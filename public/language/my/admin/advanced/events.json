@@ -1,0 +1,17 @@
+{
+	"events": "ဖြစ်ရပ်များ",
+	"no-events": "ဖြစ်ရပ်များ မရှိပါ",
+	"control-panel": "ထိန်းချုပ်မှု ပန်နယ်",
+	"delete-events": "ဖြစ်ရပ်များကို ဖျက်ရန်",
+	"confirm-delete-all-events": "ဖြစ်ရပ်အားလုံးကို ဖျက်ရန် သေချာပါသလား?",
+	"filters": "စစ်ထုတ်မှုများ",
+	"filters-apply": "အသုံးပြုရန်",
+	"filter-type": "အမျိုးအစားအလိုက် စစ်ထုတ်ရန်",
+	"filter-start": "အစ",
+	"filter-end": "အဆုံး",
+	"filter-user": "အသုံးပြုသူ",
+	"filter-user.placeholder": "အသုံးပြုသူအမည်...",
+	"filter-group": "အုပ်စု",
+	"filter-group.placeholder": "အုပ်စုအမည်...",
+	"filter-per-page": "တစ်မျက်နှာလျှင် ပြသရန်"
+}

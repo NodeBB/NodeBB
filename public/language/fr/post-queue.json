@@ -10,6 +10,7 @@
 	"user": "Utilisateur",
 	"when": "Quand",
 	"category": "Catégorie",
+	"tags": "Tags",
 	"title": "Titre",
 	"content": "Contenu",
 	"posted": "Posté",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Voulez-vous supprimer %1 messages sélectionnés ?",
 	"bulk-accept-success": "%1 messages acceptés",
 	"bulk-reject-success": "%1 messages rejetés",
-	"links-in-this-post": "Liens dans ce post"
+	"links-in-this-post": "Liens dans ce post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

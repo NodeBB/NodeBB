@@ -14,8 +14,8 @@
 	<div component="category/dropdown" class="dropdown category-dropdown-container bottom-sheet">
 		<button type="button" class="filter-btn btn btn-light btn-sm border dropdown-toggle {{{ if filters.cid }}}active-filter{{{ end }}}" data-bs-toggle="dropdown">
 			{{{ if selectedCategory }}}
-			<span class="category-item d-inline-flex align-items-center gap-1">
-				{buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}
+			<span class="category-item d-inline-flex align-items-baseline gap-1">
+				{buildCategoryIcon(selectedCategory, "18px", "rounded-circle align-self-center")}
 				<span class="visible-md-inline visible-lg-inline">{selectedCategory.name}</span>
 			</span>
 			{{{ else }}}

@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "آپ دوسرے ایڈمنسٹریٹرز کو خاموش نہیں کر سکتے!",
     "user-muted-for-hours": "آپ کو خاموش کر دیا گیا ہے۔ آپ %1 گھنٹوں کے بعد دوبارہ پوسٹ کر سکیں گے",
     "user-muted-for-minutes": "آپ کو خاموش کر دیا گیا ہے۔ آپ %1 منٹوں کے بعد دوبارہ پوسٹ کر سکیں گے",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "آپ پابندی والے صارفین کو ایڈمنسٹریٹر کے حقوق نہیں دے سکتے۔",
     "cant-remove-last-admin": "آپ واحد ایڈمنسٹریٹر ہیں۔ اپنے آپ کو ایڈمنسٹریٹر سے ہٹانے سے پہلے دوسرے صارف کو ایڈمنسٹریٹر بنائیں",
     "account-deletion-disabled": "اکاؤنٹ حذف کرنا ممنوع ہے",
@@ -131,6 +132,7 @@
     "invalid-image-type": "غلط تصویر کی قسم۔ اجازت شدہ اقسام ہیں: %1",
     "invalid-image-extension": "غلط تصویر ایکسٹینشن",
     "invalid-file-type": "غلط فائل کی قسم۔ اجازت شدہ اقسام ہیں: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "تصویر کے طول و عرض بہت بڑے ہیں",
     "group-name-too-short": "گروپ کا نام بہت چھوٹا ہے",
     "group-name-too-long": "گروپ کا نام بہت لمبا ہے",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "پوسٹ کو اسی موضوع میں منتقل نہیں کیا جا سکتا!",
     "cant-move-topic-to-same-category": "موضوع کو اسی زمرے میں منتقل نہیں کیا جا سکتا!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "آپ خود کو بلاک نہیں کر سکتے!",
     "cannot-block-privileged": "آپ ایڈمنسٹریٹرز اور گلوبل ماڈریٹرز کو بلاک نہیں کر سکتے",
     "cannot-block-guest": "مہمان دوسرے صارفین کو بلاک نہیں کر سکتے",
@@ -263,9 +266,11 @@
     "api.reauth-required": "جس وسائل تک آپ رسائی حاصل کرنے کی کوشش کر رہے ہیں اس کے لیے (دوبارہ) تصدیق درکار ہے۔",
     "activitypub.not-enabled": "اس سرور پر فیڈریشن فعال نہیں ہے",
     "activitypub.invalid-id": "داخل کردہ شناخت کنندہ کو تسلیم نہیں کیا جا سکتا – یہ غلط ہو سکتا ہے۔",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "مخصوص مواد حاصل نہیں کیا جا سکا۔",
     "activitypub.pubKey-not-found": "عوامی کلید کو تسلیم نہیں کیا جا سکا، اس لیے ڈیٹا کی تصدیق نہیں کی جا سکی۔",
     "activitypub.origin-mismatch": "موصول شدہ آبجیکٹ کا اصل بھیجنے والے کے اصل سے مطابقت نہیں رکھتا",
     "activitypub.not-implemented": "درخواست کو مسترد کر دیا گیا کیونکہ اس کا یا اس کے کسی حصے کو اس سرور کے ذریعے سپورٹ نہیں کیا جاتا جس کی طرف یہ ہدایت کی گئی ہے",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

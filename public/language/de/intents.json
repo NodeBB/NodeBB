@@ -1,0 +1,22 @@
+{
+	"display.create": "Erstellen & Antworten",
+	"display.like": "Liken",
+	"display.dislike": "Dislike",
+	"display.follow": "Folgen",
+	"display.object": "Anzeigen",
+	"title": "Open Social Web-Nutzernamen registrieren",
+	"description": "Geben Sie Ihren Open Social Web-Nutzernamen ein, um sich für „Activity Intents“ zu registrieren. So können Sie Inhalte aus diesem Forum auf Ihrem sozialen Profil teilen.",
+	"handle-label": "Open Social Web Nutzername",
+	"handle-placeholder": "nutzername@beispiel.de",
+	"register-button": "Nutzernamen registrieren",
+	"registered-handles": "Registrierte Nutzernamen",
+	"no-handles": "Es sind noch keine Nutzernamen registriert.",
+	"intents-label": "Unterstützte Intents",
+	"register-error": "Die Registrierung des Nutzernamens ist fehlgeschlagen. Bitte überprüfe das Format des Nutzernamens und versuche es erneut.",
+	"invalid-handle": "Bitte gib einen gültigen Nutzernamen im Format @username@domain.com ein",
+	"trigger-title": "%1 über Open Social Web",
+	"trigger-description": "Bitte melde dich bei deinem Forum-Konto an oder wähle einen Open Social Web-Namen aus, um diesen Vorgang abzuschließen",
+	"trigger-your-handles": "Deine registrierten Nutzernamen",
+	"trigger-yes": "Ja, benutze das",
+	"trigger-no-matching": "Es gibt keine registrierten Nutzernamen, die diese Absicht unterstützen. Registriere einen neuen Nutzernamen oder melde dich an."
+}

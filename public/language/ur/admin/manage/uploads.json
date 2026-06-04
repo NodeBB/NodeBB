@@ -8,5 +8,6 @@
     "confirm-delete": "کیا آپ واقعی اس فائل کو حذف کرنا چاہتے ہیں؟",
     "filecount": "%1 فائلیں",
     "new-folder": "نیا فولڈر",
-    "name-new-folder": "نئے فولڈر کا نام درج کریں"
+    "name-new-folder": "نئے فولڈر کا نام درج کریں",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

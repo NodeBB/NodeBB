@@ -167,6 +167,11 @@ module.exports = function (User) {
 			uids = uids.filter((uid, index) => (checkBanned ? isMembersOfBanned[index] : !isMembersOfBanned[index]));
 		}
 
+		if (filters.includes('muted')) {
+			const isMembersOfMuted = await db.isSortedSetMembers('users:muted', uids);
+			uids = uids.filter((uid, index) => isMembersOfMuted[index]);
+		}
+
 		fields.push('uid');
 		let userData = await User.getUsersFields(uids, fields);
 

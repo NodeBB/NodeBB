@@ -4,9 +4,11 @@ define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
 	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
 	'translator', 'quickreply', 'handleBack', 'imagesloaded',
+	'forum/topic/votes',
+	'modules/intents',
 ], function (infinitescroll, search, sort, hooks,
 	alerts, api, bootbox, helpers, categoryTools,
-	translator, quickreply, handleBack, imagesLoaded) {
+	translator, quickreply, handleBack, imagesLoaded, votes, intents) {
 	const World = {};
 
 	World.init = function () {
@@ -121,6 +123,8 @@ define('forum/world', [
 			handleIgnoreWatch(category.cid);
 		});
 
+		intents.addHandlers();
+
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
 	};
@@ -129,11 +133,11 @@ define('forum/world', [
 		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
 	}
 
-	function loadTopicsAfter(index, after, direction, callback) {
+	function loadTopicsAfter(index, referenceTid, direction, callback) {
 		callback = callback || function () {};
 		const query = utils.params();
 		query.page = calculateNextPage(index, direction);
-		query.after = after;
+		query[direction > 0 ? 'after' : 'before'] = referenceTid;
 		infinitescroll.loadMoreXhr(query, callback);
 	}
 
@@ -164,33 +168,19 @@ define('forum/world', [
 			});
 		});
 
-		feedEl.on('click', '[data-action="upvote"]', function () {
-			const $this = $(this);
-			const isUpvoted = $this.attr('data-upvoted') === 'true';
-			const pid = $this.attr('data-pid');
-			const upvoteCount = parseInt($this.attr('data-upvotes'), 10);
-			const method = isUpvoted ? 'del' : 'put';
-			const delta = 1;
-			api[method](`/posts/${pid}/vote`, { delta }, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
+		feedEl.on('click', '[data-action="upvote"]', function (e) {
+			e.preventDefault();
+			votes.toggleVote($(this), '.upvoted', 1);
+			return false;
+		});
 
-				const newUpvoteCount = upvoteCount + (isUpvoted ? -1 : 1);
-				$this.find('[component="upvote-count"]').text(
-					helpers.humanReadableNumber(newUpvoteCount)
-				);
-				$this.attr('data-upvotes', newUpvoteCount);
-				$this.attr('data-upvoted', isUpvoted ? 'false' : 'true');
-				$this.find('i').toggleClass('fa text-danger', !isUpvoted)
-					.toggleClass('fa-regular text-muted', isUpvoted);
-
-				hooks.fire('action:post.toggleVote', {
-					pid: pid,
-					delta: delta,
-					unvote: method === 'del',
-				});
-			});
+		// Handle UI updates for upvotes in the world feed
+		hooks.onPage('action:post.toggleVote', function (data) {
+			if (data.unvote) {
+				$(`[data-pid="${data.pid}"][data-action="upvote"]`).removeClass('upvoted');
+			} else {
+				$(`[data-pid="${data.pid}"][data-action="upvote"]`).addClass('upvoted');
+			}
 		});
 
 		feedEl.on('click', '[data-action="reply"]', function () {

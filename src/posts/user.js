@@ -24,8 +24,7 @@ module.exports = function (Posts) {
 		const groupsMap = await getGroupsMap(userData);
 
 		userData.forEach((userData, index) => {
-			userData.signature = validator.escape(String(userData.signature || ''));
-			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
+			userData.fullname = userSettings[index].showfullname ? userData.fullname || '' : undefined;
 			userData.selectedGroups = [];
 
 			if (meta.config.hideFullname) {
@@ -105,7 +104,7 @@ module.exports = function (Posts) {
 			'uid', 'username', 'fullname', 'userslug',
 			'reputation', 'postcount', 'topiccount', 'picture',
 			'signature', 'banned', 'banned:expire', 'status',
-			'lastonline', 'groupTitle', 'mutedUntil',
+			'lastonline', 'groupTitle', 'muted', 'mutedUntil',
 		];
 		const result = await plugins.hooks.fire('filter:posts.addUserFields', {
 			fields: fields,

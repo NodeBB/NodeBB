@@ -199,6 +199,7 @@
     "info.no-mute-history": "اس صارف کو کبھی خاموش نہیں کیا گیا",
     "info.muted-until": "%1 تک خاموش",
     "info.muted-expiry": "ختم ہونے کی تاریخ",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "کوئی وجہ نہیں بتائی گئی۔",
     "info.username-history": "صارف کے ناموں کی تاریخ",
     "info.email-history": "ای میلوں کی تاریخ",

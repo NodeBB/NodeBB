@@ -153,6 +153,20 @@ describe('Controllers', () => {
 			assert(body);
 		});
 
+		it('should 403 if route requires privileges', async () => {
+			const uid = await user.create({ username: 'testuser1', password: 'password' });
+			const { jar } = await helpers.loginUser('testuser1', 'password');
+			await api.users.updateSettings({ uid }, {
+				uid,
+				settings: {
+					homePageRoute: 'custom',
+					homePageCustom: 'api/admin/advanced/database',
+				},
+			});
+			const { response, body } = await request.get(nconf.get('url'), { jar });
+			assert.equal(response.statusCode, 403);
+		});
+
 		it('api should work with hook', async () => {
 			await meta.configs.set('homePageRoute', 'mycustompage');
 			const { response, body } = await request.get(`${nconf.get('url')}/api`);
@@ -232,6 +246,12 @@ describe('Controllers', () => {
 				}
 			});
 		});
+	});
+
+	it('should properly escape outgoing url query params', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
+		assert.equal(response.statusCode, 200);
+		assert.strictEqual(body.outgoing, 'https://foo.com/?best=&amp;lsqb;&amp;lsqb;topic:merged-message,%20javascript:alert(origin)&amp;rsqb;&amp;rsqb;');
 	});
 
 	it('should load /register/complete', async () => {
@@ -1278,11 +1298,11 @@ describe('Controllers', () => {
 		});
 
 		it('should parse about me', async () => {
-			await user.setUserFields(fooUid, { picture: '/path/to/picture', aboutme: 'hi i am a bot' });
+			await user.setUserFields(fooUid, { picture: '/assets/uploads/path/to/picture', aboutme: 'hi i am a bot [[topic:moved-from]] <script>alert("xss")</script>' });
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutme, 'hi i am a bot');
-			assert.equal(body.picture, '/path/to/picture');
+			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb; &lt;script&gt;alert("xss")&lt;/script&gt;');
+			assert.equal(body.picture, '&#x2F;assets&#x2F;uploads&#x2F;path&#x2F;to&#x2F;picture');
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {
@@ -1428,9 +1448,8 @@ describe('Controllers', () => {
 
 	describe('handle errors', () => {
 		const plugins = require('../src/plugins');
-		after((done) => {
-			plugins.loadedHooks['filter:router.page'] = undefined;
-			done();
+		after(() => {
+			delete plugins.loadedHooks['response:router.page'];
 		});
 
 		it('should handle topic malformed uri', async () => {

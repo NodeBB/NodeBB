@@ -1,0 +1,29 @@
+{
+	"tokens": "တိုကင်များ",
+	"settings": "ဆက်တင်များ",
+	"lead-text": "ဦးဆောင်စာသား",
+	"intro": "နိဒါန်း",
+	"warning": "သတိပေးချက်",
+	"docs": "စာရွက်စာတမ်းများ",
+
+	"require-https": "HTTPS လိုအပ်သည်",
+	"require-https-caveat": "HTTPS လိုအပ်မှုသတိပေးချက်",
+
+	"uid": "UID",
+	"token": "တိုကင်",
+	"uid-help-text": "UID အကူအညီစာသား",
+	"description": "ဖော်ပြချက်",
+	"last-seen": "နောက်ဆုံးတွေ့ချိန်",
+	"created": "ဖန်တီးခဲ့",
+	"create-token": "တိုကင်အသစ်ဖန်တီးရန်",
+	"update-token": "တိုကင်မွမ်းမံရန်",
+	"master-token": "မာစတာတိုကင်",
+	"last-seen-never": "တစ်ခါမျှမတွေ့",
+	"no-description": "ဖော်ပြချက်မရှိ",
+	"actions": "လုပ်ဆောင်ချက်များ",
+	"edit": "ပြင်ဆင်ရန်",
+	"roll": "လှိမ့်ရန်",
+
+	"delete-confirm": "ဖျက်ရန်အတည်ပြုပါ",
+	"roll-confirm": "လှိမ့်ရန်အတည်ပြုပါ"
+}

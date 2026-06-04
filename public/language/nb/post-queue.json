@@ -10,6 +10,7 @@
 	"user": "Bruker",
 	"when": "Når",
 	"category": "Kategori",
+	"tags": "Tags",
 	"title": "Tittel",
 	"content": "Innhold",
 	"posted": "Postet",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Vil du fjerne %1 valgte innlegg?",
 	"bulk-accept-success": "%1 innlegg godkjent",
 	"bulk-reject-success": "%1 innlegg avvist",
-	"links-in-this-post": "Lenker i dette innlegget"
+	"links-in-this-post": "Lenker i dette innlegget",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

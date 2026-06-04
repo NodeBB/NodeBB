@@ -1,0 +1,13 @@
+{
+	"logger": "မှတ်တမ်းတင်စနစ်",
+	"logger-settings": "မှတ်တမ်းတင်စနစ် ဆက်တင်များ",
+	"description": "ဖော်ပြချက်",
+	"explanation": "ရှင်းလင်းချက်",
+	"enable-http": "HTTP ဖွင့်ရန်",
+	"enable-socket": "Socket ဖွင့်ရန်",
+	"file-path": "ဖိုင်လမ်းကြောင်း",
+	"file-path-placeholder": "ဖိုင်လမ်းကြောင်း ထည့်ပါ...",
+
+	"control-panel": "ထိန်းချုပ်မှု ပန်နယ်",
+	"update-settings": "ဆက်တင်များကို အပ်ဒိတ်လုပ်ရန်"
+}

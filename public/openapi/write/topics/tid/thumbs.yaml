@@ -73,16 +73,22 @@ post:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                url:
-                  type: string
-                path:
-                  type: string
-                name:
-                  type: string
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        name:
+                          type: string
 delete:
   tags:
     - topics

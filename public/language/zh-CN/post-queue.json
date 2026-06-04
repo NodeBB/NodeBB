@@ -10,6 +10,7 @@
 	"user": "用户",
 	"when": "当",
 	"category": "版块",
+	"tags": "标签",
 	"title": "标题",
 	"content": "内容",
 	"posted": "发布",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "你想删除%1的选定帖子吗？",
 	"bulk-accept-success": "%1个帖子已接受",
 	"bulk-reject-success": "%1个帖子已拒绝",
-	"links-in-this-post": "帖子中的链接"
+	"links-in-this-post": "帖子中的链接",
+	"thumbs-in-this-post": "本帖子中的缩略图"
 }

@@ -8,5 +8,6 @@
     "confirm-delete": "Bu faylı həqiqətən silmək istəyirsiniz?",
     "filecount": "%1 fayl",
     "new-folder": "Yeni qovluq",
-    "name-new-folder": "Yeni qovluq üçün ad daxil edin"
+    "name-new-folder": "Yeni qovluq üçün ad daxil edin",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

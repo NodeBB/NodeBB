@@ -35,6 +35,11 @@ const probeRateLimit = ttl({
 	name: 'ap-probe-rate-limit-cache',
 	ttl: 1000 * 3, // 3 seconds
 });
+const publicKeyFetchRateLimit = ttl({
+	name: 'ap-public-key-fetch-rate-limit-cache',
+	ttl: 60 * 1000, // 60 seconds
+	max: 1000,
+});
 const publicKeyCache = lru({
 	name: 'ap-public-key-cache',
 	ttl: 1000 * 60 * 60 * 6, // 6 hours
@@ -203,7 +208,7 @@ ActivityPub.getPrivateKey = async (type, id) => {
 	return { key: privateKey, keyId };
 };
 
-ActivityPub.fetchPublicKey = async (uri) => {
+ActivityPub.fetchPublicKey = async (uri, ip) => {
 	const cached = publicKeyCache.get(uri);
 	if (cached !== undefined) {
 		if (cached === null) {
@@ -224,6 +229,22 @@ ActivityPub.fetchPublicKey = async (uri) => {
 	}
 
 	try {
+		// Validate URI is well-formed
+		new URL(uri);
+	} catch (err) {
+		throw new Error('[[error:activitypub.invalid-id]]');
+	}
+
+	// Check rate limit for this IP
+	const lockId = `pubkey:${ip}`;
+	const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
+	const lockStatus = await db.incrObjectField('locks', lockId);
+	if (lockStatus > 1 || currentCount >= 60) {
+		winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
+		throw new Error('[[error:activitypub.rate-limited]]');
+	}
+
+	try {
 		// Use requests.get with built-in SSRF protections
 		// Set reasonable timeout and response size limit
 		const { body } = await request.get(uri, {
@@ -232,14 +253,23 @@ ActivityPub.fetchPublicKey = async (uri) => {
 				'accept': ActivityPub._constants.acceptableTypes.at(1),
 			},
 			redirect: 'manual',
+			maxBodyLength: 1024 * 1024, // 1MB limit
 		});
 
 		// Process response and cache
 		if (body.hasOwnProperty('publicKeyPem')) {
+			// Validate public key
+			if (!utils.isPEM(body.publicKeyPem)) {
+				throw new Error('[[error:invalid-data]]');
+			}
 			// CryptographicKey returned (correct)
 			publicKeyCache.set(uri, body.publicKeyPem);
 			return body.publicKeyPem;
 		} else if (body?.publicKey?.publicKeyPem) {
+			// Validate public key
+			if (!utils.isPEM(body.publicKey.publicKeyPem)) {
+				throw new Error('[[error:invalid-data]]');
+			}
 			// Actor object returned (less correct)
 			publicKeyCache.set(uri, body.publicKey.publicKeyPem);
 			return body.publicKey.publicKeyPem;
@@ -257,6 +287,9 @@ ActivityPub.fetchPublicKey = async (uri) => {
 			throw new Error('[[error:activitypub.invalid-id]]');
 		}
 		throw err;
+	} finally {
+		await db.deleteObjectField('locks', lockId);
+		publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
 	}
 };
 
@@ -338,7 +371,7 @@ ActivityPub.verify = async (req) => {
 
 		// Retrieve public key from remote instance
 		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
-		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId);
+		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId, req.ip);
 
 		return await verifyAsync('sha256', Buffer.from(signed_string), publicKeyPem, Buffer.from(signature, 'base64'));
 	} catch (e) {
@@ -371,8 +404,12 @@ ActivityPub.get = async (type, id, uri, options) => {
 		return cached;
 	}
 
-	const keyData = await ActivityPub.getPrivateKey(type, id);
-	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
+	let headers = {};
+	if (parseInt(id, 10) > 0) {
+		const keyData = await ActivityPub.getPrivateKey(type, id);
+		headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
+	}
+
 	ActivityPub.helpers.log(`[activitypub/get] ${uri}`);
 	try {
 		const { response, body } = await request.get(uri, {
@@ -497,6 +534,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 						type,
 						attempts: 1,
 						timestamp: nextTryOn,
+						digest,
 						payload: JSON.stringify(payload),
 					}]);
 				}

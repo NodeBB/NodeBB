@@ -7,7 +7,7 @@ module.exports = {
 	name: 'Add a partial index on set members',
 	timestamp: Date.UTC(2026, 2, 11),
 	method: async function () {
-		const nconf = require.main.require('nconf');
+		const nconf = require('nconf');
 		const isMongo = nconf.get('database') === 'mongo';
 		if (!isMongo) {
 			return;

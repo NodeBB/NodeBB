@@ -56,6 +56,7 @@ topicsAPI.create = async function (caller, data) {
 
 	const payload = { ...data };
 	delete payload.tid;
+	delete payload.pid;
 	delete payload.generatedTitle;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
@@ -298,25 +299,44 @@ topicsAPI.bump = async (caller, { tid }) => {
 };
 
 topicsAPI.move = async (caller, { tid, cid }) => {
-	const canMove = await privileges.categories.isAdminOrMod(cid, caller.uid);
-	if (!canMove) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
 	const tids = Array.isArray(tid) ? tid : [tid];
-	const uids = await user.getUidsFromSet('users:online', 0, -1);
-	const cids = [parseInt(cid, 10)];
+	const [isAdmin, isModOfDestination, [canCreate, canRead], uids] = await Promise.all([
+		privileges.users.isAdministrator(caller.uid),
+		privileges.users.isModerator(caller.uid, cid),
+		privileges.categories.can(['topics:create', 'topics:read'], cid, caller.uid),
+		user.getUidsFromSet('users:online', 0, -1),
+	]);
+
+	let maxOwnerPosts = parseInt(meta.config.movingTopicsMaxPosts, 10);
+	if (Number.isNaN(maxOwnerPosts)) {
+		maxOwnerPosts = 5;
+	}
+	const canCreateAndReadDestination = canCreate && canRead;
+	const updateCids = [parseInt(cid, 10)];
 
 	await batch.processArray(tids, async (tids) => {
-		await Promise.all(tids.map(async (tid) => {
-			const canMove = await privileges.topics.isAdminOrMod(tid, caller.uid);
-			if (!canMove) {
-				throw new Error('[[error:no-privileges]]');
+		const topicsData = await topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'mainPid', 'slug', 'deleted', 'locked', 'postcount']);
+		const cids = topicsData.map(t => t && t.cid);
+		const isModOfTopicCid = await privileges.users.isModerator(caller.uid, cids);
+
+		await Promise.all(tids.map(async (tid, index) => {
+			const topicData = topicsData[index];
+			if (!topicData || !topicData.uid || !topicData.cid) {
+				return;
 			}
-			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'slug', 'deleted']);
+			const isModOfSourceAndDestination = isModOfDestination && isModOfTopicCid[index];
+			if (!isAdmin && !isModOfSourceAndDestination) {
+				const isOwnerOfTopic = parseInt(topicData.uid, 10) === parseInt(caller.uid, 10);
+				if (!isOwnerOfTopic || !canCreateAndReadDestination || topicData.locked || topicData.deleted) {
+					throw new Error('[[error:no-privileges]]');
+				}
+				if (maxOwnerPosts > 0 && topicData.postcount > maxOwnerPosts) {
+					throw new Error(`[[error:cant-move-topic-too-many-posts, ${maxOwnerPosts}]]`);
+				}
+			}
 			topicData.toCid = cid;
-			if (!cids.includes(topicData.cid)) {
-				cids.push(topicData.cid);
+			if (!updateCids.includes(topicData.cid)) {
+				updateCids.push(topicData.cid);
 			}
 			await topics.tools.move(tid, {
 				cid,
@@ -351,5 +371,5 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 		}));
 	}, { batch: 10 });
 
-	await categories.onTopicsMoved(cids);
+	await categories.onTopicsMoved(updateCids);
 };

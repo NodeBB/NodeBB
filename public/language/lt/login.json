@@ -8,5 +8,6 @@
     "login-successful": "Jūs sėkmingai prisijungėte!",
     "dont-have-account": "Neturite paskyros?",
     "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

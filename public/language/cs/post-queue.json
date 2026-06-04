@@ -10,6 +10,7 @@
 	"user": "Uživatel",
 	"when": "When",
 	"category": "Kategorie",
+	"tags": "Tags",
 	"title": "Název",
 	"content": "Obsah",
 	"posted": "Přidáno",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "Odkazy v tomto příspěvku"
+	"links-in-this-post": "Odkazy v tomto příspěvku",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

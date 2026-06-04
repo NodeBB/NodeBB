@@ -11,6 +11,7 @@ const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const meta = require('../../src/meta');
 const install = require('../../src/install');
+const messaging = require('../../src/messaging');
 const utils = require('../../src/utils');
 const activitypub = require('../../src/activitypub');
 
@@ -153,6 +154,122 @@ describe('Outbound activities module', () => {
 			});
 
 			commonTests();
+		});
+	});
+
+	describe('.privateNote', () => {
+		describe('.delete()', () => {
+			before(async function () {
+				// Create a local user and a remote actor
+				this.localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const remote = helpers.mocks.person();
+				this.remoteId = remote.id;
+
+				// Create a private chat room between the local user and the remote actor
+				this.roomId = await messaging.newRoom(this.localUid, { uids: [this.remoteId] });
+
+				// Send a chat message from the local user
+				const messageData = await messaging.sendMessage({
+					uid: this.localUid,
+					roomId: this.roomId,
+					content: 'Test message to delete',
+				});
+				this.mid = messageData.mid;
+				this.messageObj = {
+					mid: this.mid,
+					fromuid: this.localUid,
+					roomId: this.roomId,
+					deleted: 0,
+				};
+			});
+
+			after(() => {
+				activitypub._sent.clear();
+			});
+
+			it('should send a Delete activity when deleting a message', async function () {
+				await activitypub.out.delete.privateNote(this.localUid, this.messageObj);
+				await wait(50);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+				const { payload } = Array.from(activitypub._sent).pop()[1];
+
+				assert.strictEqual(payload.type, 'Delete');
+				assert.strictEqual(payload.object, `${nconf.get('url')}/message/${this.mid}`);
+				assert(payload.actor.startsWith(`${nconf.get('url')}/uid/`));
+			});
+
+			it('should send the Delete only to remote users in the room', async function () {
+				const { targets } = Array.from(activitypub._sent).pop()[1];
+
+				// Should include the remote actor
+				assert(targets.includes(this.remoteId));
+
+				// Should NOT include the local user
+				const localUrl = `${nconf.get('url')}/uid/${this.localUid}`;
+				assert(!targets.includes(this.localUid));
+				assert(!targets.includes(localUrl));
+			});
+
+			it('should not send any activity when mid is not a number', async function () {
+				activitypub._sent.clear();
+				await activitypub.out.delete.privateNote(this.localUid, { mid: 'not-a-number', roomId: this.roomId });
+				await wait(50);
+
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
+			it('should not federate an Update when deleting a message', async function () {
+				activitypub._sent.clear();
+
+				await activitypub.out.delete.privateNote(this.localUid, this.messageObj);
+				await wait(50);
+
+				const activities = Array.from(activitypub._sent).map(([, { payload }]) => payload.type);
+
+				assert.strictEqual(activities.filter(t => t === 'Delete').length, 1);
+				assert.strictEqual(activities.filter(t => t === 'Update').length, 0);
+			});
+		});
+
+		describe('.update()', () => {
+			before(async function () {
+				// Create a local user and a remote actor
+				this.localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const remote = helpers.mocks.person();
+				this.remoteId = remote.id;
+
+				// Create a private chat room between the local user and the remote actor
+				this.roomId = await messaging.newRoom(this.localUid, { uids: [this.remoteId] });
+
+				// Send a chat message from the local user
+				const messageData = await messaging.sendMessage({
+					uid: this.localUid,
+					roomId: this.roomId,
+					content: 'Test message to update',
+				});
+				this.mid = messageData.mid;
+				this.messageObj = {
+					mid: this.mid,
+					fromuid: this.localUid,
+					roomId: this.roomId,
+					deleted: 0,
+				};
+			});
+
+			after(() => {
+				activitypub._sent.clear();
+			});
+
+			it('should send an Update activity when updating a message', async function () {
+				await activitypub.out.update.privateNote(this.localUid, this.messageObj);
+				await wait(50);
+
+				assert.strictEqual(activitypub._sent.size, 1);
+				const { payload } = Array.from(activitypub._sent).pop()[1];
+
+				assert.strictEqual(payload.type, 'Update');
+			});
 		});
 	});
 });

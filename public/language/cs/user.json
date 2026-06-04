@@ -199,6 +199,7 @@
     "info.no-mute-history": "Tento uživatel nebyl nikdy ztlumen",
     "info.muted-until": "Ztlumen do %1",
     "info.muted-expiry": "Platnost",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Důvod neudán.",
     "info.username-history": "Historie uživatelského jména",
     "info.email-history": "E-mailová historie",

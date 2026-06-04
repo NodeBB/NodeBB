@@ -78,16 +78,25 @@ controller.list = async function (req, res) {
 		({ tids, topicCount, topics: topicData } = await topics.getSortedTopics(cidQuery));
 
 		/**
-		 * Use `after` if passed in (only on IS) to update `start`/`stop`, this is useful
+		 * Use `after` or `before` cursors (only on IS) to update `start`/`stop`, this is useful
 		 * to prevent loading duplicate posts if the sorted topics have received new topics
 		 * since the set was last loaded.
 		 */
-		if (after) {
-			const index = tids.indexOf(utils.isNumber(after) ? parseInt(after, 10) : after);
-			if (index && start - index < 1) {
-				const count = stop - start;
+		let cursor = after;
+		let direction = 1;
+		if (req.query.before) {
+			cursor = req.query.before;
+			direction = -1;
+		}
+		if (cursor) {
+			const index = tids.indexOf(utils.isNumber(cursor) ? parseInt(cursor, 10) : cursor);
+			const count = stop - start + 1;
+			if (direction === 1 && index >= start) {
 				start = index + 1;
-				stop = start + count;
+				stop = start + count - 1;
+			} else if (direction === -1 && index > 0) {
+				stop = index - 1;
+				start = stop - count + 1;
 			}
 		}
 		tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);

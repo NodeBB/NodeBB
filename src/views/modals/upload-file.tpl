@@ -27,7 +27,7 @@
 
 				<div id="upload-progress-box" class="progress progress-striped hide mb-3">
 					<div id="upload-progress-bar" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0">
-						<span class="sr-only"> [[success:success]]</span>
+						<span class="visually-hidden"> [[success:success]]</span>
 					</div>
 				</div>
 

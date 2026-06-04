@@ -94,7 +94,7 @@ Admin.activitypub.addRule = async (req, res) => {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await activitypub.rules.add(type, value, cid);
+	await activitypub.rules.upsert(type, value, cid);
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 

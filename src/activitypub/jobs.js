@@ -72,7 +72,7 @@ Jobs.start = async () => {
 		onTick: async () => {
 			await tryCronJob(async () => {
 				// Delete entries older than 24h
-				await db.sortedSetsRemoveRangeByScore(['ap:errors'], '-inf', Date.now() - (1000 * 60 * 60 * 24));
+				await db.sortedSetsRemoveRangeByScore(['ap.errors'], '-inf', Date.now() - (1000 * 60 * 60 * 24));
 			});
 		},
 	});

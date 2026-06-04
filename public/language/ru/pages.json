@@ -20,6 +20,7 @@
     "users/sort-posts": "Пользователи по кол-ву сообщений",
     "users/sort-reputation": "Пользователи по уровню репутации",
     "users/banned": "Заблокированные пользователи",
+    "users/muted": "Muted Users",
     "users/most-flags": "Пользователи, на которых больше всего жалуются",
     "users/search": "Поиск пользователей",
     "notifications": "Уведомления",

@@ -1,6 +1,6 @@
-<div id="chat-modal" class="chat-modal d-flex flex-nowrap modal overflow-visible" tabindex="-1" role="dialog" aria-labelledby="chat-room-title-{roomId}" data-center="false">
-	<div class="modal-dialog">
-		<div class="modal-content" component="chat/message/window">
+<div id="chat-modal" class="chat-modal position-fixed pe-none d-flex flex-nowrap modal overflow-visible" tabindex="-1" role="dialog" aria-labelledby="chat-room-title-{roomId}">
+	<div class="modal-dialog m-0">
+		<div class="modal-content m-4" component="chat/message/window">
 			<div class="modal-header d-flex gap-4 justify-content-between">
 				<div id="chat-room-title-{roomId}" class="fs-6 flex-grow-1 fw-semibold tracking-tight text-truncate text-nowrap" component="chat/room/name" data-icon="{icon}">{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ else }}}{./chatWithMessage}{{{ end}}}</div>
 				<div class="d-flex gap-1 align-items-center">

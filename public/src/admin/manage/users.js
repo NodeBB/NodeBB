@@ -1,8 +1,10 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts', 'accounts/invite', 'helpers', 'admin/modules/change-email',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts, AccountInvite, helpers, changeEmail) {
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts',
+	'accounts/invite', 'accounts/moderate','helpers', 'admin/modules/change-email',
+], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts,
+	AccountInvite, AccountModerate, helpers, changeEmail) {
 	const Users = {};
 
 	Users.init = function () {
@@ -232,70 +234,27 @@ define('admin/manage/users', [
 			});
 		});
 
-		$('.ban-user').on('click', function () {
+		$('.ban-user').on('click', async function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				alerts.error('[[error:no-users-selected]]');
 				return false; // specifically to keep the menu open
 			}
 
-			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
-				if (confirm) {
+			AccountModerate.throwModal({
+				tpl: 'modals/temporary-ban',
+				title: '[[user:ban-account]]',
+				type: 'ban',
+				onSubmit: function (formData) {
 					Promise.all(uids.map(function (uid) {
-						return api.put('/users/' + encodeURIComponent(uid) + '/ban');
+						return api.put('/users/' + encodeURIComponent(uid) + '/ban', {
+							until: formData.until,
+							reason: formData.reason,
+						});
 					})).then(() => {
 						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
 					}).catch(alerts.error);
-				}
-			});
-		});
-
-		$('.ban-user-temporary').on('click', async function () {
-			const uids = getSelectedUids();
-			if (!uids.length) {
-				alerts.error('[[error:no-users-selected]]');
-				return false; // specifically to keep the menu open
-			}
-			const reasons = await socket.emit('user.getCustomReasons', { type: 'ban' });
-			const html = await app.parseAndTranslate('modals/temporary-ban', { reasons });
-			const modal = bootbox.dialog({
-				title: '[[user:ban-account]]',
-				message: html,
-				show: true,
-				onEscape: true,
-				buttons: {
-					close: {
-						label: '[[global:close]]',
-						className: 'btn-link',
-					},
-					submit: {
-						label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
-						callback: function () {
-							const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
-								data[cur.name] = cur.value;
-								return data;
-							}, {});
-							const until = formData.length > 0 ? (
-								Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-							) : 0;
-
-							Promise.all(uids.map(function (uid) {
-								return api.put('/users/' + encodeURIComponent(uid) + '/ban', {
-									until: until,
-									reason: formData.reason,
-								});
-							})).then(() => {
-								onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
-							}).catch(alerts.error);
-						},
-					},
 				},
-			});
-			modal.find('[data-key]').on('click', function () {
-				const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
-				if (reason && reason.body) {
-					modal.find('[name="reason"]').val(translator.unescape(reason.body));
-				}
 			});
 		});
 
@@ -306,37 +265,65 @@ define('admin/manage/users', [
 				return false; // specifically to keep the menu open
 			}
 
-			Benchpress.render('modals/unban', {}).then(function (html) {
-				const modal = bootbox.dialog({
-					title: '[[user:unban-account]]',
-					message: html,
-					show: true,
-					onEscape: true,
-					buttons: {
-						close: {
-							label: '[[global:close]]',
-							className: 'btn-link',
-						},
-						submit: {
-							label: '[[user:unban-account]]',
-							callback: function () {
-								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
-									data[cur.name] = cur.value;
-									return data;
-								}, {});
+			AccountModerate.throwModal({
+				tpl: 'modals/unban',
+				title: '[[user:unban-account]]',
+				type: 'ban',
+				onSubmit: function (formData) {
+					Promise.all(uids.map(function (uid) {
+						return api.del('/users/' + encodeURIComponent(uid) + '/ban', {
+							reason: formData.reason || '',
+						});
+					})).then(() => {
+						onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+					}).catch(alerts.error);
+				},
+			});
+		});
 
 
-								Promise.all(uids.map(function (uid) {
-									return api.del('/users/' + encodeURIComponent(uid) + '/ban', {
-										reason: formData.reason || '',
-									});
-								})).then(() => {
-									onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
-								}).catch(alerts.error);
-							},
-						},
-					},
-				});
+		$('.mute-user').on('click', async function () {
+			const uids = getSelectedUids();
+			if (!uids.length) {
+				alerts.error('[[error:no-users-selected]]');
+				return false; // specifically to keep the menu open
+			}
+			AccountModerate.throwModal({
+				tpl: 'modals/temporary-mute',
+				title: '[[user:mute-account]]',
+				type: 'mute',
+				onSubmit: function (formData) {
+					Promise.all(uids.map(function (uid) {
+						return api.put(`/users/${encodeURIComponent(uid)}/mute`, {
+							until: formData.until,
+							reason: formData.reason,
+						});
+					})).then(() => {
+						onSuccess('[[admin/manage/users:alerts.mute-success]]', '.mute', true);
+					}).catch(alerts.error);
+				},
+			});
+		});
+
+		$('.unmute-user').on('click', function () {
+			const uids = getSelectedUids();
+			if (!uids.length) {
+				alerts.error('[[error:no-users-selected]]');
+				return false; // specifically to keep the menu open
+			}
+
+			AccountModerate.throwModal({
+				tpl: 'modals/unmute',
+				title: '[[user:unmute-account]]',
+				onSubmit: function (formData) {
+					Promise.all(uids.map(function (uid) {
+						return api.del(`/users/${encodeURIComponent(uid)}/mute`, {
+							reason: formData.reason || '',
+						});
+					})).then(() => {
+						onSuccess('[[admin/manage/users:alerts.unmute-success]]', '.mute', false);
+					}).catch(alerts.error);
+				},
 			});
 		});
 

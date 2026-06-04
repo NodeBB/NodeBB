@@ -20,6 +20,7 @@
     "users/sort-posts": "Användare med flest inlägg",
     "users/sort-reputation": "Användare med bäst rykte",
     "users/banned": "Bannlysta användare",
+    "users/muted": "Muted Users",
     "users/most-flags": "Mest flaggade användare",
     "users/search": "Användar Sök",
     "notifications": "Notiser",

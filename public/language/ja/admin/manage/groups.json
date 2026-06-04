@@ -22,7 +22,7 @@
 	"description-placeholder": "あなたのグループについての簡単な説明",
 	"create-button": "作成",
 
-	"alerts.create-failure": "<strong>おっと</strong><p>グループを作成する際に問題が発生しました。後でもう一度お試しください！</ p>",
+	"alerts.create-failure": "<strong>おっと</strong><p>グループの作成中に問題が発生しました。後でもう一度お試しください。</p>",
 	"alerts.confirm-delete": "このグループを削除してもよろしいですか？",
 
 	"edit.name": "名前",

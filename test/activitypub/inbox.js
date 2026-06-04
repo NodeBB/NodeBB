@@ -11,6 +11,7 @@ const categories = require('../../src/categories');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const privileges = require('../../src/privileges');
+const messaging = require('../../src/messaging');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
@@ -428,42 +429,6 @@ describe('Inbox', () => {
 			});
 
 			describe('(Delete)', () => {
-				it('should delete a local post when announced', async () => {
-					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-					const { id: cid } = helpers.mocks.group();
-					await activitypub.actors.assertGroup(cid);
-					const { postData } = await topics.post({
-						uid,
-						cid,
-						title: utils.generateUUID(),
-						content: utils.generateUUID(),
-					});
-
-					// Create a delete activity for the local post
-					const object = await activitypub.mocks.notes.public(postData);
-					const { activity: deleteActivity } = helpers.mocks.delete({
-						actor: `${nconf.get('url')}/uid/${postData.uid}`,
-						object,
-					});
-
-					// Wrap it in an announce
-					const { activity } = helpers.mocks.announce({
-						actor: cid,
-						object: deleteActivity,
-					});
-
-					// Verify post exists before deletion
-					assert(await posts.exists(postData.pid));
-
-					// Process the announce
-					await activitypub.inbox.announce({ body: activity });
-
-					// Verify post is deleted
-					const isDeleted = await posts.getPostField(postData.pid, 'deleted');
-					const exists = await posts.exists(postData.pid);
-					assert.strictEqual(isDeleted, 1);
-				});
-
 				it('should delete a remote post when announced', async () => {
 					const { id: cid } = helpers.mocks.group();
 
@@ -495,6 +460,154 @@ describe('Inbox', () => {
 					const exists = await posts.exists(id);
 					const isDeleted = await posts.getPostField(id, 'deleted');
 					assert.strictEqual(isDeleted, 1);
+				});
+
+				it('should delete the topic if the post is the only post in the topic', async () => {
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+
+					// Create a remote note first (announced to the remote category)
+					const { id: noteId } = helpers.mocks.note({
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, noteId, { skipChecks: true });
+
+					// Get the local post tid for verification
+					const localPid = await activitypub.helpers.resolveLocalId(noteId).then(r => r.id || noteId);
+					const tid = await posts.getPostField(localPid, 'tid');
+
+					// Verify topic and post exist before deletion
+					assert(await topics.exists(tid));
+
+					// Create a delete activity for the remote post from the remote person
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: 'https://example.org/user/foobar',
+						object: noteId,
+					});
+
+					// Wrap it in an announce from the remote category
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const isDeleted = await posts.getPostField(localPid, 'deleted');
+					assert.strictEqual(isDeleted, 1);
+
+					// Verify topic is also deleted (only post in topic)
+					const topicDeleted = await topics.getTopicField(tid, 'deleted');
+					assert.strictEqual(topicDeleted, 1);
+				});
+
+				it('should NOT delete the topic if there are replies', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+
+					// Create a remote note first (announced to the remote category)
+					const { id: noteId } = helpers.mocks.note({
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, noteId, { skipChecks: true });
+
+					// Get the local post tid
+					const localPid = await activitypub.helpers.resolveLocalId(noteId).then(r => r.id || noteId);
+					const tid = await posts.getPostField(localPid, 'tid');
+
+					// Add a local reply to the topic so it has more than one post
+					await topics.reply({
+						tid,
+						uid,
+						content: utils.generateUUID(),
+					});
+
+					// Verify topic exists before deletion
+					assert(await topics.exists(tid));
+
+					// Create a delete activity for the remote post from the remote person
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: 'https://example.org/user/foobar',
+						object: noteId,
+					});
+
+					// Wrap it in an announce from the remote category
+					const { activity } = helpers.mocks.announce({
+						actor: cid,
+						object: deleteActivity,
+					});
+
+					// Process the announce
+					await activitypub.inbox.announce({ body: activity });
+
+					// Verify post is deleted
+					const isDeleted = await posts.getPostField(localPid, 'deleted');
+					assert.strictEqual(isDeleted, 1);
+
+					// Verify topic still exists (not deleted because there are replies)
+					const topicExistsAfter = await topics.exists(tid);
+					assert.strictEqual(topicExistsAfter, true);
+				});
+			});
+
+			describe('(Delete) with non-public notes (aka chat messages)', () => {
+				before(async function () {
+					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const remote = helpers.mocks.person();
+					this.remoteId = remote.id;
+					const result = await activitypub.actors.assert([remote.id]);
+
+					// Create a private chat room between the users
+					const { note } = helpers.mocks.note({
+						attributedTo: remote.id,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					this.mid = note.id;
+					const { roomId } = await activitypub.notes.assertPrivate(note);
+					this.roomId = roomId;
+				});
+
+				it('should soft-delete a chat message via inbox.delete', async function () {
+					// Verify message exists before deletion
+					const existsBefore = await messaging.messageExists(this.mid);
+					assert.strictEqual(existsBefore, true);
+					const deletedBefore = await messaging.getMessageField(this.mid, 'deleted');
+					assert.strictEqual(deletedBefore, 0);
+
+					// Create a Delete activity for the chat message
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: this.remoteId,
+						object: this.mid,
+					});
+
+					// Process the delete directly
+					await activitypub.inbox.delete({ body: deleteActivity });
+
+					// Verify message is soft-deleted
+					const existsAfter = await messaging.messageExists(this.mid);
+					assert.strictEqual(existsAfter, true);
+					const deletedAfter = await messaging.getMessageField(this.mid, 'deleted');
+					assert.strictEqual(deletedAfter, 1);
+				});
+
+				it('should do nothing when deleting a non-existent message', async function () {
+					const { hostname } = new URL(this.remoteId);
+					const fakeMid = `https://${hostname}/note/9999999999`;
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: this.remoteId,
+						object: fakeMid,
+					});
+
+					// This should not throw – it should hit the default case
+					await activitypub.inbox.delete({ body: deleteActivity });
+
+					// Verify message still doesn't exist
+					const exists = await messaging.messageExists(fakeMid);
+					assert.strictEqual(exists, false);
 				});
 			});
 		});
@@ -622,6 +735,230 @@ describe('Inbox', () => {
 			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
 
 			assert.strictEqual(inboxed, false);
+		});
+	});
+
+	describe('Inbox – uid:<uid>:cids sorted set', () => {
+		/**
+		 * Tests that verify the `uid:<uid>:cids` sorted set is correctly maintained
+		 * when a remote post arrives via the ActivityPub inbox.
+		 *
+		 * The `:cids` sorted set stores category IDs as members with timestamps as scores,
+		 * used to determine which categories a user has posted in (for the "Posts" tab
+		 * filtering).
+		 */
+
+		describe('Create (Note) – remote user posting to local cid -1', () => {
+			let remoteActor;
+			let localUid;
+			let pid;
+
+			before(async () => {
+				remoteActor = `https://example.org/user/${utils.generateUUID().slice(0, 10)}`;
+				localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				// Set up follower relationship so assertRelation passes
+				await db.sortedSetAdd(`followersRemote:${remoteActor}`, Date.now(), localUid);
+
+				const { note, id } = helpers.mocks.note({
+					attributedTo: remoteActor,
+				});
+				const { activity } = helpers.mocks.create({ actor: remoteActor, object: note });
+
+				await activitypub.inbox.create({ body: activity });
+
+				pid = id;
+			});
+
+			it('should create the post', async () => {
+				assert(await posts.exists(pid));
+			});
+
+			it('should place the post in cid -1', async () => {
+				const cid = await posts.getCidByPid(pid);
+				assert.strictEqual(cid, -1);
+			});
+
+			it('should append the cid to the remote user\'s :cids sorted set', async () => {
+				const isMember = await db.isSortedSetMember(`uid:${remoteActor}:cids`, -1);
+				assert(isMember);
+			});
+
+			it('should have incremented the counter in the :cids sorted set', async () => {
+				const score = await db.sortedSetScore(`uid:${remoteActor}:cids`, -1);
+				assert(score > 0);
+			});
+		});
+
+		describe('Create (Note) – remote user posting to a local category', () => {
+			let remoteActor;
+			let localUid;
+			let cid;
+			let pid;
+
+			before(async () => {
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				remoteActor = `https://example.org/user/${utils.generateUUID().slice(0, 10)}`;
+				localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				await db.sortedSetAdd(`followersRemote:${remoteActor}`, Date.now(), localUid);
+
+				const { note, id } = helpers.mocks.note({
+					attributedTo: remoteActor,
+					cc: [`${nconf.get('url')}/category/${cid}`],
+				});
+				const { activity } = helpers.mocks.create({ actor: remoteActor, object: note });
+
+				await activitypub.inbox.create({ body: activity });
+
+				pid = id;
+			});
+
+			it('should create the post', async () => {
+				assert(await posts.exists(pid));
+			});
+
+			it('should place the post in the specified local category', async () => {
+				const postCid = await posts.getCidByPid(pid);
+				assert.strictEqual(postCid, cid);
+			});
+
+			it('should append the cid to the remote user\'s :cids sorted set', async () => {
+				const isMember = await db.isSortedSetMember(`uid:${remoteActor}:cids`, String(cid));
+				assert(isMember);
+			});
+
+			it('should have incremented the counter in the :cids sorted set', async () => {
+				const score = await db.sortedSetScore(`uid:${remoteActor}:cids`, String(cid));
+				assert(score > 0);
+			});
+		});
+
+		describe('Create (Note) – remote user posting to a remote category', () => {
+			let remoteActor;
+			let localUid;
+			let remoteCid;
+			let pid;
+
+			before(async () => {
+				remoteActor = `https://example.org/user/${utils.generateUUID().slice(0, 10)}`;
+				localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				// Use helpers.mocks.group() to generate a consistent remote category ID, then assert it
+				({ id: remoteCid } = helpers.mocks.group());
+				await activitypub.actors.assertGroup([remoteCid]);
+				await db.sortedSetAdd(`followersRemote:${remoteActor}`, Date.now(), localUid);
+
+				const { note, id } = helpers.mocks.note({
+					attributedTo: remoteActor,
+					audience: [remoteCid],
+				});
+				const { activity } = helpers.mocks.create({ actor: remoteActor, object: note });
+
+				await activitypub.inbox.create({ body: activity });
+
+				pid = id;
+			});
+
+			it('should create the post', async () => {
+				assert(await posts.exists(pid));
+			});
+
+			it('should place the post in the remote category', async () => {
+				const postCid = await posts.getCidByPid(pid);
+				assert.strictEqual(postCid, remoteCid);
+			});
+
+			it('should append the remote cid to the remote user\'s :cids sorted set', async () => {
+				const isMember = await db.isSortedSetMember(`uid:${remoteActor}:cids`, remoteCid);
+				assert(isMember);
+			});
+
+			it('should have incremented the counter in the :cids sorted set', async () => {
+				const score = await db.sortedSetScore(`uid:${remoteActor}:cids`, remoteCid);
+				assert(score > 0);
+			});
+		});
+
+		describe('Create (Note) – remote user posting to multiple categories', () => {
+			let remoteActor;
+			let localUid;
+			let cid1;
+			let cid2;
+
+			before(async () => {
+				remoteActor = `https://example.org/user/${utils.generateUUID().slice(0, 10)}`;
+				localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				({ cid: cid1 } = await categories.create({ name: utils.generateUUID() }));
+				({ cid: cid2 } = await categories.create({ name: utils.generateUUID() }));
+				await db.sortedSetAdd(`followersRemote:${remoteActor}`, Date.now(), localUid);
+
+				// First post to cid1
+				const { note: note1, id: id1 } = helpers.mocks.note({
+					attributedTo: remoteActor,
+					cc: [`${nconf.get('url')}/category/${cid1}`],
+				});
+				const { activity: activity1 } = helpers.mocks.create({ actor: remoteActor, object: note1 });
+				await activitypub.inbox.create({ body: activity1 });
+
+				// Then post to cid2
+				const { note: note2, id: id2 } = helpers.mocks.note({
+					attributedTo: remoteActor,
+					cc: [`${nconf.get('url')}/category/${cid2}`],
+				});
+				const { activity: activity2 } = helpers.mocks.create({ actor: remoteActor, object: note2 });
+				await activitypub.inbox.create({ body: activity2 });
+			});
+
+			it('should have both cids in the sorted set', async () => {
+				const isMember1 = await db.isSortedSetMember(`uid:${remoteActor}:cids`, String(cid1));
+				const isMember2 = await db.isSortedSetMember(`uid:${remoteActor}:cids`, String(cid2));
+				assert(isMember1);
+				assert(isMember2);
+			});
+
+			it('should have correct counters for each cid', async () => {
+				const score1 = await db.sortedSetScore(`uid:${remoteActor}:cids`, String(cid1));
+				const score2 = await db.sortedSetScore(`uid:${remoteActor}:cids`, String(cid2));
+				assert.strictEqual(score1, 1);
+				assert.strictEqual(score2, 1);
+			});
+
+			it('should have a total card matching the number of categories', async () => {
+				const card = await db.sortedSetCard(`uid:${remoteActor}:cids`);
+				assert.strictEqual(card, 2);
+			});
+		});
+
+		describe('Announce (Create) – remote user sharing a topic to local cid', () => {
+			let remoteActor;
+			let localUid;
+			let cid;
+			let remoteTid;
+
+			before(async () => {
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				remoteActor = `https://example.org/user/${utils.generateUUID().slice(0, 10)}`;
+				localUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				await db.sortedSetAdd(`followersRemote:${remoteActor}`, Date.now(), localUid);
+
+				// Create a remote note that will be announced into this category
+				const { note, id } = helpers.mocks.note({
+					attributedTo: remoteActor,
+					cc: [`${nconf.get('url')}/category/${cid}`],
+				});
+				const { activity: createActivity } = helpers.mocks.create({ actor: remoteActor, object: note });
+				await activitypub.inbox.create({ body: createActivity });
+
+				remoteTid = id;
+			});
+
+			it('should have the cid in the remote user\'s :cids sorted set', async () => {
+				const isMember = await db.isSortedSetMember(`uid:${remoteActor}:cids`, String(cid));
+				assert(isMember);
+			});
+
+			it('should have a positive counter for the cid', async () => {
+				const score = await db.sortedSetScore(`uid:${remoteActor}:cids`, String(cid));
+				assert(score > 0);
+			});
 		});
 	});
 });

@@ -1,7 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
-const mime = require('mime');
+const mime = require('mime').default;
 const path = require('path');
 const validator = require('validator');
 const sanitize = require('sanitize-html');
@@ -44,7 +44,7 @@ const sanitizeConfig = {
 
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { type, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
+	let { id, type, uuid, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -113,26 +113,16 @@ Mocks._normalize = async (object) => {
 	if (url) { // Handle url array
 		if (Array.isArray(url)) {
 			// Special handling for Video type (from PeerTube specifically)
-			if (type === 'Video') {
-				const stream = url.reduce((memo, { type, mediaType, tag }) => {
-					if (!memo) {
-						if (type === 'Link' && mediaType === 'application/x-mpegURL') {
-							memo = tag.reduce((memo, { type, mediaType, href, width, height }) => {
-								if (!memo && (type === 'Link' && mediaType === 'video/mp4')) {
-									memo = { mediaType, href, width, height };
-								}
-
-								return memo;
-							}, null);
-						}
-					}
-
-					return memo;
-				}, null);
-
-				if (stream) {
+			if (type === 'Video' && !!uuid) {
+				try {
+					const { protocol, hostname } = new URL(id);
 					attachment = attachment || [];
-					attachment.push(stream);
+					attachment.push({
+						mediaType: 'text/plain',
+						href: `${protocol}//${hostname}/videos/embed/${uuid}`,
+					});
+				} catch (e) {
+					// noop
 				}
 			}
 
@@ -423,6 +413,7 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	if (picture) {
+		picture = utils.decodeHTMLEntities(picture);
 		const imagePath = await user.getLocalAvatarPath(uid);
 		picture = {
 			type: 'Image',
@@ -432,6 +423,7 @@ Mocks.actors.user = async (uid) => {
 	}
 
 	if (cover) {
+		cover = utils.decodeHTMLEntities(cover);
 		const imagePath = await user.getLocalCoverPath(uid);
 		cover = {
 			type: 'Image',
@@ -559,6 +551,7 @@ Mocks.actors.category = async (cid) => {
 		type: 'Group',
 		name: utils.decodeHTMLEntities(name),
 		preferredUsername,
+		attributedTo: `${nconf.get('url')}/category/${cid}/moderators`,
 		summary: utils.decodeHTMLEntities(summary),
 		// image, // todo once categories have cover photos
 		icon,
@@ -663,7 +656,9 @@ Mocks.notes.public = async (post) => {
 			tag.push(...Array.from(matches).map(({ type, id: href, slug: name }) => {
 				if (utils.isNumber(href)) { // local ref
 					name = name.toLowerCase(); // local slugs are always lowercase
-					href = `${nconf.get('url')}/${type === 'uid' ? 'user' : `category/${href}`}/${name.slice(1)}`;
+					href = type === 'uid' ?
+						`${nconf.get('url')}/uid/${href}` :
+						`${nconf.get('url')}/category/${href}`;
 					name = `${name}@${nconf.get('url_parsed').hostname}`;
 				}
 
@@ -770,6 +765,7 @@ Mocks.notes.public = async (post) => {
 	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
 	let preview;
 	let summary = null;
+	let sensitive = null;
 	if (isArticle) {
 		// Preview is not adopted by anybody, so is left commented-out for now
 		preview = {
@@ -808,6 +804,7 @@ Mocks.notes.public = async (post) => {
 
 				return memo;
 			}, '');
+			sensitive = false;
 		}
 
 		// Final sanitization to clean up tags
@@ -853,6 +850,7 @@ Mocks.notes.public = async (post) => {
 		context,
 		audience,
 		...(summary && { summary }),
+		...(sensitive && { sensitive }),
 		preview,
 		content: post.content,
 		source,

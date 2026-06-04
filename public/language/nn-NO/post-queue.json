@@ -10,6 +10,7 @@
 	"user": "Brukar",
 	"when": "Når",
 	"category": "Kategori",
+	"tags": "Tags",
 	"title": "Tittel",
 	"content": "Innhald",
 	"posted": "Posta",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Er du sikker på at du vil fjerne dei valde?",
 	"bulk-accept-success": "Alle valde vart godkjent.",
 	"bulk-reject-success": "Alle valde vart avvist.",
-	"links-in-this-post": "Lenkjer i dette innlegget"
+	"links-in-this-post": "Lenkjer i dette innlegget",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

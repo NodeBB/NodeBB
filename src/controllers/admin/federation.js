@@ -110,6 +110,7 @@ federationController.analytics = async function (req, res) {
 };
 
 federationController.errors = async function (req, res) {
+	const { hostname: filterHostname, type: filterType } = req.query;
 	let errors = await db.getSortedSetRevRangeByScoreWithScores('ap.errors', 0, -1, Date.now(), '-inf');
 	const errorObj = await db.getObjects(errors.map(({ value: id }) => `ap.errors:${id}`));
 	errors = errors.map(({ value: id, score: timestamp }, idx) => {
@@ -130,7 +131,23 @@ federationController.errors = async function (req, res) {
 			// noop
 		}
 
-		return { id, type, activityType, body, stack, hostname, timestamp, timestampISO };
+		if (filterHostname && hostname !== filterHostname) {
+			return null;
+		}
+		if (filterType && type !== filterType) {
+			return null;
+		}
+
+		return {
+			id: validator.escape(String(id || '')),
+			type: validator.escape(String(type || '')),
+			activityType: validator.escape(String(activityType || '')),
+			body: validator.escape(String(body || '')),
+			stack,
+			hostname,
+			timestamp,
+			timestampISO,
+		};
 	}).filter(Boolean);
 
 	res.render('admin/federation/errors', {

@@ -8,5 +8,6 @@
     "login-successful": "Kamu telah berhasil login!",
     "dont-have-account": "Belum memiliki akun?",
     "logged-out-due-to-inactivity": "Anda sekarang sudah keluar dari Panel Kontrol Admin karena tidak aktif",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

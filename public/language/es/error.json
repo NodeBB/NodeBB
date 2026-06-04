@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "You can't mute other admins!",
     "user-muted-for-hours": "You have been muted, you will be able to post in %1 hour(s)",
     "user-muted-for-minutes": "You have been muted, you will be able to post in %1 minute(s)",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "You can't make banned users admin.",
     "cant-remove-last-admin": "Tu eres el unico administrador. Añade otro usuario como administrador antes de eliminarte a ti mismo.",
     "account-deletion-disabled": "Account deletion is disabled",
@@ -131,6 +132,7 @@
     "invalid-image-type": "Tipo de imagen inválido. Los tipos permitidos son: %1",
     "invalid-image-extension": "Extensión de imagen inválida",
     "invalid-file-type": "Tipo de fichero inválido. Los tipos permitidos son: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Las dimensiones de la imágen son demasiado grandes.",
     "group-name-too-short": "Nombre del grupo es demasiado corto.",
     "group-name-too-long": "Nombre de grupo demasiado largo",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "¡No puedes mover el mensaje al mismo tema!",
     "cant-move-topic-to-same-category": "Can't move topic to the same category!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "¡No puedes bloquearte a tí mismo!",
     "cannot-block-privileged": "No puedes bloquear administradores o moderadores globales",
     "cannot-block-guest": "Los invitados no pueden bloquear a otros usuarios",
@@ -263,9 +266,11 @@
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
     "activitypub.not-enabled": "La Federación no está habilitada en este servidor",
     "activitypub.invalid-id": "No se ha podido resolver el id del input, probablemente está mal formado.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "No se ha podido recuperar el recurso especificado. ",
     "activitypub.pubKey-not-found": "No se pudo resolver la llave pública, la verificación de payload no se ha concluido. ",
     "activitypub.origin-mismatch": "El origen del objeto recibido no coincide con el origen del emisario",
     "activitypub.not-implemented": "La petición fue rechazada porque el servidor destinatario no implementa un aspecto esperado",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

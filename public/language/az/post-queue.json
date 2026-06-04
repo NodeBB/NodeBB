@@ -10,6 +10,7 @@
 	"user": "İstifadəçi",
 	"when": "Nə zaman",
 	"category": "Kateqoriya",
+	"tags": "Tags",
 	"title": "Başlıq",
 	"content": "Məzmun",
 	"posted": "Dərc olunub",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Seçilmiş %1 yazını silmək istəyirsiniz?",
 	"bulk-accept-success": "%1 yazı qəbul edildi",
 	"bulk-reject-success": "%1 yazı rədd edildi",
-	"links-in-this-post": "Bu yazıdakı linklər"
+	"links-in-this-post": "Bu yazıdakı linklər",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

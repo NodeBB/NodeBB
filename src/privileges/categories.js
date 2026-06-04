@@ -131,18 +131,21 @@ privsCategories.isAdminOrMod = async function (cid, uid) {
 };
 
 privsCategories.isUserAllowedTo = async function (privilege, cid, uid) {
-	if ((Array.isArray(privilege) && !privilege.length) || (Array.isArray(cid) && !cid.length)) {
+	const arrayOfPrivileges = Array.isArray(privilege);
+	const arrayOfCids = Array.isArray(cid);
+	const returnAsArray = arrayOfPrivileges || arrayOfCids;
+	if ((arrayOfPrivileges && !privilege.length) || (arrayOfCids && !cid.length)) {
 		return [];
 	}
 	if (!cid) {
 		return false;
 	}
-	const results = await helpers.isAllowedTo(privilege, uid, Array.isArray(cid) ? cid : [cid]);
 
-	if (Array.isArray(results) && results.length) {
-		return Array.isArray(cid) ? results : results[0];
+	if (!arrayOfCids && !arrayOfPrivileges) {
+		cid = [cid];
 	}
-	return false;
+	const results = await helpers.isAllowedTo(privilege, uid, cid);
+	return returnAsArray ? results : results[0];
 };
 
 privsCategories.can = async function (privilege, cid, uid) {
@@ -155,6 +158,10 @@ privsCategories.can = async function (privilege, cid, uid) {
 		user.isAdministrator(uid),
 		privsCategories.isUserAllowedTo(privilege, cid, uid),
 	]);
+
+	if (Array.isArray(privilege)) {
+		return isAllowed.map(allowed => !disabled && (allowed || isAdmin));
+	}
 	return !disabled && (isAllowed || isAdmin);
 };
 

@@ -67,7 +67,7 @@ describe('Messaging Library', () => {
 		meta.configs.chatMessageDelay = chatMessageDelay;
 	});
 
-	describe('.canMessageUser()', () => {
+	describe('.canMessageUser() / canMessageRoom()', () => {
 		it('should allow messages to be sent to an unrestricted user', (done) => {
 			Messaging.canMessageUser(mocks.users.baz.uid, mocks.users.herp.uid, (err) => {
 				assert.ifError(err);
@@ -112,26 +112,53 @@ describe('Messaging Library', () => {
 			);
 		});
 
-		it('should not allow messaging room if user is muted', async () => {
+		it('should not allow messaging room if user is muted temporarily or permanently', async () => {
 			const twoMinutesFromNow = Date.now() + (2 * 60 * 1000);
 			const twoHoursFromNow = Date.now() + (2 * 60 * 60 * 1000);
 			const roomId = 0;
 
-			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoMinutesFromNow);
+			await User.setUserFields(mocks.users.herp.uid, {
+				muted: 1,
+				mutedUntil: twoMinutesFromNow,
+				mutedReason: 'no reason',
+			});
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
 				assert(err.message.startsWith('[[error:user-muted-for-minutes,'));
 				return true;
 			});
 
-			await User.setUserField(mocks.users.herp.uid, 'mutedUntil', twoHoursFromNow);
+			await User.setUserFields(mocks.users.herp.uid, {
+				muted: 1,
+				mutedUntil: twoHoursFromNow,
+				mutedReason: 'no reason',
+			});
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), (err) => {
 				assert(err.message.startsWith('[[error:user-muted-for-hours,'));
 				return true;
 			});
-			await db.deleteObjectField(`user:${mocks.users.herp.uid}`, 'mutedUntil');
+
+			await User.setUserFields(mocks.users.herp.uid, {
+				muted: 1,
+				mutedUntil: 0,
+				mutedReason: 'no reason',
+			});
+			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), {
+				message: '[[error:user-muted-indefinitely]]',
+			});
+
+			await db.deleteObjectFields(`user:${mocks.users.herp.uid}`, [
+				'muted', 'mutedUntil', 'mutedReason',
+			]);
 			await assert.rejects(Messaging.canMessageRoom(mocks.users.herp.uid, roomId), {
 				message: '[[error:no-room]]',
 			});
+		});
+
+		it('should throw if roomId is an array', async () => {
+			await assert.rejects(
+				Messaging.canMessageRoom(mocks.users.herp.uid, [1, 2, 3]),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 	});
 
@@ -612,6 +639,43 @@ describe('Messaging Library', () => {
 			});
 			assert(data.roomId);
 			assert.strictEqual(data.public, true);
+		});
+
+		it('should throw if called with an array of roomIds', async () => {
+			await assert.rejects(
+				api.chats.get({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
+
+			await assert.rejects(
+				api.chats.post({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
+
+			await assert.rejects(
+				api.chats.update({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
+
+			await assert.rejects(
+				api.search.roomUsers({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
+
+			await assert.rejects(
+				api.chats.getPinnedMessages({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
+
+			await assert.rejects(
+				api.chats.watch({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
+
+			await assert.rejects(
+				api.chats.users({ uid: mocks.users.foo.uid }, { roomId: [1, 2, 3] }),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 	});
 

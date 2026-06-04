@@ -114,6 +114,17 @@
 					<p class="form-text">
 						[[admin/settings/uploads:allowed-file-extensions-help]]
 					</p>
+					<div class="alert alert-warning text-sm alert-dismissible fade show mb-0" role="alert">
+						[[admin/settings/uploads:allowed-file-extension-warning]]
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="blockedFileExtensions">[[admin/settings/uploads:blocked-file-extensions]]</label>
+					<input id="blockedFileExtensions" type="text" class="form-control" value="" data-field="blockedFileExtensions" data-field-type="tagsinput" />
+					<p class="form-text">
+						[[admin/settings/uploads:blocked-file-extensions-help]]
+					</p>
 				</div>
 
 				<div class="mb-3">

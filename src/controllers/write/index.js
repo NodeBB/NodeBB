@@ -12,6 +12,7 @@ Write.posts = require('./posts');
 Write.chats = require('./chats');
 Write.flags = require('./flags');
 Write.search = require('./search');
+Write.intents = require('./intents');
 Write.admin = require('./admin');
 Write.files = require('./files');
 Write.utilities = require('./utilities');

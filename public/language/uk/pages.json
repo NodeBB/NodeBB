@@ -20,6 +20,7 @@
     "users/sort-posts": "Користувачі з найбільшою кількістю постів",
     "users/sort-reputation": "Користувачі з найкращою репутацією",
     "users/banned": "Забанені користувачі",
+    "users/muted": "Muted Users",
     "users/most-flags": "Користувачі з найбільшою кількістю скарг",
     "users/search": "Пошук користувача",
     "notifications": "Сповіщення",

@@ -199,6 +199,7 @@
     "info.no-mute-history": "This user has never been muted",
     "info.muted-until": "Muted until %1",
     "info.muted-expiry": "Expiry",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "Nuk u dha asnjë arsye",
     "info.username-history": "Historia e emrit të përdoruesit",
     "info.email-history": "Historia e emailit",

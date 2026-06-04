@@ -11,8 +11,10 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 const coverPhoto = require('../coverPhoto');
+const translator = require('../translator');
 
 const relative_path = nconf.get('relative_path');
+const upload_url = nconf.get('upload_url');
 
 const prependRelativePath = url => url.startsWith('http') ? url : relative_path + url;
 
@@ -20,7 +22,7 @@ const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
 	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline',
 	'lastqueuetime', 'lastposttime', 'followingCount', 'followerCount',
-	'blocksCount', 'passwordExpiry', 'mutedUntil',
+	'blocksCount', 'passwordExpiry', 'muted', 'mutedUntil', 'flags',
 ];
 
 module.exports = function (User) {
@@ -30,10 +32,19 @@ module.exports = function (User) {
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
-		'cover:position', 'groupTitle', 'mutedUntil', 'mutedReason',
+		'cover:position', 'groupTitle', 'muted', 'mutedUntil', 'mutedReason',
 	];
 
 	let customFieldWhiteList = null;
+	const escapeFieldList = [
+		'email', 'username', 'fullname', 'signature', 'displayname',
+		'cover:position', 'birthday', 'aboutme',
+	];
+	const urlFieldList = [
+		'picture', 'cover:url',
+	];
+
+	User.allowedStatus = ['online', 'offline', 'dnd', 'away'];
 
 	User.guestData = {
 		uid: 0,
@@ -107,6 +118,7 @@ module.exports = function (User) {
 		);
 
 		// Handle when some remoteIds are group actors
+		const combinedUids = uniqueUids.concat(remoteIds);
 		let remoteCids = await categories.exists(remoteIds);
 		remoteCids = remoteCids
 			.map((exists, idx) => exists ? remoteIds[idx] : null)
@@ -118,7 +130,7 @@ module.exports = function (User) {
 				return map;
 			}, new Map());
 			users = users.map((userObj, idx) => {
-				const cid = uids[idx];
+				const cid = combinedUids[idx];
 				if (remoteCids.includes(cid)) {
 					const categoryObj = categoryData.get(cid);
 					userObj = {
@@ -160,12 +172,17 @@ module.exports = function (User) {
 			banned: 'banned:expire',
 			'banned:expire': 'banned',
 			username: 'fullname',
+			muted: 'mutedUntil',
+			mutedUntil: 'muted',
 		};
 		for (const [key, field] of Object.entries(requiredFields)) {
 			if (fields.includes(key) && !fields.includes(field)) {
 				fields.push(field);
 				fieldsToRemove.push(field);
 			}
+		}
+		if (fields.includes('picture') && !fields.includes('icon:bgColor')) {
+			fields.push('icon:bgColor');
 		}
 	}
 
@@ -249,6 +266,7 @@ module.exports = function (User) {
 		}
 
 		const unbanUids = [];
+		const unmuteUids = [];
 		users.forEach((user) => {
 			if (!user) {
 				return;
@@ -258,7 +276,7 @@ module.exports = function (User) {
 
 			if (user.hasOwnProperty('username')) {
 				parseDisplayName(user, uidToSettings);
-				user.username = validator.escape(user.username ? user.username.toString() : '');
+				user.username = String(user.username || '');
 			}
 
 			// works around renderOverride supplying `url` to templates
@@ -269,7 +287,7 @@ module.exports = function (User) {
 			}
 
 			if (user.hasOwnProperty('email')) {
-				user.email = validator.escape(String(user.email || ''));
+				user.email = String(user.email || '');
 			}
 
 			if (!user.uid && !activitypub.helpers.isUri(user.uid)) {
@@ -289,6 +307,7 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
+
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :
@@ -311,8 +330,19 @@ module.exports = function (User) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 
-			if (user.hasOwnProperty('mutedUntil')) {
-				user.muted = user.mutedUntil > Date.now();
+			if (user.hasOwnProperty('muted') && user.hasOwnProperty('mutedUntil')) {
+				const isMuted = Boolean(user.muted);
+				user.muted = Boolean(user.muted && (user.mutedUntil > Date.now() || user.mutedUntil === 0));
+				const unmute = !user.muted && isMuted && user.mutedUntil && user.mutedUntil <= Date.now();
+				if (unmute) {
+					unmuteUids.push(user.uid);
+				}
+				user.mutedUntil = !user.muted ? 0 : user.mutedUntil;
+				if (user.muted) {
+					user.muted_until_readable = user.mutedUntil === 0 ?
+						'[[user:info.muted-permanently]]' :
+						utils.toISOString(user.mutedUntil);
+				}
 			}
 
 			user.isLocal = utils.isNumber(user.uid);
@@ -331,7 +361,7 @@ module.exports = function (User) {
 				user.banned = result.banned;
 				const unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
-				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
+				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : '[[user:info.banned-permanently]]';
 				if (unban) {
 					unbanUids.push(user.uid);
 					user.banned = false;
@@ -339,21 +369,54 @@ module.exports = function (User) {
 			}
 		});
 
-		// remove fields that were added just for processing
-		fieldsToRemove.forEach((field) => {
-			users.forEach((user) => {
+		users.forEach((user) => {
+			// remove fields that were added just for processing
+			fieldsToRemove.forEach((field) => {
 				if (user) {
 					user[field] = undefined;
 				}
 			});
+
+			escapeFieldList.forEach((field) => {
+				if (user[field] && typeof user[field] === 'string') {
+					user[field] = translator.escape(validator.escape(String(user[field])));
+				}
+			});
+			urlFieldList.forEach((field) => {
+				if (user[field] && typeof user[field] === 'string') {
+					const trimmedValue = user[field].trim();
+					user[field] = isValidUserUrlField(trimmedValue) ? translator.escape(validator.escape(trimmedValue)) : '';
+				}
+			});
 		});
 
-		if (unbanUids.length) {
-			await User.bans.unban(unbanUids, '[[user:info.ban-expired]]');
-		}
+		await Promise.all([
+			unbanUids.length ? User.bans.unban(unbanUids, '[[user:info.ban-expired]]') : null,
+			unmuteUids.length ? db.sortedSetRemove('users:muted', unmuteUids) : null,
+		]);
 
 		return await plugins.hooks.fire('filter:users.get', users);
 	}
+
+	function isValidUserUrlField(value) {
+		const trimmedValue = String(value).trim();
+		const isHttpUrl = validator.isURL(trimmedValue, {
+			require_protocol: true,
+			require_valid_protocol: true,
+			protocols: ['http', 'https'],
+			require_tld: false,
+		});
+
+		if (isHttpUrl || trimmedValue.startsWith(upload_url)) {
+			return true;
+		}
+
+		if (relative_path && trimmedValue.startsWith(relative_path)) {
+			return trimmedValue.slice(relative_path.length).startsWith(upload_url);
+		}
+
+		return false;
+	};
 
 	function parseDisplayName(user, uidToSettings) {
 		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
@@ -369,11 +432,11 @@ module.exports = function (User) {
 			showfullname = true;
 		}
 
-		user.displayname = validator.escape(String(
+		user.displayname = String(
 			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
 				utils.stripBidiControls(user.fullname) :
 				user.username
-		));
+		);
 	}
 
 	function parseGroupTitle(user) {

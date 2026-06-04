@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../database');
 const utils = require('../utils');
 
@@ -12,14 +14,17 @@ Rules.list = async () => {
 	let rules = await db.getObjects(rids.map(rid => `rid:${rid}`));
 	rules = rules.map((rule, idx) => {
 		rule.rid = rids[idx];
+		rule.cid = parseInt(rule.cid, 10);
+		rule.value = validator.escape(rule.value);
 		return rule;
 	});
 
 	return rules;
 };
 
-Rules.add = async (type, value, cid) => {
-	const uuid = utils.generateUUID();
+Rules.upsert = async (type, value, cid) => {
+	const rules = await Rules.list();
+	const existing = rules.find(rule => rule.type === type && rule.value === value);
 
 	// normalize user rule values into a uid
 	if (type === 'user' && value.indexOf('@') !== -1) {
@@ -30,10 +35,17 @@ Rules.add = async (type, value, cid) => {
 		value = await db.getObjectField('handle:uid', String(value).toLowerCase());
 	}
 
+	if (existing) {
+		await db.setObjectField(`rid:${existing.rid}`, 'cid', cid);
+		return existing.rid;
+	}
+
+	const uuid = utils.generateUUID();
 	await Promise.all([
 		db.setObject(`rid:${uuid}`, { type, value, cid }),
 		db.sortedSetAdd('categorization:rid', Date.now(), uuid),
 	]);
+	return uuid;
 };
 
 Rules.delete = async (rid) => {

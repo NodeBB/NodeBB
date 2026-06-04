@@ -17,6 +17,8 @@ const utils = require('../utils');
 const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
 
+const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
+
 module.exports = function (Posts) {
 	Posts.getQueuedPosts = async (filter = {}, options = {}) => {
 		options = { metadata: true, ...options }; // defaults
@@ -34,7 +36,7 @@ module.exports = function (Posts) {
 			});
 			const uids = postData.map(data => data && data.uid);
 			const userData = await user.getUsersFields(uids, [
-				'username', 'userslug', 'picture', 'joindate', 'postcount', 'reputation',
+				'username', 'userslug', 'picture', 'icon:bgColor', 'joindate', 'postcount', 'reputation',
 			]);
 			postData.forEach((postData, index) => {
 				if (postData) {
@@ -81,6 +83,12 @@ module.exports = function (Posts) {
 		} else if (postData.data.tid) {
 			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid', 'lastposttime']);
 		}
+		if (Array.isArray(postData.data.thumbs)) {
+			postData.data.thumbs = postData.data.thumbs.map(
+				thumb => thumb.startsWith('http') ? thumb : upload_url + thumb
+			);
+		}
+
 		postData.category = await categories.getCategoryData(postData.topic.cid);
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
 		postData.data.content = result.postData.content;
@@ -207,10 +215,10 @@ module.exports = function (Posts) {
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
-			bodyShort: type === 'reply' ? 
+			bodyShort: type === 'reply' ?
 				'[[notifications:post-awaiting-review]]' :
 				'[[notifications:topic-awaiting-review]]',
-			bodyLong: type === 'reply' ? 
+			bodyLong: type === 'reply' ?
 				await plugins.hooks.fire('filter:parse.raw', data.content) :
 				validator.escape(String(data.title)),
 			bodyEmail: bodyEmail,
@@ -340,12 +348,15 @@ module.exports = function (Posts) {
 	}
 
 	async function createTopic(data) {
+		delete data.tid;
+		delete data.pid;
 		const result = await topics.post(data);
 		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 		return result;
 	}
 
 	async function createReply(data) {
+		delete data.pid;
 		const postData = await topics.reply(data);
 		const result = {
 			posts: [postData],
@@ -376,6 +387,12 @@ module.exports = function (Posts) {
 		}
 		if (editData.cid !== undefined) {
 			data.data.cid = editData.cid;
+		}
+		if (editData.tags !== undefined) {
+			data.data.tags = editData.tags;
+		}
+		if (editData.thumbs !== undefined) {
+			data.data.thumbs = editData.thumbs;
 		}
 		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
 		cache.del('post-queue');

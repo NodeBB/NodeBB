@@ -8,5 +8,6 @@
     "confirm-delete": "您确定要删除此文件吗？",
     "filecount": "%1 文件",
     "new-folder": "新建文件夹",
-    "name-new-folder": "输入新文件夹的名称"
+    "name-new-folder": "输入新文件夹的名称",
+    "unsafe-file-warning": "警告：请勿上传您不信任的文件。为防止跨站脚本（XSS）攻击，某些扩展名的文件将以附件形式下载，但若在您的计算机上打开这些文件，恶意文件仍可能造成危害。"
 }

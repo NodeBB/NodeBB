@@ -351,7 +351,7 @@ Messaging.getTeasers = async (uid, roomIds) => {
 		teaser.content = validator.escape(
 			String(utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content)))
 		);
-		teaser.roomId = roomId;
+		teaser.roomId = parseInt(roomId, 10);
 		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
 		return payload.teaser;
 	}));
@@ -438,7 +438,9 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 	if (meta.config.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
-
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [roomData, inRoom, canChat] = await Promise.all([
 		Messaging.getRoomData(roomId),
 		Messaging.isUserInRoom(uid, roomId),

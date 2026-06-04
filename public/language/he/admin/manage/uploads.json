@@ -8,5 +8,6 @@
     "confirm-delete": "האם אתה בטוח שאתה רוצה למחוק קובץ זה?",
     "filecount": "%1 קבצים",
     "new-folder": "תיקייה חדשה",
-    "name-new-folder": "הכנס שם לתיקייה החדשה"
+    "name-new-folder": "הכנס שם לתיקייה החדשה",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

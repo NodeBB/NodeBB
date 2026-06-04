@@ -3,7 +3,7 @@
 const path = require('path');
 const nconf = require('nconf');
 const validator = require('validator');
-const mime = require('mime');
+const mime = require('mime').default;
 
 const meta = require('../meta');
 const user = require('../user');
@@ -11,6 +11,7 @@ const plugins = require('../plugins');
 const image = require('../image');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
+const translator = require('../translator');
 
 const Controllers = module.exports;
 
@@ -43,6 +44,7 @@ Controllers['service-worker'] = require('./service-worker');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
+Controllers.intents = require('./intents');
 
 Controllers.write = require('./write');
 
@@ -119,6 +121,7 @@ Controllers.login = async function (req, res) {
 	req.session.returnTo = req.session.returnTo && req.session.returnTo.replace(nconf.get('base_url'), '').replace(nconf.get('relative_path'), '');
 
 	data.alternate_logins = loginStrategies.length > 0;
+	data.osw_logins = !!meta.config.activitypubEnabled;
 	data.authentication = loginStrategies;
 	data.allowRegistration = registrationType === 'normal';
 	data.allowLoginWith = `[[login:${allowLoginWith}]]`;
@@ -177,6 +180,7 @@ Controllers.register = async function (req, res, next) {
 		res.render('register', {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
 			alternate_logins: !!loginStrategies.length,
+			osw_logins: !!meta.config.activitypubEnabled,
 			authentication: loginStrategies,
 
 			minimumUsernameLength: meta.config.minimumUsernameLength,
@@ -413,18 +417,26 @@ Controllers.manifest = async function (req, res) {
 
 Controllers.outgoing = function (req, res, next) {
 	const url = req.query.url || '';
+	let parsed;
+	try {
+		parsed = new URL(url);
+	} catch (err) {
+		return next();
+	}
+
 	const allowedProtocols = [
 		'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher',
 		'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal',
 	];
-	const parsed = require('url').parse(url);
 
 	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
 	}
+	const escapedSearch = validator.escape(translator.escape(parsed.search || ''));
+	const escapedUrl = parsed.search ? parsed.href.replace(parsed.search, escapedSearch) : parsed.href;
 
 	res.render('outgoing', {
-		outgoing: validator.escape(String(url)),
+		outgoing: escapedUrl,
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{
 			text: '[[notifications:outgoing-link]]',

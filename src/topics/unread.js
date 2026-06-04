@@ -145,8 +145,19 @@ module.exports = function (Topics) {
 			.filter(t => !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
-		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
-		const userCidState = _.zipObject(topicCids, categoryWatchState);
+		let crosspostCids = await Topics.crossposts.get(tids);
+		crosspostCids = crosspostCids.map((crossposts) => {
+			return crossposts.map(({ cid }) => cid);
+		});
+		const crosspostMap = crosspostCids.reduce((memo, cids, idx) => {
+			const tid = tids[idx];
+			memo.set(tid, cids);
+			return memo;
+		}, new Map());
+		const combinedCids = Array.from(new Set([...topicCids, ...crosspostCids.flat()]));
+
+		const categoryWatchState = await categories.getWatchState(combinedCids, params.uid);
+		const userCidState = _.zipObject(combinedCids, categoryWatchState);
 
 		const filterCids = params.cid && params.cid.map(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 		const filterTags = params.tag && params.tag.map(tag => String(tag));
@@ -156,8 +167,12 @@ module.exports = function (Topics) {
 				(!filterCids || filterCids.includes(topic.cid)) &&
 				(!filterTags || filterTags.every(tag => topic.tags.find(topicTag => topicTag.value === tag))) &&
 				!blockedUids.includes(topic.uid)) {
-				if (isTopicsFollowed[topic.tid] ||
-					[categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[topic.cid])) {
+				if (isTopicsFollowed[topic.tid] || // 👈 follows tid directly, or its cid 👇
+					[categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[topic.cid]) ||
+					crosspostMap.get(topic.tid).some((cid) => { // user follows a crossposted cid
+						return [categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[cid]);
+					})
+				) {
 					tidsByFilter[''].push(topic.tid);
 					unreadCids.push(topic.cid);
 				}

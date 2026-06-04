@@ -1,0 +1,20 @@
+{
+	"queue": "စစ်ဆေးမှုတန်း",
+	"description": "ဖော်ပြချက်",
+
+	"list.name": "အမည်",
+	"list.email": "အီးမေးလ်",
+	"list.ip": "IP",
+	"list.time": "အချိန်",
+	"list.username-spam": "အမည်-စပမ်း",
+	"list.email-spam": "အီးမေးလ်-စပမ်း",
+	"list.ip-spam": "IP-စပမ်း",
+
+	"invitations": "ဖိတ်ကြားမှုများ",
+	"invitations.description": "ဖိတ်ကြားမှု ဖော်ပြချက်",
+	"invitations.inviter-username": "ဖိတ်ကြားသူ အမည်",
+	"invitations.invitee-email": "ဖိတ်ကြားခံ အီးမေးလ်",
+	"invitations.invitee-username": "ဖိတ်ကြားခံ အမည်",
+
+	"invitations.confirm-delete": "ဖျက်ရန် အတည်ပြုပါ"
+} 

@@ -6,6 +6,7 @@
  */
 
 require('../../require-main');
+require('../../nodebb-global');
 
 const path = require('path');
 const nconf = require('nconf');

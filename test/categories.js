@@ -483,7 +483,19 @@ describe('Categories', () => {
 		it('should remove privilege', async () => {
 			await apiCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' });
 			const canDeleteTopics = await privileges.categories.can('topics:delete', categoryObj.cid, posterUid);
-			assert(!canDeleteTopics);
+			assert.strictEqual(canDeleteTopics, false);
+		});
+
+		it('should get an array of privileges for a category', async () => {
+			const privilegesArray = await privileges.categories.can(['topics:create', 'topics:delete'], categoryObj.cid, posterUid);
+			assert.deepStrictEqual(privilegesArray, [true, false]);
+		});
+
+		it('should error if both cid and privilege are arrays', async () => {
+			await assert.rejects(
+				privileges.categories.can(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
+				{ message: '[[error:invalid-data]]' },
+			);
 		});
 
 		it('should get privilege settings', async () => {
@@ -878,4 +890,30 @@ describe('Categories', () => {
 		assert.strictEqual(child1.cid, data.children[0].cid);
 		assert.strictEqual(child2.cid, data.children[0].children[0].cid);
 	});
+
+	it('should translate category name and description and escape them properly', async () => {
+		const category = await Categories.create({
+			name: '[[topic:merged-message, javascript:alert(origin), foobar]]',
+			description: '[[topic:forked-message, javascript:alert(origin), foobar]]',
+		});
+
+		const data = await Categories.getCategoryData(category.cid);
+		assert.strictEqual(data.name, '&lsqb;&lsqb;topic:merged-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
+		assert.strictEqual(data.description, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
+		assert.strictEqual(data.descriptionParsed, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
+		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${category.cid}/test-category`);
+
+		// title comes from category.name so should be escaped as well
+		assert.strictEqual(body.title, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		// breadcrumbs should be translated & escaped too
+		assert.strictEqual(body.breadcrumbs[1].text, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		assert.strictEqual(body.name, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		assert.strictEqual(body.description, 'This topic was forked from &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
+
+		assert.strictEqual(body.descriptionParsed, 'This topic was forked from &lt;a href=""&gt;foobar&lt;/a&gt;');
+	});
 });
+

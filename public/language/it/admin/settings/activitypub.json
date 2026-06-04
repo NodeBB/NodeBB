@@ -78,5 +78,7 @@
 	"analytics.daily": "Giornaliero",
 
 	"errors.intro": "Nelle ultime 24 ore, questa istanza ha registrato il seguente %1 errore(i).",
-	"errors.payload-gone": "Il payload per questo errore non esiste più."
+	"errors.payload-gone": "Il payload per questo errore non esiste più.",
+	"errors.hostname": "Nome host",
+	"errors.type": "Tipo"
 }

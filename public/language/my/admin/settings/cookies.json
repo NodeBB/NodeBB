@@ -1,0 +1,13 @@
+{
+	"eu-consent": "EU ခွင့်ပြုချက်",
+	"consent.enabled": "ခွင့်ပြုချက် ဖွင့်ပါ",
+	"consent.message": "ခွင့်ပြုချက် မက်ဆေ့ချ်",
+	"consent.acceptance": "လက်ခံမှု",
+	"consent.link-text": "လင့်ခ် စာသား",
+	"consent.link-url": "လင့်ခ် URL",
+	"consent.blank-localised-default": "ပုံသေ ဘာသာပြန်ချက်",
+	"settings": "ဆက်တင်များ",
+	"cookie-domain": "ကွတ်ကီး ဒိုမိန်း",
+	"max-user-sessions": "အများဆုံး သုံးစွဲသူ ဆက်ရှင်",
+	"blank-default": "ပုံသေ ဗလာ"
+}

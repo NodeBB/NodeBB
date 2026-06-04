@@ -199,6 +199,7 @@
     "info.no-mute-history": "本用戶未曾被禁聲過",
     "info.muted-until": "禁聲到 %1",
     "info.muted-expiry": "到期",
+    "info.muted-permanently": "Muted permanently",
     "info.muted-no-reason": "沒說明原因。",
     "info.username-history": "用過的使用者名",
     "info.email-history": "用過的電子信箱",

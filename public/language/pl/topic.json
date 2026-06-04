@@ -92,8 +92,8 @@
     "watch.title": "Otrzymuj powiadomienia o nowych odpowiedziach w tym temacie",
     "unwatch.title": "Przestań obserwować ten temat",
     "share-this-post": "Udostępnij",
-    "share-mail-subject": "Check out this post on \"%1\"",
-    "share-mail-body": "I thought you might be interested in this post: %1",
+    "share-mail-subject": "Sprawdź ten post na \"%1\"",
+    "share-mail-body": "Może Cię zainteresować post: %1",
     "watching": "Obserwuj",
     "not-watching": "Nie obserwuj",
     "ignoring": "Ignoruj",
@@ -237,7 +237,7 @@
     "thumb-image": "Obraz miniaturki tematu",
     "announcers": "Udostępnień",
     "announcers-x": "Udostępnień (%1)",
-    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
-    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
-    "guest-cta.closing": "With your input, this post could be even better 💗"
+    "guest-cta.title": "Cześć! Wygląda na to, że jesteś zainteresowany tą rozmową, ale nie masz jeszcze konta.",
+    "guest-cta.message": "Masz dość przewijania tych samych postów za każdą wizytą? Po zarejestrowaniu konta zawsze wrócisz dokładnie do tego samego miejsca, w którym byłeś wcześniej, możesz wtedy również wybrać opcję otrzymywania powiadomień nowych odpowiedziach (e-mailem lub powiadomieniem push). Będziesz też mógł zapisywać zakładki i głosować na posty, aby okazać uznanie innym członkom społeczności.",
+    "guest-cta.closing": "Z Twoją pomocą tez post mógłby być nawet lepszy 💗"
 }

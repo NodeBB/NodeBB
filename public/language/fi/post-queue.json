@@ -1,7 +1,7 @@
 
 {
-	"post-queue": "Post Queue",
-	"no-queued-posts": "There are no posts in the post queue.",
+	"post-queue": "Julkaisujono",
+	"no-queued-posts": "Ei uusia viestejä julkaisujonossa",
 	"no-single-post": "The topic or post you are looking for is no longer in the queue. It has likely been approved or deleted already.",
 	"enabling-help": "The post queue is currently <strong>disabled</strong>. To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"back-to-list": "Back to Post Queue",
@@ -10,6 +10,7 @@
 	"user": "User",
 	"when": "When",
 	"category": "Category",
+	"tags": "Tags",
 	"title": "Title",
 	"content": "Content",
 	"posted": "Posted",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

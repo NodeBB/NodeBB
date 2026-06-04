@@ -1,0 +1,22 @@
+{
+	"display.create": "作成して返信",
+	"display.like": "賛成票を入れる",
+	"display.dislike": "反対票を入れる",
+	"display.follow": "フォロー",
+	"display.object": "表示",
+	"title": "オープンソーシャルウェブハンドルの登録",
+	"description": "アクティビティインテントに登録するには、オープンソーシャルウェブハンドルを入力してください。これにより、このフォーラムのコンテンツをあなたのソーシャルプロフィールへ共有できるようになります。",
+	"handle-label": "オープンソーシャルウェブハンドル",
+	"handle-placeholder": "username@example.com",
+	"register-button": "ハンドルを登録",
+	"registered-handles": "登録済みハンドル",
+	"no-handles": "登録済みのハンドルはまだありません。",
+	"intents-label": "対応しているインテント",
+	"register-error": "ハンドルを登録できませんでした。ハンドルの形式を確認して、もう一度お試しください。",
+	"invalid-handle": "@username@domain.com の形式で有効なハンドルを入力してください",
+	"trigger-title": "%1（オープンソーシャルウェブ経由）",
+	"trigger-description": "この操作を完了するには、フォーラムアカウントにログインするか、オープンソーシャルウェブハンドルを選択してください",
+	"trigger-your-handles": "あなたの登録済みハンドル",
+	"trigger-yes": "はい、これを使用します",
+	"trigger-no-matching": "このインテントに対応する登録済みハンドルはありません。新しいハンドルを登録するか、ログインしてください。"
+}

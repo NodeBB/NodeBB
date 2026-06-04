@@ -75,7 +75,7 @@ TopicObject:
                 icon
               example: "#f44336"
             banned:
-              type: number
+              type: boolean
             banned_until:
               type: number
             banned_until_readable:
@@ -178,7 +178,7 @@ TopicObjectSlim:
         followercount:
           type: number
         scheduled:
-          type: number
+          type: boolean
         deleted:
           type: number
         deleterUid:
@@ -217,14 +217,14 @@ TopicObjectSlim:
           oneOf:
             - type: number
             - type: string
-          nullable: true
+            - type: 'null'
         thumbs:
           type: array
           items:
             type: object
             properties:
               id:
-                type: number
+                type: [number, string]
                 description: The topic id
               name:
                 type: string

@@ -18,7 +18,7 @@
 	"probe-timeout": "Oppslagstimeout (millisekund)",
 	"probe-timeout-help": "(Standard: 2000) Dersom oppslagsførespurnaden ikkje får eit svar innan den angitte tidsramma, vil brukaren bli sendt direkte til lenkja i staden. Juster dette talet oppover dersom nettsider responderer sakte, og du ønskjer å gi ekstra tid.",
 
-	"rules": "Categorization",
+	"rules": "Kategorisering",
 	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
 	"rules.modal.title": "How it works",
 	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
@@ -78,5 +78,7 @@
 	"analytics.daily": "Daily",
 
 	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
-	"errors.payload-gone": "The payload for this error no longer exists."
+	"errors.payload-gone": "The payload for this error no longer exists.",
+	"errors.hostname": "Hostname",
+	"errors.type": "Type"
 }

@@ -83,18 +83,48 @@ mongoModule.createIndices = async function () {
 	}
 
 	winston.info('[database] Checking database indices.');
-	const collection = mongoModule.client.collection('objects');
-	await collection.createIndex({ _key: 1, score: -1 }, { background: true });
-	await collection.createIndex({ _key: 1, value: -1 }, { background: true, unique: true, sparse: true });
-	await collection.createIndex(
-		{ members: 1, _key: 1},
+	await safeCreateIndex({ _key: 1, score: -1 }, { background: true });
+	await safeCreateIndex({ _key: 1, value: -1 }, { background: true, unique: true, sparse: true });
+	await safeCreateIndex(
+		{ members: 1, _key: 1 },
 		{ background: true, partialFilterExpression: { members: { $exists: true } } }
 	);
-	await collection.createIndex(
+	await safeCreateIndex(
 		{ expireAt: 1 },
 		{ expireAfterSeconds: 0, background: true, partialFilterExpression: { expireAt: { $exists: true } } },
 	);
+
 	winston.info('[database] Checking database indices done!');
+};
+
+function generateIndexName(indexSpec) {
+	return Object.entries(indexSpec)
+		.map(([key, value]) => `${key}_${value}`)
+		.join('_');
+}
+
+async function safeCreateIndex(indexSpec, options) {
+	try {
+		await mongoModule.client.collection('objects').createIndex(indexSpec, options);
+	} catch (err) {
+		if (err.code === 85) { // index options conflict, retry by dropping the index
+			await safeDropIndex(generateIndexName(indexSpec));
+			await safeCreateIndex(indexSpec, options);
+			return;
+		}
+		throw err;
+	}
+}
+
+async function safeDropIndex(indexName) {
+	try {
+		await mongoModule.client.collection('objects').dropIndex(indexName);
+	} catch (err) {
+		// Ignore "index not found (27)" error
+		if (err.code !== 27) {
+			throw err;
+		}
+	}
 };
 
 mongoModule.checkCompatibility = function (callback) {

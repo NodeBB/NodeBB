@@ -112,6 +112,12 @@ define('forum/register', [
 
 		// Set initial focus
 		$('#username').trigger('focus');
+
+		$('#ap-register-handle-btn').on('click', function () {
+			require(['modules/intents'], (intents) => {
+				intents.register();
+			});
+		});
 	};
 
 	function validateUsername(username, callback) {

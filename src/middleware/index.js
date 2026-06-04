@@ -209,10 +209,21 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 		return next();
 	}
 
-	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
-		const extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
-		let ext = path.extname(req.path);
-		ext = ext ? ext.replace(/^\./, '') : ext;
+	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`;
+	let requestPath = req.path;
+	try {
+		requestPath = decodeURIComponent(requestPath);
+	} catch (err) {
+		return res.status(403).json('not-allowed');
+	}
+
+	if (requestPath.startsWith(uploadPrefix)) {
+		const extensions = (meta.config.privateUploadsExtensions || '')
+			.split(',')
+			.map(ext => ext.trim().toLowerCase())
+			.filter(Boolean);
+		let ext = path.extname(requestPath);
+		ext = ext ? ext.replace(/^\./, '').toLowerCase() : ext;
 		if (!extensions.length || extensions.includes(ext)) {
 			return res.status(403).json('not-allowed');
 		}
@@ -271,20 +282,24 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 });
 
 middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
-	// Trim uploaded files' timestamps when downloading + force download if html
+	// Trim uploaded files' timestamps when downloading + force download if unsafe
 	let basename = path.basename(req.path);
 	const extname = path.extname(req.path).toLowerCase();
 	const unsafeExtensions = [
 		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
 		'.svg', '.svgz',
 		'.xml', '.xsl', '.xslt',
+		'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
+		'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
+		'.xsd', '.mathml', '.xht',
 	];
 	const isInlineSafe = !unsafeExtensions.includes(extname);
 	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
-	if (req.path.startsWith('/uploads/files/')) {
+	if (req.path.startsWith('/uploads/')) {
 		if (middleware.regexes.timestampedUpload.test(basename)) {
 			basename = basename.slice(14);
 		}
+		res.setHeader('X-Content-Type-Options', 'nosniff');
 		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
 	}
 

@@ -6,7 +6,7 @@
 	"primary": "primary / jobs",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "paikalla",
 	"git": "git",
 	"process-memory": "rss/heap used",
 	"system-memory": "system memory",

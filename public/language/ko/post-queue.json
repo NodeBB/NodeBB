@@ -10,6 +10,7 @@
 	"user": "사용자",
 	"when": "시간",
 	"category": "카테고리",
+	"tags": "Tags",
 	"title": "제목",
 	"content": "내용",
 	"posted": "작성됨",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "선택된 %1개의 게시물을 제거하시겠습니까?",
 	"bulk-accept-success": "%1개의 게시물이 승인되었습니다.",
 	"bulk-reject-success": "%1개의 게시물이 거부되었습니다.",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

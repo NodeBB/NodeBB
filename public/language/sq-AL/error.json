@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "Ju nuk mund të bëni mute administratorët e tjerë",
     "user-muted-for-hours": "Ju jeni bërë mute, dhe do të mundeni të postoni në %1 orë()",
     "user-muted-for-minutes": "Ju jeni bërë mute, dhe do të mundeni të postoni në %1 minut(a)",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "Ju nuk mund t'i bëni përdoruesit e ndaluar administrator.",
     "cant-remove-last-admin": "Ju jeni i vetmi administrator. Shtoni një përdorues tjetër si administrator përpara se të hiqni veten si administrator",
     "account-deletion-disabled": "Fshirja e llogarisë është çaktivizuar",
@@ -131,6 +132,7 @@
     "invalid-image-type": "Lloji i imazhit nuk është i duhuri. Llojet e lejuara janë: %1",
     "invalid-image-extension": "Shtesa e pasakte e imazhit",
     "invalid-file-type": "Lloj i pavlefshëm i skedarit. Llojet e lejuara janë: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Dimensionet e imazhit janë shumë të mëdha",
     "group-name-too-short": "Emri i grupit është shumë i shkurtër",
     "group-name-too-long": "Emri i grupit është shumë i gjatë",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "Postimi nuk mund të zhvendoset në të njëjtën temë!",
     "cant-move-topic-to-same-category": "Tema nuk mund të zhvendoset në të njëjtën kategori!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Ju nuk mund të bllokoni veten!",
     "cannot-block-privileged": "Ju nuk mund të bllokoni administratorët ose moderatorët",
     "cannot-block-guest": "Vizitorët nuk mund të bllokojnë përdoruesit e tjerë",
@@ -263,9 +266,11 @@
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
     "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
     "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

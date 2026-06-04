@@ -42,27 +42,27 @@ middleware.assertS2S = async function (req, res, next) {
 middleware.verify = async function (req, res, next) {
 	// Verifies the HTTP Signature if present (required for POST)
 	const passthrough = [/\/actor/, /\/uid\/\d+/];
-	if (req.method === 'GET' && passthrough.some(regex => regex.test(req.path))) {
+	if (passthrough.some(regex => regex.test(req.path))) {
 		return next();
 	}
 
-	if (req.method === 'POST') {
+	if (req.headers.hasOwnProperty('signature')) {
 		const verified = await activitypub.verify(req);
 		if (!verified) {
 			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
 			return res.sendStatus(400);
 		}
-	}
 
-	// Set calling user
-	if (req.headers.signature) {
+		// Set calling user
 		const keyId = req.headers.signature.split(',').filter(line => line.startsWith('keyId="'));
 		if (keyId.length) {
 			req.uid = keyId.shift().slice(7, -1).replace(/#.*$/, '');
 		}
-	}
 
-	activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
+	} else {
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification skipped.');
+	}
 	next();
 };
 

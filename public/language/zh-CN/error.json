@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "您不能禁言其他管理员！",
     "user-muted-for-hours": "您已被禁言，您在 %1 小时后才能发布内容",
     "user-muted-for-minutes": "您已被禁言，您在 %1 分钟后才能发布内容",
+    "user-muted-indefinitely": "您已被永久禁言",
     "cant-make-banned-users-admin": "您无法将被封禁的用户设为管理员。",
     "cant-remove-last-admin": "您是唯一的管理员。在删除您的管理员权限前，请添加另一个管理员。",
     "account-deletion-disabled": "账号删除功能已禁用",
@@ -131,6 +132,7 @@
     "invalid-image-type": "无效的图像类型。允许的类型有：%1",
     "invalid-image-extension": "无效的图像扩展",
     "invalid-file-type": "无效文件格式，允许的格式有：%1",
+    "blocked-file-type": "不允许的文件类型。扩展名 %1 已被管理员明确禁止。",
     "invalid-image-dimensions": "图片尺寸太大",
     "group-name-too-short": "群组名太短",
     "group-name-too-long": "群组名太长",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
     "cant-move-topic-to-same-category": "无法将主题移动到相同的版块！",
     "cant-move-topic-to-from-remote-categories": "您无法将主题移入或移出远程版块；请考虑采用交叉发布的方式。",
+    "cant-move-topic-too-many-posts": "包含超过 %1 条帖子的主题无法移动。",
     "cannot-block-self": "您不能把自己屏蔽！",
     "cannot-block-privileged": "您不能屏蔽管理员或者全局版主",
     "cannot-block-guest": "游客无法屏蔽其他用户",
@@ -263,9 +266,11 @@
     "api.reauth-required": "您试图访问的资源需要（重新）进行身份验证。",
     "activitypub.not-enabled": "此服务器未启用“联邦”",
     "activitypub.invalid-id": "无法解析输入 id，可能是畸形输入。",
+    "activitypub.invalid-content-type": "返回的内容关联了一个意外的内容类型",
     "activitypub.get-failed": "无法检索指定资源。",
     "activitypub.pubKey-not-found": "无法解析公钥，因此无法进行有效载荷验证。",
     "activitypub.origin-mismatch": "接收对象的原点与发送者的原点不一致",
     "activitypub.not-implemented": "请求被拒绝的原因是接收方服务器没有执行该请求或其中的某个方面",
-    "activitypub.orphan": "收到的对象未与任何已知的本地用户相关联。"
+    "activitypub.orphan": "收到的对象未与任何已知的本地用户相关联。",
+    "activitypub.rate-limited": "您的 IP 地址已被限制访问。"
 }

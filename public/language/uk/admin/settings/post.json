@@ -27,6 +27,7 @@
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Днів, доки тема не вважатиметься застарілою",
 	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
 	"timestamp": "Часова мітка",
 	"timestamp.cut-off": "Обрізка дат (в днях)",
 	"timestamp.cut-off-help": "Дата і час показуються відносно (тобто \"3 години тому\" / \"5 днів тому\"). Після певного періоду часу, цей текст може бути змінено на звичайну дати (тобто 5 Лис 2016 15:30). <br /><em>(Типово: <code>30</code>, або один місяць). Вкажіть 0, щоб завжди показувати дати або залиште пустим, щоб завжди показувати відносний час.</em>",

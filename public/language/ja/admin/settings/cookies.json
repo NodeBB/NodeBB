@@ -1,8 +1,8 @@
 {
-	"eu-consent": "EU承諾",
+	"eu-consent": "EU 同意",
 	"consent.enabled": "有効",
 	"consent.message": "通知メッセージ",
-	"consent.acceptance": "メッセージを受け取る",
+	"consent.acceptance": "同意メッセージ",
 	"consent.link-text": "ポリシーリンクテキスト",
 	"consent.link-url": "ポリシーリンクURL",
 	"consent.blank-localised-default": "空白のままにして、NodeBBのローカライズされたデフォルトを使用する",

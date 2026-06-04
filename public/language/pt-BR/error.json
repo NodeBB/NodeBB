@@ -122,6 +122,7 @@
     "cant-mute-other-admins": "You can't mute other admins!",
     "user-muted-for-hours": "You have been muted, you will be able to post in %1 hour(s)",
     "user-muted-for-minutes": "You have been muted, you will be able to post in %1 minute(s)",
+    "user-muted-indefinitely": "You have been muted indefinitely",
     "cant-make-banned-users-admin": "You can't make banned users admin.",
     "cant-remove-last-admin": "Você é o único administrador. Adicione outro usuário como administrador antes de remover a si mesmo como admin",
     "account-deletion-disabled": "A exclusão de conta está desabilitada",
@@ -131,6 +132,7 @@
     "invalid-image-type": "Tipo inválido de imagem. Os tipos permitidos são: %1",
     "invalid-image-extension": "Extensão de imagem inválida",
     "invalid-file-type": "Tipo de arquivo inválido. Os tipos permitidos são: %1",
+    "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "As dimensões da imagem são muito grandes",
     "group-name-too-short": "Nome do grupo é muito curto",
     "group-name-too-long": "O nome do grupo é muito extenso",
@@ -232,6 +234,7 @@
     "cant-move-to-same-topic": "Não é possível mover um post para o mesmo tópico!",
     "cant-move-topic-to-same-category": "Não é possível mover o tópico para a mesma categoria!",
     "cant-move-topic-to-from-remote-categories": "You cannot move topics in or out of remote categories; consider cross-posting instead.",
+    "cant-move-topic-too-many-posts": "Cannot move a topic with more than %1 posts.",
     "cannot-block-self": "Você pode bloquear a si mesmo!",
     "cannot-block-privileged": "Você não pode bloquear administradores e moderadores globais",
     "cannot-block-guest": "Vistantes não podem bloquear outros usuários",
@@ -263,9 +266,11 @@
     "api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
     "activitypub.not-enabled": "Federation is not enabled on this server",
     "activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
+    "activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",
     "activitypub.get-failed": "Unable to retrieve the specified resource.",
     "activitypub.pubKey-not-found": "Unable to resolve public key, so payload verification cannot take place.",
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
     "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
-    "activitypub.orphan": "The received object is not associated with any known local user."
+    "activitypub.orphan": "The received object is not associated with any known local user.",
+    "activitypub.rate-limited": "Your IP address has been rate-limited."
 }

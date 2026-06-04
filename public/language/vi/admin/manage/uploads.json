@@ -8,5 +8,6 @@
     "confirm-delete": "Bạn có chắc muốn xóa tệp này không?",
     "filecount": "%1 tệp",
     "new-folder": "Thư Mục Mới",
-    "name-new-folder": "Nhập tên cho thư mục mới"
+    "name-new-folder": "Nhập tên cho thư mục mới",
+    "unsafe-file-warning": "Cảnh báo: Đừng tải lên các tệp mà bạn không tin tưởng. Các tệp có phần mở rộng nhất định sẽ được tải xuống dưới dạng tệp đính kèm để ngăn chặn các cuộc tấn công XSS, tuy nhiên các tệp độc hại vẫn có thể gây hại nếu mở trên máy tính của bạn."
 }

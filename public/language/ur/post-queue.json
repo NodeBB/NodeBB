@@ -10,6 +10,7 @@
 	"user": "صارف",
 	"when": "کب",
 	"category": "زمرہ",
+	"tags": "Tags",
 	"title": "عنوان",
 	"content": "مواد",
 	"posted": "پوسٹ کیا گیا",
@@ -39,5 +40,6 @@
 	"remove-selected-confirm": "کیا آپ واقعی %1 منتخب کردہ پوسٹس کو ہٹانا چاہتے ہیں؟",
 	"bulk-accept-success": "منظور شدہ پوسٹس: %1",
 	"bulk-reject-success": "مسترد شدہ پوسٹس: %1",
-	"links-in-this-post": "اس پوسٹ میں لنکس"
+	"links-in-this-post": "اس پوسٹ میں لنکس",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }
