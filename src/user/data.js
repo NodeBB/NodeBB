@@ -281,7 +281,7 @@ module.exports = function (User) {
 
 			// works around renderOverride supplying `url` to templates
 			if (user.url) {
-				user.remoteUrl = translator.escape(validator.escape(user.url));
+				user.remoteUrl = translator.escape(validator.escape(String(user.url)));
 			} else {
 				delete user.url;
 			}
