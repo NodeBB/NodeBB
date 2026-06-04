@@ -11,9 +11,7 @@ notificationsApi.list = async (caller) => {
 };
 
 notificationsApi.get = async (caller, { nid }) => {
-	let notification = await user.notifications.getNotifications([nid], caller.uid);
-	notification = notification.pop();
-
+	const [ notification ] = await user.notifications.getNotifications([nid], caller.uid);
 	return { notification };
 };
 

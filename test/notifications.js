@@ -408,46 +408,32 @@ describe('Notifications', () => {
 		assert(data);
 	});
 
-	it('should send welcome notification', (done) => {
+	it('should send welcome notification', async () => {
 		meta.config.welcomeNotification = 'welcome to the forums';
-		user.notifications.sendWelcomeNotification(uid, (err) => {
-			assert.ifError(err);
-			user.notifications.sendWelcomeNotification(uid, (err) => {
-				assert.ifError(err);
-				setTimeout(() => {
-					user.notifications.getAll(uid, '', (err, data) => {
-						meta.config.welcomeNotification = '';
-						assert.ifError(err);
-						assert(data.includes(`welcome_${uid}`), data);
-						done();
-					});
-				}, 2000);
-			});
-		});
+		await user.notifications.sendWelcomeNotification(uid);
+		await user.notifications.sendWelcomeNotification(uid);
+		await sleep(2000);
+
+		const data = await user.notifications.getAll(uid, '');
+		meta.config.welcomeNotification = '';
+
+		assert(data.includes(`welcome_${uid}`), data);
 	});
 
-	it('should prune notifications', (done) => {
-		notifications.create({
+	it('should prune notifications', async () => {
+		const notification = await notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'tobedeleted',
 			path: '/notification/path',
-		}, (err, notification) => {
-			assert.ifError(err);
-			notifications.prune((err) => {
-				assert.ifError(err);
-				const month = 2592000000;
-				db.sortedSetAdd('notifications', Date.now() - (2 * month), notification.nid, (err) => {
-					assert.ifError(err);
-					notifications.prune((err) => {
-						assert.ifError(err);
-						notifications.get(notification.nid, (err, data) => {
-							assert.ifError(err);
-							assert(!data);
-							done();
-						});
-					});
-				});
-			});
 		});
+
+		await notifications.prune();
+		const month = 2592000000;
+		await db.sortedSetAdd('notifications', Date.now() - (2 * month), notification.nid);
+
+		await notifications.prune();
+
+		const data = await notifications.get(notification.nid);
+		assert(!data);
 	});
 });
