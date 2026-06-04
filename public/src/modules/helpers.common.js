@@ -170,7 +170,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function generateGroupDisplayName(group) {
-		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
+		return group.system ? group.displayName.replace(/-/g, ' ') : helpers.txEscape(group.displayName);
 	}
 
 	// Groups helpers
@@ -408,7 +408,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function txEscape(text) {
-		return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		return String(text)
+			.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;')
+			.replace(/,/g, '&#44;').replace(/%/g, '&#37;');
 	}
 
 	function uploadBasename(str, sep = '/') {

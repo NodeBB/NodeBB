@@ -9,6 +9,8 @@ const categories = require('../../src/categories');
 const groups = require('../../src/groups');
 const topics = require('../../src/topics');
 const utils = require('../../src/utils');
+const api = require('../../src/api');
+const privileges = require('../../src/privileges');
 
 describe('Topic tools', () => {
 	describe('Topic moving', () => {
@@ -60,6 +62,84 @@ describe('Topic tools', () => {
 
 			assert(Array.isArray(tids));
 			assert.deepStrictEqual(tids, []);
+		});
+
+		it('should only allow topic moving if user is a moderator of the source and destination category', async () => {
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const uid2 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			await assert.rejects(
+				api.topics.move({ uid: uid2 }, {
+					cid: cid2,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// making moderator on destination
+			await privileges.categories.give(['moderate'], cid2, [uid2]);
+			await assert.rejects(
+				api.topics.move({ uid: uid2 }, {
+					cid: cid2,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// making moderator on source
+			await privileges.categories.give(['moderate'], cid1, [uid2]);
+			await api.topics.move({ uid: uid2 }, {
+				cid: cid2,
+				tid: topicData.tid,
+			});
+			assert.strictEqual(
+				String(await topics.getTopicField(topicData.tid, 'cid')),
+				String(cid2)
+			);
+		});
+
+		it('should allow topic moving if user is a the owner of the topic', async () => {
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+
+			await api.topics.move({ uid: uid1 }, {
+				cid: cid2,
+				tid: topicData.tid,
+			});
+
+			assert.strictEqual(
+				String(await topics.getTopicField(topicData.tid, 'cid')),
+				String(cid2)
+			);
+		});
+
+		it('should disallow topic moving if user does not have privs in destination category', async () => {
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			await privileges.categories.rescind(['groups:topics:create'], cid2, 'registered-users');
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+
+			await assert.rejects(
+				api.topics.move({ uid: uid1 }, {
+					cid: cid2,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 	});
 

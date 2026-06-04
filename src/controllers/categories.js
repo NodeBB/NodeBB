@@ -65,5 +65,12 @@ categoriesController.list = async function (req, res) {
 		});
 	}
 
+	helpers.addLinkTags({
+		url: 'categories',
+		res: res,
+		tags: [],
+		page: page,
+	});
+
 	res.render('categories', data);
 };

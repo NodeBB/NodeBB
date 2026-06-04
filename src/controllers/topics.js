@@ -80,7 +80,9 @@ topicsController.get = async function getTopic(req, res, next) {
 		return helpers.redirect(res, `/topic/${tid}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}${generateQueryString(req.query)}`);
 	}
 	postIndex = Math.max(1, postIndex);
-	const sort = validSorts.includes(req.query.sort) ? req.query.sort : settings.topicPostSort;
+	const selectedSort = String(req.query.sort || settings.topicPostSort);
+	const sort = validSorts.includes(selectedSort) ? selectedSort : meta.config.topicPostSort;
+
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
 
@@ -118,7 +120,8 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	topicData.privateUploads = meta.config.privateUploads === 1;
 	topicData.showPostPreviewsOnHover = meta.config.showPostPreviewsOnHover === 1;
-	topicData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
+	topicData.sortOption = sort;
+	topicData.sortOptionLabel = `[[topic:${sort.replace(/_/g, '-')}]]`;
 	if (!meta.config['feeds:disableRSS']) {
 		topicData.rssFeedUrl = `${relative_path}/topic/${topicData.tid}.rss`;
 		if (req.loggedIn) {
@@ -135,7 +138,7 @@ topicsController.get = async function getTopic(req, res, next) {
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
 		topics.crossposts.get(topicData.tid),
 		buildBreadcrumbs(topicData, settings.userLang),
-		addOldCategory(topicData, userPrivileges),
+		addOldCategory(topicData, userPrivileges, settings.userLang),
 		addTags(topicData, req, res, currentPage, postAtIndex),
 		topics.increaseViewCount(req, tid),
 		markAsRead(req, tid),
@@ -224,11 +227,12 @@ async function buildBreadcrumbs(topicData, userLang) {
 	topicData.breadcrumbs = parentCrumbs.concat(breadcrumbs);
 }
 
-async function addOldCategory(topicData, userPrivileges) {
+async function addOldCategory(topicData, userPrivileges, userLang) {
 	if (userPrivileges.isAdminOrMod && topicData.oldCid) {
 		topicData.oldCategory = await categories.getCategoryFields(
 			topicData.oldCid, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
 		);
+		topicData.oldCategory.name = await helpers.translateEscapedValue(topicData.oldCategory.name, userLang);
 	}
 }
 

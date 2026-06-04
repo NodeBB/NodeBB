@@ -103,9 +103,10 @@ UserNotifications.getNotifications = async function (nids, uid) {
 		return [];
 	}
 
-	const [notifObjs, hasRead, userSettings] = await Promise.all([
+	const [notifObjs, isRead, isUnread, userSettings] = await Promise.all([
 		notifications.getMultiple(nids),
 		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+		db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
 		user.getSettings(uid),
 	]);
 
@@ -115,11 +116,11 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			deletedNids.push(nids[index]);
 		}
 		if (notification) {
-			notification.read = hasRead[index];
+			notification.read = isRead[index];
 			notification.readClass = !notification.read ? 'unread' : '';
 		}
-
-		return notification;
+		const isUsersNotification = isRead[index] || isUnread[index];
+		return notification && isUsersNotification;
 	});
 
 	await deleteUserNids(deletedNids, uid);

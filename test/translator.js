@@ -317,26 +317,62 @@ describe('new Translator(language)', () => {
 			);
 		});
 
-		it('should set href to empty string if argument is not a URL', async function () {
-			const translator = Translator.create('en-GB');
+		it('should let valid urls through and empty href for invalid urls', async function () {
+			shim.addTranslation('en-GB', 'topic', {
+				'href-test-1': 'This topic has been merged into <a href="%1">%2</a> and <a href="%1">%3</a>',
+				'href-test-2': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
+				'href-test-3': '<a href="%1">%2</a> and <a href="%3">%4</a>',
+				'href-test-4': '<a href="%1%2">%3</a>',
+			});
 
 			assert.strictEqual(
-				await translator.translate('[[topic:merged-message,    javascript is a nice language, foo]]'),
-				'This topic has been merged into <a href="">foo</a>'
-			);
-		});
-
-		it('should let valid urls through', async function () {
-			const translator = Translator.create('en-GB');
-
-			assert.strictEqual(
-				await translator.translate('[[topic:merged-message, https://example.com, foo]]'),
+				await shim.translate('[[topic:merged-message, https://example.com, foo]]'),
 				'This topic has been merged into <a href="https://example.com">foo</a>'
 			);
 
 			assert.strictEqual(
-				await translator.translate('[[topic:merged-message, /topic/123, foo]]'),
+				await shim.translate('[[topic:merged-message, http://example.com, foo]]'),
+				'This topic has been merged into <a href="http://example.com">foo</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:merged-message, /topic/123, foo]]'),
 				'This topic has been merged into <a href="/topic/123">foo</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:href-test-1, /topic/123, foo, bar]]'),
+				'This topic has been merged into <a href="/topic/123">foo</a> and <a href="/topic/123">bar</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:href-test-1, javascript:alert(origin), foo, bar]]'),
+				'This topic has been merged into <a href="">foo</a> and <a href="">bar</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:href-test-2, javascript:alert(origin), foo, bar]]'),
+				'This topic has been merged into <a href="">bar</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:merged-message,    javascript is a nice language, foo]]'),
+				'This topic has been merged into <a href="">foo</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:href-test-3, javascript:alert(origin), foo, data:123, baz]]'),
+				'<a href="">foo</a> and <a href="">baz</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:href-test-4, javascript:alert(origin), javascript:alert(origin), foo]]'),
+				'<a href="">foo</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:merged-message, "javascript:alert(origin), foo]]'),
+				'This topic has been merged into <a href="">foo</a>'
 			);
 		});
 

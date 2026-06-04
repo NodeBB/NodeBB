@@ -25,4 +25,6 @@ get:
                         parsedBody:
                           type: string
                           description: "body parsed with filter:parse.raw hook"
+                        translatedType:
+                          type: string
               - $ref: ../../../../components/schemas/CommonProps.yaml#/CommonProps

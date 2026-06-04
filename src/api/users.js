@@ -147,7 +147,10 @@ usersAPI.updateSettings = async function (caller, data) {
 };
 
 usersAPI.getStatus = async (caller, { uid }) => {
-	const status = await db.getObjectField(`user:${uid}`, 'status');
+	let status = await db.getObjectField(`user:${uid}`, 'status');
+	if (!user.allowedStatus.includes(status)) {
+		status = 'offline';
+	}
 	return { status };
 };
 

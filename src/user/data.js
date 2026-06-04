@@ -44,6 +44,8 @@ module.exports = function (User) {
 		'picture', 'cover:url',
 	];
 
+	User.allowedStatus = ['online', 'offline', 'dnd', 'away'];
+
 	User.guestData = {
 		uid: 0,
 		username: '[[global:guest]]',

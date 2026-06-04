@@ -12,6 +12,7 @@ const topics = require('../src/topics');
 const categories = require('../src/categories');
 const notifications = require('../src/notifications');
 const socketNotifications = require('../src/socket.io/notifications');
+const api = require('../src/api');
 
 const sleep = util.promisify(setTimeout);
 
@@ -30,26 +31,21 @@ describe('Notifications', () => {
 		});
 	});
 
-	it('should create a notification', (done) => {
-		notifications.create({
+	it('should create a notification', async () => {
+		notification = await notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
 			pid: 1,
-		}, (err, _notification) => {
-			notification = _notification;
-			assert.ifError(err);
-			assert(notification);
-			db.exists(`notifications:${notification.nid}`, (err, exists) => {
-				assert.ifError(err);
-				assert(exists);
-				db.isSortedSetMember('notifications', notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			});
 		});
+
+		assert(notification);
+
+		const exists = await db.exists(`notifications:${notification.nid}`);
+		assert(exists);
+
+		const isMember = await db.isSortedSetMember('notifications', notification.nid);
+		assert(isMember);
 	});
 
 	it('should create a notification with a custom icon', async () => {
@@ -79,172 +75,106 @@ describe('Notifications', () => {
 			notifData.user['icon:bgColor'].startsWith('#'));
 	});
 
-	it('should return null if pid is same and importance is lower', (done) => {
-		notifications.create({
+	it('should return null if pid is same and importance is lower', async () => {
+		const notification = await notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
 			pid: 1,
 			importance: 1,
-		}, (err, notification) => {
-			assert.ifError(err);
-			assert.strictEqual(notification, null);
-			done();
 		});
+		assert.strictEqual(notification, null);
 	});
 
-	it('should get empty array', (done) => {
-		notifications.getMultiple(null, (err, data) => {
-			assert.ifError(err);
-			assert(Array.isArray(data));
-			assert.equal(data.length, 0);
-			done();
-		});
+	it('should get empty array', async () => {
+		const data = await notifications.getMultiple(null);
+		assert(Array.isArray(data));
+		assert.equal(data.length, 0);
 	});
 
-	it('should get notifications', (done) => {
-		notifications.getMultiple([notification.nid], (err, notificationsData) => {
-			assert.ifError(err);
-			assert(Array.isArray(notificationsData));
-			assert(notificationsData[0]);
-			assert.equal(notification.nid, notificationsData[0].nid);
-			done();
-		});
+	it('should get notifications', async () => {
+		const notificationsData = await notifications.getMultiple([notification.nid]);
+		assert(Array.isArray(notificationsData));
+		assert(notificationsData[0]);
+		assert.equal(notification.nid, notificationsData[0].nid);
 	});
 
-	it('should do nothing', (done) => {
-		notifications.push(null, [], (err) => {
-			assert.ifError(err);
-			notifications.push({ nid: null }, [], (err) => {
-				assert.ifError(err);
-				notifications.push(notification, [], (err) => {
-					assert.ifError(err);
-					done();
-				});
-			});
-		});
+	it('should do nothing', async () => {
+		await notifications.push(null, []);
+		await notifications.push({ nid: null }, []);
+		await notifications.push(notification, []);
 	});
 
-	it('should push a notification to uid', (done) => {
-		notifications.push(notification, [uid], (err) => {
-			assert.ifError(err);
-			setTimeout(() => {
-				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			}, 2000);
-		});
+	it('should push a notification to uid', async () => {
+		await notifications.push(notification, [uid]);
+		await sleep(2000);
+
+		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert(isMember);
 	});
 
-	it('should push a notification to a group', (done) => {
-		notifications.pushGroup(notification, 'registered-users', (err) => {
-			assert.ifError(err);
-			setTimeout(() => {
-				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			}, 2000);
-		});
+	it('should push a notification to a group', async () => {
+		await notifications.pushGroup(notification, 'registered-users');
+		await sleep(2000);
+
+		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert(isMember);
 	});
 
-	it('should push a notification to groups', (done) => {
-		notifications.pushGroups(notification, ['registered-users', 'administrators'], (err) => {
-			assert.ifError(err);
-			setTimeout(() => {
-				db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert(isMember);
-					done();
-				});
-			}, 2000);
-		});
+	it('should push a notification to groups', async () => {
+		await notifications.pushGroups(notification, ['registered-users', 'administrators']);
+		await sleep(2000);
+		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert(isMember);
 	});
 
-	it('should not mark anything with invalid uid or nid', (done) => {
-		socketNotifications.markRead({ uid: null }, null, (err) => {
-			assert.ifError(err);
-			socketNotifications.markRead({ uid: uid }, null, (err) => {
-				assert.ifError(err);
-				done();
-			});
-		});
+	it('should not mark anything with invalid uid or nid', async () => {
+		await socketNotifications.markRead({ uid: null }, null);
+		await socketNotifications.markRead({ uid: uid }, null);
 	});
 
-	it('should mark a notification read', (done) => {
-		socketNotifications.markRead({ uid: uid }, notification.nid, (err) => {
-			assert.ifError(err);
-			db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-				assert.ifError(err);
-				assert.equal(isMember, false);
-				db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert.equal(isMember, true);
-					done();
-				});
-			});
-		});
+	it('should mark a notification read', async () => {
+		await socketNotifications.markRead({ uid: uid }, notification.nid);
+
+		const isUnread = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert.strictEqual(isUnread, false);
+		const isRead = await db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid);
+		assert.strictEqual(isRead, true);
 	});
 
-	it('should not mark anything with invalid uid or nid', (done) => {
-		socketNotifications.markUnread({ uid: null }, null, (err) => {
-			assert.ifError(err);
-			socketNotifications.markUnread({ uid: uid }, null, (err) => {
-				assert.ifError(err);
-				done();
-			});
-		});
+	it('should not mark anything with invalid uid or nid', async () => {
+		await socketNotifications.markUnread({ uid: null }, null);
+		await socketNotifications.markUnread({ uid: uid }, null);
 	});
 
-	it('should error if notification does not exist', (done) => {
-		socketNotifications.markUnread({ uid: uid }, 123123, (err) => {
-			assert.equal(err.message, '[[error:no-notification]]');
-			done();
-		});
+	it('should error if notification does not exist', async () => {
+		await assert.rejects(
+			socketNotifications.markUnread({ uid: uid }, 123123),
+			{ message: '[[error:no-notification]]' }
+		);
 	});
 
-	it('should mark a notification unread', (done) => {
-		socketNotifications.markUnread({ uid: uid }, notification.nid, (err) => {
-			assert.ifError(err);
-			db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-				assert.ifError(err);
-				assert.equal(isMember, true);
-				db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert.equal(isMember, false);
-					socketNotifications.getCount({ uid: uid }, null, (err, count) => {
-						assert.ifError(err);
-						assert.equal(count, 1);
-						done();
-					});
-				});
-			});
-		});
+	it('should mark a notification unread', async () => {
+		await socketNotifications.markUnread({ uid: uid }, notification.nid);
+
+		const isUnread = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert.strictEqual(isUnread, true);
+		const isRead = await db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid);
+		assert.strictEqual(isRead, false);
+		const count = await socketNotifications.getCount({ uid: uid }, null);
+		assert.strictEqual(count, 1);
 	});
 
-	it('should mark all notifications read', (done) => {
-		socketNotifications.markAllRead({ uid: uid }, null, (err) => {
-			assert.ifError(err);
-			db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid, (err, isMember) => {
-				assert.ifError(err);
-				assert.equal(isMember, false);
-				db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid, (err, isMember) => {
-					assert.ifError(err);
-					assert.equal(isMember, true);
-					done();
-				});
-			});
-		});
+	it('should mark all notifications read', async () => {
+		await socketNotifications.markAllRead({ uid: uid }, null);
+		const isUnread = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
+		assert.strictEqual(isUnread, false);
+		const isRead = await db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid);
+		assert.strictEqual(isRead, true);
 	});
 
-	it('should not do anything', (done) => {
-		socketNotifications.markAllRead({ uid: 1000 }, null, (err) => {
-			assert.ifError(err);
-			done();
-		});
+	it('should not do anything', async () => {
+		await socketNotifications.markAllRead({ uid: 1000 }, null);
 	});
 
 	it('should link to the first unread post in a watched topic', async () => {
@@ -282,112 +212,81 @@ describe('Notifications', () => {
 		assert.equal(`${nconf.get('relative_path')}/post/${pid}`, notifications.unread[0].path, 'the notification should link to the first unread post');
 	});
 
-	it('should get notification by nid', (done) => {
-		socketNotifications.get({ uid: uid }, { nids: [notification.nid] }, (err, data) => {
-			assert.ifError(err);
-			assert.equal(data[0].bodyShort, 'bodyShort');
-			assert.equal(data[0].nid, 'notification_id');
-			assert.equal(data[0].path, `${nconf.get('relative_path')}/notification/path`);
-			done();
-		});
+	it('should get notification by nid', async () => {
+		const [notifObj] = await socketNotifications.get({ uid: uid }, { nids: [notification.nid] });
+		assert.equal(notifObj.bodyShort, 'bodyShort');
+		assert.equal(notifObj.nid, 'notification_id');
+		assert.equal(notifObj.path, `${nconf.get('relative_path')}/notification/path`);
 	});
 
-	it('should get user\'s notifications', (done) => {
-		socketNotifications.get({ uid: uid }, {}, (err, data) => {
-			assert.ifError(err);
-			assert.equal(data.unread.length, 0);
-			assert.equal(data.read[0].nid, 'notification_id');
-			done();
-		});
+	it('should not return another user\'s notification by nid', async () => {
+		const notifObj = await api.notifications.get({ uid: 0 }, { nid: notification.nid });
+		assert.deepStrictEqual(notifObj, { notification: undefined });
 	});
 
-	it('should error if not logged in', (done) => {
-		socketNotifications.deleteAll({ uid: 0 }, null, (err) => {
-			assert.equal(err.message, '[[error:no-privileges]]');
-			done();
-		});
+	it('should get user\'s notifications', async () => {
+		const data = await socketNotifications.get({ uid: uid }, {});
+		assert.equal(data.unread.length, 0);
+		assert.equal(data.read[0].nid, 'notification_id');
 	});
 
-	it('should delete all user notifications', (done) => {
-		socketNotifications.deleteAll({ uid: uid }, null, (err) => {
-			assert.ifError(err);
-			socketNotifications.get({ uid: uid }, {}, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.unread.length, 0);
-				assert.equal(data.read.length, 0);
-				done();
-			});
-		});
+	it('should error if not logged in', async () => {
+		await assert.rejects(
+			socketNotifications.deleteAll({ uid: 0 }, null),
+			{ message: '[[error:no-privileges]]'},
+		);
 	});
 
-	it('should return empty with falsy uid', (done) => {
-		user.notifications.get(0, (err, data) => {
-			assert.ifError(err);
-			assert.equal(data.read.length, 0);
-			assert.equal(data.unread.length, 0);
-			done();
-		});
+	it('should delete all user notifications', async () => {
+		await socketNotifications.deleteAll({ uid: uid }, null);
+		const data = await socketNotifications.get({ uid: uid }, {});
+		assert.equal(data.unread.length, 0);
+		assert.equal(data.read.length, 0);
 	});
 
-	it('should get all notifications and filter', (done) => {
+	it('should return empty with falsy uid', async () => {
+		const data = await user.notifications.get(0);
+		assert.equal(data.read.length, 0);
+		assert.equal(data.unread.length, 0);
+	});
+
+	it('should get all notifications and filter', async () => {
 		const nid = 'willbefiltered';
-		notifications.create({
+		const notification = await notifications.create({
 			bodyShort: 'bodyShort',
 			nid: nid,
 			path: '/notification/path',
 			type: 'post',
-		}, (err, notification) => {
-			assert.ifError(err);
-			notifications.push(notification, [uid], (err) => {
-				assert.ifError(err);
-				setTimeout(() => {
-					user.notifications.getAll(uid, 'post', (err, nids) => {
-						assert.ifError(err);
-						assert(nids.includes(nid));
-						done();
-					});
-				}, 3000);
-			});
 		});
+
+		await notifications.push(notification, [uid]);
+		await sleep(3000);
+		const nids = await user.notifications.getAll(uid, 'post');
+		assert(nids.includes(nid));
 	});
 
-	it('should not get anything if notifications does not exist', (done) => {
-		user.notifications.getNotifications(['doesnotexistnid1', 'doesnotexistnid2'], uid, (err, data) => {
-			assert.ifError(err);
-			assert.deepEqual(data, []);
-			done();
-		});
+	it('should not get anything if notifications does not exist', async () => {
+		const data = await user.notifications.getNotifications(['doesnotexistnid1', 'doesnotexistnid2'], uid);
+		assert.deepEqual(data, []);
 	});
 
-	it('should get daily notifications', (done) => {
-		user.notifications.getDailyUnread(uid, (err, data) => {
-			assert.ifError(err);
-			assert.equal(data[0].nid, 'willbefiltered');
-			done();
-		});
+	it('should get daily notifications', async () => {
+		const data = await user.notifications.getDailyUnread(uid);
+		assert.equal(data[0].nid, 'willbefiltered');
 	});
 
-	it('should return empty array for invalid interval', (done) => {
-		user.notifications.getUnreadInterval(uid, '2 aeons', (err, data) => {
-			assert.ifError(err);
-			assert.deepEqual(data, []);
-			done();
-		});
+	it('should return empty array for invalid interval', async () => {
+		const data = await user.notifications.getUnreadInterval(uid, '2 aeons');
+		assert.deepEqual(data, []);
 	});
 
-	it('should return 0 for falsy uid', (done) => {
-		user.notifications.getUnreadCount(0, (err, count) => {
-			assert.ifError(err);
-			assert.equal(count, 0);
-			done();
-		});
+	it('should return 0 for falsy uid', async () => {
+		const count = await user.notifications.getUnreadCount(0);
+		assert.equal(count, 0);
 	});
 
-	it('should not do anything if uid is falsy', (done) => {
-		user.notifications.deleteAll(0, (err) => {
-			assert.ifError(err);
-			done();
-		});
+	it('should not do anything if uid is falsy', async () => {
+		await user.notifications.deleteAll(0);
 	});
 
 	it('should send notification to followers of user when he posts', async () => {
@@ -408,46 +307,32 @@ describe('Notifications', () => {
 		assert(data);
 	});
 
-	it('should send welcome notification', (done) => {
+	it('should send welcome notification', async () => {
 		meta.config.welcomeNotification = 'welcome to the forums';
-		user.notifications.sendWelcomeNotification(uid, (err) => {
-			assert.ifError(err);
-			user.notifications.sendWelcomeNotification(uid, (err) => {
-				assert.ifError(err);
-				setTimeout(() => {
-					user.notifications.getAll(uid, '', (err, data) => {
-						meta.config.welcomeNotification = '';
-						assert.ifError(err);
-						assert(data.includes(`welcome_${uid}`), data);
-						done();
-					});
-				}, 2000);
-			});
-		});
+		await user.notifications.sendWelcomeNotification(uid);
+		await user.notifications.sendWelcomeNotification(uid);
+		await sleep(2000);
+
+		const data = await user.notifications.getAll(uid, '');
+		meta.config.welcomeNotification = '';
+
+		assert(data.includes(`welcome_${uid}`), data);
 	});
 
-	it('should prune notifications', (done) => {
-		notifications.create({
+	it('should prune notifications', async () => {
+		const notification = await notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'tobedeleted',
 			path: '/notification/path',
-		}, (err, notification) => {
-			assert.ifError(err);
-			notifications.prune((err) => {
-				assert.ifError(err);
-				const month = 2592000000;
-				db.sortedSetAdd('notifications', Date.now() - (2 * month), notification.nid, (err) => {
-					assert.ifError(err);
-					notifications.prune((err) => {
-						assert.ifError(err);
-						notifications.get(notification.nid, (err, data) => {
-							assert.ifError(err);
-							assert(!data);
-							done();
-						});
-					});
-				});
-			});
 		});
+
+		await notifications.prune();
+		const month = 2592000000;
+		await db.sortedSetAdd('notifications', Date.now() - (2 * month), notification.nid);
+
+		await notifications.prune();
+
+		const data = await notifications.get(notification.nid);
+		assert(!data);
 	});
 });
