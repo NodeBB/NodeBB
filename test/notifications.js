@@ -12,6 +12,7 @@ const topics = require('../src/topics');
 const categories = require('../src/categories');
 const notifications = require('../src/notifications');
 const socketNotifications = require('../src/socket.io/notifications');
+const api = require('../src/api');
 
 const sleep = util.promisify(setTimeout);
 
@@ -212,10 +213,15 @@ describe('Notifications', () => {
 	});
 
 	it('should get notification by nid', async () => {
-		const data = await socketNotifications.get({ uid: uid }, { nids: [notification.nid] });
-		assert.equal(data[0].bodyShort, 'bodyShort');
-		assert.equal(data[0].nid, 'notification_id');
-		assert.equal(data[0].path, `${nconf.get('relative_path')}/notification/path`);
+		const [notifObj] = await socketNotifications.get({ uid: uid }, { nids: [notification.nid] });
+		assert.equal(notifObj.bodyShort, 'bodyShort');
+		assert.equal(notifObj.nid, 'notification_id');
+		assert.equal(notifObj.path, `${nconf.get('relative_path')}/notification/path`);
+	});
+
+	it('should not return another user\'s notification by nid', async () => {
+		const notifObj = await api.notifications.get({ uid: 0 }, { nid: notification.nid });
+		assert.deepStrictEqual(notifObj, { notification: undefined });
 	});
 
 	it('should get user\'s notifications', async () => {
