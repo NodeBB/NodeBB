@@ -102,6 +102,9 @@ module.exports = function (Messaging) {
 	Messaging.canDelete = async (messageId, uid) => await canEditDelete(messageId, uid, 'delete');
 
 	Messaging.canPin = async (roomId, uid) => {
+		if (utils.isNumber(roomId)) {
+			throw new Error('[[error:invalid-data]]');
+		}
 		const [isAdmin, isGlobalMod, inRoom, isRoomOwner] = await Promise.all([
 			user.isAdministrator(uid),
 			user.isGlobalModerator(uid),

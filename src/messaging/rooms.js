@@ -336,9 +336,10 @@ module.exports = function (Messaging) {
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
-		const isInRoom = await Promise.all(
-			uids.map(uid => Messaging.isUserInRoom(uid, roomId))
-		);
+		if (!utils.isNumber(roomId) || !Array.isArray(uids)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		const isInRoom = await Messaging.isUsersInRoom(uids, roomId);
 		uids = uids.filter((uid, index) => isInRoom[index]);
 
 		const keys = uids
@@ -363,6 +364,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
+		if (!Array.isArray(roomIds)) {
+			throw new Error('[[error:invalid-data]]');
+		}
 		const isInRoom = await Messaging.isUserInRoom(uid, roomIds);
 		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
 		if (!roomIds.length) {
