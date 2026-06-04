@@ -394,15 +394,23 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		if (!token) {
 			return '';
 		}
-		let txToken = token;
-		// handle old tx syntax where tokens were wrapped in double square brackets, e.g. [[namespace:key]]
-		if (token.startsWith('[[') && token.endsWith(']]')) {
-			txToken = token.slice(2, -2);
+		const [txToken, _args] = translator.normalizeToken(token);
+		if (Array.isArray(_args) && _args.length > 0) {
+			args = _args;
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
 			return token;
 		}
+		// translate the arguments if they are tokens themselves
+		args = args.map((arg) => {
+			arg = translator.escapeHTML(arg);
+			if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
+				return helpers.tx.call(this, arg, []); // no arguments on nested tokens for now
+			}
+			return arg;
+		});
+
 		const translation = this._i18n[namespace][key];
 		return translator.replaceArguments(translation, args);
 	}

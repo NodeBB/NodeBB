@@ -19,9 +19,16 @@ describe('Translator shim', () => {
 				topic: {
 					'moved-from': 'Moved from %1',
 					'merged-message': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
+					'argument-test': 'Test arguments like %1 and %2, in them: %3',
+					'no-arguments': 'no arguments here',
 				},
 			},
 		};
+
+		shim.addTranslation('en-GB', 'topic', {
+			'argument-test': 'Test arguments like %1 and %2, in them: %3',
+		});
+
 		it('should return translated string with interpolation when has _i18n', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', 'general discussion');
 			assert.strictEqual(str, 'Moved from general discussion');
@@ -40,9 +47,36 @@ describe('Translator shim', () => {
 			done();
 		});
 
+		it('should work with handle % and , in arguments syntax', async () => {
+			const compiled = shim.compile('topic:argument-test', 'ar%1g1', 'arg,2', 'arg3');
+			const shimStr = await shim.translate(compiled);
+			const str = helpers.tx.call(context, '[[topic:argument-test, ar&#37;1g1, arg&#44;2, arg3]]');
+
+			assert.strictEqual(str, 'Test arguments like ar&#37;1g1 and arg,2, in them: arg3');
+			assert.strictEqual(str, shimStr);
+		});
+
 		it('should escape html escape arguments', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', '<script>alert("xss")</script>');
 			assert.strictEqual(str, 'Moved from &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+			done();
+		});
+
+		it('should validate href arguments', (done) => {
+			const str = helpers.tx.call(context, 'topic:merged-message', 'javascript:alert(origin)', 'foo', 'baz');
+			assert.strictEqual(str, 'This topic has been merged into <a href="">baz</a>');
+			done();
+		});
+
+		it('should properly translate if arguments have % or , in them', (done) => {
+			const str = helpers.tx.call(context, 'topic:argument-test', '%2 awesome, really', 'wow 2%', ',works');
+			assert.strictEqual(str, 'Test arguments like &#37;2 awesome, really and wow 2%, in them: ,works');
+			done();
+		});
+
+		it('should translate arguments if they are tokens themselves', (done) => {
+			const str = helpers.tx.call(context, 'topic:moved-from', '[[topic:no-arguments]]');
+			assert.strictEqual(str, 'Moved from no arguments here');
 			done();
 		});
 
@@ -107,6 +141,10 @@ describe('Translator shim', () => {
 	});
 
 	describe('translateKey / translateKeys', () => {
+		shim.addTranslation('en-GB', 'topic', {
+			'tx-token': 'TX TOKEN',
+		});
+
 		it('should translate a single key with no arguments', async () => {
 			const translated = await shim.translateKey('global:search', [], 'en-GB');
 			assert.deepStrictEqual(translated, 'Search');
@@ -125,6 +163,11 @@ describe('Translator shim', () => {
 		it('should not translate nested keys', async () => {
 			const translated = await shim.translateKey('[[topic:moved-from, [[topic:merged-message]]]]');
 			assert.deepStrictEqual(translated, '[[topic:moved-from, [[topic:merged-message]]]]');
+		});
+
+		it('should translate arguments if they are tokens themselves', async () => {
+			const str = await shim.translateKey('topic:moved-from', ['[[topic:tx-token]]']);
+			assert.strictEqual(str, 'Moved from TX TOKEN');
 		});
 
 		it('should return string untouched if it\'s not a tx string', async () => {

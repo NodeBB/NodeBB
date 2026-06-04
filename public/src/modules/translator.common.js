@@ -278,6 +278,8 @@ module.exports = function (utils, load, warn) {
 			});
 		}
 
+		Translator.validateHrefAttributes = validateHrefAttributes;
+
 		function isSafeHref(href) {
 			const normalizedHref = String(href).trim().toLowerCase();
 			const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
@@ -594,6 +596,19 @@ module.exports = function (utils, load, warn) {
 			});
 		},
 
+		// takes a old style token '[[topic:moved-from, arg1, arg2]]' and
+		// normalizes it to ['topic:moved-from', ['arg1', 'arg2']]
+		normalizeToken: function (token) {
+			if (typeof token !== 'string' || token === '') {
+				return [String(token), []];
+			}
+			if (token.startsWith('[[') && token.endsWith(']]')) {
+				token = token.slice(2, -2);
+			}
+			const parts = token.trim().split(',');
+			return [parts[0].trim(), parts.slice(1).map(part => part.trim())];
+		},
+
 		translateKeys: async function (data, language, callback) {
 			if (!Array.isArray(data)) {
 				throw new Error('[[error:invalid-data]]');
@@ -604,6 +619,8 @@ module.exports = function (utils, load, warn) {
 				cb = language;
 				lang = null;
 			}
+			lang = lang || Translator.getLanguage();
+
 			function normalizeToken(token) {
 				if (typeof token === 'string' && token.startsWith('[[') && token.endsWith(']]')) {
 					token = token.slice(2, -2);
@@ -613,18 +630,22 @@ module.exports = function (utils, load, warn) {
 			// convert old format([[topic:moved-from]]) to new format [token, args, language]
 			data = data.map(key => (typeof key === 'string' ? [key, [], lang] : key));
 
-			const translations = await Promise.all(data.map((item) => {
+			const translations = await Promise.all(data.map(async (item) => {
 				const [token, args, language] = item;
 				const [namespace, key] = normalizeToken(token).split(':', 2);
 				if (!key) {
 					return token;
 				}
-				return Translator.create(language).getTranslation(namespace, key).then(function (translation) {
+				const tokenLanguage = language || lang;
+				let txArgs = Array.isArray(args) ? args.map(arg => escapeHTML(arg)) : [];
+				txArgs = await adaptor.txArgs(args, tokenLanguage);
+
+				return Translator.create(tokenLanguage).getTranslation(namespace, key).then(function (translation) {
 					if (!translation) {
 						// if translation is missing/or not a translation, return the token as is
 						return token;
 					}
-					return adaptor.replaceArguments(translation, args);
+					return adaptor.replaceArguments(translation, txArgs);
 				});
 			}));
 			if (typeof cb === 'function') {
@@ -640,15 +661,31 @@ module.exports = function (utils, load, warn) {
 			return translation;
 		},
 
+		escapeHTML: escapeHTML,
+
+		txArgs: async function (args, language) {
+			if (!Array.isArray(args) || args.length === 0) {
+				return args;
+			}
+
+			return await Promise.all(args.map(async (arg) => {
+				if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
+					return await adaptor.translateKey(arg, [], language);
+				}
+				return arg;
+			}));
+		},
+
 		replaceArguments: (translation, args) => {
 			if (!Array.isArray(args) || args.length === 0) {
 				return translation;
 			}
 			args.forEach((arg, index) => {
+				const argEscaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
 				const placeholder = `%${index + 1}`;
-				translation = translation.split(placeholder).join(utils.escapeHTML(String(arg)));
+				translation = translation.split(placeholder).join(argEscaped);
 			});
-			return translation;
+			return Translator.validateHrefAttributes(translation);
 		},
 
 		/**
