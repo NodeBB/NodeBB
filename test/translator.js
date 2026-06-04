@@ -341,13 +341,13 @@ describe('new Translator(language)', () => {
 			const translator = Translator.create('en-GB');
 
 			assert.strictEqual(
-				await translator.translate('[[topic:merged-message,    javascript:alert(origin), foo]]'),
-				'This topic has been merged into <a href="">foo</a>'
+				await translator.translate('[[topic:merged-message,    javascript:alert(origin), foo, bar]]'),
+				'This topic has been merged into <a href="">bar</a>'
 			);
 
 			assert.strictEqual(
-				await translator.translate('[[topic:merged-message, %20%20%20javascript:alert(origin), foo]]'),
-				'This topic has been merged into <a href="">foo</a>'
+				await translator.translate('[[topic:merged-message, %20%20%20javascript:alert(origin), foo, bar]]'),
+				'This topic has been merged into <a href="">bar</a>'
 			);
 		});
 
@@ -369,18 +369,18 @@ describe('new Translator(language)', () => {
 			});
 
 			assert.strictEqual(
-				await shim.translate('[[topic:merged-message, https://example.com, foo]]'),
-				'This topic has been merged into <a href="https://example.com">foo</a>'
+				await shim.translate('[[topic:merged-message, https://example.com, foo, bar]]'),
+				'This topic has been merged into <a href="https://example.com/topic/foo">bar</a>'
 			);
 
 			assert.strictEqual(
-				await shim.translate('[[topic:merged-message, http://example.com, foo]]'),
-				'This topic has been merged into <a href="http://example.com">foo</a>'
+				await shim.translate('[[topic:merged-message, http://example.com, foo, bar]]'),
+				'This topic has been merged into <a href="http://example.com/topic/foo">bar</a>'
 			);
 
 			assert.strictEqual(
-				await shim.translate('[[topic:merged-message, /topic/123, foo]]'),
-				'This topic has been merged into <a href="/topic/123">foo</a>'
+				await shim.translate('[[topic:merged-message, /topic/123, foo, bar]]'),
+				'This topic has been merged into <a href="/topic/123/topic/foo">bar</a>'
 			);
 
 			assert.strictEqual(
@@ -399,8 +399,8 @@ describe('new Translator(language)', () => {
 			);
 
 			assert.strictEqual(
-				await shim.translate('[[topic:merged-message,    javascript is a nice language, foo]]'),
-				'This topic has been merged into <a href="">foo</a>'
+				await shim.translate('[[topic:merged-message,    javascript is a nice language, foo, bar]]'),
+				'This topic has been merged into <a href="">bar</a>'
 			);
 
 			assert.strictEqual(
@@ -414,8 +414,8 @@ describe('new Translator(language)', () => {
 			);
 
 			assert.strictEqual(
-				await shim.translate('[[topic:merged-message, "javascript:alert(origin), foo]]'),
-				'This topic has been merged into <a href="">foo</a>'
+				await shim.translate('[[topic:merged-message, "javascript:alert(origin), foo, bar]]'),
+				'This topic has been merged into <a href="">bar</a>'
 			);
 		});
 
