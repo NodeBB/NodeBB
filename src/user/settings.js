@@ -205,11 +205,15 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-language]]');
 		}
 
-		if (Object.hasOwn(data, 'chatAllowList') && !Array.isArray(data.chatAllowList)) {
-			throw new Error('[[error:invalid-chat-allow-list]]');
-		}
-		if (Object.hasOwn(data, 'chatDenyList') && !Array.isArray(data.chatDenyList)) {
-			throw new Error('[[error:invalid-chat-deny-list]]');
+		try {
+			if (Object.hasOwn(data, 'chatAllowList') && !Array.isArray(JSON.parse(data.chatAllowList))) {
+				throw new Error('[[error:invalid-chat-allow-list]]');
+			}
+			if (Object.hasOwn(data, 'chatDenyList') && !Array.isArray(JSON.parse(data.chatDenyList))) {
+				throw new Error('[[error:invalid-chat-deny-list]]');
+			}
+		} catch (err) {
+			throw new Error('[[error:invalid-data]]');
 		}
 	}
 
