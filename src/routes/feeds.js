@@ -49,22 +49,19 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	if (uid <= 0 || !token) {
 		return controllerHelpers.notAllowed(req, res);
 	}
+
+	const ip = req.ip || req.connection.remoteAddress;
+	const rateLimitKey = `rss:token:fail:${ip}`;
+	const count = await db.increment(rateLimitKey);
+	if (count === 1) {
+		await db.pexpire(rateLimitKey, 3600000);
+	}
+	if (count > 5) {
+		return controllerHelpers.notAllowed(req, res);
+	}
+
 	const userToken = await db.getObjectField(`user:${uid}`, 'rss_token');
 	if (userToken !== token) {
-		const ip = req.ip || req.connection.remoteAddress;
-		const rateLimitKey = `rss:token:fail:${ip}`;
-		const rateLimitMax = 5;
-		const rateLimitWindow = 3600000; // 1 hour
-
-		const count = await db.increment(rateLimitKey);
-		if (count === 1) {
-			await db.pexpire(rateLimitKey, rateLimitWindow);
-		}
-
-		if (count > rateLimitMax) {
-			return controllerHelpers.notAllowed(req, res);
-		}
-
 		return controllerHelpers.notAllowed(req, res);
 	}
 	const userPrivileges = await privileges.categories.get(cid, uid);
