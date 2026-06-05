@@ -56,16 +56,14 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 		const rateLimitMax = 5;
 		const rateLimitWindow = 3600000; // 1 hour
 
-		const failData = await db.getObject(rateLimitKey);
-		let count = failData ? parseInt(failData.count, 10) || 0 : 0;
-
-		if (count >= rateLimitMax) {
-			return controllerHelpers.notAllowed(req, res);
+		const count = await db.increment(rateLimitKey);
+		if (count === 1) {
+			await db.pexpire(rateLimitKey, rateLimitWindow);
 		}
 
-		count += 1;
-		await db.setObject(rateLimitKey, { count: String(count) });
-		await db.pexpire(rateLimitKey, rateLimitWindow);
+		if (count > rateLimitMax) {
+			return controllerHelpers.notAllowed(req, res);
+		}
 
 		return controllerHelpers.notAllowed(req, res);
 	}
