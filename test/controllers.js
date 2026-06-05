@@ -1301,7 +1301,7 @@ describe('Controllers', () => {
 			await user.setUserFields(fooUid, { picture: '/assets/uploads/path/to/picture', aboutme: 'hi i am a bot [[topic:moved-from]] <script>alert("xss")</script>' });
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb; &lt;script&gt;alert("xss")&lt;/script&gt;');
+			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb; ');
 			assert.equal(body.picture, '&#x2F;assets&#x2F;uploads&#x2F;path&#x2F;to&#x2F;picture');
 		});
 
