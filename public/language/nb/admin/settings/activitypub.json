@@ -27,6 +27,9 @@
 	"rules.help-user": "Emner opprettet av den angitte brukeren vil samsvare. Skriv inn et brukernavn eller en fullstendig ID (f.eks. <code>bob@example.org</code> or <code>https://example.org/users/bob</code>.",
 	"rules.type": "Type",
 	"rules.value": "Verdi",
+	"rules.filter": "Queue",
+	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
+	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "Kategori",
 
 	"relays": "Relays/Videresendingstjenester",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "Filtrering",
 	"count": "Denne NodeBB-installasjonen kjenner for øyeblikket til %1 servere",
-	"server.filter-help": "Angi servere du vil hindre fra å føderere med din NodeBB. Alternativt kan du velge å bare <em>tillate</em> føderering med bestemte servere. Begge alternativene støttes, men de kan ikke brukes samtidig.",
-	"server.filter-help-hostname": "Skriv kun inn instansens vertsnavn nedenfor (f.eks. <code>example.org</code>), atskilt med linjeskift.",
+	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.<br /><br /><strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
 	"server.filter-allow-list": "Bruk dette som en tillatelsesliste i stedet",
+	"server.filter-allow-list-help": "When enabled, only domains in the core list are allowed to federate. Severity settings are ignored in allow list mode.",
+
+	"core-domains.title": "Add/Modify Domain",
+	"core-domains.add": "Add",
+	"core-domains.domain": "Domain",
+	"core-domains.severity": "Severity",
+	"core-domains.empty": "No domains yet. Add domains above to start filtering.",
+	"core-domains.placeholder": "Enter domain name",
+
+	"severity.suspend": "Suspend",
+	"severity.silence": "Silence",
+	"severity.filter": "Filter",
 
 	"content.outgoing": "Utgående",
 	"content.summary-limit": "Antall tegn før et sammendrag genereres",
