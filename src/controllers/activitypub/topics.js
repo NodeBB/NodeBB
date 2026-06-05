@@ -115,7 +115,6 @@ controller.list = async function (req, res) {
 	]);
 
 	postData.forEach((p, index) => {
-		p.pid = encodeURIComponent(p.pid);
 		if (p.topic) {
 			p.topic = { ...p.topic };
 			p.topic.thumbs = topicData[index].thumbs;
