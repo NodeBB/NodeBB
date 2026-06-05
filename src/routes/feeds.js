@@ -51,7 +51,22 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	}
 	const userToken = await db.getObjectField(`user:${uid}`, 'rss_token');
 	if (userToken !== token) {
-		await user.auth.logAttempt(uid, req.ip);
+		const ip = req.ip || req.connection.remoteAddress;
+		const rateLimitKey = `rss:token:fail:${ip}`;
+		const rateLimitMax = 5;
+		const rateLimitWindow = 3600000; // 1 hour
+
+		const failData = await db.getObject(rateLimitKey);
+		let count = failData ? parseInt(failData.count, 10) || 0 : 0;
+
+		if (count >= rateLimitMax) {
+			return controllerHelpers.notAllowed(req, res);
+		}
+
+		count += 1;
+		await db.setObject(rateLimitKey, { count: String(count) });
+		await db.pexpire(rateLimitKey, rateLimitWindow);
+
 		return controllerHelpers.notAllowed(req, res);
 	}
 	const userPrivileges = await privileges.categories.get(cid, uid);
@@ -316,7 +331,8 @@ async function generateForRecentPosts(req, res, next) {
 	const postsPerPage = 20;
 	const start = Math.max(0, (page - 1) * postsPerPage);
 	const stop = start + postsPerPage - 1;
-	const postData = await posts.getRecentPosts(req.uid, start, stop, 'month');
+	const uid = await getUidFromToken(req);
+	const postData = await posts.getRecentPosts(uid, start, stop, 'month');
 	const feed = generateForPostsFeed({
 		title: 'Recent Posts',
 		description: 'A list of recent posts',
@@ -394,8 +410,9 @@ async function generateForUserTopics(req, res, next) {
 		return next();
 	}
 	const userData = await user.getUserFields(uid, ['uid', 'username']);
+	const authUid = await getUidFromToken(req);
 	await sendTopicsFeed({
-		uid: req.uid,
+		uid: authUid,
 		title: `Topics by ${userData.username}`,
 		description: `A list of topics that are posted by ${userData.username}`,
 		feed_url: `/user/${userslug}/topics.rss`,
