@@ -64,6 +64,7 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	if (userToken !== token) {
 		return controllerHelpers.notAllowed(req, res);
 	}
+	await db.delete(rateLimitKey);
 	const userPrivileges = await privileges.categories.get(cid, uid);
 	if (!userPrivileges.read) {
 		return controllerHelpers.notAllowed(req, res);
