@@ -169,33 +169,22 @@ module.exports = function (User) {
 		return await User.getSettings(uid);
 	};
 
+	function validateMinMax(value, min, max, errorMessage) {
+		const parsed = parseInt(value, 10);
+		if (!value || parsed < min || parsed > max) {
+			throw new Error(errorMessage);
+		}
+	}
+
 	async function validateSettings(data) {
 		const maxUnreadCutoff = Math.max(meta.config.unreadCutoff, 14);
-		if (
-			!data.unreadCutoff ||
-			parseInt(data.unreadCutoff, 10) <= 0 ||
-			parseInt(data.unreadCutoff, 10) > maxUnreadCutoff
-		) {
-			throw new Error(`[[error:invalid-unread-cutoff, ${maxUnreadCutoff}]]`);
-		}
+		validateMinMax(data.unreadCutoff, 1, maxUnreadCutoff, `[[error:invalid-unread-cutoff, ${maxUnreadCutoff}]]`);
 
 		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
-		if (
-			!data.postsPerPage ||
-			parseInt(data.postsPerPage, 10) <= 1 ||
-			parseInt(data.postsPerPage, 10) > maxPostsPerPage
-		) {
-			throw new Error(`[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
-		}
+		validateMinMax(data.postsPerPage, 2, maxPostsPerPage, `[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
 
 		const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
-		if (
-			!data.topicsPerPage ||
-			parseInt(data.topicsPerPage, 10) <= 1 ||
-			parseInt(data.topicsPerPage, 10) > maxTopicsPerPage
-		) {
-			throw new Error(`[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
-		}
+		validateMinMax(data.topicsPerPage, 2, maxTopicsPerPage, `[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
 
 		const languageCodes = await languages.listCodes();
 		if (data.userLang && !languageCodes.includes(data.userLang)) {
