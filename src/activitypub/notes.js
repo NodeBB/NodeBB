@@ -140,7 +140,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 		const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
 		let crosspostCid = false;
-		let filter = false;
 
 		if (options.cid && cid === -1) {
 			// Move topic if currently uncategorized
@@ -194,7 +193,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 			// Auto-categorization (takes place only if all other categorization efforts fail)
 			const { cid, filter: ruleFilter } = await assignCategory(mainPost);
-			filter = ruleFilter;
+			options.queue = ruleFilter;
 			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
@@ -397,7 +396,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 		await Notes.syncUserInboxes(tid, uid);
 
 		if (crosspostCid) {
-			if (filter) {
+			if (options.queue) {
 				await topics.crossposts.queue(tid, crosspostCid, 0);
 			} else {
 				await topics.crossposts.add(tid, crosspostCid, 0);
