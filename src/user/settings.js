@@ -21,6 +21,8 @@ module.exports = function (User) {
 		categoryWatchState: 'notwatching',
 	});
 
+	const validNotificationTypeValues = ['none', 'notification', 'email', 'notificationemail'];
+
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
 			const isSpider = parseInt(uid, 10) === -1;
@@ -96,6 +98,9 @@ module.exports = function (User) {
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
+			if (!validNotificationTypeValues.includes(settings[notificationType])) {
+				settings[notificationType] = 'notification';
+			}
 		});
 
 		settings.chatAllowList = parseJSONArray(settings.chatAllowList || '[]', []);
@@ -159,7 +164,7 @@ module.exports = function (User) {
 
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
-			if (data[notificationType]) {
+			if (Object.hasOwn(data, notificationType) && validNotificationTypeValues.includes(data[notificationType])) {
 				settings[notificationType] = data[notificationType];
 			}
 		});
@@ -204,6 +209,13 @@ module.exports = function (User) {
 		} catch (err) {
 			throw new Error('[[error:invalid-data]]');
 		}
+
+		const notificationTypes = await notifications.getAllNotificationTypes();
+		notificationTypes.forEach((notificationType) => {
+			if (Object.hasOwn(data, notificationType) && !validNotificationTypeValues.includes(data[notificationType])) {
+				throw new Error('[[error:invalid-notification-type]]');
+			}
+		});
 	}
 
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {

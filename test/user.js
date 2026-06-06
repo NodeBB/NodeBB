@@ -1791,6 +1791,19 @@ describe('User', () => {
 			}
 		});
 
+		it('should error if notificationType_upvote is invalid', async () => {
+			const data = {
+				uid: testUid,
+				settings: {
+					notificationType_upvote: '<invalid-string>',
+				},
+			};
+			await assert.rejects(
+				apiUser.updateSettings({ uid: testUid }, data),
+				{ message: '[[error:invalid-notification-type]]' }
+			);
+		});
+
 		it('should set moderation note', async () => {
 			const adminUid = await User.create({ username: 'noteadmin' });
 			await groups.join('administrators', adminUid);
