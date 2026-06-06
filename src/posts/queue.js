@@ -84,14 +84,6 @@ module.exports = function (Posts) {
 				const topicData = await topics.getTopicFields(postData.data.tid, ['title', 'timestamp', 'uid', 'mainPid', 'cid', 'lastposttime']);
 				postData.topic = topicData;
 				postData.data.title = topicData.title || '';
-				if (topicData.uid) {
-					const authorData = await user.getUsersFields([topicData.uid], [
-						'username', 'userslug', 'picture', 'icon:bgColor', 'joindate', 'postcount', 'reputation',
-					]);
-					if (authorData && authorData[0]) {
-						postData.user = authorData[0];
-					}
-				}
 				if (topicData.mainPid) {
 					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content']);
 					if (firstPost) {
