@@ -198,6 +198,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
+				crosspostCid = false;
 			}
 			// filter is used below to decide whether to queue or add the crosspost
 

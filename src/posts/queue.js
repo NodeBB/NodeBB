@@ -80,7 +80,19 @@ module.exports = function (Posts) {
 		}
 		postData.topic = { cid: 0 };
 		if (postData.data.crosspostCid) {
-			postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
+			if (postData.data.tid) {
+				const topicData = await topics.getTopicFields(postData.data.tid, ['title', 'timestamp', 'uid', 'mainPid', 'cid', 'lastposttime']);
+				postData.topic = topicData;
+				postData.data.title = topicData.title || '';
+				if (topicData.mainPid) {
+					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content']);
+					if (firstPost) {
+						postData.data.content = firstPost.content || '';
+					}
+				}
+			} else {
+				postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
+			}
 		} else if (postData.data.cid) {
 			postData.topic = { cid: parseInt(postData.data.cid, 10) };
 		} else if (postData.data.tid) {
