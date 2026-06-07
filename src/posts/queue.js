@@ -447,6 +447,9 @@ module.exports = function (Posts) {
 	};
 
 	Posts.canEditQueue = async function (uid, editData, action) {
+		if (!utils.isNumber(uid) || !(parseInt(uid, 10) > 0)) {
+			return false;
+		}
 		const [isAdminOrGlobalMod, data] = await Promise.all([
 			user.isAdminOrGlobalMod(uid),
 			getParsedObject(editData.id),
