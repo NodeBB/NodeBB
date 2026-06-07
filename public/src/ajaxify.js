@@ -286,7 +286,7 @@ ajaxify.widgets = { render: render };
 		hooks.fire('action:ajaxify.updateTitle', data);
 
 		const [titleTranslated, browserTitleTranslated] = await translator.translateKeys([
-			data.title, data.browserTitle,
+			data.title, config.browserTitle || '',
 		]);
 
 		const documentTitle = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
