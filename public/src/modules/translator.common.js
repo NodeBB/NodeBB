@@ -11,6 +11,19 @@ module.exports = function (utils, load, warn) {
 		));
 	}
 
+	function validateHrefAttributes(translated) {
+		return translated.replace(/href="([^"]*)"/gi, (match, href) => {
+			return isSafeHref(href) ? match : 'href=""';
+		});
+	}
+
+	function isSafeHref(href) {
+		const normalizedHref = String(href).trim().toLowerCase();
+		const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
+		const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
+		return isHttpUrl || isRelativeUrl;
+	}
+
 	const Translator = (function () {
 		/**
 		 * Construct a new Translator object
@@ -272,21 +285,6 @@ module.exports = function (utils, load, warn) {
 				});
 			});
 		};
-
-		function validateHrefAttributes(translated) {
-			return translated.replace(/href="([^"]*)"/gi, (match, href) => {
-				return isSafeHref(href) ? match : 'href=""';
-			});
-		}
-
-		Translator.validateHrefAttributes = validateHrefAttributes;
-
-		function isSafeHref(href) {
-			const normalizedHref = String(href).trim().toLowerCase();
-			const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
-			const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
-			return isHttpUrl || isRelativeUrl;
-		}
 
 		/**
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
@@ -685,7 +683,7 @@ module.exports = function (utils, load, warn) {
 				const placeholder = `%${index + 1}`;
 				translation = translation.split(placeholder).join(argEscaped);
 			});
-			return Translator.validateHrefAttributes(translation);
+			return validateHrefAttributes(translation);
 		},
 
 		/**
