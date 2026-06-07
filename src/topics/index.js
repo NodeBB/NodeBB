@@ -1,5 +1,6 @@
 'use strict';
 
+const nconf = require('nconf');
 const _ = require('lodash');
 const validator = require('validator');
 
@@ -13,6 +14,8 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const privileges = require('../privileges');
 const social = require('../social');
+
+const relative_path = nconf.get('relative_path');
 
 const Topics = module.exports;
 
@@ -267,6 +270,7 @@ async function getMerger(topicData) {
 		Topics.getTopicField(topicData.mergeIntoTid, 'title'),
 	]);
 	merger.mergedIntoTitle = mergedIntoTitle;
+	merger.mergedIntoHref = `${relative_path}/topic/${topicData.mergedIntoTid}`;
 	return merger;
 }
 
