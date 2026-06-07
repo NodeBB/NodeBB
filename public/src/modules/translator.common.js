@@ -263,7 +263,8 @@ module.exports = function (utils, load, warn) {
 						let escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
 						// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
 						escaped = escaped.replace(/&amp;lsqb;/g, '&lsqb;')
-							.replace(/&amp;rsqb;/g, '&rsqb;');
+							.replace(/&amp;rsqb;/g, '&rsqb;')
+							.replace(/&amp;#44;/g, '&#44;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
 					out = validateHrefAttributes(out);

@@ -20,11 +20,12 @@ define('forum/chats', [
 	'chat',
 	'api',
 	'uploadHelpers',
+	'translator',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	events, search, autocomplete, hooks, bootbox, alerts,
-	chatModule, api, uploadHelpers
+	chatModule, api, uploadHelpers, translator
 ) {
 	const Chats = {
 		activeAutocomplete: {},
@@ -521,9 +522,7 @@ define('forum/chats', [
 	Chats.addRenameHandler = function (roomId, buttonEl) {
 		buttonEl.on('click', async function () {
 			const { roomName } = await api.get(`/chats/${roomId}`);
-			const html = await app.parseAndTranslate('modals/rename-room', {
-				name: roomName,
-			});
+			const html = await app.parseAndTranslate('modals/rename-room', {});
 			const modal = bootbox.dialog({
 				title: '[[modules:chat.rename-room]]',
 				message: html,
@@ -542,6 +541,13 @@ define('forum/chats', [
 						},
 					},
 				},
+			});
+			modal.on('show.bs.modal', function () {
+				const val = translator.unescape(roomName);
+				modal.find('#roomName').val(val).selectRange(0, val.length);
+			});
+			modal.on('shown.bs.modal', function () {
+				modal.find('#roomName').focus();
 			});
 		});
 	};
