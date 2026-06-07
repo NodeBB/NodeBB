@@ -282,10 +282,6 @@ ajaxify.widgets = { render: render };
 			return;
 		}
 
-		title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-			.replace('{pageTitle}', () => title)
-			.replace('{browserTitle}', () => config.browserTitle);
-
 		const data = { title: title };
 		hooks.fire('action:ajaxify.updateTitle', data);
 
