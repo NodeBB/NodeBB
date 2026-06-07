@@ -27,6 +27,9 @@
 	"rules.help-user": "Le discussioni create dall'utente inserito corrisponderanno. Inserisci un nome utente o un ID completo (ad es. <code>bob@example.org</code> or <code>https://example.org/users/bob</code>.",
 	"rules.type": "Tipo",
 	"rules.value": "Valore",
+	"rules.filter": "Coda",
+	"rules.filter.help": "Se selezionato, i contenuti corrispondenti saranno inviati alla coda dei post per la revisione prima di essere categorizzati.",
+	"rules.filter-warning": "Hai impostato delle regole di categorizzazione per mettere in coda i post, ma la coda dei post è attualmente disabilitata. I post che corrispondono a queste regole saranno pubblicati immediatamente.",
 	"rules.cid": "Categoria",
 
 	"relays": "Relè",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "Filtraggio",
 	"count": "Questo NodeBB è attualmente a conoscenza di <strong>%1</strong> server",
-	"server.filter-help": "Specifica i server a cui desideri impedire la federazione con il tuo NodeBB. In alternativa, puoi scegliere di <em>consentire</em> in modo selettivo la federazione con server specifici. Entrambe le opzioni sono supportate, anche se si escludono a vicenda.",
-	"server.filter-help-hostname": "Inserisci solo il nome host dell'istanza sottostante (ad es. <code>example.org</code>), separato da interruzioni di riga.",
+	"server.filter-help": "Specifica i server a cui desideri impedire l'interazione con il tuo NodeBB. In alternativa, puoi scegliere di <em>consentire</em> in modo selettivo l'interazione con server specifici. Entrambe le opzioni sono supportate, sebbene si escludano a vicenda. <br /><br /><strong>Nota:</strong> Attualmente, le opzioni <em>Silenzia</em> e <em>Sospendi</em> sono trattate allo stesso modo: entrambe bloccano completamente l'interazione. L'opzione <em>Filtro</em> consente l'interazione ma mette in coda il contenuto per la revisione.",
 	"server.filter-allow-list": "Usa invece questo come Elenco permessi",
+	"server.filter-allow-list-help": "Quando abilitata, solo i domini presenti nell'elenco principale possono federarsi. Le impostazioni di gravità sono ignorate in modalità elenco consentito.",
+
+	"core-domains.title": "Aggiungi/Modifica dominio",
+	"core-domains.add": "Aggiungi",
+	"core-domains.domain": "Dominio",
+	"core-domains.severity": "Gravità",
+	"core-domains.empty": "Non ci sono ancora domini. Aggiungi i domini qui sopra per avviare il filtro.",
+	"core-domains.placeholder": "Inserisci il nome del dominio",
+
+	"severity.suspend": "Sospendere",
+	"severity.silence": "Silenzio",
+	"severity.filter": "Filtro",
 
 	"content.outgoing": "In uscita",
 	"content.summary-limit": "Numero di caratteri dopo il quale sarà generato un riepilogo",

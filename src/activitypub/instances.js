@@ -15,14 +15,23 @@ Instances.getCount = async () => db.sortedSetCard('instances:lastSeen');
 Instances.list = async () => db.getSortedSetMembers('instances:lastSeen');
 
 Instances.isAllowed = async (domain) => {
-	const allowed = await activitypub.blocklists.check(domain);
-	let { activitypubFilter: type, activitypubFilterList: list } = meta.config;
+	const result = await activitypub.blocklists.check(domain);
+	await activitypub.blocklists.core.ensure();
+	const core = await activitypub.blocklists.get('core');
+	const { activitypubFilter: type } = meta.config;
 
-	if (!allowed && !type) {
-		return allowed;
+	if (!type) {
+		// type = 0: blocklist mode — deny if domain is on the core list with severity <= silence
+		if (result.allowed) {
+			const coreDomain = core.domains.find(d => d.domain === domain);
+			const coreSeverity = coreDomain ? coreDomain.severity : null;
+			const coreBlocked = coreSeverity && coreSeverity !== 'filter';
+			return { ...result, allowed: !coreBlocked };
+		}
+
+		return result;
 	}
 
-	list = new Set(String(list).split('\n'));
-	// eslint-disable-next-line no-bitwise
-	return allowed || (list.has(domain) ^ !type);
+	// type = 1: allowlist mode — allow only if domain is on the core list
+	return { ...result, allowed: core.domains.some(d => d.domain === domain) };
 };

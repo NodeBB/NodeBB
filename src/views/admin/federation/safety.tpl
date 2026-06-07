@@ -47,14 +47,46 @@
 				<form>
 					<div class="mb-3">
 						<p>[[admin/settings/activitypub:server.filter-help]]</p>
-						<p>[[admin/settings/activitypub:server.filter-help-hostname]]</p>
 						<p>[[admin/settings/activitypub:count, {instanceCount}]]</p>
-						<label for="activitypubFilterList" class="form-label">Filtering list</label>
-						<textarea class="form-control" id="activitypubFilterList" data-field="activitypubFilterList" rows="10"></textarea>
+						<div class="mb-3">
+							<h6 class="fw-bold">[[admin/settings/activitypub:core-domains.title]]</h6>
+							<div class="input-group mb-2">
+								<input type="text" class="form-control" id="coreDomainInput" placeholder="[[admin/settings/activitypub:core-domains.placeholder]]" />
+								<select class="form-select" id="coreSeveritySelect">
+									<option value="suspend">[[admin/settings/activitypub:severity.suspend]]</option>
+									<option value="silence">[[admin/settings/activitypub:severity.silence]]</option>
+									<option value="filter">[[admin/settings/activitypub:severity.filter]]</option>
+								</select>
+								<button class="btn btn-sm btn-primary" type="button" data-action="core.add">[[admin/settings/activitypub:core-domains.add]]</button>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-sm table-striped" id="coreDomains">
+									<thead>
+										<th>[[admin/settings/activitypub:core-domains.domain]]</th>
+										<th>[[admin/settings/activitypub:core-domains.severity]]</th>
+										<th></th>
+									</thead>
+									<tbody>
+										{{{ if !domains.length }}}
+										<tr><td colspan="3" class="text-muted">[[admin/settings/activitypub:core-domains.empty]]</td></tr>
+										{{{ else }}}
+										{{{ each domains }}}
+										<tr data-domain="{./domain}">
+											<td>{./domain}</td>
+											<td>[[admin/settings/activitypub:severity.{./severity}]]</td>
+											<td><a href="#" data-action="core.remove"><i class="fa fa-trash link-danger"></i></a></td>
+										</tr>
+										{{{ end }}}
+										{{{ end }}}
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" type="checkbox" id="activitypubFilter" data-field="activitypubFilter" />
 						<label class="form-check-label" for="activitypubFilter">[[admin/settings/activitypub:server.filter-allow-list]]</label>
+						<p class="form-text">[[admin/settings/activitypub:server.filter-allow-list-help]]</p>
 					</div>
 				</form>
 			</div>

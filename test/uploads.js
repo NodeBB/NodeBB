@@ -346,10 +346,10 @@ describe('Upload Controllers', () => {
 			});
 		});
 
-		it('should return empty string for invalid cover:url when user profile is loaded', async () => {
+		it('should return default cover for invalid cover:url when user profile is loaded', async () => {
 			await user.setUserField(1, 'cover:url', 'http://example.com/"><script>alert(1)</script>');
 			const { body: userData } = await helpers.request('get', '/api/user/admin');
-			assert.strictEqual(userData['cover:url'], '');
+			assert.strictEqual(userData['cover:url'], `${nconf.get('relative_path')}/assets/images/cover-default.png`);
 		});
 
 		it('should return empty string for invalid picture when user profile is loaded', async () => {

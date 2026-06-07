@@ -27,6 +27,9 @@
 	"rules.help-user": "Subiectele create de utilizatorul introdus se vor potrivi. Introduceți un nume de utilizator sau un ID complet (e.g. <code>bob@example.org</code> sau <code>https://example.org/users/bob</code>.",
 	"rules.type": "Tip",
 	"rules.value": "Valoare",
+	"rules.filter": "Queue",
+	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
+	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "Categorie",
 
 	"relays": "Retransmițători",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "Filtrează",
 	"count": "NodeBB cunoaște acum %1</strong> server(e)",
-	"server.filter-help": "Specificați serverele interzise a se conecta cu NodeBB-ul dvs. Alternativ, puteți opta să <em>permiteți</em> selectiv conectarea cu anumite servere. Ambele opțiuni sunt acceptate, deși se exclud reciproc.",
-	"server.filter-help-hostname": "Introduceți mai jos doar numele instanței (de exemplu, <code>example.org</code>), câte unul pe rând.",
+	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.<br /><br /><strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
 	"server.filter-allow-list": "Folosește ca Poziții Permise",
+	"server.filter-allow-list-help": "When enabled, only domains in the core list are allowed to federate. Severity settings are ignored in allow list mode.",
+
+	"core-domains.title": "Add/Modify Domain",
+	"core-domains.add": "Add",
+	"core-domains.domain": "Domain",
+	"core-domains.severity": "Severity",
+	"core-domains.empty": "No domains yet. Add domains above to start filtering.",
+	"core-domains.placeholder": "Enter domain name",
+
+	"severity.suspend": "Suspend",
+	"severity.silence": "Silence",
+	"severity.filter": "Filter",
 
 	"content.outgoing": "Outgoing",
 	"content.summary-limit": "Character count after which a summary is generated",

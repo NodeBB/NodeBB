@@ -488,7 +488,7 @@ describe('Crossposting (& related logic)', () => {
 					content: utils.generateUUID(),
 				});
 				tid = topicData.tid;
-				pid = topicData.mainPid,
+				pid = topicData.mainPid;
 
 				// Add some remote followers
 				await Promise.all([cid1, cid2].map(async (cid) => {

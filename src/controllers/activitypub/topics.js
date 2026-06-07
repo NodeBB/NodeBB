@@ -18,7 +18,7 @@ controller.list = async function (req, res) {
 		return helpers.redirect(res, '/world?local=1', false);
 	}
 
-	const { topicsPerPage } = await user.getSettings(req.uid);
+	const { topicsPerPage, userLang } = await user.getSettings(req.uid);
 	let { page, after } = req.query;
 	page = parseInt(page, 10) || 1;
 	let start = Math.max(0, (page - 1) * topicsPerPage);
@@ -46,6 +46,7 @@ controller.list = async function (req, res) {
 		thumbsOnly: 1,
 	};
 	const data = await categories.getCategoryById(cidQuery);
+	await helpers.translateCategoryData([data], userLang);
 	delete data.children;
 	data.sort = req.query.sort;
 	data.privileges = userPrivileges;
@@ -114,7 +115,6 @@ controller.list = async function (req, res) {
 	]);
 
 	postData.forEach((p, index) => {
-		p.pid = encodeURIComponent(p.pid);
 		if (p.topic) {
 			p.topic = { ...p.topic };
 			p.topic.thumbs = topicData[index].thumbs;

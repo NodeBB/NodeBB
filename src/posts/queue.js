@@ -46,6 +46,7 @@ module.exports = function (Posts) {
 						postData.user.displayname = postData.user.username;
 						postData.user.fullname = postData.user.username;
 					}
+					postData.data.content = postData.data.sourceContent || postData.data.content;
 					postData.data.rawContent = validator.escape(String(postData.data.content));
 					postData.data.title = validator.escape(String(postData.data.title || ''));
 				}
@@ -78,7 +79,21 @@ module.exports = function (Posts) {
 			return;
 		}
 		postData.topic = { cid: 0 };
-		if (postData.data.cid) {
+		if (postData.data.crosspostCid) {
+			if (postData.data.tid) {
+				const topicData = await topics.getTopicFields(postData.data.tid, ['title', 'timestamp', 'uid', 'mainPid', 'cid', 'lastposttime']);
+				postData.topic = topicData;
+				postData.data.title = topicData.title || '';
+				if (topicData.mainPid) {
+					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content']);
+					if (firstPost) {
+						postData.data.content = firstPost.content || '';
+					}
+				}
+			} else {
+				postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
+			}
+		} else if (postData.data.cid) {
 			postData.topic = { cid: parseInt(postData.data.cid, 10) };
 		} else if (postData.data.tid) {
 			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid', 'lastposttime']);
@@ -157,7 +172,9 @@ module.exports = function (Posts) {
 	}
 
 	function getType(data) {
-		if (data.hasOwnProperty('tid')) {
+		if (data.hasOwnProperty('crosspostCid')) {
+			return 'crosspost';
+		} else if (data.hasOwnProperty('tid')) {
 			return 'reply';
 		} else if (data.hasOwnProperty('cid')) {
 			return 'topic';
@@ -190,6 +207,10 @@ module.exports = function (Posts) {
 		const id = `${type}-${now}`;
 		await canPost(type, data);
 
+		if (data.pid) {
+			await removeFromQueueByPid(data.pid);
+		}
+
 		let payload = {
 			id: id,
 			uid: data.uid,
@@ -219,7 +240,7 @@ module.exports = function (Posts) {
 				'[[notifications:post-awaiting-review]]' :
 				'[[notifications:topic-awaiting-review]]',
 			bodyLong: type === 'reply' ?
-				await plugins.hooks.fire('filter:parse.raw', data.content) :
+				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content) :
 				validator.escape(String(data.title)),
 			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
@@ -237,7 +258,7 @@ module.exports = function (Posts) {
 	async function parseBodyEmail(cid, type, data) {
 		const url = nconf.get('url');
 		const [content, category, userData] = await Promise.all([
-			plugins.hooks.fire('filter:parse.raw', data.content),
+			plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content),
 			categories.getCategoryFields(cid, ['name', 'slug']),
 			user.getUserFields(data.uid, ['uid', 'username']),
 		]);
@@ -266,6 +287,8 @@ module.exports = function (Posts) {
 			return data.cid;
 		} else if (type === 'reply') {
 			return await topics.getTopicField(data.tid, 'cid');
+		} else if (type === 'crosspost') {
+			return data.crosspostCid;
 		}
 		return null;
 	}
@@ -275,9 +298,12 @@ module.exports = function (Posts) {
 		const typeToPrivilege = {
 			topic: 'topics:create',
 			reply: 'topics:reply',
+			crosspost: 'topics:crosspost',
 		};
 
-		topics.checkContent(data.content);
+		if (type !== 'crosspost') {
+			topics.checkContent(data.sourceContent || data.content);
+		}
 		if (type === 'topic') {
 			topics.checkTitle(data.title);
 			if (data.tags) {
@@ -286,7 +312,7 @@ module.exports = function (Posts) {
 		}
 
 		const [canPost] = await Promise.all([
-			privileges.categories.can(typeToPrivilege[type], cid, data.uid),
+			(type === 'crosspost' && data.uid === 0) || privileges.categories.can(typeToPrivilege[type], cid, data.uid),
 			user.isReadyToQueue(data.uid, cid),
 		]);
 		if (!canPost) {
@@ -312,6 +338,23 @@ module.exports = function (Posts) {
 		cache.del('post-queue');
 	}
 
+	async function removeFromQueueByPid(pid) {
+		const ids = await db.getSortedSetRange('post:queue', 0, -1);
+		if (!ids.length) {
+			return;
+		}
+		const keys = ids.map(id => `post:queue:${id}`);
+		const items = await db.getObjects(keys);
+		const toRemove = [];
+		items.forEach((item, idx) => {
+			const data = JSON.parse(item.data);
+			if (data.pid === pid) {
+				toRemove.push(ids[idx]);
+			}
+		});
+		await Promise.all(toRemove.map(removeFromQueue));
+	}
+
 	Posts.submitFromQueue = async function (id) {
 		let data = await getParsedObject(id);
 		if (!data) {
@@ -326,6 +369,9 @@ module.exports = function (Posts) {
 		} else if (data.type === 'reply') {
 			const result = await createReply(data.data);
 			data.pid = result.pid;
+			data.tid = result.tid;
+		} else if (data.type === 'crosspost') {
+			const result = await createCrosspost(data.data);
 			data.tid = result.tid;
 		}
 		await removeFromQueue(id);
@@ -348,15 +394,17 @@ module.exports = function (Posts) {
 	}
 
 	async function createTopic(data) {
-		delete data.tid;
-		delete data.pid;
 		const result = await topics.post(data);
 		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 		return result;
 	}
 
+	async function createCrosspost(data) {
+		await topics.crossposts.add(data.tid, data.crosspostCid, data.uid || 0);
+		return { tid: data.tid };
+	}
+
 	async function createReply(data) {
-		delete data.pid;
 		const postData = await topics.reply(data);
 		const result = {
 			posts: [postData],

@@ -162,9 +162,9 @@
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
     "chat-allow-list-user-already-added": "This user is already in your allow list",
     "chat-deny-list-user-already-added": "This user is already in your deny list",
-    "chat-user-blocked": "You have been blocked by this user.",
+    "chat-user-blocked": "Tämä käyttäjä on estänyt sinut",
     "chat-disabled": "Keskustelujärjestelmä on pois käytöstä",
-    "too-many-messages": "You have sent too many messages, please wait awhile.",
+    "too-many-messages": "Olet lähettänyt liian monta viestiä, odota hetki.",
     "invalid-chat-message": "Virheellinen keskusteluviesti",
     "chat-message-too-long": "Chat messages can not be longer than %1 characters.",
     "cant-edit-chat-message": "You are not allowed to edit this message",
@@ -272,5 +272,5 @@
     "activitypub.origin-mismatch": "The received object's origin does not match the sender's origin",
     "activitypub.not-implemented": "The request was denied because it or an aspect of it is not implemented by the recipient server",
     "activitypub.orphan": "The received object is not associated with any known local user.",
-    "activitypub.rate-limited": "Your IP address has been rate-limited."
+    "activitypub.rate-limited": "IP-osoitteesi on asetettu rajoitukseen"
 }

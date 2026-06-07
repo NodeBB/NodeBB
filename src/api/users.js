@@ -137,6 +137,8 @@ usersAPI.updateSettings = async function (caller, data) {
 		topicsPerPage: defaults.topicsPerPage,
 		userLang: defaults.userLang,
 		acpLang: defaults.acpLang,
+		chatAllowList: '[]',
+		chatDenyList: '[]',
 	};
 	// load raw settings without parsing values to booleans
 	const current = await db.getObject(`user:${data.uid}:settings`);

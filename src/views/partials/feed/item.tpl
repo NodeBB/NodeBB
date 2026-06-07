@@ -61,7 +61,7 @@
 			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">[[world:see-more]]</button>
 			<hr class="my-2"/>
 			<div class="d-flex justify-content-between">
-				<a href="{config.relative_path}/post/{{{ if ./topic.teaserPid }}}{encodeURIComponent(./topic.teaserPid)}{{{ else }}}{encodeURIComponent(./pid)){{{ end }}}" class="btn btn-link btn-sm text-body {{{ if !./isMainPost }}}invisible{{{ end }}}"><i class="fa-fw fa-regular fa-message text-muted"></i> {humanReadableNumber(./topic.postcount)}</a>
+				<a href="{config.relative_path}/post/{{{ if ./topic.teaserPid }}}{encodeURIComponent(./topic.teaserPid)}{{{ else }}}{encodeURIComponent(./pid)}{{{ end }}}" class="btn btn-link btn-sm text-body {{{ if !./isMainPost }}}invisible{{{ end }}}"><i class="fa-fw fa-regular fa-message text-muted"></i> {humanReadableNumber(./topic.postcount)}</a>
 
 				<a href="#" data-pid="{./pid}" data-action="bookmark" data-bookmarked="{./bookmarked}" data-bookmarks="{./bookmarks}" class="btn btn-link btn-sm text-body"><i class="fa-fw fa-bookmark {{{ if ./bookmarked }}}fa text-primary{{{ else }}}fa-regular text-muted{{{ end }}}"></i> <span component="bookmark-count">{humanReadableNumber(./bookmarks)}</span></a>
 

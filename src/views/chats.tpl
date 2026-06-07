@@ -22,7 +22,7 @@
 							{{{ each publicRooms }}}
 							<div component="chat/public/room" class="btn btn-ghost btn-sm ff-sans d-flex justify-content-between hover-parent {{{ if ./unread}}}unread{{{ end }}}" data-roomid="{./roomId}">
 								<div class="d-flex gap-1 align-items-baseline">
-									<i class="fa {./icon} text-muted"></i> {./roomName}
+									<i class="fa {./icon} text-muted"></i> <span class="text-start">{./roomName}</span>
 									<div component="chat/public/room/unread/count" data-count="{./unreadCount}" class="badge border bg-light text-primary {{{ if !./unreadCount }}}hidden{{{ end }}}">{./unreadCountText}</div>
 								</div>
 								<div>

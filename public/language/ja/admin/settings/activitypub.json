@@ -27,6 +27,9 @@
 	"rules.help-user": "入力したユーザーが作成したスレッドが一致します。ハンドルまたは完全なIDを入力（例: <code>bob@example.org</code>または<code>https://example.org/users/bob</code>）。",
 	"rules.type": "タイプ",
 	"rules.value": "値",
+	"rules.filter": "Queue",
+	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
+	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "カテゴリ",
 
 	"relays": "リレー",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "フィルタリング",
 	"count": "このNodeBBは現在<strong>%1</strong>台のサーバーを認識しています",
-	"server.filter-help": "NodeBBとのフェデレーションから除外したいサーバーを指定してください。または、特定のサーバーとのフェデレーションを選択的に<em>許可</em>することもできます。両方のオプションがサポートされていますが、相互に排他的です。",
-	"server.filter-help-hostname": "以下にインスタンスのホスト名のみを入力してください（例: <code>example.org</code>）。改行で区切ります。",
+	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.<br /><br /><strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
 	"server.filter-allow-list": "これを許可リストとして使用",
+	"server.filter-allow-list-help": "When enabled, only domains in the core list are allowed to federate. Severity settings are ignored in allow list mode.",
+
+	"core-domains.title": "Add/Modify Domain",
+	"core-domains.add": "Add",
+	"core-domains.domain": "Domain",
+	"core-domains.severity": "Severity",
+	"core-domains.empty": "No domains yet. Add domains above to start filtering.",
+	"core-domains.placeholder": "Enter domain name",
+
+	"severity.suspend": "Suspend",
+	"severity.silence": "Silence",
+	"severity.filter": "Filter",
 
 	"content.outgoing": "送信",
 	"content.summary-limit": "要約を生成する文字数",

@@ -281,7 +281,7 @@ module.exports = function (User) {
 
 			// works around renderOverride supplying `url` to templates
 			if (user.url) {
-				user.remoteUrl = user.url;
+				user.remoteUrl = translator.escape(validator.escape(String(user.url)));
 			} else {
 				delete user.url;
 			}
@@ -385,7 +385,16 @@ module.exports = function (User) {
 			urlFieldList.forEach((field) => {
 				if (user[field] && typeof user[field] === 'string') {
 					const trimmedValue = user[field].trim();
-					user[field] = isValidUserUrlField(trimmedValue) ? translator.escape(validator.escape(trimmedValue)) : '';
+					const isValid = isValidUserUrlField(trimmedValue);
+					if (isValid) {
+						user[field] = translator.escape(validator.escape(trimmedValue));
+					} else {
+						if (field === 'picture') {
+							user.picture = User.getDefaultAvatar();
+						} else if (field === 'cover:url') {
+							user['cover:url'] = coverPhoto.getDefaultProfileCover(user.uid);
+						}
+					}
 				}
 			});
 		});

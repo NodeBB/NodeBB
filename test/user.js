@@ -1765,6 +1765,12 @@ describe('User', () => {
 			await apiUser.updateSettings({ uid: testUid }, data);
 			const userSettings = await User.getSettings(testUid);
 			assert.strictEqual(userSettings.homePageRoute, 'category/6/testing-ground');
+
+
+			data.settings.homePageRoute = '<script>alert(1);</script>';
+			await apiUser.updateSettings({ uid: testUid }, data);
+			const updatedSettings = await User.getSettings(testUid);
+			assert.strictEqual(updatedSettings.homePageRoute, '&lt;script&gt;alert(1);&lt;/script&gt;');
 		});
 
 
@@ -1783,6 +1789,19 @@ describe('User', () => {
 			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-language]]');
 			}
+		});
+
+		it('should error if notificationType_upvote is invalid', async () => {
+			const data = {
+				uid: testUid,
+				settings: {
+					notificationType_upvote: '<invalid-string>',
+				},
+			};
+			await assert.rejects(
+				apiUser.updateSettings({ uid: testUid }, data),
+				{ message: '[[error:invalid-notification-type]]' }
+			);
 		});
 
 		it('should set moderation note', async () => {
