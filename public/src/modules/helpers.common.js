@@ -394,9 +394,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		if (!token) {
 			return '';
 		}
-		const [txToken, _args] = translator.normalizeToken(token);
-		if (Array.isArray(_args) && _args.length > 0) {
-			args = _args;
+		const [txToken, argsFromToken] = translator.normalizeToken(token);
+		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {

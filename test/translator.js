@@ -160,9 +160,9 @@ describe('Translator shim', () => {
 			assert.deepStrictEqual(translated, 'Moved from general discussion');
 		});
 
-		it('should not translate nested keys', async () => {
+		it('should translate nested keys', async () => {
 			const translated = await shim.translateKey('[[topic:moved-from, [[topic:merged-message]]]]');
-			assert.deepStrictEqual(translated, '[[topic:moved-from, [[topic:merged-message]]]]');
+			assert.deepStrictEqual(translated, 'Moved from This topic has been merged into <a href="">&#37;2</a>');
 		});
 
 		it('should translate arguments if they are tokens themselves', async () => {
@@ -207,6 +207,17 @@ describe('Translator shim', () => {
 			assert.deepStrictEqual(translated, [
 				'Check out this post on "nodebb"',
 				'Ich dachte, dieser Beitrag könnte dich interessieren: http://example.com/post/123',
+			]);
+		});
+
+		it('should translate keys with args in old format', async () => {
+			const translated = await shim.translateKeys([
+				'[[topic:share-mail-subject, nodebb]]',
+				'[[topic:share-mail-body, http://example.com/post/123]]',
+			], 'en-GB');
+			assert.deepStrictEqual(translated, [
+				'Check out this post on "nodebb"',
+				'I thought you might be interested in this post: http://example.com/post/123',
 			]);
 		});
 	});

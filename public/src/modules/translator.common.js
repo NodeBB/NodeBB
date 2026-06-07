@@ -523,13 +523,13 @@ module.exports = function (utils, load, warn) {
 		 * @param {string} name - Translation name
 		 * @param {...string} arg - Optional argument for the pattern
 		 */
-		Translator.compile = function compile() {
-			const args = Array.prototype.slice.call(arguments, 0).map(function (text) {
+		Translator.compile = function compile(...args) {
+			const compiled = args.map(function (text) {
 				// escape commas and percent signs in arguments
 				return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 			});
 
-			return '[[' + args.join(', ') + ']]';
+			return `[[${compiled.join(', ')}]]`;
 		};
 
 		return Translator;
@@ -607,7 +607,9 @@ module.exports = function (utils, load, warn) {
 				token = token.slice(2, -2);
 			}
 			const parts = token.trim().split(',');
-			return [parts[0].trim(), parts.slice(1).map(part => part.trim())];
+			const txToken = parts[0].trim();
+			const args = parts.slice(1).map(part => part.trim());
+			return [txToken, args];
 		},
 
 		translateKeys: async function (data, language, callback) {
@@ -622,18 +624,17 @@ module.exports = function (utils, load, warn) {
 			}
 			lang = lang || Translator.getLanguage();
 
-			function normalizeToken(token) {
-				if (typeof token === 'string' && token.startsWith('[[') && token.endsWith(']]')) {
-					token = token.slice(2, -2);
-				}
-				return token;
-			}
 			// convert old format([[topic:moved-from]]) to new format [token, args, language]
 			data = data.map(key => (typeof key === 'string' ? [key, [], lang] : key));
 
 			const translations = await Promise.all(data.map(async (item) => {
-				const [token, args, language] = item;
-				const [namespace, key] = normalizeToken(token).split(':', 2);
+				const [token, itemArgs, language] = item;
+				const [txToken, argsFromToken] = adaptor.normalizeToken(token);
+				let args = itemArgs;
+				if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+					args = argsFromToken;
+				}
+				const [namespace, key] = txToken.split(':', 2);
 				if (!key) {
 					return token;
 				}
@@ -654,9 +655,7 @@ module.exports = function (utils, load, warn) {
 			}
 			return translations;
 		},
-		// single tx token '[[topic:moved-from]]',
-		// TODO: replace translator.translate('[[topic:moved-from]]') with
-		// translator.translateKey('topic:moved-from', [arg1, arg2], language)
+		// single tx token '[[topic:moved-from]]'
 		translateKey: async function (token, args, language) {
 			const [translation] = await adaptor.translateKeys([[token, args, language]]);
 			return translation;
