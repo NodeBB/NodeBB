@@ -162,24 +162,24 @@ function setupGraphs(callback) {
 	}
 
 	const keys = [
-		['admin/dashboard:graphs.page-views', [], config.acpLang],
-		['admin/dashboard:graphs.page-views-registered', [], config.acpLang],
-		['admin/dashboard:graphs.page-views-guest', [], config.acpLang],
-		['admin/dashboard:graphs.page-views-bot', [], config.acpLang],
-		['admin/dashboard:graphs.page-views-ap', [], config.acpLang],
-		['admin/dashboard:graphs.unique-visitors', [], config.acpLang],
-		['admin/dashboard:graphs.registered-users', [], config.acpLang],
-		['admin/dashboard:graphs.guest-users', [], config.acpLang],
-		['admin/dashboard:graphs.on-categories', [], config.acpLang],
-		['admin/dashboard:graphs.reading-posts', [], config.acpLang],
-		['admin/dashboard:graphs.browsing-topics', [], config.acpLang],
-		['admin/dashboard:graphs.recent', [], config.acpLang],
-		['admin/dashboard:graphs.unread', [], config.acpLang],
+		'[[admin/dashboard:graphs.page-views]]',
+		'[[admin/dashboard:graphs.page-views-registered]]',
+		'[[admin/dashboard:graphs.page-views-guest]]',
+		'[[admin/dashboard:graphs.page-views-bot]]',
+		'[[admin/dashboard:graphs.page-views-ap]]',
+		'[[admin/dashboard:graphs.unique-visitors]]',
+		'[[admin/dashboard:graphs.registered-users]]',
+		'[[admin/dashboard:graphs.guest-users]]',
+		'[[admin/dashboard:on-categories]]',
+		'[[admin/dashboard:reading-posts]]',
+		'[[admin/dashboard:browsing-topics]]',
+		'[[admin/dashboard:recent]]',
+		'[[admin/dashboard:unread]]',
 	];
 	const graphLabels = {};
-	translator.translateKeys(keys).then(function (translations) {
+	translator.translateKeys(keys, config.acpLang).then(function (translations) {
 		keys.forEach(function (key, index) {
-			graphLabels[key[0].split(':')[1]] = translations[index];
+			graphLabels[key.split(':')[1].slice(0, -2)] = translations[index];
 		});
 
 		const tension = 0.25;
