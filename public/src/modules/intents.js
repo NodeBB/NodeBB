@@ -34,7 +34,7 @@ const INTENT_DISPLAY_MAP = {
 };
 
 async function mapIntentNames(intents) {
-	return await translateKeys(Object.keys(intents).map(intent => INTENT_DISPLAY_MAP[intent.toLowerCase()]));
+	return await translateKeys(Object.keys(intents).map(intent => `${INTENT_DISPLAY_MAP[intent.toLowerCase()]}`));
 }
 
 export function list() {
