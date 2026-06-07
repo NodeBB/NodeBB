@@ -893,23 +893,23 @@ describe('Categories', () => {
 
 	it('should translate category name and description and escape them properly', async () => {
 		const category = await Categories.create({
-			name: '[[topic:merged-message, javascript:alert(origin), foobar, fizz]]',
+			name: '[[topic:merged-message, javascript:alert(origin), foobar]]',
 			description: '[[topic:forked-message, javascript:alert(origin), foobar]]',
 		});
 
 		const data = await Categories.getCategoryData(category.cid);
-		assert.strictEqual(data.name, '&lsqb;&lsqb;topic:merged-message, javascript:alert(origin), foobar, fizz&rsqb;&rsqb;');
+		assert.strictEqual(data.name, '&lsqb;&lsqb;topic:merged-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
 		assert.strictEqual(data.description, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
 		assert.strictEqual(data.descriptionParsed, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
 		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${category.cid}/test-category`);
 
 		// title comes from category.name so should be escaped as well
-		assert.strictEqual(body.title, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;fizz&lt;&#x2F;a&gt;');
+		assert.strictEqual(body.title, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
 
 		// breadcrumbs should be translated & escaped too
-		assert.strictEqual(body.breadcrumbs[1].text, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;fizz&lt;&#x2F;a&gt;');
+		assert.strictEqual(body.breadcrumbs[1].text, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
 
-		assert.strictEqual(body.name, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;fizz&lt;&#x2F;a&gt;');
+		assert.strictEqual(body.name, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
 
 		assert.strictEqual(body.description, 'This topic was forked from &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
 

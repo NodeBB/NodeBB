@@ -71,8 +71,8 @@ define('share', ['hooks', 'translator'], function (hooks, translator) {
 		addHandler('[component="share/email"]', async function () {
 			const postUrl = getPostUrl($(this));
 			const [subject, body] = await translator.translateKeys([
-				['topic', 'share-mail-subject', [config.siteTitle]],
-				['topic', 'share-mail-body', [postUrl]],
+				translator.compile('topic:share-mail-subject', config.siteTitle),
+				translator.compile('topic:share-mail-body', postUrl),
 			]);
 			const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 			window.location.href = mailtoUrl;

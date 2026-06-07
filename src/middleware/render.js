@@ -97,7 +97,7 @@ module.exports = function (middleware) {
 				const headerFooterData = await loadHeaderFooterData(req, res, options);
 				const results = await utils.promiseParallel({
 					header: renderHeaderFooter(render, 'renderHeader', req, res, options, headerFooterData),
-					content: renderContent(render, templateToRender, req, res, options),
+					content: renderAsync(render, templateToRender, req, res, options),
 					footer: renderHeaderFooter(render, 'renderFooter', req, res, options, headerFooterData),
 				});
 
@@ -318,11 +318,11 @@ module.exports = function (middleware) {
 		return templateValues;
 	}
 
-	function renderContent(render, tpl, req, res, options) {
+	function renderAsync(render, tpl, req, res, data) {
 		return new Promise((resolve, reject) => {
-			render.call(res, tpl, options, async (err, str) => {
+			render.call(res, tpl, data, async (err, str) => {
 				if (err) reject(err);
-				else resolve(str);
+				else resolve(await translate(str, getLang(req, res)));
 			});
 		});
 	}
@@ -336,13 +336,7 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		// return await req.app.renderAsync('header', hookReturn.templateData);
-		return new Promise((resolve, reject) => {
-			render.call(res, 'header', hookReturn.templateData, (err, str) => {
-				if (err) reject(err);
-				else resolve(str);
-			});
-		});
+		return await renderAsync(render, 'header', req, res, hookReturn.templateData);
 	}
 
 	async function renderFooter(render, req, res, options, headerFooterData) {
@@ -362,13 +356,7 @@ module.exports = function (middleware) {
 		hookReturn.templateData.customJS = hookReturn.templateData.useCustomJS ? meta.config.customJS : '';
 		hookReturn.templateData.isSpider = req.uid === -1;
 
-		// return await req.app.renderAsync('footer', hookReturn.templateData);
-		return new Promise((resolve, reject) => {
-			render.call(res, 'footer', hookReturn.templateData, (err, str) => {
-				if (err) reject(err);
-				else resolve(str);
-			});
-		});
+		return await renderAsync(render, 'footer', req, res, hookReturn.templateData);
 	}
 
 	async function renderAdminHeader(render, req, res, options, headerFooterData) {
@@ -380,13 +368,7 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		// return await req.app.renderAsync('admin/header', hookReturn.templateData);
-		return new Promise((resolve, reject) => {
-			render.call(res, 'admin/header', hookReturn.templateData, (err, str) => {
-				if (err) reject(err);
-				else resolve(str);
-			});
-		});
+		return await renderAsync(render, 'admin/header', req, res, hookReturn.templateData);
 	}
 
 	async function renderAdminFooter(render, req, res, options, headerFooterData) {
@@ -398,13 +380,7 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		// return await req.app.renderAsync('admin/footer', hookReturn.templateData);
-		return new Promise((resolve, reject) => {
-			render.call(res, 'admin/footer', hookReturn.templateData, (err, str) => {
-				if (err) reject(err);
-				else resolve(str);
-			});
-		});
+		return await renderAsync(render, 'admin/footer', req, res, hookReturn.templateData);
 	}
 
 	async function renderHeaderFooter(render, method, req, res, options, headerFooterData) {
@@ -431,6 +407,11 @@ module.exports = function (middleware) {
 			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
 		}
 		return req.query.lang ? validator.escape(String(req.query.lang)) : language;
+	}
+
+	async function translate(str, language) {
+		const translated = await translator.translate(str, language);
+		return translator.unescape(translated);
 	}
 
 	async function appendUnreadCounts({ uid, navigation, unreadData, query }) {

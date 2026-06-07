@@ -62,7 +62,7 @@ module.exports = function (Posts) {
 			postData.content = postData.content.replace(meta.config.activitypubBreakString, '');
 		}
 		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
-
+		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
 			cache.set(cacheKey, postData.content);
 		}

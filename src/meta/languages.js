@@ -92,8 +92,11 @@ async function buildNamespaceLanguage(lang, namespace, plugins) {
 
 	if (Object.keys(translations).length) {
 		await writeLanguageFile(lang, namespace, translations);
-		allLanguages[lang] = allLanguages[lang] || {};
-		allLanguages[lang][namespace] = translations;
+		allLanguages[lang] = allLanguages[lang] || { full: {}, client: {} };
+		allLanguages[lang].full[namespace] = translations;
+		if (!namespace.startsWith('admin/')) {
+			allLanguages[lang].client[namespace] = translations;
+		}
 	}
 }
 
@@ -140,15 +143,20 @@ exports.build = async function buildLanguages() {
 	await fs.promises.rm(buildLanguagesPath, { recursive: true, force: true });
 	const data = await getTranslationMetadata();
 	await buildTranslations(data);
-	// console.log(allLanguages);
+
 	for (const lang of Object.keys(allLanguages)) {
 		const jsonfilePath = path.join(buildLanguagesPath, lang, `full.json`);
 		const jsFilePath = path.join(buildLanguagesPath, lang, `full.min.js`);
+		const clientJsonFilePath = path.join(buildLanguagesPath, lang, `client.json`);
+		const clientJsFilePath = path.join(buildLanguagesPath, lang, `client.min.js`);
 		await mkdirp(path.dirname(jsonfilePath));
-		const jsonStr = JSON.stringify(allLanguages[lang]);
+		const fullJsonStr = JSON.stringify(allLanguages[lang].full);
+		const clientJsonStr = JSON.stringify(allLanguages[lang].client);
 		await Promise.all([
-			fs.promises.writeFile(jsonfilePath, jsonStr),
-			fs.promises.writeFile(jsFilePath, `window._i18n = ${jsonStr}`),
+			fs.promises.writeFile(jsonfilePath, fullJsonStr),
+			fs.promises.writeFile(jsFilePath, `window._i18n = ${fullJsonStr}`),
+			fs.promises.writeFile(clientJsonFilePath, clientJsonStr),
+			fs.promises.writeFile(clientJsFilePath, `window._i18n = ${clientJsonStr}`),
 		]);
 	}
 };
