@@ -97,7 +97,7 @@ module.exports = function (middleware) {
 				const headerFooterData = await loadHeaderFooterData(req, res, options);
 				const results = await utils.promiseParallel({
 					header: renderHeaderFooter(render, 'renderHeader', req, res, options, headerFooterData),
-					content: renderAsync(render, templateToRender, req, res, options),
+					content: renderContent(render, templateToRender, req, res, options),
 					footer: renderHeaderFooter(render, 'renderFooter', req, res, options, headerFooterData),
 				});
 
@@ -318,9 +318,9 @@ module.exports = function (middleware) {
 		return templateValues;
 	}
 
-	function renderAsync(render, tpl, req, res, data) {
+	function renderContent(render, tpl, req, res, options) {
 		return new Promise((resolve, reject) => {
-			render.call(res, tpl, data, async (err, str) => {
+			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
 				else resolve(await translate(str, getLang(req, res)));
 			});
@@ -336,7 +336,7 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		return await renderAsync(render, 'header', req, res, hookReturn.templateData);
+		return await renderContent(render, 'header', req, res, hookReturn.templateData);
 	}
 
 	async function renderFooter(render, req, res, options, headerFooterData) {
@@ -356,7 +356,7 @@ module.exports = function (middleware) {
 		hookReturn.templateData.customJS = hookReturn.templateData.useCustomJS ? meta.config.customJS : '';
 		hookReturn.templateData.isSpider = req.uid === -1;
 
-		return await renderAsync(render, 'footer', req, res, hookReturn.templateData);
+		return await renderContent(render, 'footer', req, res, hookReturn.templateData);
 	}
 
 	async function renderAdminHeader(render, req, res, options, headerFooterData) {
@@ -368,7 +368,7 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		return await renderAsync(render, 'admin/header', req, res, hookReturn.templateData);
+		return await renderContent(render, 'admin/header', req, res, hookReturn.templateData);
 	}
 
 	async function renderAdminFooter(render, req, res, options, headerFooterData) {
@@ -380,7 +380,7 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		return await renderAsync(render, 'admin/footer', req, res, hookReturn.templateData);
+		return await renderContent(render, 'admin/footer', req, res, hookReturn.templateData);
 	}
 
 	async function renderHeaderFooter(render, method, req, res, options, headerFooterData) {
