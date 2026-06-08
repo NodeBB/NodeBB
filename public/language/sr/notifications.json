@@ -66,6 +66,7 @@
     "flag-assigned-to-you": "<strong>Заставица %1</strong> је додељена вама",
     "post-awaiting-review": "Порука на чекању за преглед",
     "topic-awaiting-review": "Topic awaiting review",
+    "crosspost-awaiting-review": "Crosspost awaiting review",
     "profile-exported": "<strong>%1</strong> профила извезено, кликните за преузимање",
     "posts-exported": "<strong>%1</strong> порука извезено, кликните за преузимање",
     "uploads-exported": "<strong>%1</strong> отпремања извезено, кликните за преузимање",

@@ -66,6 +66,7 @@
     "flag-assigned-to-you": "<strong>Жалоба %1</strong> была назначена вам",
     "post-awaiting-review": "Сообщение ожидает проверки",
     "topic-awaiting-review": "Topic awaiting review",
+    "crosspost-awaiting-review": "Crosspost awaiting review",
     "profile-exported": "Профиль <strong>%1</strong> экспортирован, нажмите для загрузки",
     "posts-exported": "Посты <strong>%1</strong> экспортированы, нажмите для загрузки",
     "uploads-exported": "Вложения <strong>%1</strong> экспортированы, нажмите для загрузки",
