@@ -98,6 +98,7 @@ module.exports = function (Posts) {
 					'username', 'userslug', 'picture', 'icon:bgColor', 'joindate', 'postcount', 'reputation',
 				]);
 				postData.user = userData;
+				postData.crosspostCategory = await categories.getCategoryData(postData.data.crosspostCid);
 			} else {
 				postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
 			}
@@ -112,7 +113,7 @@ module.exports = function (Posts) {
 			);
 		}
 
-		postData.category = await categories.getCategoryData(postData.data.crosspostCid || postData.topic.cid);
+		postData.category = await categories.getCategoryData(postData.topic.cid);
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
 		postData.data.content = result.postData.content;
 	}
@@ -461,6 +462,9 @@ module.exports = function (Posts) {
 		}
 		if (editData.thumbs !== undefined) {
 			data.data.thumbs = editData.thumbs;
+		}
+		if (editData.crosspostCid !== undefined) {
+			data.data.crosspostCid = editData.crosspostCid;
 		}
 		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
 		cache.del('post-queue');
