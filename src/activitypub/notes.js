@@ -267,7 +267,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 				return null;
 			}
 
-			if ((mainResult.severity === 3 || options.queue) && meta.config.postQueue) {
+			if ((mainResult.severity === 3 || (utils.isNumber(options.cid) && options.queue)) && meta.config.postQueue) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3${options.queue ? ' or explicit queue option' : ''}`);
 				if (utils.isNumber(mainPid) || (await posts.exists([mainPid]))[0]) {
 					activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued main post (${mainPid}): pid is local or already exists`);
@@ -285,9 +285,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				};
-				if (options.queue && crosspostCid) {
-					queueData.crosspostCid = crosspostCid;
-				}
 
 				await posts.addToQueue(queueData);
 

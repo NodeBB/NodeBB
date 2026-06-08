@@ -84,12 +84,20 @@ module.exports = function (Posts) {
 				const topicData = await topics.getTopicFields(postData.data.tid, ['title', 'timestamp', 'uid', 'mainPid', 'cid', 'lastposttime']);
 				postData.topic = topicData;
 				postData.data.title = topicData.title || '';
+				postData.data.timestamp = topicData.timestamp;
+				postData.data.timestampISO = topicData.timestampISO;
 				if (topicData.mainPid) {
-					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content']);
+					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content', 'sourceContent']);
 					if (firstPost) {
-						postData.data.content = firstPost.content || '';
+						postData.data.content = firstPost.content || firstPost.sourceContent || '';
 					}
 				}
+
+				// uid queued is 0 because system user queued it, so user metadata is retrieved here instead
+				const userData = await user.getUserFields(topicData.uid, [
+					'username', 'userslug', 'picture', 'icon:bgColor', 'joindate', 'postcount', 'reputation',
+				]);
+				postData.user = userData;
 			} else {
 				postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
 			}
@@ -104,7 +112,7 @@ module.exports = function (Posts) {
 			);
 		}
 
-		postData.category = await categories.getCategoryData(postData.topic.cid);
+		postData.category = await categories.getCategoryData(postData.data.crosspostCid || postData.topic.cid);
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: postData.data });
 		postData.data.content = result.postData.content;
 	}
@@ -400,7 +408,7 @@ module.exports = function (Posts) {
 	}
 
 	async function createCrosspost(data) {
-		await topics.crossposts.add(data.tid, data.crosspostCid, data.uid || 0);
+		await topics.crossposts.add(data.tid, data.crosspostCid, 'system');
 		return { tid: data.tid };
 	}
 
