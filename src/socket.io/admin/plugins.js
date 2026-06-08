@@ -65,5 +65,16 @@ Plugins.orderActivePlugins = async function (socket, data) {
 };
 
 Plugins.upgrade = async function (socket, data) {
+	if (await plugins.isSystemPlugin(data.id)) {
+		throw new Error('[[error:cannot-upgrade-system-plugin]]');
+	}
+	const isInstalled = await plugins.isInstalled(data.id);
+	if (!isInstalled) {
+		throw new Error('[[error:plugin-not-installed]]');
+	}
+	if (nconf.get('acpPluginInstallDisabled')) {
+		throw new Error('[[error:plugin-installation-via-acp-disabled]]');
+	}
+	await plugins.checkWhitelist(data.id, data.version);
 	return await plugins.upgrade(data.id, data.version);
 };
