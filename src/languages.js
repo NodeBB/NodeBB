@@ -85,7 +85,11 @@ Languages.userTimeagoCode = async function (userLang) {
 };
 
 Languages.getFull = async function (language) {
-	return require(path.join(languagesPath, language, 'full.json'));
+	const pathToLanguageFile = path.join(languagesPath, language, 'full.json');
+	if (!pathToLanguageFile.startsWith(languagesPath)) {
+		throw new Error('[[error:invalid-path]]');
+	}
+	return require(pathToLanguageFile);
 };
 
 require('./promisify')(Languages);
