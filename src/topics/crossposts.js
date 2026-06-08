@@ -121,9 +121,11 @@ Crossposts.queue = async function (tid, cid, uid) {
 	if (!meta.config.postQueue) {
 		return;
 	}
+	const title = await topics.getTopicField(tid, 'title');
 	await posts.addToQueue({
 		uid: uid || 0,
 		tid,
+		title,
 		crosspostCid: cid,
 	});
 };

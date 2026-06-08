@@ -249,14 +249,19 @@ module.exports = function (Posts) {
 			bodyShort = '[[notifications:topic-awaiting-review]]';
 		}
 
+		let bodyLong;
+		if (type === 'reply') {
+			bodyLong = await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content);
+		} else {
+			bodyLong = validator.escape(String(data.title));
+		}
+
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
 			bodyShort,
-			bodyLong: type === 'reply' ?
-				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content) :
-				validator.escape(String(data.title)),
+			bodyLong: bodyLong,
 			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
 			from: data.uid,
