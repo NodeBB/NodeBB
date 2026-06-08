@@ -55,7 +55,7 @@
 			</div>
 
 			<div component="post/content" class="content text-sm text-break position-relative line-clamp-6">
-				<a href="{config.relative_path}/post/{./pid}" class="stretched-link"></a>
+				<a href="{config.relative_path}/post/{encodeURIComponent(./pid)}" class="stretched-link"></a>
 				{./content}
 			</div>
 			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">[[world:see-more]]</button>
