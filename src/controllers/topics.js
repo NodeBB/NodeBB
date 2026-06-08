@@ -367,7 +367,7 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 		images.push(topicData.category.backgroundImage);
 	}
 	if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-		images.push(validator.unescape(postAtIndex.user.picture));
+		images.push(postAtIndex.user.picture);
 	}
 	images.forEach(path => addOGImageTag(res, path));
 }

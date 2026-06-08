@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const nconf = require('nconf');
 
 const db = require('../../database');
@@ -48,8 +47,8 @@ module.exports = function (SocketUser) {
 		list.pictures = list.pictures.map(({ type, url, text }) => ({
 			type,
 			username: text,
-			picture: validator.escape(String(url)),
-			selected: url === validator.unescape(String(userObj.picture)),
+			picture: String(url),
+			selected: url === String(userObj.picture),
 		}));
 
 		list.pictures.unshift({
