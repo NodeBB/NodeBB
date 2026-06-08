@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const mime = require('mime').default;
 const nconf = require('nconf');
 const validator = require('validator');
 
@@ -47,6 +48,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
+		validateUploadedFileMime(uploadedFile);
 		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
@@ -132,6 +134,7 @@ uploadsController.uploadThumb = async function (req, res) {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
+		validateUploadedFileMime(uploadedFile);
 		await image.isFileTypeAllowed(uploadedFile.path);
 		const dimensions = await image.checkDimensions(uploadedFile.path);
 
@@ -209,6 +212,13 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 		storedFile,
 	});
 	return data.storedFile;
+}
+
+function validateUploadedFileMime(uploadedFile) {
+	const detectedMimeType = mime.getType(uploadedFile.name) || mime.getType(uploadedFile.path);
+	if (detectedMimeType && uploadedFile.type && detectedMimeType !== uploadedFile.type) {
+		throw new Error('[[error:invalid-mime-type]]');
+	}
 }
 
 function deleteTempFiles(files) {
