@@ -240,13 +240,20 @@ module.exports = function (Posts) {
 		const uids = await getNotificationUids(cid);
 		const bodyEmail = await parseBodyEmail(cid, type, data);
 
+		let bodyShort;
+		if (type === 'reply') {
+			bodyShort = '[[notifications:post-awaiting-review]]';
+		} else if (type === 'crosspost') {
+			bodyShort = '[[notifications:crosspost-awaiting-review]]';
+		} else {
+			bodyShort = '[[notifications:topic-awaiting-review]]';
+		}
+
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
-			bodyShort: type === 'reply' ?
-				'[[notifications:post-awaiting-review]]' :
-				'[[notifications:topic-awaiting-review]]',
+			bodyShort,
 			bodyLong: type === 'reply' ?
 				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content) :
 				validator.escape(String(data.title)),
