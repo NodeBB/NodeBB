@@ -41,11 +41,6 @@ middleware.assertS2S = async function (req, res, next) {
 
 middleware.verify = async function (req, res, next) {
 	// Verifies the HTTP Signature if present (required for POST)
-	const passthrough = [/\/actor(?:\/$|\/)/, /\/uid\/\d+(?:\/$|\/)/];
-	if (passthrough.some(regex => regex.test(req.path))) {
-		return next();
-	}
-
 	if (req.headers.hasOwnProperty('signature')) {
 		const verified = await activitypub.verify(req);
 		if (!verified) {
