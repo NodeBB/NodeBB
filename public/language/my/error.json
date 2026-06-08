@@ -132,6 +132,7 @@
     "invalid-image-type": "ဓာတ်ပုံအမျိုးအစားမှာ အကျုံးမဝင်ပါ။ ခွင့်ပြုထားသောအမျိုးအစားများမှာ %1 ဖြစ်ပါသည်။",
     "invalid-image-extension": "ဓာတ်ပုံအမျိုးအစားမှာ အကျုံးမဝင်ပါ",
     "invalid-file-type": "ဖိုင်အမျိုးအစားမှာ အကျုံးမဝင်ပါ။ ခွင့်ပြုထားသော ဖိုင်အမျိုးအစားများမှာ %1 ဖြစ်ပါသည်။",
+    "invalid-mime-type": "Invalid MIME type",
     "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "ပုံအရွယ်အစား ကြီးမားလွန်းနေပါသည်",
     "group-name-too-short": "အဖွဲ့အမည်မှာ တိုတောင်းလွန်းနေပါသည်",

@@ -132,6 +132,7 @@
     "invalid-image-type": "Ogiltig bildtyp. Tillåtna typer är: %1",
     "invalid-image-extension": "Ogiltigt bildformat",
     "invalid-file-type": "Ogiltig filtyp. Tillåtna typer är: %1",
+    "invalid-mime-type": "Invalid MIME type",
     "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Gruppnamnet är för kort",

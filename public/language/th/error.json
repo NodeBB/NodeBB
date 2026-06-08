@@ -132,6 +132,7 @@
     "invalid-image-type": "ประเภทรูปภาพไม่ถูกต้อง ประเภทที่ได้รับการอนุญาติคือ : %1",
     "invalid-image-extension": "นามสกุลรูปภาพไม่ถูกต้อง",
     "invalid-file-type": "ประเภทไฟล์ไม่ถูกต้อง ประเภทที่ได้รับการอนุญาติคือ : %1",
+    "invalid-mime-type": "Invalid MIME type",
     "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "ภาพขนาดใหญ่เกินไป",
     "group-name-too-short": "ชื่อกลุ่มสั้นเกินไป",
