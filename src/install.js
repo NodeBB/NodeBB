@@ -58,6 +58,7 @@ function checkSetupFlagEnv() {
 		NODEBB_ADMIN_PASSWORD: 'admin:password',
 		NODEBB_ADMIN_EMAIL: 'admin:email',
 		NODEBB_DB: 'database',
+		NODEBB_DB_DIALECT: 'dialect',
 		NODEBB_DB_HOST: 'host',
 		NODEBB_DB_PORT: 'port',
 		NODEBB_DB_USER: 'username',
@@ -130,7 +131,19 @@ function checkCIFlag() {
 	}
 
 	if (ciVals && ciVals instanceof Object) {
-		if (ciVals.hasOwnProperty('host') && ciVals.hasOwnProperty('port') && ciVals.hasOwnProperty('database')) {
+		// SQLite and PGlite don't need host/port since they are file-based/embedded databases
+		const isFileBasedDb = ciVals.dialect === 'sqlite' || ciVals.dialect === 'pglite';
+
+		if (isFileBasedDb) {
+			// For file-based databases, only database (file path) is required
+			if (ciVals.hasOwnProperty('database')) {
+				install.ciVals = ciVals;
+			} else {
+				winston.error('[install/checkCIFlag] required values are missing for automated CI integration:');
+				winston.error('  database');
+				process.exit();
+			}
+		} else if (ciVals.hasOwnProperty('host') && ciVals.hasOwnProperty('port') && ciVals.hasOwnProperty('database')) {
 			install.ciVals = ciVals;
 		} else {
 			winston.error('[install/checkCIFlag] required values are missing for automated CI integration:');
@@ -160,16 +173,24 @@ async function setupConfig() {
 	let config = {};
 
 	if (install.values) {
+		// Diagnostic: log which install.values keys are visible to the
+		// question-answering loop. Non-obvious bugs in the headless setup
+		// path (e.g., positional --setup JSON not propagating specific keys)
+		// surface as silently-defaulted config fields. This log makes the
+		// gap visible at install time.
+		winston.verbose(`[install/setupConfig] install.values keys: [${Object.keys(install.values).sort().join(', ')}]`);
 		// Use provided values, fall back to defaults
 		const redisQuestions = require('./database/redis').questions;
 		const mongoQuestions = require('./database/mongo').questions;
 		const postgresQuestions = require('./database/postgres').questions;
+		const kyselyQuestions = require('./database/kysely').questions;
 		const allQuestions = [
 			...questions.main,
 			...questions.optional,
 			...redisQuestions,
 			...mongoQuestions,
 			...postgresQuestions,
+			...kyselyQuestions,
 		];
 
 		allQuestions.forEach((question) => {
