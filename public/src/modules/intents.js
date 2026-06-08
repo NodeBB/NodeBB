@@ -235,7 +235,15 @@ export async function trigger(intent, parameters) {
 			url = url?.replaceAll(/\{[^}]+\}/g, '');
 
 			if (url) {
-				window.location.href = url;
+				// Validate URL scheme to prevent XSS via javascript: data: etc.
+				try {
+					const parsed = new URL(url);
+					if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+						window.location.href = url;
+					}
+				} catch (e) {
+					// Invalid URL, silently ignore
+				}
 			}
 		});
 
