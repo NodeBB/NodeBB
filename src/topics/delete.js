@@ -30,7 +30,7 @@ module.exports = function (Topics) {
 			resolveTopicPostFlags(pids, uid),
 			activitypub.out.remove.context(uid, tid),
 			categories.updateRecentTidForCid(cid),
-			posts.queue.removeFromQueueByTid(tid),
+			posts.removeFromQueueByTid(tid),
 		]);
 	};
 
