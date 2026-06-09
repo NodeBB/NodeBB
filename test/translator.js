@@ -205,7 +205,7 @@ describe('new Translator(language)', () => {
 			);
 		});
 
-		it.only('should let valid urls through and empty href for invalid urls', async function () {
+		it('should let valid urls through and empty href for invalid urls', async function () {
 			shim.addTranslation('en-GB', 'topic', {
 				'href-test-1': 'This topic has been merged into <a href="%1">%2</a> and <a href="%1">%3</a>',
 				'href-test-2': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
