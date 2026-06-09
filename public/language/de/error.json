@@ -132,7 +132,7 @@
     "invalid-image-type": "Falsche Bildart. Erlaubte Arten sind: %1",
     "invalid-image-extension": "Ungültige Dateinamenerweiterung",
     "invalid-file-type": "Ungültiger Dateityp. Erlaubte Typen sind: %1",
-    "invalid-mime-type": "Invalid MIME type",
+    "invalid-mime-type": "Ungültiger MIME-Typ",
     "blocked-file-type": "Dateityp nicht zulässig. Die Dateiendung %1 wurde vom Administrator ausdrücklich gesperrt.",
     "invalid-image-dimensions": "Die Bildabmessungen sind zu groß.",
     "group-name-too-short": "Gruppenname zu kurz",

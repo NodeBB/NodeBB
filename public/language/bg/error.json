@@ -132,7 +132,7 @@
     "invalid-image-type": "Грешен тип на изображение. Позволените типове са: %1",
     "invalid-image-extension": "Грешно разширение на изображението",
     "invalid-file-type": "Грешен тип на файл. Позволените типове са: %1",
-    "invalid-mime-type": "Invalid MIME type",
+    "invalid-mime-type": "Грешен тип MIME",
     "blocked-file-type": "Този вид файлове не е разрешен. Разширението %1 е изрично забранено от администратора.",
     "invalid-image-dimensions": "Размерите на изображението са твърде големи",
     "group-name-too-short": "Името на групата е твърде кратко",
