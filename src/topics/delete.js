@@ -134,7 +134,7 @@ module.exports = function (Topics) {
 			deleteFromTags(deletedTopics),
 			Topics.events.purge(tidsToDelete),
 			Topics.crossposts.removeAll(tidsToDelete),
-			posts.queue.removeFromQueueByTid(tidsToDelete),
+			posts.removeFromQueueByTid(tidsToDelete),
 
 			reduceCounters(deletedTopics),
 		]);
