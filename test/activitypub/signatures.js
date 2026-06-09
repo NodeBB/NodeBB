@@ -124,14 +124,19 @@ describe('http signature signing and verification', () => {
 		it('should return true when a digest is also passed in', async () => {
 			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 			const path = `/user/${username}/inbox`;
+			const payload = { foo: 'bar' };
 			const keyData = await activitypub.getPrivateKey('uid', uid);
-			const signature = await activitypub.sign(keyData, endpoint, { foo: 'bar' });
+			const hash = createHash('sha256');
+			hash.update(JSON.stringify(payload));
+			const checksum = `SHA-256=${hash.digest('base64')}`;
+			const signature = await activitypub.sign(keyData, endpoint, checksum);
 			const { host } = nconf.get('url_parsed');
 			const req = {
 				...mockReqBase,
 				...{
 					method: 'POST',
 					path,
+					body: payload,
 					headers: { ...signature, host },
 				},
 			};
