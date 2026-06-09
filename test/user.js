@@ -1000,7 +1000,7 @@ describe('User', () => {
 			assert.strictEqual(body.status.code, 'ok');
 
 			const picture = await User.getUserField(uid, 'picture');
-			assert.strictEqual(picture, validator.escape('https://example.org/picture.jpg'));
+			assert.strictEqual(picture, 'https://example.org/picture.jpg');
 		});
 
 		it('should fail to change user picture with invalid data', async () => {
@@ -1031,7 +1031,7 @@ describe('User', () => {
 			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/assets/uploads/test');
 			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/assets/uploads/test', uid: uid });
 			const picture = await User.getUserField(uid, 'picture');
-			assert.equal(picture, validator.escape(`${nconf.get('relative_path')}/assets/uploads/test`));
+			assert.equal(picture, `${nconf.get('relative_path')}/assets/uploads/test`);
 		});
 
 		it('should return error if profile image uploads disabled', (done) => {

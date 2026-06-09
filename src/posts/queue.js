@@ -84,12 +84,21 @@ module.exports = function (Posts) {
 				const topicData = await topics.getTopicFields(postData.data.tid, ['title', 'timestamp', 'uid', 'mainPid', 'cid', 'lastposttime']);
 				postData.topic = topicData;
 				postData.data.title = topicData.title || '';
+				postData.data.timestamp = topicData.timestamp;
+				postData.data.timestampISO = topicData.timestampISO;
 				if (topicData.mainPid) {
-					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content']);
+					const firstPost = await Posts.getPostFields(topicData.mainPid, ['content', 'sourceContent']);
 					if (firstPost) {
-						postData.data.content = firstPost.content || '';
+						postData.data.content = firstPost.content || firstPost.sourceContent || '';
 					}
 				}
+
+				// uid queued is 0 because system user queued it, so user metadata is retrieved here instead
+				const userData = await user.getUserFields(topicData.uid, [
+					'username', 'userslug', 'picture', 'icon:bgColor', 'joindate', 'postcount', 'reputation',
+				]);
+				postData.user = userData;
+				postData.crosspostCategory = await categories.getCategoryData(postData.data.crosspostCid);
 			} else {
 				postData.topic = { cid: parseInt(postData.data.crosspostCid, 10) };
 			}
@@ -232,16 +241,28 @@ module.exports = function (Posts) {
 		const uids = await getNotificationUids(cid);
 		const bodyEmail = await parseBodyEmail(cid, type, data);
 
+		let bodyShort;
+		if (type === 'reply') {
+			bodyShort = '[[notifications:post-awaiting-review]]';
+		} else if (type === 'crosspost') {
+			bodyShort = '[[notifications:crosspost-awaiting-review]]';
+		} else {
+			bodyShort = '[[notifications:topic-awaiting-review]]';
+		}
+
+		let bodyLong;
+		if (type === 'reply') {
+			bodyLong = await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content);
+		} else {
+			bodyLong = validator.escape(String(data.title));
+		}
+
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
-			bodyShort: type === 'reply' ?
-				'[[notifications:post-awaiting-review]]' :
-				'[[notifications:topic-awaiting-review]]',
-			bodyLong: type === 'reply' ?
-				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content) :
-				validator.escape(String(data.title)),
+			bodyShort,
+			bodyLong: bodyLong,
 			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
 			from: data.uid,
@@ -319,6 +340,26 @@ module.exports = function (Posts) {
 			throw new Error('[[error:no-privileges]]');
 		}
 	}
+
+	Posts.removeFromQueueByTid = async function (tid) {
+		// todo: refactor this to be more general (search by different values in queue hash or hash.data)
+		const tids = Array.isArray(tid) ? tid : [tid];
+		const ids = await db.getSortedSetRange('post:queue', 0, -1);
+		if (!ids.length) {
+			return [];
+		}
+		const keys = ids.map(id => `post:queue:${id}`);
+		const items = await db.getObjects(keys);
+		const toRemove = [];
+		items.forEach((item, idx) => {
+			const data = JSON.parse(item.data);
+			if (tids.includes(String(data.tid))) {
+				toRemove.push(ids[idx]);
+			}
+		});
+		await Promise.all(toRemove.map(removeFromQueue));
+		return toRemove;
+	};
 
 	Posts.removeFromQueue = async function (id) {
 		const data = await getParsedObject(id);
@@ -400,7 +441,7 @@ module.exports = function (Posts) {
 	}
 
 	async function createCrosspost(data) {
-		await topics.crossposts.add(data.tid, data.crosspostCid, data.uid || 0);
+		await topics.crossposts.add(data.tid, data.crosspostCid, 'system');
 		return { tid: data.tid };
 	}
 
@@ -441,6 +482,9 @@ module.exports = function (Posts) {
 		}
 		if (editData.thumbs !== undefined) {
 			data.data.thumbs = editData.thumbs;
+		}
+		if (editData.crosspostCid !== undefined) {
+			data.data.crosspostCid = editData.crosspostCid;
 		}
 		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
 		cache.del('post-queue');

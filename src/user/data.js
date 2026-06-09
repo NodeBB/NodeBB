@@ -387,7 +387,7 @@ module.exports = function (User) {
 					const trimmedValue = user[field].trim();
 					const isValid = isValidUserUrlField(trimmedValue);
 					if (isValid) {
-						user[field] = translator.escape(validator.escape(trimmedValue));
+						user[field] = translator.escape(trimmedValue);
 					} else {
 						if (field === 'picture') {
 							user.picture = User.getDefaultAvatar();

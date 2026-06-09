@@ -310,8 +310,12 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			userObj = this;
 		}
 		classNames = classNames || '';
+		const displayname = escape(String(userObj.displayname || ''));
+		const picture = escape(String(userObj.picture || ''));
+		const iconBgColor = escape(String(userObj['icon:bgColor'] || ''));
+		const iconText = escape(String(userObj['icon:text'] || ''));
 		const attributes = new Map([
-			['title', userObj.displayname],
+			['title', displayname],
 			['data-uid', userObj.uid],
 			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
@@ -324,9 +328,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			output += `<img${attr2String(attributes)} alt="${userObj.displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
+			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
 		}
-		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${userObj['icon:bgColor']}">${userObj['icon:text']}</span>`;
+		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${iconBgColor}">${iconText}</span>`;
 		return output;
 	}
 

@@ -41,11 +41,6 @@ middleware.assertS2S = async function (req, res, next) {
 
 middleware.verify = async function (req, res, next) {
 	// Verifies the HTTP Signature if present (required for POST)
-	const passthrough = [/\/actor/, /\/uid\/\d+/];
-	if (passthrough.some(regex => regex.test(req.path))) {
-		return next();
-	}
-
 	if (req.headers.hasOwnProperty('signature')) {
 		const verified = await activitypub.verify(req);
 		if (!verified) {
@@ -60,8 +55,12 @@ middleware.verify = async function (req, res, next) {
 		}
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
+	} else if (req.method === 'POST') {
+		// HTTP Signatures are mandatory for POST (ActivityPub S2S spec)
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature required for POST but not present.');
+		return res.sendStatus(401);
 	} else {
-		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification skipped.');
+		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification skipped (GET).');
 	}
 	next();
 };

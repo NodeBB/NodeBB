@@ -132,7 +132,7 @@
     "invalid-image-type": "Tipo dell'immagine non valido. I tipi permessi sono: %1",
     "invalid-image-extension": "Estensione immagine non valida",
     "invalid-file-type": "Tipo di file non valido. I formati consentiti sono: %1",
-    "invalid-mime-type": "Invalid MIME type",
+    "invalid-mime-type": "Tipo MIME non valido",
     "blocked-file-type": "Tipo di file non consentito. L'estensione %1 è esplicitamente bloccata dall'amministratore.",
     "invalid-image-dimensions": "Dimensione immagine troppo grande",
     "group-name-too-short": "Nome del Gruppo troppo corto",

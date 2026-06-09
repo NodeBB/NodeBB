@@ -66,6 +66,7 @@
     "flag-assigned-to-you": "<strong>Reporte %1</strong> te ha sido asignado.",
     "post-awaiting-review": "Entrada esperando revisión",
     "topic-awaiting-review": "Topic awaiting review",
+    "crosspost-awaiting-review": "Crosspost awaiting review",
     "profile-exported": "<strong>%1</strong> profile exported, click to download",
     "posts-exported": "<strong>%1</strong> posts exported, click to download",
     "uploads-exported": "<strong>%1</strong> uploads exported, click to download",

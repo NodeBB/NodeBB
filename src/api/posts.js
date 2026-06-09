@@ -608,7 +608,10 @@ postsAPI.removeQueuedPost = async (caller, data) => {
 };
 
 postsAPI.editQueuedPost = async (caller, data) => {
-	if (!data || !data.id || (!data.content && !data.title && !data.cid && !data.tags && !data.thumbs)) {
+	if (
+		!data || !data.id || (!data.content && !data.title && !data.cid &&
+			!data.tags && !data.thumbs && !data.crosspostCid)
+	) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await posts.editQueuedContent(caller.uid, data);

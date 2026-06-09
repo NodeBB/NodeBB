@@ -125,6 +125,7 @@ module.exports = function (Plugins) {
 			packageManagerCommands[packageManager][command],
 			pkgName + (command === 'install' && version ? `@${version}` : ''),
 			'--save',
+			'--ignore-scripts',
 		];
 
 		if (process.platform === 'win32') {
