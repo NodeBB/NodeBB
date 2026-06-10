@@ -132,13 +132,13 @@ module.exports = function (Groups) {
 		if (group) {
 			if (hasField('name')) {
 				group.nameEncoded = encodeURIComponent(group.name);
-				group.displayName = validator.escape(String(group.name));
+				group.displayName = String(group.name);
 			}
 			if (hasField('description')) {
-				group.description = validator.escape(String(group.description || ''));
+				group.description = String(group.description || '');
 			}
 			if (hasField('userTitle')) {
-				group.userTitle = validator.escape(String(group.userTitle || ''));
+				group.userTitle = String(group.userTitle || '');
 				group.userTitleEscaped = translator.escape(group.userTitle);
 			}
 		}

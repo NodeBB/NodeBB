@@ -17,7 +17,7 @@
 								<a class="category-header text-reset" href="{config.relative_path}/admin/manage/categories/{categories.cid}">{categories.name}</a> {{{ if categories.link }}}<a class="text-xs text-muted" href="{categories.link}"><i class="fa fa-link"></i> {categories.link}</a>{{{ end }}}
 							</div>
 							{{{ if categories.descriptionParsed }}}
-							<div class="description text-muted text-xs w-100">{categories.descriptionParsed}</div>
+							<div class="description text-muted text-xs w-100">{{categories.descriptionParsed}}</div>
 							{{{ end }}}
 						</div>
 					</div>

@@ -415,13 +415,13 @@ module.exports = function (middleware) {
 	}
 
 	async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
-		const originalRoutes = navigation.map(nav => nav.originalRoute);
+		const routes = navigation.map(nav => nav.route);
 		const calls = {
 			unreadData: topics.getUnreadData({ uid: uid, query: query }),
 			unreadChatCount: messaging.getUnreadCount(uid),
 			unreadNotificationCount: user.notifications.getUnreadCount(uid),
 			unreadFlagCount: (async function () {
-				if (originalRoutes.includes('/flags') && await user.isPrivileged(uid)) {
+				if (routes.includes('/flags') && await user.isPrivileged(uid)) {
 					return flags.getCount({
 						uid,
 						query,
@@ -458,7 +458,7 @@ module.exports = function (middleware) {
 		const { tidsByFilter } = results.unreadData;
 		navigation = navigation.map((item) => {
 			function modifyNavItem(item, route, filter, content) {
-				if (item && item.originalRoute === route) {
+				if (item && item.route === route) {
 					unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 					item.content = content;
 					unreadCount.mobileUnread = content;
@@ -474,7 +474,7 @@ module.exports = function (middleware) {
 			modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
 
 			['flags'].forEach((prop) => {
-				if (item && item.originalRoute === `/${prop}` && unreadCount[prop] > 0) {
+				if (item && item.route === `/${prop}` && unreadCount[prop] > 0) {
 					item.iconClass += ' unread-count';
 					item.content = unreadCount.flags;
 				}

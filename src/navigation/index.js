@@ -12,8 +12,6 @@ navigation.get = async function (uid) {
 	let data = await admin.get();
 
 	data = data.filter(item => item && item.enabled).map((item) => {
-		item.originalRoute = item.route; // TODO: can remove originalRoute in 5.x
-
 		if (!item.route.startsWith('http')) {
 			item.route = relative_path + item.route;
 		}
