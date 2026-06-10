@@ -459,12 +459,37 @@ describe('socket.io', () => {
 			socketAdmin.plugins.upgrade({
 				uid: adminUid,
 			}, {
-				id: 'nodebb-plugin-location-to-map',
+				id: 'nodebb-plugin-markdown',
 				version: 'latest',
 			}, (err) => {
 				assert.ifError(err);
 				process.env.NODE_ENV = oldValue;
 				done();
+			});
+		});
+
+		it('should fail to upgrade plugin if it is not installed', function (done) {
+			this.timeout(0);
+			const oldValue = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'development';
+			socketAdmin.plugins.toggleInstall({
+				uid: adminUid,
+			}, {
+				id: 'nodebb-plugin-location-to-map',
+				version: 'latest',
+			}, function (err) {
+				assert.ifError(err);
+				socketAdmin.plugins.upgrade({
+					uid: adminUid,
+				}, {
+					id: 'nodebb-plugin-location-to-map',
+					version: 'latest',
+				}, (err) => {
+					console.log(err);
+					assert.strictEqual(err.message, '[[error:plugin-not-installed]]');
+					process.env.NODE_ENV = oldValue;
+					done();
+				});
 			});
 		});
 	});
