@@ -12,6 +12,7 @@ require('timeago');
 const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
+Benchpress.setGlobal('_i18n', window._i18n);
 
 require('./sockets');
 require('./overrides');

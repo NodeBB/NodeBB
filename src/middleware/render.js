@@ -91,12 +91,14 @@ module.exports = function (middleware) {
 					req.app.set('json spaces', process.env.NODE_ENV === 'development' || req.query.pretty ? 4 : 0);
 					return res.json(options);
 				}
+
+				res.locals._i18n = await languages.getFull(getLang(req, res));
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
 				const headerFooterData = await loadHeaderFooterData(req, res, options);
 				const results = await utils.promiseParallel({
-					header: renderHeaderFooter('renderHeader', req, res, options, headerFooterData),
+					header: renderHeaderFooter(render, 'renderHeader', req, res, options, headerFooterData),
 					content: renderContent(render, templateToRender, req, res, options),
-					footer: renderHeaderFooter('renderFooter', req, res, options, headerFooterData),
+					footer: renderHeaderFooter(render, 'renderFooter', req, res, options, headerFooterData),
 				});
 
 				const str = `${results.header +
@@ -325,7 +327,7 @@ module.exports = function (middleware) {
 		});
 	}
 
-	async function renderHeader(req, res, options, headerFooterData) {
+	async function renderHeader(render, req, res, options, headerFooterData) {
 		const hookReturn = await plugins.hooks.fire('filter:middleware.renderHeader', {
 			req: req,
 			res: res,
@@ -334,10 +336,10 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		return await req.app.renderAsync('header', hookReturn.templateData);
+		return await renderContent(render, 'header', req, res, hookReturn.templateData);
 	}
 
-	async function renderFooter(req, res, options, headerFooterData) {
+	async function renderFooter(render, req, res, options, headerFooterData) {
 		const hookReturn = await plugins.hooks.fire('filter:middleware.renderFooter', {
 			req,
 			res,
@@ -354,10 +356,10 @@ module.exports = function (middleware) {
 		hookReturn.templateData.customJS = hookReturn.templateData.useCustomJS ? meta.config.customJS : '';
 		hookReturn.templateData.isSpider = req.uid === -1;
 
-		return await req.app.renderAsync('footer', hookReturn.templateData);
+		return await renderContent(render, 'footer', req, res, hookReturn.templateData);
 	}
 
-	async function renderAdminHeader(req, res, options, headerFooterData) {
+	async function renderAdminHeader(render, req, res, options, headerFooterData) {
 		const hookReturn = await plugins.hooks.fire('filter:middleware.renderAdminHeader', {
 			req,
 			res,
@@ -366,10 +368,10 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		return await req.app.renderAsync('admin/header', hookReturn.templateData);
+		return await renderContent(render, 'admin/header', req, res, hookReturn.templateData);
 	}
 
-	async function renderAdminFooter(req, res, options, headerFooterData) {
+	async function renderAdminFooter(render, req, res, options, headerFooterData) {
 		const hookReturn = await plugins.hooks.fire('filter:middleware.renderAdminFooter', {
 			req,
 			res,
@@ -378,25 +380,25 @@ module.exports = function (middleware) {
 			data: options,
 		});
 
-		return await req.app.renderAsync('admin/footer', hookReturn.templateData);
+		return await renderContent(render, 'admin/footer', req, res, hookReturn.templateData);
 	}
 
-	async function renderHeaderFooter(method, req, res, options, headerFooterData) {
+	async function renderHeaderFooter(render, method, req, res, options, headerFooterData) {
 		let str = '';
 		if (res.locals.renderHeaderType === 'client') {
 			if (method === 'renderHeader') {
-				str = await renderHeader(req, res, options, headerFooterData);
+				str = await renderHeader(render, req, res, options, headerFooterData);
 			} else if (method === 'renderFooter') {
-				str = await renderFooter(req, res, options, headerFooterData);
+				str = await renderFooter(render, req, res, options, headerFooterData);
 			}
 		} else if (res.locals.renderHeaderType === 'admin') {
 			if (method === 'renderHeader') {
-				str = await renderAdminHeader(req, res, options, headerFooterData);
+				str = await renderAdminHeader(render, req, res, options, headerFooterData);
 			} else if (method === 'renderFooter') {
-				str = await renderAdminFooter(req, res, options, headerFooterData);
+				str = await renderAdminFooter(render, req, res, options, headerFooterData);
 			}
 		}
-		return await translate(str, getLang(req, res));
+		return str;
 	}
 
 	function getLang(req, res) {

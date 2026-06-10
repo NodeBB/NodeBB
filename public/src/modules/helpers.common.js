@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (utils, Benchpress, relative_path) {
+module.exports = function (utils, Benchpress, translator, relative_path) {
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
 	const oneDayInMs = 24 * 60 * 60 * 1000;
@@ -36,6 +36,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		humanReadableNumber,
 		formattedNumber,
 		isNumber,
+		tx,
 		txEscape,
 		uploadBasename,
 		generatePlaceholderWave,
@@ -391,6 +392,31 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function isNumber(value) {
 		return utils.isNumber(value);
+	}
+
+	function tx(token, ...args) {
+		if (!token) {
+			return '';
+		}
+		const [txToken, argsFromToken] = translator.normalizeToken(token);
+		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+			args = argsFromToken;
+		}
+		const [namespace, key] = txToken.split(':', 2);
+		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
+			return token;
+		}
+		// translate the arguments if they are tokens themselves
+		args = args.map((arg) => {
+			arg = translator.escapeHTML(arg);
+			if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
+				return helpers.tx.call(this, arg, []); // no arguments on nested tokens for now
+			}
+			return arg;
+		});
+
+		const translation = this._i18n[namespace][key];
+		return translator.replaceArguments(translation, args);
 	}
 
 	function txEscape(text) {
