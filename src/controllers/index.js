@@ -11,6 +11,7 @@ const plugins = require('../plugins');
 const image = require('../image');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
+const translator = require('../translator');
 
 const Controllers = module.exports;
 
@@ -416,18 +417,26 @@ Controllers.manifest = async function (req, res) {
 
 Controllers.outgoing = function (req, res, next) {
 	const url = req.query.url || '';
+	let parsed;
+	try {
+		parsed = new URL(url);
+	} catch (err) {
+		return next();
+	}
+
 	const allowedProtocols = [
 		'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher',
 		'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal',
 	];
-	const parsed = require('url').parse(url);
 
 	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
 	}
+	const escapedSearch = validator.escape(translator.escape(parsed.search || ''));
+	const escapedUrl = parsed.search ? parsed.href.replace(parsed.search, escapedSearch) : parsed.href;
 
 	res.render('outgoing', {
-		outgoing: validator.escape(String(url)),
+		outgoing: escapedUrl,
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{
 			text: '[[notifications:outgoing-link]]',

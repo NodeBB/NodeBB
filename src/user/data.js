@@ -11,8 +11,10 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 const coverPhoto = require('../coverPhoto');
+const translator = require('../translator');
 
 const relative_path = nconf.get('relative_path');
+const upload_url = nconf.get('upload_url');
 
 const prependRelativePath = url => url.startsWith('http') ? url : relative_path + url;
 
@@ -34,6 +36,15 @@ module.exports = function (User) {
 	];
 
 	let customFieldWhiteList = null;
+	const escapeFieldList = [
+		'email', 'username', 'fullname', 'signature', 'displayname',
+		'cover:position', 'birthday', 'aboutme',
+	];
+	const urlFieldList = [
+		'picture', 'cover:url',
+	];
+
+	User.allowedStatus = ['online', 'offline', 'dnd', 'away'];
 
 	User.guestData = {
 		uid: 0,
@@ -265,18 +276,18 @@ module.exports = function (User) {
 
 			if (user.hasOwnProperty('username')) {
 				parseDisplayName(user, uidToSettings);
-				user.username = validator.escape(user.username ? user.username.toString() : '');
+				user.username = String(user.username || '');
 			}
 
 			// works around renderOverride supplying `url` to templates
 			if (user.url) {
-				user.remoteUrl = user.url;
+				user.remoteUrl = translator.escape(validator.escape(String(user.url)));
 			} else {
 				delete user.url;
 			}
 
 			if (user.hasOwnProperty('email')) {
-				user.email = validator.escape(String(user.email || ''));
+				user.email = String(user.email || '');
 			}
 
 			if (!user.uid && !activitypub.helpers.isUri(user.uid)) {
@@ -295,9 +306,6 @@ module.exports = function (User) {
 				if (isUsingUploadedPicture) {
 					user.picture = user.uploadedpicture;
 				}
-			}
-			if (user.picture) {
-				user.picture = validator.escape(String(user.picture || ''));
 			}
 
 			if (user.hasOwnProperty('cover:url')) {
@@ -361,11 +369,32 @@ module.exports = function (User) {
 			}
 		});
 
-		// remove fields that were added just for processing
-		fieldsToRemove.forEach((field) => {
-			users.forEach((user) => {
+		users.forEach((user) => {
+			// remove fields that were added just for processing
+			fieldsToRemove.forEach((field) => {
 				if (user) {
 					user[field] = undefined;
+				}
+			});
+
+			escapeFieldList.forEach((field) => {
+				if (user[field] && typeof user[field] === 'string') {
+					user[field] = translator.escape(validator.escape(String(user[field])));
+				}
+			});
+			urlFieldList.forEach((field) => {
+				if (user[field] && typeof user[field] === 'string') {
+					const trimmedValue = user[field].trim();
+					const isValid = isValidUserUrlField(trimmedValue);
+					if (isValid) {
+						user[field] = translator.escape(trimmedValue);
+					} else {
+						if (field === 'picture') {
+							user.picture = User.getDefaultAvatar();
+						} else if (field === 'cover:url') {
+							user['cover:url'] = coverPhoto.getDefaultProfileCover(user.uid);
+						}
+					}
 				}
 			});
 		});
@@ -377,6 +406,26 @@ module.exports = function (User) {
 
 		return await plugins.hooks.fire('filter:users.get', users);
 	}
+
+	function isValidUserUrlField(value) {
+		const trimmedValue = String(value).trim();
+		const isHttpUrl = validator.isURL(trimmedValue, {
+			require_protocol: true,
+			require_valid_protocol: true,
+			protocols: ['http', 'https'],
+			require_tld: false,
+		});
+
+		if (isHttpUrl || trimmedValue.startsWith(upload_url)) {
+			return true;
+		}
+
+		if (relative_path && trimmedValue.startsWith(relative_path)) {
+			return trimmedValue.slice(relative_path.length).startsWith(upload_url);
+		}
+
+		return false;
+	};
 
 	function parseDisplayName(user, uidToSettings) {
 		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
@@ -392,11 +441,11 @@ module.exports = function (User) {
 			showfullname = true;
 		}
 
-		user.displayname = validator.escape(String(
+		user.displayname = String(
 			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
 				utils.stripBidiControls(user.fullname) :
 				user.username
-		));
+		);
 	}
 
 	function parseGroupTitle(user) {

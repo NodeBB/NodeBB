@@ -66,6 +66,7 @@
     "flag-assigned-to-you": "<strong>Flaga %1</strong> została przypisana do ciebie",
     "post-awaiting-review": "Post oczkujący na sprawdzenie",
     "topic-awaiting-review": "Temat oczekujący na sprawdzenie",
+    "crosspost-awaiting-review": "Crosspost awaiting review",
     "profile-exported": "<strong>%1</strong>profil wyeksportowany, kliknij tutaj by pobrać",
     "posts-exported": "<strong>%1</strong>postów wyeksportowanych, kliknij tutaj by pobrać",
     "uploads-exported": "<strong>%1</strong>przesłanych plików wyeksportowane, kliknij tutaj by pobrać",

@@ -6,6 +6,7 @@ const helpers = require('../helpers');
 const messaging = require('../../messaging');
 const events = require('../../events');
 const activitypub = require('../../activitypub');
+const utils = require('../../utils');
 
 const Admin = module.exports;
 
@@ -88,13 +89,22 @@ Admin.listGroups = async (req, res) => {
 Admin.activitypub = {};
 
 Admin.activitypub.addRule = async (req, res) => {
-	const { type, value, cid } = req.body;
-	const exists = await categories.exists(cid);
+	let { type, value, cid, filter } = req.body;
+
+	let exists = true;
+	const parsedCid = parseInt(cid, 10);
+	if (utils.isNumber(parsedCid) && parsedCid > 0) {
+		exists = await categories.exists(parsedCid);
+		cid = parsedCid;
+	} else {
+		cid = -1;
+	}
+
 	if (!value || !exists) {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await activitypub.rules.add(type, value, cid);
+	await activitypub.rules.upsert(type, value, cid, filter === 'true');
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 
@@ -141,7 +151,8 @@ Admin.activitypub.addBlocklist = async (req, res, next) => {
 Admin.activitypub.viewBlocklist = async (req, res) => {
 	const { url } = req.params;
 
-	helpers.formatApiResponse(200, res, await activitypub.blocklists.get(url));
+	const { domains, count } = await activitypub.blocklists.get(url);
+	helpers.formatApiResponse(200, res, { domains: domains.map(d => d.domain), count });
 };
 
 Admin.activitypub.removeBlocklist = async (req, res) => {
@@ -158,4 +169,33 @@ Admin.activitypub.refreshBlocklist = async (req, res) => {
 	const blocklists = await activitypub.blocklists.list();
 
 	helpers.formatApiResponse(200, res, { blocklists, count });
+};
+
+Admin.activitypub.addCoreDomain = async (req, res) => {
+	const { domain, severity } = req.body;
+	if (!domain) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	try {
+		const parsed = new URL(`https://${domain}`);
+		if (parsed.hostname.split('.').length < 2) {
+			return helpers.formatApiResponse(400, res);
+		}
+	} catch (e) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	await activitypub.blocklists.core.add(domain, severity);
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
+};
+
+Admin.activitypub.removeCoreDomain = async (req, res) => {
+	const { domain } = req.query;
+	if (!domain) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	await activitypub.blocklists.core.remove(domain);
+	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
 };

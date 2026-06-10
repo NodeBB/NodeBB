@@ -27,6 +27,9 @@
 	"rules.help-user": "由输入用户创建的主题将匹配。请输入用户名或完整ID（例如：<code>bob@example.org</code> 或 <code>https://example.org/users/bob</code>.",
 	"rules.type": "类型",
 	"rules.value": "值",
+	"rules.filter": "队列",
+	"rules.filter.help": "如果勾选此选项，匹配的内容将在分类前先被发送到发帖队列进行审核。",
+	"rules.filter-warning": "您已设置了用于将文章加入队列的分类规则，但发帖队列目前处于禁用状态。符合这些规则的文章将立即发布。",
 	"rules.cid": "版块",
 
 	"relays": "中继服务",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "过滤",
 	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
-	"server.filter-help": "指定您希望禁止与 NodeBB 联邦化的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器联邦化。两者只能选其一。",
-	"server.filter-help-hostname": "请在下面输入实例主机名（如 <code>example.org</code> ），中间用换行符隔开。",
+	"server.filter-help": "指定您希望限制其与 NodeBB 进行交互的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器进行交互。这两种选项均受支持，但它们是互斥的。<br /><br /><strong>注意:</strong> 目前，<em>“静音”</em> 和 <em>“暂停”</em> 的管控级别被视为相同——两者都会完全阻止交互。<em>“过滤”</em> 允许交互，但会将内容放入队列以待审核。",
 	"server.filter-allow-list": "将其用作允许列表",
+	"server.filter-allow-list-help": "启用此功能后，仅允许核心列表中的域名进行联合。在白名单模式下，管控级别设置将被忽略。",
+
+	"core-domains.title": "添加/修改域名",
+	"core-domains.add": "添加",
+	"core-domains.domain": "域名",
+	"core-domains.severity": "管控级别",
+	"core-domains.empty": "目前尚无域名。请在上方添加域名以开始筛选。",
+	"core-domains.placeholder": "输入域名",
+
+	"severity.suspend": "暂停",
+	"severity.silence": "静音",
+	"severity.filter": "过滤",
 
 	"content.outgoing": "外部",
 	"content.summary-limit": "生成摘要后的字符计数",

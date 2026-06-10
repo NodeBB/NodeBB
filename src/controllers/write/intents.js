@@ -33,10 +33,20 @@ Intents.query = async (req, res) => {
 	const prefix = 'https://w3id.org/fep/3b86/';
 	if (!webfinger || !webfinger?._raw?.links) {
 		helpers.formatApiResponse(200, res, { intents });
+		return;
 	}
 	intents = webfinger._raw.links.reduce((memo, link) => {
 		if (link.rel.startsWith(prefix)) {
 			const intent = link.rel.slice(prefix.length).toLowerCase();
+			// Reject non-http/https URLs to prevent XSS via javascript: data: etc.
+			try {
+				const parsed = new URL(link.template);
+				if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+					return memo; // silently skip untrusted schemes
+				}
+			} catch (e) {
+				return memo; // invalid URL, skip
+			}
 			memo[intent] = link.template;
 		}
 		return memo;

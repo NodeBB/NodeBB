@@ -52,7 +52,7 @@ Notes._normalizeTags = async (tag, cid) => {
 	return tags;
 };
 
-Notes.assert = async (uid, input, options = { skipChecks: false }) => {
+Notes.assert = async (uid, input, options = { skipChecks: false, queue: false }) => {
 	/**
 	 * Given the id or object of any as:Note, either retrieves the full context (if resolvable),
 	 * or traverses up the reply chain to build a context.
@@ -192,11 +192,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			}
 
 			// Auto-categorization (takes place only if all other categorization efforts fail)
-			crosspostCid = await assignCategory(mainPost);
+			const { cid, filter: ruleFilter } = await assignCategory(mainPost);
+			options.queue = ruleFilter;
+			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
 				crosspostCid = false;
 			}
+			// filter is used below to decide whether to queue or add the crosspost
 
 			// mainPid ok to leave as-is
 			if (!title) {
@@ -255,6 +258,40 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		activitypub.helpers.log(`[notes/assert] ${count} new note(s) found.`);
 
 		if (!hasTid) {
+			activitypub.helpers.log(`[activitypub/notes.assert] hasTid=${hasTid}, skipChecks=${options.skipChecks}, mainPid=${mainPid}`);
+			const { hostname: mainHostname } = new URL(mainPid);
+			const mainResult = await activitypub.instances.isAllowed(mainHostname);
+
+			if (!mainResult.allowed) {
+				activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${mainPid}, domain is blocked.`);
+				return null;
+			}
+
+			if ((mainResult.severity === 3 || (utils.isNumber(options.cid) && options.queue)) && meta.config.postQueue) {
+				activitypub.helpers.log(`[activitypub/notes.assert] Queuing main post (${mainPid}) due to blocklist severity 3${options.queue ? ' or explicit queue option' : ''}`);
+				if (utils.isNumber(mainPid) || (await posts.exists([mainPid]))[0]) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued main post (${mainPid}): pid is local or already exists`);
+					return null;
+				}
+
+				const queueData = {
+					uid: authorId,
+					cid: options.cid || cid,
+					pid: mainPid,
+					title,
+					timestamp,
+					content: mainPost.content,
+					sourceContent: mainPost.sourceContent,
+					generatedTitle,
+					_activitypub: mainPost._activitypub,
+				};
+
+				await posts.addToQueue(queueData);
+
+				// Drop the rest of the chain — replies without OP don't make sense
+				return { tid: null, queued: 1 };
+			}
+
 			const { to, cc } = mainPost._activitypub;
 			const tags = await Notes._normalizeTags(mainPost._activitypub.tag || []);
 
@@ -302,10 +339,39 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		unprocessed = unprocessed.filter(post => !banned.includes(post.uid));
 
 		let added = [];
+		let queued = 0;
 		await Promise.all(unprocessed.map(async (post) => {
 			const { to, cc } = post._activitypub;
 
 			try {
+				const { hostname: postHostname } = new URL(post.pid);
+				const postResult = await activitypub.instances.isAllowed(postHostname);
+
+				if (!postResult.allowed) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${post.pid}, domain is blocked.`);
+					return;
+				}
+
+				if (postResult.severity === 3 && meta.config.postQueue) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Queuing reply (${post.pid}) due to blocklist severity 3`);
+					if (utils.isNumber(post.pid) || await posts.exists(post.pid)) {
+						activitypub.helpers.log(`[activitypub/notes.assert] Rejecting to-be-queued reply (${post.pid}): pid or tid is local or already exists`);
+						return;
+					}
+
+					await posts.addToQueue({
+						uid: post.uid,
+						tid,
+						pid: post.pid,
+						content: post.content,
+						sourceContent: post.sourceContent,
+						timestamp: post.timestamp,
+						_activitypub: post._activitypub,
+					});
+					queued += 1;
+					return;
+				}
+
 				const postData = await topics.reply(post);
 				added.push(postData);
 				await Notes.updateLocalRecipients(post.pid, { to, cc });
@@ -327,7 +393,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		await Notes.syncUserInboxes(tid, uid);
 
 		if (crosspostCid) {
-			await topics.crossposts.add(tid, crosspostCid, 0);
+			if (options.queue) {
+				await topics.crossposts.queue(tid, crosspostCid, 0);
+			} else {
+				await topics.crossposts.add(tid, crosspostCid, 0);
+			}
 		}
 
 		if (!hasTid && uid && options.cid) {
@@ -335,7 +405,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 			await activitypub.out.announce.topic(tid);
 		}
 
-		return { tid, count };
+		return { tid, count, queued };
 	} catch (e) {
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
@@ -487,18 +557,17 @@ async function assertRelation(post) {
 
 async function assignCategory(post) {
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
-	let cid = undefined;
 	const rules = await activitypub.rules.list();
 	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
 	tags = tags.map(tag => tag.toLowerCase());
 
-	cid = rules.reduce((cid, { type, value, cid: target }) => {
-		if (!cid) {
+	const matched = rules.reduce((matched, { type, value, cid: target, filter: ruleFilter }) => {
+		if (!matched.cid) {
 			switch (type) {
 				case 'hashtag': {
 					if (tags.includes(value.toLowerCase())) {
 						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}`);
-						return target;
+						return { cid: target, filter: ruleFilter };
 					}
 					break;
 				}
@@ -506,16 +575,16 @@ async function assignCategory(post) {
 				case 'user': {
 					if (post.uid === value) {
 						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}`);
-						return target;
+						return { cid: target, filter: ruleFilter };
 					}
 				}
 			}
 		}
 
-		return cid;
-	}, cid);
+		return matched;
+	}, { cid: undefined, filter: false });
 
-	return cid;
+	return matched;
 }
 
 Notes.updateLocalRecipients = async (id, { to, cc }) => {

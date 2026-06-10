@@ -422,4 +422,300 @@ describe('Notes', () => {
 			assert(!inboxed);
 		});
 	});
+
+	describe('Blocklist severity 3 (filter)', () => {
+		/**
+		 * Clear the post queue between tests.
+		 */
+		async function clearQueue() {
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		}
+
+		/**
+		 * Mock instances.isAllowed to return a specific severity for a domain.
+		 */
+		function mockBlockedDomain(domain, severity) {
+			activitypub.instances.isAllowed = async (hostname) => {
+				if (hostname === domain) {
+					return {
+						allowed: severity > 2,
+						severity,
+						listUrl: 'https://example.org/blocklist.csv',
+					};
+				}
+				return activitypub.instances._originalIsAllowed(hostname);
+			};
+		}
+
+		before(async () => {
+			activitypub.instances._originalIsAllowed = activitypub.instances.isAllowed;
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			if (activitypub.instances._originalIsAllowed) {
+				activitypub.instances.isAllowed = activitypub.instances._originalIsAllowed;
+			}
+		});
+
+		beforeEach(async () => {
+			await clearQueue();
+		});
+
+		describe('!hasTid — new topic', () => {
+			beforeEach(function () {
+				mockBlockedDomain('blocked.example.org', 3);
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://blocked.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should queue the main post instead of creating it', async () => {
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert.strictEqual(assertion.tid, null);
+				assert.strictEqual(assertion.queued, 1);
+				assert.strictEqual(assertion.count, undefined);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+
+			it('should queue parent and drop replies when hasTid is false', async () => {
+				const { id: parentId } = helpers.mocks.note();
+				const { id: replyId } = helpers.mocks.note({
+					inReplyTo: parentId,
+				});
+
+				// Assert the parent with severity 3 — should queue and return tid: null
+				const parentAssertion = await activitypub.notes.assert(0, parentId, {
+					skipChecks: true,
+				});
+
+				assert(parentAssertion);
+				assert.strictEqual(parentAssertion.tid, null);
+				assert.strictEqual(parentAssertion.queued, 1);
+
+				// Assert the reply with severity 3 — parent has no tid, so hasTid is false
+				const replyAssertion = await activitypub.notes.assert(0, replyId, {
+					skipChecks: true,
+				});
+
+				assert(replyAssertion);
+				assert.strictEqual(replyAssertion.tid, null);
+				assert.strictEqual(replyAssertion.queued, 1);
+
+				// Verify neither post was created as a real topic/reply
+				assert.strictEqual(await posts.exists(parentId), false);
+				assert.strictEqual(await posts.exists(replyId), false);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+		});
+
+		describe('hasTid — existing topic', () => {
+			let tid;
+			let mainPid;
+			let cid;
+
+			before(async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				const { topicData, postData } = await topics.post({
+					cid,
+					uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				tid = topicData.tid;
+				mainPid = postData.pid;
+			});
+
+			beforeEach(function () {
+				mockBlockedDomain('blocked.example.org', 3);
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://blocked.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should queue replies when severity is 3', async () => {
+				const { id: replyId } = helpers.mocks.note({
+					inReplyTo: mainPid,
+				});
+				const assertion = await activitypub.notes.assert(0, replyId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert.strictEqual(assertion.tid, tid);
+				assert.strictEqual(assertion.queued, 1);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+
+			it('should queue multiple replies', async () => {
+				const { id: id1 } = helpers.mocks.note({
+					inReplyTo: mainPid,
+				});
+				const { id: id2 } = helpers.mocks.note({
+					inReplyTo: mainPid,
+				});
+
+				const assertion1 = await activitypub.notes.assert(0, id1, {
+					skipChecks: true,
+				});
+				const assertion2 = await activitypub.notes.assert(0, id2, {
+					skipChecks: true,
+				});
+
+				assert(assertion1);
+				assert(assertion2);
+				assert.strictEqual(assertion1.tid, tid);
+				assert.strictEqual(assertion1.queued, 1);
+				assert.strictEqual(assertion2.tid, tid);
+				assert.strictEqual(assertion2.queued, 1);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 2);
+			});
+		});
+
+		describe('null case', () => {
+			beforeEach(function () {
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://allowed.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should NOT queue posts when domain is not blocked', async () => {
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid);
+				assert.strictEqual(assertion.queued, 0);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+		});
+
+		describe('Severity 1 and 2', () => {
+			beforeEach(function () {
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://blocked.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should NOT queue posts with severity 1 (suspend)', async () => {
+				mockBlockedDomain('blocked.example.org', 1);
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(!assertion);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+
+			it('should NOT queue posts with severity 2 (silence)', async () => {
+				mockBlockedDomain('blocked.example.org', 2);
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(!assertion);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+		});
+	});
+
+	describe('auto-categorization with queue rule', () => {
+		let remoteCid;
+		let targetCid;
+		let rid;
+		const tagName = utils.generateUUID().slice(0, 8);
+
+		before(async () => {
+			// Create a remote group actor
+			({ id: remoteCid } = helpers.mocks.group());
+			// Create a local target category
+			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			// Add a hashtag-type auto-categorization rule with filter (queue) enabled
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, true);
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			if (rid) {
+				await activitypub.rules.delete(rid);
+			}
+		});
+
+		beforeEach(async () => {
+			// Clear the queue
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		});
+
+		it('should queue as crosspost when auto-categorization rule matches with filter=true', async () => {
+			const { id: noteId } = helpers.mocks.note({
+				audience: [remoteCid],
+				tag: [
+					{ type: 'Hashtag', name: `#${tagName}` },
+				],
+			});
+			const assertion = await activitypub.notes.assert(0, noteId, {
+				skipChecks: true,
+			});
+
+			assert(assertion);
+			assert.strictEqual(assertion.queued, 0); // topic in remote category parsed normally
+			assert(assertion.tid);
+
+			// Verify queue entry has crosspostCid
+			const queueIds = await db.getSortedSetMembers('post:queue');
+			assert.strictEqual(queueIds.length, 1);
+
+			const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+			assert.strictEqual(queueData.type, 'crosspost');
+			const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+			assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			assert.strictEqual(parsedData.tid, assertion.tid);
+		});
+	});
 });

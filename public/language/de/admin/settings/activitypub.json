@@ -27,6 +27,9 @@
 	"rules.help-user": "Die vom eingegebenen Benutzer erstellten Themen werden abgeglichen. Gebe ein Handle oder eine vollständige ID ein. (z.B. <code>bob@example.org</code> or <code>https://example.org/users/bob</code>.",
 	"rules.type": "Typ",
 	"rules.value": "Wert",
+	"rules.filter": "Warteschlange",
+	"rules.filter.help": "Wenn dieses Kontrollkästchen aktiviert ist, werden passende Inhalte vor der Kategorisierung zur Überprüfung an die Beitragswarteschlange weitergeleitet.",
+	"rules.filter-warning": "Du hast Kategorisierungsregeln eingerichtet, um Beiträge in die Warteschlange zu stellen, aber die Beitragswarteschlange ist derzeit deaktiviert. Beiträge, die diesen Regeln entsprechen, werden sofort veröffentlicht.",
 	"rules.cid": "Kategorie",
 
 	"relays": "Relays",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "Filterung",
 	"count": "Dieses NodeBB kennt derzeit <strong>%1</strong> Server",
-	"server.filter-help": "Gib die Server an, die du von der Föderation mit deinem NodeBB ausschließen möchtest. Alternativ kannst du auch festlegen, dass die Föderation nur mit bestimmten Servern <em>erlaubt</em> ist. Beide Optionen werden unterstützt, schließen sich jedoch gegenseitig aus.",
-	"server.filter-help-hostname": "Gib unten nur den Instanz-Hostnamen ein (z. B. <code>example.org</code>), jeweils durch Zeilenumbrüche getrennt.",
+	"server.filter-help": "Gib die Server an, deren Interaktion mit deinem NodeBB du einschränken möchtest. Alternativ kannst du stattdessen auch die Interaktion mit bestimmten Servern selektiv <em>zulassen.</em> Beide Optionen werden unterstützt, schließen sich jedoch gegenseitig aus. <br /><br /><strong>Hinweis:</strong> Die Schweregrade <em>Stumm</em> and <em>Aussetzen</em> werden derzeit identisch behandelt – beide blockieren die Interaktion vollständig. <em>Filter</em> lässt die Interaktion zu, stellt Inhalte jedoch zur Überprüfung in die Warteschlange.",
 	"server.filter-allow-list": "Stattdessen als Allow-Liste verwenden",
+	"server.filter-allow-list-help": "Wenn diese Option aktiviert ist, dürfen nur Domänen aus der Kernliste eine Föderation bilden. Die Schweregradeinstellungen werden im Zulassungslistenmodus ignoriert.",
+
+	"core-domains.title": "Domain hinzufügen/bearbeiten",
+	"core-domains.add": "Hinzufügen",
+	"core-domains.domain": "Domain",
+	"core-domains.severity": "Schweregrad",
+	"core-domains.empty": "Noch keine Domains. Füge oben Domains hinzu, um die Filterung zu starten.",
+	"core-domains.placeholder": "Gib den Domainnamen ein",
+
+	"severity.suspend": "Aussetzen",
+	"severity.silence": "Stumm",
+	"severity.filter": "Filter",
 
 	"content.outgoing": "Ausgehend",
 	"content.summary-limit": "Anzahl der Zeichen, nach der eine Zusammenfassung erstellt wird",

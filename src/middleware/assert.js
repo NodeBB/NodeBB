@@ -36,7 +36,7 @@ Assert.user = helpers.try(async (req, res, next) => {
 		return next();
 	}
 
-	controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
+	await controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-user]]'));
 });
 
 Assert.group = helpers.try(async (req, res, next) => {

@@ -443,7 +443,7 @@ describe('Crossposting (& related logic)', () => {
 				],
 			}));
 
-			await activitypub.rules.add('hashtag', preferredUsername, cid);
+			await activitypub.rules.upsert('hashtag', preferredUsername, cid);
 		});
 
 		it('note assertion should automatically cross-post', async () => {
@@ -488,7 +488,7 @@ describe('Crossposting (& related logic)', () => {
 					content: utils.generateUUID(),
 				});
 				tid = topicData.tid;
-				pid = topicData.mainPid,
+				pid = topicData.mainPid;
 
 				// Add some remote followers
 				await Promise.all([cid1, cid2].map(async (cid) => {

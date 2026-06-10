@@ -608,7 +608,10 @@ postsAPI.removeQueuedPost = async (caller, data) => {
 };
 
 postsAPI.editQueuedPost = async (caller, data) => {
-	if (!data || !data.id || (!data.content && !data.title && !data.cid && !data.tags && !data.thumbs)) {
+	if (
+		!data || !data.id || (!data.content && !data.title && !data.cid &&
+			!data.tags && !data.thumbs && !data.crosspostCid)
+	) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	await posts.editQueuedContent(caller.uid, data);
@@ -650,6 +653,9 @@ async function logQueueEvent(caller, result, type) {
 	if (result.type === 'topic') {
 		eventData.cid = result.data.cid;
 		eventData.title = result.data.title;
+	} else if (result.type === 'crosspost') {
+		eventData.tid = result.data.tid;
+		eventData.crosspostCid = result.data.crosspostCid;
 	} else {
 		eventData.tid = result.data.tid;
 	}

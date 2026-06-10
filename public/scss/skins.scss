@@ -31,15 +31,21 @@
 	}
 }
 
-
-// brite text-secondary is white :/
 .skin-brite {
-	.text-secondary {
-		color: var(--bs-secondary-color) !important;
-	}
-
 	.btn-link {
 		background: $body-bg;
+	}
+}
+
+// these skins have very light text/link-secondary  :/
+.skin-brite, .skin-simplex, .skin-cerulean, .skin-lumen, .skin-lux,
+.skin-materia, .skin-morph, .skin-yeti, .skin-zephyr {
+	.text-secondary, .link-secondary {
+		color: var(--bs-secondary-color) !important;
+	}
+	.link-secondary:hover {
+		color: color-mix(in srgb, var(--bs-secondary-color) 80%, black)!important;
+		text-decoration-color: color-mix(in srgb, var(--bs-secondary-color) 80%, black)!important;
 	}
 }
 

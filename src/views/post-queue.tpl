@@ -70,7 +70,12 @@
 							<input id="{./id}" type="checkbox" class="form-check-input" autocomplete="off" />
 							{{{ end }}}
 							<label for="{./id}" class="small stretched-link">
-								{{{ if posts.data.tid }}}[[post-queue:reply]]{{{ else }}}[[post-queue:topic]]{{{ end }}}
+								{{{ if posts.data.crosspostCid }}}
+									[[post-queue:crosspost]]
+								{{{ else }}}
+									{{{ if posts.data.tid }}}[[post-queue:reply]]{{{ end }}}
+									{{{ if posts.data.cid }}}[[post-queue:topic]]{{{ end }}}
+								{{{ end }}}
 							</label>
 						</li>
 						<li class="card-body d-flex flex-column gap-1 border-bottom">
@@ -177,6 +182,26 @@
 								</a>
 							</div>
 						</li>
+
+						{{{ if (./type == "crosspost") }}}
+						<li class="card-body border-bottom" data-crosspost>
+							<div class="d-flex align-items-center justify-content-between mb-1">
+								<div class="text-xs fw-semibold">
+									[[post-queue:crosspost-to]]
+								</div>
+								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+							</div>
+
+							<div class="topic-category">
+								<a href="{config.relative_path}/category/{posts.crosspostCategory.slug}">
+									<div class="category-item d-inline-block">
+										{buildCategoryIcon(./crosspostCategory, "24px", "rounded-circle")}
+										<span class="text-sm">{posts.crosspostCategory.name}</span>
+									</div>
+								</a>
+							</div>
+						</li>
+						{{{ end }}}
 
 						{{{ if (posts.type == "topic") }}}
 						<li class="card-body border-bottom">

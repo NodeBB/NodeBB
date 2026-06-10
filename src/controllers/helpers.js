@@ -191,15 +191,17 @@ function prependRelativePath(url) {
 		url : relative_path + url;
 }
 
-helpers.buildCategoryBreadcrumbs = async function (cid) {
+helpers.buildCategoryBreadcrumbs = async function (cid, userLang) {
 	const breadcrumbs = [];
 
 	while (parseInt(cid, 10)) {
 		/* eslint-disable no-await-in-loop */
 		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
+
+		const translatedName = await helpers.translateEscapedValue(data.name, userLang);
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
-				text: String(data.name),
+				text: translatedName,
 				url: `${url}/category/${data.slug}`,
 				cid: cid,
 			});
@@ -247,8 +249,29 @@ helpers.buildTitle = function (pageTitle) {
 
 	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 
-	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
+	const title = titleLayout
+		.replace('{pageTitle}', () => pageTitle)
+		.replace('{browserTitle}', () => browserTitle);
 	return title;
+};
+
+helpers.translateEscapedValue = async function translateEscapedValue(value, lang) {
+	const rawValue = validator.unescape(translator.unescape(String(value || '')));
+	return validator.escape(await translator.translate(rawValue, lang));
+};
+
+// categoy names and descriptions can be tx keys, translate them safely here
+// used on category list, category page and users watched categories
+helpers.translateCategoryData = async function (categoryData, userLang) {
+	await Promise.all(categoryData.map(async (category) => {
+		if (category) {
+			category.name = await helpers.translateEscapedValue(category.name, userLang);
+			category.descriptionParsed = await plugins.hooks.fire(
+				'filter:parse.raw', await helpers.translateEscapedValue(category.description, userLang)
+			);
+			category.description = await helpers.translateEscapedValue(category.description, userLang);
+		}
+	}));
 };
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
@@ -266,7 +289,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		helpers.getVisibleCategories({
 			cids, uid, states, privilege, showLinks: false,
 		}),
-		helpers.getSelectedCategory(selectedCid),
+		helpers.getSelectedCategory(selectedCid, uid),
 	]);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
@@ -337,28 +360,30 @@ helpers.getVisibleCategories = async function (params) {
 	});
 };
 
-helpers.getSelectedCategory = async function (cids) {
+helpers.getSelectedCategory = async function (cids, uid) {
 	if (cids && !Array.isArray(cids)) {
 		cids = [cids];
 	}
 	cids = cids && cids.map(cid => parseInt(cid, 10));
-	let selectedCategories = await categories.getCategoriesData(cids);
+	const [selectedCategories, { userLang }] = await Promise.all([
+		categories.getCategoriesData(cids),
+		user.getSettings(uid),
+	]);
+	let selectedCategory = null;
 	const selectedCids = selectedCategories.map(c => c && c.cid).filter(Boolean);
 	if (selectedCategories.length > 1) {
-		selectedCategories = {
+		selectedCategory = {
 			icon: 'fa-plus',
 			name: '[[unread:multiple-categories-selected]]',
 			bgColor: '#ddd',
 		};
 	} else if (selectedCategories.length === 1 && selectedCategories[0]) {
-		selectedCategories = selectedCategories[0];
-	} else {
-		selectedCategories = null;
+		selectedCategory = selectedCategories[0];
 	}
-	return {
-		selectedCids: selectedCids,
-		selectedCategory: selectedCategories,
-	};
+	if (selectedCategory) {
+		selectedCategory.name = await helpers.translateEscapedValue(selectedCategory.name, userLang);
+	}
+	return { selectedCids, selectedCategory };
 };
 
 helpers.getSelectedTag = function (tags) {
@@ -513,7 +538,6 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
-
 		if (process.env.NODE_ENV === 'development') {
 			const stack = payload instanceof Error ? payload.stack : new Error(String(payload)).stack;
 			returnPayload.stack = stack;
@@ -551,8 +575,8 @@ async function generateBannedResponse(res) {
 helpers.generateError = async (statusCode, message, res) => {
 	async function translateMessage(message) {
 		const { req } = res;
-		const settings = req.query.lang ? null : await user.getSettings(req.uid);
-		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
+		const settings = req?.query?.lang ? null : await user.getSettings(req.uid);
+		const language = String(req?.query?.lang || settings.userLang || meta.config.defaultLang);
 		return await translator.translate(message, language);
 	}
 	if (message && message.startsWith('[[')) {

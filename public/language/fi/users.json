@@ -1,6 +1,6 @@
 {
     "all-users": "Kaikki käyttäjät",
-    "followed-users": "Followed Users",
+    "followed-users": "Seuratut käyttäjät",
     "latest-users": "Viimeisimmät käyttäjät",
     "top-posters": "Aktiivisimmat julkaisijat",
     "most-reputation": "Maineikkain",
@@ -14,7 +14,7 @@
     "online-only": "Vain paikalla olevat",
     "invite": "Kutsu",
     "prompt-email": "Sähköpostit:",
-    "groups-to-join": "Groups to be joined when invite is accepted:",
+    "groups-to-join": "Ryhmät, joihin liitytään kutsun hyväksymisen yhteydessä:",
     "invitation-email-sent": "Kutsuviesti lähetettiin osoitteeseen %1",
     "user-list": "Käyttäjälista",
     "recent-topics": "Tuoreimmat aiheet",

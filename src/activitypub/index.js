@@ -154,7 +154,7 @@ ActivityPub.resolveInboxes = async (ids) => {
 		let allowed = false;
 		try {
 			const { hostname } = new URL(inbox);
-			allowed = await ActivityPub.instances.isAllowed(hostname);
+			({ allowed } = await ActivityPub.instances.isAllowed(hostname));
 			if (!allowed) {
 				blocked.push(inbox);
 			}
@@ -342,6 +342,17 @@ ActivityPub.verify = async (req) => {
 			algorithm = 'sha256';
 		}
 
+		// Verify Digest header matches request body
+		if (headers.includes('digest')) {
+			const receivedDigest = req.headers.digest;
+			const bodyData = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+			const bodyDigest = `SHA-256=${createHash('sha256').update(bodyData).digest('base64')}`;
+			if (receivedDigest !== bodyDigest) {
+				ActivityPub.helpers.log('[activitypub/verify]   Failed, digest mismatch.');
+				return false;
+			}
+		}
+
 		// Re-construct signature string
 		const signed_string = headers.split(' ').reduce((memo, cur) => {
 			switch (cur) {
@@ -386,7 +397,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 
 	const { hostname } = new URL(uri);
-	const allowed = await ActivityPub.instances.isAllowed(hostname);
+	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
 	if (!allowed) {
 		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
 		const e = new Error(`[[error:activitypub.get-failed]]`);
@@ -404,8 +415,12 @@ ActivityPub.get = async (type, id, uri, options) => {
 		return cached;
 	}
 
-	const keyData = await ActivityPub.getPrivateKey(type, id);
-	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
+	let headers = {};
+	if (parseInt(id, 10) > 0) {
+		const keyData = await ActivityPub.getPrivateKey(type, id);
+		headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
+	}
+
 	ActivityPub.helpers.log(`[activitypub/get] ${uri}`);
 	try {
 		const { response, body } = await request.get(uri, {

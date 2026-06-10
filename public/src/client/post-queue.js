@@ -167,6 +167,36 @@ define('forum/post-queue', [
 		});
 	}
 
+	function handleCrosspostCidChange(postEl) {
+		const id = postEl.getAttribute('data-id');
+		const crosspostSection = postEl.querySelector('[data-crosspost]');
+
+		categorySelector.modal({
+			localOnly: true,
+			onSubmit: function (selectedCategory) {
+				Promise.all([
+					api.get(`/categories/${selectedCategory.cid}`, {}),
+					api.put(`/posts/queue/${id}`, {
+						crosspostCid: selectedCategory.cid,
+					}),
+				]).then(function (result) {
+					const category = result[0];
+					app.parseAndTranslate('post-queue', 'posts', {
+						posts: [{
+							type: 'crosspost',
+							crosspostCategory: category,
+							crosspostCid: category.cid,
+						}],
+					}, function (html) {
+						if (crosspostSection) {
+							crosspostSection.innerHTML = html.find('[data-crosspost]').html();
+						}
+					});
+				}).catch(alerts.error);
+			},
+		});
+	}
+
 	function handleCategoryChange(categoryEl) {
 		const $this = $(categoryEl);
 		const id = $this.parents('[data-id]').attr('data-id');
@@ -251,8 +281,13 @@ define('forum/post-queue', [
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
 					switch (action) {
 						case 'editCategory': {
-							const categoryEl = e.target.closest('[data-id]').querySelector('.topic-category');
-							handleCategoryChange(categoryEl);
+							const postEl = e.target.closest('[data-id]');
+							if (e.target.closest('[data-crosspost]')) {
+								handleCrosspostCidChange(postEl);
+							} else {
+								const categoryEl = postEl.querySelector('.topic-category');
+								handleCategoryChange(categoryEl);
+							}
 							break;
 						}
 

@@ -132,6 +132,7 @@
     "invalid-image-type": "Định dạng ảnh không hợp lệ. Các loại được phép là: %1",
     "invalid-image-extension": "Phần mở rộng ảnh không hợp lệ",
     "invalid-file-type": "Loại tệp không hợp lệ. Loại cho phép là: %1",
+    "invalid-mime-type": "Loại MIME không hợp lệ",
     "blocked-file-type": "Loại tệp không được phép. Tiện ích mở rộng %1 bị quản trị viên chặn rõ ràng.",
     "invalid-image-dimensions": "Độ phân giải của ảnh quá lớn",
     "group-name-too-short": "Tên nhóm quá ngắn",

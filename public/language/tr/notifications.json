@@ -66,6 +66,7 @@
     "flag-assigned-to-you": "<strong>Şikayet %1</strong> size devredildi",
     "post-awaiting-review": "İnceleme bekleyen ileti(ler) var",
     "topic-awaiting-review": "Topic awaiting review",
+    "crosspost-awaiting-review": "Crosspost awaiting review",
     "profile-exported": "<strong>%1</strong> profili hazırlandı, indirmek için tıklayınız",
     "posts-exported": "<strong>%1</strong> iletileri hazırlandı, indirmek için tıklayınız",
     "uploads-exported": "<strong>%1</strong> yüklemeleri hazırlandı, indirmek için tıklayınız",

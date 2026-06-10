@@ -121,18 +121,44 @@ module.exports = function (Plugins) {
 	}
 
 	function runPackageManagerCommand(command, pkgName, version, callback) {
-		cproc.execFile(packageManagerExecutable, [
+		const args = [
 			packageManagerCommands[packageManager][command],
 			pkgName + (command === 'install' && version ? `@${version}` : ''),
 			'--save',
-		], (err, stdout) => {
-			if (err) {
-				return callback(err);
-			}
+			'--ignore-scripts',
+		];
 
-			winston.verbose(`[plugins/${command}] ${stdout}`);
-			callback();
-		});
+		if (process.platform === 'win32') {
+			const child = cproc.spawn(packageManagerExecutable, args, { shell: true });
+			let stdout = '';
+			let stderr = '';
+
+			child.stdout.on('data', (data) => {
+				stdout += data;
+			});
+			child.stderr.on('data', (data) => {
+				stderr += data;
+			});
+
+			child.on('close', (code) => {
+				if (code !== 0) {
+					const err = new Error(stderr || `Process exited with code ${code}`);
+					return callback(err);
+				}
+				winston.verbose(`[plugins/${command}] ${stdout}`);
+				callback();
+			});
+			child.on('error', callback);
+		} else {
+			cproc.execFile(packageManagerExecutable, args, (err, stdout) => {
+				if (err) {
+					return callback(err);
+				}
+
+				winston.verbose(`[plugins/${command}] ${stdout}`);
+				callback();
+			});
+		}
 	}
 
 

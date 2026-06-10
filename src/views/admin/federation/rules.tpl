@@ -6,12 +6,17 @@
 			<div id="rules" class="mb-4">
 				<p class="lead">[[admin/settings/activitypub:rules-intro]]</p>
 
+				{{{ if (hasFilterRules && !postQueueEnabled) }}}
+				<div class="alert alert-warning">[[admin/settings/activitypub:rules.filter-warning]]</div>
+				{{{ end }}}
+
 				<div class="mb-3 table-responsive-md">
 					<table class="table table-striped" id="rules">
 						<thead>
 							<th></th>
 							<th>[[admin/settings/activitypub:rules.type]]</th>
 							<th>[[admin/settings/activitypub:rules.value]]</th>
+							<th>[[admin/settings/activitypub:rules.filter]]</th>
 							<th>[[admin/settings/activitypub:rules.cid]]</th>
 							<th></th>
 						</thead>
@@ -23,6 +28,7 @@
 								</td>
 								<td>{./type}</td>
 								<td>{./value}</td>
+								<td>{{{ if ./filter }}}✓{{{ else }}}✗{{{ end }}}</td>
 								<td>{./cid}</td>
 								<td><a href="#" data-action="rules.delete"><i class="fa fa-trash link-danger"></i></a></td>
 							</tr>
@@ -30,7 +36,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="5">
+								<td colspan="6">
 									<button class="btn btn-sm btn-primary" data-action="rules.add">[[admin/settings/activitypub:rules.add]]</button>
 								</td>
 							</tr>

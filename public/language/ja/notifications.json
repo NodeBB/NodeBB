@@ -66,6 +66,7 @@
     "flag-assigned-to-you": "<strong>フラグ %1</strong>はあなたに割当てられました",
     "post-awaiting-review": "レビュー待ちの投稿",
     "topic-awaiting-review": "レビュー待ちのスレッド",
+    "crosspost-awaiting-review": "レビュー待ちのクロスポスト",
     "profile-exported": "<strong>%1</strong>のプロフィールをエクスポートしました。クリックしてダウンロード",
     "posts-exported": "<strong>%1</strong>の投稿をエクスポートしました。クリックしてダウンロード",
     "uploads-exported": "<strong>%1</strong>のアップロードをエクスポートしました。クリックしてダウンロード",

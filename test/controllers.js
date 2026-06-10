@@ -248,6 +248,12 @@ describe('Controllers', () => {
 		});
 	});
 
+	it('should properly escape outgoing url query params', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/api/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
+		assert.equal(response.statusCode, 200);
+		assert.strictEqual(body.outgoing, 'https://foo.com/?best=&amp;lsqb;&amp;lsqb;topic:merged-message,%20javascript:alert(origin)&amp;rsqb;&amp;rsqb;');
+	});
+
 	it('should load /register/complete', async () => {
 		const jar = request.jar();
 		const csrf_token = await helpers.getCsrfToken(jar);
@@ -1292,11 +1298,14 @@ describe('Controllers', () => {
 		});
 
 		it('should parse about me', async () => {
-			await user.setUserFields(fooUid, { picture: '/path/to/picture', aboutme: 'hi i am a bot' });
+			await user.setUserFields(fooUid, {
+				picture: '/assets/uploads/path/to/picture',
+				aboutme: 'hi i am a bot [[topic:moved-from]] <script>alert("xss")</script>',
+			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutme, 'hi i am a bot');
-			assert.equal(body.picture, '&#x2F;path&#x2F;to&#x2F;picture');
+			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb; ');
+			assert.equal(body.picture, '/assets/uploads/path/to/picture');
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {

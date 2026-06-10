@@ -138,66 +138,76 @@ Controller.getOutbox = async (req, res) => {
 
 	let prev;
 	let next;
-	const partOf = paginate && (after || before) && `${nconf.get('url')}/uid/${uid}/outbox`;
+	const partOf = paginate && `${nconf.get('url')}/uid/${uid}/outbox`;
 	const first = paginate && !after && !before && `${nconf.get('url')}/uid/${uid}/outbox?after=${Date.now()}`;
 	const last = paginate && !after && !before && `${nconf.get('url')}/uid/${uid}/outbox?before=0`;
 	let activities;
+	let post, upvote, downvote, share;
 
-	if (!paginate || after || before) {
+	if (after || before) {
 		const limit = after ? parseInt(after, 10) - 1 : parseInt(before, 10) + 1;
 		const method = after ? 'getSortedSetRevRangeByScoreWithScores' : 'getSortedSetRangeByScoreWithScores';
 
-		const [post, upvote, downvote, share] = await Promise.all([
+		[post, upvote, downvote, share] = await Promise.all([
 			db[method](`uid:${uid}:posts`, 0, 20, limit, `${after ? '-' : '+'}inf`),
 			db[method](`uid:${uid}:upvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
 			db[method](`uid:${uid}:downvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
 			db[method](`uid:${uid}:shares`, 0, 20, limit, `${after ? '-' : '+'}inf`),
 		]);
-		activities = [
-			post.map(post => ({ ...post, type: 'post' })),
-			upvote.map(upvote => ({ ...upvote, type: 'upvote' })),
-			downvote.map(downvote => ({ ...downvote, type: 'downvote' })),
-			share.map(share => ({ ...share, type: 'share' })),
-		].flat().sort((a, b) => b.score - a.score);
-		if (after) {
-			activities = activities.slice(0, 20);
-		} else {
-			activities = activities.slice(-20);
-		}
+	} else {
+		// Simple range query for first page (no pagination params)
+		[post, upvote, downvote, share] = await Promise.all([
+			db.getSortedSetRangeWithScores(`uid:${uid}:posts`, 0, 19),
+			db.getSortedSetRangeWithScores(`uid:${uid}:upvote`, 0, 19),
+			db.getSortedSetRangeWithScores(`uid:${uid}:downvote`, 0, 19),
+			db.getSortedSetRangeWithScores(`uid:${uid}:shares`, 0, 19),
+		]);
+	}
 
-		if (activities.length) {
-			prev = `${nconf.get('url')}/uid/${uid}/outbox?before=${activities[0].score}`;
-			next = `${nconf.get('url')}/uid/${uid}/outbox?after=${activities[19].score}`;
+	activities = [
+		post.map(post => ({ ...post, type: 'post' })),
+		upvote.map(upvote => ({ ...upvote, type: 'upvote' })),
+		downvote.map(downvote => ({ ...downvote, type: 'downvote' })),
+		share.map(share => ({ ...share, type: 'share' })),
+	].flat().sort((a, b) => b.score - a.score);
+	if (!paginate || before) {
+		activities = activities.slice(-20);
+	} else {
+		activities = activities.slice(0, 20);
+	}
 
-			let postsData = activities.filter((({ type }) => type === 'post'));
-			postsData = await posts.getPostSummaryByPids(postsData.map(({ value }) => value), 0, { stripTags: false });
-			postsData = postsData.reduce((map, postData) => {
-				map.set(postData.pid, postData);
-				return map;
-			}, new Map());
+	if (activities.length) {
+		prev = `${nconf.get('url')}/uid/${uid}/outbox?before=${activities[0].score}`;
+		next = `${nconf.get('url')}/uid/${uid}/outbox?after=${activities[activities.length - 1].score}`;
 
-			activities = await Promise.all(activities.map(async ({ type, value: id }) => {
-				switch (type) {
-					case 'post': {
-						const { activity } = await activitypub.mocks.activities.create(id, 0, postsData.get(id));
-						return activity;
-					}
+		let postsData = activities.filter((({ type }) => type === 'post'));
+		postsData = await posts.getPostSummaryByPids(postsData.map(({ value }) => value), 0, { stripTags: false });
+		postsData = postsData.reduce((map, postData) => {
+			map.set(postData.pid, postData);
+			return map;
+		}, new Map());
 
-					case 'upvote': {
-						return activitypub.mocks.activities.like(id, uid);
-					}
-
-					case 'downvote': {
-						return activitypub.mocks.activities.dislike(id, uid);
-					}
-
-					case 'share': {
-						const { activity } = await activitypub.mocks.activities.announce(id, uid);
-						return activity;
-					}
+		activities = await Promise.all(activities.map(async ({ type, value: id }) => {
+			switch (type) {
+				case 'post': {
+					const { activity } = await activitypub.mocks.activities.create(id, 0, postsData.get(id));
+					return activity;
 				}
-			}));
-		}
+
+				case 'upvote': {
+					return activitypub.mocks.activities.like(id, uid);
+				}
+
+				case 'downvote': {
+					return activitypub.mocks.activities.dislike(id, uid);
+				}
+
+				case 'share': {
+					const { activity } = await activitypub.mocks.activities.announce(id, uid);
+					return activity;
+				}
+			}
+		}));
 	}
 
 	res.status(200).json({

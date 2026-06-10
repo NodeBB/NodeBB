@@ -1000,7 +1000,7 @@ describe('User', () => {
 			assert.strictEqual(body.status.code, 'ok');
 
 			const picture = await User.getUserField(uid, 'picture');
-			assert.strictEqual(picture, validator.escape('https://example.org/picture.jpg'));
+			assert.strictEqual(picture, 'https://example.org/picture.jpg');
 		});
 
 		it('should fail to change user picture with invalid data', async () => {
@@ -1027,11 +1027,11 @@ describe('User', () => {
 		});
 
 		it('should set user picture to uploaded', async () => {
-			await User.setUserField(uid, 'uploadedpicture', '/test');
-			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/test');
-			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/test', uid: uid });
+			await User.setUserField(uid, 'uploadedpicture', '/assets/uploads/test');
+			await db.sortedSetAdd(`uid:${uid}:profile:pictures`, Date.now(), '/assets/uploads/test');
+			await apiUser.changePicture({ uid: uid }, { type: 'uploaded', picture: '/assets/uploads/test', uid: uid });
 			const picture = await User.getUserField(uid, 'picture');
-			assert.equal(picture, validator.escape(`${nconf.get('relative_path')}/test`));
+			assert.equal(picture, `${nconf.get('relative_path')}/assets/uploads/test`);
 		});
 
 		it('should return error if profile image uploads disabled', (done) => {
@@ -1765,6 +1765,12 @@ describe('User', () => {
 			await apiUser.updateSettings({ uid: testUid }, data);
 			const userSettings = await User.getSettings(testUid);
 			assert.strictEqual(userSettings.homePageRoute, 'category/6/testing-ground');
+
+
+			data.settings.homePageRoute = '<script>alert(1);</script>';
+			await apiUser.updateSettings({ uid: testUid }, data);
+			const updatedSettings = await User.getSettings(testUid);
+			assert.strictEqual(updatedSettings.homePageRoute, '&lt;script&gt;alert(1);&lt;/script&gt;');
 		});
 
 
@@ -1783,6 +1789,19 @@ describe('User', () => {
 			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-language]]');
 			}
+		});
+
+		it('should error if notificationType_upvote is invalid', async () => {
+			const data = {
+				uid: testUid,
+				settings: {
+					notificationType_upvote: '<invalid-string>',
+				},
+			};
+			await assert.rejects(
+				apiUser.updateSettings({ uid: testUid }, data),
+				{ message: '[[error:invalid-notification-type]]' }
+			);
 		});
 
 		it('should set moderation note', async () => {

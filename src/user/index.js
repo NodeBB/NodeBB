@@ -100,7 +100,11 @@ User.getStatus = function (userData) {
 		return 'offline';
 	}
 	const isOnline = (Date.now() - userData.lastonline) < (meta.config.onlineCutoff * 60000);
-	return isOnline ? (userData.status || 'online') : 'offline';
+	let status = isOnline ? (userData.status || 'online') : 'offline';
+	if (!User.allowedStatus.includes(status)) {
+		status = 'offline';
+	}
+	return status;
 };
 
 User.getUidByUsername = async function (username) {

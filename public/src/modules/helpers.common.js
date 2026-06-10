@@ -169,7 +169,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function generateGroupDisplayName(group) {
-		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
+		return group.system ? group.displayName.replace(/-/g, ' ') : helpers.txEscape(group.displayName);
 	}
 
 	// Groups helpers
@@ -309,8 +309,12 @@ module.exports = function (utils, Benchpress, relative_path) {
 			userObj = this;
 		}
 		classNames = classNames || '';
+		const displayname = escape(String(userObj.displayname || ''));
+		const picture = escape(String(userObj.picture || ''));
+		const iconBgColor = escape(String(userObj['icon:bgColor'] || ''));
+		const iconText = escape(String(userObj['icon:text'] || ''));
 		const attributes = new Map([
-			['title', userObj.displayname],
+			['title', displayname],
 			['data-uid', userObj.uid],
 			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
@@ -323,9 +327,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			output += `<img${attr2String(attributes)} alt="${userObj.displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
+			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
 		}
-		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${userObj['icon:bgColor']}">${userObj['icon:text']}</span>`;
+		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${iconBgColor}">${iconText}</span>`;
 		return output;
 	}
 
@@ -390,7 +394,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function txEscape(text) {
-		return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		return String(text)
+			.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;')
+			.replace(/,/g, '&#44;').replace(/%/g, '&#37;');
 	}
 
 	function uploadBasename(str, sep = '/') {

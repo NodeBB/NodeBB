@@ -20,11 +20,12 @@ define('forum/chats', [
 	'chat',
 	'api',
 	'uploadHelpers',
+	'translator',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	events, search, autocomplete, hooks, bootbox, alerts,
-	chatModule, api, uploadHelpers
+	chatModule, api, uploadHelpers, translator
 ) {
 	const Chats = {
 		activeAutocomplete: {},
@@ -123,7 +124,12 @@ define('forum/chats', [
 			inputEl: chatInput,
 		});
 
-		$('[data-action="close"]').on('click', () => Chats.switchChat());
+		$('[data-action="close"]').on('click', async function () {
+			if (ajaxify.data.roomId) {
+				await api.del(`/chats/${ajaxify.data.roomId}/state`, {});
+			}
+			Chats.switchChat();
+		});
 		userList.init(roomId, mainWrapper);
 		Chats.addNotificationSettingHandler(roomId, mainWrapper);
 		messageSearch.init(roomId, mainWrapper);
@@ -516,9 +522,7 @@ define('forum/chats', [
 	Chats.addRenameHandler = function (roomId, buttonEl) {
 		buttonEl.on('click', async function () {
 			const { roomName } = await api.get(`/chats/${roomId}`);
-			const html = await app.parseAndTranslate('modals/rename-room', {
-				name: roomName,
-			});
+			const html = await app.parseAndTranslate('modals/rename-room', {});
 			const modal = bootbox.dialog({
 				title: '[[modules:chat.rename-room]]',
 				message: html,
@@ -537,6 +541,13 @@ define('forum/chats', [
 						},
 					},
 				},
+			});
+			modal.on('show.bs.modal', function () {
+				const val = translator.unescape(roomName);
+				modal.find('#roomName').val(val).selectRange(0, val.length);
+			});
+			modal.on('shown.bs.modal', function () {
+				modal.find('#roomName').focus();
 			});
 		});
 	};

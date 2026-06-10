@@ -116,6 +116,7 @@ function renderUser(event) {
 	const user = {
 		...event.user,
 		displayname: validator.escape(String(event.user.displayname)),
+		userslug: validator.escape(String(event.user.userslug)),
 	};
 
 	return `${helpers.buildAvatar(user, '16px', true)} <a href="${relative_path}/user/${user.userslug}">${user.displayname}</a>`;

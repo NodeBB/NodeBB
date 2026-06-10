@@ -27,6 +27,9 @@
 	"rules.help-user": "Les sujets créés par l’utilisateur spécifié seront pris en compte. Entrez un identifiant ou un ID complet (par ex. <code>bob@exemple.org</code> ou <code>https://exemple.org/users/bob</code>).",
 	"rules.type": "Type",
 	"rules.value": "Valeur",
+	"rules.filter": "Queue",
+	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
+	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "Catégorie",
 
 	"relays": "Relais",
@@ -54,9 +57,20 @@
 
 	"server-filtering": "Filtrage",
 	"count": "Ce NodeBB connaît actuellement <strong>%1</strong> serveur(s)",
-	"server.filter-help": "Spécifiez les serveurs que vous souhaitez interdire de se fédérer avec votre NodeBB. Vous pouvez également autoriser sélectivement la fédération avec certains serveurs. Ces deux options sont possibles, mais incompatibles.",
-	"server.filter-help-hostname": "Saisissez uniquement le nom d’hôte de l’instance (par ex. <code>exemple.org</code>), un par ligne.",
+	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.<br /><br /><strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
 	"server.filter-allow-list": "Utiliser comme liste blanche",
+	"server.filter-allow-list-help": "When enabled, only domains in the core list are allowed to federate. Severity settings are ignored in allow list mode.",
+
+	"core-domains.title": "Add/Modify Domain",
+	"core-domains.add": "Add",
+	"core-domains.domain": "Domain",
+	"core-domains.severity": "Severity",
+	"core-domains.empty": "No domains yet. Add domains above to start filtering.",
+	"core-domains.placeholder": "Enter domain name",
+
+	"severity.suspend": "Suspend",
+	"severity.silence": "Silence",
+	"severity.filter": "Filter",
 
 	"content.outgoing": "Sortant",
 	"content.summary-limit": "Nombre de caractères déclenchant la génération d’un résumé",

@@ -132,6 +132,7 @@
     "invalid-image-type": "無効なイメージタイプです。許可された種類は: %1",
     "invalid-image-extension": "無効なイメージのエクステンション",
     "invalid-file-type": "無効なファイルタイプです。許可された種類は: %1",
+    "invalid-mime-type": "無効なMIMEタイプ",
     "blocked-file-type": "ファイル形式は許可されていません。拡張子 %1 は管理者によって明示的にブロックされています。",
     "invalid-image-dimensions": "画像が大きすぎます",
     "group-name-too-short": "グループ名は短すぎます。",

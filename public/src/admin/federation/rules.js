@@ -97,7 +97,7 @@ function throwModal() {
 		});
 
 		modal.on('shown.bs.modal', function () {
-			modal.find('input').focus();
+			modal.find('#value').focus();
 		});
 
 
@@ -123,6 +123,7 @@ function throwModal() {
 			cacheList: false,
 			showLinks: true,
 			template: 'admin/partials/category/selector-dropdown-right',
+			localOnly: true,
 		});
 	});
 }

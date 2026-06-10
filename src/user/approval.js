@@ -17,6 +17,12 @@ module.exports = function (User) {
 		User.checkUsernameLength(userData.username);
 		const queue = await User.shouldQueueUser(req.ip);
 		const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, userData, queue });
+
+		// prevent picture if reputation required
+		if (Object.hasOwn(userData, 'picture') && (!meta.config['reputation:disabled'] && meta.config['min:rep:profile-picture'] > 0)) {
+			delete userData.picture;
+		}
+
 		if (result.queue) {
 			await User.addToApprovalQueue({ ...userData, ip: req.ip, _opts: JSON.stringify(opts) });
 			return { queued: true, message: await getRegistrationQueuedMessage() };

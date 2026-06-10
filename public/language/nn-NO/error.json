@@ -132,6 +132,7 @@
     "invalid-image-type": "Ugyldig biletype. Tillatte typar er: %1",
     "invalid-image-extension": "Ugyldig bileteutviding",
     "invalid-file-type": "Ugyldig filtype. Tillatte typar er: %1",
+    "invalid-mime-type": "Invalid MIME type",
     "blocked-file-type": "File type not allowed. The extension %1 is explicitly blocked by the administrator.",
     "invalid-image-dimensions": "Biletedimensjonane er for store",
     "group-name-too-short": "Gruppenamn er for kort",

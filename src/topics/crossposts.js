@@ -4,6 +4,7 @@ const winston = require('winston');
 const _ = require('lodash');
 const db = require('../database');
 const topics = require('.');
+const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -114,6 +115,19 @@ Crossposts.add = async function (tid, cid, uid) {
 	}
 
 	return [...crossposts, { id: crosspostId, uid, tid, cid, timestamp: now }];
+};
+
+Crossposts.queue = async function (tid, cid, uid) {
+	if (!meta.config.postQueue) {
+		return;
+	}
+	const title = await topics.getTopicField(tid, 'title');
+	await posts.addToQueue({
+		uid: uid || 0,
+		tid,
+		title,
+		crosspostCid: cid,
+	});
 };
 
 Crossposts.remove = async function (tid, cid, uid) {

@@ -30,6 +30,12 @@ define('notifications', [
 	hooks.on('filter:notifications.load', _addTimeagoString);
 
 	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
+		// backwards compatibilty for old signature (notifList, callback)
+		if (triggerEl && typeof notifList === 'function') {
+			callback = notifList;
+			notifList = triggerEl;
+			triggerEl = null;
+		}
 		callback = callback || function () {};
 		api.get('/notifications').then((data) => {
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {

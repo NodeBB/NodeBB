@@ -26,7 +26,7 @@
 	"restrictions.title-length": "标题长度",
 	"restrictions.post-length": "帖子字数",
 	"restrictions.days-until-stale": "主题过时的天数",
-	"restrictions.stale-help": "如果某个主题被认为是“过时”的，则会向试图回复该主题的用户发出警告。(设置为 0 则禁用）",
+	"restrictions.stale-help": "如果某个主题被视为“过期”，则会向试图回复此主题的用户发出警告。（设置为 0 以禁用此功能）",
 	"restrictions.move-own-topic-max-posts": "主题中的最大帖子数，超过此数后用户将无法移动自己的主题（设置为 0 以禁用此功能）",
 	"timestamp": "时间戳",
 	"timestamp.cut-off": "截止日期（天）",

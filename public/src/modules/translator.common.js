@@ -263,13 +263,28 @@ module.exports = function (utils, load, warn) {
 						let escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
 						// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
 						escaped = escaped.replace(/&amp;lsqb;/g, '&lsqb;')
-							.replace(/&amp;rsqb;/g, '&rsqb;');
+							.replace(/&amp;rsqb;/g, '&rsqb;')
+							.replace(/&amp;#44;/g, '&#44;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
+					out = validateHrefAttributes(out);
 					return out;
 				});
 			});
 		};
+
+		function validateHrefAttributes(translated) {
+			return translated.replace(/href="([^"]*)"/gi, (match, href) => {
+				return isSafeHref(href) ? match : 'href=""';
+			});
+		}
+
+		function isSafeHref(href) {
+			const normalizedHref = String(href).trim().toLowerCase();
+			const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
+			const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
+			return isHttpUrl || isRelativeUrl;
+		}
 
 		/**
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
@@ -465,8 +480,18 @@ module.exports = function (utils, load, warn) {
 		Translator.escape = function escape(text) {
 			return typeof text === 'string' ?
 				text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') :
-				// text.replace(/\[\[([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;') :
 				text;
+			/*
+				if (typeof text !== 'string') return text;
+
+    			let previous;
+    			// Keep matching the innermost unescaped brackets and converting them
+    			while (text !== previous) {
+	        		previous = text;
+        			text = text.replace(/\[\[([a-zA-Z0-9_.-]+:[^\[\]]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;');
+    			}
+    			return text;
+			*/
 		};
 
 		/**
@@ -477,8 +502,18 @@ module.exports = function (utils, load, warn) {
 		Translator.unescape = function unescape(text) {
 			return typeof text === 'string' ?
 				text.replace(/&rsqb;&rsqb;/g, ']]').replace(/&lsqb;&lsqb;/g, '[[') :
-				// text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+)&rsqb;&rsqb;/g, '[[$1]]') :
 				text;
+			/*
+				if (typeof text !== 'string') return text;
+
+				let previous;
+				// Keep matching the innermost escaped brackets and converting them back
+				while (text !== previous) {
+					previous = text;
+					text = text.replace(/&lsqb;&lsqb;([a-zA-Z0-9_.-]+:(?:(?!&lsqb;|&rsqb;).)+)&rsqb;&rsqb;/g, '[[$1]]');
+				}
+				return text;
+			*/
 		};
 
 		/**

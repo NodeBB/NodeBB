@@ -21,6 +21,8 @@ module.exports = function (User) {
 		categoryWatchState: 'notwatching',
 	});
 
+	const validNotificationTypeValues = ['none', 'notification', 'email', 'notificationemail'];
+
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
 			const isSpider = parseInt(uid, 10) === -1;
@@ -96,16 +98,19 @@ module.exports = function (User) {
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
+			if (!validNotificationTypeValues.includes(settings[notificationType])) {
+				settings[notificationType] = 'notification';
+			}
 		});
 
-		settings.chatAllowList = parseJSONSetting(settings.chatAllowList || '[]', []).map(String);
-		settings.chatDenyList = parseJSONSetting(settings.chatDenyList || '[]', []).map(String);
+		settings.chatAllowList = parseJSONArray(settings.chatAllowList || '[]', []);
+		settings.chatDenyList = parseJSONArray(settings.chatDenyList || '[]', []);
 		return settings;
 	}
 
-	function parseJSONSetting(value, defaultValue) {
+	function parseJSONArray(value, defaultValue) {
 		try {
-			return JSON.parse(value);
+			return JSON.parse(value).map(String);
 		} catch (err) {
 			return defaultValue;
 		}
@@ -156,9 +161,10 @@ module.exports = function (User) {
 			chatAllowList: data.chatAllowList,
 			chatDenyList: data.chatDenyList,
 		};
+
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
-			if (data[notificationType]) {
+			if (Object.hasOwn(data, notificationType) && validNotificationTypeValues.includes(data[notificationType])) {
 				settings[notificationType] = data[notificationType];
 			}
 		});
@@ -168,33 +174,22 @@ module.exports = function (User) {
 		return await User.getSettings(uid);
 	};
 
+	function validateMinMax(value, min, max, errorMessage) {
+		const parsed = parseInt(value, 10);
+		if (!value || parsed < min || parsed > max) {
+			throw new Error(errorMessage);
+		}
+	}
+
 	async function validateSettings(data) {
 		const maxUnreadCutoff = Math.max(meta.config.unreadCutoff, 14);
-		if (
-			!data.unreadCutoff ||
-			parseInt(data.unreadCutoff, 10) <= 0 ||
-			parseInt(data.unreadCutoff, 10) > maxUnreadCutoff
-		) {
-			throw new Error(`[[error:invalid-unread-cutoff, ${maxUnreadCutoff}]]`);
-		}
+		validateMinMax(data.unreadCutoff, 1, maxUnreadCutoff, `[[error:invalid-unread-cutoff, ${maxUnreadCutoff}]]`);
 
 		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
-		if (
-			!data.postsPerPage ||
-			parseInt(data.postsPerPage, 10) <= 1 ||
-			parseInt(data.postsPerPage, 10) > maxPostsPerPage
-		) {
-			throw new Error(`[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
-		}
+		validateMinMax(data.postsPerPage, 2, maxPostsPerPage, `[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
 
 		const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
-		if (
-			!data.topicsPerPage ||
-			parseInt(data.topicsPerPage, 10) <= 1 ||
-			parseInt(data.topicsPerPage, 10) > maxTopicsPerPage
-		) {
-			throw new Error(`[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
-		}
+		validateMinMax(data.topicsPerPage, 2, maxTopicsPerPage, `[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
 
 		const languageCodes = await languages.listCodes();
 		if (data.userLang && !languageCodes.includes(data.userLang)) {
@@ -203,6 +198,24 @@ module.exports = function (User) {
 		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
 			throw new Error('[[error:invalid-language]]');
 		}
+
+		try {
+			if (Object.hasOwn(data, 'chatAllowList') && !Array.isArray(JSON.parse(data.chatAllowList))) {
+				throw new Error('[[error:invalid-chat-allow-list]]');
+			}
+			if (Object.hasOwn(data, 'chatDenyList') && !Array.isArray(JSON.parse(data.chatDenyList))) {
+				throw new Error('[[error:invalid-chat-deny-list]]');
+			}
+		} catch (err) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		const notificationTypes = await notifications.getAllNotificationTypes();
+		notificationTypes.forEach((notificationType) => {
+			if (Object.hasOwn(data, notificationType) && !validNotificationTypeValues.includes(data[notificationType])) {
+				throw new Error('[[error:invalid-notification-type]]');
+			}
+		});
 	}
 
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {
