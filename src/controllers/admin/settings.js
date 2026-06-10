@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const meta = require('../../meta');
 const emailer = require('../../emailer');
 const notifications = require('../../notifications');
@@ -12,7 +10,6 @@ const social = require('../../social');
 const api = require('../../api');
 const pagination = require('../../pagination');
 const helpers = require('../helpers');
-const translator = require('../../translator');
 const plugins = require('../../plugins');
 
 const settingsController = module.exports;
@@ -46,9 +43,6 @@ settingsController.navigation = async function (req, res) {
 	admin.enabled.forEach((enabled, index) => {
 		enabled.index = index;
 		enabled.selected = index === 0;
-		enabled.title = translator.escape(enabled.title);
-		enabled.text = translator.escape(enabled.text);
-		enabled.dropdownContent = translator.escape(validator.escape(String(enabled.dropdownContent || '')));
 		enabled.groups = admin.groups.map(group => ({
 			displayName: group.displayName,
 			selected: enabled.groups.includes(group.name),

@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = require('nconf');
-const validator = require('validator');
 const admin = require('./admin');
 const groups = require('../groups');
 
@@ -13,7 +12,7 @@ navigation.get = async function (uid) {
 	let data = await admin.get();
 
 	data = data.filter(item => item && item.enabled).map((item) => {
-		item.originalRoute = validator.unescape(item.route);
+		item.originalRoute = item.route; // TODO: can remove originalRoute in 5.x
 
 		if (!item.route.startsWith('http')) {
 			item.route = relative_path + item.route;

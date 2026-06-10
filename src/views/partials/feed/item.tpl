@@ -56,7 +56,7 @@
 
 			<div component="post/content" class="content text-sm text-break position-relative line-clamp-6">
 				<a href="{config.relative_path}/post/{encodeURIComponent(./pid)}" class="stretched-link"></a>
-				{./content}
+				{{./content}}
 			</div>
 			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">[[world:see-more]]</button>
 			<hr class="my-2"/>
@@ -81,7 +81,7 @@
 					</div>
 					<div class="post-content text-xs text-break line-clamp-sm-2 lh-sm position-relative flex-fill">
 						<a class="stretched-link" tabindex="-1" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./topic.teaser.index }}}/{./topic.teaser.index}{{{ end }}}" aria-label="[[global:lastpost]]"></a>
-						{./topic.teaser.content}
+						{{./topic.teaser.content}}
 					</div>
 				</div>
 			</div>
