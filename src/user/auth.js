@@ -12,26 +12,26 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = async function (uid, ip) {
-		if (!(parseInt(uid, 10) > 0)) {
-			return;
-		}
-		const exists = await db.exists(`lockout:${uid}`);
+		// Use a fixed dummy key for non-existent users to prevent username enumeration (CWE-203)
+		const targetKey = parseInt(uid, 10) > 0 ? uid : 'dummy';
+
+		const exists = await db.exists(`lockout:${targetKey}`);
 		if (exists) {
 			throw new Error('[[error:account-locked]]');
 		}
-		const attempts = await db.increment(`loginAttempts:${uid}`);
+		const attempts = await db.increment(`loginAttempts:${targetKey}`);
 		if (attempts <= meta.config.loginAttempts) {
-			return await db.pexpire(`loginAttempts:${uid}`, 1000 * 60 * 60);
+			return await db.pexpire(`loginAttempts:${targetKey}`, 1000 * 60 * 60);
 		}
-		// Lock out the account
-		await db.set(`lockout:${uid}`, '');
+		// Lock out
+		await db.set(`lockout:${targetKey}`, '');
 		const duration = 1000 * 60 * meta.config.lockoutDuration;
 
-		await db.delete(`loginAttempts:${uid}`);
-		await db.pexpire(`lockout:${uid}`, duration);
+		await db.delete(`loginAttempts:${targetKey}`);
+		await db.pexpire(`lockout:${targetKey}`, duration);
 		await events.log({
 			type: 'account-locked',
-			uid: uid,
+			uid: targetKey === 'dummy' ? 0 : targetKey,
 			ip: ip,
 		});
 		throw new Error('[[error:account-locked]]');
