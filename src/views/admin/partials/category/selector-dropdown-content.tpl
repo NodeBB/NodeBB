@@ -2,7 +2,7 @@
 	<span component="category-selector-selected" class="d-flex align-items-center gap-1">
 		{{{ if (selectedCategory && !showCategorySelectLabel) }}}
 		<span class="category-item d-inline-flex align-items-center gap-1">
-			{buildCategoryIcon(selectedCategory, "24px", "rounded-circle")}
+			{{buildCategoryIcon(selectedCategory, "24px", "rounded-circle")}}
 			<span class="fw-semibold">{selectedCategory.name}</span>
 		</span>
 		{{{ else }}}
@@ -29,7 +29,7 @@
 				<span component="category-markup" style="{{{ if ./match }}}font-weight: bold;{{{end}}}">
 					<div class="category-item d-inline-flex align-items-center gap-1">
 						{{{ if ./icon }}}
-						{buildCategoryIcon(@value, "24px", "rounded-circle")}
+						{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 						{{{ end }}}
 						{./name}
 					</div>

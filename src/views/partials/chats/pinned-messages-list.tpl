@@ -6,7 +6,7 @@
 	{{{ end }}}
 
 	<div class="message-header lh-1 d-flex align-items-center gap-2 text-sm pb-2">
-		<a href="{config.relative_path}/user/{messages.fromUser.userslug}" class="text-decoration-none">{buildAvatar(messages.fromUser, "18px", true, "not-responsive")}</a>
+		<a href="{config.relative_path}/user/{messages.fromUser.userslug}" class="text-decoration-none">{{buildAvatar(messages.fromUser, "18px", true, "not-responsive")}}</a>
 		<span class="chat-user fw-semibold"><a href="{config.relative_path}/user/{messages.fromUser.userslug}">{messages.fromUser.displayname}</a></span>
 
 		<span class="chat-timestamp text-muted timeago" title="{messages.timestampISO}"></span>

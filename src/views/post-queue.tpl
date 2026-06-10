@@ -111,7 +111,7 @@
 							</div>
 							<div class="text-sm lh-1">
 								{{{ if posts.user.userslug}}}
-								<a class="text-decoration-none d-flex align-items-center gap-1" href="{config.relative_path}/uid/{posts.user.uid}">{buildAvatar(posts.user, "24px", true, "not-responsive")} {posts.user.username}</a>
+								<a class="text-decoration-none d-flex align-items-center gap-1" href="{config.relative_path}/uid/{posts.user.uid}">{{buildAvatar(posts.user, "24px", true, "not-responsive")}} {posts.user.username}</a>
 								{{{ else }}}
 								{posts.user.username}
 								{{{ end }}}
@@ -176,7 +176,7 @@
 							<div class="topic-category">
 								<a href="{config.relative_path}/category/{posts.category.slug}">
 									<div class="category-item d-inline-block">
-										{buildCategoryIcon(./category, "24px", "rounded-circle")}
+										{{buildCategoryIcon(./category, "24px", "rounded-circle")}}
 										<span class="text-sm">{posts.category.name}</span>
 									</div>
 								</a>
@@ -195,7 +195,7 @@
 							<div class="topic-category">
 								<a href="{config.relative_path}/category/{posts.crosspostCategory.slug}">
 									<div class="category-item d-inline-block">
-										{buildCategoryIcon(./crosspostCategory, "24px", "rounded-circle")}
+										{{buildCategoryIcon(./crosspostCategory, "24px", "rounded-circle")}}
 										<span class="text-sm">{posts.crosspostCategory.name}</span>
 									</div>
 								</a>

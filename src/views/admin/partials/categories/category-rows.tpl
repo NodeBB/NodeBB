@@ -10,7 +10,7 @@
 					</button>
 					<div class="information flex-1 align-items-start d-flex gap-2">
 						<div>
-						{buildCategoryIcon(@value, "28px", "rounded-1")}
+						{{buildCategoryIcon(@value, "28px", "rounded-1")}}
 						</div>
 						<div class="d-grid gap-0">
 							<div class="title fw-semibold">

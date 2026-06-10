@@ -18,7 +18,7 @@
 					<a class="dropdown-item rounded-1" role="menuitem">{categories.level}
 						<span component="category-markup">
 							<div class="category-item d-inline-block">
-								{buildCategoryIcon(@value, "24px", "rounded-circle")}
+								{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 								{./name}
 							</div>
 						</span>

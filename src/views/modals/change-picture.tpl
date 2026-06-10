@@ -5,7 +5,7 @@
 			<div class="d-flex align-items-center gap-3">
 				<button component="profile/picture/button" type="button" class="btn btn-ghost border d-flex p-3 flex-grow-1 {{{ if ./selected }}}active{{{ end }}}" data-type="{./type}" data-url="{./picture}">
 					<div class="flex-shrink-0">
-						{buildAvatar(pictures, "48px", true)}
+						{{buildAvatar(pictures, "48px", true)}}
 					</div>
 					<div class="flex-grow-1 ms-3 align-self-center fs-5 text-start">
 						{./username}

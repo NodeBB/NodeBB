@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-ghost btn-sm d-flex align-items-center ff-secondary d-flex gap-2 dropdown-toggle h-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     {{{ if selectedCategory }}}
     <span class="category-item d-inline-flex align-items-center gap-1">
-        {buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}
+        {{buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}}
         <span class="d-none d-md-inline fw-semibold">{selectedCategory.name}</span>
     </span>
     {{{ else }}}
@@ -34,7 +34,7 @@
                 <span component="category-markup" class="flex-grow-1" style="{{{ if ./match }}}font-weight: bold;{{{end}}}">
                     <div class="category-item d-inline-flex align-items-center gap-1">
                         {{{ if ./icon }}}
-                        {buildCategoryIcon(@value, "24px", "rounded-circle")}
+                        {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
                         {{{ end }}}
                         <span class="category-name">{./name}</span>
                     </div>

@@ -28,7 +28,7 @@
 			<tbody>
 				{{{ each delivery }}}
 				<tr>
-					<td>{buildAvatar(delivery, "24px", true)} <a href="{config.relative_path}/uid/{./uid}">{./username}</a></td>
+					<td>{{buildAvatar(delivery, "24px", true)}} <a href="{config.relative_path}/uid/{./uid}">{./username}</a></td>
 					<td>{{{if ./setting}}}{./setting}{{{else}}}<em>[[admin/manage/digest:default]]</em>{{{end}}}</td>
 					<td>{./lastDelivery}</td>
 					<td><button class="btn btn-sm btn-outline-secondary" data-action="resend" data-uid="{./uid}">[[admin/manage/digest:resend]]</button></td>

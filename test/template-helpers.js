@@ -163,7 +163,7 @@ describe('helpers', () => {
 			],
 		};
 		const html = helpers.generateChildrenCategories(category);
-		assert.equal(html, `<span class="category-children"><span class="category-children-item float-start"><div role="presentation" class="icon float-start" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
+		assert.equal(html, `<span class="category-children"><span class="category-children-item"><div role="presentation" class="icon" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
 		done();
 	});
 

@@ -54,7 +54,7 @@
 						<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
 					</div>
 				</td>
-				{spawnPrivilegeStates(cid, privileges.groups.name, ../privileges, ../types)}
+				{{spawnPrivilegeStates(cid, privileges.groups.name, ../privileges, ../types)}}
 			</tr>
 			{{{ end }}}
 		</tbody>
@@ -119,7 +119,7 @@
 			{{{ each privileges.users }}}
 			<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 				<td>
-					{buildAvatar(privileges.users, "24px", true)}
+					{{buildAvatar(privileges.users, "24px", true)}}
 					{{{ if privileges.users.banned }}}
 					<i class="ban fa fa-gavel text-danger" title="[[admin/manage/categories:privileges.banned-user-inheritance]]"></i>
 					{{{ end }}}
@@ -133,7 +133,7 @@
 						<input autocomplete="off" type="checkbox" class="form-check-input float-none checkbox-helper">
 					</div>
 				</td>
-				{spawnPrivilegeStates(cid, privileges.users.username, ../privileges, ../types)}
+				{{spawnPrivilegeStates(cid, privileges.users.username, ../privileges, ../types)}}
 			</tr>
 			{{{ end }}}
 		</tbody>

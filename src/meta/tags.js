@@ -5,14 +5,13 @@ const winston = require('winston');
 
 const plugins = require('../plugins');
 const Meta = require('./index');
-const utils = require('../utils');
-const translator = require('../translator');
 
-const Tags = module.exports;
 
 const url = nconf.get('url');
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
+
+const Tags = module.exports;
 
 Tags.parse = async (req, data, meta, link) => {
 	const isAPI = req.res && req.res.locals && req.res.locals.isAPI;
@@ -22,11 +21,9 @@ Tags.parse = async (req, data, meta, link) => {
 		name: 'viewport',
 		// https://stackoverflow.com/a/77815388 for resizes-content
 		content: 'width=device-width, initial-scale=1.0, interactive-widget=resizes-content',
-		noEscape: true,
 	}, {
 		name: 'content-type',
 		content: 'text/html; charset=UTF-8',
-		noEscape: true,
 	}, {
 		name: 'apple-mobile-web-app-capable',
 		content: 'yes',
@@ -52,7 +49,6 @@ Tags.parse = async (req, data, meta, link) => {
 		defaultTags.push({
 			name: 'msapplication-square150x150logo',
 			content: Meta.config['brand:logo'],
-			noEscape: true,
 		});
 	}
 
@@ -74,7 +70,7 @@ Tags.parse = async (req, data, meta, link) => {
 		defaultLinks.push({
 			rel: 'search',
 			type: 'application/opensearchdescription+xml',
-			title: utils.escapeHTML(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
+			title: String(Meta.config.title || Meta.config.browserTitle || 'NodeBB'),
 			href: `${relative_path}/osd.xml`,
 		});
 	}
@@ -94,13 +90,6 @@ Tags.parse = async (req, data, meta, link) => {
 			return tag;
 		}
 
-		if (!tag.noEscape) {
-			const attributes = Object.keys(tag);
-			attributes.forEach((attr) => {
-				tag[attr] = translator.escape(utils.escapeHTML(String(tag[attr])));
-			});
-		}
-
 		return tag;
 	});
 
@@ -117,16 +106,6 @@ Tags.parse = async (req, data, meta, link) => {
 		const whitelist = ['canonical', 'alternate', 'up'];
 		link = link.filter(link => whitelist.some(val => val === link.rel));
 	}
-	link = link.map((tag) => {
-		if (!tag.noEscape) {
-			const attributes = Object.keys(tag);
-			attributes.forEach((attr) => {
-				tag[attr] = utils.escapeHTML(String(tag[attr]));
-			});
-		}
-
-		return tag;
-	});
 
 	return { meta, link };
 };
@@ -202,7 +181,7 @@ function addIfNotExists(meta, keyName, tagName, value) {
 
 	if (!exists && value) {
 		meta.push({
-			content: translator.escape(utils.escapeHTML(String(value))),
+			content: String(value),
 			[keyName]: tagName,
 		});
 	}
@@ -240,11 +219,9 @@ async function addSiteOGImage(meta) {
 						meta.push({
 							property: 'og:image',
 							content: image.url,
-							noEscape: true,
 						}, {
 							property: 'og:image:url',
 							content: image.url,
-							noEscape: true,
 						});
 						break;
 					}
@@ -253,7 +230,6 @@ async function addSiteOGImage(meta) {
 						meta.push({
 							property: `og:${property}`,
 							content: image[property],
-							noEscape: true,
 						});
 						break;
 					}

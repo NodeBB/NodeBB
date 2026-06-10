@@ -247,12 +247,10 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		{
 			name: 'title',
 			content: title,
-			noEscape: true,
 		},
 		{
 			property: 'og:title',
 			content: title,
-			noEscape: true,
 		},
 		{
 			property: 'og:type',
@@ -278,12 +276,10 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 			{
 				name: 'description',
 				content: description,
-				noEscape: true,
 			},
 			{
 				property: 'og:description',
 				content: description,
-				noEscape: true,
 			},
 		);
 	}
@@ -295,7 +291,6 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		{
 			rel: 'canonical',
 			href: `${url}/topic/${topicData.slug}${page}`,
-			noEscape: true,
 		},
 	];
 

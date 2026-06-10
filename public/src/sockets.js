@@ -6,8 +6,6 @@ const $ = require('jquery');
 const { alert } = require('alerts');
 const hooks = require('hooks');
 
-app = window.app || {};
-
 (function () {
 	let reconnecting = false;
 
@@ -48,7 +46,7 @@ app = window.app || {};
 		socket.connect();
 	}
 
-	window.app.reconnect = (showAlert = false) => {
+	app.reconnect = (showAlert = false) => {
 		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}

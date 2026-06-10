@@ -85,7 +85,7 @@
 			{{{ each history }}}
 			<div class="d-flex flex-column gap-1">
 				<div class="d-flex gap-2 align-items-center">
-					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{./user.userslug}">{buildAvatar(./user, "16px", true)}</a>
+					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{./user.userslug}">{{buildAvatar(./user, "16px", true)}}</a>
 					<a href="{config.relative_path}/user/{./user.userslug}">{./user.username}</a>
 					<span class="timeago text-muted text-nowrap" title="{./datetimeISO}"></span>
 				</div>
@@ -115,7 +115,7 @@
 			<div component="flag/content" class="d-flex flex-column gap-1 pb-3 border-bottom">
 				{{{ if type_bool.post }}}
 				<div class="d-flex gap-2 align-items-center">
-					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{target.user.userslug}">{buildAvatar(target.user, "16px", true)}</a>
+					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{target.user.userslug}">{{buildAvatar(target.user, "16px", true)}}</a>
 					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
 					<span class="timeago text-muted" title="{target.timestampISO}"></span>
 				</div>
@@ -124,7 +124,7 @@
 
 				{{{ if type_bool.user }}}
 				<div class="d-flex gap-2 align-items-center lh-1 mb-2">
-					<a href="{config.relative_path}/user/{./target.userslug}">{buildAvatar(target, "16px", true)}</a>
+					<a href="{config.relative_path}/user/{./target.userslug}">{{buildAvatar(target, "16px", true)}}</a>
 					<a href="{config.relative_path}/user/{./target.userslug}">{target.username}</a>
 				</div>
 				<blockquote>{{{ if target.aboutme }}}{target.aboutme}{{{ else }}}<em>[[flags:target-aboutme-empty]]</em>{{{ end }}}</blockquote>
@@ -140,7 +140,7 @@
 					{{{ each reports }}}
 					<li class="d-flex flex-column gap-1" component="flag/report" data-timestamp="{./timestamp}">
 						<div class="d-flex gap-2 align-items-center">
-							<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{./reporter.userslug}">{buildAvatar(./reporter, "16px", true)}</a>
+							<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{./reporter.userslug}">{{buildAvatar(./reporter, "16px", true)}}</a>
 							<a href="{config.relative_path}/user/{./reporter.userslug}">{./reporter.username}</a>
 							<span class="timeago text-muted" title="{./timestampISO}"></span>
 						</div>
@@ -161,7 +161,7 @@
 					{{{ each notes }}}
 					<li class="d-flex flex-column gap-1" component="flag/note" data-datetime="{./datetime}" data-index="{@index}">
 						<div class="d-flex gap-2 align-items-center">
-							<a href="{config.relative_path}/user/{./user.userslug}">{buildAvatar(./user, "16px", true)}</a>
+							<a href="{config.relative_path}/user/{./user.userslug}">{{buildAvatar(./user, "16px", true)}}</a>
 							<a href="{config.relative_path}/user/{./user.userslug}">{./user.username}</a>
 							<span class="timeago text-muted" title="{./datetimeISO}"></span>
 							<div class=" ms-auto flex-shrink-0">

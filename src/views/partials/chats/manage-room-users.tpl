@@ -1,7 +1,7 @@
 {{{ each users }}}
 <li class="list-group-item d-flex align-items-center justify-content-between" data-uid="{./uid}" data-index="{./index}">
 	<div class="d-flex gap-1 align-items-center">
-		{buildAvatar(users, "24px", true)}
+		{{buildAvatar(users, "24px", true)}}
 		<span>{./username} <i component="chat/manage/user/owner/icon" class="fa fa-star text-warning {{{ if !./isOwner }}}hidden{{{ end }}}" title="[[modules:chat.owner]]" data-bs-toggle="tooltip"></i></span>
 	</div>
 	<div class="d-flex gap-1">

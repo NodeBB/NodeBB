@@ -171,18 +171,18 @@
 								<li component="category/no-matches" role="presentation" class="category hidden">
 									<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 								</li>
-								{{{each categories}}}
+								{{{ each categories }}}
 								<li role="presentation" class="category {{{ if categories.disabledClass }}}disabled{{{ end }}}" data-cid="{categories.cid}" data-name="{categories.name}" data-parent-cid="{categories.parentCid}">
 									<a class="dropdown-item rounded-1" role="menuitem">{categories.level}
 										<span component="category-markup">
 											<div class="category-item d-inline-block">
-												{buildCategoryIcon(@value, "24px", "rounded-circle")}
+												{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 												{./name}
 											</div>
 										</span>
 									</a>
 								</li>
-								{{{end}}}
+								{{{ end }}}
 							</ul>
 						</div>
 					</div>

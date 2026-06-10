@@ -76,7 +76,7 @@
 							{{{ each followers }}}
 							<tr data-uid="{./uid}">
 								<td class="w-100 text-truncate" style="max-width: 1px;">
-									{buildAvatar(followers, "24px", true)}
+									{{buildAvatar(followers, "24px", true)}}
 									{./userslug}
 								</td>
 								<td class="w-0">

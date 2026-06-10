@@ -60,7 +60,7 @@
 								{./ip}
 								{{{ each ./ipMatch }}}
 								<br>
-								{buildAvatar(@value, "24px", true)}
+								{{buildAvatar(@value, "24px", true)}}
 								<a href="{config.relative_path}/uid/{./uid}">{./username}</a>
 								{{{ end }}}
 							</td>

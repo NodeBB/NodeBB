@@ -209,17 +209,14 @@ function addTags(categoryData, res, currentPage) {
 		{
 			name: 'title',
 			content: categoryData.name,
-			noEscape: true,
 		},
 		{
 			property: 'og:title',
 			content: categoryData.name,
-			noEscape: true,
 		},
 		{
 			name: 'description',
 			content: categoryData.description,
-			noEscape: true,
 		},
 		{
 			property: 'og:type',
@@ -236,7 +233,6 @@ function addTags(categoryData, res, currentPage) {
 		res.locals.metaTags.push({
 			property: 'og:image',
 			content: backgroundImage,
-			noEscape: true,
 		});
 	}
 
@@ -249,7 +245,6 @@ function addTags(categoryData, res, currentPage) {
 		{
 			rel: 'canonical',
 			href: `${url}/category/${categoryData.slug}${page}`,
-			noEscape: true,
 		},
 	];
 

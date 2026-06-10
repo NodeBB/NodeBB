@@ -41,7 +41,7 @@
 				</td>
 				<td></td>
 				<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
-				{spawnPrivilegeStates(cid, privileges.groups.name, ../privileges, ../types)}
+				{{spawnPrivilegeStates(cid, privileges.groups.name, ../privileges, ../types)}}
 			</tr>
 			{{{ end }}}
 		</tbody>
@@ -94,7 +94,7 @@
 			{{{ each privileges.users }}}
 			<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 				<td>
-					{buildAvatar(privileges.users, "24px", true)}
+					{{buildAvatar(privileges.users, "24px", true)}}
 					{{{ if privileges.users.banned }}}
 						<i class="ban fa fa-gavel text-danger" title="[[admin/manage/categories:privileges.banned-user-inheritance]]"></i>
 					{{{ end }}}
@@ -104,7 +104,7 @@
 					<!-- need this empty -->
 				</td>
 				<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
-				{spawnPrivilegeStates(cid, privileges.users.username, ../privileges, ../types)}
+				{{spawnPrivilegeStates(cid, privileges.users.username, ../privileges, ../types)}}
 			</tr>
 			{{{ end }}}
 		</tbody>

@@ -104,7 +104,7 @@
 				<div component="user/filter/selected" class="d-flex flex-wrap gap-2">
 					{{{ each selected.assignee }}}
 					<div class="d-flex px-2 py-1 rounded-1 text-bg-primary gap-2 align-items-center text-sm">
-						{buildAvatar(@value, "16px", true)} {./username}
+						{{buildAvatar(@value, "16px", true)}} {./username}
 						<button component="user/filter/delete" data-uid="{./uid}" class="btn btn-primary btn-sm py-0"><i class="fa fa-times fa-xs"></i></button>
 					</div>
 					{{{ end }}}
@@ -112,7 +112,7 @@
 				<hr/>
 				<div component="user/filter/results" class="d-flex flex-wrap gap-2">
 					{{{ each userFilterResults }}}
-					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{buildAvatar(@value, "16px", true)} {./username}</button>
+					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{{buildAvatar(@value, "16px", true)}} {./username}</button>
 					{{{ end }}}
 				</div>
 			</li>
@@ -131,7 +131,7 @@
 				<div component="user/filter/selected" class="d-flex flex-wrap gap-2">
 					{{{ each selected.reporterId }}}
 					<div class="d-flex px-2 py-1 rounded-1 text-bg-primary gap-2 align-items-center text-sm">
-						{buildAvatar(@value, "16px", true)} {./username}
+						{{buildAvatar(@value, "16px", true)}} {./username}
 						<button component="user/filter/delete" data-uid="{./uid}" class="btn btn-primary btn-sm py-0"><i class="fa fa-times fa-xs"></i></button>
 					</div>
 					{{{ end }}}
@@ -139,7 +139,7 @@
 				<hr/>
 				<div component="user/filter/results" class="d-flex flex-wrap gap-2">
 					{{{ each userFilterResults }}}
-					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{buildAvatar(@value, "16px", true)} {./username}</button>
+					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{{buildAvatar(@value, "16px", true)}} {./username}</button>
 					{{{ end }}}
 				</div>
 			</li>
@@ -158,7 +158,7 @@
 				<div component="user/filter/selected" class="d-flex flex-wrap gap-2">
 					{{{ each selected.targetUid }}}
 					<div class="d-flex px-2 py-1 rounded-1 text-bg-primary gap-2 align-items-center text-sm">
-						{buildAvatar(@value, "16px", true)} {./username}
+						{{buildAvatar(@value, "16px", true)}} {./username}
 						<button component="user/filter/delete" data-uid="{./uid}" class="btn btn-primary btn-sm py-0"><i class="fa fa-times fa-xs"></i></button>
 					</div>
 					{{{ end }}}
@@ -166,7 +166,7 @@
 				<hr/>
 				<div component="user/filter/results" class="d-flex flex-wrap gap-2">
 					{{{ each userFilterResults }}}
-					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{buildAvatar(@value, "16px", true)} {./username}</button>
+					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{{buildAvatar(@value, "16px", true)}} {./username}</button>
 					{{{ end }}}
 				</div>
 			</li>

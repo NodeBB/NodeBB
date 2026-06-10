@@ -62,12 +62,10 @@ tagsController.getTag = async function (req, res) {
 		{
 			name: 'title',
 			content: escapedTag,
-			noEscape: true,
 		},
 		{
 			property: 'og:title',
 			content: escapedTag,
-			noEscape: true,
 		},
 	];
 

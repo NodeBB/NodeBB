@@ -138,7 +138,6 @@ function addTags(res, userData) {
 		{
 			name: 'title',
 			content: userData.fullname || userData.username,
-			noEscape: true,
 		},
 		{
 			name: 'description',
@@ -147,7 +146,6 @@ function addTags(res, userData) {
 		{
 			property: 'og:title',
 			content: userData.fullname || userData.username,
-			noEscape: true,
 		},
 		{
 			property: 'og:description',
@@ -160,12 +158,10 @@ function addTags(res, userData) {
 			{
 				property: 'og:image',
 				content: `${url}${userData.picture}`,
-				noEscape: true,
 			},
 			{
 				property: 'og:image:url',
 				content: `${url}${userData.picture}`,
-				noEscape: true,
 			}
 		);
 	}
