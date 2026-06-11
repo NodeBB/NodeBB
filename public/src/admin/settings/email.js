@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function (ace, alerts) {
+define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings', 'hooks'], function (ace, alerts, Settings, hooks) {
 	const Email = {};
 	let emailEditor;
 
@@ -11,10 +11,8 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		configureEmailEditor();
 		handleDigestHourChange();
 
-		$(window).off('action:admin.settingsLoaded', onSettingsLoaded)
-			.on('action:admin.settingsLoaded', onSettingsLoaded);
-		$(window).off('action:admin.settingsSaved', onSettingsSaved)
-			.on('action:admin.settingsSaved', onSettingsSaved);
+		hooks.onPage('action:admin.settingsLoaded', onSettingsLoaded);
+		hooks.onPage('action:admin.settingsSaved', onSettingsSaved);
 	};
 
 	function onSettingsLoaded() {
