@@ -36,7 +36,8 @@ exports.addJob = async function (options) {
 		throw new Error('[cron] Invalid options');
 	}
 	if (Object.hasOwn(jobs, name)) {
-		throw new Error('[cron] Job with that name already exists');
+		jobs[name].stop();
+		delete jobs[name];
 	}
 
 	const job = new CronJob(cronTime, async function () {
