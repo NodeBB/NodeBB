@@ -243,16 +243,20 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	return breadcrumbs;
 };
 
-helpers.buildTitle = function (pageTitle) {
+helpers.buildTitle = async function (pageTitle, userLang) {
 	pageTitle = pageTitle || '';
+
+	const browserTitle = String(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	const [titleTranslated, browserTitleTranslated] = await translator.translateKeys([
+		pageTitle, browserTitle,
+	], userLang);
+
 	const titleLayout = meta.config.titleLayout || `${pageTitle ? '{pageTitle} | ' : ''}{browserTitle}`;
-
-	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
-
 	const title = titleLayout
-		.replace('{pageTitle}', () => pageTitle)
-		.replace('{browserTitle}', () => browserTitle);
-	return title;
+		.replace('{pageTitle}', () => titleTranslated)
+		.replace('{browserTitle}', () => browserTitleTranslated);
+
+	return utils.decodeHTMLEntities(title);
 };
 
 helpers.translateEscapedValue = async function translateEscapedValue(value, lang) {

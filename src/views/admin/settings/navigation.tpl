@@ -59,7 +59,7 @@
 						<div class="row mb-3">
 							<div class="col-sm-4">
 								<label class="form-label" for="nav:text">[[admin/settings/navigation:text]]</label>
-								<input id="nav:text" class="form-control" type="text" name="text" value="{{txEscape(escape(enabled.text))}}" />
+								<input id="nav:text" class="form-control" type="text" name="text" value="{{escapeTxHtml(enabled.text)}}" />
 							</div>
 
 							<div class="col-sm-4">
@@ -69,7 +69,7 @@
 
 							<div class="col-sm-4">
 								<label class="form-label" for="nav:tooltip">[[admin/settings/navigation:tooltip]]</label>
-								<input id="nav:tooltip" class="form-control" type="text" name="title" value="{{txEscape(escape(enabled.title))}}" />
+								<input id="nav:tooltip" class="form-control" type="text" name="title" value="{{escapeTxHtml(enabled.title)}}" />
 							</div>
 						</div>
 
@@ -98,7 +98,7 @@
 							<p class="form-text">
 								[[admin/settings/navigation:dropdown-placeholder]]
 							</p>
-							<textarea name="dropdownContent" rows="5" class="form-control">{{txEscape(escape(enabled.dropdownContent))}}</textarea>
+							<textarea name="dropdownContent" rows="5" class="form-control">{{escapeTxHtml(enabled.dropdownContent)}}</textarea>
 						</div>
 						<div class="row">
 							<div class="col-sm-12 text-end">

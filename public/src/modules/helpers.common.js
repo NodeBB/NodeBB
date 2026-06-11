@@ -11,6 +11,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		buildLinkTag,
 		stringify,
 		escape,
+		escapeTxHtml,
 		stripTags,
 		buildCategoryIcon,
 		buildCategoryLabel,
@@ -67,7 +68,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${txEscape(escape(tag.content)).replace(/\n/g, ' ')}" ` : '';
+		const content = tag.content ? `content="${escapeTxHtml(tag.content).replace(/\n/g, ' ')}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -91,6 +92,12 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 
 	function escape(str) {
 		return utils.escapeHTML(str);
+	}
+
+	function escapeTxHtml(str) {
+		// html escape first, then escape tx tokens, used to display strings that have
+		// translation tokens in them like topic titles or navigation items in the ACP
+		return txEscape(escape(str));
 	}
 
 	function stripTags(str) {

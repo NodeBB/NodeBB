@@ -186,7 +186,7 @@ module.exports = function (middleware) {
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', userLang),
 			timeagoCode: languages.userTimeagoCode(userLang),
-			browserTitle: translator.translate(controllersHelpers.buildTitle(title), userLang),
+			browserTitle: controllersHelpers.buildTitle(title, userLang),
 			navigation: navigation.get(req.uid),
 			roomIds: req.uid > 0 ? db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0) : [],
 		});

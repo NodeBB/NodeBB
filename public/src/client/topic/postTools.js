@@ -15,7 +15,7 @@ define('forum/topic/postTools', [
 
 		addPostHandlers(tid);
 
-		share.addShareHandlers(ajaxify.data.titleRaw);
+		share.addShareHandlers(ajaxify.data.title);
 
 		votes.addVoteHandler();
 
@@ -107,12 +107,10 @@ define('forum/topic/postTools', [
 			onReplyClicked($(this), tid);
 		});
 
-		$('.topic').on('click', '[component="topic/reply-as-topic"]', function () {
-			translator.translate(`[[topic:link-back, ${ajaxify.data.titleRaw}, ${config.relative_path}/topic/${ajaxify.data.slug}]]`, function (body) {
-				hooks.fire('action:composer.topic.new', {
-					cid: ajaxify.data.cid,
-					body: body,
-				});
+		$('.topic').on('click', '[component="topic/reply-as-topic"]', async function () {
+			hooks.fire('action:composer.topic.new', {
+				cid: ajaxify.data.cid,
+				body: await getLinkBackBody(),
 			});
 		});
 
@@ -301,7 +299,7 @@ define('forum/topic/postTools', [
 				hooks.fire('action:composer.addQuote', {
 					tid: tid,
 					pid: toPid,
-					title: ajaxify.data.titleRaw,
+					title: ajaxify.data.title,
 					username: username,
 					body: selectedNode.text,
 					selectedPid: selectedNode.pid,
@@ -310,7 +308,7 @@ define('forum/topic/postTools', [
 				hooks.fire('action:composer.post.new', {
 					tid: tid,
 					pid: toPid,
-					title: ajaxify.data.titleRaw,
+					title: ajaxify.data.title,
 					body: username ? username + ' ' : ($('[component="topic/quickreply/text"]').val() || ''),
 				});
 			}
@@ -332,7 +330,7 @@ define('forum/topic/postTools', [
 				tid: tid,
 				pid: toPid,
 				username: username,
-				title: ajaxify.data.titleRaw,
+				title: ajaxify.data.title,
 				body: body,
 			});
 		});
@@ -467,13 +465,11 @@ define('forum/topic/postTools', [
 				create: {
 					label: '[[topic:stale.create]]',
 					className: 'btn-primary',
-					callback: function () {
-						translator.translate(`[[topic:link-back, ${ajaxify.data.title}, ${config.relative_path}/topic/${ajaxify.data.slug}]]`, function (body) {
-							hooks.fire('action:composer.topic.new', {
-								cid: ajaxify.data.cid,
-								body: body,
-								fromStaleTopic: true,
-							});
+					callback: async function () {
+						hooks.fire('action:composer.topic.new', {
+							cid: ajaxify.data.cid,
+							body: await getLinkBackBody(),
+							fromStaleTopic: true,
 						});
 					},
 				},
@@ -553,6 +549,14 @@ define('forum/topic/postTools', [
 				left: tooltipWidth > lastRect.width ? lastRect.left : lastRect.left + lastRect.width - tooltipWidth,
 			});
 		}
+	}
+
+	async function getLinkBackBody() {
+		// brackets confuse markdown parsing, so we need to escape them
+		// "link-back": "Re: [%1](%2)\n\n",
+		const title = ajaxify.data.title.replace(/\]\]/g, '\\]\\]').replace(/\[\[/g, '\\[\\[');
+		const href = `${config.relative_path}/topic/${ajaxify.data.slug}`;
+		return await translator.translateKey('topic:link-back', [title, href]);
 	}
 
 	return PostTools;

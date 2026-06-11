@@ -169,9 +169,6 @@ module.exports = function (Categories) {
 		topics.forEach((topic) => {
 			if (!topic.scheduled && topic.deleted && !topic.isOwner) {
 				topic.title = '[[topic:topic-is-deleted]]';
-				if (topic.hasOwnProperty('titleRaw')) {
-					topic.titleRaw = '[[topic:topic-is-deleted]]';
-				}
 				topic.slug = topic.tid;
 				topic.teaser = null;
 				topic.noAnchor = true;

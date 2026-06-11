@@ -220,7 +220,7 @@ async function buildBreadcrumbs(topicData, userLang) {
 			cid: topicData.category.cid,
 		},
 		{
-			text: topicData.title,
+			text: translator.escape(topicData.title),
 		},
 	];
 	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, userLang);
@@ -327,9 +327,7 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 }
 
 function getTitleFromTopic(topic) {
-	// titleRaw is trasnslator.escape'd
-	const title = translator.unescape(String(topic.titleRaw));
-	return translator.escape(utils.escapeHTML(title));
+	return translator.escape(utils.escapeHTML(topic.title));
 }
 
 function getDescriptionFromPost(post) {

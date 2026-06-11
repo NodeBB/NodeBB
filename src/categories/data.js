@@ -130,6 +130,7 @@ function modifyCategory(category, fields) {
 
 	db.parseIntFields(category, intFields, fields);
 
+	// TODO: dont escape them anymore
 	const escapeFields = [
 		'name', 'nickname', 'description', 'color', 'bgColor',
 		'backgroundImage', 'imageClass', 'class', 'link',

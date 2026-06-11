@@ -595,7 +595,7 @@ Mocks.notes.public = async (post) => {
 	let tag = null;
 	let followersUrl;
 
-	let { titleRaw: name, generatedTitle } = await topics.getTopicFields(post.tid, ['title', 'generatedTitle']);
+	let { title: name, generatedTitle } = await topics.getTopicFields(post.tid, ['title', 'generatedTitle']);
 	if (generatedTitle) {
 		name = null;
 	}

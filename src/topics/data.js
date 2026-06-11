@@ -5,7 +5,6 @@ const validator = require('validator');
 const db = require('../database');
 const categories = require('../categories');
 const utils = require('../utils');
-const translator = require('../translator');
 const plugins = require('../plugins');
 
 const intFields = [
@@ -80,14 +79,6 @@ module.exports = function (Topics) {
 	};
 };
 
-function escapeTitle(topicData, hasField) {
-	if (topicData) {
-		if (hasField('title')) {
-			topicData.title = translator.escape(validator.escape(topicData.title));
-			topicData.titleRaw = translator.escape(topicData.titleRaw || '');
-		}
-	}
-}
 
 function modifyTopic(topic, fields) {
 	if (!topic) {
@@ -99,11 +90,8 @@ function modifyTopic(topic, fields) {
 	db.parseIntFields(topic, intFields, fields);
 
 	if (hasField('title')) {
-		topic.titleRaw = topic.title;
 		topic.title = String(topic.title);
 	}
-
-	escapeTitle(topic, hasField);
 
 	if (hasField('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);

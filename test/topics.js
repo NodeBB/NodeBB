@@ -588,22 +588,6 @@ describe('Topic\'s', () => {
 		});
 	});
 
-	describe('Title escaping', () => {
-		it('should properly escape topic title', (done) => {
-			const title = '"<script>alert(\'ok1\');</script> new topic test';
-			const titleEscaped = validator.escape(title);
-			topics.post({ uid: topic.userId, title: title, content: topic.content, cid: topic.categoryId }, (err, result) => {
-				assert.ifError(err);
-				topics.getTopicData(result.topicData.tid, (err, topicData) => {
-					assert.ifError(err);
-					assert.strictEqual(topicData.titleRaw, title);
-					assert.strictEqual(topicData.title, titleEscaped);
-					done();
-				});
-			});
-		});
-	});
-
 	describe('tools/delete/restore/purge', () => {
 		let newTopic;
 		let followerUid;

@@ -306,8 +306,8 @@ if (document.readyState === 'loading') {
 
 		const [hooks, api] = await app.require(['hooks', 'api']);
 		params.title = (ajaxify.data.template.topic ?
-			ajaxify.data.titleRaw :
-			(await api.get(`/topics/${params.tid}`)).titleRaw);
+			ajaxify.data.title :
+			(await api.get(`/topics/${params.tid}`)).title);
 
 		hooks.fire('action:composer.post.new', params);
 	};
