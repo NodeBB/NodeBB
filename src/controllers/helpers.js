@@ -263,14 +263,17 @@ helpers.buildTitle = async function (pageTitle, userLang, template) {
 
 // categoy names and descriptions can be tx keys, translate them safely here
 // used on category list, category page and users watched categories
-helpers.translateCategoryData = async function (categoryData, userLang) {
+helpers.translateCategoryData = async function (categoryData /*, userLang */) {
 	await Promise.all(categoryData.map(async (category) => {
 		if (category) {
-			category.name = await translator.translate(category.name, userLang);
 			category.descriptionParsed = await plugins.hooks.fire(
-				'filter:parse.raw', await translator.translate(category.description, userLang)
+				'filter:parse.raw', category.description
 			);
-			category.description = await translator.translate(category.description, userLang);
+			// category.name = await translator.translate(category.name, userLang);
+			// category.descriptionParsed = await plugins.hooks.fire(
+			// 'filter:parse.raw', await translator.translate(category.description, userLang)
+			// );
+			// category.description = await translator.translate(category.description, userLang);
 		}
 	}));
 };

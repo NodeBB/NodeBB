@@ -31,6 +31,16 @@ module.exports = function (middleware) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		const { render } = res;
 
+		res.renderAsync = function (tpl, options) {
+			return new Promise((resolve, reject) => {
+				render.call(res, tpl, options, async (err, str) => {
+					if (err) reject(err);
+					// else resolve(await translate(str, getLang(req, res)));
+					else resolve(str);
+				});
+			});
+		};
+
 		res.render = async function renderOverride(template, options, fn) {
 			const self = this;
 			const { req } = this;
@@ -74,6 +84,7 @@ module.exports = function (middleware) {
 				options._header = {
 					tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
 				};
+				res.locals._i18n = await languages.getFull(getLang(req, res));
 				options.widgets = await widgets.render(req.uid, {
 					template: `${template}.tpl`,
 					url: options.url,
@@ -92,7 +103,7 @@ module.exports = function (middleware) {
 					return res.json(options);
 				}
 
-				res.locals._i18n = await languages.getFull(getLang(req, res));
+
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
 				const headerFooterData = await loadHeaderFooterData(req, res, options);
 				const results = await utils.promiseParallel({

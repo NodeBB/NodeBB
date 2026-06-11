@@ -6,12 +6,15 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	const oneDayInMs = 24 * 60 * 60 * 1000;
 
 	const helpers = {
-		displayMenuItem,
+		__escape: fixEscape,
+		escape,
+		escapeTxHtml,
+		txEscape,
+		tx,
 		buildMetaTag,
 		buildLinkTag,
 		stringify,
-		escape,
-		escapeTxHtml,
+		displayMenuItem,
 		stripTags,
 		buildCategoryIcon,
 		buildCategoryLabel,
@@ -38,44 +41,66 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		humanReadableNumber,
 		formattedNumber,
 		isNumber,
-		tx,
-		txEscape,
 		uploadBasename,
 		generatePlaceholderWave,
 		register,
-		__escape: fixEscape,
+
 	};
 
 	function fixEscape(str) {
-		return utils.escapeHTML(str).replace(/&amp;lsqb;/g, '&lsqb;')
-			.replace(/&amp;rsqb;/g, '&rsqb;');
+		return translator.escape(
+			utils.escapeHTML(str).replace(/&amp;lsqb;/g, '&lsqb;')
+				.replace(/&amp;rsqb;/g, '&rsqb;')
+		);
 	}
 
-	function displayMenuItem(data, index) {
-		const item = data.navigation[index];
-		if (!item) {
-			return false;
+	function escape(str) {
+		return utils.escapeHTML(str);
+	}
+
+	function escapeTxHtml(str) {
+		// html escape first, then escape tx tokens, used to display strings that have
+		// translation tokens in them like topic titles or navigation items in the ACP
+		return txEscape(escape(str));
+	}
+
+	function txEscape(text) {
+		return String(text)
+			.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;')
+			.replace(/,/g, '&#44;').replace(/%/g, '&#37;');
+	}
+
+	function tx(token, ...args) {
+		if (!token) {
+			return '';
 		}
 
-		if (item.route.match('/users') && data.user && !data.user.privileges['view:users']) {
-			return false;
+		const [txToken, argsFromToken] = translator.normalizeToken(token);
+		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+			args = argsFromToken;
+		}
+		const [namespace, key] = txToken.split(':', 2);
+		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
+			return token;
 		}
 
-		if (item.route.match('/tags') && data.user && !data.user.privileges['view:tags']) {
-			return false;
-		}
+		// translate the arguments if they are tokens themselves
+		args = args.map((arg) => {
+			arg = translator.escapeHTML(arg);
+			if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
+				return helpers.tx.call(this, arg, []); // no arguments on nested tokens for now
+			}
+			return arg;
+		});
 
-		if (item.route.match('/groups') && data.user && !data.user.privileges['view:groups']) {
-			return false;
-		}
-
-		return true;
+		const translation = this._i18n[namespace][key];
+		return translator.replaceArguments(translation, args);
 	}
 
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${escapeTxHtml(tag.content).replace(/\n/g, ' ')}" ` : '';
+		const content = tag.content ? `content="${txEscape(escape(tag.content)).replace(/\n/g, ' ')}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -97,14 +122,25 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			.replace(/"/g, '&quot;');
 	}
 
-	function escape(str) {
-		return utils.escapeHTML(str);
-	}
+	function displayMenuItem(data, index) {
+		const item = data.navigation[index];
+		if (!item) {
+			return false;
+		}
 
-	function escapeTxHtml(str) {
-		// html escape first, then escape tx tokens, used to display strings that have
-		// translation tokens in them like topic titles or navigation items in the ACP
-		return txEscape(escape(str));
+		if (item.route.match('/users') && data.user && !data.user.privileges['view:users']) {
+			return false;
+		}
+
+		if (item.route.match('/tags') && data.user && !data.user.privileges['view:tags']) {
+			return false;
+		}
+
+		if (item.route.match('/groups') && data.user && !data.user.privileges['view:groups']) {
+			return false;
+		}
+
+		return true;
 	}
 
 	function stripTags(str) {
@@ -134,7 +170,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		const href = tag === 'a' ? `href="${relative_path}/category/${escape(category.slug)}"` : '';
 		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${color};background-color: ${bgColor};border-color: ${bgColor}!important; max-width: 70vw;">
 			${icon && icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${icon}"></i>` : ''}
-			${escape(category.name)}
+			${escape(tx.call(this, String(category.name)))}
 		</${tag}>`;
 	}
 
@@ -436,37 +472,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 
 	function isNumber(value) {
 		return utils.isNumber(value);
-	}
-
-	function tx(token, ...args) {
-		if (!token) {
-			return '';
-		}
-		const [txToken, argsFromToken] = translator.normalizeToken(token);
-		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
-			args = argsFromToken;
-		}
-		const [namespace, key] = txToken.split(':', 2);
-		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
-			return token;
-		}
-		// translate the arguments if they are tokens themselves
-		args = args.map((arg) => {
-			arg = translator.escapeHTML(arg);
-			if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
-				return helpers.tx.call(this, arg, []); // no arguments on nested tokens for now
-			}
-			return arg;
-		});
-
-		const translation = this._i18n[namespace][key];
-		return translator.replaceArguments(translation, args);
-	}
-
-	function txEscape(text) {
-		return String(text)
-			.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;')
-			.replace(/,/g, '&#44;').replace(/%/g, '&#37;');
 	}
 
 	function uploadBasename(str, sep = '/') {

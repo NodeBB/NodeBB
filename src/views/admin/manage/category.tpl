@@ -16,14 +16,14 @@
 					<label class="form-label" for="cid-{category.cid}-name">
 						[[admin/manage/categories:name]]
 					</label>
-					<input id="cid-{category.cid}-name" type="text" class="form-control" data-name="name" value="{{escapeTxHtml(category.name)}}" />
+					<input id="cid-{category.cid}-name" type="text" class="form-control" data-name="name" value="{category.name}" />
 				</div>
 
 				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-handle">
 						[[admin/manage/categories:handle]]
 					</label>
-					<input id="cid-{category.cid}-handle" type="text" class="form-control" data-name="handle" value="{{escapeTxHtml(category.handle)}}" />
+					<input id="cid-{category.cid}-handle" type="text" class="form-control" data-name="handle" value="{category.handle}" />
 					<p class="form-text">
 						[[admin/manage/categories:handle.help]]
 					</p>
@@ -33,14 +33,14 @@
 					<label class="form-label" for="cid-{category.cid}-description">
 						[[admin/manage/categories:description]]
 					</label>
-					<textarea id="cid-{category.cid}-description" data-name="description" class="form-control category_description description" rows="4" />{{escapeTxHtml(category.description)}}</textarea>
+					<textarea id="cid-{category.cid}-description" data-name="description" class="form-control category_description description" rows="4" />{category.description}</textarea>
 				</div>
 
 				<div class="mb-3">
 					<label class="form-label" for="cid-{category.cid}-topic-template">
 						[[admin/manage/categories:topic-template]]
 					</label>
-					<textarea id="cid-{category.cid}-topic-template" data-name="topicTemplate" class="form-control" rows="4" />{{escapeTxHtml(category.topicTemplate)}}</textarea>
+					<textarea id="cid-{category.cid}-topic-template" data-name="topicTemplate" class="form-control" rows="4" />{category.topicTemplate}</textarea>
 					<p class="form-text">
 						[[admin/manage/categories:topic-template.help]]
 					</p>
@@ -93,7 +93,7 @@
 					<label class="form-label" for="cid-{category.cid}-link">
 						[[admin/manage/categories:ext-link]]
 					</label>
-					<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{{escapeTxHtml(category.link)}}" />
+					<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 				</div>
 
 				<div class="mb-3">
