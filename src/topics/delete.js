@@ -30,7 +30,8 @@ module.exports = function (Topics) {
 			resolveTopicPostFlags(pids, uid),
 			activitypub.out.remove.context(uid, tid),
 			categories.updateRecentTidForCid(cid),
-			posts.removeFromQueueByTid(tid),
+			posts.getQueuedPosts({ tid }).then(items =>
+				Promise.all(items.map(item => posts.removeFromQueue(item.id)))),
 		]);
 	};
 
@@ -134,7 +135,8 @@ module.exports = function (Topics) {
 			deleteFromTags(deletedTopics),
 			Topics.events.purge(tidsToDelete),
 			Topics.crossposts.removeAll(tidsToDelete),
-			posts.removeFromQueueByTid(tidsToDelete),
+			posts.getQueuedPosts({ tid: tidsToDelete }).then(items =>
+				Promise.all(items.map(item => posts.removeFromQueue(item.id)))),
 
 			reduceCounters(deletedTopics),
 		]);

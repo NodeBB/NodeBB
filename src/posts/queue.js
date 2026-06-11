@@ -341,26 +341,6 @@ module.exports = function (Posts) {
 		}
 	}
 
-	Posts.removeFromQueueByTid = async function (tid) {
-		// todo: refactor this to be more general (search by different values in queue hash or hash.data)
-		const tids = Array.isArray(tid) ? tid : [tid];
-		const ids = await db.getSortedSetRange('post:queue', 0, -1);
-		if (!ids.length) {
-			return [];
-		}
-		const keys = ids.map(id => `post:queue:${id}`);
-		const items = await db.getObjects(keys);
-		const toRemove = [];
-		items.forEach((item, idx) => {
-			const data = JSON.parse(item.data);
-			if (tids.includes(String(data.tid))) {
-				toRemove.push(ids[idx]);
-			}
-		});
-		await Promise.all(toRemove.map(removeFromQueue));
-		return toRemove;
-	};
-
 	Posts.removeFromQueue = async function (id) {
 		const data = await getParsedObject(id);
 		if (!data) {
