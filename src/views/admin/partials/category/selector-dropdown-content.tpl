@@ -25,13 +25,13 @@
 		</li>
 		{{{each categoryItems}}}
 		<li role="presentation" class="category {{{ if ./disabledClass }}}disabled {{{ end }}}" data-cid="{./cid}" data-name="{./name}" data-parent-cid="{./parentCid}">
-			<a href="#" class="dropdown-item rounded-1" role="menu-item">{./level}
-				<span component="category-markup" style="{{{ if ./match }}}font-weight: bold;{{{end}}}">
+			<a href="#" class="dropdown-item rounded-1" role="menu-item">
+				<span component="category-markup" style="{{{ if ./match }}}font-weight: bold;{{{end}}} margin-left: calc({./depth} * 24px);">
 					<div class="category-item d-inline-flex align-items-center gap-1">
 						{{{ if ./icon }}}
 						{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 						{{{ end }}}
-						{./name}
+						{{escapeTxHtml(./name)}}
 					</div>
 				</span>
 			</a>

@@ -186,7 +186,7 @@ module.exports = function (middleware) {
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
 			languageDirection: translator.translate('[[language:dir]]', userLang),
 			timeagoCode: languages.userTimeagoCode(userLang),
-			browserTitle: controllersHelpers.buildTitle(title, userLang),
+			browserTitle: controllersHelpers.buildTitle(title, userLang, options.template.name),
 			navigation: navigation.get(req.uid),
 			roomIds: req.uid > 0 ? db.getSortedSetRevRange(`uid:${req.uid}:chat:rooms`, 0, 0) : [],
 		});
@@ -250,7 +250,7 @@ module.exports = function (middleware) {
 		}
 
 		if (req.route && req.route.path === '/') {
-			modifyTitle(templateValues);
+			await modifyTitle(templateValues, userLang, options.template.name);
 		}
 		return templateValues;
 	}
@@ -487,8 +487,8 @@ module.exports = function (middleware) {
 	}
 
 
-	function modifyTitle(obj) {
-		const title = controllersHelpers.buildTitle(meta.config.homePageTitle || '[[pages:home]]');
+	async function modifyTitle(obj, userLang, template) {
+		const title = await controllersHelpers.buildTitle(meta.config.homePageTitle || '[[pages:home]]', userLang, template);
 		obj.browserTitle = title;
 
 		if (obj.metaTags) {

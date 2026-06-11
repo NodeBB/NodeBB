@@ -285,15 +285,15 @@ ajaxify.widgets = { render: render };
 		const data = { title: title };
 		hooks.fire('action:ajaxify.updateTitle', data);
 
-		const [titleTranslated, browserTitleTranslated] = await translator.translateKeys([
-			data.title, config.browserTitle || '',
+		const [titleTranslated, browserTitleTranslated] = await Promise.all([
+			ajaxify.data.template.topic ? data.title : translator.translateKey(data.title),
+			translator.translateKey(config.browserTitle || ''),
 		]);
 
 		const documentTitle = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-			.replace('{pageTitle}', () => titleTranslated)
+			.replace('{pageTitle}', () => titleTranslated.slice(0, 60))
 			.replace('{browserTitle}', () => browserTitleTranslated);
-
-		window.document.title = $('<div></div>').html(documentTitle).text();
+		window.document.title = documentTitle;
 	}
 	ajaxify.updateTitle = updateTitle;
 

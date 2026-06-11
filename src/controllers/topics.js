@@ -232,7 +232,7 @@ async function addOldCategory(topicData, userPrivileges, userLang) {
 		topicData.oldCategory = await categories.getCategoryFields(
 			topicData.oldCid, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
 		);
-		topicData.oldCategory.name = await helpers.translateEscapedValue(topicData.oldCategory.name, userLang);
+		topicData.oldCategory.name = await translator.translate(topicData.oldCategory.name, userLang);
 	}
 }
 
@@ -242,15 +242,14 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		mainPost = await posts.getPostData(topicData.mainPid);
 	}
 
-	const title = getTitleFromTopic(topicData);
 	res.locals.metaTags = [
 		{
 			name: 'title',
-			content: title,
+			content: topicData.title,
 		},
 		{
 			property: 'og:title',
-			content: title,
+			content: topicData.title,
 		},
 		{
 			property: 'og:type',
@@ -326,20 +325,15 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	}
 }
 
-function getTitleFromTopic(topic) {
-	return translator.escape(utils.escapeHTML(topic.title));
-}
-
 function getDescriptionFromPost(post) {
 	let description = '';
 	if (post && post.content) {
-		// posts/parse.js calls translator.escape on post.content, unescape first then re-escape after stripping html tags
+		// posts/parse.js calls translator.escape on post.content, unescape first
 		const content = translator.unescape(String(post.content));
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(content)).trim();
 		if (description.length > 160) {
 			description = `${description.slice(0, 157)}...`;
 		}
-		description = translator.escape(utils.escapeHTML(description));
 		description = description.replace(/\n/g, ' ').trim();
 	}
 	return description;

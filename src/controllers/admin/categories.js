@@ -7,7 +7,6 @@ const user = require('../../user');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
-const translator = require('../../translator');
 const meta = require('../../meta');
 const activitypub = require('../../activitypub');
 const helpers = require('../helpers');
@@ -37,8 +36,6 @@ categoriesController.get = async function (req, res, next) {
 		category: category,
 		customClasses: [],
 	});
-	data.category.name = translator.escape(String(data.category.name));
-	data.category.description = translator.escape(String(data.category.description));
 
 	res.render('admin/manage/category', {
 		category: data.category,

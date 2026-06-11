@@ -198,7 +198,7 @@ helpers.buildCategoryBreadcrumbs = async function (cid, userLang) {
 		/* eslint-disable no-await-in-loop */
 		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
 
-		const translatedName = await helpers.translateEscapedValue(data.name, userLang);
+		const translatedName = await translator.translate(data.name, userLang);
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
 				text: translatedName,
@@ -243,12 +243,14 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	return breadcrumbs;
 };
 
-helpers.buildTitle = async function (pageTitle, userLang) {
+helpers.buildTitle = async function (pageTitle, userLang, template) {
 	pageTitle = pageTitle || '';
+	const translateTitle = template !== 'topic';
 
 	const browserTitle = String(meta.config.browserTitle || meta.config.title || 'NodeBB');
-	const [titleTranslated, browserTitleTranslated] = await translator.translateKeys([
-		pageTitle, browserTitle,
+	const [titleTranslated, browserTitleTranslated] = await Promise.all([
+		translateTitle ? translator.translateKey(pageTitle, [], userLang) : pageTitle,
+		translator.translateKey(browserTitle, [], userLang),
 	], userLang);
 
 	const titleLayout = meta.config.titleLayout || `${pageTitle ? '{pageTitle} | ' : ''}{browserTitle}`;
@@ -259,21 +261,16 @@ helpers.buildTitle = async function (pageTitle, userLang) {
 	return utils.decodeHTMLEntities(title);
 };
 
-helpers.translateEscapedValue = async function translateEscapedValue(value, lang) {
-	const rawValue = validator.unescape(translator.unescape(String(value || '')));
-	return validator.escape(await translator.translate(rawValue, lang));
-};
-
 // categoy names and descriptions can be tx keys, translate them safely here
 // used on category list, category page and users watched categories
 helpers.translateCategoryData = async function (categoryData, userLang) {
 	await Promise.all(categoryData.map(async (category) => {
 		if (category) {
-			category.name = await helpers.translateEscapedValue(category.name, userLang);
+			category.name = await translator.translate(category.name, userLang);
 			category.descriptionParsed = await plugins.hooks.fire(
-				'filter:parse.raw', await helpers.translateEscapedValue(category.description, userLang)
+				'filter:parse.raw', await translator.translate(category.description, userLang)
 			);
-			category.description = await helpers.translateEscapedValue(category.description, userLang);
+			category.description = await translator.translate(category.description, userLang);
 		}
 	}));
 };
@@ -385,7 +382,7 @@ helpers.getSelectedCategory = async function (cids, uid) {
 		selectedCategory = selectedCategories[0];
 	}
 	if (selectedCategory) {
-		selectedCategory.name = await helpers.translateEscapedValue(selectedCategory.name, userLang);
+		selectedCategory.name = await translator.translate(selectedCategory.name, userLang);
 	}
 	return { selectedCids, selectedCategory };
 };

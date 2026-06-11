@@ -10,7 +10,7 @@ const user = require('../user');
 const plugins = require('../plugins');
 const categories = require('../categories');
 const utils = require('../utils');
-const helpers = require('../controllers/helpers');
+const translator = require('../translator');
 
 module.exports = function (Posts) {
 	Posts.getPostSummaryByPids = async function (pids, uid, options) {
@@ -88,7 +88,7 @@ module.exports = function (Posts) {
 				post.content = post.content ? validator.escape(String(post.content)) : post.content;
 			}
 			if (post.category) {
-				post.category.name = await helpers.translateEscapedValue(post.category.name);
+				post.category.name = await translator.translate(post.category.name);
 			}
 			return post;
 		}));
