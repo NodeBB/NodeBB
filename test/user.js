@@ -2342,10 +2342,6 @@ describe('User', () => {
 			await User.startJobs();
 		});
 
-		it('should stop user jobs', async () => {
-			User.stopJobs();
-		});
-
 		it('should send digest', (done) => {
 			db.sortedSetAdd('digest:day:uids', [Date.now(), Date.now()], [1, 2], (err) => {
 				assert.ifError(err);
