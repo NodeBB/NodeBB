@@ -17,6 +17,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		buildCategoryLabel,
 		generateCategoryBackground,
 		generateChildrenCategories,
+		generateTopicTitle,
 		generateTopicClass,
 		generateGroupDisplayName,
 		membershipBtn,
@@ -172,6 +173,13 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			}
 		});
 		return html ? (`<span class="category-children">${html}</span>`) : html;
+	}
+
+	function generateTopicTitle(topic) {
+		if (topic.showDeletedTitle) {
+			return tx.call(this, '[[topic:topic-is-deleted]]');
+		}
+		return txEscape(escape(topic.title));
 	}
 
 	function generateTopicClass(topic) {
