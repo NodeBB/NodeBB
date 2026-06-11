@@ -314,61 +314,41 @@ define('admin/manage/categories', [
 	 * @param parentId {number} parent category identifier
 	 */
 	function renderList(categories, container, parentCategory) {
-		// Translate category names if needed
-		let count = 0;
 		const parentId = parentCategory.cid;
-		categories.forEach(function (category, idx, parent) {
-			translator.translate(category.name, function (translated) {
-				if (category.name !== translated) {
-					category.name = translated;
-				}
-				count += 1;
 
-				if (count === parent.length) {
-					continueRender();
-				}
+		app.parseAndTranslate('admin/partials/categories/category-rows', {
+			cid: parentCategory.cid,
+			categories: categories,
+			parentCategory: parentCategory,
+		}, function (html) {
+			if (container.find('.category-row').length) {
+				container.find('.category-row').after(html);
+			} else {
+				container.append(html);
+			}
+
+			// Disable expand toggle
+			if (!categories.length) {
+				const toggleEl = container.get(0).querySelector('.toggle');
+				toggleEl.classList.toggle('invisible', true);
+			}
+
+			// Handle and children categories in this level have
+			for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
+				renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x]);
+			}
+
+			// Make list sortable
+			sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+				group: 'cross-categories',
+				animation: 150,
+				handle: '.information',
+				dataIdAttr: 'data-cid',
+				ghostClass: 'placeholder',
+				onAdd: itemDidAdd,
+				onEnd: itemDragDidEnd,
 			});
 		});
-
-		if (!categories.length) {
-			continueRender();
-		}
-
-		function continueRender() {
-			app.parseAndTranslate('admin/partials/categories/category-rows', {
-				cid: parentCategory.cid,
-				categories: categories,
-				parentCategory: parentCategory,
-			}, function (html) {
-				if (container.find('.category-row').length) {
-					container.find('.category-row').after(html);
-				} else {
-					container.append(html);
-				}
-
-				// Disable expand toggle
-				if (!categories.length) {
-					const toggleEl = container.get(0).querySelector('.toggle');
-					toggleEl.classList.toggle('invisible', true);
-				}
-
-				// Handle and children categories in this level have
-				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x]);
-				}
-
-				// Make list sortable
-				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-					group: 'cross-categories',
-					animation: 150,
-					handle: '.information',
-					dataIdAttr: 'data-cid',
-					ghostClass: 'placeholder',
-					onAdd: itemDidAdd,
-					onEnd: itemDragDidEnd,
-				});
-			});
-		}
 	}
 
 	return Categories;

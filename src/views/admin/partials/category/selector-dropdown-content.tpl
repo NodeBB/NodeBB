@@ -31,7 +31,7 @@
 						{{{ if ./icon }}}
 						{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 						{{{ end }}}
-						{{escapeTxHtml(./name)}}
+						{./name}
 					</div>
 				</span>
 			</a>

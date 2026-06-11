@@ -1,6 +1,6 @@
 <ul data-cid="{cid}" class="m-0 p-0 list-unstyled user-select-none">
 {{{ each categories }}}
-	<li data-cid="{categories.cid}" data-parent-cid="{categories.parentCid}" data-name="{categories.name}" class="{{{ if categories.disabled }}}disabled{{{ end }}}">
+	<li data-cid="{categories.cid}" data-parent-cid="{categories.parentCid}" data-name="{{escapeTxHtml(categories.name)}}" class="{{{ if categories.disabled }}}disabled{{{ end }}}">
 		<hr/>
 		<div class="category-row d-flex justify-content-between mb-1">
 			<div class="flex-grow-1 align-items-start d-flex gap-2">
@@ -14,7 +14,7 @@
 						</div>
 						<div class="d-grid gap-0">
 							<div class="title fw-semibold">
-								<a class="category-header text-reset" href="{config.relative_path}/admin/manage/categories/{categories.cid}">{categories.name}</a> {{{ if categories.link }}}<a class="text-xs text-muted" href="{categories.link}"><i class="fa fa-link"></i> {categories.link}</a>{{{ end }}}
+								<a class="category-header text-reset" href="{config.relative_path}/admin/manage/categories/{categories.cid}">{{escapeTxHtml(categories.name)}}</a> {{{ if categories.link }}}<a class="text-xs text-muted" href="{{escapeTxHtml(categories.link)}}"><i class="fa fa-link"></i> {{escapeTxHtml(categories.link)}}</a>{{{ end }}}
 							</div>
 							{{{ if categories.descriptionParsed }}}
 							<div class="description text-muted text-xs w-100">{{categories.descriptionParsed}}</div>
@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<div class="flex-shrink-0 d-flex gap-1 align-items-start">
-				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{encodeURIComponent(./cid)}{{{end}}}" class="btn btn-light btn-sm d-none d-sm-block" target="_blank">[[admin/admin:view]]</a>
+				<a href="{{{if ./link}}}{{escapeTxHtml(./link)}}{{{else}}}{config.relative_path}/category/{encodeURIComponent(./cid)}{{{end}}}" class="btn btn-light btn-sm d-none d-sm-block" target="_blank">[[admin/admin:view]]</a>
 
 				{{{ if ./isLocal }}}
 				<a href="./categories/{./cid}" class="btn btn-light btn-sm d-none d-sm-block">[[admin/manage/categories:edit]]</a>

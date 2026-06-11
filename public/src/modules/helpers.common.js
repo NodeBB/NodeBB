@@ -43,7 +43,13 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		uploadBasename,
 		generatePlaceholderWave,
 		register,
+		__escape: fixEscape,
 	};
+
+	function fixEscape(str) {
+		return utils.escapeHTML(str).replace(/&amp;lsqb;/g, '&lsqb;')
+			.replace(/&amp;rsqb;/g, '&rsqb;');
+	}
 
 	function displayMenuItem(data, index) {
 		const item = data.navigation[index];

@@ -244,12 +244,12 @@ helpers.buildBreadcrumbs = function (crumbs) {
 };
 
 helpers.buildTitle = async function (pageTitle, userLang, template) {
-	pageTitle = pageTitle || '';
+	pageTitle = String(pageTitle || '');
 	const translateTitle = template !== 'topic';
 
 	const browserTitle = String(meta.config.browserTitle || meta.config.title || 'NodeBB');
 	const [titleTranslated, browserTitleTranslated] = await Promise.all([
-		translateTitle ? translator.translateKey(pageTitle, [], userLang) : pageTitle,
+		translateTitle ? translator.translateKey(pageTitle, [], userLang) : translator.escape(pageTitle),
 		translator.translateKey(browserTitle, [], userLang),
 	], userLang);
 
