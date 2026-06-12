@@ -1168,7 +1168,7 @@ describe('Topic\'s', () => {
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			assert.equal(response.statusCode, 200);
-			assert(body.includes('<meta property="og:title" content="[[topic:deleted]]" />'), body.slice(0, 2000));
+			assert(body.includes('<meta property="og:title" content="[[topic:deleted]]" />'));
 			assert(body.includes('<meta name="title" content="[[topic:deleted]]" />'));
 		});
 	});
