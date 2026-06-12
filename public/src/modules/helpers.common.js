@@ -209,7 +209,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function generateGroupDisplayName(group) {
-		return group.system ? group.displayName.replace(/-/g, ' ') : escape(group.displayName);
+		return group.system ? group.displayName.replace(/-/g, ' ') : helpers.txEscape(group.displayName);
 	}
 
 	// Groups helpers
@@ -273,16 +273,18 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function renderDigestAvatar(block) {
-		const user = block.teaser && block.teaser.user ? block.teaser.user : block.user;
-		if (!user) return '';
 		const imgStyle = `vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;`;
-		const iconStyle = `vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%; background-color: ${escape(user['icon:bgColor'])};`;
-
-
-		if (user.picture) {
-			return `<img style="${imgStyle}" src="${escape(user.picture)}" title="${escape(user.username)}" />`;
+		const iconStyle = `vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%;`;
+		if (block.teaser) {
+			if (block.teaser.user.picture) {
+				return `<img style="${imgStyle}" src="${escape(block.teaser.user.picture)}" title="${escape(block.teaser.user.username)}" />`;
+			}
+			return `<div style="${iconStyle} background-color: ${escape(block.teaser.user['icon:bgColor'])};">${escape(block.teaser.user['icon:text'])}</div>`;
 		}
-		return `<div style="${iconStyle}">${escape(user['icon:text'])}</div>`;
+		if (block.user.picture) {
+			return `<img style="${imgStyle}" src="${escape(block.user.picture)}" title="${escape(block.user.username)}" />`;
+		}
+		return `<div style="${iconStyle} background-color: ${escape(block.user['icon:bgColor'])};">${escape(block.user['icon:text'])}</div>`;
 	}
 
 	function userAgentIcons(data) {
