@@ -72,6 +72,22 @@ exports.addJob = async function (options) {
 	return job;
 };
 
+exports.hasJob = function (name) {
+	return Object.hasOwn(jobs, name);
+};
+
+exports.restartJob = async function (options) {
+	exports.removeJob(options.name);
+	return await exports.addJob(options);
+};
+
+exports.removeJob = function (name) {
+	if (Object.hasOwn(jobs, name)) {
+		jobs[name].stop();
+		delete jobs[name];
+	}
+};
+
 exports.getJobs = async function () {
 	const jobNames = await db.getSortedSetRange('cronJobs', 0, -1);
 	const jobs = await db.getObjects(jobNames.map(name => `cronJob:${name}`));
