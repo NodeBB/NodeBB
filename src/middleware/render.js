@@ -31,16 +31,6 @@ module.exports = function (middleware) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		const { render } = res;
 
-		res.renderAsync = function (tpl, options) {
-			return new Promise((resolve, reject) => {
-				render.call(res, tpl, options, async (err, str) => {
-					if (err) reject(err);
-					// else resolve(await translate(str, getLang(req, res)));
-					else resolve(str);
-				});
-			});
-		};
-
 		res.render = async function renderOverride(template, options, fn) {
 			const self = this;
 			const { req } = this;
