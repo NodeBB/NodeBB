@@ -19,7 +19,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		buildCategoryLabel,
 		generateCategoryBackground,
 		generateChildrenCategories,
-		generateTopicTitle,
 		generateTopicClass,
 		generateGroupDisplayName,
 		membershipBtn,
@@ -87,7 +86,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${txEscape(escape(tx.call(this, tag.content))).replace(/\n/g, ' ')}" ` : '';
+		const content = tag.content ? `content="${escape(tag.content).replace(/\n/g, ' ')}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -204,20 +203,13 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		return html ? (`<span class="category-children">${html}</span>`) : html;
 	}
 
-	function generateTopicTitle(topic) {
-		if (topic.showDeletedTitle) {
-			return tx.call(this, '[[topic:topic-is-deleted]]');
-		}
-		return txEscape(escape(topic.title));
-	}
-
 	function generateTopicClass(topic) {
 		const fields = ['locked', 'pinned', 'deleted', 'unread', 'scheduled'];
 		return fields.filter(field => !!topic[field]).join(' ');
 	}
 
 	function generateGroupDisplayName(group) {
-		return group.system ? group.displayName.replace(/-/g, ' ') : helpers.txEscape(group.displayName);
+		return group.system ? group.displayName.replace(/-/g, ' ') : escape(group.displayName);
 	}
 
 	// Groups helpers
@@ -281,18 +273,15 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function renderDigestAvatar(block) {
+		const user = block.teaser && block.teaser.user ? block.teaser.user : block.user;
+		if (!user) return '';
 		const imgStyle = `vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;`;
-		const iconStyle = `vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%;`;
-		if (block.teaser) {
-			if (block.teaser.user.picture) {
-				return `<img style="${imgStyle}" src="${escape(block.teaser.user.picture)}" title="${escape(block.teaser.user.username)}" />`;
-			}
-			return `<div style="${iconStyle} background-color: ${escape(block.teaser.user['icon:bgColor'])};">${escape(block.teaser.user['icon:text'])}</div>`;
+		const iconStyle = `vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%; background-color: ${escape(user['icon:bgColor'])};`;
+
+		if (user.picture) {
+			return `<img style="${imgStyle}" src="${escape(user.picture)}" title="${escape(user.username)}" />`;
 		}
-		if (block.user.picture) {
-			return `<img style="${imgStyle}" src="${escape(block.user.picture)}" title="${escape(block.user.username)}" />`;
-		}
-		return `<div style="${iconStyle} background-color: ${escape(block.user['icon:bgColor'])};">${escape(block.user['icon:text'])}</div>`;
+		return `<div style="${iconStyle}">${escape(user['icon:text'])}</div>`;
 	}
 
 	function userAgentIcons(data) {

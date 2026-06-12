@@ -244,11 +244,11 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	res.locals.metaTags = [
 		{
 			name: 'title',
-			content: translator.escape(topicData.title),
+			content: topicData.title,
 		},
 		{
 			property: 'og:title',
-			content: translator.escape(topicData.title),
+			content: topicData.title,
 		},
 		{
 			property: 'og:type',

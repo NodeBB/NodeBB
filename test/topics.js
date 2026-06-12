@@ -1175,8 +1175,8 @@ describe('Topic\'s', () => {
 
 			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
 			assert.equal(response.statusCode, 200);
-			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
-			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
+			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '[[topic:deleted]]');
+			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '[[topic:deleted]]');
 
 			const { body: body2 } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			console.log(body2.slice(0, 3000));

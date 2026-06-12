@@ -299,7 +299,9 @@ ajaxify.widgets = { render: render };
 
 	function updateTags() {
 		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(val => new RegExp(val));
+		const validMetaAttributes = ['name', 'property', 'content', 'http-equiv'];
 		const linkWhitelist = ['canonical', 'alternate', 'up'];
+		const validLinkAttributes = ['rel', 'href', 'type', 'sizes', 'hreflang', 'media'];
 
 		// Delete the old meta tags
 		document.querySelectorAll('head meta').forEach(el => {
@@ -313,11 +315,10 @@ ajaxify.widgets = { render: render };
 		ajaxify.data._header.tags.meta.forEach(async (tagObj) => {
 			const name = tagObj.name || tagObj.property;
 			if (metaWhitelist.some(exp => exp.test(name))) {
-				if (tagObj.content) {
-					tagObj.content = await translator.translate(tagObj.content);
-				}
 				const metaEl = document.createElement('meta');
-				Object.keys(tagObj).forEach(prop => metaEl.setAttribute(prop, tagObj[prop]));
+				validMetaAttributes.forEach(
+					attr => Object.hasOwn(tagObj, attr) && metaEl.setAttribute(attr, tagObj[attr])
+				);
 				document.head.appendChild(metaEl);
 			}
 		});
@@ -334,7 +335,9 @@ ajaxify.widgets = { render: render };
 		ajaxify.data._header.tags.link.forEach(async (tagObj) => {
 			if (linkWhitelist.some(item => item === tagObj.rel)) {
 				const linkEl = document.createElement('link');
-				Object.keys(tagObj).forEach(prop => linkEl.setAttribute(prop, tagObj[prop]));
+				validLinkAttributes.forEach(
+					attr => Object.hasOwn(tagObj, attr) && linkEl.setAttribute(attr, tagObj[attr])
+				);
 				document.head.appendChild(linkEl);
 			}
 		});

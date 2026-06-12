@@ -256,7 +256,7 @@ describe('Categories', () => {
 
 			assert.deepStrictEqual(
 				data.topics.map(t => t.title),
-				['[[topic:topic-is-deleted]]', 'Test Topic Title', 'Test Topic Title'],
+				['This topic is deleted!', 'Test Topic Title', 'Test Topic Title'],
 				JSON.stringify(data.topics, null, 2),
 			);
 		});
@@ -898,10 +898,10 @@ describe('Categories', () => {
 		});
 
 		const { response, body } = await request.get(`${nconf.get('url')}/category/${category.cid}/test-category`);
-
-		assert(body.includes('<title>This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt; | NodeBB</title>'));
-		assert(body.includes('<meta name="title" content="This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'));
-		assert(body.includes('<meta name="description" content="This topic was forked from &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'));
+		const debug = body.slice(0, 1000);
+		assert(body.includes('<title>This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt; | NodeBB</title>'), debug);
+		assert(body.includes('<meta name="title" content="This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'), debug);
+		assert(body.includes('<meta name="description" content="This topic was forked from &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'), debug);
 	});
 });
 
