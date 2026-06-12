@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 require('../../require-main');
+require('../../nodebb-global');
 
 // https://github.com/NodeBB/NodeBB/issues/13734
 // check dev flag early so packageInstall.installAll() can use it
