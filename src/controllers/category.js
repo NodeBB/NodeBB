@@ -2,7 +2,6 @@
 
 
 const nconf = require('nconf');
-const validator = require('validator');
 const qs = require('querystring');
 
 const db = require('../database');
@@ -74,7 +73,7 @@ categoryController.get = async function (req, res, next) {
 
 	if (categoryFields.link) {
 		await db.incrObjectField(`category:${cid}`, 'timesClicked');
-		return helpers.redirect(res, validator.unescape(categoryFields.link));
+		return helpers.redirect(res, categoryFields.link);
 	}
 
 	if (!userSettings.usePagination) {

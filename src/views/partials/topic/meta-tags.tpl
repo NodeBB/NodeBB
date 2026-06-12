@@ -1,5 +1,5 @@
-<meta itemprop="headline" content="{{escapeTxHtml(title)}}">
-<meta itemprop="text" content="{{escapeTxHtml(title)}}">
+<meta itemprop="headline" content="{title}">
+<meta itemprop="text" content="{title}">
 <meta itemprop="url" content="{url}">
 <meta itemprop="datePublished" content="{timestampISO}">
 <meta itemprop="dateModified" content="{lastposttimeISO}">
