@@ -114,7 +114,7 @@ categoryController.get = async function (req, res, next) {
 		return next();
 	}
 
-	await categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges, userSettings.userLang);
+	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 	categoryData.tagWhitelist = categories.filterTagWhitelist(categoryData.tagWhitelist, userPrivileges.isAdminOrMod);
 
 	const allCategories = [];
@@ -207,17 +207,14 @@ function addTags(categoryData, res, currentPage) {
 		{
 			name: 'title',
 			content: categoryData.name,
-			translate: true,
 		},
 		{
 			property: 'og:title',
 			content: categoryData.name,
-			translate: true,
 		},
 		{
 			name: 'description',
 			content: categoryData.description,
-			translate: true,
 		},
 		{
 			property: 'og:type',
@@ -227,6 +224,7 @@ function addTags(categoryData, res, currentPage) {
 
 	if (categoryData.backgroundImage) {
 		let { backgroundImage } = categoryData;
+		backgroundImage = utils.decodeHTMLEntities(backgroundImage);
 		if (!backgroundImage.startsWith('http')) {
 			backgroundImage = url + backgroundImage.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 		}

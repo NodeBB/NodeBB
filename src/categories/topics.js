@@ -161,22 +161,21 @@ module.exports = function (Categories) {
 		return await topics.tools.checkPinExpiry(pinnedTids);
 	};
 
-	Categories.modifyTopicsByPrivilege = async function (topics, privileges, userLang) {
+	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
 		if (!Array.isArray(topics) || !topics.length || privileges.view_deleted) {
 			return;
 		}
-		const topicsToHide = topics.filter(t => t && !t.scheduled && t.deleted && !t.isOwner);
-		if (!topicsToHide.length) {
-			return;
-		}
-		const deletedTitle = await translator.translateKey('topic:topic-is-deleted', [], userLang);
-		topicsToHide.forEach((topic) => {
-			topic.title = deletedTitle;
-			topic.slug = topic.tid;
-			topic.teaser = null;
-			topic.noAnchor = true;
-			topic.unread = false;
-			topic.tags = [];
+
+		topics.forEach((topic) => {
+			if (!topic.scheduled && topic.deleted && !topic.isOwner) {
+				topic.showDeletedTitle = true;
+				topic.title = '[[topic:topic-is-deleted]]';
+				topic.slug = topic.tid;
+				topic.teaser = null;
+				topic.noAnchor = true;
+				topic.unread = false;
+				topic.tags = [];
+			}
 		});
 	};
 

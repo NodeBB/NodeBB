@@ -19,6 +19,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		buildCategoryLabel,
 		generateCategoryBackground,
 		generateChildrenCategories,
+		generateTopicTitle,
 		generateTopicClass,
 		generateGroupDisplayName,
 		membershipBtn,
@@ -86,7 +87,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${escape(tag.content).replace(/\n/g, ' ')}" ` : '';
+		const content = tag.content ? `content="${txEscape(escape(tx.call(this, tag.content))).replace(/\n/g, ' ')}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -201,6 +202,13 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			}
 		});
 		return html ? (`<span class="category-children">${html}</span>`) : html;
+	}
+
+	function generateTopicTitle(topic) {
+		if (topic.showDeletedTitle) {
+			return tx.call(this, '[[topic:topic-is-deleted]]');
+		}
+		return txEscape(escape(topic.title));
 	}
 
 	function generateTopicClass(topic) {
