@@ -35,7 +35,7 @@ recentController.getData = async function (req, url, sort, selectedTerm = 'allti
 
 	const [settings, categoryData, tagData, rssToken, canPost, isPrivileged] = await Promise.all([
 		user.getSettings(req.uid),
-		helpers.getSelectedCategory(cid, req.uid),
+		helpers.getSelectedCategory(cid),
 		helpers.getSelectedTag(tag),
 		user.auth.getFeedToken(req.uid),
 		privileges.categories.canPostTopic(req.uid),

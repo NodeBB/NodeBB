@@ -20,7 +20,7 @@ categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, selectedData] = await Promise.all([
 		categories.getCategories([req.params.category_id]),
 		categories.getParents([req.params.category_id]),
-		helpers.getSelectedCategory(req.params.category_id, req.uid),
+		helpers.getSelectedCategory(req.params.category_id),
 	]);
 
 	const category = categoryData[0];
@@ -144,7 +144,7 @@ categoriesController.buildBreadCrumbs = buildBreadcrumbs;
 categoriesController.getAnalytics = async function (req, res) {
 	const [analyticsData, { selectedCategory }] = await Promise.all([
 		analytics.getCategoryAnalytics(req.params.category_id),
-		helpers.getSelectedCategory(req.params.category_id, req.uid),
+		helpers.getSelectedCategory(req.params.category_id),
 	]);
 
 	res.render('admin/manage/category-analytics', {
@@ -160,7 +160,7 @@ categoriesController.getFederation = async function (req, res) {
 		db.getSortedSetMembers(`cid:${cid}:following`),
 		db.getSortedSetMembers(`followRequests:cid.${cid}`),
 		activitypub.notes.getCategoryFollowers(cid),
-		helpers.getSelectedCategory(cid, req.uid),
+		helpers.getSelectedCategory(cid),
 	]);
 
 	const following = [..._following, ...pending].map(entry => ({

@@ -34,7 +34,7 @@ tagsController.getTag = async function (req, res) {
 	const [settings, cids, categoryData, canPost, isPrivileged, rssToken, isFollowing] = await Promise.all([
 		user.getSettings(req.uid),
 		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
-		helpers.getSelectedCategory(cid, req.uid),
+		helpers.getSelectedCategory(cid),
 		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
 		user.auth.getFeedToken(req.uid),

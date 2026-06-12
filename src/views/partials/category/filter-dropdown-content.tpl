@@ -35,7 +35,7 @@
                         {{{ if ./icon }}}
                         {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
                         {{{ end }}}
-                        <span class="category-name">{./name}</span>
+                        <span class="category-name">{tx(./name)}</span>
                     </div>
                 </span>
                 <i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{ if !./selected }}}invisible{{{ end }}}"></i>

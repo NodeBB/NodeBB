@@ -49,8 +49,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 
 	function fixEscape(str) {
 		return translator.escape(
-			utils.escapeHTML(str).replace(/&amp;lsqb;/g, '&lsqb;')
-				.replace(/&amp;rsqb;/g, '&rsqb;')
+			utils.escapeHTML(str)
 		);
 	}
 

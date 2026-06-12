@@ -249,7 +249,7 @@ helpers.buildTitle = async function (pageTitle, userLang, template) {
 
 	const browserTitle = String(meta.config.browserTitle || meta.config.title || 'NodeBB');
 	const [titleTranslated, browserTitleTranslated] = await Promise.all([
-		translateTitle ? translator.translateKey(pageTitle, [], userLang) : translator.escape(pageTitle),
+		translateTitle ? translator.translateKey(pageTitle, [], userLang) : pageTitle,
 		translator.translateKey(browserTitle, [], userLang),
 	], userLang);
 
@@ -293,7 +293,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		helpers.getVisibleCategories({
 			cids, uid, states, privilege, showLinks: false,
 		}),
-		helpers.getSelectedCategory(selectedCid, uid),
+		helpers.getSelectedCategory(selectedCid),
 	]);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
@@ -364,15 +364,12 @@ helpers.getVisibleCategories = async function (params) {
 	});
 };
 
-helpers.getSelectedCategory = async function (cids, uid) {
+helpers.getSelectedCategory = async function (cids) {
 	if (cids && !Array.isArray(cids)) {
 		cids = [cids];
 	}
 	cids = cids && cids.map(cid => parseInt(cid, 10));
-	const [selectedCategories, { userLang }] = await Promise.all([
-		categories.getCategoriesData(cids),
-		user.getSettings(uid),
-	]);
+	const selectedCategories = await categories.getCategoriesData(cids);
 	let selectedCategory = null;
 	const selectedCids = selectedCategories.map(c => c && c.cid).filter(Boolean);
 	if (selectedCategories.length > 1) {
@@ -384,9 +381,7 @@ helpers.getSelectedCategory = async function (cids, uid) {
 	} else if (selectedCategories.length === 1 && selectedCategories[0]) {
 		selectedCategory = selectedCategories[0];
 	}
-	if (selectedCategory) {
-		selectedCategory.name = await translator.translate(selectedCategory.name, userLang);
-	}
+
 	return { selectedCids, selectedCategory };
 };
 
@@ -638,6 +633,7 @@ helpers.generateError = async (statusCode, message, res) => {
 
 helpers.validateParameters = function (query, fields, validation) {
 	// Parse query string params for filters, eliminate non-valid filters
+	console.log(query, fields, validation);
 	const valid = fields.reduce((memo, field) => {
 		if (query.hasOwnProperty(field) && Object.hasOwn(validation, field)) {
 			const val = query[field];
@@ -645,6 +641,7 @@ helpers.validateParameters = function (query, fields, validation) {
 			if (Array.isArray(validationRule) && validationRule.includes(val)) {
 				memo[field] = val;
 			} else if (validationRule === 'number') {
+				console.log('isArray', Array.isArray(val), val.map(val => console.log(val)));
 				if (Array.isArray(val)) {
 					memo[field] = val.filter(utils.isNumber);
 				} else if (utils.isNumber(val)) {

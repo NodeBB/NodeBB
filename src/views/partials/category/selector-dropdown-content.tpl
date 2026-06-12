@@ -29,7 +29,7 @@
                         {{{ if ./icon }}}
                         {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
                         {{{ end }}}
-                        <span class="category-name">{./name}</span>
+                        <span class="category-name">{tx(./name)}</span>
                     </span>
                 </span>
             </a>
