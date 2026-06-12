@@ -1170,6 +1170,9 @@ describe('Topic\'s', () => {
 			assert.equal(response.statusCode, 200);
 			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
 			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
+
+			const { body: body2 } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
+			console.log(body2.slice(0, 3000));
 		});
 	});
 

@@ -155,7 +155,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 					key: slugify(name),
 					name,
 					value,
-					linkValue: validator.escape(String(value.replace('http://', '').replace('https://', ''))),
+					linkValue: value.replace('http://', '').replace('https://', ''),
 					type: isUrl ? 'input-link' : 'input-text',
 					'min-rep': '',
 					icon: 'fa-solid fa-circle-info',
