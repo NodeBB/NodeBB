@@ -3,11 +3,11 @@
         {{{ if (selectedCategory && !showCategorySelectLabel) }}}
         <span class="category-item d-inline-flex align-items-center gap-1">
             {{buildCategoryIcon(selectedCategory, "24px", "rounded-circle")}}
-            <span class="category-name">{selectedCategory.name}</span>
+            <span class="category-name">{tx(selectedCategory.name)}</span>
         </span>
         {{{ else }}}
         <i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}} text-primary"></i>
-        <span class="d-none d-md-inline">{{{ if selectCategoryLabel }}}{selectCategoryLabel}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}</span>
+        <span class="d-none d-md-inline">{{{ if selectCategoryLabel }}}{tx(selectCategoryLabel)}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}</span>
         {{{ end }}}
     </span>
 </button>
