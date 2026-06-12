@@ -548,7 +548,7 @@ module.exports = function (Messaging) {
 			return { options, selectedIcon: labels[currentSetting].icon };
 		}
 
-		const [canReply, users, messages, settings, isOwner, onlineUids, notifOptions] = await Promise.all([
+		const [canReply, users, messages, isOwner, onlineUids, notifOptions] = await Promise.all([
 			Messaging.canReply(roomId, uid),
 			Messaging.getUsersInRoomFromSet(`chat:room:${roomId}:uids:online`, roomId, 0, 39, true),
 			Messaging.getMessages({
@@ -558,7 +558,6 @@ module.exports = function (Messaging) {
 				roomId: roomId,
 				isNew: false,
 			}),
-			user.getSettings(uid),
 			Messaging.isRoomOwner(uid, roomId),
 			io.getUidsInRoom(`chat_room_${roomId}`),
 			getNotificationOptions(),
@@ -578,7 +577,7 @@ module.exports = function (Messaging) {
 		room.groupChat = users.length > 2;
 		room.icon = Messaging.getRoomIcon(room);
 		room.usernames = Messaging.generateUsernames(room, uid);
-		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, settings.userLang);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

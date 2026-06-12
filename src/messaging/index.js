@@ -200,7 +200,6 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
 		users: getUsers(roomIds, uid),
 		teasers: Messaging.getTeasers(uid, roomIds),
-		settings: user.getSettings(uid),
 	});
 
 	results.roomData = await modifyChatRooms(uid, results);
@@ -226,7 +225,6 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
 		users: getUsers(roomIds, uid),
 		teasers: Messaging.getTeasers(uid, roomIds),
-		settings: user.getSettings(uid),
 	});
 
 	results.roomData = await modifyChatRooms(uid, results);
@@ -272,7 +270,7 @@ async function modifyChatRooms(uid, results) {
 			room.users = room.users.filter(user => user && (parseInt(user.uid, 10) || activitypub.helpers.isUri(user.uid)));
 			room.lastUser = room.users[0];
 			room.usernames = Messaging.generateUsernames(room, uid);
-			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
 		}
 	}));
 
@@ -292,28 +290,42 @@ Messaging.generateUsernames = function (room, excludeUid) {
 	return usernames.join(', ');
 };
 
-Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
-	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
-	const usernames = users.map(u => (utils.isNumber(u.uid) ?
-		`<a href="${relative_path}/uid/${u.uid}">${validator.escape(String(u.displayname))}</a>` :
-		`<a href="${relative_path}/user/${u.username}">${validator.escape(String(u.displayname))}</a>`));
-	let compiled;
+Messaging.generateChatWithMessage = async function (room, callerUid) {
+	let users = room.users.filter(u => u && String(u.uid) !== String(callerUid));
 	if (!users.length) {
 		return '[[modules:chat.no-users-in-room]]';
 	}
-	if (users.length > 3) {
+	const moreThan3 = users.length > 3;
+	users = moreThan3 ? users.slice(0, 2) : users;
+	const userData = users.map((u) => {
+		const href = utils.isNumber(u.uid) ?
+			`${relative_path}/uid/${u.uid}` :
+			`${relative_path}/user/${u.username}`;
+
+		return {
+			href,
+			displayname: String(u.displayname),
+		};
+	});
+
+	let compiled;
+	const txArgs = [];
+	userData.forEach((userData) =>{
+		txArgs.push(userData.href, userData.displayname);
+	});
+	if (moreThan3) {
+		txArgs.push(room.userCount - 2);
 		compiled = translator.compile(
 			'modules:chat.chat-with-usernames-and-x-others',
-			usernames.slice(0, 2).join(', '),
-			room.userCount - 2
+			...txArgs
 		);
 	} else {
 		compiled = translator.compile(
-			'modules:chat.chat-with-usernames',
-			usernames.join(', '),
+			`modules:chat.chat-with-usernames-${userData.length}`,
+			...txArgs
 		);
 	}
-	return utils.decodeHTMLEntities(await translator.translate(compiled, userLang));
+	return compiled;
 };
 
 Messaging.getTeaser = async (uid, roomId) => {

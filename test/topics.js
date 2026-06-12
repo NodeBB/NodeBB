@@ -1158,6 +1158,19 @@ describe('Topic\'s', () => {
 				pageCount: 1,
 			});
 		});
+
+		it('should tx escape topic title in meta tags', async () => {
+			const { topicData } = await topics.post({
+				uid: topic.userId,
+				title: '[[topic:deleted]]',
+				content: 'topic content',
+				cid: topic.categoryId,
+			});
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
+			assert.equal(response.statusCode, 200);
+			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
+			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
+		});
 	});
 
 

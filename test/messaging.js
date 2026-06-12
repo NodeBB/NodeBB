@@ -602,10 +602,11 @@ describe('Messaging Library', () => {
 				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
 			);
 
-			assert.strictEqual(
-				rooms[0].chatWithMessage,
-				`Chat with <a href="${nconf.get('relative_path')}/uid/${uid}">&lt;svg&#x2F;onload=alert(document.location);</a>`
-			);
+			const { response, body } = await request.get(`${nconf.get('url')}/chats/${rooms[0].roomId}`, {
+				jar: mocks.users.foo.jar,
+			});
+
+			assert(body.includes(`Chat with <a href="${nconf.get('relative_path')}/uid/${uid}">&lt;svg/onload&#x3D;alert(document.location);</a>`));
 
 			meta.config.showFullnameAsDisplayName = oldValue;
 		});

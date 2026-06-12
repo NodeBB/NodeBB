@@ -27,7 +27,7 @@
 					{{{ if !./lastUser.uid }}}
 					[[modules:chat.no-users-in-room]]
 					{{{ else }}}
-					{./usernames}
+					{tx(./usernames)}
 					{{{ end  }}}
 				{{{ end }}}
 				</div>
