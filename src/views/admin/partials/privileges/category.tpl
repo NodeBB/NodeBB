@@ -18,13 +18,13 @@
 				<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
 				<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
 				{{{ each privileges.labelData }}}
-				<th class="text-center" data-type="{./type}">{./label}</th>
+				<th class="text-center" data-type="{./type}">{tx(./label)}</th>
 				{{{ end }}}
 			</tr>
 		</thead>
 		<tbody>
 			{{{ each privileges.groups }}}
-			<tr data-group-name="{privileges.groups.nameEscaped}" data-private="{{{ if privileges.groups.isPrivate }}}1{{{ else }}}0{{{ end }}}">
+			<tr data-group-name="{privileges.groups.name}" data-private="{{{ if privileges.groups.isPrivate }}}1{{{ else }}}0{{{ end }}}">
 				<td>
 					{{{ if privileges.groups.isPrivate }}}
 						{{{ if (privileges.groups.name == "banned-users") }}}
@@ -111,7 +111,7 @@
 				<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
 				<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
 				{{{ each privileges.labelData }}}
-				<th class="text-center" data-type="{./type}">{./label}</th>
+				<th class="text-center" data-type="{./type}">{tx(./label)}</th>
 				{{{ end }}}
 			</tr>
 		</thead>

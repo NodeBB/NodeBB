@@ -426,7 +426,6 @@ define('admin/manage/privileges', [
 				groups: [
 					{
 						name: group,
-						nameEscaped: translator.escape(group),
 						privileges: privilegeSet,
 						types: typesMap,
 					},

@@ -6,7 +6,6 @@ const nconf = require('nconf');
 const db = require('../database');
 const plugins = require('../plugins');
 const utils = require('../utils');
-const translator = require('../translator');
 const coverPhoto = require('../coverPhoto');
 const slugify = require('../slugify');
 
@@ -81,7 +80,18 @@ module.exports = function (Groups) {
 
 			db.parseIntFields(group, intFields, fields);
 
-			escapeGroupData(group, hasField);
+			if (hasField('name')) {
+				group.nameEncoded = encodeURIComponent(group.name);
+				group.displayName = String(group.name);
+			}
+
+			if (hasField('description')) {
+				group.description = String(group.description || '');
+			}
+
+			if (hasField('userTitle')) {
+				group.userTitle = String(group.userTitle || '');
+			}
 
 			if (hasField('slug') && group.name && !group.slug) {
 				group.slug = slugify(group.name);
@@ -124,22 +134,6 @@ module.exports = function (Groups) {
 
 			if (hasField('cover:position')) {
 				group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
-			}
-		}
-	}
-
-	function escapeGroupData(group, hasField) {
-		if (group) {
-			if (hasField('name')) {
-				group.nameEncoded = encodeURIComponent(group.name);
-				group.displayName = String(group.name);
-			}
-			if (hasField('description')) {
-				group.description = String(group.description || '');
-			}
-			if (hasField('userTitle')) {
-				group.userTitle = String(group.userTitle || '');
-				group.userTitleEscaped = translator.escape(group.userTitle);
 			}
 		}
 	}

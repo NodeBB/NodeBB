@@ -61,7 +61,7 @@
 							<i id="group-icon" class="fa fa-2x {{{ if group.icon }}}{group.icon}{{{ end }}}" value="{group.icon}"></i>
 						</div>
 						<div class="w-100">
-							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitleEscaped}" maxlength="{maximumGroupTitleLength}" data-property />
+							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" data-property />
 						</div>
 					</div>
 				</div>

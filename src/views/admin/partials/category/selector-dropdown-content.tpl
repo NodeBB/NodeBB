@@ -3,7 +3,7 @@
 		{{{ if (selectedCategory && !showCategorySelectLabel) }}}
 		<span class="category-item d-inline-flex align-items-center gap-1">
 			{{buildCategoryIcon(selectedCategory, "24px", "rounded-circle")}}
-			<span class="fw-semibold">{selectedCategory.name}</span>
+			<span class="fw-semibold">{tx(selectedCategory.name)}</span>
 		</span>
 		{{{ else }}}
 		<i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}}"></i>

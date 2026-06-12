@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -175,13 +174,13 @@ module.exports = function (Posts) {
 
 		newTopicData.tags = data.tags;
 		newTopicData.oldTitle = topicData.title;
-		const renamed = title && translator.escape(validator.escape(String(title))) !== topicData.title;
+		const renamed = title && String(title) !== topicData.title;
 		plugins.hooks.fire('action:topic.edit', { topic: newTopicData, uid: data.uid });
 		return {
 			tid: tid,
 			cid: newTopicData.cid,
 			uid: postData.uid,
-			title: validator.escape(String(title)),
+			title: title,
 			oldTitle: topicData.title,
 			slug: newTopicData.slug || topicData.slug,
 			isMainPost: true,
