@@ -8,7 +8,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	const helpers = {
 		__escape: escape,
 		escape,
-		escapeTxHtml,
 		txEscape,
 		tx,
 		buildMetaTag,
@@ -50,12 +49,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		return translator.escape(
 			utils.escapeHTML(str)
 		);
-	}
-
-	function escapeTxHtml(str) {
-		// html escape first, then escape tx tokens, used to display strings that have
-		// translation tokens in them like topic titles or navigation items in the ACP
-		return txEscape(escape(str));
 	}
 
 	function txEscape(text) {
