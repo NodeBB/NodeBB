@@ -1159,13 +1159,20 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should tx escape topic title in meta tags', async () => {
+		it.only('should tx escape topic title in meta tags', async () => {
 			const { topicData } = await topics.post({
 				uid: topic.userId,
 				title: '[[topic:deleted]]',
 				content: 'topic content',
 				cid: topic.categoryId,
 			});
+			console.log('bjs', require('benchpressjs/package.json').version);
+			console.log('harmony', require('nodebb-theme-harmony/package.json').version);
+			const bjs = require('benchpressjs');
+			console.log(bjs.helpers?.__escape.toString());
+			console.log(bjs.helpers?.escape.toString());
+
+
 			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
 			assert.equal(response.statusCode, 200);
 			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '&lsqb;&lsqb;topic:deleted&rsqb;&rsqb;');
