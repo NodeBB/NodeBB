@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
 
@@ -126,7 +127,7 @@ describe('Topic Events', () => {
 
 		const events = await topics.events.get(topicData.tid, uid);
 
-		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size: 16px; background-color: #827717">B</span> <a href="/user/bar">&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;</a> <a href="/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
+		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size: 16px; background-color: #827717">B</span> <a href="${nconf.get('relative_path')}/user/bar">&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;</a> <a href="${nconf.get('relative_path')}/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
 
 		meta.config.showFullnameAsDisplayName = oldVlaueShowFullnameAsDisplayName;
 	});
