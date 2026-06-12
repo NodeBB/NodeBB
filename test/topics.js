@@ -1159,7 +1159,7 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it.only('should tx escape topic title in meta tags', async () => {
+		it('should tx escape topic title in meta tags', async () => {
 			const { topicData } = await topics.post({
 				uid: topic.userId,
 				title: '[[topic:deleted]]',
