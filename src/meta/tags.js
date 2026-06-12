@@ -3,6 +3,8 @@
 const nconf = require('nconf');
 const winston = require('winston');
 
+const translator = require('../translator');
+const user = require('../user');
 const plugins = require('../plugins');
 const Meta = require('./index');
 
@@ -79,19 +81,22 @@ Tags.parse = async (req, data, meta, link) => {
 		addTouchIcons(defaultLinks);
 	}
 
-	const [{ tags }, { links }] = await Promise.all([
+	const [{ tags }, { links }, { userLang }] = await Promise.all([
 		plugins.hooks.fire('filter:meta.getMetaTags', { req, data, tags: defaultTags }),
 		plugins.hooks.fire('filter:meta.getLinkTags', { req, data, links: defaultLinks }),
+		user.getSettings(req.uid),
 	]);
 
-	meta = tags.concat(meta || []).map((tag) => {
+	meta = await Promise.all(tags.concat(meta || []).map(async (tag) => {
 		if (!tag || typeof tag.content !== 'string') {
 			winston.warn('Invalid meta tag. ', tag);
 			return tag;
 		}
-
+		if (tag.translate) {
+			tag.content = await translator.translate(tag.content, userLang);
+		}
 		return tag;
-	});
+	}));
 
 	await addSiteOGImage(meta);
 
