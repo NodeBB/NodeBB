@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const nconf = require('nconf');
 
 const db = require('../database');
@@ -98,15 +97,15 @@ module.exports = function (Groups) {
 			}
 
 			if (hasField('labelColor')) {
-				group.labelColor = validator.escape(String(group.labelColor || '#000000'));
+				group.labelColor = String(group.labelColor || '#000000');
 			}
 
 			if (hasField('textColor')) {
-				group.textColor = validator.escape(String(group.textColor || '#ffffff'));
+				group.textColor = String(group.textColor || '#ffffff');
 			}
 
 			if (hasField('icon')) {
-				group.icon = validator.escape(String(group.icon || ''));
+				group.icon = String(group.icon || '');
 			}
 
 			if (hasField('createtime')) {
@@ -133,7 +132,7 @@ module.exports = function (Groups) {
 			}
 
 			if (hasField('cover:position')) {
-				group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
+				group['cover:position'] = String(group['cover:position'] || '50% 50%');
 			}
 		}
 	}

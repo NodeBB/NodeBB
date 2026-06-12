@@ -42,13 +42,13 @@ module.exports = function (Posts) {
 				if (postData) {
 					postData.user = userData[index];
 					if (postData.user.uid === 0 && postData.data.handle) {
-						postData.user.username = validator.escape(String(postData.data.handle));
+						postData.user.username = String(postData.data.handle);
 						postData.user.displayname = postData.user.username;
 						postData.user.fullname = postData.user.username;
 					}
 					postData.data.content = postData.data.sourceContent || postData.data.content;
-					postData.data.rawContent = validator.escape(String(postData.data.content));
-					postData.data.title = validator.escape(String(postData.data.title || ''));
+					postData.data.rawContent = String(postData.data.content);
+					postData.data.title = String(postData.data.title || '');
 				}
 			});
 			cache.set('post-queue', _.cloneDeep(postData));

@@ -214,7 +214,7 @@
 							</div>
 							<div class="tag-list">
 								{{{ each posts.data.tags }}}
-								<a href="{config.relative_path}/tags/{encodeURIComponent(@value)}"><span class="badge border border-gray-300 fw-normal tag">{escape(@value)}</span></a>
+								<a href="{config.relative_path}/tags/{encodeURIComponent(@value)}"><span class="badge border border-gray-300 fw-normal tag">{@value}</span></a>
 								{{{ end }}}
 							</div>
 							<div class="topic-tags-editable hidden">
@@ -250,7 +250,7 @@
 						<button data-action="editContent" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
 						{{{ end }}}
 					</div>
-					<div class="post-content mb-auto text-break px-3 py-0 h-100">{posts.data.content}</div>
+					<div class="post-content mb-auto text-break px-3 py-0 h-100">{{posts.data.content}}</div>
 					<div class="post-content-editable flex-grow-1 hidden">
 						<textarea class="form-control w-100 h-100 p-3">{posts.data.rawContent}</textarea>
 					</div>
@@ -265,7 +265,7 @@
 							{{{ each posts.data.thumbs }}}
 							<div class="position-relative">
 								<a class="d-inline-block" href="#">
-									<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{escape(@value)}" />
+									<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{@value}" />
 								</a>
 								<a href="#" data-action="removeThumb" class="link-danger position-absolute btn top-0 start-100 translate-middle p-1"><i class="fa-solid fa-circle-xmark"></i></button>
 							</div>
