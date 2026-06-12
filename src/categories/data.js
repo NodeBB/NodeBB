@@ -141,4 +141,12 @@ function modifyCategory(category, fields) {
 	if (hasField('topic_count')) {
 		category.totalTopicCount = category.topic_count;
 	}
+
+	if (hasField('nickname')) {
+		category.nickname = category.nickname || '';
+	}
+
+	if (hasField('name')) {
+		category.name = category.nickname || category.name;
+	}
 }
