@@ -75,7 +75,7 @@
 									</div>
 									<div class="card-body hidden">
 										<form>
-											{./content}
+											{{./content}}
 										</form>
 									</div>
 								</div>

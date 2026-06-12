@@ -11,7 +11,7 @@
 		</div>
 		<div class="d-flex gap-1">
 			{{{ each composerActions }}}
-			<button data-action="{./action}" class="btn btn-ghost btn-sm d-flex p-2 {./class}" type="button" title="{./title}" data-bs-toggle="tooltip"><i class="fa {./icon}"></i></button>
+			<button data-action="{./action}" class="btn btn-ghost btn-sm d-flex p-2 {./class}" type="button" title="{tx(./title)}" data-bs-toggle="tooltip"><i class="fa {./icon}"></i></button>
 			{{{ end }}}
 			<button class="btn btn-ghost btn-sm d-flex p-2" type="button" data-action="send" title="[[modules:chat.send]]" data-bs-toggle="tooltip"><i class="fa fa-fw fa-paper-plane text-primary"></i></button>
 		</div>
