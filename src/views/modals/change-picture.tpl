@@ -20,7 +20,7 @@
 		<div class="d-flex flex-column gap-2">
 			<h5>[[user:avatar-background-colour]]</h5>
 			<div class="d-flex gap-2 flex-wrap">
-				<a href="#" class="lh-1 p-1" data-bg-color="transparent"><i class="fa-solid fa-2x fa-ban text-secondary"></i></a>
+				<a href="#" class="lh-1 p-1" data-bg-color="transparent"><i class="fa-solid fa-2x fa-ban text-secondary fa-width-auto"></i></a>
 				{{{ each iconBackgrounds }}}
 				<a href="#" class="lh-1 p-1 {{{ if ./selected }}}selected{{{ end }}}" data-bg-color="{./color}" style="color: {./color};"><i class="fa-solid fa-2x fa-circle fa-width-auto"></i></a>
 				{{{ end }}}

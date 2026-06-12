@@ -209,7 +209,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function generateGroupDisplayName(group) {
-		return group.system ? group.displayName.replace(/-/g, ' ') : escape(group.displayName);
+		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
 	}
 
 	// Groups helpers

@@ -195,7 +195,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			userValue = JSON.parse(userValue || '[]');
 		}
 		if (f.type === 'input-link' && userValue) {
-			f.linkValue = validator.escape(String(userValue.replace('http://', '').replace('https://', '')));
+			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
 		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
 		if (f.type === 'select') {
@@ -213,7 +213,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			if (Array.isArray(userValue)) {
 				userValue = userValue.join(', ');
 			}
-			f.value = translator.escape(validator.escape(String(userValue)));
+			f.value = String(userValue);
 		}
 	});
 	return fields;

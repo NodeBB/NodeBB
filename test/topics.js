@@ -1166,12 +1166,6 @@ describe('Topic\'s', () => {
 				content: 'topic content',
 				cid: topic.categoryId,
 			});
-			console.log('bjs', require('benchpressjs/package.json').version);
-			console.log('harmony', require('nodebb-theme-harmony/package.json').version);
-			const bjs = require('benchpressjs');
-			console.log(bjs.helpers?.__escape.toString());
-			console.log(bjs.helpers?.escape.toString());
-
 
 			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
 			assert.equal(response.statusCode, 200);
