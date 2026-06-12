@@ -791,7 +791,7 @@ describe('User', () => {
 					...data, password: '123456', invalid: 'field',
 				});
 				const storedUsername = await db.getObjectField(`user:${uid}`, 'username');
-				assert.equal(result.username, 'ex&#x27;ample_user');
+				assert.equal(result.username, 'ex\'ample_user');
 				assert.equal(storedUsername, 'ex\'ample_user');
 				assert.equal(result.userslug, 'ex-ample_user');
 			});

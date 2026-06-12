@@ -11,7 +11,6 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
 const coverPhoto = require('../coverPhoto');
-const translator = require('../translator');
 
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
@@ -36,10 +35,7 @@ module.exports = function (User) {
 	];
 
 	let customFieldWhiteList = null;
-	const escapeFieldList = [
-		'email', 'username', 'fullname', 'signature', 'displayname',
-		'cover:position', 'birthday', 'aboutme',
-	];
+
 	const urlFieldList = [
 		'picture', 'cover:url',
 	];
@@ -281,7 +277,7 @@ module.exports = function (User) {
 
 			// works around renderOverride supplying `url` to templates
 			if (user.url) {
-				user.remoteUrl = translator.escape(validator.escape(String(user.url)));
+				user.remoteUrl = String(user.url);
 			} else {
 				delete user.url;
 			}
@@ -377,18 +373,11 @@ module.exports = function (User) {
 				}
 			});
 
-			escapeFieldList.forEach((field) => {
-				if (user[field] && typeof user[field] === 'string') {
-					user[field] = translator.escape(validator.escape(String(user[field])));
-				}
-			});
 			urlFieldList.forEach((field) => {
 				if (user[field] && typeof user[field] === 'string') {
 					const trimmedValue = user[field].trim();
 					const isValid = isValidUserUrlField(trimmedValue);
-					if (isValid) {
-						user[field] = translator.escape(trimmedValue);
-					} else {
+					if (!isValid) {
 						if (field === 'picture') {
 							user.picture = User.getDefaultAvatar();
 						} else if (field === 'cover:url') {

@@ -353,11 +353,10 @@ async function parseAboutMe(userData) {
 		return;
 	} else if (activitypub.helpers.isUri(userData.uid)) {
 		userData.aboutme = posts.sanitize(String(userData.aboutme));
-		userData.aboutmeParsed = userData.aboutme;
+		userData.aboutmeParsed = translator.escape(userData.aboutme);
 		return;
 	}
 	const parsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));
-	userData.aboutme = translator.escape(userData.aboutme);
 	userData.aboutmeParsed = translator.escape(parsed);
 }
 

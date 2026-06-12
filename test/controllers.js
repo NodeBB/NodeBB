@@ -1300,11 +1300,11 @@ describe('Controllers', () => {
 		it('should parse about me', async () => {
 			await user.setUserFields(fooUid, {
 				picture: '/assets/uploads/path/to/picture',
-				aboutme: 'hi i am a bot [[topic:moved-from]] <script>alert("xss")</script>',
+				aboutme: 'hi i am a bot [[topic:moved-from]]<script>alert("xss")</script>',
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb; ');
+			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb;');
 			assert.equal(body.picture, '/assets/uploads/path/to/picture');
 		});
 
