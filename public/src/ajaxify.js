@@ -313,9 +313,6 @@ ajaxify.widgets = { render: render };
 		ajaxify.data._header.tags.meta.forEach(async (tagObj) => {
 			const name = tagObj.name || tagObj.property;
 			if (metaWhitelist.some(exp => exp.test(name))) {
-				if (tagObj.content) {
-					tagObj.content = await translator.translate(tagObj.content);
-				}
 				const metaEl = document.createElement('meta');
 				Object.keys(tagObj).forEach(prop => metaEl.setAttribute(prop, tagObj[prop]));
 				document.head.appendChild(metaEl);
