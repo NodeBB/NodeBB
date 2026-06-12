@@ -6,7 +6,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	const oneDayInMs = 24 * 60 * 60 * 1000;
 
 	const helpers = {
-		__escape: fixEscape,
+		__escape: escape,
 		escape,
 		escapeTxHtml,
 		txEscape,
@@ -44,17 +44,12 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		uploadBasename,
 		generatePlaceholderWave,
 		register,
-
 	};
 
-	function fixEscape(str) {
+	function escape(str) {
 		return translator.escape(
 			utils.escapeHTML(str)
 		);
-	}
-
-	function escape(str) {
-		return utils.escapeHTML(str);
 	}
 
 	function escapeTxHtml(str) {

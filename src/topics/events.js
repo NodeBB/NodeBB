@@ -87,7 +87,8 @@ Events.init = async () => {
 
 async function translateEventArgs(event, language, prefix, ...args) {
 	const key = getTranslationKey(event, prefix);
-	const compiled = translator.compile.apply(null, [key, ...args]);
+	const txArgs = args.map(arg => translator.escape(utils.escapeHTML(arg)));
+	const compiled = translator.compile.apply(null, [key, ...txArgs]);
 	return utils.decodeHTMLEntities(await translator.translate(compiled, language));
 }
 
@@ -115,11 +116,12 @@ function renderUser(event) {
 
 	const user = {
 		...event.user,
-		displayname: validator.escape(String(event.user.displayname)),
-		userslug: validator.escape(String(event.user.userslug)),
+		displayname: String(event.user.displayname),
+		userslug: String(event.user.userslug),
 	};
-
-	return `${helpers.buildAvatar(user, '16px', true)} <a href="${relative_path}/user/${user.userslug}">${user.displayname}</a>`;
+	const avatar = helpers.buildAvatar(user, '16px', true);
+	const link = `<a href="${relative_path}/user/${validator.escape(user.userslug)}">${validator.escape(user.displayname)}</a>`;
+	return `${avatar} ${link}`;
 }
 
 function renderCategory(category) {

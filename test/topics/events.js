@@ -4,6 +4,7 @@ const assert = require('assert');
 
 const db = require('../mocks/databasemock');
 
+const meta = require('../../src/meta');
 const plugins = require('../../src/plugins');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
@@ -101,5 +102,32 @@ describe('Topic Events', () => {
 			const exists = await Promise.all(keys.map(key => db.exists(key)));
 			assert(exists.every(exists => !exists));
 		});
+	});
+
+	it('should properly escape topic events with HTML and tx tokens in their arguments', async () => {
+		const oldVlaueShowFullnameAsDisplayName = meta.config.showFullnameAsDisplayName;
+		meta.config.showFullnameAsDisplayName = 1;
+		const { topicData } = await topics.post({
+			title: 'topic events testing',
+			content: 'foobar one two three',
+			uid: fooUid,
+			cid: 1,
+		});
+		const uid = await user.create({ username: 'bar', fullname: '"><script>alert("xss")</script> [[global:posts]]' });
+		await user.setSetting(uid, 'showfullname', 1);
+
+		const now = Date.now();
+		await topics.events.log(topicData.tid, {
+			uid: uid,
+			type: 'fork',
+			href: `/topic/${topicData.tid}`,
+			timestamp: now,
+		});
+
+		const events = await topics.events.get(topicData.tid, uid);
+
+		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;" data-uid="2" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size: 16px; background-color: #827717">B</span> <a href="/user/bar">&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;</a> <a href="/topic/2">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
+
+		meta.config.showFullnameAsDisplayName = oldVlaueShowFullnameAsDisplayName;
 	});
 });
