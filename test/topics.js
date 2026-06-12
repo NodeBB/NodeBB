@@ -1180,8 +1180,8 @@ describe('Topic\'s', () => {
 
 			const { body: body2 } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			const debug = body2.slice(0, 1000);
-			assert(body.includes('<meta property="og:title" content="[[topic:deleted]]" />'), debug);
-			assert(body.includes('<meta name="title" content="[[topic:deleted]]" />'), debug);
+			assert(body2.includes('<meta property="og:title" content="[[topic:deleted]]" />'), debug);
+			assert(body2.includes('<meta name="title" content="[[topic:deleted]]" />'), debug);
 		});
 	});
 
