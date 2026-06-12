@@ -1159,7 +1159,7 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should tx escape topic title in meta tags', async () => {
+		it('should not translate the title of a topic in meta tags even if it is a translation key', async () => {
 			const { topicData } = await topics.post({
 				uid: topic.userId,
 				title: '[[topic:deleted]]',
@@ -1179,7 +1179,9 @@ describe('Topic\'s', () => {
 			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '[[topic:deleted]]');
 
 			const { body: body2 } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
-			console.log(body2.slice(0, 3000));
+			const debug = body2.slice(0, 1000);
+			assert(body.includes('<meta property="og:title" content="[[topic:deleted]]" />'), debug);
+			assert(body.includes('<meta name="title" content="[[topic:deleted]]" />'), debug);
 		});
 	});
 
