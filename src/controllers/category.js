@@ -120,10 +120,9 @@ categoryController.get = async function (req, res, next) {
 
 	const allCategories = [];
 	categories.flattenCategories(allCategories, categoryData.children);
-	await helpers.translateCategoryData([categoryData].concat(categoryData.children), userSettings.userLang),
+
 	await Promise.all([
-		// needs to be after translateCategoryData to ensure category names are translated for breadcrumbs
-		buildBreadcrumbs(req, categoryData, userSettings.userLang),
+		buildBreadcrumbs(req, categoryData),
 		categories.setUnread([categoryData], allCategories.map(c => c.cid).concat(cid), req.uid),
 	]);
 
@@ -190,7 +189,7 @@ categoryController.get = async function (req, res, next) {
 	res.render('category', categoryData);
 };
 
-async function buildBreadcrumbs(req, categoryData, userLang) {
+async function buildBreadcrumbs(req, categoryData) {
 	const breadcrumbs = [
 		{
 			text: categoryData.name,
@@ -198,7 +197,7 @@ async function buildBreadcrumbs(req, categoryData, userLang) {
 			cid: categoryData.cid,
 		},
 	];
-	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid, userLang);
+	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
 	if (req.originalUrl.startsWith(`${relative_path}/api/category`) || req.originalUrl.startsWith(`${relative_path}/category`)) {
 		categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 	}

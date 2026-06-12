@@ -31,6 +31,7 @@ module.exports = function (Categories) {
 			name: data.name,
 			handle,
 			description: data.description ? data.description : '',
+			descriptionParsed: data.descriptionParsed ? data.descriptionParsed : '',
 			icon: data.icon ? data.icon : '',
 			bgColor: data.bgColor || colours[0],
 			color: data.color || colours[1],
@@ -84,6 +85,9 @@ module.exports = function (Categories) {
 		category = result.category;
 
 		await db.setObject(`category:${category.cid}`, category);
+		if (!category.descriptionParsed) {
+			await Categories.parseDescription(category.cid, category.description);
+		}
 
 		await db.sortedSetAddBulk([
 			['categories:cid', category.order, category.cid],

@@ -79,7 +79,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
-		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
+		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
 			return token;
 		}
 
@@ -99,7 +99,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${txEscape(escape(tag.content)).replace(/\n/g, ' ')}" ` : '';
+		const content = tag.content ? `content="${txEscape(escape(tx.call(this, tag.content))).replace(/\n/g, ' ')}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -206,11 +206,11 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
 				const link = child.link ? child.link : (relative_path + '/category/' + child.slug);
-				html += `<span class="category-children-item">
-					<div role="presentation" class="icon" style="${generateCategoryBackground(child)}">
-					<i class="fa fa-fw ${escape(child.icon)}"></i>
-					</div>
-					<a href="${escape(link)}"> <small>${escape(child.name)}</small></a></span>`;
+				html += '<span class="category-children-item">' +
+					`<div role="presentation" class="icon" style="${generateCategoryBackground(child)}">` +
+					`<i class="fa fa-fw ${escape(child.icon)}"></i>` +
+					'</div>' +
+					`<a href="${escape(link)}"><small>${escape(child.name)}</small></a></span>`;
 			}
 		});
 		return html ? (`<span class="category-children">${html}</span>`) : html;
@@ -293,7 +293,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function renderDigestAvatar(block) {
-		const imgStyle = `vertical-align: middle; width: 32px; height: 32px; border-radius: 50%`;
+		const imgStyle = `vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;`;
 		const iconStyle = `vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%;`;
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
@@ -416,9 +416,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 
 	function generateWroteReplied(post, timeagoCutoff) {
 		if (post.toPid) {
-			return generateRepliedTo(post, timeagoCutoff);
+			return generateRepliedTo.call(this, post, timeagoCutoff);
 		}
-		return generateWrote(post, timeagoCutoff);
+		return generateWrote.call(this, post, timeagoCutoff);
 	}
 
 	function generateRepliedTo(post, timeagoCutoff) {

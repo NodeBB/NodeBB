@@ -477,7 +477,7 @@ describe('Groups', () => {
 			assert.strictEqual('updatetestgroup', groupObj.slug);
 
 			const navItems = await navigation.get();
-			assert.strictEqual(navItems[0].route, '&#x2F;categories');
+			assert.strictEqual(navItems[0].route, '/categories');
 		});
 
 		it('should fail if system groups is being renamed', (done) => {

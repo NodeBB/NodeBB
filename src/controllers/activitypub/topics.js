@@ -18,14 +18,13 @@ controller.list = async function (req, res) {
 		return helpers.redirect(res, '/world?local=1', false);
 	}
 
-	const { topicsPerPage, userLang } = await user.getSettings(req.uid);
+	const userSettings = await user.getSettings(req.uid);
 	let { page, after } = req.query;
 	page = parseInt(page, 10) || 1;
-	let start = Math.max(0, (page - 1) * topicsPerPage);
-	let stop = start + topicsPerPage - 1;
+	let start = Math.max(0, (page - 1) * userSettings.topicsPerPage);
+	let stop = start + userSettings.topicsPerPage - 1;
 
-	const [userSettings, userPrivileges, isAdminOrGlobalMod, selectedCategory] = await Promise.all([
-		user.getSettings(req.uid),
+	const [userPrivileges, isAdminOrGlobalMod, selectedCategory] = await Promise.all([
 		privileges.categories.get('-1', req.uid),
 		user.isAdminOrGlobalMod(req.uid),
 		categories.getCategoryData(meta.config.activitypubWorldDefaultCid),
@@ -50,7 +49,7 @@ controller.list = async function (req, res) {
 		thumbsOnly: 1,
 	};
 	const data = await categories.getCategoryById(cidQuery);
-	await helpers.translateCategoryData([data], userLang);
+
 	delete data.children;
 	data.sort = req.query.sort;
 	data.privileges = userPrivileges;
@@ -169,7 +168,7 @@ controller.list = async function (req, res) {
 	data.title = translator.escape(data.name);
 	data.breadcrumbs = helpers.buildBreadcrumbs([]);
 
-	const pageCount = Math.max(1, Math.ceil(data.topicCount / topicsPerPage));
+	const pageCount = Math.max(1, Math.ceil(data.topicCount / userSettings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({
 		url: 'world',

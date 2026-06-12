@@ -61,6 +61,9 @@ module.exports = function (Categories) {
 		}
 
 		await db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, key, value);
+		if (key === 'description') {
+			await Categories.parseDescription(cid, value);
+		}
 	}
 
 	async function updateParent(cid, newParent) {
@@ -133,6 +136,11 @@ module.exports = function (Categories) {
 			'categories:cid',
 		]);
 	}
+
+	Categories.parseDescription = async function (cid, description) {
+		const parsedDescription = await plugins.hooks.fire('filter:parse.raw', description);
+		await Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription);
+	};
 
 	async function updateName(cid, newName) {
 		const oldName = await Categories.getCategoryField(cid, 'name');

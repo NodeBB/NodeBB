@@ -191,17 +191,16 @@ function prependRelativePath(url) {
 		url : relative_path + url;
 }
 
-helpers.buildCategoryBreadcrumbs = async function (cid, userLang) {
+helpers.buildCategoryBreadcrumbs = async function (cid) {
 	const breadcrumbs = [];
 
 	while (parseInt(cid, 10)) {
 		/* eslint-disable no-await-in-loop */
 		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
 
-		const translatedName = await translator.translate(data.name, userLang);
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
-				text: translatedName,
+				text: data.name,
 				url: `${url}/category/${data.slug}`,
 				cid: cid,
 			});
@@ -259,23 +258,6 @@ helpers.buildTitle = async function (pageTitle, userLang, template) {
 		.replace('{browserTitle}', () => browserTitleTranslated);
 
 	return utils.decodeHTMLEntities(title);
-};
-
-// categoy names and descriptions can be tx keys, translate them safely here
-// used on category list, category page and users watched categories
-helpers.translateCategoryData = async function (categoryData /*, userLang */) {
-	await Promise.all(categoryData.map(async (category) => {
-		if (category) {
-			category.descriptionParsed = await plugins.hooks.fire(
-				'filter:parse.raw', category.description
-			);
-			// category.name = await translator.translate(category.name, userLang);
-			// category.descriptionParsed = await plugins.hooks.fire(
-			// 'filter:parse.raw', await translator.translate(category.description, userLang)
-			// );
-			// category.description = await translator.translate(category.description, userLang);
-		}
-	}));
 };
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
@@ -633,7 +615,6 @@ helpers.generateError = async (statusCode, message, res) => {
 
 helpers.validateParameters = function (query, fields, validation) {
 	// Parse query string params for filters, eliminate non-valid filters
-	console.log(query, fields, validation);
 	const valid = fields.reduce((memo, field) => {
 		if (query.hasOwnProperty(field) && Object.hasOwn(validation, field)) {
 			const val = query[field];
@@ -641,7 +622,6 @@ helpers.validateParameters = function (query, fields, validation) {
 			if (Array.isArray(validationRule) && validationRule.includes(val)) {
 				memo[field] = val;
 			} else if (validationRule === 'number') {
-				console.log('isArray', Array.isArray(val), val.map(val => console.log(val)));
 				if (Array.isArray(val)) {
 					memo[field] = val.filter(utils.isNumber);
 				} else if (utils.isNumber(val)) {
