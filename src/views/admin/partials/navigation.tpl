@@ -160,14 +160,14 @@
 		<div id="collapsePlugins" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
 			<div class="accordion-body p-0 d-grid">
 				{{{ each plugins }}}
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{./name}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{tx(./name)}</a>
 				{{{ end }}}
 
 				{{{ if authentication.length }}}
 				<hr/>
 				<div class="text-sm ms-4">[[admin/menu:section-social-auth]]</div>
 				{{{ each authentication }}}
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{./name}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{tx(./name)}</a>
 				{{{ end }}}
 				{{{ end }}}
 				<hr/>

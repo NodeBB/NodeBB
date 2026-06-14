@@ -32,6 +32,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		increment,
 		lessthan,
 		greaterthan,
+		max,
+		min,
+		clamp,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -69,6 +72,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
+			console.warn(`Translation token "${token}" not found.`);
 			return translator.fixDoubleEscaped(translator.escapeHTML(token));
 		}
 
@@ -395,6 +399,18 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 
 	function greaterthan(a, b) {
 		return parseInt(a, 10) > parseInt(b, 10);
+	}
+
+	function max(a, b) {
+		return Math.max(parseInt(a, 10), parseInt(b, 10));
+	}
+
+	function min(a, b) {
+		return Math.min(parseInt(a, 10), parseInt(b, 10));
+	}
+
+	function clamp(value, minValue, maxValue) {
+		return Math.min(Math.max(parseInt(value, 10), parseInt(minValue, 10)), parseInt(maxValue, 10));
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {
