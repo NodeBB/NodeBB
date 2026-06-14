@@ -72,7 +72,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
-			console.warn(`Translation token "${token}" not found.`);
 			return translator.fixDoubleEscaped(translator.escapeHTML(token));
 		}
 
