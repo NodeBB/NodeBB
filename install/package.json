@@ -42,7 +42,7 @@
         "@textcomplete/textarea": "0.1.13",
         "@xmldom/xmldom": "^0.9.10",
         "ace-builds": "1.44.0",
-        "archiver": "7.0.1",
+        "archiver": "8.0.0",
         "async": "3.2.6",
         "autoprefixer": "10.5.0",
         "bcryptjs": "3.0.3",
