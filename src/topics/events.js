@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 const nconf = require('nconf');
 const db = require('../database');
@@ -87,9 +86,10 @@ Events.init = async () => {
 
 async function translateEventArgs(event, language, prefix, ...args) {
 	const key = getTranslationKey(event, prefix);
-	const txArgs = args.map(arg => translator.escape(utils.escapeHTML(arg)));
+	const txArgs = args.map(arg => utils.escapeHTML(arg));
 	const compiled = translator.compile.apply(null, [key, ...txArgs]);
-	return utils.decodeHTMLEntities(await translator.translate(compiled, language));
+	const translated = await translator.translate(compiled, language);
+	return utils.decodeHTMLEntities(translated);
 }
 
 async function translateSimple(event, language, prefix) {
@@ -120,7 +120,7 @@ function renderUser(event) {
 		userslug: String(event.user.userslug),
 	};
 	const avatar = helpers.buildAvatar(user, '16px', true);
-	const link = `<a href="${relative_path}/user/${validator.escape(user.userslug)}">${validator.escape(user.displayname)}</a>`;
+	const link = `<a href="${relative_path}/user/${helpers.escape(user.userslug)}">${helpers.escape(user.displayname)}</a>`;
 	return `${avatar} ${link}`;
 }
 

@@ -249,9 +249,12 @@ describe('Controllers', () => {
 	});
 
 	it('should properly escape outgoing url query params', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
+		const { response, body } = await request.get(`${nconf.get('url')}/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
 		assert.equal(response.statusCode, 200);
-		assert.strictEqual(body.outgoing, 'https://foo.com/?best=&amp;lsqb;&amp;lsqb;topic:merged-message,%20javascript:alert(origin)&amp;rsqb;&amp;rsqb;');
+
+		console.log(body.slice(15000, 25000));
+		assert(body.includes('<a href="https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]"'));
+		assert(body.includes('https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]'));
 	});
 
 	it('should load /register/complete', async () => {

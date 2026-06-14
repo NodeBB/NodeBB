@@ -107,13 +107,14 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 		return;
 	}
 	const [userData, topicTitle, postObj] = await Promise.all([
-		fromCategory ? categories.getCategoryFields(fromuid, ['name']) : user.getUserFields(fromuid, ['username']),
+		fromCategory ?
+			categories.getCategoryFields(fromuid, ['name']) :
+			user.getUserFields(fromuid, ['username']),
 		topics.getTopicField(postData.tid, 'title'),
 		posts.parsePost(postData),
 	]);
 
-	const title = utils.decodeHTMLEntities(topicTitle);
-	const bodyShort = translator.compile(notification, userData.displayname || userData.name, title);
+	const bodyShort = translator.compile(notification, userData.displayname || userData.name, topicTitle);
 
 	const notifObj = await notifications.create({
 		type: command,

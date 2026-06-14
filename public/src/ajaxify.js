@@ -293,7 +293,7 @@ ajaxify.widgets = { render: render };
 		const documentTitle = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
 			.replace('{pageTitle}', () => titleTranslated.slice(0, 60))
 			.replace('{browserTitle}', () => browserTitleTranslated);
-		window.document.title = documentTitle;
+		window.document.title = utils.decodeHTMLEntities(documentTitle);
 	}
 	ajaxify.updateTitle = updateTitle;
 

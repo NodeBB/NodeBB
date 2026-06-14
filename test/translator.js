@@ -10,26 +10,25 @@ const shim = require('../src/translator');
 const { Translator } = shim;
 const db = require('./mocks/databasemock');
 const helpers = require('../src/helpers');
+const languages = require('../src/languages');
 
 describe('Translator shim', () => {
 
 	describe('tx helper', () => {
-		const context = {
-			_i18n: {
-				topic: {
-					'moved-from': 'Moved from %1',
-					'merged-message': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
-					'argument-test': 'Test arguments like %1 and %2, in them: %3',
-					'no-arguments': 'no arguments here',
-				},
-			},
-		};
+
+		const context = { };
+
+		before(async () => {
+			context._i18n = await languages.getFull('en-GB');
+			context._i18n.topic['argument-test'] = 'Test arguments like %1 and %2, in them: %3';
+			context._i18n.topic['no-arguments'] = 'no arguments here';
+		});
 
 		shim.addTranslation('en-GB', 'topic', {
 			'argument-test': 'Test arguments like %1 and %2, in them: %3',
 		});
 
-		it('should return translated string with interpolation when has _i18n', (done) => {
+		it('should return translated string with interpolation', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', 'general discussion');
 			assert.strictEqual(str, 'Moved from general discussion');
 			done();
@@ -47,7 +46,7 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should work with handle % and , in arguments syntax', async () => {
+		it('should work with % and , in arguments syntax', async () => {
 			const compiled = shim.compile('topic:argument-test', 'ar%1g1', 'arg,2', 'arg3');
 			const shimStr = await shim.translate(compiled);
 			const str = helpers.tx.call(context, '[[topic:argument-test, ar&#37;1g1, arg&#44;2, arg3]]');
@@ -56,14 +55,26 @@ describe('Translator shim', () => {
 			assert.strictEqual(str, shimStr);
 		});
 
-		it('should escape html escape arguments', (done) => {
+		it('should html escape the token if it is not found in _i18n', (done) => {
+			const str = helpers.tx.call(context, '<script>alert("xss")</script>');
+			assert.strictEqual(str, '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+			done();
+		});
+
+		it('should html escape arguments', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', '<script>alert("xss")</script>');
 			assert.strictEqual(str, 'Moved from &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
 			done();
 		});
 
+		it('should escape html if everything is passed as first string and its not a valid token', (done) => {
+			const str = helpers.tx.call(context, '[[<script>alert("xss")</script>, <script>alert("xss")</script>]]');
+			assert.strictEqual(str, '[[&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;, &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;]]');
+			done();
+		});
+
 		it('should validate href arguments', (done) => {
-			const str = helpers.tx.call(context, 'topic:merged-message', 'javascript:alert(origin)', 'foo', 'baz');
+			const str = helpers.tx.call(context, 'topic:merged-message', 'javascript:alert(origin)', 'baz');
 			assert.strictEqual(str, 'This topic has been merged into <a href="">baz</a>');
 			done();
 		});
@@ -80,9 +91,9 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should escape html escape arguments but keep it if it\'s coming from tx file', (done) => {
-			const str = helpers.tx.call(context, 'topic:merged-message', '/forum', '<script>alert("xss")</script>', 'topic name');
-			assert.strictEqual(str, 'This topic has been merged into <a href="/forum/topic/&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;">topic name</a>');
+		it('should html escape arguments but keep it if it\'s coming from tx file', (done) => {
+			const str = helpers.tx.call(context, 'topic:merged-message', '/forum/<script>alert("xss")</script>', 'topic name');
+			assert.strictEqual(str, 'This topic has been merged into <a href="/forum/&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;">topic name</a>');
 			done();
 		});
 
@@ -105,7 +116,6 @@ describe('Translator shim', () => {
 			assert.strictEqual(compiled, 'some bar with translation Moved from general discussion');
 		});
 	});
-
 
 	describe('.translate()', () => {
 		it('should translate correctly', (done) => {

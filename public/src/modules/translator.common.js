@@ -11,6 +11,13 @@ module.exports = function (utils, load, warn) {
 		));
 	}
 
+	function fixDoubleEscaped(str) {
+		// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
+		return str.replace(/&amp;lsqb;/g, '&lsqb;')
+			.replace(/&amp;rsqb;/g, '&rsqb;')
+			.replace(/&amp;#44;/g, '&#44;');
+	}
+
 	function validateHrefAttributes(translated) {
 		return translated.replace(/href="([^"]*)"/gi, (match, href) => {
 			return isSafeHref(href) ? match : 'href=""';
@@ -267,17 +274,13 @@ module.exports = function (utils, load, warn) {
 				}
 
 				const argsToTranslate = args.map(function (arg) {
-					return self.translate(escapeHTML(arg));
+					return self.translate(fixDoubleEscaped(escapeHTML(arg)));
 				});
 
 				return Promise.all(argsToTranslate).then(function (translatedArgs) {
 					let out = translated;
 					translatedArgs.forEach(function (arg, i) {
-						let escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
-						// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
-						escaped = escaped.replace(/&amp;lsqb;/g, '&lsqb;')
-							.replace(/&amp;rsqb;/g, '&rsqb;')
-							.replace(/&amp;#44;/g, '&#44;');
+						const escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
 						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 					});
 					out = validateHrefAttributes(out);
@@ -524,10 +527,14 @@ module.exports = function (utils, load, warn) {
 		Translator.compile = function compile(...args) {
 			const compiled = args.map(function (text) {
 				// escape commas and percent signs in arguments
-				return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+				return Translator.escapeArg(text);
 			});
 
 			return `[[${compiled.join(', ')}]]`;
+		};
+
+		Translator.escapeArg = function (arg) {
+			return String(arg).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 		};
 
 		return Translator;
@@ -545,6 +552,9 @@ module.exports = function (utils, load, warn) {
 		compile: Translator.compile,
 		escape: Translator.escape,
 		unescape: Translator.unescape,
+		escapeArg: Translator.escapeArg,
+		escapeHTML: escapeHTML,
+		fixDoubleEscaped: fixDoubleEscaped,
 		getLanguage: Translator.getLanguage,
 
 		flush: function () {
@@ -637,8 +647,7 @@ module.exports = function (utils, load, warn) {
 					return token;
 				}
 				const tokenLanguage = language || lang;
-				let txArgs = Array.isArray(args) ? args.map(arg => escapeHTML(arg)) : [];
-				txArgs = await adaptor.txArgs(args, tokenLanguage);
+				const txArgs = await adaptor.txArgs(args, tokenLanguage);
 
 				return Translator.create(tokenLanguage).getTranslation(namespace, key).then(function (translation) {
 					if (!translation) {
@@ -659,7 +668,7 @@ module.exports = function (utils, load, warn) {
 			return translation;
 		},
 
-		escapeHTML: escapeHTML,
+
 
 		txArgs: async function (args, language) {
 			if (!Array.isArray(args) || args.length === 0) {
@@ -667,6 +676,7 @@ module.exports = function (utils, load, warn) {
 			}
 
 			return await Promise.all(args.map(async (arg) => {
+				arg = fixDoubleEscaped(escapeHTML(arg));
 				if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
 					return await adaptor.translateKey(arg, [], language);
 				}

@@ -554,7 +554,9 @@ define('forum/topic/postTools', [
 	async function getLinkBackBody() {
 		// brackets confuse markdown parsing, so we need to escape them
 		// "link-back": "Re: [%1](%2)\n\n",
-		const title = ajaxify.data.title.replace(/\]\]/g, '\\]\\]').replace(/\[\[/g, '\\[\\[');
+		const title = ajaxify.data.title.replace(/\]\]/g, '\\]\\]').replace(/\[\[/g, '\\[\\[')
+			.replace(/&lsqb;/g, '&amplsqb;')
+			.replace(/&rsqb;/g, '&amprsqb;');
 		const href = `${config.relative_path}/topic/${ajaxify.data.slug}`;
 		return await translator.translateKey('topic:link-back', [title, href]);
 	}

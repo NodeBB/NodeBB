@@ -8,9 +8,11 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	const helpers = {
 		__escape: escape,
 		escape,
-		txEscape,
+		txEscape: translator.escape,
+		txEscapeArg: translator.escapeArg,
 		tx,
 		buildMetaTag,
+		quote,
 		buildLinkTag,
 		stringify,
 		displayMenuItem,
@@ -46,17 +48,17 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 
 	function escape(str) {
 		return translator.escape(
-			utils.escapeHTML(str)
+			utils.escapeHTML(utils.decodeHTMLEntities(
+				String(str)
+			))
 		);
 	}
 
-	function txEscape(text) {
-		return String(text)
-			.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;')
-			.replace(/,/g, '&#44;').replace(/%/g, '&#37;');
-	}
-
 	function tx(token, ...args) {
+		if (Array.isArray(token) && token.length) {
+			args = [...token.slice(1)];
+			token = token[0];
+		}
 		if (!token) {
 			return '';
 		}
@@ -67,20 +69,27 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
-			return token;
+			return translator.escapeHTML(token);
 		}
 
-		// translate the arguments if they are tokens themselves
-		args = args.map((arg) => {
-			arg = translator.escapeHTML(arg);
-			if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
-				return helpers.tx.call(this, arg, []); // no arguments on nested tokens for now
+		const escapedArgs = args.map((arg) => {
+			const escapedArg = translator.fixDoubleEscaped(translator.escapeHTML(arg));
+
+			if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
+				return helpers.tx.call(this, escapedArg, []); // no escapedArguments on nested tokens for now
 			}
-			return arg;
+			return escapedArg;
 		});
 
 		const translation = this._i18n[namespace][key];
-		return translator.replaceArguments(translation, args);
+		const result = translator.replaceArguments(translation, escapedArgs);
+		// prevents the translator.translate() in
+		// app.parseAndTraslate and page render from translating again
+		return translator.escape(result);
+	}
+
+	function quote(str) {
+		return `"${str}"`;
 	}
 
 	function buildMetaTag(tag) {
@@ -216,9 +225,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	function membershipBtn(groupObj, btnClass = '') {
 		btnClass = btnClass ? escape(btnClass) : '';
 		const displayName = groupObj.displayName ? escape(groupObj.displayName) : '';
-
-		// use below to translate tx strings
-		// console.log('tx', tx.call(this, '[[groups:membership.leave-group]]'));
 
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
 			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
