@@ -311,7 +311,7 @@ Messaging.generateChatWithMessage = async function (room, callerUid) {
 	let compiled;
 	const txArgs = [];
 	userData.forEach((userData) =>{
-		txArgs.push(userData.href, userData.displayname);
+		txArgs.push(userData.href, translator.escape(userData.displayname));
 	});
 	if (moreThan3) {
 		txArgs.push(room.userCount - 2);
