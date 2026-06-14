@@ -14,6 +14,7 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const privileges = require('../privileges');
 const social = require('../social');
+const translator = require('../translator');
 
 const relative_path = nconf.get('relative_path');
 
@@ -321,6 +322,11 @@ async function getMainPosts(mainPids, uid) {
 Topics.isLocked = async function (tid) {
 	const locked = await Topics.getTopicField(tid, 'locked');
 	return locked === 1;
+};
+
+Topics.getNotificationTitle = async function (tid) {
+	const title = await Topics.getTopicField(tid, 'title');
+	return translator.escape(title);
 };
 
 Topics.search = async function (tid, term) {

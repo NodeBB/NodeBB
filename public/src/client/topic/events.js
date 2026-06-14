@@ -121,13 +121,17 @@ define('forum/topic/events', [
 			history.replaceState({ url: newUrl }, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
 			topicTitle.fadeOut(250, function () {
-				topicTitle.html(data.topic.title).fadeIn(250);
+				topicTitle.text(data.topic.title).fadeIn(250);
 			});
-			breadCrumb.fadeOut(250, function () {
-				breadCrumb.html(data.topic.title).fadeIn(250);
-			});
+
+			if (breadCrumb.is(':visible')) {
+				breadCrumb.fadeOut(250, function () {
+					breadCrumb.find('span').text(data.topic.title);
+					breadCrumb.fadeIn(250);
+				});
+			}
 			navbarTitle.fadeOut(250, function () {
-				navbarTitle.html(data.topic.title).fadeIn(250);
+				navbarTitle.text(data.topic.title).fadeIn(250);
 			});
 		}
 

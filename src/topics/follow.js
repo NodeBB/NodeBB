@@ -5,7 +5,8 @@ const db = require('../database');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
-const utils = require('../utils');
+const user = require('../user');
+const tx = require('../translator');
 
 module.exports = function (Topics) {
 	Topics.toggleFollow = async function (tid, uid) {
@@ -157,14 +158,17 @@ module.exports = function (Topics) {
 		if (!followers.length) {
 			return;
 		}
-
-		let { title } = postData.topic;
-		if (title) {
-			title = utils.decodeHTMLEntities(title);
-		}
-
+		const [displayName, title] = await Promise.all([
+			user.getNotificationDisplayname(exceptUid),
+			Topics.getNotificationTitle(postData.topic.tid),
+		]);
+		const typeToTxKey = {
+			'new-reply': 'notifications:user-posted-to',
+			'post-edit': 'notifications:user-edited-post',
+		};
 		const notification = await notifications.create({
 			subject: title,
+			bodyShort: tx.compile(typeToTxKey[notifData.type], displayName, title),
 			bodyLong: postData.content,
 			pid: postData.pid,
 			path: `/post/${encodeURIComponent(postData.pid)}`,

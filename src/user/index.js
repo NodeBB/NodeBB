@@ -10,6 +10,7 @@ const categories = require('../categories');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const User = module.exports;
 
@@ -173,6 +174,23 @@ User.getUsernamesByUids = async function (uids) {
 User.getUsernameByUserslug = async function (slug) {
 	const uid = await User.getUidByUserslug(slug);
 	return await User.getUserField(uid, 'username');
+};
+
+User.getNotificationDisplayname = async function (uid) {
+	const isLocal = utils.isNumber(uid);
+	const fromCategory = !isLocal && await categories.exists(uid);
+
+	const userData = fromCategory ?
+		await categories.getCategoryFields(uid, ['name']) :
+		await User.getUserFields(uid, ['uid', 'username']);
+	if (fromCategory) {
+		return userData.name;
+	}
+
+	if (userData.uid === 0) {
+		return userData.displayname; // [[global:guest]] or [[global:former-user]]
+	}
+	return translator.escape(userData.displayname);
 };
 
 User.getUidByEmail = async function (email) {

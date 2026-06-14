@@ -127,7 +127,7 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	notificationData = await notifications.merge(notificationData);
 	await Promise.all(notificationData.map(async (n) => {
 		if (n && n.bodyShort) {
-			n.bodyShort = await translator.translate(n.bodyShort, userSettings.userLang);
+			n.bodyShort = await translator.translateKey(n.bodyShort, [], userSettings.userLang);
 		}
 	}));
 

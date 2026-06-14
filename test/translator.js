@@ -193,7 +193,7 @@ describe('Translator shim', () => {
 
 			assert.deepStrictEqual(
 				await shim.translateKey('[[this is a [[foo:baz, "foo"]], regular string %1 test]]', [], 'en-GB'),
-				'[[this is a [[foo:baz, "foo"]], regular string %1 test]]'
+				'[[this is a [[foo:baz, &quot;foo&quot;]], regular string %1 test]]'
 			);
 		});
 

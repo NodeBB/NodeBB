@@ -9,6 +9,7 @@ const user = require('../user');
 const meta = require('../meta');
 const notifications = require('../notifications');
 const slugify = require('../slugify');
+const tx = require('../translator');
 
 const groupsAPI = module.exports;
 
@@ -227,11 +228,11 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const { displayname } = await user.getUserFields(data.uid, ['username']);
+	const displayname = await user.getNotificationDisplayname(data.uid);
 
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: `[[groups:membership.leave.notification-title, ${displayname}, ${groupName}]]`,
+		bodyShort: `[[groups:membership.leave.notification-title, ${displayname}, ${tx.escape(groupName)}]]`,
 		nid: `group:${validator.escape(groupName)}:uid:${data.uid}:group-leave`,
 		path: `/groups/${slugify(groupName)}`,
 		from: data.uid,

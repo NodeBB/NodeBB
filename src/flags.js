@@ -757,7 +757,7 @@ Flags.update = async function (flagId, uid, changeset) {
 		}
 		const notifObj = await notifications.create({
 			type: 'my-flags',
-			bodyShort: `[[notifications:flag-assigned-to-you, ${flagId}]]`,
+			bodyShort: translator.compile(`[[notifications:flag-assigned-to-you, ${flagId}]]`),
 			path: `/flags/${flagId}`,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
@@ -928,21 +928,21 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 	]);
 	let uids = admins.concat(globalMods);
 	let notifObj;
-
-	const { displayname } = flagObj.reports[flagObj.reports.length - 1].reporter;
-
+	const { reports } = flagObj;
+	const repoterUid = reports.length ? reports[reports.length - 1]?.reporter : 0;
+	const displayname = await user.getNotificationDisplayname(repoterUid);
 	if (flagObj.type === 'post') {
+		const tid = await posts.getPostField(flagObj.targetId, 'tid');
 		const [title, cid] = await Promise.all([
-			topics.getTitleByPid(flagObj.targetId),
+			topics.getNotificationTitle(tid),
 			posts.getCidByPid(flagObj.targetId),
 		]);
 
 		const modUids = await categories.getModeratorUids([cid]);
-		const titleEscaped = utils.decodeHTMLEntities(title);
 
 		notifObj = await notifications.create({
 			type: 'new-post-flag',
-			bodyShort: translator.compile('notifications:user-flagged-post-in', displayname, titleEscaped),
+			bodyShort: translator.compile('notifications:user-flagged-post-in', displayname, title),
 			bodyLong: String(flagObj.target?.content || ''),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
@@ -953,10 +953,10 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
-		const targetDisplayname = flagObj.target && flagObj.target.displayname ? flagObj.target.displayname : '[[global:guest]]';
+		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetId);
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
-			bodyShort: `[[notifications:user-flagged-user, ${displayname}, ${targetDisplayname}]]`,
+			bodyShort: translator.compile('notifications:user-flagged-user', displayname, targetDisplayname),
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:user:${flagObj.targetId}:${uid}`,

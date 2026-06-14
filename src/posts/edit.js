@@ -11,7 +11,6 @@ const plugins = require('../plugins');
 const pubsub = require('../pubsub');
 const utils = require('../utils');
 const slugify = require('../slugify');
-const translator = require('../translator');
 
 module.exports = function (Posts) {
 	pubsub.on('post:edit', pid => Posts.clearCachedPost(pid));
@@ -55,8 +54,8 @@ module.exports = function (Posts) {
 			user.getUserFields(data.uid, ['username', 'userslug']),
 			editMainPost(data, postData, topicData),
 		]);
-
-		const contentChanged = ((data.sourceContent || data.content) !== oldContent) ||
+		const newContent = data.sourceContent || data.content;
+		const contentChanged = (newContent !== oldContent) ||
 			topic.renamed ||
 			topic.tagsupdated;
 
@@ -65,7 +64,7 @@ module.exports = function (Posts) {
 				pid: data.pid,
 				uid: data.uid,
 				oldContent: oldContent,
-				newContent: data.content,
+				newContent: newContent,
 				edited: editPostData.edited,
 				topic,
 			});
@@ -79,7 +78,7 @@ module.exports = function (Posts) {
 		returnPostData.cid = topic.cid;
 		returnPostData.topic = topic;
 		returnPostData.editedISO = utils.toISOString(editPostData.edited);
-		returnPostData.changed = contentChanged;
+		returnPostData.changed = newContent !== oldContent;
 		returnPostData.oldContent = oldContent;
 		returnPostData.newContent = data.content;
 
@@ -98,7 +97,6 @@ module.exports = function (Posts) {
 
 		await topics.notifyFollowers(returnPostData, data.uid, {
 			type: 'post-edit',
-			bodyShort: translator.compile('notifications:user-edited-post', editor.username, topic.title),
 			nid: `edit_post:${data.pid}:uid:${data.uid}`,
 		});
 

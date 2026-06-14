@@ -644,7 +644,7 @@ module.exports = function (utils, load, warn) {
 				}
 				const [namespace, key] = txToken.split(':', 2);
 				if (!key) {
-					return token;
+					return escapeHTML(token);
 				}
 				const tokenLanguage = language || lang;
 				const txArgs = await adaptor.txArgs(args, tokenLanguage);
@@ -652,7 +652,7 @@ module.exports = function (utils, load, warn) {
 				return Translator.create(tokenLanguage).getTranslation(namespace, key).then(function (translation) {
 					if (!translation) {
 						// if translation is missing/or not a translation, return the token as is
-						return token;
+						return escapeHTML(token);
 					}
 					return adaptor.replaceArguments(translation, txArgs);
 				});
@@ -667,8 +667,6 @@ module.exports = function (utils, load, warn) {
 			const [translation] = await adaptor.translateKeys([[token, args, language]]);
 			return translation;
 		},
-
-
 
 		txArgs: async function (args, language) {
 			if (!Array.isArray(args) || args.length === 0) {
