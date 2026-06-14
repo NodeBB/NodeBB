@@ -31,6 +31,33 @@ module.exports = function (utils, load, warn) {
 		return isHttpUrl || isRelativeUrl;
 	}
 
+	// split a translator string into an array of tokens
+	// but don't split by commas inside other translator strings
+	function split(text) {
+		const len = text.length;
+		const arr = [];
+		let i = 0;
+		let brk = 0;
+		let level = 0;
+
+		while (i + 2 <= len) {
+			if (text[i] === '[' && text[i + 1] === '[') {
+				level += 1;
+				i += 1;
+			} else if (text[i] === ']' && text[i + 1] === ']') {
+				level -= 1;
+				i += 1;
+			} else if (level === 0 && text[i] === ',' && text[i - 1] !== '\\') {
+				arr.push(text.slice(brk, i).trim());
+				i += 1;
+				brk = i;
+			}
+			i += 1;
+		}
+		arr.push(text.slice(brk, i + 1).trim());
+		return arr;
+	}
+
 	const Translator = (function () {
 		/**
 		 * Construct a new Translator object
@@ -84,33 +111,6 @@ module.exports = function (utils, load, warn) {
 
 			// to store the state of if we're currently in a top-level token for later
 			let inToken = false;
-
-			// split a translator string into an array of tokens
-			// but don't split by commas inside other translator strings
-			function split(text) {
-				const len = text.length;
-				const arr = [];
-				let i = 0;
-				let brk = 0;
-				let level = 0;
-
-				while (i + 2 <= len) {
-					if (text[i] === '[' && text[i + 1] === '[') {
-						level += 1;
-						i += 1;
-					} else if (text[i] === ']' && text[i + 1] === ']') {
-						level -= 1;
-						i += 1;
-					} else if (level === 0 && text[i] === ',' && text[i - 1] !== '\\') {
-						arr.push(text.slice(brk, i).trim());
-						i += 1;
-						brk = i;
-					}
-					i += 1;
-				}
-				arr.push(text.slice(brk, i + 1).trim());
-				return arr;
-			}
 
 			// move to the first [[
 			cursor = str.indexOf('[[', cursor);
@@ -614,7 +614,10 @@ module.exports = function (utils, load, warn) {
 			if (token.startsWith('[[') && token.endsWith(']]')) {
 				token = token.slice(2, -2);
 			}
-			const parts = token.trim().split(',');
+			const parts = split(token); // use same split as translator.translate
+			if (parts.length === 0) {
+				return [token.trim(), []];
+			}
 			const txToken = parts[0].trim();
 			const args = parts.slice(1).map(part => part.trim());
 			return [txToken, args];

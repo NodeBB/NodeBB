@@ -117,6 +117,27 @@ describe('Translator shim', () => {
 		});
 	});
 
+	describe('.normalizeToken', () => {
+		it('should normalize a token into its key and arguments', (done) => {
+			assert.deepStrictEqual(
+				shim.normalizeToken('[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]'),
+				['notifications:new-message-in', ['[[modules:chat.room-id, 8]]']]
+			);
+
+			assert.deepStrictEqual(
+				shim.normalizeToken('[[notifications:new-message-in, arg1, arg]]'),
+				['notifications:new-message-in', ['arg1', 'arg']]
+			);
+
+			assert.deepStrictEqual(
+				shim.normalizeToken('[[notifications:new-message-in, [[modules:chat.room-id, 8]], arg]]'),
+				['notifications:new-message-in', ['[[modules:chat.room-id, 8]]', 'arg']]
+			);
+			done();
+		});
+	});
+
+
 	describe('.translate()', () => {
 		it('should translate correctly', (done) => {
 			shim.translate('[[global:pagination.out-of, (foobar), [[global:home]]]]', (translated) => {
@@ -157,22 +178,27 @@ describe('Translator shim', () => {
 
 		it('should translate a single key with no arguments', async () => {
 			const translated = await shim.translateKey('global:search', [], 'en-GB');
-			assert.deepStrictEqual(translated, 'Search');
+			assert.strictEqual(translated, 'Search');
 		});
 
 		it('should translate a single key with arguments', async () => {
 			const translated = await shim.translateKey('topic:moved-from', ['general discussion']);
-			assert.deepStrictEqual(translated, 'Moved from general discussion');
+			assert.strictEqual(translated, 'Moved from general discussion');
 		});
 
 		it('should translate a single key with brackets arguments', async () => {
 			const translated = await shim.translateKey('[[topic:moved-from]]', ['general discussion']);
-			assert.deepStrictEqual(translated, 'Moved from general discussion');
+			assert.strictEqual(translated, 'Moved from general discussion');
 		});
 
 		it('should translate nested keys', async () => {
 			const translated = await shim.translateKey('[[topic:moved-from, [[topic:merged-message]]]]');
-			assert.deepStrictEqual(translated, 'Moved from This topic has been merged into <a href="">&#37;2</a>');
+			assert.strictEqual(translated, 'Moved from This topic has been merged into <a href="">&#37;2</a>');
+		});
+
+		it('should translate nested keys with arguments', async () => {
+			const translated = await shim.translateKey('[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]');
+			assert.strictEqual(translated, 'New message in <strong>Room 8</strong>');
 		});
 
 		it('should translate arguments if they are tokens themselves', async () => {
@@ -181,17 +207,17 @@ describe('Translator shim', () => {
 		});
 
 		it('should return string untouched if it\'s not a tx string', async () => {
-			assert.deepStrictEqual(
+			assert.strictEqual(
 				await shim.translateKey('nodebb forum', [], 'en-GB'),
 				'nodebb forum',
 			);
 
-			assert.deepStrictEqual(
+			assert.strictEqual(
 				await shim.translateKey('this is a [[foo:baz]] regular string %1 test', [], 'en-GB'),
 				'this is a [[foo:baz]] regular string %1 test',
 			);
 
-			assert.deepStrictEqual(
+			assert.strictEqual(
 				await shim.translateKey('[[this is a [[foo:baz, "foo"]], regular string %1 test]]', [], 'en-GB'),
 				'[[this is a [[foo:baz, &quot;foo&quot;]], regular string %1 test]]'
 			);
