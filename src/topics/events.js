@@ -8,7 +8,7 @@ const user = require('../user');
 const posts = require('../posts');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const translator = require('../translator');
+const tx = require('../translator');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const helpers = require('../helpers');
@@ -87,8 +87,8 @@ Events.init = async () => {
 async function translateEventArgs(event, language, prefix, ...args) {
 	const key = getTranslationKey(event, prefix);
 	const txArgs = args.map(arg => utils.escapeHTML(arg));
-	const compiled = translator.compile.apply(null, [key, ...txArgs]);
-	const translated = await translator.translate(compiled, language);
+	const compiled = tx.compile.apply(null, [key, ...txArgs]);
+	const translated = await tx.translateKey(compiled, [], language);
 	return utils.decodeHTMLEntities(translated);
 }
 

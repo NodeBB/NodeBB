@@ -11,6 +11,7 @@ const groups = require('../groups');
 const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
+const tx = require('../translator');
 
 module.exports = function (User) {
 	User.createOrQueue = async function (req, userData, opts = {}) {
@@ -69,7 +70,7 @@ module.exports = function (User) {
 	async function sendNotificationToAdmins(username) {
 		const notifObj = await notifications.create({
 			type: 'new-register',
-			bodyShort: `[[notifications:new-register, ${username}]]`,
+			bodyShort: tx.compile('notifications:new-register', tx.escape(username)),
 			nid: `new-register:${username}`,
 			path: '/admin/manage/registration',
 			mergeId: 'new-register',

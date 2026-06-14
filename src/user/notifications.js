@@ -9,7 +9,7 @@ const meta = require('../meta');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
-const translator = require('../translator');
+const tx = require('../translator');
 const topics = require('../topics');
 const user = require('./index');
 
@@ -126,8 +126,10 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	await deleteUserNids(deletedNids, uid);
 	notificationData = await notifications.merge(notificationData);
 	await Promise.all(notificationData.map(async (n) => {
-		if (n && n.bodyShort) {
-			n.bodyShort = await translator.translateKey(n.bodyShort, [], userSettings.userLang);
+		if (n) {
+			if (n.bodyShort) {
+				n.bodyShort = await tx.translateKey(n.bodyShort, [], userSettings.userLang);
+			}
 		}
 	}));
 
@@ -204,9 +206,10 @@ UserNotifications.deleteAll = async function (uid) {
 
 UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicData, postData) {
 	try {
-		const [allFollowers, title] = await Promise.all([
+		const [displayname, allFollowers, title] = await Promise.all([
+			user.getNotificationDisplayname(uid),
 			db.getSortedSetRange(`followers:${uid}`, 0, -1),
-			topics.getTopicField(topicData.tid, 'title'),
+			topics.getNotificationTitle(topicData.tid, 'title'),
 		]);
 		const followers = await privileges.categories.filterUids('read', topicData.cid, allFollowers);
 		if (!followers.length) {
@@ -215,7 +218,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 
 		const notifObj = await notifications.create({
 			type: 'new-topic',
-			bodyShort: translator.compile('notifications:user-posted-topic', postData.user.displayname, title),
+			bodyShort: tx.compile('notifications:user-posted-topic', displayname, title),
 			bodyLong: postData.content,
 			pid: postData.pid,
 			path: `/post/${postData.pid}`,
@@ -248,13 +251,13 @@ UserNotifications.sendWelcomeNotification = async function (uid) {
 
 UserNotifications.sendNameChangeNotification = async function (uid, username) {
 	const notifObj = await notifications.create({
-		bodyShort: `[[user:username-taken-workaround, ${username}]]`,
+		bodyShort: tx.compile('user:username-taken-workaround', tx.escape(username)),
 		image: 'brand:logo',
 		nid: `username_taken:${uid}`,
 		datetime: Date.now(),
 	});
 
-	await notifications.push(notifObj, uid);
+	await notifications.push(notifObj, [uid]);
 };
 
 UserNotifications.pushCount = async function (uid) {

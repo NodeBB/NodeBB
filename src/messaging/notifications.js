@@ -11,6 +11,7 @@ const io = require('../socket.io');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const tx = require('../translator');
 
 module.exports = function (Messaging) {
 	Messaging.setUserNotificationSetting = async (uid, roomId, value) => {
@@ -116,15 +117,19 @@ module.exports = function (Messaging) {
 		});
 
 		if (uidsToNotify.length) {
-			const { displayname } = messageObj.fromUser;
-			const isGroupChat = await Messaging.isGroupChat(roomId);
-			const roomName = roomData.roomName || `[[modules:chat.room-id, ${roomId}]]`;
+			const [displayname, isGroupChat] = await Promise.all([
+				user.getNotificationDisplayname(fromUid),
+				Messaging.isGroupChat(roomId),
+			]);
+			const roomName = tx.escape(roomData.roomName) || `[[modules:chat.room-id, ${roomId}]]`;
 			const notifData = {
 				type: isGroupChat ? 'new-group-chat' : 'new-chat',
 				subject: roomData.roomName ?
-					`[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]` :
-					`[[email:notif.chat.new-message-from-user, ${displayname}]]`,
-				bodyShort: isGroupChat || roomData.roomName ? `[[notifications:new-message-in, ${roomName}]]` : `[[notifications:new-message-from, ${displayname}]]`,
+					tx.compile('email:notif.chat.new-message-from-user-in-room', displayname, roomName) :
+					tx.compile('email:notif.chat.new-message-from-user', displayname),
+				bodyShort: isGroupChat || roomData.roomName ?
+					tx.compile('notifications:new-message-in', roomName) :
+					tx.compile('notifications:new-message-from', displayname),
 				bodyLong: messageObj.content,
 				nid: `chat_${roomId}_${fromUid}_${Date.now()}`,
 				mergeId: `new-chat|${roomId}`, // as roomId is the differentiator, no distinction between direct vs. group req'd.
@@ -137,8 +142,8 @@ module.exports = function (Messaging) {
 				const icon = Messaging.getRoomIcon(roomData);
 				notifData.type = 'new-public-chat';
 				notifData.roomIcon = icon;
-				notifData.subject = `[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]`;
-				notifData.bodyShort = `[[notifications:user-posted-in-public-room, ${displayname}, ${icon}, ${roomName}]]`;
+				notifData.subject = tx.compile('email:notif.chat.new-message-from-user-in-room', displayname, roomName);
+				notifData.bodyShort = tx.compile('notifications:user-posted-in-public-room', displayname, icon, roomName);
 				notifData.mergeId = `notifications:user-posted-in-public-room|${roomId}`;
 			}
 			const notification = await notifications.create(notifData);

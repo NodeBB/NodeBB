@@ -16,7 +16,7 @@ const privileges = require('../privileges');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
 const events = require('../events');
-const translator = require('../translator');
+const tx = require('../translator');
 const sockets = require('../socket.io');
 const utils = require('../utils');
 
@@ -207,7 +207,7 @@ usersAPI.ban = async function (caller, data) {
 	await db.setObjectField(`uid:${data.uid}:ban:${banData.timestamp}`, 'fromUid', caller.uid);
 
 	if (!data.reason) {
-		data.reason = await translator.translate('[[user:info.banned-no-reason]]');
+		data.reason = await tx.translate('[[user:info.banned-no-reason]]');
 	}
 
 	sockets.in(`uid_${data.uid}`).emit('event:banned', {
@@ -735,7 +735,7 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 		await db.deleteObjectField('locks', `export:${uid}${type}`);
 		const displayname = await user.getNotificationDisplayname(uid);
 		const n = await notifications.create({
-			bodyShort: translator.compile(`notifications:${type}-exported`, displayname),
+			bodyShort: tx.compile(`notifications:${type}-exported`, displayname),
 			path: `/api/v3/users/${uid}/exports/${type}`,
 			nid: `${type}:export:${uid}`,
 			from: uid,

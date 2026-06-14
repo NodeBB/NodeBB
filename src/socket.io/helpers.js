@@ -130,21 +130,15 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 		return;
 	}
 
-	fromuid = parseInt(fromuid, 10);
-
-	const [userData, topicData] = await Promise.all([
-		user.getUserFields(fromuid, ['username']),
-		topics.getTopicFields(tid, ['uid', 'slug', 'title']),
+	const [displayname, title, topicData] = await Promise.all([
+		user.getNotificationDisplayname(fromuid),
+		topics.getNotificationTitle(tid),
+		topics.getTopicFields(tid, ['uid', 'slug']),
 	]);
 
-	if (fromuid === topicData.uid) {
+	if (String(fromuid) === String(topicData.uid) || !topicData.uid) {
 		return;
 	}
-
-	const { displayname } = userData;
-
-	const ownerUid = topicData.uid;
-	const title = utils.decodeHTMLEntities(topicData.title);
 
 	const notifObj = await notifications.create({
 		bodyShort: translator.compile(notification, displayname, title),
@@ -153,9 +147,7 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 		from: fromuid,
 	});
 
-	if (ownerUid) {
-		notifications.push(notifObj, [ownerUid]);
-	}
+	notifications.push(notifObj, [topicData.uid]);
 };
 
 SocketHelpers.upvote = async function (data, notification) {

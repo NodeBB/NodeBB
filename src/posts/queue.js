@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const nconf = require('nconf');
 
 const db = require('../database');
@@ -16,6 +15,8 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
+const tx = require('../translator');
+const helpers = require('../helpers');
 
 const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
 
@@ -241,27 +242,26 @@ module.exports = function (Posts) {
 		const uids = await getNotificationUids(cid);
 		const bodyEmail = await parseBodyEmail(cid, type, data);
 
-		let bodyShort;
-		if (type === 'reply') {
-			bodyShort = '[[notifications:post-awaiting-review]]';
-		} else if (type === 'crosspost') {
-			bodyShort = '[[notifications:crosspost-awaiting-review]]';
-		} else {
-			bodyShort = '[[notifications:topic-awaiting-review]]';
-		}
 
+		const typeToTx = {
+			reply: '[[notifications:post-awaiting-review]]',
+			crosspost: '[[notifications:crosspost-awaiting-review]]',
+			topic: '[[notifications:topic-awaiting-review]]',
+		};
 		let bodyLong;
 		if (type === 'reply') {
-			bodyLong = await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content);
+			bodyLong = tx.escape(
+				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content)
+			);
 		} else {
-			bodyLong = validator.escape(String(data.title));
+			bodyLong = helpers.escape(String(data.title));
 		}
 
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
-			bodyShort,
+			bodyShort: typeToTx[type],
 			bodyLong: bodyLong,
 			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
