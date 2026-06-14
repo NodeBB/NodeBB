@@ -350,8 +350,7 @@ if (document.readyState === 'loading') {
 	};
 
 	function registerServiceWorker() {
-		// Do not register for Safari browsers
-		if (!config.useragent.isSafari && 'serviceWorker' in navigator) {
+		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register(config.relative_path + '/service-worker.js', { scope: config.relative_path + '/' })
 				.then(function () {
 					navigator.serviceWorker.addEventListener('message', (event) => {
