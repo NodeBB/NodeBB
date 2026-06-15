@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/settings/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'api', 'alerts'], function (settings, clipboard, bootbox, Benchpress, api, alerts) {
+define('admin/manage/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'api', 'alerts'], function (settings, clipboard, bootbox, Benchpress, api, alerts) {
 	const ACP = {};
 
 	ACP.init = function () {
