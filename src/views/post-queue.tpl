@@ -158,7 +158,6 @@
 							</span>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
-								FOOOOO
 								<input class="form-control form-control-sm" type="text" value="{txEscape(posts.data.title)}"/>
 							</div>
 							{{{end}}}
