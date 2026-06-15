@@ -143,6 +143,18 @@ privsUsers.canFlag = async function (callerUid, uid) {
 	return { flag: canFlag };
 };
 
+privsUsers.canExportData = async function (callerUid, uid) {
+	if (String(callerUid) === String(uid)) {
+		return true;
+	}
+	const privsAdmin = require('./admin');
+	const [isAdmin, hadAdminUsersPrivilege] = await Promise.all([
+		privsUsers.isAdministrator(uid),
+		privsAdmin.can('admin:users', uid),
+	]);
+	return isAdmin || hadAdminUsersPrivilege;
+};
+
 privsUsers.hasBanPrivilege = async uid => await hasGlobalPrivilege('ban', uid);
 privsUsers.hasMutePrivilege = async uid => await hasGlobalPrivilege('mute', uid);
 privsUsers.hasInvitePrivilege = async uid => await hasGlobalPrivilege('invite', uid);

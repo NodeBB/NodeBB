@@ -696,26 +696,17 @@ const prepareExport = async ({ uid, type }) => {
 	}
 };
 
-async function checkExportPrivileges(uid, targetUid) {
-	if (String(uid) === String(targetUid)) {
-		return;
-	}
-	const [isAdmin, hadAdminUsersPrivilege] = await Promise.all([
-		privileges.users.isAdministrator(uid),
-		privileges.admin.can('admin:users', uid),
-	]);
-	if (!isAdmin && !hadAdminUsersPrivilege) {
+usersAPI.checkExportByType = async (caller, { uid, type }) => {
+	if (!await privileges.users.canExportData(caller.uid, uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
-}
-
-usersAPI.checkExportByType = async (caller, { uid, type }) => {
-	await checkExportPrivileges(caller.uid, uid);
 	await prepareExport({ uid, type });
 };
 
 usersAPI.getExportByType = async (caller, { uid, type }) => {
-	await checkExportPrivileges(caller.uid, uid);
+	if (!await privileges.users.canExportData(caller.uid, uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const [extension, mime] = exportMetadata.get(type);
 	const filename = `${uid}_${type}.${extension}`;
 
@@ -728,7 +719,9 @@ usersAPI.getExportByType = async (caller, { uid, type }) => {
 };
 
 usersAPI.generateExport = async (caller, { uid, type }) => {
-	await checkExportPrivileges(caller.uid, uid);
+	if (!await privileges.users.canExportData(caller.uid, uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const validTypes = ['profile', 'posts', 'uploads'];
 	if (!validTypes.includes(type)) {
 		throw new Error('[[error:invalid-data]]');
