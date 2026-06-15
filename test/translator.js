@@ -67,9 +67,9 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should escape html if everything is passed as first string and its not a valid token', (done) => {
+		it('should escape html and tx, if everything is passed as first string and its not a valid token', (done) => {
 			const str = helpers.tx.call(context, '[[<script>alert("xss")</script>, <script>alert("xss")</script>]]');
-			assert.strictEqual(str, '[[&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;, &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;]]');
+			assert.strictEqual(str, '&lsqb;&lsqb;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;, &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;&rsqb;&rsqb;');
 			done();
 		});
 
