@@ -13,6 +13,7 @@ const adminController = {
 	tags: require('./admin/tags'),
 	groups: require('./admin/groups'),
 	digest: require('./admin/digest'),
+	api: require('./admin/api'),
 	appearance: require('./admin/appearance'),
 	federation: require('./admin/federation'),
 	extend: {
