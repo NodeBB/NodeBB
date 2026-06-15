@@ -11,6 +11,8 @@
 	"enabled-help": "אם זה מופעל, NodeBB זה יוכל גם לתקשר עם כל הלקוחות התומכים ב-Activitypub במרחב הפדראלי הרחב.",
 	"allowLoopback": "אפשר עיבוד loopback",
 	"allowLoopback-help": "שימושי למטרות ניפוי באגים בלבד. אתם כנראה תרצו להשאיר את זה מושבת.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "פתיחה באפליקציה",
 	"probe-enabled": "נסו לפתוח משאבים התומכים ב-ActivityPub ב-NodeBB",

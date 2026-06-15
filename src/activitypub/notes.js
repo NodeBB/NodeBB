@@ -622,7 +622,20 @@ Notes.getParentChain = async (uid, input) => {
 	const id = activitypub.helpers.isUri(input) ? input : input.id;
 
 	const chain = new Set();
+	const visited = new Set();
+	let depth = 0;
 	const traverse = async (uid, id) => {
+		const maxDepth = meta.config.activitypubParentTraversalDepth || 50;
+		if (depth >= maxDepth) {
+			activitypub.helpers.log(`[activitypub/notes/getParentChain] Depth limit reached (${maxDepth}), terminating.`);
+			return;
+		}
+		if (visited.has(id)) {
+			return;
+		}
+		visited.add(id);
+		depth += 1;
+
 		// Handle remote reference to local post
 		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
 		if (type === 'post' && localId) {

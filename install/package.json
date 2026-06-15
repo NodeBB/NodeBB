@@ -76,6 +76,7 @@
         "express-useragent": "2.2.0",
         "fetch-cookie": "3.2.0",
         "file-loader": "6.2.0",
+        "file-type": "22.0.1",
         "fs-extra": "11.3.5",
         "graceful-fs": "4.2.11",
         "helmet": "8.2.0",

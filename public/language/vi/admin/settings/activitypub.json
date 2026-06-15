@@ -11,6 +11,8 @@
 	"enabled-help": "Nếu được bật, sẽ cho phép NodeBB này có thể giao tiếp với tất cả các máy khách đã bật  Activitypub trên toàn bộ liên đoàn rộng hơn.",
 	"allowLoopback": "Cho phép xử lý vòng lặp",
 	"allowLoopback-help": "Chỉ hữu ích cho mục đích gỡ lỗi. Có lẽ bạn nên tắt tính năng này.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Mở trong Ứng Dụng",
 	"probe-enabled": "Thử mở tài nguyên Kích Hoạt ActivityPub trong NodeBB",

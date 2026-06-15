@@ -16,6 +16,7 @@ const socketGroups = require('../src/socket.io/groups');
 const apiGroups = require('../src/api/groups');
 const meta = require('../src/meta');
 const navigation = require('../src/navigation/admin');
+const translator = require('../src/translator');
 
 
 describe('Groups', () => {
@@ -146,6 +147,21 @@ describe('Groups', () => {
 		});
 	});
 
+	describe('description', () => {
+		it('should not translate group description', async () => {
+			const desc = '[[global:403.login, javascript:alert(document.domain)]]';
+			const txEscapedDesc = translator.escape(desc);
+			await Groups.create({
+				name: 'tx escape',
+				description: desc,
+				private: 0,
+				hidden: 0,
+			});
+			const data = await Groups.get('tx escape', {});
+			assert.strictEqual(data.descriptionParsed, txEscapedDesc);
+		});
+	});
+
 	describe('.search()', () => {
 		const socketGroups = require('../src/socket.io/groups');
 
@@ -160,7 +176,7 @@ describe('Groups', () => {
 		it('should return the groups when search query is empty', (done) => {
 			socketGroups.search({ uid: adminUid }, { query: '' }, (err, groups) => {
 				assert.ifError(err);
-				assert.equal(groups.length, 6);
+				assert.equal(groups.length, 7);
 				done();
 			});
 		});

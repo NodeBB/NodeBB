@@ -11,6 +11,8 @@
 	"enabled-help": "اگر فعال ہو، تو یہ نوڈ بی بی پوری فیڈیورس میں ایکٹیویٹی پب استعمال کرنے والے تمام کلائنٹس کے ساتھ رابطہ قائم کر سکے گا۔",
 	"allowLoopback": "لوکل لوپ بیک پروسیسنگ کی اجازت دیں",
 	"allowLoopback-help": "صرف ڈیبگنگ کے لیے مفید۔ اسے غیر فعال رکھنا بہتر ہے۔",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "ایپلی کیشن میں کھولیں",
 	"probe-enabled": "کیا ایکٹیویٹی پب کی حمایت کرنے والی چیزوں کو نوڈ بی بی میں کھولنے کی کوشش کی جائے",

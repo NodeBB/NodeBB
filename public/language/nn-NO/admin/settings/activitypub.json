@@ -11,6 +11,8 @@
 	"enabled-help": "Dersom aktivert, vil dette gjere at NodeBB kan kommunisere med alle ActivityPub-aktiverte klientar i det større fødiverset.",
 	"allowLoopback": "Tillat loopback-prosessering",
 	"allowLoopback-help": "Nyttig berre for feilsøking. Du bør sannsynlegvis la dette vere deaktivert.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Opne i app",
 	"probe-enabled": "Forsøk å opne ActivityPub-aktiverte ressursar i NodeBB",

@@ -11,6 +11,8 @@
 	"enabled-help": "有効にすると、このNodeBBは広いフェディバース上のすべてのActivityPub対応クライアントと通信できるようになります。",
 	"allowLoopback": "ループバック処理を許可",
 	"allowLoopback-help": "デバッグ目的でのみ有用です。無効のままにしておくことをお勧めします。",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "アプリで開く",
 	"probe-enabled": "ActivityPub対応リソースをNodeBBで開く",

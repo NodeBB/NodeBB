@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const { fileTypeFromFile } = require('file-type');
 const mime = require('mime').default;
 const nconf = require('nconf');
 const validator = require('validator');
@@ -48,7 +49,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
-		validateUploadedFileMime(uploadedFile);
+		await validateUploadedFileMime(uploadedFile);
 		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
@@ -131,10 +132,14 @@ uploadsController.uploadThumb = async function (req, res) {
 	}
 
 	return await uploadsController.upload(req, res, async (uploadedFile) => {
+		const canUpload = await privileges.global.can('upload:post:image', req.uid);
+		if (!canUpload) {
+			throw new Error('[[error:no-privileges]]');
+		}
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
-		validateUploadedFileMime(uploadedFile);
+		await validateUploadedFileMime(uploadedFile);
 		await image.isFileTypeAllowed(uploadedFile.path);
 		const dimensions = await image.checkDimensions(uploadedFile.path);
 
@@ -214,8 +219,9 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	return data.storedFile;
 }
 
-function validateUploadedFileMime(uploadedFile) {
-	const detectedMimeType = mime.getType(uploadedFile.name) || mime.getType(uploadedFile.path);
+async function validateUploadedFileMime(uploadedFile) {
+	const detected = await fileTypeFromFile(uploadedFile.path);
+	const detectedMimeType = detected ? detected.mime : mime.getType(uploadedFile.name);
 	if (detectedMimeType && uploadedFile.type && detectedMimeType !== uploadedFile.type) {
 		throw new Error('[[error:invalid-mime-type]]');
 	}

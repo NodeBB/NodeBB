@@ -594,6 +594,17 @@ describe('Messaging Library', () => {
 			assert.equal(rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
 		});
 
+		it('should not translate chat messages if they have translation keys', async () => {
+			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: '[[global:404.login]]' }, 'foo');
+			const { rooms } = await api.chats.list(
+				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
+			);
+			const room = await api.chats.get({ uid: mocks.users.foo.uid }, { uid: mocks.users.foo.uid, roomId });
+			const txEscaped = translator.escape('[[global:404.login]]');
+			assert.strictEqual(room.messages[room.messages.length - 1].content, txEscaped);
+			assert.strictEqual(rooms[0].teaser.content, txEscaped);
+		});
+
 		it('should escape chatWithMessage', async () => {
 			const oldValue = meta.config.showFullnameAsDisplayName;
 			meta.config.showFullnameAsDisplayName = true;

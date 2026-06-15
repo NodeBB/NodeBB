@@ -421,7 +421,7 @@ module.exports = function (Posts) {
 	}
 
 	async function createCrosspost(data) {
-		await topics.crossposts.add(data.tid, data.crosspostCid, 'system');
+		await topics.crossposts.add(data.tid, data.crosspostCid, 0);
 		return { tid: data.tid };
 	}
 

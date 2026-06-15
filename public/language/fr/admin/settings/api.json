@@ -4,7 +4,8 @@
 	"lead-text": "À partir de cette page, vous pouvez paramétrer l'accès à l'API dans NodeBB.",
 	"intro": "Par défaut, l'API authentifie les utilisateurs en fonction de leur cookie de session, mais NodeBB prend également en charge l'authentification du porteur via des tokens générés via cette page.",
 	"warning": "<strong>Soyez Informé</strong> : Utiliser les jetons comme des mots de passe. S'ils sont divulgués, votre compte doit être considéré comme compromis.",
-	"docs": "Cliquez ici pour accéder à la documentation de l'API",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "Forcer l'utilisation de l'API via HTTPS uniquement",
 	"require-https-caveat": "<strong>Remarque</strong>: certaines installations impliquant de l'équilibrage de charge peuvent transmettre leurs requêtes à NodeBB via HTTP, auquel cas cette option doit rester désactivée.",

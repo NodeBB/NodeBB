@@ -135,7 +135,7 @@ Topics.getThumbs = async (req, res) => {
 
 Topics.addThumb = async (req, res) => {
 	// todo: move controller logic to src/api/topics.js
-	await api.topics._checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid });
+	await api.topics._checkThumbPrivileges({ tid: req.params.tid, uid: req.uid });
 
 	const files = await uploadsController.uploadThumb(req, res); // response is handled here
 

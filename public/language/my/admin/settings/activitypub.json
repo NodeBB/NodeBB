@@ -11,6 +11,8 @@
 	"enabled-help": "ဖွင့်ထားမှု အကူအညီ",
 	"allowLoopback": "Loopback ခွင့်ပြုရန်",
 	"allowLoopback-help": "Loopback ခွင့်ပြုမှု အကူအညီ",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "စူးစမ်းခြင်း",
 	"probe-enabled": "စူးစမ်းခြင်း ဖွင့်ထားသည်",

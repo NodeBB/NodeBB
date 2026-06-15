@@ -18,12 +18,17 @@
 		<p class="lead">[[admin/settings/api:lead-text]]</p>
 		<p>[[admin/settings/api:intro]]</p>
 		<p class="text-danger">[[admin/settings/api:warning]]</p>
-		<div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2 mb-3">
-			<a class="" href="https://docs.nodebb.org/api">
+		<p class="d-flex flex-column gap-2">
+			<a href="https://docs.nodebb.org/api">
 				<i class="fa fa-external-link"></i>
 				[[admin/settings/api:docs]]
 			</a>
-		</div>
+			<br />
+			<a href="https://docs.nodebb.org/api/write">
+				<i class="fa fa-external-link"></i>
+				[[admin/settings/api:docs.write]]
+			</a>
+		</p>
 
 		<div class="mb-3">
 			<div class="form-check form-switch mb-3">

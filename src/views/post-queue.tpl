@@ -141,24 +141,25 @@
 								{{{ if posts.data.tid }}}[[post-queue:topic]]{{{ else }}}[[post-queue:title]]{{{ end }}}
 								</span>
 								{{{ if !posts.data.tid }}}
-								<button data-action="editTitle" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+								<button data-action="editTitle" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 								{{{ end }}}
 							</div>
 							<span class="small topic-title text-break">
 								{{{ if posts.data.tid }}}
 								<div class="d-flex flex-column align-items-start gap-1">
-									<a href="{config.relative_path}/topic/{posts.data.tid}">{posts.topic.title}</a>
+									<a href="{config.relative_path}/topic/{posts.data.tid}">{txEscape(posts.topic.title})</a>
 									<span class="badge text-body border border-gray-300 stats text-xs">
 										<span class="text-lowercase fw-normal">[[global:lastpost]]</span>
 										<span title="{posts.topic.lastposttimeISO}" class="timeago fw-bold"></span>
 									</span>
 								</div>
 								{{{ end }}}
-								<span class="title-text">{posts.data.title}</span>
+								<span class="title-text">{txEscape(posts.data.title)}</span>
 							</span>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
-								<input class="form-control form-control-sm" type="text" value="{posts.data.title}"/>
+								FOOOOO
+								<input class="form-control form-control-sm" type="text" value="{txEscape(posts.data.title)}"/>
 							</div>
 							{{{end}}}
 						</li>
@@ -169,7 +170,7 @@
 									[[post-queue:category]]
 								</div>
 								{{{ if posts.data.cid }}}
-								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 								{{{ end }}}
 							</div>
 
@@ -189,7 +190,7 @@
 								<div class="text-xs fw-semibold">
 									[[post-queue:crosspost-to]]
 								</div>
-								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 							</div>
 
 							<div class="topic-category">
@@ -210,7 +211,7 @@
 									[[post-queue:tags]]
 								</div>
 
-								<button data-action="editTags" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+								<button data-action="editTags" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 							</div>
 							<div class="tag-list">
 								{{{ each posts.data.tags }}}
@@ -247,12 +248,12 @@
 							[[post-queue:content]]
 						</div>
 						{{{ if ./canEdit }}}
-						<button data-action="editContent" class="btn btn-ghost btn-sm ff-secondary border text-xs">Edit</button>
+						<button data-action="editContent" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 						{{{ end }}}
 					</div>
-					<div class="post-content mb-auto text-break px-3 py-0 h-100">{{posts.data.content}}</div>
+					<div class="post-content mb-auto text-break px-3 py-0 h-100">{{txEscape(posts.data.content)}}</div>
 					<div class="post-content-editable flex-grow-1 hidden">
-						<textarea class="form-control w-100 h-100 p-3">{posts.data.rawContent}</textarea>
+						<textarea class="form-control w-100 h-100 p-3">{txEscape(posts.data.rawContent)}</textarea>
 					</div>
 					<div component="post-queue/link-container" class="hidden border-top mx-3 py-3">
 						<label class="text-secondary form-text mb-2">[[post-queue:links-in-this-post]]</label>

@@ -98,6 +98,14 @@ async function getNotificationsFromSet(set, uid, start, stop) {
 	return await UserNotifications.getNotifications(nids, uid);
 }
 
+UserNotifications.ownsNids = async function (nids, uid) {
+	const [isInRead, isInUnread] = await Promise.all([
+		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+		db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
+	]);
+	return nids.map((nid, index) => (isInRead[index] || isInUnread[index]));
+};
+
 UserNotifications.getNotifications = async function (nids, uid) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return [];

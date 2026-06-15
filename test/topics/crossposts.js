@@ -100,6 +100,15 @@ describe('Crossposting (& related logic)', () => {
 			await privileges.categories.give(['groups:topics:crosspost'], cid2, 'registered-users');
 		});
 
+		it('should not allow a crosspost if user lacks topics:read on source category', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid1, 'registered-users');
+			await assert.rejects(
+				topics.crossposts.add(tid, cid2, uid),
+				{ message: '[[error:not-allowed]]' }
+			);
+			await privileges.categories.give(['groups:topics:read'], cid1, 'registered-users');
+		});
+
 		it('should successfully crosspost to another cid', async () => {
 			const crossposts = await topics.crossposts.add(tid, cid2, uid);
 

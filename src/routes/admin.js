@@ -33,6 +33,7 @@ module.exports = function (app, name, middleware, controllers) {
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/uploads`, middlewares, controllers.admin.uploads.get);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/digest`, middlewares, controllers.admin.digest.get);
+	helpers.setupAdminPageRoute(app, `/${name}/manage/api`, middlewares, controllers.admin.api.get);
 
 	helpers.setupAdminPageRoute(app, `/${name}/settings/general`, middlewares, controllers.admin.settings.general);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/navigation`, middlewares, controllers.admin.settings.navigation);
@@ -46,7 +47,6 @@ module.exports = function (app, name, middleware, controllers) {
 	helpers.setupAdminPageRoute(app, `/${name}/settings/chat`, middlewares, controllers.admin.settings.chat);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/pagination`, middlewares, controllers.admin.settings.pagination);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/notifications`, middlewares, controllers.admin.settings.notifications);
-	helpers.setupAdminPageRoute(app, `/${name}/settings/api`, middlewares, controllers.admin.settings.api);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/cookies`, middlewares, controllers.admin.settings.cookies);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/web-crawler`, middlewares, controllers.admin.settings.webCrawler);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/advanced`, middlewares, controllers.admin.settings.advanced);

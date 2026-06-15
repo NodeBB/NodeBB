@@ -4,7 +4,8 @@
 	"lead-text": "ဦးဆောင်စာသား",
 	"intro": "နိဒါန်း",
 	"warning": "သတိပေးချက်",
-	"docs": "စာရွက်စာတမ်းများ",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "HTTPS လိုအပ်သည်",
 	"require-https-caveat": "HTTPS လိုအပ်မှုသတိပေးချက်",

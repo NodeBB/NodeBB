@@ -45,6 +45,7 @@
 				{{{ if user.privileges.admin:admins-mods }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a>
 				{{{ end }}}
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/api">[[admin/menu:settings/api]]</a>
 				{{{ if user.privileges.admin:tags }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a>
 				{{{ end }}}
@@ -85,7 +86,6 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a>
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a>

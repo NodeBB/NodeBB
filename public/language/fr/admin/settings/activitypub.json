@@ -11,6 +11,8 @@
 	"enabled-help": "Si activé, cette instance NodeBB pourra communiquer avec tous les clients compatibles ActivityPub sur le fediverse.",
 	"allowLoopback": "Autoriser le traitement en boucle",
 	"allowLoopback-help": "À utiliser uniquement à des fins de débogage. Il est recommandé de laisser cette option désactivée.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Ouvrir dans l’application",
 	"probe-enabled": "Tenter d’ouvrir les ressources ActivityPub dans NodeBB",
