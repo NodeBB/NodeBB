@@ -8,7 +8,7 @@
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="description">[[groups:details.description]]</label>
-					<textarea class="form-control" name="description" id="description" type="text" maxlength="255" rows="5">{txEscape(group.description)}</textarea>
+					<textarea class="form-control" name="description" id="description" type="text" maxlength="255" rows="5">{group.description}</textarea>
 				</div>
 
 				<div class="form-check mb-3">

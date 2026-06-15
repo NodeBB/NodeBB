@@ -158,7 +158,7 @@
 							</span>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
-								<input class="form-control form-control-sm" type="text" value="{txEscape(posts.data.title)}"/>
+								<input class="form-control form-control-sm" type="text" value="{posts.data.title}"/>
 							</div>
 							{{{end}}}
 						</li>
@@ -252,7 +252,7 @@
 					</div>
 					<div class="post-content mb-auto text-break px-3 py-0 h-100">{{txEscape(posts.data.content)}}</div>
 					<div class="post-content-editable flex-grow-1 hidden">
-						<textarea class="form-control w-100 h-100 p-3">{txEscape(posts.data.rawContent)}</textarea>
+						<textarea class="form-control w-100 h-100 p-3">{posts.data.rawContent}</textarea>
 					</div>
 					<div component="post-queue/link-container" class="hidden border-top mx-3 py-3">
 						<label class="text-secondary form-text mb-2">[[post-queue:links-in-this-post]]</label>
