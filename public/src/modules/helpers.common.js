@@ -50,10 +50,10 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	};
 
 	function escape(str) {
+		// decoding HTML entities before escaping to prevent double escaping
+		// and allow translators to use HTML entities in translations
 		return tx.escape(
-			utils.escapeHTML(utils.decodeHTMLEntities(
-				String(str)
-			))
+			utils.escapeHTML(utils.decodeHTMLEntities(str))
 		);
 	}
 
@@ -79,7 +79,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			const escapedArg = tx.fixDoubleEscaped(tx.escapeHTML(arg));
 
 			if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
-				return helpers.tx.call(this, escapedArg, []); // no escapedArguments on nested tokens for now
+				return _tx.call(this, escapedArg, []); // no escapedArguments on nested tokens for now
 			}
 			return escapedArg;
 		});
@@ -168,7 +168,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		const href = tag === 'a' ? `href="${relative_path}/category/${escape(category.slug)}"` : '';
 		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${color};background-color: ${bgColor};border-color: ${bgColor}!important; max-width: 70vw;">
 			${icon && icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${icon}"></i>` : ''}
-			${escape(tx.call(this, String(category.name)))}
+			${escape(_tx.call(this, String(category.name)))}
 		</${tag}>`;
 	}
 
@@ -424,7 +424,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return tx.call(this,
+		return _tx.call(this,
 			`topic:replied-to-user-${langSuffix}`,
 			escape(post.toPid),
 			`${relative_path}/post/${encodeURIComponent(post.toPid)}`,
@@ -437,7 +437,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	function generateWrote(post, timeagoCutoff) {
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return tx.call(this,
+		return _tx.call(this,
 			`topic:wrote-${langSuffix}`,
 			`${relative_path}/post/${encodeURIComponent(post.pid)}`,
 			post.timestampISO
