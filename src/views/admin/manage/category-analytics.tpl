@@ -3,7 +3,7 @@
 
 	<div class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
 		<div class="col-12 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:analytics.title, {name}]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/manage/categories:analytics.title", txEscape(name))}}</h4>
 			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 		</div>
 	</div>
