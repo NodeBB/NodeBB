@@ -13,6 +13,7 @@ const categories = require('../src/categories');
 const notifications = require('../src/notifications');
 const socketNotifications = require('../src/socket.io/notifications');
 const api = require('../src/api');
+const utils = require('../src/utils');
 
 const sleep = util.promisify(setTimeout);
 
@@ -222,6 +223,19 @@ describe('Notifications', () => {
 	it('should not return another user\'s notification by nid', async () => {
 		const notifObj = await api.notifications.get({ uid: 0 }, { nid: notification.nid });
 		assert.deepStrictEqual(notifObj, { notification: undefined });
+	});
+
+	it('should not mark unread/read if notification does not belong to user', async () => {
+		const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+		await assert.rejects(
+			api.notifications.markUnread({ uid: uid }, { nid: notification.nid }),
+			{ message: '[[error:no-notification]]' },
+		);
+
+		await assert.rejects(
+			api.notifications.markRead({ uid: uid }, { nid: notification.nid }),
+			{ message: '[[error:no-notification]]' },
+		);
 	});
 
 	it('should get user\'s notifications', async () => {

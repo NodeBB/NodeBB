@@ -401,8 +401,11 @@ Notifications.markUnread = async function (nid, uid) {
 	if (!(parseInt(uid, 10) > 0) || !nid) {
 		return;
 	}
-	const notification = await db.getObject(`notifications:${nid}`);
-	if (!notification) {
+	const [notification, [userOwns]] = await Promise.all([
+		db.getObject(`notifications:${nid}`),
+		User.notifications.ownsNids([nid], uid),
+	]);
+	if (!notification || !userOwns) {
 		throw new Error('[[error:no-notification]]');
 	}
 	notification.datetime = notification.datetime || Date.now();
@@ -418,7 +421,10 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	if (!Array.isArray(nids) || !nids.length || !(parseInt(uid, 10) > 0)) {
 		return;
 	}
-
+	const userOwns = await User.notifications.ownsNids(nids, uid);
+	if (userOwns.some(owns => !owns)) {
+		throw new Error('[[error:no-notification]]');
+	}
 	let notificationKeys = nids.map(nid => `notifications:${nid}`);
 	let mergeIds = await db.getObjectsFields(notificationKeys, ['mergeId']);
 	// Isolate mergeIds and find related notifications
