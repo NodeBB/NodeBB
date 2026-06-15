@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -14,7 +13,7 @@ const io = require('../socket.io');
 const cache = require('../cache');
 const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
-const translator = require('../translator');
+const tx = require('../translator');
 
 const roomUidCache = cacheCreate({
 	name: 'chat-room-uids',
@@ -49,7 +48,7 @@ module.exports = function (Messaging) {
 		rooms.forEach((data) => {
 			if (data) {
 				db.parseIntFields(data, intFields, fields);
-				data.roomName = translator.escape(validator.escape(String(data.roomName || '')));
+				data.roomName = String(data.roomName || '');
 				data.public = parseInt(data.public, 10) === 1;
 				data.groupChat = data.userCount > 2;
 
@@ -134,7 +133,6 @@ module.exports = function (Messaging) {
 		]);
 
 		if (!isPublic && parseInt(room.joinLeaveMessages, 10) === 1) {
-			// chat owner should also get the user-join system message
 			await Messaging.addSystemMessage('user-join', uid, roomId);
 		}
 
@@ -463,9 +461,10 @@ module.exports = function (Messaging) {
 
 		await db.setObjectField(`chat:room:${payload.roomId}`, 'roomName', payload.newName);
 		await Messaging.addSystemMessage(
-			`room-rename, ${payload.newName.replace(/,/g, '&#44;')}`,
+			'room-rename',
 			payload.uid,
-			payload.roomId
+			payload.roomId,
+			[tx.escape(payload.newName)]
 		);
 
 		plugins.hooks.fire('action:chat.renameRoom', {

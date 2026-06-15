@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (utils, Benchpress, translator, relative_path) {
+module.exports = function (utils, Benchpress, tx, relative_path) {
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
 	const oneDayInMs = 24 * 60 * 60 * 1000;
@@ -8,9 +8,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	const helpers = {
 		__escape: escape,
 		escape,
-		txEscape: translator.escape,
-		txEscapeArg: translator.escapeArg,
-		tx,
+		txEscape: tx.escape,
+		txEscapeArg: tx.escapeArg,
+		tx: _tx,
 		buildMetaTag,
 		quote,
 		buildLinkTag,
@@ -50,14 +50,14 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	};
 
 	function escape(str) {
-		return translator.escape(
+		return tx.escape(
 			utils.escapeHTML(utils.decodeHTMLEntities(
 				String(str)
 			))
 		);
 	}
 
-	function tx(token, ...args) {
+	function _tx(token, ...args) {
 		if (Array.isArray(token) && token.length) {
 			args = [...token.slice(1)];
 			token = token[0];
@@ -66,17 +66,17 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			return '';
 		}
 
-		const [txToken, argsFromToken] = translator.normalizeToken(token);
+		const [txToken, argsFromToken] = tx.normalizeToken(token);
 		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
 			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
-			return translator.fixDoubleEscaped(translator.escapeHTML(token));
+			return tx.escape(tx.fixDoubleEscaped(tx.escapeHTML(token)));
 		}
 
 		const escapedArgs = args.map((arg) => {
-			const escapedArg = translator.fixDoubleEscaped(translator.escapeHTML(arg));
+			const escapedArg = tx.fixDoubleEscaped(tx.escapeHTML(arg));
 
 			if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
 				return helpers.tx.call(this, escapedArg, []); // no escapedArguments on nested tokens for now
@@ -85,10 +85,10 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		});
 
 		const translation = this._i18n[namespace][key];
-		const result = translator.replaceArguments(translation, escapedArgs);
+		const result = tx.replaceArguments(translation, escapedArgs);
 		// prevents the translator.translate() in
 		// app.parseAndTraslate and page render from translating again
-		return translator.escape(result);
+		return tx.escape(result);
 	}
 
 	function quote(str) {

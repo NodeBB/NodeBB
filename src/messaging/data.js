@@ -1,14 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
 const utils = require('../utils');
 const plugins = require('../plugins');
-const translator = require('../translator');
 
 const intFields = ['mid', 'timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
@@ -186,7 +184,7 @@ module.exports = function (Messaging) {
 	}
 	async function parseMessage(message, uid, roomId, isNew) {
 		if (message.system) {
-			return translator.escape(validator.escape(String(message.content)));
+			return message.content;
 		} else if (!utils.isNumber(message.mid)) {
 			return posts.sanitize(message.content);
 		}

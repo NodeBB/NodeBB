@@ -215,7 +215,8 @@ describe('Messaging Library', () => {
 			const { messages } = body.response;
 			assert.equal(messages.length, 2);
 			assert.strictEqual(messages[0].system, 1);
-			assert.strictEqual(messages[0].content, 'user-join');
+			assert.strictEqual(messages[0].type, 'user-join');
+			assert.strictEqual(messages[0].content, `[[modules:chat.system.user-join, baz, ${messages[0].timestampISO}]]`);
 
 			const { response, body: body2 } = await callv3API('put', `/chats/${roomId}/messages/${messages[0].messageId}`, {
 				message: 'test',
@@ -294,7 +295,8 @@ describe('Messaging Library', () => {
 			const { messages } = body.response;
 			const message = messages.pop();
 			assert.strictEqual(message.system, 1);
-			assert.strictEqual(message.content, 'user-leave');
+			assert.strictEqual(message.type, 'user-leave');
+			assert.strictEqual(message.content, `[[modules:chat.system.user-leave, baz, ${message.timestampISO}]]`);
 		});
 
 		it('should not send a user-leave system message when a user tries to leave a room they are not in', async () => {
@@ -305,12 +307,14 @@ describe('Messaging Library', () => {
 			assert.equal(messages.length, 4);
 			let message = messages.pop();
 			assert.strictEqual(message.system, 1);
-			assert.strictEqual(message.content, 'user-leave');
+			assert.strictEqual(message.type, 'user-leave');
+			assert.strictEqual(message.content, `[[modules:chat.system.user-leave, baz, ${message.timestampISO}]]`);
 
 			// The message before should still be a user-join
 			message = messages.pop();
 			assert.strictEqual(message.system, 1);
-			assert.strictEqual(message.content, 'user-join');
+			assert.strictEqual(message.type, 'user-join');
+			assert.strictEqual(message.content, `[[modules:chat.system.user-join, herp, ${message.timestampISO}]]`);
 		});
 
 		it('should make both users owners on room creation', async () => {
@@ -533,7 +537,8 @@ describe('Messaging Library', () => {
 
 			const message = messages.pop();
 			assert.strictEqual(message.system, 1);
-			assert.strictEqual(message.content, 'room-rename, new room name');
+			assert.strictEqual(message.type, 'room-rename');
+			assert.strictEqual(message.content, `[[modules:chat.system.room-rename, foo, ${message.timestampISO}, new room name]]`);
 		});
 
 		it('should fail to load room with invalid-data', async () => {

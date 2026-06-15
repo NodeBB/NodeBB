@@ -42,45 +42,45 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
-		const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
-
-		let data = {
-			roomId: roomId,
-			fromUid: fromUid,
-			message: messageObj,
-			public: isPublic,
-		};
-		data = await plugins.hooks.fire('filter:messaging.notify', data);
-		if (!data) {
-			return;
-		}
-
-		// delivers full message to all online users in roomId
-		io.in(`chat_room_${roomId}`).emit('event:chats.receive', data);
-
-		const unreadData = { roomId, fromUid, public: isPublic };
-		if (isPublic && !messageObj.system) {
-			// delivers unread public msg to all online users on the chats page
-			io.in(`chat_room_public_${roomId}`).emit('event:chats.public.unread', unreadData);
-		}
-		if (messageObj.system) {
-			return;
-		}
-
-		// push unread count only for private rooms
-		if (!isPublic) {
-			const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
-			unreadData.teaser = {
-				content: validator.escape(
-					String(utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)))
-				),
-				user: messageObj.fromUser,
-				timestampISO: messageObj.timestampISO,
-			};
-			Messaging.pushUnreadCount(uids, unreadData);
-		}
-
 		try {
+			const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+
+			let data = {
+				roomId: roomId,
+				fromUid: fromUid,
+				message: messageObj,
+				public: isPublic,
+			};
+			data = await plugins.hooks.fire('filter:messaging.notify', data);
+			if (!data) {
+				return;
+			}
+
+			// delivers full message to all online users in roomId
+			io.in(`chat_room_${roomId}`).emit('event:chats.receive', data);
+
+			const unreadData = { roomId, fromUid, public: isPublic };
+			if (isPublic && !messageObj.system) {
+				// delivers unread public msg to all online users on the chats page
+				io.in(`chat_room_public_${roomId}`).emit('event:chats.public.unread', unreadData);
+			}
+			if (messageObj.system) {
+				return;
+			}
+
+			// push unread count only for private rooms
+			if (!isPublic) {
+				const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
+				unreadData.teaser = {
+					content: validator.escape(
+						String(utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)))
+					),
+					user: messageObj.fromUser,
+					timestampISO: messageObj.timestampISO,
+				};
+				Messaging.pushUnreadCount(uids, unreadData);
+			}
+
 			await sendNotification(fromUid, roomId, messageObj);
 			if (!isPublic && utils.isNumber(fromUid)) {
 				setImmediate(() => {
