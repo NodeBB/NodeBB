@@ -149,8 +149,8 @@ privsUsers.canExportData = async function (callerUid, uid) {
 	}
 	const privsAdmin = require('./admin');
 	const [isAdmin, hadAdminUsersPrivilege] = await Promise.all([
-		privsUsers.isAdministrator(uid),
-		privsAdmin.can('admin:users', uid),
+		privsUsers.isAdministrator(callerUid),
+		privsAdmin.can('admin:users', callerUid),
 	]);
 	return isAdmin || hadAdminUsersPrivilege;
 };

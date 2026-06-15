@@ -15,7 +15,7 @@ consentController.get = async function (req, res, next) {
 	const { username, userslug } = payload;
 	const [consented, canExport] = await Promise.all([
 		db.getObjectField(`user:${res.locals.uid}`, 'gdpr_consent'),
-		privileges.users.canExportData(res.uid, res.locals.uid),
+		privileges.users.canExportData(req.uid, res.locals.uid),
 	]);
 
 	payload.gdpr_consent = parseInt(consented, 10) === 1;
