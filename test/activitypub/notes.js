@@ -660,6 +660,60 @@ describe('Notes', () => {
 		});
 	});
 
+	describe('getParentChain', () => {
+		it('should retrieve a two-note chain via inReplyTo', async () => {
+			const { id: parentId } = helpers.mocks.note();
+			const { id: childId } = helpers.mocks.note({ inReplyTo: parentId });
+
+			const chain = await activitypub.notes.getParentChain(0, childId);
+
+			assert(chain instanceof Set);
+			assert.strictEqual(chain.size, 2);
+
+			const pids = Array.from(chain).map((n) => n.pid);
+			assert(pids.includes(parentId));
+			assert(pids.includes(childId));
+		});
+
+		it('should stop at configured depth', async () => {
+			meta.config.activitypubParentTraversalDepth = 30;
+
+			const noteIds = [];
+			let previousId = null;
+			for (let i = 0; i < 55; i += 1) {
+				const noteData = previousId ? { inReplyTo: previousId } : {};
+				const { id } = helpers.mocks.note(noteData);
+				noteIds.push(id);
+				previousId = id;
+			}
+
+			const chain = await activitypub.notes.getParentChain(0, noteIds[noteIds.length - 1]);
+
+			assert(chain instanceof Set);
+			assert(chain.size <= 30);
+
+			delete meta.config.activitypubParentTraversalDepth;
+		});
+
+		it('should use default depth of 50 when not configured', async () => {
+			delete meta.config.activitypubParentTraversalDepth;
+
+			const noteIds = [];
+			let previousId = null;
+			for (let i = 0; i < 55; i += 1) {
+				const noteData = previousId ? { inReplyTo: previousId } : {};
+				const { id } = helpers.mocks.note(noteData);
+				noteIds.push(id);
+				previousId = id;
+			}
+
+			const chain = await activitypub.notes.getParentChain(0, noteIds[noteIds.length - 1]);
+
+			assert(chain instanceof Set);
+			assert(chain.size <= 50);
+		});
+	});
+
 	describe('auto-categorization with queue rule', () => {
 		let remoteCid;
 		let targetCid;

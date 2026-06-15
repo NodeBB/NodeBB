@@ -206,6 +206,7 @@
     "tinyconBackground": "#ff0000",
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
+    "activitypubParentTraversalDepth": 50,
     "activitypubProbe": 1,
     "activitypubProbeTimeout": 2000,
     "activitypubContentPruneDays": 30,
