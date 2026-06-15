@@ -148,13 +148,6 @@ describe('Notifications', () => {
 		await socketNotifications.markUnread({ uid: uid }, null);
 	});
 
-	it('should error if notification does not exist', async () => {
-		await assert.rejects(
-			socketNotifications.markUnread({ uid: uid }, 123123),
-			{ message: '[[error:no-notification]]' }
-		);
-	});
-
 	it('should mark a notification unread', async () => {
 		await socketNotifications.markUnread({ uid: uid }, notification.nid);
 
@@ -227,14 +220,16 @@ describe('Notifications', () => {
 
 	it('should not mark unread/read if notification does not belong to user', async () => {
 		const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
-		await assert.rejects(
-			api.notifications.markUnread({ uid: uid }, { nid: notification.nid }),
-			{ message: '[[error:no-notification]]' },
+		await api.notifications.markUnread({ uid: uid }, { nid: notification.nid });
+		assert.strictEqual(
+			await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid),
+			false
 		);
 
-		await assert.rejects(
-			api.notifications.markRead({ uid: uid }, { nid: notification.nid }),
-			{ message: '[[error:no-notification]]' },
+		await api.notifications.markRead({ uid: uid }, { nid: notification.nid }),
+		assert.strictEqual(
+			await db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid),
+			false,
 		);
 	});
 

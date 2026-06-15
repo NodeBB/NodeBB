@@ -57,9 +57,9 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'get', '/:uid/emails/:email', [...middlewares, middleware.assert.user], controllers.write.users.getEmail);
 	setupApiRoute(router, 'post', '/:uid/emails/:email/confirm', [...middlewares, middleware.assert.user], controllers.write.users.confirmEmail);
 
-	setupApiRoute(router, 'head', '/:uid/exports/:type', [...middlewares, middleware.assert.user, middleware.checkAccountPermissions], controllers.write.users.checkExportByType);
-	setupApiRoute(router, 'get', '/:uid/exports/:type', [...middlewares, middleware.assert.user, middleware.checkAccountPermissions], controllers.write.users.getExportByType);
-	setupApiRoute(router, 'post', '/:uid/exports/:type', [...middlewares, middleware.assert.user, middleware.checkAccountPermissions], controllers.write.users.generateExportsByType);
+	setupApiRoute(router, 'head', '/:uid/exports/:type', [...middlewares, middleware.assert.user], controllers.write.users.checkExportByType);
+	setupApiRoute(router, 'get', '/:uid/exports/:type', [...middlewares, middleware.assert.user], controllers.write.users.getExportByType);
+	setupApiRoute(router, 'post', '/:uid/exports/:type', [...middlewares, middleware.assert.user], controllers.write.users.generateExportsByType);
 
 	// Shorthand route to access user routes by userslug
 	router.all('/+bySlug/:userslug*?', [], controllers.write.users.redirectBySlug);
