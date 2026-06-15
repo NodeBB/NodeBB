@@ -4,7 +4,8 @@
 	"lead-text": "מעמוד זה תוכלו להגדיר גישת כתיבה ל-API ב- NodeBB.",
 	"intro": "כברירת מחדל, ה- API של כתיבה מאמת משתמשים בהתבסס על קובץ ה-cookie של ההפעלה שלהם, אך NodeBB תומך גם באימות נושא באמצעות טוקנים (אישורי אבטחה) שנוצרו באמצעות דף זה.",
 	"warning": "<strong>שים לב</strong> — יש להתייחס לאסימונים כמו אל סיסמאות. אם הם דולפים, יש לראות את חשבונך כנפרץ. ",
-	"docs": "לחץ כאן כדי לגשת למפרט ה- API המלא",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "אפשר שימוש בAPI באמצעות HTTPS בלבד",
 	"require-https-caveat": "<strong>הערה</strong>: התקנות מסוימות הכוללות מאזני עומסים עשויות לשלוח את הבקשות שלהם ל-NodeBB באמצעות HTTP, ובמקרה כזה אפשרות זו צריכה להישאר מושבתת.",

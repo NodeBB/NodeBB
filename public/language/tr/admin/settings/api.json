@@ -4,7 +4,8 @@
 	"lead-text": "Bu sayfadan NodeBB'deki \"Write API\"e erişimi yapılandırabilirsiniz.",
 	"intro": "Varsayılan olarak, Yazma API'si kullanıcıların kimliklerini oturum tanımlama bilgileri temelinde doğrular, ancak NodeBB ayrıca bu sayfa aracılığıyla oluşturulan belirteçler aracılığıyla Taşıyıcı kimlik doğrulamasını da destekler.",
 	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
-	"docs": "Tüm API özeliklerine erişmek için buraya tıklayın. ",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "API kullanımı için HTTPS kısıtlaması gerektir",
 	"require-https-caveat": "Not: Yük dengeleyicilerini içeren bazı kurulumlar, isteklerini HTTP kullanarak NodeBB'ye proxy uygulayabilir, bu durumda bu seçenek devre dışı kalmalıdır.",

@@ -4,7 +4,8 @@
 	"lead-text": "Na tej stronie możesz skonfigurować dostęp do Write API w NodeBB.",
 	"intro": "Domyślnie Write API uwierzytelnia użytkowników na podstawie ich sesji cookie, ale NodeBB obsługuje również uwierzytelnianie okaziciela za pomocą tokenów generowanych za pośrednictwem tej strony.",
 	"warning": "<strong>Pamiętaj</strong> — traktuj tokeny jak hasła. Jeśli wyciekły, uznaj swoje konto jako przejęte.",
-	"docs": "Kliknij tutaj, aby zobaczyć pełną specyfikację API",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "Wymagaj użycia API tylko przez HTTPS",
 	"require-https-caveat": "<strong>Uwaga</strong>: Niektóre instalacje z modułami równoważenia obciążenia mogą przekazywać swoje żądania do NodeBB za pomocą protokołu HTTP, w takim przypadku ta opcja powinna pozostać wyłączona.",

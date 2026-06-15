@@ -4,7 +4,8 @@
 	"lead-text": "이 페이지에서는 NodeBB의 Write API에 대한 액세스를 구성할 수 있습니다.",
 	"intro": "기본적으로 Write API는 세션 쿠키를 기반으로 사용자를 인증하지만, NodeBB는 이 페이지를 통해 생성된 토큰을 통한 Bearer 인증도 지원합니다.",
 	"warning": "<strong>주의</strong> — 토큰을 비밀번호처럼 다루세요. 노출되면 계정이 침해된 것으로 간주해야 합니다.",
-	"docs": "전체 API 사양에 액세스하려면 여기를 클릭하세요",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "API 사용 시 HTTPS만 사용",
 	"require-https-caveat": "<strong>참고</strong>: 일부 로드 밸런서를 사용하는 설치에서는 요청을 HTTP를 사용하여 NodeBB로 프록시하는 경우가 있습니다. 이 경우 이 옵션을 비활성화 상태로 유지해야 합니다.",
