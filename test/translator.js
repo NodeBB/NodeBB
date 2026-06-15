@@ -382,6 +382,7 @@ describe('new Translator(language)', () => {
 				'href-test-2': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
 				'href-test-3': '<a href="%1">%2</a> and <a href="%3">%4</a>',
 				'href-test-4': '<a href="%1%2">%3</a>',
+				'href-test-5': '<a href=\'%1\'>%2</a>',
 			});
 
 			assert.strictEqual(
@@ -419,8 +420,6 @@ describe('new Translator(language)', () => {
 				'This topic has been merged into <a href="">bar</a>'
 			);
 
-
-
 			assert.strictEqual(
 				await shim.translate('[[topic:href-test-3, javascript:alert(origin), foo, data:123, baz]]'),
 				'<a href="">foo</a> and <a href="">baz</a>'
@@ -428,6 +427,11 @@ describe('new Translator(language)', () => {
 
 			assert.strictEqual(
 				await shim.translate('[[topic:href-test-4, javascript:alert(origin), javascript:alert(origin), foo]]'),
+				'<a href="">foo</a>'
+			);
+
+			assert.strictEqual(
+				await shim.translate('[[topic:href-test-5, javascript:alert(origin), foo]]'),
 				'<a href="">foo</a>'
 			);
 
