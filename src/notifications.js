@@ -401,15 +401,19 @@ Notifications.markUnread = async function (nid, uid) {
 	if (!(parseInt(uid, 10) > 0) || !nid) {
 		return;
 	}
-	const notification = await db.getObject(`notifications:${nid}`);
-	if (!notification) {
-		throw new Error('[[error:no-notification]]');
+	const [notification, [userOwns]] = await Promise.all([
+		db.getObject(`notifications:${nid}`),
+		User.notifications.ownsNids([nid], uid),
+	]);
+	if (!notification || !userOwns) {
+		return;
 	}
-	notification.datetime = notification.datetime || Date.now();
+
+	const timestamp = notification.datetime || Date.now();
 
 	await Promise.all([
 		db.sortedSetRemove(`uid:${uid}:notifications:read`, nid),
-		db.sortedSetAdd(`uid:${uid}:notifications:unread`, notification.datetime, nid),
+		db.sortedSetAdd(`uid:${uid}:notifications:unread`, timestamp, nid),
 	]);
 };
 
@@ -418,16 +422,21 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	if (!Array.isArray(nids) || !nids.length || !(parseInt(uid, 10) > 0)) {
 		return;
 	}
-
-	let notificationKeys = nids.map(nid => `notifications:${nid}`);
-	let mergeIds = await db.getObjectsFields(notificationKeys, ['mergeId']);
+	const userOwns = await User.notifications.ownsNids(nids, uid);
+	nids = nids.filter((nid, index) => userOwns[index]);
+	let mergeIds = await db.getObjectsFields(
+		nids.map(nid => `notifications:${nid}`),
+		['mergeId']
+	);
 	// Isolate mergeIds and find related notifications
 	mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
 
 	const relatedNids = await Notifications.findRelated(mergeIds, `uid:${uid}:notifications:unread`);
-	notificationKeys = _.union(nids, relatedNids).map(nid => `notifications:${nid}`);
 
-	let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'datetime']);
+	let notificationData = await db.getObjectsFields(
+		_.union(nids, relatedNids).map(nid => `notifications:${nid}`),
+		['nid', 'datetime']
+	);
 	notificationData = notificationData.filter(n => n && n.nid);
 
 	nids = notificationData.map(n => n.nid);

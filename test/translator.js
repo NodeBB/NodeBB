@@ -360,6 +360,11 @@ describe('new Translator(language)', () => {
 				await translator.translate('[[topic:merged-message, %20%20%20javascript:alert(origin), foo]]'),
 				'This topic has been merged into <a href="">foo</a>'
 			);
+
+			assert.strictEqual(
+				await translator.translate('[[global:403.login, javascript:alert(origin)]]'),
+				'Perhaps you should <a class="alert-link" href="">try logging in</a>?'
+			);
 		});
 
 		it('should not strip javascript from arguments if it\'s not a href attribute', async function () {

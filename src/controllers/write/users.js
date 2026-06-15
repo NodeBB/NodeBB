@@ -206,6 +206,7 @@ Users.confirmEmail = async (req, res) => {
 };
 
 Users.checkExportByType = async (req, res) => {
+	console.log('CHECK FAIL?', req.uid, req.params.uid, req.params.type);
 	const stat = await api.users.checkExportByType(req, { ...req.params });
 	const modified = new Date(stat.mtimeMs);
 	res.set('Last-Modified', modified.toUTCString());

@@ -38,7 +38,6 @@ module.exports = function () {
 	setupApiRoute(router, 'post', '/:tid/thumbs', [
 		middleware.validateFiles,
 		middleware.uploads.ratelimit,
-		...middlewares,
 	], controllers.write.topics.addThumb);
 
 
