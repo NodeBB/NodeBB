@@ -700,7 +700,7 @@ usersAPI.checkExportByType = async (caller, { uid, type }) => {
 	if (!await privileges.users.canExportData(caller.uid, uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
-	await prepareExport({ uid, type });
+	return await prepareExport({ uid, type });
 };
 
 usersAPI.getExportByType = async (caller, { uid, type }) => {
