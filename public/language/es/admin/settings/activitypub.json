@@ -11,6 +11,8 @@
 	"enabled-help": "Si se activa, esto habilitará a NodeBB comunicarse con todos los clientes que tengan habilitado ActivityPub en el fediverso.",
 	"allowLoopback": "Permitir procesamiento de bucle invertido",
 	"allowLoopback-help": "Útil únicamente para fines de depuración. Probablemente debería dejar esta opción desactivada.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Abrir en la aplicación",
 	"probe-enabled": "Intenta abrir recursos compatibles con ActivityPub en NodeBB.",

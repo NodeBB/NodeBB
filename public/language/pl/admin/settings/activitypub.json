@@ -11,6 +11,8 @@
 	"enabled-help": "Po włączeniu NodeBB będzie komunikować się ze wszystkimi klientami obsługującymi ActivityPub zapewniając dostęp do fediverse.",
 	"allowLoopback": "Zezwól na przetwarzanie pętli zwrotnej",
 	"allowLoopback-help": "Użyteczne tylko do debugowania. Raczej powinieneś(-aś) zostawić to wyłączone.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Otwórz w aplikacji",
 	"probe-enabled": "Spróbuj otworzyć zawartość związaną z ActivityPub w NodeBB",

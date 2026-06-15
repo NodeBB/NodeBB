@@ -11,6 +11,8 @@
 	"enabled-help": "Dacă este activat, acest lucru va permite ca NodeBB să poată comunica cu toți clienții compatibili cu Activitypub de pe fediverse.",
 	"allowLoopback": "Permite procesarea loopback",
 	"allowLoopback-help": "Util doar pentru depanare. Probabil ar trebui să lași această opțiune dezactivată.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Deschide în Aplicație",
 	"probe-enabled": "Încercă să deschidă resurse compatibile cu ActivityPub în NodeBB",

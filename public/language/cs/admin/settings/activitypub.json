@@ -11,6 +11,8 @@
 	"enabled-help": "Pokud je povoleno, umožní to tomuto NodeBB komunikovat se všemi klienty podporujícími ActivityPub v širším fediverse.",
 	"allowLoopback": "Povolit zpracování smyčky",
 	"allowLoopback-help": "Užitečné pouze pro účely ladění. Pravděpodobně byste měli ponechat tuto možnost vypnutou.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Otevřít v aplikaci",
 	"probe-enabled": "Zkusit otevřít zdroje podporující ActivityPub v NodeBB",

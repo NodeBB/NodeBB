@@ -11,6 +11,8 @@
 	"enabled-help": "If enabled, will allow this NodeBB will be able to communicate with all Activitypub-enabled clients on the wider fediverse.",
 	"allowLoopback": "Allow loopback processing",
 	"allowLoopback-help": "Useful for debugging purposes only. You should probably leave this disabled.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Avaa sovelluksessa",
 	"probe-enabled": "Try to open ActivityPub-enabled resources in NodeBB",

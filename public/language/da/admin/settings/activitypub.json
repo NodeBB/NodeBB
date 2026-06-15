@@ -11,6 +11,8 @@
 	"enabled-help": "Hvis slået til, vil denne NodeBB instans kunne kommunikere med alle klienter der bruger ActivityPub på det bredere fødivers.",
 	"allowLoopback": "Tillad loopback proccesering",
 	"allowLoopback-help": "Kun brugbart for debugging-formål. Du bør formentlig efterlade det slukket.",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "Åben i App",
 	"probe-enabled": "Prøv at åbne ActivityPub-tændte ressourcer i NodeBB",

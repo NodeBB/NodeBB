@@ -11,6 +11,8 @@
 	"enabled-help": "如果启用，将允许 NodeBB 与更广泛的联邦宇宙中所有启用 Activitypub 的客户端进行通信。",
 	"allowLoopback": "允许环回处理",
 	"allowLoopback-help": "仅用于调试目的，您最好将其禁用。",
+	"parentTraversalDepth": "Parent traversal depth",
+	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
 	"probe": "在应用程序中打开",
 	"probe-enabled": "尝试在 NodeBB 中打开启用了 ActivityPub 的资源",
