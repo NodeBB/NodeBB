@@ -18,6 +18,7 @@ const file = require('../../src/file');
 const utils = require('../../src/utils');
 
 const helpers = require('../helpers');
+const request = require('../../src/request');
 
 describe('Topic thumbs', () => {
 	let topicObj;
@@ -313,6 +314,25 @@ describe('Topic thumbs', () => {
 		it('should fail when calling user cannot edit the tid', async () => {
 			const { response } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/2/thumbs`, path.join(__dirname, '../files/test.png'), {}, fooJar, fooCSRF);
 			assert.strictEqual(response.statusCode, 403);
+		});
+
+		it('should fail if user does not have upload:image privilege', async function () {
+			const jar = request.jar();
+			const csrf = await helpers.getCsrfToken(jar);
+			const filePath = path.join(__dirname, '../files/test.png');
+			const { response, body } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/v3/topics/${this.tid}/thumbs`, filePath, {}, jar, csrf
+			);
+			assert.strictEqual(response.statusCode, 403);
+			assert(body && body.status);
+			assert.strictEqual(body.status.message, 'You do not have enough privileges for this action.');
+
+			const {response: response1, body: body1 } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/topic/thumb/upload`, filePath, {}, jar, csrf
+			);
+			assert.strictEqual(response1.statusCode, 403);
+			assert(body1 && body1.status);
+			assert.strictEqual(body1.status.message, 'You do not have enough privileges for this action.');
 		});
 
 		it('should fail if thumbnails are not enabled', async function () {
