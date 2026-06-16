@@ -278,12 +278,11 @@ async function modifyChatRooms(uid, results) {
 
 Messaging.generateUsernames = function (room, excludeUid) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
-	const usernames = users.map(u => u.displayname);
+	const usernames = users.map(u => tx.escape(u.displayname));
 	if (users.length > 3) {
 		return tx.compile(
 			'modules:chat.usernames-and-x-others',
-			usernames.slice(0, 2).join(', '),
-			room.userCount - 2
+			...[usernames.slice(0, 2), room.userCount - 2]
 		);
 	}
 	return usernames.join(', ');

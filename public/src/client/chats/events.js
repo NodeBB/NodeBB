@@ -5,7 +5,8 @@ define('forum/chats/events', [
 	'forum/chats/messages',
 	'chat',
 	'components',
-], function (messages, chatModule, components) {
+	'helpers',
+], function (messages, chatModule, components, helpers) {
 	const Events = {};
 
 	const events = {
@@ -83,13 +84,17 @@ define('forum/chats/events', [
 		if (roomEl.length) {
 			const titleEl = roomEl.find('[component="chat/room/title"]');
 			ajaxify.data.roomName = data.newName;
-			titleEl.translateText(data.newName ? data.newName : ajaxify.data.usernames);
+			if (data.newName) {
+				titleEl.text(data.newName);
+			} else {
+				titleEl.translateText(ajaxify.data.usernames);
+			}
 		}
 		const titleEl = $(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"] [component="chat/header/title"]`);
 		if (titleEl.length) {
 			titleEl.html(
 				data.newName ?
-					`<i class="fa ${ajaxify.data.icon} text-muted"></i> ${data.newName}` :
+					`<i class="fa ${helpers.escape(ajaxify.data.icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
 					ajaxify.data.chatWithMessage
 			);
 		}

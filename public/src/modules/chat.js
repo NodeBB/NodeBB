@@ -1,8 +1,8 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts', 'api', 'scrollStop', 'resizable',
-], function (components, taskbar, translator, hooks, bootbox, alerts, api, scrollStop, resizable) {
+	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts', 'api', 'scrollStop', 'resizable', 'helpers',
+], function (components, taskbar, translator, hooks, bootbox, alerts, api, scrollStop, resizable, helpers) {
 	const Chat = {};
 
 	Chat.openChat = function (roomId, uid) {
@@ -236,14 +236,12 @@ define('chat', [
 		if (titleEl.length) {
 			titleEl.html(
 				data.newName ?
-					`<i class="fa ${icon} text-muted"></i> ${data.newName}` :
+					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
 					data.chatWithMessage
 			);
 		}
-
-		const newTitle = $('<div></div>').html(data.newName).text();
 		taskbar.update('chat', modal.attr('data-uuid'), {
-			title: newTitle,
+			title: helpers.escape(data.newName),
 		});
 		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
