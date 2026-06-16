@@ -161,14 +161,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
 			await activitypub.actors.assert(Array.from(set));
 
-			// Local
+			// Local (set if found)
 			const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 			const recipientCids = resolved
 				.filter(Boolean)
 				.filter(({ type }) => type === 'category')
 				.map(obj => obj.id);
 
-			// Remote
+			// Remote (set only if cid and object domains match or cid is set in `audience`)
 			let remoteCid;
 			const assertedGroups = await categories.exists(Array.from(set));
 			try {
