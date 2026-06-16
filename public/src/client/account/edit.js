@@ -139,19 +139,19 @@ define('forum/account/edit', [
 
 	function updateSignature() {
 		const el = $('#signature');
-		$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
+		$('#signatureCharCountLeft').text(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 
 		el.on('keyup change', function () {
-			$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
+			$('#signatureCharCountLeft').text(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 		});
 	}
 
 	function updateAboutMe() {
 		const el = $('#aboutme');
-		$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
+		$('#aboutMeCharCountLeft').text(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 
 		el.on('keyup change', function () {
-			$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
+			$('#aboutMeCharCountLeft').text(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 		});
 	}
 

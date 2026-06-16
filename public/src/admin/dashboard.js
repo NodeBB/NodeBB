@@ -454,10 +454,6 @@ function updateTrafficGraph(units, until, amount) {
 			graphs.traffic.data.xLabels = utils.getDaysArray(until, amount);
 		} else {
 			graphs.traffic.data.xLabels = utils.getHoursArray();
-
-			$('#pageViewsThirty').html(formattedNumber(data.summary.thirty));
-			$('#pageViewsSeven').html(formattedNumber(data.summary.seven));
-			$('#pageViewsPastDay').html(formattedNumber(data.pastDay));
 		}
 
 		graphs.traffic.data.datasets[0].data = data.pageviews;

@@ -475,12 +475,13 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		const span = components.get('navbar/title').find('span');
-		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
-			span.html(ajaxify.data.title).removeClass('hidden');
-		} else if ($(window).scrollTop() <= 50 && !span.hasClass('hidden')) {
-			span.html('').addClass('hidden');
+		const scrollTop = $(window).scrollTop();
+		if (scrollTop > 50 && span.hasClass('hidden')) {
+			span.text(ajaxify.data.title).removeClass('hidden');
+		} else if (scrollTop <= 50 && !span.hasClass('hidden')) {
+			span.text('').addClass('hidden');
 		}
-		if ($(window).scrollTop() > 300) {
+		if (scrollTop > 300) {
 			alerts.remove('bookmark');
 		}
 	}
