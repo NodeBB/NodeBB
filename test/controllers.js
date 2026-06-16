@@ -1439,9 +1439,9 @@ describe('Controllers', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 			assert.equal(response.statusCode, 200);
 			assert.ok(body.cookies);
-			assert.equal(translator.escape('[[global:cookies.message]]'), body.cookies.message);
-			assert.equal(translator.escape('[[global:cookies.accept]]'), body.cookies.dismiss);
-			assert.equal(translator.escape('[[global:cookies.learn-more]]'), body.cookies.link);
+			assert.equal('[[global:cookies.message]]', body.cookies.message);
+			assert.equal('[[global:cookies.accept]]', body.cookies.dismiss);
+			assert.equal('[[global:cookies.learn-more]]', body.cookies.link);
 		});
 
 		it('response should be parseable when entries have apostrophes', async () => {
