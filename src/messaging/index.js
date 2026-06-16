@@ -89,8 +89,7 @@ async function canGet(hook, callerUid, uid) {
 }
 
 Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
-	let parsed = await plugins.hooks.fire('filter:parse.raw', String(message || ''));
-	parsed = tx.escape(parsed);
+	const parsed = await plugins.hooks.fire('filter:parse.raw', String(message || ''));
 	let messageData = {
 		message: message,
 		parsed: parsed,

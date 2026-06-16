@@ -3,9 +3,9 @@
 
 define('forum/chats/messages', [
 	'components', 'hooks', 'bootbox', 'alerts',
-	'messages', 'api', 'forum/topic/images', 'imagesloaded',
+	'messages', 'api', 'forum/topic/images', 'imagesloaded', 'translator',
 ], function (
-	components, hooks, bootbox, alerts, messagesModule, api, images, imagesLoaded
+	components, hooks, bootbox, alerts, messagesModule, api, images, imagesLoaded, tx
 ) {
 	const messages = {};
 
@@ -196,7 +196,7 @@ define('forum/chats/messages', [
 		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
 		replyToEl.attr('data-tomid', mid)
 			.find('[component="chat/composer/replying-to-text"]')
-			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-displayname')}]]`);
+			.translateHtml(tx.compile('modules:chat.replying-to', tx.escape(msgEl.attr('data-displayname'))));
 		replyToEl.removeClass('hidden');
 		replyToEl.find('[component="chat/composer/replying-to-cancel"]').off('click')
 			.on('click', () => {

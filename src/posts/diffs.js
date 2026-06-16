@@ -64,6 +64,7 @@ module.exports = function (Posts) {
 		post.content = String(post.content || '');
 
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: post });
+		// TODO: remove and escape in template
 		result.postData.content = translator.escape(result.postData.content);
 		return result.postData;
 	};

@@ -654,7 +654,7 @@ module.exports = function (utils, load, warn) {
 
 				return Translator.create(tokenLanguage).getTranslation(namespace, key).then(function (translation) {
 					if (!translation) {
-						// if translation is missing/or not a translation, return the token as is
+						// if translation is missing/or not a translation, return html escaped token
 						return escapeHTML(token);
 					}
 					return adaptor.replaceArguments(translation, txArgs);

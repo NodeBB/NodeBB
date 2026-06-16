@@ -586,23 +586,40 @@ describe('Messaging Library', () => {
 			assert(Array.isArray(rooms));
 		});
 
-		it('should escape teaser', async () => {
+		it('should escape teaser in the rendered html', async () => {
 			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: '<svg/onload=alert(document.location);' }, 'foo');
 			const { rooms } = await api.chats.list(
 				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
 			);
-			assert.equal(rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
+			// in the api not escaped
+			assert.equal(rooms[0].teaser.content, '<svg/onload=alert(document.location);');
+
+			const { response, body } = await request.get(`${nconf.get('url')}/chats/${roomId}`, {
+				jar: mocks.users.foo.jar,
+			});
+			// in the rendered output should be escaped
+			assert(body.includes('&lt;svg/onload&#x3D;alert(document.location)'));
 		});
 
 		it('should not translate chat messages if they have translation keys', async () => {
-			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: '[[global:404.login]]' }, 'foo');
+			const message = '[[global:403.login]]';
+			const txEscaped = translator.escape(message);
+			await callv3API('post', `/chats/${roomId}`, { roomId, message }, 'foo');
 			const { rooms } = await api.chats.list(
 				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }
 			);
 			const room = await api.chats.get({ uid: mocks.users.foo.uid }, { uid: mocks.users.foo.uid, roomId });
-			const txEscaped = translator.escape('[[global:404.login]]');
-			assert.strictEqual(room.messages[room.messages.length - 1].content, txEscaped);
-			assert.strictEqual(rooms[0].teaser.content, txEscaped);
+			// in the api not escaped
+			assert.strictEqual(room.messages[room.messages.length - 1].content, message);
+			assert.strictEqual(rooms[0].teaser.content, message);
+
+			// in the html escaped
+			const { response, body } = await request.get(`${nconf.get('url')}/chats/${roomId}`, {
+				jar: mocks.users.foo.jar,
+			});
+			console.log(body);
+			assert(body.includes(message));
+			assert(!body.includes('Perhaps you should'));
 		});
 
 		it('should escape chatWithMessage', async () => {

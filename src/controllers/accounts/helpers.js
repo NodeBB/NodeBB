@@ -10,7 +10,6 @@ const plugins = require('../../plugins');
 const meta = require('../../meta');
 const utils = require('../../utils');
 const privileges = require('../../privileges');
-const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
 const posts = require('../../posts');
@@ -353,11 +352,10 @@ async function parseAboutMe(userData) {
 		return;
 	} else if (activitypub.helpers.isUri(userData.uid)) {
 		userData.aboutme = posts.sanitize(String(userData.aboutme));
-		userData.aboutmeParsed = translator.escape(userData.aboutme);
+		userData.aboutmeParsed = userData.aboutme;
 		return;
 	}
-	const parsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));
-	userData.aboutmeParsed = translator.escape(parsed);
+	userData.aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));
 }
 
 function filterLinks(links, states) {

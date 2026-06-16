@@ -409,7 +409,6 @@ Mocks.actors.user = async (uid) => {
 	if (aboutme) {
 		aboutme = validator.escape(String(aboutme || ''));
 		aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', aboutme);
-		aboutmeParsed = translator.escape(aboutmeParsed);
 	}
 
 	if (picture) {
