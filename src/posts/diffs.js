@@ -5,7 +5,6 @@ const diff = require('diff');
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const topics = require('../topics');
 
 module.exports = function (Posts) {
@@ -64,8 +63,6 @@ module.exports = function (Posts) {
 		post.content = String(post.content || '');
 
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: post });
-		// TODO: remove and escape in template
-		result.postData.content = translator.escape(result.postData.content);
 		return result.postData;
 	};
 
