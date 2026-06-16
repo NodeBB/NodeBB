@@ -164,7 +164,6 @@ define('admin/manage/users', [
 						autocomplete.group(modal.find('.group-search'), function (ev, ui) {
 							const uid = $(ev.target).attr('data-uid');
 							api.put('/groups/' + ui.item.group.slug + '/membership/' + uid, undefined).then(() => {
-								ui.item.group.nameEscaped = translator.escape(ui.item.group.displayName);
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});

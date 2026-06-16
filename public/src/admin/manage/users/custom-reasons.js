@@ -1,6 +1,6 @@
 define('admin/manage/user/custom-reasons', [
-	'benchpress', 'bootbox', 'alerts', 'translator', 'jquery-ui/widgets/sortable',
-], function (benchpress, bootbox, alerts, translator) {
+	'benchpress', 'bootbox', 'alerts', 'jquery-ui/widgets/sortable',
+], function (benchpress, bootbox, alerts) {
 	const manageCustomReasons = {};
 
 	manageCustomReasons.init = function () {
@@ -54,6 +54,7 @@ define('admin/manage/user/custom-reasons', [
 	}
 
 	async function showModal(reason = null) {
+		console.log('reason', reason);
 		const html = await benchpress.render('admin/partials/manage-custom-reasons-modal', reason);
 		const modal = bootbox.dialog({
 			message: html,
@@ -67,8 +68,7 @@ define('admin/manage/user/custom-reasons', [
 					callback: async function () {
 						const formData = modal.find('form').serializeObject();
 						formData.key = reason ? reason.key : Date.now();
-						formData.body = translator.escape(formData.body);
-						formData.parsedBody = translator.escape(await socket.emit('admin.parseRaw', formData.body));
+						formData.parsedBody = await socket.emit('admin.parseRaw', formData.body);
 
 						app.parseAndTranslate('admin/manage/users/custom-reasons', 'reasons', {
 							reasons: [formData],
