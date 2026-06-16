@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const nconf = require('nconf');
 const db = require('../database');
 const user = require('../user');
@@ -361,9 +360,7 @@ Messaging.getTeasers = async (uid, roomIds) => {
 		if (userMap[teaser.fromuid]) {
 			teaser.user = userMap[teaser.fromuid];
 		}
-		teaser.content = translator.escape(validator.escape(
-			String(utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content)))
-		));
+		teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
 		teaser.roomId = parseInt(roomId, 10);
 		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
 		return payload.teaser;

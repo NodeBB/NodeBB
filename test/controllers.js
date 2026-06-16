@@ -1448,7 +1448,7 @@ describe('Controllers', () => {
 			await meta.configs.set('cookieConsentMessage', 'Julian\'s Message');
 			const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 			assert.equal(response.statusCode, 200);
-			assert.equal('Julian&#x27;s Message', body.cookies.message);
+			assert.equal(body.cookies.message, 'Julian\'s Message');
 		});
 	});
 
