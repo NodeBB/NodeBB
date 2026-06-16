@@ -5,6 +5,7 @@ const $ = require('jquery');
 
 const { alert } = require('alerts');
 const hooks = require('hooks');
+const helpers = require('helpers');
 
 (function () {
 	let reconnecting = false;
@@ -221,8 +222,8 @@ const hooks = require('hooks');
 	function onEventBanned(data) {
 		require(['bootbox', 'translator'], function (bootbox, translator) {
 			const message = data.until ?
-				translator.compile('error:user-banned-reason-until', new Date(data.until).toLocaleString(), data.reason) :
-				translator.compile('error:user-banned-reason', data.reason);
+				translator.compile('error:user-banned-reason-until', new Date(data.until).toLocaleString(), helpers.escape(data.reason)) :
+				translator.compile('error:user-banned-reason', helpers.escape(data.reason));
 			translator.translate(message, function (message) {
 				bootbox.alert({
 					title: '[[error:user-banned]]',

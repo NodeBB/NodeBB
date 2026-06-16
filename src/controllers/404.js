@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const validator = require('validator');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
@@ -62,7 +61,7 @@ exports.send404 = helpers.try(async (req, res) => {
 	const path = String(req.path || '');
 	if (res.locals.isAPI) {
 		return res.json({
-			path: validator.escape(path.replace(/^\/api/, '')),
+			path: path.replace(/^\/api/, ''),
 			title: '[[global:404.title]]',
 			bodyClass: helpers.buildBodyClass(req, res),
 		});
@@ -70,7 +69,7 @@ exports.send404 = helpers.try(async (req, res) => {
 
 	await middleware.buildHeaderAsync(req, res);
 	res.render('404', {
-		path: validator.escape(path),
+		path: path,
 		title: '[[global:404.title]]',
 		icon: error404Icons[Math.floor(Math.random() * error404Icons.length)],
 	});

@@ -86,14 +86,14 @@ usersAPI.update = async function (caller, data) {
 
 	await user.updateProfile(caller.uid, data);
 	const userData = await user.getUserData(data.uid);
-	const oldUsernameEscaped = validator.escape(String(oldUserData.username));
-	if (userData.username !== oldUsernameEscaped) {
+
+	if (userData.username !== oldUserData.username) {
 		await events.log({
 			type: 'username-change',
 			uid: caller.uid,
 			targetUid: data.uid,
 			ip: caller.ip,
-			oldUsername: oldUsernameEscaped,
+			oldUsername: oldUserData.username,
 			newUsername: userData.username,
 		});
 	}
@@ -212,7 +212,7 @@ usersAPI.ban = async function (caller, data) {
 
 	sockets.in(`uid_${data.uid}`).emit('event:banned', {
 		until: data.until,
-		reason: validator.escape(String(data.reason || '')),
+		reason: data.reason || '',
 	});
 
 	await flags.resolveFlag('user', data.uid, caller.uid);

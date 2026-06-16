@@ -2,7 +2,6 @@
 
 const path = require('path');
 const nconf = require('nconf');
-const validator = require('validator');
 const mime = require('mime').default;
 
 const meta = require('../meta');
@@ -109,7 +108,7 @@ Controllers.login = async function (req, res) {
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	} else if (req.query.error) {
-		errorText = validator.escape(String(req.query.error));
+		errorText = req.query.error;
 	}
 
 	if (req.headers['x-return-to']) {
