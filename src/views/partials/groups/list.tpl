@@ -8,7 +8,7 @@
 					<div class="flex-grow-1 fs-6 fw-semibold text-capitalize">{generateGroupDisplayName(@value)}</div>
 					<div class="align-self-start flex-shrink-0 badge border border-gray-300 fw-normal text-body"><i class="text-secondary fa-solid fa-users"></i> {formattedNumber(./memberCount)}</div>
 				</div>
-				<div class="text-sm line-clamp-3">{./description}</div>
+				<div class="text-sm line-clamp-3 mb-last-0">{{txEscape(./descriptionParsed)}}</div>
 				<span class="timeago text-xs text-secondary mt-auto" title="{./createtimeISO}"></span>
 			</div>
 		</a>

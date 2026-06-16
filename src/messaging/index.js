@@ -10,7 +10,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
-const translator = require('../translator');
+const tx = require('../translator');
 const cache = require('../cache');
 
 const relative_path = nconf.get('relative_path');
@@ -90,7 +90,7 @@ async function canGet(hook, callerUid, uid) {
 
 Messaging.parse = async (message, fromuid, uid, roomId, isNew) => {
 	let parsed = await plugins.hooks.fire('filter:parse.raw', String(message || ''));
-	parsed = translator.escape(parsed);
+	parsed = tx.escape(parsed);
 	let messageData = {
 		message: message,
 		parsed: parsed,
@@ -281,7 +281,7 @@ Messaging.generateUsernames = function (room, excludeUid) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
 	const usernames = users.map(u => u.displayname);
 	if (users.length > 3) {
-		return translator.compile(
+		return tx.compile(
 			'modules:chat.usernames-and-x-others',
 			usernames.slice(0, 2).join(', '),
 			room.userCount - 2
@@ -311,16 +311,16 @@ Messaging.generateChatWithMessage = async function (room, callerUid) {
 	let compiled;
 	const txArgs = [];
 	userData.forEach((userData) =>{
-		txArgs.push(userData.href, translator.escape(userData.displayname));
+		txArgs.push(userData.href, tx.escape(userData.displayname));
 	});
 	if (moreThan3) {
 		txArgs.push(room.userCount - 2);
-		compiled = translator.compile(
+		compiled = tx.compile(
 			'modules:chat.chat-with-usernames-and-x-others',
 			...txArgs
 		);
 	} else {
-		compiled = translator.compile(
+		compiled = tx.compile(
 			`modules:chat.chat-with-usernames-${userData.length}`,
 			...txArgs
 		);

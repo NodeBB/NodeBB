@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const privileges = require('../privileges');
 const events = require('../events');
 const groups = require('../groups');
@@ -232,8 +230,8 @@ groupsAPI.leave = async function (caller, data) {
 
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: `[[groups:membership.leave.notification-title, ${displayname}, ${tx.escape(groupName)}]]`,
-		nid: `group:${validator.escape(groupName)}:uid:${data.uid}:group-leave`,
+		bodyShort: tx.compile('groups:membership.leave.notification-title', displayname, tx.escape(groupName)),
+		nid: `group:${groupName}:uid:${data.uid}:group-leave`,
 		path: `/groups/${slugify(groupName)}`,
 		from: data.uid,
 	});
