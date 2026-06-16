@@ -252,7 +252,6 @@ describe('Controllers', () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
 		assert.equal(response.statusCode, 200);
 
-		console.log(body.slice(15000, 25000));
 		assert(body.includes('<a href="https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]"'));
 		assert(body.includes('https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]'));
 	});
@@ -1307,8 +1306,14 @@ describe('Controllers', () => {
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb;');
+			// should be unescaped in api
+			assert.equal(body.aboutmeParsed, 'hi i am a bot [[topic:moved-from]]');
 			assert.equal(body.picture, '/assets/uploads/path/to/picture');
+
+			const { response: response2, body: body2 } = await request.get(`${nconf.get('url')}/user/foo`);
+			// should not be translated in html
+			assert(body2.includes('hi i am a bot [[topic:moved-from]]'));
+			assert(!body2.includes('Moved from'));
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {
