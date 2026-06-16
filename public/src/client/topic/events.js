@@ -137,6 +137,7 @@ define('forum/topic/events', [
 
 		if (data.post.changed) {
 			editedPostEl.fadeOut(250, function () {
+				console.log(data.post.content);
 				editedPostEl.html(translator.unescape(data.post.content));
 				editedPostEl.find('img:not(.not-responsive)').addClass('img-fluid');
 				images.wrapImagesInLinks(editedPostEl.parent());

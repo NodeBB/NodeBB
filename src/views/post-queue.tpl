@@ -250,9 +250,9 @@
 						<button data-action="editContent" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 						{{{ end }}}
 					</div>
-					<div class="post-content mb-auto text-break px-3 py-0 h-100">{{txEscape(posts.data.content)}}</div>
-					<div class="post-content-editable flex-grow-1 hidden">
-						<textarea class="form-control w-100 h-100 p-3">{posts.data.rawContent}</textarea>
+					<div class="post-content mb-auto text-break px-3 py-0 px-1 h-100">{{txEscape(posts.data.content)}}</div>
+					<div class="post-content-editable flex-grow-1 hidden px-2">
+						<textarea class="form-control w-100 h-100 px-2">{posts.data.rawContent}</textarea>
 					</div>
 					<div component="post-queue/link-container" class="hidden border-top mx-3 py-3">
 						<label class="text-secondary form-text mb-2">[[post-queue:links-in-this-post]]</label>
@@ -267,7 +267,7 @@
 								<a class="d-inline-block" href="#">
 									<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{@value}" />
 								</a>
-								<a href="#" data-action="removeThumb" class="link-danger position-absolute btn top-0 start-100 translate-middle p-1"><i class="fa-solid fa-circle-xmark"></i></button>
+								<a href="#" data-action="removeThumb" class="link-danger position-absolute btn shadow-none top-0 start-100 translate-middle p-1"><i class="fa-solid fa-circle-xmark"></i></button>
 							</div>
 							{{{ end }}}
 							<a class="btn btn-ghost d-inline-block p-0" href="#" data-action="uploadThumb">

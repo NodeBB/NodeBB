@@ -441,7 +441,7 @@ define('forum/post-queue', [
 			modal.find('[data-key]').on('click', function () {
 				const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
 				if (reason && reason.body) {
-					modal.find('[name="reason"]').val(translator.unescape(reason.body));
+					modal.find('[name="reason"]').val(reason.body);
 				}
 			});
 		});

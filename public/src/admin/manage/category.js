@@ -94,10 +94,8 @@ define('admin/manage/category', [
 
 		$('.purge').on('click', async function (e) {
 			e.preventDefault();
-			let name = ajaxify.data.category.name;
-			name = utils.escapeHTML(await translator.translate(translator.unescape(name)));
 			Benchpress.render('admin/partials/categories/purge', {
-				name: name,
+				name: ajaxify.data.category.name,
 				topic_count: ajaxify.data.category.topic_count,
 			}).then(function (html) {
 				const modal = bootbox.dialog({
