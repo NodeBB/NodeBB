@@ -7,7 +7,6 @@ const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const languages = require('../languages');
 const { generateToken } = require('../middleware/csrf');
 const utils = require('../utils');
@@ -86,10 +85,10 @@ apiController.loadConfig = async function (req) {
 		timeagoCodes: languages.timeagoCodes,
 		cookies: {
 			enabled: meta.config.cookieConsentEnabled === 1,
-			message: translator.escape(validator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]')).replace(/\\/g, '\\\\'),
-			dismiss: translator.escape(validator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]')).replace(/\\/g, '\\\\'),
-			link: translator.escape(validator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn-more]]')).replace(/\\/g, '\\\\'),
-			link_url: translator.escape(validator.escape(meta.config.cookieConsentLinkUrl || 'https://www.cookiesandyou.com')).replace(/\\/g, '\\\\'),
+			message: meta.config.cookieConsentMessage || '[[global:cookies.message]]',
+			dismiss: meta.config.cookieConsentDismiss || '[[global:cookies.accept]]',
+			link: meta.config.cookieConsentLink || '[[global:cookies.learn-more]]',
+			link_url: meta.config.cookieConsentLinkUrl || 'https://www.cookiesandyou.com',
 		},
 		thumbs: {
 			size: meta.config.topicThumbSize,

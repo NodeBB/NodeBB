@@ -30,9 +30,6 @@ controller.list = async function (req, res) {
 		categories.getCategoryData(meta.config.activitypubWorldDefaultCid),
 	]);
 
-	// temporary?
-	selectedCategory.name = translator.unescape(selectedCategory.name);
-
 	const targetUid = await user.getUidByUserslug(req.query.author);
 	let cidQuery = {
 		uid: req.uid,

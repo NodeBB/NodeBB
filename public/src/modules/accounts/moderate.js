@@ -4,8 +4,7 @@ define('forum/account/moderate', [
 	'api',
 	'bootbox',
 	'alerts',
-	'translator',
-], function (api, bootbox, alerts, translator) {
+], function (api, bootbox, alerts) {
 	const AccountModerate = {};
 
 	AccountModerate.banAccount = function (theirid, onSuccess) {
@@ -118,9 +117,10 @@ define('forum/account/moderate', [
 		modal.find('[data-key]').on('click', function () {
 			const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
 			if (reason && reason.body) {
-				modal.find('[name="reason"]').val(translator.unescape(reason.body));
+				modal.find('[name="reason"]').val(reason.body);
 			}
 		});
+		return modal;
 	}
 
 	AccountModerate.throwModal = throwModal;

@@ -48,11 +48,6 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			return;
 		}
 
-		config.cookies.message = translator.unescape(config.cookies.message);
-		config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
-		config.cookies.link = translator.unescape(config.cookies.link);
-		config.cookies.link_url = translator.unescape(config.cookies.link_url);
-
 		app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
 			$(document.body).append(html);
 			$(document.body).addClass('cookie-consent-open');
