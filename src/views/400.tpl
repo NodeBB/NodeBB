@@ -6,7 +6,7 @@
 			<div class="mx-auto p-4 bg-light border rounded">
 				<i class="text-secondary fa fa-fw fa-4x fa-triangle-exclamation"></i>
 			</div>
-			{{{ if error }}}{error}{{{ else }}}[[global:400.message, {config.relative_path}]]{{{ end }}}
+			{{{ if error }}}{tx(error)}{{{ else }}}[[global:400.message, {config.relative_path}]]{{{ end }}}
 		</div>
 	</div>
 </div>

@@ -429,9 +429,15 @@ describe('Upload Controllers', () => {
 		});
 
 		it('should fail to upload invalid file type', async () => {
-			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/category/uploadpicture`, path.join(__dirname, '../test/files/503.html'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token);
+			const { response, body } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/admin/category/uploadpicture`,
+				path.join(__dirname, '../test/files/503.html'),
+				{ params: JSON.stringify({ cid: cid }) },
+				jar,
+				csrf_token
+			);
 			assert.strictEqual(response.statusCode, 500);
-			assert.equal(body.error, '[[error:invalid-image-type, image&#x2F;png&amp;#44; image&#x2F;jpeg&amp;#44; image&#x2F;pjpeg&amp;#44; image&#x2F;jpg&amp;#44; image&#x2F;gif&amp;#44; image&#x2F;svg+xml]]');
+			assert.equal(body.error, '[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]');
 		});
 
 		it('should fail to upload category image with invalid json params', async () => {
