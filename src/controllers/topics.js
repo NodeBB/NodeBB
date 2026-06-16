@@ -327,9 +327,7 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 function getDescriptionFromPost(post) {
 	let description = '';
 	if (post && post.content) {
-		// TODO: posts/parse.js calls translator.escape on post.content, unescape first
-		const content = translator.unescape(String(post.content));
-		description = utils.stripHTMLTags(utils.decodeHTMLEntities(content)).trim();
+		description = utils.stripHTMLTags(utils.decodeHTMLEntities(post.content)).trim();
 		if (description.length > 160) {
 			description = `${description.slice(0, 157)}...`;
 		}

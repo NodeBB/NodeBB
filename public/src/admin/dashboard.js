@@ -16,7 +16,7 @@ import * as Benchpress from 'benchpressjs';
 import * as bootbox from 'bootbox';
 import * as alerts from '../modules/alerts';
 import * as translator from '../modules/translator';
-import { formattedNumber } from '../modules/helpers';
+import { formattedNumber, escape } from '../modules/helpers';
 
 import { setupFullscreen } from './modules/fullscreen';
 
@@ -509,7 +509,7 @@ function updatePresenceGraph(users) {
 
 function updateTopicsGraph(topics) {
 	if (!topics.length) {
-		translator.translate('[[admin/dashboard:no-users-browsing]]', function (translated) {
+		translator.translateKey('[[admin/dashboard:no-users-browsing]]', function (translated) {
 			topics = [{
 				title: translated,
 				count: 1,
@@ -534,12 +534,15 @@ function updateTopicsGraph(topics) {
 	function buildTopicsLegend() {
 		let html = '';
 		topics.forEach(function (t, i) {
-			const link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
-			const label = t.count === '0' ? t.title : link;
+			const title = escape(t.title);
+			const link = t.tid ?
+				`<a title="${title}" href="${config.relative_path}/topic/${t.tid}" target="_blank">${title}</a>` :
+				title;
+			const label = t.count === '0' ? title : link;
 
 			html += '<li>' +
-				'<div style="background-color: ' + topicColors[i] + ';"></div>' +
-				'<span> (' + t.count + ') ' + label + '</span>' +
+				`<div style="background-color: ${topicColors[i]};"></div>` +
+				`<span>(${t.count}) ${label}</span>` +
 				'</li>';
 		});
 		$('#topics-legend').translateHtml(html);

@@ -93,7 +93,7 @@
 					<ul class="list-unstyled">
 						{{{ each ./fields }}}
 						<li>
-							[[flags:{@key}]]{{{ if @value }}} &rarr; <span class="fw-semibold">{@value}</span>{{{ end }}}
+							[[flags:{@key}]]{{{ if @value }}} &rarr; <span class="fw-semibold">{tx(@value)}</span>{{{ end }}}
 						</li>
 						{{{ end }}}
 						{{{ each ./meta }}}
@@ -119,7 +119,7 @@
 					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
 					<span class="timeago text-muted" title="{target.timestampISO}"></span>
 				</div>
-				<blockquote>{target.content}</blockquote>
+				<blockquote>{{txEscape(target.content)}}</blockquote>
 				{{{ end }}}
 
 				{{{ if type_bool.user }}}

@@ -7,7 +7,6 @@ const _ = require('lodash');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const utils = require('../utils');
 const postCache = require('./cache');
 const devMode = process.env.NODE_ENV === 'development';
@@ -62,8 +61,6 @@ module.exports = function (Posts) {
 			postData.content = postData.content.replace(meta.config.activitypubBreakString, '');
 		}
 		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
-		// TODO: ?? remove and escape in template
-		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
 			cache.set(cacheKey, postData.content);
 		}

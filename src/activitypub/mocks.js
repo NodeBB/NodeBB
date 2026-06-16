@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const mime = require('mime').default;
 const path = require('path');
-const validator = require('validator');
 const sanitize = require('sanitize-html');
 const tokenizer = require('sbd');
 
@@ -407,7 +406,6 @@ Mocks.actors.user = async (uid) => {
 
 	let aboutmeParsed = '';
 	if (aboutme) {
-		aboutme = validator.escape(String(aboutme || ''));
 		aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', aboutme);
 	}
 

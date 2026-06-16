@@ -137,8 +137,7 @@ define('forum/topic/events', [
 
 		if (data.post.changed) {
 			editedPostEl.fadeOut(250, function () {
-				console.log(data.post.content);
-				editedPostEl.html(translator.unescape(data.post.content));
+				editedPostEl.html(data.post.content);
 				editedPostEl.find('img:not(.not-responsive)').addClass('img-fluid');
 				images.wrapImagesInLinks(editedPostEl.parent());
 				posts.addBlockquoteEllipses(editedPostEl.parent());
@@ -163,9 +162,7 @@ define('forum/topic/events', [
 
 			const parentEl = $(`[component="post/parent"][data-parent-pid="${data.post.pid}"]`);
 			if (parentEl.length) {
-				parentEl.find('[component="post/parent/content"]').html(
-					translator.unescape(data.post.content)
-				);
+				parentEl.find('[component="post/parent/content"]').html(data.post.content);
 				parentEl.find('img:not(.not-responsive)').addClass('img-fluid');
 				parentEl.find('[component="post/parent/content"] img:not(.emoji)').each(function () {
 					images.wrapImageInLink($(this));
@@ -221,7 +218,7 @@ define('forum/topic/events', [
 				if (isDeleted) {
 					postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
 				} else {
-					postEl.find('[component="post/content"]').html(translator.unescape(data.content));
+					postEl.find('[component="post/content"]').html(data.content);
 				}
 			}
 		}
@@ -233,7 +230,7 @@ define('forum/topic/events', [
 				if (isDeleted) {
 					$parent.find('[component="post/parent/content"]').translateHtml('[[topic:post-is-deleted]]');
 				} else {
-					$parent.find('[component="post/parent/content"]').html(translator.unescape(data.content));
+					$parent.find('[component="post/parent/content"]').html(data.content);
 				}
 			});
 		}

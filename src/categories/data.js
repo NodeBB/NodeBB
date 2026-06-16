@@ -24,7 +24,7 @@ const worldCategory = {
 	disabled: 0,
 	handle: 'world',
 	link: '',
-	class: '', // todo
+	class: '',
 };
 worldCategory.descriptionParsed = worldCategory.description;
 

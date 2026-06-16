@@ -609,15 +609,14 @@ module.exports = function (Topics) {
 	};
 
 	Topics.notifyTagFollowers = async function (postData, exceptUid) {
-		let { tags } = postData.topic;
+		const { tags } = postData.topic;
 		if (!tags.length) {
 			return;
 		}
-		tags = tags.map(tag => tx.escape(tag.value));
 
 		const [followersOfPoster, allFollowers, displayname, title] = await Promise.all([
 			db.getSortedSetRange(`followers:${exceptUid}`, 0, -1),
-			db.getSortedSetRange(tags.map(tag => `tag:${tag}:followers`), 0, -1),
+			db.getSortedSetRange(tags.map(tag => `tag:${tag.value}:followers`), 0, -1),
 			user.getNotificationDisplayname(exceptUid),
 			Topics.getTopicField(postData.topic.tid, 'title'),
 		]);
@@ -631,7 +630,7 @@ module.exports = function (Topics) {
 
 		const notifBase = 'notifications:user-posted-topic-with-tag';
 		let suffix = '';
-		let tagArgs = tags;
+		let tagArgs = tags.map(tag => tx.escape(tag.value));
 		if (tags.length === 2) {
 			suffix = '-dual';
 		} else if (tags.length === 3) {
