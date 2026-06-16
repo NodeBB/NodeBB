@@ -87,7 +87,9 @@ module.exports = function (Groups) {
 
 				if (hasField('description')) {
 					group.description = String(group.description || '');
-					group.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', group.description);
+					if (hasField('descriptionParsed')) {
+						group.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', group.description);
+					}
 				}
 
 				if (hasField('userTitle')) {
