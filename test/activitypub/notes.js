@@ -714,6 +714,55 @@ describe('Notes', () => {
 		});
 	});
 
+	describe('Announce from remote category after initial assertion', () => {
+		let remoteCid;
+		let noteId;
+		let note;
+
+		before(async () => {
+			// Create a remote group actor on a different origin than the note
+			({ id: remoteCid } = helpers.mocks.group({
+				id: `https://other.example.org/group/${utils.generateUUID()}`,
+			}));
+			await activitypub.actors.assertGroup([remoteCid]);
+		});
+
+		it('should move topic to announce-er category (currently ignores announce cid)', async () => {
+			// Step 1: Assert a note addressed to the remote category in cc
+			// Origin mismatch → topic should end up in cid -1
+			note = helpers.mocks.note({
+				cc: [remoteCid],
+			});
+			noteId = note.id;
+
+			const assertion = await activitypub.notes.assert(0, noteId, { skipChecks: true });
+			assert(assertion);
+			assert(assertion.tid);
+
+			// Verify topic is in cid -1 (uncategorized)
+			const topicData = await topics.getTopicData(assertion.tid);
+			assert.strictEqual(topicData.cid, -1);
+
+			// Step 2: Announce from the same remote category
+			// Build an Announce(Create(Note)) that inbox.announce will process
+			const createActivity = helpers.mocks.create(note.note);
+			const { activity: announceActivity } = helpers.mocks.announce({
+				actor: remoteCid,
+				object: createActivity.activity,
+			});
+
+			await activitypub.inbox.announce({ body: announceActivity });
+
+			// Step 3: Verify the topic was moved to the remote category
+			const updatedTopic = await topics.getTopicData(assertion.tid);
+			assert.strictEqual(
+				parseInt(updatedTopic.cid, 10),
+				parseInt(remoteCid, 10),
+				'Topic should be moved to the announce-er category',
+			);
+		});
+	});
+
 	describe('auto-categorization with queue rule', () => {
 		let remoteCid;
 		let targetCid;

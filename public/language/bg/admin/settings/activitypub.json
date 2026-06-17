@@ -11,8 +11,8 @@
 	"enabled-help": "Ако е включено, този NodeBB ще може да осъществява връзка с всички клиенти ползващи ActivityPub в цялата федивселена.",
 	"allowLoopback": "Разрешаване на обработката на локална обратна връзка",
 	"allowLoopback-help": "Полезно само за дебъгване. Най-добре е това да бъде изключено",
-	"parentTraversalDepth": "Parent traversal depth",
-	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
+	"parentTraversalDepth": "Дълбочина на обхождане нагоре",
+	"parentTraversalDepth-help": "Максимален брой стъпки за обхождане нагоре по веригата на отговорите при изграждане на контекст. (по подразбиране: 50)",
 
 	"probe": "Отваряне в приложението",
 	"probe-enabled": "Дали да се опитва отваряне на нещата поддържащи ActivityPub в NodeBB",

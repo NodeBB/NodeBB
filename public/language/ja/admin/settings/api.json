@@ -4,8 +4,8 @@
 	"lead-text": "このページからNodeBBのWrite APIへのアクセスを設定できます。",
 	"intro": "デフォルトでは、Write APIはセッションCookieに基づいてユーザーを認証しますが、NodeBBはこのページで生成されたトークンによるBearer認証もサポートしています。",
 	"warning": "<strong>注意</strong> — トークンはパスワードのように扱ってください。漏洩した場合、アカウントは侵害されたと見なす必要があります。",
-	"docs": "Click here to access the Read API specification",
-	"docs.write": "Click here to access the Write API specification",
+	"docs": "読み取りAPI仕様にアクセスするにはここをクリック",
+	"docs.write": "書き込みAPI仕様にアクセスするにはここをクリック",
 
 	"require-https": "HTTPS経由でのみAPI使用を要求",
 	"require-https-caveat": "<strong>注意</strong>: ロードバランサーを含む一部のインストールでは、HTTPを使用してNodeBBにリクエストをプロキシする場合があり、その場合はこのオプションは無効のままにしてください。",

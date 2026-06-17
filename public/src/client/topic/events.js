@@ -44,7 +44,6 @@ define('forum/topic/events', [
 		'posts.downvote': togglePostVote,
 		'posts.unvote': togglePostVote,
 
-		'event:new_notification': onNewNotification,
 		'event:new_post': posts.onNewPost,
 	};
 
@@ -258,13 +257,6 @@ define('forum/topic/events', [
 		post.find('[component="post/downvote"]').filter(function (index, el) {
 			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		}).toggleClass('downvoted', data.downvote);
-	}
-
-	function onNewNotification(data) {
-		const tid = ajaxify.data.tid;
-		if (data && data.tid && String(data.tid) === String(tid)) {
-			socket.emit('topics.markTopicNotificationsRead', [tid]);
-		}
 	}
 
 	return Events;

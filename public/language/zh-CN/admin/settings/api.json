@@ -4,8 +4,8 @@
 	"lead-text": "从此处，您可以配置对 NodeBB 中 Write API 的访问。",
 	"intro": "默认情况下，Write API 根据用户的会话cookie对用户进行身份验证，但 NodeBB 也支持通过此页面生成的令牌进行身份验证。",
 	"warning": "<strong>请注意</strong> - 将令牌视为密码。如果它们被泄露，你的账户应被视为受到影响。",
-	"docs": "Click here to access the Read API specification",
-	"docs.write": "Click here to access the Write API specification",
+	"docs": "点击此处查看 Read API 规范",
+	"docs.write": "点击此处查看 Write API 规范",
 
 	"require-https": "要求 API 只能通过 HTTPS 调用",
 	"require-https-caveat": "<strong>注意：</strong>一些负载均衡器可能会使用 HTTP 代理向 NodeBB 发送请求，在这种情况下，应继续禁用此选项。",
