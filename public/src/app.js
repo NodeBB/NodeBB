@@ -266,14 +266,9 @@ if (document.readyState === 'loading') {
 		if (!el.length) {
 			return;
 		}
-
-		require(['translator'], function (translator) {
-			translator.translate('[[global:' + status + ']]', function (translated) {
-				el.removeClass('online offline dnd away')
-					.addClass(status)
-					.attr('data-new-title', translated);
-			});
-		});
+		el.removeClass('online offline dnd away')
+			.addClass(status)
+			.translateAttr('data-new-title', `[[global:${status}]]`);
 	};
 
 	app.newTopic = function (params) {

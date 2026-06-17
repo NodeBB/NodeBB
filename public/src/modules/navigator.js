@@ -1,8 +1,8 @@
 'use strict';
 
 define('navigator', [
-	'forum/pagination', 'components', 'hooks', 'alerts', 'translator', 'storage',
-], function (pagination, components, hooks, alerts, translator, storage) {
+	'forum/pagination', 'components', 'hooks', 'alerts', 'storage',
+], function (pagination, components, hooks, alerts, storage) {
 	const navigator = {};
 	let index = 0;
 	let count = 0;
@@ -379,7 +379,7 @@ define('navigator', [
 			anchorEl.innerText = text;
 			anchorEl.style.display = text ? 'inline' : 'none';
 			if (text) {
-				translator.translate(text).then(translated => anchorEl.innerText = translated);
+				$(anchorEl).translateText(text);
 			}
 			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
 			if (text) {

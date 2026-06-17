@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/flags/detail', [
-	'components', 'translator', 'benchpress', 'accounts/moderate', 'accounts/delete', 'api', 'bootbox', 'alerts',
-], function (components, translator, Benchpress, AccountModerate, AccountsDelete, api, bootbox, alerts) {
+	'components', 'benchpress', 'accounts/moderate', 'accounts/delete', 'api', 'bootbox', 'alerts',
+], function (components, Benchpress, AccountModerate, AccountsDelete, api, bootbox, alerts) {
 	const Detail = {};
 
 	Detail.init = function () {
@@ -154,14 +154,12 @@ define('forum/flags/detail', [
 	};
 
 	function postAction(action, method, path) {
-		translator.translate('[[topic:post-' + action + '-confirm]]', function (msg) {
-			bootbox.confirm(msg, function (confirm) {
-				if (!confirm) {
-					return;
-				}
+		bootbox.confirm(`[[topic:post-${action}-confirm]]`, function (confirm) {
+			if (!confirm) {
+				return;
+			}
 
-				method(path).then(ajaxify.refresh).catch(alerts.error);
-			});
+			method(path).then(ajaxify.refresh).catch(alerts.error);
 		});
 	}
 

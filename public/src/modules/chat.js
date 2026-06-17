@@ -273,15 +273,20 @@ define('chat', [
 
 		const usernames = [];
 		typingUsersList.children().each((i, el) => {
-			usernames.push($(el).text());
+			usernames.push(translator.escape($(el).text()));
 		});
 
+		const totalTyping = usernames.length;
 		const typingTextEl = typingEl.find('[component="chat/composer/typing/text"]');
-		const count = usernames.length > 3 ? 'n' : usernames.length;
-		if (count) {
-			const key = `modules:chat.user-typing-${count}`;
-			const compiled = translator.compile.apply(null, [key, ...usernames]);
-			typingTextEl.html(await translator.translate(compiled));
+		if (totalTyping) {
+			const key = `modules:chat.user-typing-${totalTyping > 3 ? 'n' : totalTyping}`;
+			const args = [];
+			if (totalTyping > 3) {
+				args.push(usernames[0], usernames[1], totalTyping - 2);
+			} else {
+				args.push(...usernames);
+			}
+			typingTextEl.html(await translator.translateKey(key, args));
 		}
 		typingTextEl.toggleClass('hidden', !usernames.length);
 	};

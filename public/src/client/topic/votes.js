@@ -67,7 +67,7 @@ define('forum/topic/votes', [
 		});
 	}
 
-	function createTooltip(el, data) {
+	async function createTooltip(el, data) {
 		function doCreateTooltip(title) {
 			el.attr('title', title);
 			(new bootstrap.Tooltip(el, {
@@ -75,20 +75,17 @@ define('forum/topic/votes', [
 				html: true,
 			})).show();
 		}
-		let usernames = data.usernames
+		const usernames = data.usernames
 			.filter(name => name !== '[[global:former-user]]');
 		if (!usernames.length) {
 			return;
 		}
+		const usersList = usernames.join(', ');
 		if (usernames.length + data.otherCount > data.cutoff) {
-			usernames = usernames.join(', ').replace(/,/g, '|');
-			translator.translate('[[topic:users-and-others, ' + usernames + ', ' + data.otherCount + ']]', function (translated) {
-				translated = translated.replace(/\|/g, ',');
-				doCreateTooltip(translated);
-			});
+			const translated = await translator.translateKey('topic:users-and-others', [usersList, data.otherCount]);
+			doCreateTooltip(translated);
 		} else {
-			usernames = usernames.join(', ');
-			doCreateTooltip(usernames);
+			doCreateTooltip(usersList);
 		}
 	}
 

@@ -1,14 +1,13 @@
 'use strict';
 
 define('admin/manage/categories', [
-	'translator',
 	'benchpress',
 	'categorySelector',
 	'api',
 	'Sortable',
 	'bootbox',
 	'alerts',
-], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
+], function (Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
 	Sortable = Sortable.default;
 	const Categories = {};
 	let newCategoryId = '-1';
@@ -235,12 +234,10 @@ define('admin/manage/categories', [
 		const container = $('.categories');
 
 		if (!categories || !categories.length) {
-			translator.translate('[[admin/manage/categories:alert.none-active]]', function (text) {
-				$('<div></div>')
-					.addClass('alert alert-info text-center')
-					.text(text)
-					.appendTo(container);
-			});
+			$('<div></div>')
+				.addClass('alert alert-info text-center')
+				.translateText('[[admin/manage/categories:alert.none-active]]')
+				.appendTo(container);
 		} else {
 			sortables = {};
 			renderList(categories, container, { cid: 0 });

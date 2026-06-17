@@ -3,7 +3,6 @@
 define('admin/manage/group', [
 	'forum/groups/memberlist',
 	'iconSelect',
-	'translator',
 	'categorySelector',
 	'groupSearch',
 	'slugify',
@@ -12,7 +11,7 @@ define('admin/manage/group', [
 	'alerts',
 	'admin/settings',
 ], function (
-	memberList, iconSelect, translator, categorySelector, groupSearch,
+	memberList, iconSelect, categorySelector, groupSearch,
 	slugify, api, bootbox, alerts, settings
 ) {
 	const Groups = {};
@@ -161,13 +160,11 @@ define('admin/manage/group', [
 		if (cid) {
 			const url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.nameEncoded;
 			if (app.flags && app.flags._unsaved === true) {
-				translator.translate('[[global:unsaved-changes]]', function (text) {
-					bootbox.confirm(text, function (navigate) {
-						if (navigate) {
-							app.flags._unsaved = false;
-							ajaxify.go(url);
-						}
-					});
+				bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+					if (navigate) {
+						app.flags._unsaved = false;
+						ajaxify.go(url);
+					}
 				});
 				return;
 			}
