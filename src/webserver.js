@@ -169,6 +169,7 @@ function setupExpressApp(app) {
 	configureBodyParser(app);
 
 	app.use(cookieParser(nconf.get('secret')));
+	setupDirectAccessGate(app, relativePath);
 	app.use(useragent.express());
 	app.use(detector.middleware());
 	app.use(session({
@@ -197,6 +198,83 @@ function setupExpressApp(app) {
 	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
 	toobusy.interval(meta.config.eventLoopInterval);
+}
+
+function parseCsv(value) {
+	if (!value || typeof value !== 'string') {
+		return [];
+	}
+	return value.split(',').map(item => item.trim()).filter(Boolean);
+}
+
+function normalizePath(pathname) {
+	if (!pathname || typeof pathname !== 'string') {
+		return '/';
+	}
+	return pathname.startsWith('/') ? pathname : `/${pathname}`;
+}
+
+function setupDirectAccessGate(app, relativePath) {
+	const nodeEnv = process.env.NODE_ENV;
+	const defaultRedirectUrl = nodeEnv === 'production' ?
+		'https://app.lets-speek.com/community' :
+		'https://dev.lets-speek.com/community';
+	const gateEnabledEnv = process.env.NODEBB_DIRECT_ACCESS_GATE_ENABLED;
+	const isEnabled = gateEnabledEnv ? gateEnabledEnv === 'true' : true;
+	if (!isEnabled) {
+		return;
+	}
+
+	const redirectTo = (process.env.NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL || defaultRedirectUrl).trim();
+	const cookieNames = parseCsv(process.env.NODEBB_DIRECT_ACCESS_GATE_COOKIE_NAMES || 'token,express.sid');
+	const defaultBypassPaths = [
+		'/ping',
+		'/sping',
+		'/assets',
+		'/plugins',
+		'/socket.io',
+		'/api/session-sharing',
+	];
+	const bypassPaths = parseCsv(process.env.NODEBB_DIRECT_ACCESS_GATE_BYPASS_PATHS || '')
+		.concat(defaultBypassPaths)
+		.map(normalizePath);
+
+	const normalizedRelativePath = (relativePath && relativePath !== '/') ? relativePath : '';
+	const trimRelativePath = pathname => (
+		normalizedRelativePath && pathname.startsWith(normalizedRelativePath) ?
+			pathname.slice(normalizedRelativePath.length) || '/' :
+			pathname
+	);
+
+	app.use((req, res, next) => {
+		const pathname = normalizePath(trimRelativePath(req.path || '/'));
+		const bypassed = bypassPaths.some((prefix) => {
+			const normalizedPrefix = normalizePath(prefix);
+			return pathname === normalizedPrefix || pathname.startsWith(`${normalizedPrefix}/`);
+		});
+		if (bypassed) {
+			return next();
+		}
+
+		const hasAllowedCookie = cookieNames.some((name) => {
+			if (!name) {
+				return false;
+			}
+			return Boolean(req.cookies && typeof req.cookies[name] !== 'undefined' && req.cookies[name] !== '');
+		});
+
+		if (hasAllowedCookie) {
+			return next();
+		}
+
+		if (redirectTo) {
+			return res.redirect(302, redirectTo);
+		}
+
+		return res.status(403).json({
+			status: { code: 'forbidden', message: 'Community access requires an authenticated app session.' },
+		});
+	});
 }
 
 function setupHelmet(app) {

@@ -95,6 +95,11 @@ environment:
   # Session Sharing
   NODEBB_SSO_SECRET: a604917d...  # MUST match API
   
+  # Community public-access gate (recommended)
+  NODEBB_DIRECT_ACCESS_GATE_ENABLED: "true"
+  NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL: "https://app.lets-speek.com/community"
+  NODEBB_DIRECT_ACCESS_GATE_COOKIE_NAMES: "token,express.sid"
+  
   # Database (without NODEBB_ prefix)
   DB_HOST: postgres
   DB_PORT: 5432
@@ -213,6 +218,15 @@ docker logs <nodebb-container> 2>&1 | grep -i "session-sharing"
 2. Check NodeBB database for user record
 3. Verify `behaviour: 'trust'` in session-sharing config
 4. Check `noRegistration` is set to `'off'`
+
+### Issue: Community link is still publicly viewable
+
+**Symptoms:** Opening `community...` directly still shows forum pages to anonymous visitors
+
+**Solutions:**
+1. Ensure `NODEBB_DIRECT_ACCESS_GATE_ENABLED=true`
+2. Ensure `NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL` points to your app `/community` route
+3. Confirm users are getting `token` or `express.sid` cookies through the app flow
 
 ### Issue: Redis connection fails
 

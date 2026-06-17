@@ -22,6 +22,26 @@ echo "✅ Redis connection established!"
 
 echo "🎉 Database services are ready!"
 
+# Configure direct-access gate to prevent unauthenticated public browsing
+if [ -z "${NODEBB_DIRECT_ACCESS_GATE_ENABLED}" ]; then
+  export NODEBB_DIRECT_ACCESS_GATE_ENABLED="true"
+fi
+
+if [ -z "${NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL}" ]; then
+  if [ "${NODE_ENV}" = "production" ]; then
+    export NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL="https://app.lets-speek.com/community"
+  else
+    export NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL="https://dev.lets-speek.com/community"
+  fi
+fi
+
+if [ -z "${NODEBB_DIRECT_ACCESS_GATE_COOKIE_NAMES}" ]; then
+  export NODEBB_DIRECT_ACCESS_GATE_COOKIE_NAMES="token,express.sid"
+fi
+
+echo "🔒 Direct access gate: ${NODEBB_DIRECT_ACCESS_GATE_ENABLED}"
+echo "↪️  Direct access redirect: ${NODEBB_DIRECT_ACCESS_GATE_REDIRECT_URL:-<disabled>}"
+
 # Check if database has proper NodeBB PostgreSQL tables (not just Legacy/Redis tables)
 echo "🔍 Checking database for existing NodeBB tables..."
 echo "   📊 Database: ${DB_NAME}"
