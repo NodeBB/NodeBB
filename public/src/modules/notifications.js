@@ -95,17 +95,22 @@ define('notifications', [
 		});
 	};
 
-	Notifications.onNewNotification = function (notifData) {
+	Notifications.onNewNotification = async function (notifData) {
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
-		if (ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(notifData.roomId, 10)) {
+		const { template } = ajaxify.data;
+		if (template.chats && String(ajaxify.data.roomId) === String(notifData.roomId)) {
 			return;
 		}
 
-		api.get('/notifications/count').then(({ unread }) => {
-			Notifications.updateNotifCount(unread);
-		}).catch(alerts.error);
+		if (template.topic && String(ajaxify.data.tid) === String(notifData.tid)) {
+			await socket.emit('topics.markTopicNotificationsRead', [notifData.tid]);
+			return;
+		}
+
+		const { unread } = await api.get('/notifications/count');
+		Notifications.updateNotifCount(unread);
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;
