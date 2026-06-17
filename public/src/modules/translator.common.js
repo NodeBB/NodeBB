@@ -274,7 +274,7 @@ module.exports = function (utils, load, warn) {
 		};
 
 		function validateHrefAttributes(translated) {
-			return translated.replace(/href="([^"]*)"/gi, (match, href) => {
+			return translated.replace(/href\s*=\s*(["'])(.*?)\1/gi, (match, quote, href) => {
 				return isSafeHref(href) ? match : 'href=""';
 			});
 		}

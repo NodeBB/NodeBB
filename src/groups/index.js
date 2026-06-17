@@ -6,6 +6,7 @@ const plugins = require('../plugins');
 const privileges = require('../privileges');
 const slugify = require('../slugify');
 const cache = require('../cache');
+const translator = require('../translator');
 
 const Groups = module.exports;
 
@@ -178,7 +179,7 @@ Groups.get = async function (groupName, options) {
 
 
 	const descriptionParsed = await plugins.hooks.fire('filter:parse.raw', String(groupData.description || ''));
-	groupData.descriptionParsed = descriptionParsed;
+	groupData.descriptionParsed = translator.escape(descriptionParsed);
 	groupData.members = members;
 	groupData.membersNextStart = stop + 1;
 	groupData.isMember = isMember;

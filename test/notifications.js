@@ -13,6 +13,7 @@ const categories = require('../src/categories');
 const notifications = require('../src/notifications');
 const socketNotifications = require('../src/socket.io/notifications');
 const api = require('../src/api');
+const utils = require('../src/utils');
 
 const sleep = util.promisify(setTimeout);
 
@@ -147,13 +148,6 @@ describe('Notifications', () => {
 		await socketNotifications.markUnread({ uid: uid }, null);
 	});
 
-	it('should error if notification does not exist', async () => {
-		await assert.rejects(
-			socketNotifications.markUnread({ uid: uid }, 123123),
-			{ message: '[[error:no-notification]]' }
-		);
-	});
-
 	it('should mark a notification unread', async () => {
 		await socketNotifications.markUnread({ uid: uid }, notification.nid);
 
@@ -222,6 +216,21 @@ describe('Notifications', () => {
 	it('should not return another user\'s notification by nid', async () => {
 		const notifObj = await api.notifications.get({ uid: 0 }, { nid: notification.nid });
 		assert.deepStrictEqual(notifObj, { notification: undefined });
+	});
+
+	it('should not mark unread/read if notification does not belong to user', async () => {
+		const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+		await api.notifications.markUnread({ uid: uid }, { nid: notification.nid });
+		assert.strictEqual(
+			await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid),
+			false
+		);
+
+		await api.notifications.markRead({ uid: uid }, { nid: notification.nid }),
+		assert.strictEqual(
+			await db.isSortedSetMember(`uid:${uid}:notifications:read`, notification.nid),
+			false,
+		);
 	});
 
 	it('should get user\'s notifications', async () => {

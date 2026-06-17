@@ -131,6 +131,10 @@ uploadsController.uploadThumb = async function (req, res) {
 	}
 
 	return await uploadsController.upload(req, res, async (uploadedFile) => {
+		const canUpload = await privileges.global.can('upload:post:image', req.uid);
+		if (!canUpload) {
+			throw new Error('[[error:no-privileges]]');
+		}
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}

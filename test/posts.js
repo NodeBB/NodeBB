@@ -24,6 +24,7 @@ const file = require('../src/file');
 const helpers = require('./helpers');
 const utils = require('../src/utils');
 const request = require('../src/request');
+const translator = require('../src/translator');
 
 describe('Post\'s', () => {
 	let voterUid;
@@ -1076,6 +1077,19 @@ describe('Post\'s', () => {
 			assert.strictEqual(postData.length, 1);
 			assert.strictEqual(postData[0].data.content, 'the moved queued post');
 			assert.strictEqual(postData[0].data.tid, result2.tid);
+		});
+
+		it('should not translate queued topic title & content', async () => {
+			const text = '[[global:403.login, javascript:alert(document.domain)]]';
+			const textEscaped = translator.escape(text);
+			const result = await apiTopics.create({ uid: uid }, {
+				cid: cid,
+				title: text,
+				content: text,
+			});
+			const { body } = await request.get(`${nconf.get('url')}/post-queue/${result.id}`, { jar });
+			// should not contain the translated message
+			assert(body.indexOf('Perhaps you should') === -1);
 		});
 	});
 

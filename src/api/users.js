@@ -696,9 +696,17 @@ const prepareExport = async ({ uid, type }) => {
 	}
 };
 
-usersAPI.checkExportByType = async (caller, { uid, type }) => await prepareExport({ uid, type });
+usersAPI.checkExportByType = async (caller, { uid, type }) => {
+	if (!await privileges.users.canExportData(caller.uid, uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	return await prepareExport({ uid, type });
+};
 
 usersAPI.getExportByType = async (caller, { uid, type }) => {
+	if (!await privileges.users.canExportData(caller.uid, uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const [extension, mime] = exportMetadata.get(type);
 	const filename = `${uid}_${type}.${extension}`;
 
@@ -711,6 +719,9 @@ usersAPI.getExportByType = async (caller, { uid, type }) => {
 };
 
 usersAPI.generateExport = async (caller, { uid, type }) => {
+	if (!await privileges.users.canExportData(caller.uid, uid)) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const validTypes = ['profile', 'posts', 'uploads'];
 	if (!validTypes.includes(type)) {
 		throw new Error('[[error:invalid-data]]');
