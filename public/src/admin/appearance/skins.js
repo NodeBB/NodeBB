@@ -95,17 +95,12 @@ define('admin/appearance/skins', [
 	};
 
 	async function highlightSelectedTheme(themeId) {
-		const [select, current] = await translator.translateKeys([
-			'[[admin/appearance/skins:select-skin]]',
-			'[[admin/appearance/skins:current-skin]]',
-		]);
-
 		$('[data-theme]')
 			.removeClass('selected')
 			.find('[data-action="use"]').each(function () {
 				if ($(this).parents('[data-theme]').attr('data-theme')) {
 					$(this)
-						.text(select)
+						.translateText('[[admin/appearance/skins:select-skin]]')
 						.removeClass('btn-success')
 						.addClass('btn-primary');
 				}
@@ -118,7 +113,7 @@ define('admin/appearance/skins', [
 		$(`[data-theme="${themeId}"]`)
 			.addClass('selected')
 			.find('[data-action="use"]')
-			.text(current)
+			.translateText('[[admin/appearance/skins:current-skin]]')
 			.removeClass('btn-primary')
 			.addClass('btn-success');
 	}

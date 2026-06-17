@@ -6,8 +6,9 @@ define('admin/extend/plugins', [
 	'benchpress',
 	'bootbox',
 	'alerts',
+	'helpers',
 	'jquery-ui/widgets/sortable',
-], function (translator, Benchpress, bootbox, alerts) {
+], function (translator, Benchpress, bootbox, alerts, helpers) {
 	const Plugins = {};
 	Plugins.init = function () {
 		const pluginsList = $('.plugins');
@@ -195,8 +196,8 @@ define('admin/extend/plugins', [
 				let html = '';
 				activePlugins.forEach(function (plugin) {
 					html += `
-						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2" data-plugin="${plugin}">
-							${plugin}
+						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2" data-plugin="${helpers.escape(plugin)}">
+							${helpers.escape(plugin)}
 							<div class="d-flex gap-1">
 								<div class="btn btn-ghost btn-sm move-up">
 									<i class="fa fa-chevron-up"></i>
@@ -209,9 +210,9 @@ define('admin/extend/plugins', [
 					`;
 				});
 				if (!activePlugins.length) {
-					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
-						$('#order-active-plugins-modal .plugin-list').html(text).sortable();
-					});
+					$('#order-active-plugins-modal .plugin-list')
+						.translateText('[[admin/extend/plugins:none-active]]')
+						.sortable();
 					return;
 				}
 				const list = $('#order-active-plugins-modal .plugin-list');
