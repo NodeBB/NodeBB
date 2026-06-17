@@ -1,3 +1,79 @@
+#### v4.13.2 (2026-06-17)
+
+##### Chores
+
+*  remove log (9da146ef)
+*  incrementing version number - v4.13.1 (f7a8126b)
+*  update changelog for v4.13.1 (a84db031)
+*  incrementing version number - v4.13.0 (7aade857)
+*  incrementing version number - v4.12.0 (9456aae1)
+*  incrementing version number - v4.11.3 (6a330ea7)
+*  incrementing version number - v4.11.2 (d78d9e24)
+*  incrementing version number - v4.11.1 (78b47c7a)
+*  incrementing version number - v4.11.0 (e8141e26)
+*  incrementing version number - v4.10.3 (31940371)
+*  incrementing version number - v4.10.2 (c270bb91)
+*  incrementing version number - v4.10.1 (0c9bbcea)
+*  incrementing version number - v4.10.0 (5b703104)
+*  incrementing version number - v4.9.2 (e6846052)
+*  incrementing version number - v4.9.1 (72e44c86)
+*  incrementing version number - v4.9.0 (3fdd1bef)
+*  incrementing version number - v4.8.1 (713ae0c0)
+*  incrementing version number - v4.8.0 (3fac737a)
+*  incrementing version number - v4.7.2 (cd419d8a)
+*  incrementing version number - v4.7.1 (afb88805)
+*  incrementing version number - v4.7.0 (e82d40f8)
+*  incrementing version number - v4.6.3 (9fc5b0f3)
+*  incrementing version number - v4.6.2 (f98747db)
+*  incrementing version number - v4.6.1 (f47aa678)
+*  incrementing version number - v4.6.0 (ee395bc5)
+*  incrementing version number - v4.5.2 (ad2da639)
+*  incrementing version number - v4.5.1 (69f4b61f)
+*  incrementing version number - v4.5.0 (f05c5d06)
+*  incrementing version number - v4.4.6 (074043ad)
+*  incrementing version number - v4.4.5 (6f106923)
+*  incrementing version number - v4.4.4 (d323af44)
+*  incrementing version number - v4.4.3 (d354c2eb)
+*  incrementing version number - v4.4.2 (55c510ae)
+*  incrementing version number - v4.4.1 (5ae79b4e)
+*  incrementing version number - v4.4.0 (0a75eee3)
+*  incrementing version number - v4.3.2 (b92b5d80)
+*  incrementing version number - v4.3.1 (308e6b9f)
+*  incrementing version number - v4.3.0 (bff291db)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  incrementing version number - v4.2.1 (852a270c)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  register service worker on safari (2ec09875)
+
+##### Bug Fixes
+
+*  closes #14355 dont flash unread notif for topics (0e8544b8)
+*  remove test (be735684)
+*  failing api test (524d5019)
+*  uids used for priv check (bd7bf5be)
+*  dont allow global mods gdpr export (39299bdb)
+*  prevent uploading thumbs if user does not have upload:image privilege (72defdcf)
+*  dont mark nids that you don't own read/unread (001e45d4)
+*  more tx fixes (adfffbf5)
+*  bind hooks module in admin/settings/email define() (#14352) (86fd621d)
+*  translator.escape chat messages & teasers (7ef400b3)
+
+##### Refactors
+
+*  canExportData check (304665de)
+
 #### v4.13.1 (2026-06-12)
 
 ##### Chores
