@@ -2,7 +2,6 @@
 'use strict';
 
 const async = require('async');
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -339,9 +338,8 @@ module.exports = function (Topics) {
 			return [];
 		}
 		tags.forEach((tag) => {
-			tag.valueEscaped = validator.escape(String(tag.value));
 			tag.valueEncoded = encodeURIComponent(tag.value);
-			tag.class = tag.valueEscaped.replace(/\s/g, '-');
+			tag.class = tag.value.replace(/\s/g, '-');
 		});
 		return tags;
 	};

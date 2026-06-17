@@ -42,7 +42,7 @@
 
 						{{{ each regFormEntry }}}
 						<div class="mb-2 regFormEntry d-flex flex-column gap-2 {./styleName}">
-							<label for="{./inputId}">{./label}</label>
+							<label for="{./inputId}">{tx(./label)}</label>
 							<div>{{./html}}</div>
 						</div>
 						{{{ end }}}
@@ -86,7 +86,7 @@
 								<i class="flex-shrink-0 {./icons.normal}" style="color:{./color};"></i>
 								{{{ end }}}
 								{{{ if ./labels.register }}}
-								<div class="flex-grow-1 text-body text-sm">{./labels.register}</div>
+								<div class="flex-grow-1 text-body text-sm">{tx(./labels.register)}</div>
 								{{{ end }}}
 							</a>
 						</li>

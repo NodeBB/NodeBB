@@ -54,7 +54,6 @@ define('admin/manage/user/custom-reasons', [
 	}
 
 	async function showModal(reason = null) {
-		console.log('reason', reason);
 		const html = await benchpress.render('admin/partials/manage-custom-reasons-modal', reason);
 		const modal = bootbox.dialog({
 			message: html,

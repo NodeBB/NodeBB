@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../database');
 const categories = require('../categories');
 const utils = require('../utils');
@@ -119,12 +117,10 @@ function modifyTopic(topic, fields) {
 	if (hasField('tags')) {
 		const tags = String(topic.tags || '');
 		topic.tags = tags.split(',').filter(Boolean).map((tag) => {
-			const escaped = validator.escape(String(tag));
 			return {
 				value: tag,
-				valueEscaped: escaped,
 				valueEncoded: encodeURIComponent(tag),
-				class: escaped.replace(/\s/g, '-'),
+				class: tag.replace(/\s/g, '-'),
 			};
 		});
 	}
