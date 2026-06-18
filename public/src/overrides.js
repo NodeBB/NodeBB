@@ -7,8 +7,6 @@ window.overrides = window.overrides || {};
 function translate(elements, type, str) {
 	return elements.each(function () {
 		const el = $(this);
-		// TODO:
-		// helpers.tx.call(window, str); // this is sync
 		translator.translate(str, function (translated) {
 			el[type](translated);
 		});

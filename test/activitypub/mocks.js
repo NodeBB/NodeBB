@@ -209,7 +209,7 @@ describe('Mocking', () => {
 
 						// Mock the mentions plugin's getMatches
 						const mentionPath = path.join(__dirname, '../../node_modules/nodebb-plugin-mentions');
-						mentionPlugin = require.main.require(mentionPath);
+						mentionPlugin = nodebb.require(mentionPath);
 						mentionPlugin.getMatches = async (content) => {
 							const matches = new Set();
 							// Simple regex to find @username mentions

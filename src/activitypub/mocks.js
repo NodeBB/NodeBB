@@ -645,7 +645,7 @@ Mocks.notes.public = async (post) => {
 		};
 	}
 	if (mentionsEnabled) {
-		const mentions = require.main.require('nodebb-plugin-mentions');
+		const mentions = nodebb.require('nodebb-plugin-mentions');
 		const matches = await mentions.getMatches(content);
 
 		if (matches.size) {

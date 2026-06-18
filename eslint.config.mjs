@@ -51,6 +51,7 @@ export default defineConfig([
 				beforeEach: 'readonly',
 				after: 'readonly',
 				afterEach: 'readonly',
+				nodebb: 'readonly',
 			},
 		},
 		rules: {
