@@ -3,9 +3,10 @@
 define('accounts/picture', [
 	'pictureCropper',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-], (pictureCropper, api, bootbox, alerts) => {
+	'benchpress',
+], (pictureCropper, api, modals, alerts, Benchpress) => {
 	const Picture = {};
 
 	Picture.openChangeModal = () => {
@@ -21,7 +22,7 @@ define('accounts/picture', [
 				return memo || cur.type === 'uploaded';
 			}, false);
 
-			app.parseAndTranslate('modals/change-picture', {
+			Benchpress.render('modals/change-picture', {
 				pictures: pictures,
 				uploaded: uploaded,
 				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
@@ -40,8 +41,8 @@ define('accounts/picture', [
 					'icon:text': ajaxify.data['icon:text'],
 					'icon:bgColor': ajaxify.data['icon:bgColor'],
 				},
-			}, function (html) {
-				const modal = bootbox.dialog({
+			}).then(async function (html) {
+				const modal = await modals.dialog({
 					className: 'picture-switcher',
 					title: '[[user:change-picture]]',
 					message: html,

@@ -1,6 +1,6 @@
 'use strict';
 
-define('accounts/invite', ['api', 'benchpress', 'bootbox', 'alerts'], function (api, Benchpress, bootbox, alerts) {
+define('accounts/invite', ['api', 'benchpress', 'modals', 'alerts'], function (api, Benchpress, modals, alerts) {
 	const Invite = {};
 
 	function isACP() {
@@ -11,8 +11,8 @@ define('accounts/invite', ['api', 'benchpress', 'bootbox', 'alerts'], function (
 		$('[component="user/invite"]').on('click', function (e) {
 			e.preventDefault();
 			api.get(`/api/v3/users/${app.user.uid}/invites/groups`, {}).then((groups) => {
-				Benchpress.parse('modals/invite', { groups: groups }, function (html) {
-					bootbox.dialog({
+				Benchpress.parse('modals/invite', { groups }, function (html) {
+					modals.dialog({
 						message: html,
 						title: `[[${isACP() ? 'admin/manage/users:invite' : 'users:invite'}]]`,
 						onEscape: true,

@@ -1,12 +1,12 @@
 'use strict';
 
 define('admin/modules/change-email', [
-	'api', 'bootbox', 'alerts',
-], function (api, bootbox, alerts) {
+	'api', 'modals', 'alerts',
+], function (api, modals, alerts) {
 	const ChangeEmail = {};
 
-	ChangeEmail.init = function (params) {
-		const modal = bootbox.dialog({
+	ChangeEmail.init = async function (params) {
+		const modal = await modals.dialog({
 			message: `
 				<label class="form-label">[[admin/manage/users:new-email]]</label>
 				<input id="newEmail" class="form-control" type="text" value="${utils.escapeHTML(params.email || '')}">

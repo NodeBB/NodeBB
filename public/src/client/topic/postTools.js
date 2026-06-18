@@ -2,8 +2,8 @@
 
 define('forum/topic/postTools', [
 	'share', 'navigator', 'components', 'translator', 'forum/topic/votes',
-	'api', 'bootbox', 'alerts', 'hooks', 'helpers', 'slugify',
-], function (share, navigator, components, translator, votes, api, bootbox, alerts, hooks, helpers, slugify) {
+	'api', 'modals', 'alerts', 'hooks', 'helpers', 'slugify',
+], function (share, navigator, components, translator, votes, api, modals, alerts, hooks, helpers, slugify) {
 	const PostTools = {};
 
 	let staleReplyAnyway = false;
@@ -147,7 +147,7 @@ define('forum/topic/postTools', [
 		postContainer.on('click', '[component="post/already-flagged"]', function () {
 			const flagId = $(this).data('flag-id');
 			require(['flags'], function (flags) {
-				bootbox.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
+				modals.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
 					if (!confirm) {
 						return;
 					}
@@ -417,7 +417,7 @@ define('forum/topic/postTools', [
 			return;
 		}
 
-		bootbox.confirm('[[topic:post-' + action + '-confirm]]', function (confirm) {
+		modals.confirm('[[topic:post-' + action + '-confirm]]', function (confirm) {
 			if (!confirm) {
 				return;
 			}
@@ -437,7 +437,7 @@ define('forum/topic/postTools', [
 		return false;
 	}
 
-	function showStaleWarning(callback) {
+	async function showStaleWarning(callback) {
 		const topicStaleDays = parseInt(ajaxify.data.topicStaleDays, 10);
 		if (!topicStaleDays) {
 			return callback();
@@ -450,7 +450,7 @@ define('forum/topic/postTools', [
 			return callback();
 		}
 
-		const warning = bootbox.dialog({
+		modals.dialog({
 			title: '[[topic:stale.title]]',
 			message: '[[topic:stale.warning]]',
 			buttons: {
@@ -475,8 +475,6 @@ define('forum/topic/postTools', [
 				},
 			},
 		});
-
-		warning.modal();
 	}
 
 	const selectionChangeFn = utils.debounce(selectionChange, 250);

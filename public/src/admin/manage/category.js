@@ -6,11 +6,11 @@ define('admin/manage/category', [
 	'categorySelector',
 	'benchpress',
 	'api',
-	'bootbox',
+	'modals',
 	'translator',
 	'alerts',
 	'admin/settings',
-], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, translator, alerts, settings) {
+], function (uploader, iconSelect, categorySelector, Benchpress, api, modals, translator, alerts, settings) {
 	const Category = {};
 	let updateHash = {};
 
@@ -97,8 +97,8 @@ define('admin/manage/category', [
 			Benchpress.render('admin/partials/categories/purge', {
 				name: ajaxify.data.category.name,
 				topic_count: ajaxify.data.category.topic_count,
-			}).then(function (html) {
-				const modal = bootbox.dialog({
+			}).then(async function (html) {
+				const modal = await modals.dialog({
 					title: '[[admin/manage/categories:purge]]',
 					message: html,
 					size: 'large',
@@ -150,9 +150,9 @@ define('admin/manage/category', [
 		});
 
 		$('.copy-settings').on('click', function () {
-			Benchpress.render('admin/partials/categories/copy-settings', {}).then(function (html) {
+			Benchpress.render('admin/partials/categories/copy-settings', {}).then(async (html) => {
 				let selectedCid;
-				const modal = bootbox.dialog({
+				const modal = await modals.dialog({
 					title: '[[modules:composer.select-category]]',
 					message: html,
 					buttons: {

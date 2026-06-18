@@ -15,14 +15,15 @@ define('forum/topic', [
 	'hooks',
 	'api',
 	'alerts',
-	'bootbox',
+	'modals',
+	'benchpress',
 	'clipboard',
 	'modules/intents',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard, intents
+	modals, Benchpress, clipboard, intents
 ) {
 	const Topic = {};
 	let tid = '0';
@@ -191,12 +192,12 @@ define('forum/topic', [
 				thumbs.forEach((t, i) => {
 					t.selected = i === clickedThumbIndex;
 				});
-				const html = await app.parseAndTranslate('modals/topic-thumbs-view', {
+				const html = await Benchpress.render('modals/topic-thumbs-view', {
 					src: clickedThumb.href,
 					thumbs: thumbs,
 				});
 
-				const modal = bootbox.dialog({
+				const modal = await modals.dialog({
 					size: 'lg',
 					onEscape: true,
 					backdrop: true,
@@ -452,7 +453,7 @@ define('forum/topic', [
 			anchorEl.addEventListener('click', async () => {
 				const { crossposts } = ajaxify.data;
 				const html = await app.parseAndTranslate('modals/crossposts', { crossposts });
-				bootbox.dialog({
+				modals.dialog({
 					onEscape: true,
 					backdrop: true,
 					title: '[[global:crossposts]]',

@@ -10,6 +10,6 @@
 	</div>
 	<p class="form-text text-center">
 		For a full list of icons, please consult:
-		<a href="https://fontawesome.com/v6/icons/">FontAwesome</a>
+		<a href="https://fontawesome.com/icons">FontAwesome</a>
 	</p>
 </div>

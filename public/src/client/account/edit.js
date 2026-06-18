@@ -6,10 +6,10 @@ define('forum/account/edit', [
 	'translator',
 	'api',
 	'hooks',
-	'bootbox',
+	'modals',
 	'alerts',
 	'admin/modules/change-email',
-], function (header, picture, translator, api, hooks, bootbox, alerts, changeEmail) {
+], function (header, picture, translator, api, hooks, modals, alerts, changeEmail) {
 	const AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -80,41 +80,39 @@ define('forum/account/edit', [
 
 
 	function handleAccountDelete() {
-		$('#deleteAccountBtn').on('click', function () {
-			translator.translate('[[user:delete-account-confirm]]', function (translated) {
-				const modal = bootbox.confirm(translated + '<p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
-					if (!confirm) {
-						return;
+		$('#deleteAccountBtn').on('click', async function () {
+			const modal = await modals.confirm('<p>[[user:delete-account-confirm]]</p><p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
+				if (!confirm) {
+					return;
+				}
+
+				const confirmBtn = modal.find('.btn-primary');
+				confirmBtn.html('<i class="fa fa-spinner fa-spin"></i>');
+				confirmBtn.prop('disabled', true);
+				api.del(`/users/${ajaxify.data.uid}/account`, {
+					password: $('#confirm-password').val(),
+				}, function (err) {
+					function restoreButton() {
+						translator.translate('[[modules:bootbox.confirm]]', function (confirmText) {
+							confirmBtn.text(confirmText);
+							confirmBtn.prop('disabled', false);
+						});
 					}
 
-					const confirmBtn = modal.find('.btn-primary');
-					confirmBtn.html('<i class="fa fa-spinner fa-spin"></i>');
-					confirmBtn.prop('disabled', true);
-					api.del(`/users/${ajaxify.data.uid}/account`, {
-						password: $('#confirm-password').val(),
-					}, function (err) {
-						function restoreButton() {
-							translator.translate('[[modules:bootbox.confirm]]', function (confirmText) {
-								confirmBtn.text(confirmText);
-								confirmBtn.prop('disabled', false);
-							});
-						}
+					if (err) {
+						restoreButton();
+						return alerts.error(err);
+					}
 
-						if (err) {
-							restoreButton();
-							return alerts.error(err);
-						}
-
-						confirmBtn.html('<i class="fa fa-check"></i>');
-						window.location.href = `${config.relative_path}/`;
-					});
-
-					return false;
+					confirmBtn.html('<i class="fa fa-check"></i>');
+					window.location.href = `${config.relative_path}/`;
 				});
 
-				modal.on('shown.bs.modal', function () {
-					modal.find('input').focus();
-				});
+				return false;
+			});
+
+			modal.on('shown.bs.modal', function () {
+				modal.find('input').focus();
 			});
 			return false;
 		});

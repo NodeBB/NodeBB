@@ -2,9 +2,10 @@
 
 define('forum/account/moderate', [
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-], function (api, bootbox, alerts) {
+	'benchpress',
+], function (api, modals, alerts, Benchpress) {
 	const AccountModerate = {};
 
 	AccountModerate.banAccount = function (theirid, onSuccess) {
@@ -80,11 +81,10 @@ define('forum/account/moderate', [
 
 	async function throwModal(options) {
 		const reasons = await socket.emit('user.getCustomReasons', { type: options.type || '' });
-		const html = await app.parseAndTranslate(options.tpl, { reasons });
-		const modal = bootbox.dialog({
+		const html = await Benchpress.render(options.tpl, { reasons });
+		const modal = await modals.dialog({
 			title: options.title,
 			message: html,
-			show: true,
 			onEscape: true,
 			buttons: {
 				close: {

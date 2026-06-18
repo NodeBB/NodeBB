@@ -7,12 +7,12 @@ define('admin/manage/group', [
 	'groupSearch',
 	'slugify',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
 	'admin/settings',
 ], function (
 	memberList, iconSelect, categorySelector, groupSearch,
-	slugify, api, bootbox, alerts, settings
+	slugify, api, modals, alerts, settings
 ) {
 	const Groups = {};
 
@@ -88,7 +88,7 @@ define('admin/manage/group', [
 		});
 
 		$('[data-action="delete"]').on('click', function () {
-			bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
+			modals.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 				if (confirm) {
 					api.del(`/groups/${slugify(ajaxify.data.group.name)}`, {}).then(() => {
 						ajaxify.go('/admin/manage/groups');
@@ -141,7 +141,7 @@ define('admin/manage/group', [
 					break;
 
 				case 'kick':
-					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
+					modals.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
 						if (!confirm) {
 							return;
 						}
@@ -160,7 +160,7 @@ define('admin/manage/group', [
 		if (cid) {
 			const url = 'admin/manage/privileges/' + cid + '?group=' + ajaxify.data.group.nameEncoded;
 			if (app.flags && app.flags._unsaved === true) {
-				bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+				modals.confirm('[[global:unsaved-changes]]', function (navigate) {
 					if (navigate) {
 						app.flags._unsaved = false;
 						ajaxify.go(url);

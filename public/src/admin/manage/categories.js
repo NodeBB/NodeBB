@@ -5,9 +5,9 @@ define('admin/manage/categories', [
 	'categorySelector',
 	'api',
 	'Sortable',
-	'bootbox',
+	'modals',
 	'alerts',
-], function (Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
+], function (Benchpress, categorySelector, api, Sortable, modals, alerts) {
 	Sortable = Sortable.default;
 	const Categories = {};
 	let newCategoryId = '-1';
@@ -52,12 +52,12 @@ define('admin/manage/categories', [
 			}
 		});
 
-		$('.categories').on('click', '.set-order', function () {
+		$('.categories').on('click', '.set-order', async function () {
 			const cid = $(this).attr('data-cid');
 			const order = $(this).attr('data-order');
-			const modal = bootbox.dialog({
+			const modal = await modals.dialog({
 				title: '[[admin/manage/categories:set-order]]',
-				message: '<input type="number" min="1" class="form-control input-lg" value=' + order + ' /><p class="form-text">[[admin/manage/categories:set-order-help]]</p>',
+				message: `<input type="number" min="1" class="form-control input-lg" value="${order}" /><p class="form-text">[[admin/manage/categories:set-order-help]]</p>`,
 				show: true,
 				buttons: {
 					save: {
@@ -114,8 +114,8 @@ define('admin/manage/categories', [
 	};
 
 	Categories.throwCreateModal = function () {
-		Benchpress.render('admin/partials/categories/create', {}).then(function (html) {
-			const modal = bootbox.dialog({
+		Benchpress.render('admin/partials/categories/create', {}).then(async (html) => {
+			const modal = await modals.dialog({
 				title: '[[admin/manage/categories:alert.create]]',
 				message: html,
 				buttons: {
@@ -168,8 +168,8 @@ define('admin/manage/categories', [
 	};
 
 	Categories.throwAddModal = function () {
-		Benchpress.render('admin/partials/categories/add', {}).then(function (html) {
-			const modal = bootbox.dialog({
+		Benchpress.render('admin/partials/categories/add', {}).then(async (html) => {
+			const modal = await modals.dialog({
 				title: '[[admin/manage/categories:alert.add]]',
 				message: html,
 				buttons: {
@@ -195,7 +195,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.remove = function (cid) {
-		bootbox.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
+		modals.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
 			if (ok) {
 				api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
 			}
@@ -203,7 +203,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.rename = function (cid) {
-		bootbox.prompt({
+		modals.prompt({
 			title: '[[admin/manage/categories:alert.rename]]',
 			message: '<p class="mb-3">[[admin/manage/categories:alert.rename-help]]</p>',
 			callback: (name) => {

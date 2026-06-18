@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/registration', ['bootbox', 'alerts'], function (bootbox, alerts) {
+define('admin/manage/registration', ['modals', 'alerts'], function (modals, alerts) {
 	const Registration = {};
 
 	Registration.init = function () {
@@ -37,7 +37,7 @@ define('admin/manage/registration', ['bootbox', 'alerts'], function (bootbox, al
 				parent.remove();
 			};
 			if (action === 'delete') {
-				bootbox.confirm('[[admin/manage/registration:invitations.confirm-delete]]', function (confirm) {
+				modals.confirm('[[admin/manage/registration:invitations.confirm-delete]]', function (confirm) {
 					if (confirm) {
 						socket.emit(method, { email: email, invitedBy: invitedBy }, function (err) {
 							if (err) {

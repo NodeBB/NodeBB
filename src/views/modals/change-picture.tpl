@@ -8,7 +8,7 @@
 						{{buildAvatar(pictures, "48px", true)}}
 					</div>
 					<div class="flex-grow-1 ms-3 align-self-center fs-5 text-start">
-						{./username}
+						{tx(./username)}
 					</div>
 				</button>
 				<button class="btn btn-sm btn-ghost border {{{ if (./type != "uploaded") }}}invisible{{{ end }}}" data-action="remove-uploaded" data-url="{./picture}"><i class="text-danger fa-solid fa-trash-can"></i></button>

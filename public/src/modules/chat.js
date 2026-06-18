@@ -1,8 +1,8 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts', 'api', 'scrollStop', 'resizable', 'helpers',
-], function (components, taskbar, translator, hooks, bootbox, alerts, api, scrollStop, resizable, helpers) {
+	'components', 'taskbar', 'translator', 'hooks', 'modals', 'alerts', 'api', 'scrollStop', 'resizable', 'helpers',
+], function (components, taskbar, translator, hooks, modals, alerts, api, scrollStop, resizable, helpers) {
 	const Chat = {};
 
 	Chat.openChat = function (roomId, uid) {
@@ -74,7 +74,7 @@ define('chat', [
 				return createChat();
 			}
 
-			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+			modals.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
 				if (ok) {
 					createChat();
 				}

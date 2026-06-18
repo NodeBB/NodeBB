@@ -335,7 +335,18 @@ if (document.readyState === 'loading') {
 					.then(resolve, reject);
 			});
 		}).then((html) => {
-			html = $(html);
+			try {
+				html = $(html);
+			} catch (err) {
+				// handle cases where the template parsed has multiple elements at the root level
+				// this breaks the jquery selector so we wrap it in a div
+				if (err.startsWith('Syntax error, unrecognized expression')) {
+					html = $(`<div>${html}</div>`);
+				} else {
+					throw err;
+				}
+			}
+
 			if (callback && typeof callback === 'function') {
 				setTimeout(callback, 0, html);
 			}

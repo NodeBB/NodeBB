@@ -31,5 +31,5 @@
 </div>
 
 {{{ if message }}}
-<div>{message}</div>
+<div>{{message}}</div>
 {{{ end }}}

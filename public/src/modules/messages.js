@@ -1,6 +1,8 @@
 'use strict';
 
-define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], function (bootbox, translator, storage, alerts, hooks) {
+define('messages', [
+	'modals', 'translator', 'storage', 'alerts', 'hooks',
+], function (modals, translator, storage, alerts, hooks) {
 	const messages = {};
 
 	let registerMessage;
@@ -70,7 +72,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 		registerMessage = params.get('register');
 
 		if (registerMessage) {
-			bootbox.alert({
+			modals.alert({
 				message: utils.escapeHTML(decodeURIComponent(registerMessage)),
 			});
 
@@ -89,7 +91,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 	}
 
 	messages.showInvalidSession = function () {
-		bootbox.alert({
+		modals.alert({
 			title: '[[error:invalid-session]]',
 			message: '[[error:invalid-session-text]]',
 			closeButton: false,
@@ -100,7 +102,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 	};
 
 	messages.showSessionMismatch = function () {
-		bootbox.alert({
+		modals.alert({
 			title: '[[error:session-mismatch]]',
 			message: '[[error:session-mismatch-text]]',
 			closeButton: false,

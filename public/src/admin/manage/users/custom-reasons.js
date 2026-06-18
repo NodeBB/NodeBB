@@ -1,6 +1,6 @@
 define('admin/manage/user/custom-reasons', [
-	'benchpress', 'bootbox', 'alerts', 'jquery-ui/widgets/sortable',
-], function (benchpress, bootbox, alerts) {
+	'benchpress', 'modals', 'alerts', 'jquery-ui/widgets/sortable',
+], function (benchpress, modals, alerts) {
 	const manageCustomReasons = {};
 
 	manageCustomReasons.init = function () {
@@ -16,7 +16,7 @@ define('admin/manage/user/custom-reasons', [
 		table.on('click', '[data-action="delete"]', function () {
 			const row = $(this).parents('[data-key]');
 			const title = row.attr('data-title');
-			bootbox.confirm(`[[admin/manage/custom-reasons:delete-reason-confirm-x, "${title}"]]`, function (ok) {
+			modals.confirm(`[[admin/manage/custom-reasons:delete-reason-confirm-x, "${title}"]]`, function (ok) {
 				if (!ok) {
 					return;
 				}
@@ -55,7 +55,7 @@ define('admin/manage/user/custom-reasons', [
 
 	async function showModal(reason = null) {
 		const html = await benchpress.render('admin/partials/manage-custom-reasons-modal', reason);
-		const modal = bootbox.dialog({
+		const modal = await modals.dialog({
 			message: html,
 			onEscape: true,
 			title: reason ?

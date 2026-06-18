@@ -2,8 +2,8 @@
 
 
 define('forum/chats/manage', [
-	'api', 'alerts', 'autocomplete', 'forum/chats/user-list',
-], function (api, alerts, autocomplete, userList) {
+	'api', 'alerts', 'autocomplete', 'forum/chats/user-list', 'modals',
+], function (api, alerts, autocomplete, userList, modals) {
 	const manage = {};
 
 	manage.init = function (roomId, buttonEl) {
@@ -30,7 +30,7 @@ define('forum/chats/manage', [
 				user: app.user,
 				room: ajaxify.data,
 			});
-			modal = bootbox.dialog({
+			modal = await modals.dialog({
 				title: '[[modules:chat.manage-room]]',
 				size: 'large',
 				message: html,

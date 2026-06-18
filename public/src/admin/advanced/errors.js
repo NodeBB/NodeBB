@@ -9,7 +9,7 @@ import {
 	Filler,
 } from 'chart.js';
 
-import * as bootbox from 'bootbox';
+import * as modals from 'modals';
 import * as alerts from '../../modules/alerts';
 
 Chart.register(
@@ -30,7 +30,7 @@ export function init() {
 }
 
 function clear404() {
-	bootbox.confirm('[[admin/advanced/errors:clear404-confirm]]', function (ok) {
+	modals.confirm('[[admin/advanced/errors:clear404-confirm]]', function (ok) {
 		if (ok) {
 			socket.emit('admin.errors.clear', {}, function (err) {
 				if (err) {

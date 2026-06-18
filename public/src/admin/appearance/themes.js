@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function (bootbox, translator, alerts) {
+define('admin/appearance/themes', ['modals', 'translator', 'alerts'], function (modals, translator, alerts) {
 	const Themes = {};
 
 	Themes.init = function () {
@@ -49,7 +49,7 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 			if (config['theme:id'] === 'nodebb-theme-harmony') {
 				return;
 			}
-			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
+			modals.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',

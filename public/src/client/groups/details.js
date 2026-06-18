@@ -9,9 +9,10 @@ define('forum/groups/details', [
 	'api',
 	'slugify',
 	'categorySelector',
-	'bootbox',
+	'modals',
 	'alerts',
 	'helpers',
+	'translator',
 ], function (
 	memberList,
 	iconSelect,
@@ -21,9 +22,10 @@ define('forum/groups/details', [
 	api,
 	slugify,
 	categorySelector,
-	bootbox,
+	modals,
 	alerts,
-	helpers
+	helpers,
+	tx,
 ) {
 	const Details = {};
 	let groupName;
@@ -86,7 +88,7 @@ define('forum/groups/details', [
 					break;
 
 				case 'kick':
-					bootbox.confirm('[[groups:details.kick-confirm]]', function (confirm) {
+					modals.confirm('[[groups:details.kick-confirm]]', function (confirm) {
 						if (!confirm) {
 							return;
 						}
@@ -282,9 +284,9 @@ define('forum/groups/details', [
 	};
 
 	Details.deleteGroup = function () {
-		bootbox.confirm('Are you sure you want to delete the group: ' + utils.escapeHTML(groupName), function (confirm) {
+		modals.confirm(tx.compile('groups:details.delete-group-confirm', utils.escapeHTML(groupName)), function (confirm) {
 			if (confirm) {
-				bootbox.prompt('Please enter the name of this group in order to delete it:', function (response) {
+				modals.prompt('[[groups:details.delete-group-confirm-label]]', function (response) {
 					if (response === groupName) {
 						api.del(`/groups/${ajaxify.data.group.slug}`, {}).then(() => {
 							alerts.success('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
@@ -348,7 +350,7 @@ define('forum/groups/details', [
 	}
 
 	function removeCover() {
-		bootbox.confirm('[[groups:remove-group-cover-confirm]]', function (confirm) {
+		modals.confirm('[[groups:remove-group-cover-confirm]]', function (confirm) {
 			if (!confirm) {
 				return;
 			}

@@ -615,8 +615,8 @@ $(document).ready(function () {
 							return;
 						}
 
-						require(['bootbox'], function (bootbox) {
-							bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+						require(['modals'], function (modals) {
+							modals.confirm('[[global:unsaved-changes]]', function (navigate) {
 								if (navigate) {
 									app.flags._unsaved = false;
 									process.call(_self);

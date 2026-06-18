@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/manage/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'api', 'alerts'], function (settings, clipboard, bootbox, Benchpress, api, alerts) {
+define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'api', 'alerts'], function (settings, clipboard, modals, Benchpress, api, alerts) {
 	const ACP = {};
 
 	ACP.init = function () {
@@ -81,7 +81,7 @@ define('admin/manage/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'a
 			return false;
 		};
 
-		bootbox.dialog({
+		modals.dialog({
 			title: '[[admin/settings/api:create-token]]',
 			message: html,
 			buttons: {
@@ -125,7 +125,7 @@ define('admin/manage/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'a
 		};
 
 		const html = await Benchpress.render('admin/partials/edit-token-modal', { uid, description });
-		bootbox.dialog({
+		modals.dialog({
 			title: '[[admin/settings/api:update-token]]',
 			message: html,
 			buttons: {
@@ -142,7 +142,7 @@ define('admin/manage/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'a
 		const rowEl = el.closest('[data-token]');
 		const token = rowEl.getAttribute('data-token');
 
-		bootbox.confirm('[[admin/settings/api:delete-confirm]]', async (ok) => {
+		modals.confirm('[[admin/settings/api:delete-confirm]]', async (ok) => {
 			if (ok) {
 				try {
 					await api.del(`/admin/tokens/${token}`);
@@ -159,7 +159,7 @@ define('admin/manage/api', ['settings', 'clipboard', 'bootbox', 'benchpress', 'a
 		const rowEl = el.closest('[data-token]');
 		const token = rowEl.getAttribute('data-token');
 
-		bootbox.confirm('[[admin/settings/api:roll-confirm]]', async (ok) => {
+		modals.confirm('[[admin/settings/api:roll-confirm]]', async (ok) => {
 			if (ok) {
 				try {
 					const tokenObj = await api.post(`/admin/tokens/${token}/roll`);

@@ -3,7 +3,7 @@
 define('admin/manage/privileges', [
 	'api',
 	'autocomplete',
-	'bootbox',
+	'modals',
 	'alerts',
 	'translator',
 	'categorySelector',
@@ -11,7 +11,7 @@ define('admin/manage/privileges', [
 	'admin/modules/checkboxRowSelector',
 	'admin/settings',
 ], function (
-	api, autocomplete, bootbox, alerts, translator,
+	api, autocomplete, modals, alerts, translator,
 	categorySelector, mousetrap, checkboxRowSelector, settings
 ) {
 	const Privileges = {};
@@ -60,7 +60,7 @@ define('admin/manage/privileges', [
 
 			if (member) {
 				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
-					bootbox.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
+					modals.confirm('[[admin/manage/privileges:alert.confirm-moderate]]', function (confirm) {
 						if (confirm) {
 							$wrapperEl.attr('data-delta', delta);
 							Privileges.applyDeltaState(checkboxEl, delta);
@@ -70,7 +70,7 @@ define('admin/manage/privileges', [
 						}
 					});
 				} else if (privilege.endsWith('admin:admins-mods') && state) {
-					bootbox.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
+					modals.confirm('[[admin/manage/privileges:alert.confirm-admins-mods]]', function (confirm) {
 						if (confirm) {
 							$wrapperEl.attr('data-delta', delta);
 							Privileges.applyDeltaState(checkboxEl, delta);
@@ -158,7 +158,7 @@ define('admin/manage/privileges', [
 
 		function throwConfirmModal(method, onConfirm) {
 			const privilegeSubset = getPrivilegeSubset();
-			bootbox.confirm(`[[admin/manage/privileges:alert.confirm-${method}, ${privilegeSubset}]]<br /><br />[[admin/manage/privileges:alert.no-undo]]`, function (ok) {
+			modals.confirm(`[[admin/manage/privileges:alert.confirm-${method}, ${privilegeSubset}]]<br /><br />[[admin/manage/privileges:alert.no-undo]]`, function (ok) {
 				if (ok) {
 					onConfirm.call();
 				}
@@ -250,8 +250,8 @@ define('admin/manage/privileges', [
 
 	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'del'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${encodeURIComponent(privilege)}`, { member });
 
-	Privileges.addUserToPrivilegeTable = function () {
-		const modal = bootbox.dialog({
+	Privileges.addUserToPrivilegeTable = async function () {
+		const modal = await modals.dialog({
 			title: '[[admin/manage/categories:alert.find-user]]',
 			message: '<input class="form-control input-lg" placeholder="[[admin/manage/categories:alert.user-search]]" />',
 			show: true,
@@ -269,8 +269,8 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	Privileges.addGroupToPrivilegeTable = function () {
-		const modal = bootbox.dialog({
+	Privileges.addGroupToPrivilegeTable = async function () {
+		const modal = await modals.dialog({
 			title: '[[admin/manage/categories:alert.find-group]]',
 			message: '<input class="form-control input-lg" placeholder="[[admin/manage/categories:alert.group-search]]" />',
 			show: true,

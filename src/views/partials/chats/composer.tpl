@@ -7,7 +7,7 @@
 		<button component="chat/upload/button" class="btn btn-ghost btn-sm d-flex p-2" type="button" title="[[global:upload]]" data-bs-toggle="tooltip"><i class="fa fa-fw fa-upload"></i></button>
 		{{{ end }}}
 		<div class="flex-grow-1 align-self-center">
-			<textarea component="chat/input" placeholder="{{{ if roomName }}}{tx("modules:chat.placeholder.message-room", txEscape(roomName))}{{{ else }}}[[modules:chat.placeholder.mobile]]{{{ end }}}" class="bg-transparent text-body form-control chat-input mousetrap rounded-0 border-0 shadow-none px-1 py-0" style="min-height: 1.5rem;height:0;max-height:30vh;resize:none;"></textarea>
+			<textarea component="chat/input" placeholder="{{{ if roomName }}}{{tx("modules:chat.placeholder.message-room", txEscape(roomName))}}{{{ else }}}[[modules:chat.placeholder.mobile]]{{{ end }}}" class="bg-transparent text-body form-control chat-input mousetrap rounded-0 border-0 shadow-none px-1 py-0" style="min-height: 1.5rem;height:0;max-height:30vh;resize:none;"></textarea>
 		</div>
 		<div class="d-flex gap-1">
 			{{{ each composerActions }}}

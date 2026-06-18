@@ -2,10 +2,10 @@
 
 
 define('forum/chats/messages', [
-	'components', 'hooks', 'bootbox', 'alerts',
+	'components', 'hooks', 'modals', 'alerts',
 	'messages', 'api', 'forum/topic/images', 'imagesloaded', 'translator',
 ], function (
-	components, hooks, bootbox, alerts, messagesModule, api, images, imagesLoaded, tx
+	components, hooks, modals, alerts, messagesModule, api, images, imagesLoaded, tx
 ) {
 	const messages = {};
 
@@ -403,7 +403,7 @@ define('forum/chats/messages', [
 	};
 
 	messages.delete = function (messageId, roomId) {
-		bootbox.confirm('[[modules:chat.delete-message-confirm]]', function (ok) {
+		modals.confirm('[[modules:chat.delete-message-confirm]]', function (ok) {
 			if (!ok) {
 				return;
 			}

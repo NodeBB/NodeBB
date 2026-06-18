@@ -172,7 +172,7 @@
         "@eslint/js": "10.0.1",
         "@stylistic/eslint-plugin": "5.10.0",
         "ajv": "8.20.0",
-        "eslint-config-nodebb": "2.0.2",
+        "eslint-config-nodebb": "2.0.3",
         "globals": "17.6.0",
         "grunt": "1.6.2",
         "grunt-contrib-watch": "1.1.0",
