@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -168,8 +167,6 @@ module.exports = function (User) {
 		let users = await db.getObjects(keys);
 		users = users.filter(Boolean).map((user, index) => {
 			user.timestampISO = utils.toISOString(data[index].score);
-			user.email = validator.escape(String(user.email));
-			user.usernameEscaped = validator.escape(String(user.username));
 			delete user.hashedPassword;
 			return user;
 		});

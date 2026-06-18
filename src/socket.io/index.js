@@ -244,8 +244,7 @@ async function checkMaintenance(socket) {
 	if (isAdmin) {
 		return;
 	}
-	const validator = require('validator');
-	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
+	throw new Error(`[[pages:maintenance.text, ${meta.config.title || 'NodeBB'}]]`);
 }
 
 async function validateSession(socket, errorMsg) {

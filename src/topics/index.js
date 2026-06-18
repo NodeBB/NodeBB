@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const posts = require('../posts');
@@ -140,7 +139,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			topic.category = result.categoriesMap[topic.cid];
 			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
-				topic.user.username = validator.escape(result.tidToGuestHandle[topic.tid]);
+				topic.user.username = result.tidToGuestHandle[topic.tid];
 				topic.user.displayname = topic.user.username;
 			}
 			topic.teaser = result.teasers[i] || null;

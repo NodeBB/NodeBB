@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const nconf = require('nconf');
-const validator = require('validator');
 const jsesc = require('jsesc');
 const winston = require('winston');
 const semver = require('semver');
@@ -237,7 +236,7 @@ module.exports = function (middleware) {
 		templateValues.userLang = res.locals.config.userLang;
 		templateValues.languageDirection = results.languageDirection;
 		if (req.query.noScriptMessage) {
-			templateValues.noScriptMessage = validator.escape(String(req.query.noScriptMessage));
+			templateValues.noScriptMessage = req.query.noScriptMessage;
 		}
 
 		templateValues.template = { name: res.locals.template };
@@ -405,7 +404,7 @@ module.exports = function (middleware) {
 		if (res.locals.renderHeaderType === 'admin') {
 			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
 		}
-		return req.query.lang ? validator.escape(String(req.query.lang)) : language;
+		return req.query.lang ? req.query.lang : language;
 	}
 
 	async function translate(str, language) {

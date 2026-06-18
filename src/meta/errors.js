@@ -91,11 +91,8 @@ Errors.log404 = function (route) {
 	counters[route] += 1;
 };
 
-Errors.get = async function (escape) {
+Errors.get = async function () {
 	const data = await db.getSortedSetRevRangeWithScores('errors:404', 0, 199);
-	data.forEach((nfObject) => {
-		nfObject.value = escape ? validator.escape(String(nfObject.value || '')) : nfObject.value;
-	});
 	return data;
 };
 

@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const validator = require('validator');
 const querystring = require('querystring');
 const _ = require('lodash');
 const chalk = require('chalk');
@@ -376,7 +375,7 @@ helpers.getSelectedTag = function (tags) {
 	let selectedTag = null;
 	if (tagData.length) {
 		selectedTag = {
-			label: validator.escape(tagData.join(', ')),
+			label: tagData.join(', '),
 		};
 	}
 	return {

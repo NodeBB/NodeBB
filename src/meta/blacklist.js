@@ -144,7 +144,7 @@ Blacklist.validate = function (rules) {
 		}
 
 		if (!addr || whitelist.includes(rule)) {
-			invalid.push(validator.escape(rule));
+			invalid.push(rule);
 			return false;
 		}
 

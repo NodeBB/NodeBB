@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 const db = require('../database');
 const meta = require('../meta');
@@ -68,7 +67,6 @@ module.exports = function (User) {
 			if (sessObj && sessObj.meta) {
 				sessObj.meta.current = curSessionId === sids[idx];
 				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
-				sessObj.meta.ip = validator.escape(String(sessObj.meta.ip));
 			}
 			return sessObj && sessObj.meta;
 		}).filter(Boolean);

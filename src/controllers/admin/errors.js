@@ -10,14 +10,14 @@ const errorsController = module.exports;
 
 errorsController.get = async function (req, res) {
 	const data = await utils.promiseParallel({
-		'not-found': meta.errors.get(true),
+		'not-found': meta.errors.get(),
 		analytics: analytics.getErrorAnalytics(),
 	});
 	res.render('admin/advanced/errors', data);
 };
 
 errorsController.export = async function (req, res) {
-	const data = await meta.errors.get(false);
+	const data = await meta.errors.get();
 	const fields = data.length ? Object.keys(data[0]) : [];
 	const opts = { fields };
 	const json2csvAsync = new AsyncParser(opts);

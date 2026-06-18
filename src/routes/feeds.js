@@ -16,12 +16,7 @@ const utils = require('../utils');
 const controllers404 = require('../controllers/404');
 const routeHelpers = require('./helpers');
 
-const terms = {
-	daily: 'day',
-	weekly: 'week',
-	monthly: 'month',
-	alltime: 'alltime',
-};
+const { terms } = controllerHelpers;
 
 module.exports = function (app, middleware) {
 	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTopic));
@@ -209,7 +204,7 @@ async function generateForTop(req, res, next) {
 		site_url: `/top/${req.params.term || 'daily'}`,
 		sort: 'votes',
 		timestampField: 'timestamp',
-		term: 'day',
+		term: 'daily',
 	}, req, res, next);
 }
 
@@ -221,16 +216,17 @@ async function generateForPopular(req, res, next) {
 		site_url: `/popular/${req.params.term || 'daily'}`,
 		sort: 'posts',
 		timestampField: 'timestamp',
-		term: 'day',
+		term: 'daily',
 	}, req, res, next);
 }
 
 async function generateSorted(options, req, res, next) {
-	if (meta.config['feeds:disableRSS']) {
+	const termParam = req.params.term || options.term;
+	if (meta.config['feeds:disableRSS'] || !Object.hasOwn(terms, termParam)) {
 		return next();
 	}
 
-	const term = terms[req.params.term] || options.term;
+	const term = terms[termParam];
 	const uid = await getUidFromToken(req);
 
 	const params = {

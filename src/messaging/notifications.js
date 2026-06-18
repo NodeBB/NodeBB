@@ -73,7 +73,7 @@ module.exports = function (Messaging) {
 				const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
 				unreadData.teaser = {
 					content: validator.escape(
-						String(utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)))
+						utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content))
 					),
 					user: messageObj.fromUser,
 					timestampISO: messageObj.timestampISO,
