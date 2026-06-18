@@ -213,7 +213,7 @@ describe('Controllers', () => {
 			{ it: 'should load recent rss feed', url: `/recent.rss` },
 			{ it: 'should load top rss feed', url: `/top.rss` },
 			{ it: 'should load popular rss feed', url: `/popular.rss` },
-			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
+			{ it: 'should load popular rss feed with term', url: `/popular/daily.rss` },
 			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
 			{ it: 'should load category recent posts rss feed', url: `/category/1/recentposts.rss` },
 			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
