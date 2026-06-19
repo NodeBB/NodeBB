@@ -88,6 +88,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		const result = tx.replaceArguments(translation, escapedArgs);
 		// prevents the translator.translate() in
 		// app.parseAndTraslate and page render from translating again
+		// can be removed once whole page translation is removed
 		return tx.escape(result);
 	}
 

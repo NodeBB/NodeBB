@@ -10,7 +10,7 @@
 			{{{ end }}}
 
 			{{{ if message }}}
-			<p class="m-0">{tx(message)}</p>
+			<p class="m-0">{{tx(message)}}</p>
 			{{{ end }}}
 		</div>
 	</div>

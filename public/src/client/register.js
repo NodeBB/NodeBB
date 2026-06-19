@@ -14,8 +14,6 @@ define('forum/register', [
 		const password_confirm = $('#password-confirm');
 		const register = $('#register');
 
-		handleLanguageOverride();
-
 		$('#content #noscript').val('false');
 
 		const query = utils.params();
@@ -208,15 +206,6 @@ define('forum/register', [
 				.addClass('register-success');
 			element.show();
 		});
-	}
-
-	function handleLanguageOverride() {
-		if (!app.user.uid && config.defaultLang !== config.userLang) {
-			const formEl = $('[component="register/local"]');
-			const langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
-
-			formEl.append(langEl);
-		}
 	}
 
 	return Register;

@@ -68,6 +68,9 @@
 						<input id="token" type="hidden" name="token" value="" />
 						<input id="noscript" type="hidden" name="noscript" value="true" />
 						<input type="hidden" name="_csrf" value="{config.csrf_token}" />
+						{{{ if (config.userLang != config.defaultLang) }}}
+						<input type="hidden" name="userLang" value="{config.userLang}" />
+						{{{ end }}}
 					</form>
 				</div>
 			</div>

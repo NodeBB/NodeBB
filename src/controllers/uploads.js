@@ -4,7 +4,6 @@ const path = require('path');
 const { fileTypeFromFile } = require('file-type');
 const mime = require('mime').default;
 const nconf = require('nconf');
-const validator = require('validator');
 
 const user = require('../user');
 const meta = require('../meta');
@@ -201,7 +200,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
-	const filename = `${Date.now()}-${validator.escape(name.slice(0, -extension.length)).slice(0, 255)}${extension}`;
+	const filename = `${Date.now()}-${name.slice(0, -extension.length).slice(0, 255)}${extension}`;
 
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 	const storedFile = {

@@ -2,7 +2,6 @@
 
 const rss = require('rss');
 const nconf = require('nconf');
-const validator = require('validator');
 
 const posts = require('../posts');
 const topics = require('../topics');
@@ -418,7 +417,7 @@ async function generateForTag(req, res) {
 	}
 	const uid = await getUidFromToken(req);
 	const set = `tag:${String(req.params.tag)}:topics`;
-	const tag = validator.escape(stripUnicodeControlChars(String(req.params.tag)));
+	const tag = stripUnicodeControlChars(String(req.params.tag));
 	const page = parseInt(req.query.page, 10) || 1;
 	const topicsPerPage = meta.config.topicsPerPage || 20;
 	const start = Math.max(0, (page - 1) * topicsPerPage);
