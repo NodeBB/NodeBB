@@ -17,14 +17,8 @@ const helpers = require('./helpers');
 const uploadsController = module.exports;
 
 uploadsController.upload = async function (req, res, filesIterator) {
-	let files;
-	try {
-		files = req.files;
-	} catch (e) {
-		return helpers.formatApiResponse(400, res);
-	}
+	const { files } = req;
 
-	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
 		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
 	}
