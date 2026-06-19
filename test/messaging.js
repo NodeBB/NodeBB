@@ -617,7 +617,6 @@ describe('Messaging Library', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/chats/${roomId}`, {
 				jar: mocks.users.foo.jar,
 			});
-			console.log(body);
 			assert(body.includes(message));
 			assert(!body.includes('Perhaps you should'));
 		});
