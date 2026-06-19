@@ -473,6 +473,10 @@ module.exports = function (utils, load, warn) {
 		normalizeToken: normalizeToken,
 		replaceArguments: replaceArguments,
 		getLanguage: Translator.getLanguage,
+		rtlLanguages: ['ar', 'fa-IR', 'he', 'ur'],
+		languageDirection: function (lang) {
+			return this.rtlLanguages.includes(lang) ? 'rtl' : 'ltr';
+		},
 
 		flush: function () {
 			Object.keys(Translator.cache).forEach(function (code) {

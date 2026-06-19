@@ -182,7 +182,6 @@ module.exports = function (middleware) {
 			blocks: user.blocks.list(req.uid),
 			user: user.getUserFields(req.uid, ['uid', 'username', 'fullname', 'userslug', 'email', 'email:confirmed', 'picture', 'status', 'reputation']),
 			isEmailConfirmSent: req.uid <= 0 ? false : await user.email.isValidationPending(req.uid),
-			languageDirection: translator.translate('[[language:dir]]', userLang),
 			timeagoCode: languages.userTimeagoCode(userLang),
 			browserTitle: controllersHelpers.buildTitle(options.title, userLang, options.template.name),
 			navigation: navigation.get(req.uid),
@@ -234,7 +233,7 @@ module.exports = function (middleware) {
 		templateValues.maintenanceHeader = meta.config.maintenanceMode && !results.isAdmin;
 		templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 		templateValues.userLang = res.locals.config.userLang;
-		templateValues.languageDirection = results.languageDirection;
+		templateValues.languageDirection = translator.languageDirection(userLang);
 		if (req.query.noScriptMessage) {
 			templateValues.noScriptMessage = req.query.noScriptMessage;
 		}
@@ -268,7 +267,6 @@ module.exports = function (middleware) {
 			latestVersion: getLatestVersion(),
 			privileges: privileges.admin.get(req.uid),
 			tags: meta.tags.parse(req, {}, [], []),
-			languageDirection: translator.translate('[[language:dir]]', res.locals.config.acpLang),
 		});
 
 		const { userData } = results;
@@ -285,7 +283,8 @@ module.exports = function (middleware) {
 		const version = nconf.get('version');
 
 		res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
-		res.locals.config.isRTL = results.languageDirection === 'rtl';
+		const langDirection = translator.languageDirection(res.locals.config.acpLang);
+		res.locals.config.isRTL = langDirection === 'rtl';
 		const templateValues = {
 			config: res.locals.config,
 			configJSON: jsesc(translator.escape(JSON.stringify(res.locals.config)), { isScriptContext: true }),
@@ -308,7 +307,7 @@ module.exports = function (middleware) {
 			showManageMenu: results.privileges.superadmin || ['categories', 'privileges', 'users', 'admins-mods', 'groups', 'tags', 'settings'].some(priv => results.privileges[`admin:${priv}`]),
 			defaultLang: meta.config.defaultLang || 'en-GB',
 			acpLang: res.locals.config.acpLang,
-			languageDirection: results.languageDirection,
+			languageDirection: langDirection,
 		};
 
 		templateValues.template = { name: res.locals.template };
