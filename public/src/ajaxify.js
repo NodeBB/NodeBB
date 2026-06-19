@@ -257,6 +257,7 @@ ajaxify.widgets = { render: render };
 	function renderTemplate(url, tpl_url, data, callback) {
 		hooks.fire('action:ajaxify.loadingTemplates', {});
 		benchpress.render(tpl_url, data)
+			// TODO: remove once all tx tokens are migrated to tx("") helper
 			.then(rendered => translator.translate(rendered))
 			.then(function (translated) {
 				translated = translator.unescape(translated);

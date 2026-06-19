@@ -73,7 +73,7 @@ module.exports = function (middleware) {
 				options._header = {
 					tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
 				};
-				res.locals._i18n = await languages.getFull(getLang(req, res));
+				res.locals._i18n = languages.getFull(getLang(req, res));
 				options.widgets = await widgets.render(req.uid, {
 					template: `${template}.tpl`,
 					url: options.url,

@@ -16,6 +16,7 @@ const User = require('./user');
 const Plugins = require('./plugins');
 const meta = require('./meta');
 const translator = require('./translator');
+const languages = require('./languages');
 const pubsub = require('./pubsub');
 const file = require('./file');
 
@@ -376,7 +377,8 @@ Emailer.sendViaFallback = async (data) => {
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
-	const html = await app.renderAsync(`emails/${template}`, params);
+	const _i18n = languages.getFull(lang);
+	const html = await app.renderAsync(`emails/${template}`, { ...params, _i18n: _i18n });
 	return await translator.translate(html, lang);
 };
 
