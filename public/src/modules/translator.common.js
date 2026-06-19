@@ -18,6 +18,36 @@ module.exports = function (utils, load, warn) {
 			.replace(/&amp;#44;/g, '&#44;');
 	}
 
+	// takes token '[[topic:moved-from, arg1, arg2]]' and
+	// normalizes it to ['topic:moved-from', ['arg1', 'arg2']]
+	function normalizeToken(token) {
+		if (typeof token !== 'string' || token === '') {
+			return [String(token), []];
+		}
+		if (token.startsWith('[[') && token.endsWith(']]')) {
+			token = token.slice(2, -2);
+		}
+		const parts = split(token); // use same split as translator.translate
+		if (parts.length === 0) {
+			return [token.trim(), []];
+		}
+		const txToken = parts[0].trim();
+		const args = parts.slice(1).map(part => part.trim());
+		return [txToken, args];
+	}
+
+	// replaces %1, %2 in translation with args[0], args[1] respectively
+	function replaceArguments(translation, args) {
+		if (!Array.isArray(args) || args.length === 0) {
+			return translation;
+		}
+		args.forEach((arg, index) => {
+			const argEscaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
+			translation = translation.split(`%${index + 1}`).join(argEscaped);
+		});
+		return validateHrefAttributes(translation);
+	}
+
 	function validateHrefAttributes(translated) {
 		return translated.replace(/href\s*=\s*(["'])(.*?)\1/gi, (match, quote, href) => {
 			return isSafeHref(href) ? match : 'href=""';
@@ -58,6 +88,91 @@ module.exports = function (utils, load, warn) {
 		return arr;
 	}
 
+	/*
+	turns
+		`]] some text here [[namespace1:key1, arg1, arg2]] other text [[invalid]] test [[namespace2:key2]] [[invalid`;
+	into
+		[
+			{ text: ']] some text here ', tx: false },
+			{ text: '[[namespace1:key1, arg1, arg2]]', tx: true },
+			{ text: ' other text [[invalid]] test ', tx: false },
+			{ text: '[[namespace2:key2]]', tx: true },
+			{ text: ' [[invalid', tx: false }
+		]
+	*/
+	const TOKEN_VALIDATOR = /^\[\[[^[\]\s,]+:[^[\]\s,]+/;
+	function parseTranslationString(str) {
+		const results = [];
+		let cursor = 0;
+		let lastCut = 0;
+		const len = str.length;
+
+		while (cursor < len) {
+			// jump directly to the next opening bracket
+			const nextOpen = str.indexOf('[[', cursor);
+			if (nextOpen === -1) break; // No more tokens, exit loop
+
+			let depth = 1;
+			let i = nextOpen + 2;
+			let foundClose = false;
+
+			while (i < len) {
+				// jump from bracket to bracket instead of char to char
+				const closeIdx = str.indexOf(']]', i);
+				if (closeIdx === -1) {
+					break; // Missing a closing bracket entirely
+				}
+				const openIdx = str.indexOf('[[', i);
+
+				// If we found another '[[', and it's BEFORE the next ']]', we are nesting
+				if (openIdx !== -1 && openIdx < closeIdx) {
+					depth++;
+					i = openIdx + 2;
+				} else {
+					// Otherwise, we are closing a bracket
+					depth--;
+					i = closeIdx + 2;
+
+					// If depth hits 0, we found the end of the outer token!
+					if (depth === 0) {
+						foundClose = true;
+						break;
+					}
+				}
+			}
+
+			if (foundClose) {
+				const token = str.slice(nextOpen, i);
+				// Validate the token format
+				if (TOKEN_VALIDATOR.test(token)) {
+					// Push leading normal text if it exists
+					if (nextOpen > lastCut) {
+						results.push({ text: str.slice(lastCut, nextOpen), tx: false });
+					}
+					// Push the valid token
+					results.push({ text: token, tx: true });
+					// Advance our cuts and cursors past this token
+					lastCut = i;
+					cursor = i;
+					continue;
+				}
+			}
+
+			// --- BACKTRACKING ---
+			// If we get here, the token was unclosed OR invalid.
+			// We simply move the cursor past the broken '[[' and let the outer loop try again.
+			// The broken brackets will eventually just get sliced as normal text.
+			cursor = nextOpen + 2;
+		}
+
+		// Catch any remaining text at the end of the string
+		if (lastCut < len) {
+			results.push({ text: str.slice(lastCut), tx: false });
+		}
+
+		return results;
+	}
+
 	const Translator = (function () {
 		/**
 		 * Construct a new Translator object
@@ -94,147 +209,15 @@ module.exports = function (utils, load, warn) {
 		 * @returns {Promise<string>}
 		 */
 		Translator.prototype.translate = function translate(str) {
-			// regex for valid text in namespace / key
-			const validText = 'a-zA-Z0-9\\-_.\\/';
-			const validTextRegex = new RegExp('[' + validText + ']');
-			const invalidTextRegex = new RegExp('[^' + validText + '\\]]');
-
-			// current cursor position
-			let cursor = 0;
-			// last break of the input string
-			let lastBreak = 0;
-			// length of the input string
-			const len = str.length;
-			// array to hold the promises for the translations
-			// and the strings of untranslated text in between
-			const toTranslate = [];
-
-			// to store the state of if we're currently in a top-level token for later
-			let inToken = false;
-
-			// move to the first [[
-			cursor = str.indexOf('[[', cursor);
-
-			// the loooop, we'll go to where the cursor
-			// is equal to the length of the string since
-			// slice doesn't include the ending index
-			while (cursor + 2 <= len && cursor !== -1) {
-				// split the string from the last break
-				// to the character before the cursor
-				// add that to the result array
-				toTranslate.push(str.slice(lastBreak, cursor));
-				// set the cursor position past the beginning
-				// brackets of the translation string
-				cursor += 2;
-				// set the last break to our current
-				// spot since we just broke the string
-				lastBreak = cursor;
-				// we're in a token now
-				inToken = true;
-
-				// the current level of nesting of the translation strings
-				let level = 0;
-				let char0;
-				let char1;
-				// validating the current string is actually a translation
-				let textBeforeColonFound = false;
-				let colonFound = false;
-				let textAfterColonFound = false;
-				let commaAfterNameFound = false;
-
-				while (cursor + 2 <= len) {
-					char0 = str[cursor];
-					char1 = str[cursor + 1];
-					// found some text after the double bracket,
-					// so this is probably a translation string
-					if (!textBeforeColonFound && validTextRegex.test(char0)) {
-						textBeforeColonFound = true;
-						cursor += 1;
-					// found a colon, so this is probably a translation string
-					} else if (textBeforeColonFound && !colonFound && char0 === ':') {
-						colonFound = true;
-						cursor += 1;
-					// found some text after the colon,
-					// so this is probably a translation string
-					} else if (colonFound && !textAfterColonFound && validTextRegex.test(char0)) {
-						textAfterColonFound = true;
-						cursor += 1;
-					} else if (textAfterColonFound && !commaAfterNameFound && char0 === ',') {
-						commaAfterNameFound = true;
-						cursor += 1;
-					// a space or comma was found before the name
-					// this isn't a translation string, so back out
-					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
-							invalidTextRegex.test(char0)) {
-						cursor += 1;
-						lastBreak -= 2;
-						// no longer in a token
-						inToken = false;
-						if (level > 0) {
-							level -= 1;
-						} else {
-							break;
-						}
-					// if we're at the beginning of another translation string,
-					// we're nested, so add to our level
-					} else if (char0 === '[' && char1 === '[') {
-						level += 1;
-						cursor += 2;
-					// if we're at the end of a translation string
-					} else if (char0 === ']' && char1 === ']') {
-						// if we're at the base level, then this is the end
-						if (level === 0) {
-							// so grab the name and args
-							const currentSlice = str.slice(lastBreak, cursor);
-							const result = split(currentSlice);
-							const name = result[0];
-							const args = result.slice(1);
-
-							// make a backup based on the raw string of the token
-							// if there are arguments to the token
-							let backup = '';
-							if (args && args.length) {
-								backup = this.translate(currentSlice);
-							}
-							// add the translation promise to the array
-							toTranslate.push(this.translateKey(name, args, backup));
-							// skip past the ending brackets
-							cursor += 2;
-							// set this as our last break
-							lastBreak = cursor;
-							// and we're no longer in a translation string,
-							// so continue with the main loop
-							inToken = false;
-							break;
-						}
-						// otherwise we lower the level
-						level -= 1;
-						// and skip past the ending brackets
-						cursor += 2;
-					} else {
-						// otherwise just move to the next character
-						cursor += 1;
-					}
+			const tokens = parseTranslationString(str);
+			return Promise.all(tokens.map(async (token) => {
+				if (token.tx) {
+					const [txToken, args] = normalizeToken(token.text);
+					return await this.translateKey(txToken, args, token.text);
 				}
-
-				// skip to the next [[
-				cursor = str.indexOf('[[', cursor);
-			}
-
-			// ending string of source
-			let last = str.slice(lastBreak);
-
-			// if we were mid-token, treat it as invalid
-			if (inToken) {
-				last = this.translate(last);
-			}
-
-			// add the remaining text after the last translation string
-			toTranslate.push(last);
-
-			// and return a promise for the concatenated translated string
-			return Promise.all(toTranslate).then(function (translated) {
-				return translated.join('');
+				return token.text;
+			})).then(translations => translations.join('')).catch(err => {
+				warn('Translation failed: ' + err.stack);
 			});
 		};
 
@@ -256,13 +239,8 @@ module.exports = function (utils, load, warn) {
 				return Promise.resolve(self.modules[namespace](key, args));
 			}
 
-			if (namespace && result.length === 1) {
-				return Promise.resolve('[[' + namespace + ']]');
-			}
-
-			if (namespace && !key) {
-				warn('Missing key in translation token "' + name + '" for language "' + self.lang + '"');
-				return Promise.resolve('[[' + namespace + ']]');
+			if (!namespace || (result.length === 1 || !key)) {
+				return Promise.resolve(escapeHTML(backup || name));
 			}
 
 			const translation = this.getTranslation(namespace, key);
@@ -270,24 +248,30 @@ module.exports = function (utils, load, warn) {
 				// check if the translation is missing first
 				if (!translated) {
 					warn('Missing translation "' + name + '" for language "' + self.lang + '"');
-					return backup || key;
+					return escapeHTML(backup || name);
 				}
 
-				const argsToTranslate = args.map(function (arg) {
-					return self.translate(fixDoubleEscaped(escapeHTML(arg)));
-				});
-
-				return Promise.all(argsToTranslate).then(function (translatedArgs) {
-					let out = translated;
-					translatedArgs.forEach(function (arg, i) {
-						const escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
-						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
-					});
-					out = validateHrefAttributes(out);
-					return out;
+				return self.txArgs(args).then(function (translatedArgs) {
+					return replaceArguments(translated, translatedArgs);
 				});
 			});
 		};
+
+		// translate arguments
+		Translator.prototype.txArgs = async function (args) {
+			if (!Array.isArray(args) || args.length === 0) {
+				return args;
+			}
+
+			return await Promise.all(args.map(async (arg) => {
+				const escapedArg = fixDoubleEscaped(escapeHTML(arg));
+				if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
+					const [txToken, args] = normalizeToken(escapedArg);
+					return await this.translateKey(txToken, args);
+				}
+				return escapedArg;
+			}));
+		},
 
 		/**
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
@@ -423,13 +407,13 @@ module.exports = function (utils, load, warn) {
 			/*
 				if (typeof text !== 'string') return text;
 
-    			let previous;
-    			// Keep matching the innermost unescaped brackets and converting them
-    			while (text !== previous) {
-	        		previous = text;
-        			text = text.replace(/\[\[([a-zA-Z0-9_.-]+:[^\[\]]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;');
-    			}
-    			return text;
+				let previous;
+				// Keep matching the innermost unescaped brackets and converting them
+				while (text !== previous) {
+					previous = text;
+					text = text.replace(/\[\[([a-zA-Z0-9_.-]+:[^\[\]]+)\]\]/g, '&lsqb;&lsqb;$1&rsqb;&rsqb;');
+				}
+				return text;
 			*/
 		};
 
@@ -461,12 +445,7 @@ module.exports = function (utils, load, warn) {
 		 * @param {...string} arg - Optional argument for the pattern
 		 */
 		Translator.compile = function compile(...args) {
-			const compiled = args.map(function (text) {
-				// escape commas and percent signs in arguments
-				return Translator.escapeArg(text);
-			});
-
-			return `[[${compiled.join(', ')}]]`;
+			return `[[${args.map(Translator.escapeArg).join(', ')}]]`;
 		};
 
 		Translator.escapeArg = function (arg) {
@@ -491,6 +470,8 @@ module.exports = function (utils, load, warn) {
 		escapeArg: Translator.escapeArg,
 		escapeHTML: escapeHTML,
 		fixDoubleEscaped: fixDoubleEscaped,
+		normalizeToken: normalizeToken,
+		replaceArguments: replaceArguments,
 		getLanguage: Translator.getLanguage,
 
 		flush: function () {
@@ -541,24 +522,6 @@ module.exports = function (utils, load, warn) {
 			});
 		},
 
-		// takes a old style token '[[topic:moved-from, arg1, arg2]]' and
-		// normalizes it to ['topic:moved-from', ['arg1', 'arg2']]
-		normalizeToken: function (token) {
-			if (typeof token !== 'string' || token === '') {
-				return [String(token), []];
-			}
-			if (token.startsWith('[[') && token.endsWith(']]')) {
-				token = token.slice(2, -2);
-			}
-			const parts = split(token); // use same split as translator.translate
-			if (parts.length === 0) {
-				return [token.trim(), []];
-			}
-			const txToken = parts[0].trim();
-			const args = parts.slice(1).map(part => part.trim());
-			return [txToken, args];
-		},
-
 		translateKeys: async function (data, language, callback) {
 			if (!Array.isArray(data)) {
 				throw new Error('[[error:invalid-data]]');
@@ -581,20 +544,8 @@ module.exports = function (utils, load, warn) {
 				if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
 					args = argsFromToken;
 				}
-				const [namespace, key] = txToken.split(':', 2);
-				if (!key) {
-					return escapeHTML(token);
-				}
 				const tokenLanguage = language || lang;
-				const txArgs = await adaptor.txArgs(args, tokenLanguage);
-
-				return Translator.create(tokenLanguage).getTranslation(namespace, key).then(function (translation) {
-					if (!translation) {
-						// if translation is missing/or not a translation, return html escaped token
-						return escapeHTML(token);
-					}
-					return adaptor.replaceArguments(translation, txArgs);
-				});
+				return Translator.create(tokenLanguage).translateKey(txToken, args, token);
 			}));
 			if (typeof cb === 'function') {
 				return setTimeout(cb, 0, translations);
@@ -605,32 +556,6 @@ module.exports = function (utils, load, warn) {
 		translateKey: async function (token, args, language) {
 			const [translation] = await adaptor.translateKeys([[token, args, language]]);
 			return translation;
-		},
-
-		txArgs: async function (args, language) {
-			if (!Array.isArray(args) || args.length === 0) {
-				return args;
-			}
-
-			return await Promise.all(args.map(async (arg) => {
-				arg = fixDoubleEscaped(escapeHTML(arg));
-				if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
-					return await adaptor.translateKey(arg, [], language);
-				}
-				return arg;
-			}));
-		},
-
-		replaceArguments: (translation, args) => {
-			if (!Array.isArray(args) || args.length === 0) {
-				return translation;
-			}
-			args.forEach((arg, index) => {
-				const argEscaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
-				const placeholder = `%${index + 1}`;
-				translation = translation.split(placeholder).join(argEscaped);
-			});
-			return validateHrefAttributes(translation);
 		},
 
 		/**

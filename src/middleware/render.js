@@ -408,6 +408,7 @@ module.exports = function (middleware) {
 	}
 
 	async function translate(str, language) {
+		// TODO: remove once all tx tokens are migrated to tx("") helper
 		const translated = await translator.translate(str, language);
 		return translator.unescape(translated);
 	}

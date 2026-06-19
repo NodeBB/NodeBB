@@ -91,6 +91,11 @@ describe('Translator shim', () => {
 			done();
 		});
 
+		it('should translate nested keys with arguments', async () => {
+			const translated = helpers.tx.call(context, '[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]');
+			assert.strictEqual(translated, 'New message in <strong>Room 8</strong>');
+		});
+
 		it('should html escape arguments but keep it if it\'s coming from tx file', (done) => {
 			const str = helpers.tx.call(context, 'topic:merged-message', '/forum/<script>alert("xss")</script>', 'topic name');
 			assert.strictEqual(str, 'This topic has been merged into <a href="/forum/&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;">topic name</a>');
@@ -167,7 +172,11 @@ describe('Translator shim', () => {
 
 		it('should not allow path traversal', async () => {
 			const t = await shim.translate('[[../../../../config:secret]]');
-			assert.strictEqual(t, 'secret');
+			assert.strictEqual(t, '[[../../../../config:secret]]');
+			await assert.rejects(
+				languages.get('en-GB', '../../../../config'),
+				{ message: '[[error:invalid-path]]' }
+			);
 		});
 	});
 
@@ -218,8 +227,8 @@ describe('Translator shim', () => {
 			);
 
 			assert.strictEqual(
-				await shim.translateKey('[[this is a [[foo:baz, "foo"]], regular string %1 test]]', [], 'en-GB'),
-				'[[this is a [[foo:baz, &quot;foo&quot;]], regular string %1 test]]'
+				await shim.translateKey('[[this is a [[foo:baz, "foo"]] regular string %1 test]]', [], 'en-GB'),
+				'[[this is a [[foo:baz, &quot;foo&quot;]] regular string %1 test]]'
 			);
 		});
 
@@ -535,22 +544,28 @@ describe('new Translator(language)', () => {
 		it('should use key for unknown keys without arguments', () => {
 			const translator = Translator.create('en-GB');
 			return translator.translate('[[unknown:key.without.args]]').then((translated) => {
-				assert.strictEqual(translated, 'key.without.args');
+				assert.strictEqual(translated, '[[unknown:key.without.args]]');
 			});
 		});
 
 		it('should use backup for unknown keys with arguments', () => {
 			const translator = Translator.create('en-GB');
 			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then((translated) => {
-				assert.strictEqual(translated, 'unknown:key.with.args, arguments are here, derpity, derp');
+				assert.strictEqual(translated, '[[unknown:key.with.args, arguments are here, derpity, derp]]');
 			});
 		});
 
-		it('should ignore unclosed tokens', () => {
+		it('should ignore unclosed tokens', async () => {
 			const translator = Translator.create('en-GB');
-			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then((translated) => {
-				assert.strictEqual(translated, 'here is some stuff and other things abc:xyz, other random stuff should be fine here Home and more things Latest Users');
-			});
+			assert.strictEqual(
+				await translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]'),
+				'here is some stuff and other things [[abc:xyz, other random stuff should be fine here Home and more things Latest Users'
+			);
+
+			assert.strictEqual(
+				await translator.translate('mine]] [[topic:merged-message, foo, best'),
+				'mine]] [[topic:merged-message, foo, best'
+			);
 		});
 	});
 });

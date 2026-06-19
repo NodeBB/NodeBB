@@ -79,7 +79,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			const escapedArg = tx.fixDoubleEscaped(tx.escapeHTML(arg));
 
 			if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
-				return _tx.call(this, escapedArg, []); // no escapedArguments on nested tokens for now
+				return _tx.call(this, escapedArg, []);
 			}
 			return escapedArg;
 		});
