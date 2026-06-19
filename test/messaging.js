@@ -886,7 +886,7 @@ describe('Messaging Library', () => {
 			it('should error out for regular users', async () => {
 				const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
 				assert.strictEqual(response.statusCode, 400);
-				assert.strictEqual(body.status.message, 'chat-message-editing-disabled');
+				assert.strictEqual(body.status.message, '[[error:chat-message-editing-disabled]]');
 			});
 
 			it('should succeed for administrators', async () => {

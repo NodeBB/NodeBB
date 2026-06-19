@@ -491,13 +491,10 @@ module.exports = function (utils, load, warn) {
 			});
 		},
 
-
 		/**
-		 * Legacy translator function for backwards compatibility
+		 * translator function for backwards compatibility
 		 */
 		translate: function translate(text, language, callback) {
-			// TODO: deprecate?
-
 			let cb = callback;
 			let lang = language;
 			if (typeof language === 'function') {
