@@ -64,7 +64,7 @@ module.exports = function (User) {
 		}
 
 		// Allow plugins to short-circuit with their own results
-		const hookResult = await plugins.hooks.fire('static:users.search', {
+		const hookResult = await plugins.hooks.fire('filter:users.searchOverride', {
 			query, searchBy, uids, uid, hardCap: data.hardCap,
 		});
 		uids = hookResult.uids;
