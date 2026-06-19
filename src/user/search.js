@@ -59,20 +59,31 @@ module.exports = function (User) {
 			}
 
 			if (!uids.length) {
-				const searchMethod = data.findUids || findUids;
-				const promises = [
-					searchMethod(query, searchBy, data.hardCap),
-				];
-
-				const mapping = {
-					username: 'ap.preferredUsername',
-					fullname: 'ap.name',
-				};
-				if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
-					promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
-				}
-				uids = (await Promise.all(promises)).flat();
+				uids = await (data.findUids || findUids)(query, searchBy, data.hardCap);
 			}
+		}
+
+		// Allow plugins to short-circuit with their own results
+		const hookResult = await plugins.hooks.fire('static:users.search', {
+			query, searchBy, uids, uid, hardCap: data.hardCap,
+		});
+		uids = hookResult.uids;
+
+		// Only run fallback if still empty
+		if (!uids.length) {
+			const searchMethod = data.findUids || findUids;
+			const promises = [
+				searchMethod(query, searchBy, data.hardCap),
+			];
+
+			const mapping = {
+				username: 'ap.preferredUsername',
+				fullname: 'ap.name',
+			};
+			if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
+				promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
+			}
+			uids = (await Promise.all(promises)).flat();
 		}
 
 		uids = await filterAndSortUids(uids, data);
