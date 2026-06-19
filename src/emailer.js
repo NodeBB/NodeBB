@@ -269,7 +269,7 @@ Emailer.send = async (template, uid, params) => {
 	params.uid = uid;
 	params.username = userData.username;
 	params.displayname = userData.displayname;
-	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
+	params.rtl = translator.languageDirection(userSettings.userLang) === 'rtl';
 
 	const result = await Plugins.hooks.fire('filter:email.cancel', {
 		cancel: false, // set to true in plugin to cancel sending email
