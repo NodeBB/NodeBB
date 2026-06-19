@@ -1743,8 +1743,11 @@ describe('User', () => {
 		});
 
 		it('should properly escape homePageRoute', async () => {
+			const username = utils.generateUUID().slice(0, 6);
+			const uid = await User.create({ username, password: '123456' });
+			const { jar } = await helpers.loginUser(username, '123456');
 			const data = {
-				uid: testUid,
+				uid: uid,
 				settings: {
 					bootswatchSkin: 'default',
 					homePageRoute: 'category/6/testing-ground',
@@ -1762,15 +1765,20 @@ describe('User', () => {
 					followTopicsOnReply: 1,
 				},
 			};
-			await apiUser.updateSettings({ uid: testUid }, data);
-			const userSettings = await User.getSettings(testUid);
+			await apiUser.updateSettings({ uid }, data);
+			const userSettings = await User.getSettings(uid);
 			assert.strictEqual(userSettings.homePageRoute, 'category/6/testing-ground');
 
 
 			data.settings.homePageRoute = '<script>alert(1);</script>';
-			await apiUser.updateSettings({ uid: testUid }, data);
-			const updatedSettings = await User.getSettings(testUid);
-			assert.strictEqual(updatedSettings.homePageRoute, '&lt;script&gt;alert(1);&lt;/script&gt;');
+			await apiUser.updateSettings({ uid }, data);
+			const updatedSettings = await User.getSettings(uid);
+			// not escaped in api
+			assert.strictEqual(updatedSettings.homePageRoute, '<script>alert(1);</script>');
+
+			// escaped in html
+			const { body } = await request.get(`${nconf.get('url')}/user/${username}/settings`, { jar });
+			assert(body.includes('value="&lt;script&gt;alert(1);&lt;/script&gt;"'));
 		});
 
 
@@ -1913,7 +1921,12 @@ describe('User', () => {
 			const { jar } = await helpers.loginUser('admin', '123456');
 			const { body: { users } } = await request.get(`${nconf.get('url')}/api/admin/manage/registration`, { jar });
 			assert.equal(users[0].username, 'rejectme');
-			assert.equal(users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
+			// not escaped in api
+			assert.equal(users[0].email, '<script>alert("ok")<script>reject@me.com');
+
+			// escaped in html
+			const { body } = await request.get(`${nconf.get('url')}/admin/manage/registration`, { jar });
+			assert(body.includes('&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com'));
 		});
 
 		it('should fail to add user to queue if username is taken', async () => {
@@ -2130,7 +2143,12 @@ describe('User', () => {
 			it('should escape email', async () => {
 				await helpers.invite({ emails: '<script>alert("ok");</script>', groupsToJoin: [] }, adminUid, jar, csrf_token);
 				const data = await User.getInvites(adminUid);
-				assert.strictEqual(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+				// not escaped in api
+				assert.strictEqual(data[0], '<script>alert("ok");</script>');
+
+				// escaped in html
+				const { body } = await request.get(`${nconf.get('url')}/admin/manage/registration`, { jar });
+				assert(body.includes('&lt;script&gt;alert(&quot;ok&quot;);&lt;/script&gt;'));
 				await User.deleteInvitationKey('<script>alert("ok");</script>');
 			});
 
