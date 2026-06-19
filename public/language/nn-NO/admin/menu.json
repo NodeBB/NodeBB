@@ -48,8 +48,8 @@
 
 	"settings.page-title": "%1 Innstillingar",
 
-	"section-federation": "Federation",
-	"federation/general": "General",
+	"section-federation": "Føderering",
+	"federation/general": "Generelt",
 	"federation/content": "Content",
 	"federation/rules": "Categorization",
 	"federation/relays": "Relays",
