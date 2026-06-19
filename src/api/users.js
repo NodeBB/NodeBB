@@ -207,7 +207,7 @@ usersAPI.ban = async function (caller, data) {
 	await db.setObjectField(`uid:${data.uid}:ban:${banData.timestamp}`, 'fromUid', caller.uid);
 
 	if (!data.reason) {
-		data.reason = await tx.translate('[[user:info.banned-no-reason]]');
+		data.reason = await tx.translateKey('[[user:info.banned-no-reason]]');
 	}
 
 	sockets.in(`uid_${data.uid}`).emit('event:banned', {
