@@ -57,7 +57,7 @@ const helpers = require('helpers');
 				.removeClass('alert-danger alert-success pointer hide')
 				.addClass('alert-warning show')
 				.find('p')
-				.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+				.translateHtml(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		}
 
 		$('#reconnect').html('<i class="fa fa-spinner fa-spin"></i>');
