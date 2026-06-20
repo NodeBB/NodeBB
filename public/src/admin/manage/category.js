@@ -236,7 +236,9 @@ define('admin/manage/category', [
 				disabled: disabled ? 0 : 1,
 			}).then(() => {
 				$this.find('.label').translateText(
-					!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]'
+					!disabled ?
+						'[[admin/manage/categories:enable]]' :
+						'[[admin/manage/categories:disable]]'
 				);
 				$this.find('i')
 					.toggleClass(['fa-check', 'text-success'], !disabled)

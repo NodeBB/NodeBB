@@ -100,9 +100,9 @@ define('forum/topic/fork', [
 
 	function showPostsSelected() {
 		if (postSelect.pids.length) {
-			forkModal.find('#fork-pids').translateHtml('[[topic:fork-pid-count, ' + postSelect.pids.length + ']]');
+			forkModal.find('#fork-pids').translateText('[[topic:fork-pid-count, ' + postSelect.pids.length + ']]');
 		} else {
-			forkModal.find('#fork-pids').translateHtml('[[topic:fork-no-pids]]');
+			forkModal.find('#fork-pids').translateText('[[topic:fork-no-pids]]');
 		}
 	}
 

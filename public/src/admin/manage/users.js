@@ -695,11 +695,11 @@ define('admin/manage/users', [
 				return;
 			}
 			if (data && data.users.length === 0) {
-				$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
+				$('#user-notfound-notify').translateText('[[admin/manage/users:search.not-found]]')
 					.removeClass('hidden');
 				$('#user-found-notify').addClass('hidden');
 			} else {
-				$('#user-found-notify').translateHtml(
+				$('#user-found-notify').translateText(
 					translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing)
 				).removeClass('hidden');
 				$('#user-notfound-notify').addClass('hidden');

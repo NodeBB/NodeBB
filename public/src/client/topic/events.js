@@ -215,7 +215,7 @@ define('forum/topic/events', [
 			if (!isAdminOrMod && !isSelfPost) {
 				postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
 				if (isDeleted) {
-					postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
+					postEl.find('[component="post/content"]').translateText('[[topic:post-is-deleted]]');
 				} else {
 					postEl.find('[component="post/content"]').html(data.content);
 				}
@@ -227,7 +227,7 @@ define('forum/topic/events', [
 			parentEl.each((i, el) => {
 				const $parent = $(el);
 				if (isDeleted) {
-					$parent.find('[component="post/parent/content"]').translateHtml('[[topic:post-is-deleted]]');
+					$parent.find('[component="post/parent/content"]').translateText('[[topic:post-is-deleted]]');
 				} else {
 					$parent.find('[component="post/parent/content"]').html(data.content);
 				}

@@ -69,9 +69,9 @@ export function remove(id) {
 	$('#alert_button_' + id).remove();
 }
 
-function updateAlert(alert, params) {
-	alert.find('strong').translateHtml(params.title);
-	alert.find('p').translateHtml(params.message);
+async function updateAlert(alert, params) {
+	const newEl = await app.parseAndTranslate('partials/toast', params);
+	alert.find('[component="toast/body"]').replaceWith(newEl.find('[component="toast/body"]'));
 	alert.removeClass('alert-success alert-danger alert-info alert-warning')
 		.addClass(`alert-${params.type}`);
 

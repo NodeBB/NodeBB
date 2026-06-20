@@ -529,8 +529,9 @@ function updateTopicsGraph(topics) {
 		let html = '';
 		topics.forEach(function (t, i) {
 			const title = escape(t.title);
+			const tidEscaped = escape(t.tid);
 			const link = t.tid ?
-				`<a title="${title}" href="${config.relative_path}/topic/${t.tid}" target="_blank">${title}</a>` :
+				`<a title="${title}" href="${config.relative_path}/topic/${tidEscaped}" target="_blank">${title}</a>` :
 				title;
 			const label = t.count === '0' ? title : link;
 
@@ -539,7 +540,7 @@ function updateTopicsGraph(topics) {
 				`<span>(${t.count}) ${label}</span>` +
 				'</li>';
 		});
-		$('#topics-legend').translateHtml(html);
+		$('#topics-legend').html(html);
 	}
 
 	buildTopicsLegend();

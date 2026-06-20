@@ -77,7 +77,7 @@ define('forum/search', [
 		}
 		$('[component="tag/filter/button"]').toggleClass(
 			'active-filter', isActive
-		).find('.filter-label').translateHtml(labelText);
+		).find('.filter-label').translateText(labelText);
 	}
 
 	function updateTimeFilter() {
@@ -343,7 +343,7 @@ define('forum/search', [
 			}
 
 			if (!result.tags.length) {
-				el.find('[component="tag/filter/results"]').translateHtml(
+				el.find('[component="tag/filter/results"]').translateText(
 					'[[tags:no-tags-found]]'
 				);
 				return;

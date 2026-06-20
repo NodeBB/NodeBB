@@ -150,7 +150,7 @@ const helpers = require('helpers');
 				.removeClass('alert-warning alert-danger')
 				.addClass('alert-success')
 				.find('p')
-				.translateText(`[[global:reconnected-message, ${config.siteTitle}]]`);
+				.translateHtml(`[[global:reconnected-message, ${config.siteTitle}]]`);
 
 			setTimeout(() => {
 				reconnectEl.removeClass('active').addClass('hide');

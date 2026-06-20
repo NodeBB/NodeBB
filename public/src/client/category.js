@@ -110,7 +110,7 @@ define('forum/category', [
 				ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
 				ajaxify.data.subCategoriesLeft -= data.length;
 				btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
-					.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
+					.translateText(`[[category:x-more-categories, ${ajaxify.data.subCategoriesLeft}]]`);
 			});
 
 			return false;

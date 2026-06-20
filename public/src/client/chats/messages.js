@@ -326,12 +326,12 @@ define('forum/chats/messages', [
 		msgEl.toggleClass('deleted', true);
 		parentEl.toggleClass('deleted', true);
 		if (!isSelf) {
-			msgEl.find('[component="chat/message/body"]')
-				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+			msgEl.find('[component="chat/message/body"]').html('<p></p>')
+				.translateText('[[modules:chat.message-deleted]]');
 		}
 		if (!isParentSelf) {
-			parentEl.find('[component="chat/message/parent/content"]')
-				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+			parentEl.find('[component="chat/message/parent/content"]').html('<p></p>')
+				.translateText('[[modules:chat.message-deleted]]');
 		}
 	}
 
