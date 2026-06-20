@@ -20,12 +20,15 @@ module.exports = function (utils, load, warn) {
 
 	// takes token '[[topic:moved-from, arg1, arg2]]' and
 	// normalizes it to ['topic:moved-from', ['arg1', 'arg2']]
-	function normalizeToken(token) {
+	function normalizeToken(token, ignoreArgs = false) {
 		if (typeof token !== 'string' || token === '') {
 			return [String(token), []];
 		}
 		if (token.startsWith('[[') && token.endsWith(']]')) {
 			token = token.slice(2, -2);
+		}
+		if (ignoreArgs) {
+			return [token.trim(), []];
 		}
 		const parts = split(token); // use same split as translator.translate
 		if (parts.length === 0) {
@@ -547,9 +550,10 @@ module.exports = function (utils, load, warn) {
 
 			const translations = await Promise.all(data.map(async (item) => {
 				const [token, itemArgs, language] = item;
-				const [txToken, argsFromToken] = adaptor.normalizeToken(token);
+				const hasPassedArgs = Array.isArray(itemArgs) && itemArgs.length > 0;
+				const [txToken, argsFromToken] = adaptor.normalizeToken(token, hasPassedArgs);
 				let args = itemArgs;
-				if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+				if (!hasPassedArgs && Array.isArray(argsFromToken) && argsFromToken.length > 0) {
 					args = argsFromToken;
 				}
 				const tokenLanguage = language || lang;

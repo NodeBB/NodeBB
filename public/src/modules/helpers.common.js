@@ -66,8 +66,9 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			return '';
 		}
 
-		const [txToken, argsFromToken] = tx.normalizeToken(token);
-		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+		const hasPassedArgs = args.length > 0;
+		const [txToken, argsFromToken] = tx.normalizeToken(token, hasPassedArgs);
+		if (!hasPassedArgs && Array.isArray(argsFromToken) && argsFromToken.length > 0) {
 			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
@@ -79,7 +80,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			const escapedArg = tx.fixDoubleEscaped(tx.escapeHTML(arg));
 
 			if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
-				return _tx.call(this, escapedArg, []);
+				return _tx.call(this, escapedArg);
 			}
 			return escapedArg;
 		});
