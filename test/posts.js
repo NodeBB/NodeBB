@@ -1081,7 +1081,6 @@ describe('Post\'s', () => {
 
 		it('should not translate queued topic title & content', async () => {
 			const text = '[[global:403.login, javascript:alert(document.domain)]]';
-			const textEscaped = translator.escape(text);
 			const result = await apiTopics.create({ uid: uid }, {
 				cid: cid,
 				title: text,

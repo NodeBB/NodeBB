@@ -603,7 +603,6 @@ describe('Messaging Library', () => {
 
 		it('should not translate chat messages if they have translation keys', async () => {
 			const message = '[[global:403.login]]';
-			const txEscaped = translator.escape(message);
 			await callv3API('post', `/chats/${roomId}`, { roomId, message }, 'foo');
 			const { rooms } = await api.chats.list(
 				{ uid: mocks.users.foo.uid }, { start: 0, stop: 9, uid: mocks.users.foo.uid }

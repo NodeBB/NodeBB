@@ -14,8 +14,7 @@ module.exports = function (utils, load, warn) {
 	function fixDoubleEscaped(str) {
 		// fix double escaped translation keys, see https://github.com/NodeBB/NodeBB/issues/9206
 		return str.replace(/&amp;lsqb;/g, '&lsqb;')
-			.replace(/&amp;rsqb;/g, '&rsqb;')
-			.replace(/&amp;#44;/g, '&#44;');
+			.replace(/&amp;rsqb;/g, '&rsqb;');
 	}
 
 	// takes token '[[topic:moved-from, arg1, arg2]]' and
