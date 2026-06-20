@@ -43,7 +43,7 @@ module.exports = function (utils, load, warn) {
 		}
 		args.forEach((arg, index) => {
 			const argEscaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
-			translation = translation.split(`%${index + 1}`).join(argEscaped);
+			translation = translation.replaceAll(`%${index + 1}`, argEscaped);
 		});
 		return validateHrefAttributes(translation);
 	}
@@ -63,21 +63,28 @@ module.exports = function (utils, load, warn) {
 
 	// split a translator string into an array of tokens
 	// but don't split by commas inside other translator strings
+	// "namespace:key, arg1, [[namespace:key, arg2]]" becomes
+	// ["namespace:key", "arg1", "[[namespace:key, arg2]]"]
 	function split(text) {
-		const len = text.length;
+		// skip strings that don't have commas, this makes [[namespace:key]] tokens faster
+		if (text.indexOf(',') === - 1) {
+			return [];
+		}
+		const lenLessOne = text.length - 1;
 		const arr = [];
 		let i = 0;
 		let brk = 0;
 		let level = 0;
-
-		while (i + 2 <= len) {
-			if (text[i] === '[' && text[i + 1] === '[') {
+		while (i < lenLessOne) {
+			const cur = text[i];
+			const next = text[i + 1];
+			if (cur === '[' && next === '[') {
 				level += 1;
 				i += 1;
-			} else if (text[i] === ']' && text[i + 1] === ']') {
+			} else if (cur === ']' && next === ']') {
 				level -= 1;
 				i += 1;
-			} else if (level === 0 && text[i] === ',' && text[i - 1] !== '\\') {
+			} else if (level === 0 && cur === ',' && text[i - 1] !== '\\') {
 				arr.push(text.slice(brk, i).trim());
 				i += 1;
 				brk = i;
