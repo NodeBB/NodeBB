@@ -12,7 +12,6 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		txEscapeArg: tx.escapeArg,
 		tx: _tx,
 		buildMetaTag,
-		quote,
 		buildLinkTag,
 		stringify,
 		displayMenuItem,
@@ -35,6 +34,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		max,
 		min,
 		clamp,
+		quote,
+		renderContent,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -91,10 +92,6 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		// app.parseAndTraslate and page render from translating again
 		// can be removed once whole page translation is removed
 		return tx.escape(result);
-	}
-
-	function quote(str) {
-		return `"${str}"`;
 	}
 
 	function buildMetaTag(tag) {
@@ -412,6 +409,18 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 	function clamp(value, minValue, maxValue) {
 		return Math.min(Math.max(parseInt(value, 10), parseInt(minValue, 10)), parseInt(maxValue, 10));
+	}
+
+	function quote(str) {
+		return `"${str}"`;
+	}
+	const deletedMsgs = [
+		'[[topic:topic-is-deleted]]', '[[topic:post-is-deleted]]', '[[modules:chat.message-deleted]]',
+	];
+	function renderContent(content, deleted = 0) {
+		// if deleted translate the deleted message which can be one from deletedMsgs
+		const translateDeletedMsg = parseInt(deleted, 10) === 1 && deletedMsgs.includes(content);
+		return translateDeletedMsg ? _tx.call(this, content) : tx.escape(content);
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {

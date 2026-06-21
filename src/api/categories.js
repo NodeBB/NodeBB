@@ -149,7 +149,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 		tag: data.query.tag,
 		targetUid,
 	});
-	await categories.modifyTopicsByPrivilege(result.topics, userPrivileges, settings.userLang);
+	await categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
 
 	return { ...result, privileges: userPrivileges };
 };
