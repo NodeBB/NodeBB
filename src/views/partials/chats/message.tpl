@@ -18,7 +18,7 @@
 		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="[[global:edited-timestamp, {isoTimeToLocaleString(messages.editedISO, config.userLang)}]]"><i class="fa fa-edit"></i></span></div>
 	</div>
 	<div class="message-body-wrapper">
-		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break">
+		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break mb-last-0 mb-3">
 			{{renderContent(messages.content, messages.deleted)}}
 		</div>
 		<!-- IMPORT partials/chats/reactions.tpl -->
