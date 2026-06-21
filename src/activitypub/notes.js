@@ -307,6 +307,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
 					generatedTitle,
+					...(mainPost.polls && { polls: mainPost.polls }),
 					_activitypub: mainPost._activitypub,
 				});
 				unprocessed.shift();
