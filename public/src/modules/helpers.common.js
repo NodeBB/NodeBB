@@ -69,7 +69,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 		const hasPassedArgs = args.length > 0;
 		const [txToken, argsFromToken] = tx.normalizeToken(token, hasPassedArgs);
-		if (!hasPassedArgs && Array.isArray(argsFromToken) && argsFromToken.length > 0) {
+		if (!hasPassedArgs && argsFromToken.length > 0) {
 			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
