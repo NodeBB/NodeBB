@@ -843,7 +843,7 @@ describe('Messaging Library', () => {
 			const { body } = await callv3API('get', `/chats/${roomId}`, {}, 'herp');
 			const { messages } = body.response;
 			messages.forEach((msg) => {
-				assert(!msg.deleted || msg.content === '<p>[[modules:chat.message-deleted]]</p>', msg.content);
+				assert(!msg.deleted || msg.content === '[[modules:chat.message-deleted]]', msg.content);
 			});
 		});
 
@@ -851,7 +851,7 @@ describe('Messaging Library', () => {
 			const { body } = await callv3API('get', `/chats/${roomId}/messages/${mid}`, {}, 'herp');
 			const message = body.response;
 			assert.strictEqual(message.deleted, 1);
-			assert.strictEqual(message.content, '<p>[[modules:chat.message-deleted]]</p>');
+			assert.strictEqual(message.content, '[[modules:chat.message-deleted]]');
 		});
 
 		it('should error out if a message is deleted again', async () => {
