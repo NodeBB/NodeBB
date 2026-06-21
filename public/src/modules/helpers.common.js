@@ -414,12 +414,14 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	function quote(str) {
 		return `"${str}"`;
 	}
-	const deletedMsgs = [
-		'[[topic:topic-is-deleted]]', '[[topic:post-is-deleted]]', '[[modules:chat.message-deleted]]',
-	];
+
+	const deletedMsgs = new Set([
+		'[[topic:topic-is-deleted]]',
+		'[[topic:post-is-deleted]]',
+		'[[modules:chat.message-deleted]]',
+	]);
 	function renderContent(content, deleted = 0) {
-		// if deleted translate the deleted message which can be one from deletedMsgs
-		const translateDeletedMsg = parseInt(deleted, 10) === 1 && deletedMsgs.includes(content);
+		const translateDeletedMsg = parseInt(deleted, 10) === 1 && deletedMsgs.has(content);
 		return translateDeletedMsg ? _tx.call(this, content) : tx.escape(content);
 	}
 
