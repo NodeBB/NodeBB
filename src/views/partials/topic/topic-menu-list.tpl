@@ -22,11 +22,11 @@
 {{{ end }}}
 
 <li>
-	<a component="topic/merge" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-code-fork text-secondary"></i> [[topic:thread-tools.merge]]</a>
+	<a component="topic/merge" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa-solid fa-code-merge text-secondary"></i> [[topic:thread-tools.merge]]</a>
 </li>
 
 <li>
-	<a component="topic/fork" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa fa-fw fa-code-fork text-secondary"></i> [[topic:thread-tools.fork]]</a>
+	<a component="topic/fork" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem"><i class="fa-solid fa-code-fork text-secondary"></i> [[topic:thread-tools.fork]]</a>
 </li>
 
 <li>
