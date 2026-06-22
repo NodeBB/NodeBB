@@ -47,8 +47,6 @@ searchApi.categories = async (caller, data) => {
 
 	let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass'], data.parentCid);
 	categoriesData = categoriesData.slice(0, 1000);
-	const userSettings = await user.getSettings(caller.uid);
-	await controllersHelpers.translateCategoryData(categoriesData, userSettings.userLang);
 
 	categoriesData.forEach((category) => {
 		category.selected = data.selectedCids ? data.selectedCids.includes(String(category.cid)) : false;

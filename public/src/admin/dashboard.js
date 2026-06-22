@@ -12,11 +12,10 @@ import {
 	Legend,
 } from 'chart.js';
 
-import * as Benchpress from 'benchpressjs';
-import * as bootbox from 'bootbox';
+import * as modals from '../modules/modals';
 import * as alerts from '../modules/alerts';
 import * as translator from '../modules/translator';
-import { formattedNumber } from '../modules/helpers';
+import { formattedNumber, escape } from '../modules/helpers';
 
 import { setupFullscreen } from './modules/fullscreen';
 
@@ -370,58 +369,57 @@ function setupGraphs(callback) {
 			$('[data-action="updateGraph"] option[value="range"]').addClass('hidden');
 		});
 
-		function throwCustomRangeSelector(targetEl) {
-			Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
-				const modal = bootbox.dialog({
-					title: '[[admin/dashboard:page-views-custom]]',
-					message: html,
-					buttons: {
-						submit: {
-							label: '[[global:search]]',
-							className: 'btn-primary',
-							callback: submit,
-						},
+		async function throwCustomRangeSelector(targetEl) {
+			const html = await app.parseAndTranslate('admin/partials/pageviews-range-select', {});
+			const modal = await modals.dialog({
+				title: '[[admin/dashboard:page-views-custom]]',
+				message: html,
+				buttons: {
+					submit: {
+						label: '[[global:search]]',
+						className: 'btn-primary',
+						callback: submit,
 					},
-				}).on('shown.bs.modal', function () {
-					const date = new Date();
-					const today = date.toISOString().slice(0, 10);
-					date.setDate(date.getDate() - 1);
-					const yesterday = date.toISOString().slice(0, 10);
+				},
+			}).on('shown.bs.modal', function () {
+				const date = new Date();
+				const today = date.toISOString().slice(0, 10);
+				date.setDate(date.getDate() - 1);
+				const yesterday = date.toISOString().slice(0, 10);
 
-					modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
-					modal.find('#endRange').val(targetEl.attr('data-endRange') || today);
-				});
-
-				function submit() {
-					// NEED TO ADD VALIDATION HERE FOR YYYY-MM-DD
-					const formData = modal.find('form').serializeObject();
-					const validRegexp = /\d{4}-\d{2}-\d{2}/;
-
-					// Input validation
-					if (!formData.startRange && !formData.endRange) {
-						// No range? Assume last 30 days
-						updateTrafficGraph('days');
-						return;
-					} else if (!validRegexp.test(formData.startRange) || !validRegexp.test(formData.endRange)) {
-						// Invalid Input
-						modal.find('.alert-danger').removeClass('hidden');
-						return false;
-					}
-
-					let until = new Date(formData.endRange);
-					until.setDate(until.getDate() + 1);
-					until = until.getTime();
-					const amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
-
-					updateTrafficGraph('days', until, amount);
-
-					// Update "custom range" label
-					targetEl.attr('data-startRange', formData.startRange);
-					targetEl.attr('data-endRange', formData.endRange);
-					targetEl.find('option[value="range"]').text(formData.startRange + ' - ' + formData.endRange);
-					targetEl.val('range');
-				}
+				modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
+				modal.find('#endRange').val(targetEl.attr('data-endRange') || today);
 			});
+
+			function submit() {
+				// NEED TO ADD VALIDATION HERE FOR YYYY-MM-DD
+				const formData = modal.find('form').serializeObject();
+				const validRegexp = /\d{4}-\d{2}-\d{2}/;
+
+				// Input validation
+				if (!formData.startRange && !formData.endRange) {
+					// No range? Assume last 30 days
+					updateTrafficGraph('days');
+					return;
+				} else if (!validRegexp.test(formData.startRange) || !validRegexp.test(formData.endRange)) {
+					// Invalid Input
+					modal.find('.alert-danger').removeClass('hidden');
+					return false;
+				}
+
+				let until = new Date(formData.endRange);
+				until.setDate(until.getDate() + 1);
+				until = until.getTime();
+				const amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
+
+				updateTrafficGraph('days', until, amount);
+
+				// Update "custom range" label
+				targetEl.attr('data-startRange', formData.startRange);
+				targetEl.attr('data-endRange', formData.endRange);
+				targetEl.find('option[value="range"]').text(formData.startRange + ' - ' + formData.endRange);
+				targetEl.val('range');
+			}
 		}
 
 		callback();
@@ -454,10 +452,6 @@ function updateTrafficGraph(units, until, amount) {
 			graphs.traffic.data.xLabels = utils.getDaysArray(until, amount);
 		} else {
 			graphs.traffic.data.xLabels = utils.getHoursArray();
-
-			$('#pageViewsThirty').html(formattedNumber(data.summary.thirty));
-			$('#pageViewsSeven').html(formattedNumber(data.summary.seven));
-			$('#pageViewsPastDay').html(formattedNumber(data.pastDay));
 		}
 
 		graphs.traffic.data.datasets[0].data = data.pageviews;
@@ -509,7 +503,7 @@ function updatePresenceGraph(users) {
 
 function updateTopicsGraph(topics) {
 	if (!topics.length) {
-		translator.translate('[[admin/dashboard:no-users-browsing]]', function (translated) {
+		translator.translateKey('[[admin/dashboard:no-users-browsing]]', function (translated) {
 			topics = [{
 				title: translated,
 				count: 1,
@@ -534,15 +528,19 @@ function updateTopicsGraph(topics) {
 	function buildTopicsLegend() {
 		let html = '';
 		topics.forEach(function (t, i) {
-			const link = t.tid ? '<a title="' + t.title + '"href="' + config.relative_path + '/topic/' + t.tid + '" target="_blank"> ' + t.title + '</a>' : t.title;
-			const label = t.count === '0' ? t.title : link;
+			const title = escape(t.title);
+			const tidEscaped = escape(t.tid);
+			const link = t.tid ?
+				`<a title="${title}" href="${config.relative_path}/topic/${tidEscaped}" target="_blank">${title}</a>` :
+				title;
+			const label = t.count === '0' ? title : link;
 
 			html += '<li>' +
-				'<div style="background-color: ' + topicColors[i] + ';"></div>' +
-				'<span> (' + t.count + ') ' + label + '</span>' +
+				`<div style="background-color: ${topicColors[i]};"></div>` +
+				`<span>(${t.count}) ${label}</span>` +
 				'</li>';
 		});
-		$('#topics-legend').translateHtml(html);
+		$('#topics-legend').html(html);
 	}
 
 	buildTopicsLegend();

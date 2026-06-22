@@ -61,7 +61,7 @@
 							<i id="group-icon" class="fa fa-2x {{{ if group.icon }}}{group.icon}{{{ end }}}" value="{group.icon}"></i>
 						</div>
 						<div class="w-100">
-							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitleEscaped}" maxlength="{maximumGroupTitleLength}" data-property />
+							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" data-property />
 						</div>
 					</div>
 				</div>
@@ -171,18 +171,18 @@
 								<li component="category/no-matches" role="presentation" class="category hidden">
 									<a class="dropdown-item" role="menuitem">[[search:no-matches]]</a>
 								</li>
-								{{{each categories}}}
+								{{{ each categories }}}
 								<li role="presentation" class="category {{{ if categories.disabledClass }}}disabled{{{ end }}}" data-cid="{categories.cid}" data-name="{categories.name}" data-parent-cid="{categories.parentCid}">
 									<a class="dropdown-item rounded-1" role="menuitem">{categories.level}
 										<span component="category-markup">
 											<div class="category-item d-inline-block">
-												{buildCategoryIcon(@value, "24px", "rounded-circle")}
+												{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 												{./name}
 											</div>
 										</span>
 									</a>
 								</li>
-								{{{end}}}
+								{{{ end }}}
 							</ul>
 						</div>
 					</div>

@@ -5,7 +5,8 @@ define('forum/chats/events', [
 	'forum/chats/messages',
 	'chat',
 	'components',
-], function (messages, chatModule, components) {
+	'helpers',
+], function (messages, chatModule, components, helpers) {
 	const Events = {};
 
 	const events = {
@@ -52,11 +53,14 @@ define('forum/chats/events', [
 
 			messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
 		}
-		Chats.updateTeaser(data.roomId, {
-			content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
-			user: data.message.fromUser,
-			timestampISO: data.message.timestampISO,
-		});
+
+		if (!data.message.system) {
+			Chats.updateTeaser(data.roomId, {
+				content: utils.stripHTMLTags(utils.decodeHTMLEntities(data.message.content)),
+				user: data.message.fromUser,
+				timestampISO: data.message.timestampISO,
+			});
+		}
 	}
 
 	function publicChatUnread(data) {
@@ -80,17 +84,26 @@ define('forum/chats/events', [
 
 	function onRoomRename(data) {
 		const roomEl = components.get('chat/recent/room', data.roomId);
+		const publicRoomEl = components.get('chat/public/room', data.roomId);
+
 		if (roomEl.length) {
 			const titleEl = roomEl.find('[component="chat/room/title"]');
 			ajaxify.data.roomName = data.newName;
-			titleEl.translateText(data.newName ? data.newName : ajaxify.data.usernames);
+			if (data.newName) {
+				titleEl.text(data.newName);
+			} else {
+				titleEl.translateText(ajaxify.data.usernames);
+			}
+		} else if (publicRoomEl.length) {
+			publicRoomEl.find('[component="chat/room/title"]').text(data.newName);
 		}
+
 		const titleEl = $(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"] [component="chat/header/title"]`);
 		if (titleEl.length) {
-			titleEl.html(
+			titleEl.translateHtml(
 				data.newName ?
-					`<i class="fa ${ajaxify.data.icon} text-muted"></i> ${data.newName}` :
-					ajaxify.data.chatWithMessage
+					`<i class="fa ${helpers.escape(ajaxify.data.icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
+					data.chatWithMessage
 			);
 		}
 	}

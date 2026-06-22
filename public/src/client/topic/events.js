@@ -120,19 +120,23 @@ define('forum/topic/events', [
 			history.replaceState({ url: newUrl }, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
 			topicTitle.fadeOut(250, function () {
-				topicTitle.html(data.topic.title).fadeIn(250);
+				topicTitle.text(data.topic.title).fadeIn(250);
 			});
-			breadCrumb.fadeOut(250, function () {
-				breadCrumb.html(data.topic.title).fadeIn(250);
-			});
+
+			if (breadCrumb.is(':visible')) {
+				breadCrumb.fadeOut(250, function () {
+					breadCrumb.find('span').text(data.topic.title);
+					breadCrumb.fadeIn(250);
+				});
+			}
 			navbarTitle.fadeOut(250, function () {
-				navbarTitle.html(data.topic.title).fadeIn(250);
+				navbarTitle.text(data.topic.title).fadeIn(250);
 			});
 		}
 
 		if (data.post.changed) {
 			editedPostEl.fadeOut(250, function () {
-				editedPostEl.html(translator.unescape(data.post.content));
+				editedPostEl.html(data.post.content);
 				editedPostEl.find('img:not(.not-responsive)').addClass('img-fluid');
 				images.wrapImagesInLinks(editedPostEl.parent());
 				posts.addBlockquoteEllipses(editedPostEl.parent());
@@ -157,9 +161,7 @@ define('forum/topic/events', [
 
 			const parentEl = $(`[component="post/parent"][data-parent-pid="${data.post.pid}"]`);
 			if (parentEl.length) {
-				parentEl.find('[component="post/parent/content"]').html(
-					translator.unescape(data.post.content)
-				);
+				parentEl.find('[component="post/parent/content"]').html(data.post.content);
 				parentEl.find('img:not(.not-responsive)').addClass('img-fluid');
 				parentEl.find('[component="post/parent/content"] img:not(.emoji)').each(function () {
 					images.wrapImageInLink($(this));
@@ -213,9 +215,9 @@ define('forum/topic/events', [
 			if (!isAdminOrMod && !isSelfPost) {
 				postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
 				if (isDeleted) {
-					postEl.find('[component="post/content"]').translateHtml('[[topic:post-is-deleted]]');
+					postEl.find('[component="post/content"]').translateText('[[topic:post-is-deleted]]');
 				} else {
-					postEl.find('[component="post/content"]').html(translator.unescape(data.content));
+					postEl.find('[component="post/content"]').html(data.content);
 				}
 			}
 		}
@@ -225,9 +227,9 @@ define('forum/topic/events', [
 			parentEl.each((i, el) => {
 				const $parent = $(el);
 				if (isDeleted) {
-					$parent.find('[component="post/parent/content"]').translateHtml('[[topic:post-is-deleted]]');
+					$parent.find('[component="post/parent/content"]').translateText('[[topic:post-is-deleted]]');
 				} else {
-					$parent.find('[component="post/parent/content"]').html(translator.unescape(data.content));
+					$parent.find('[component="post/parent/content"]').html(data.content);
 				}
 			});
 		}

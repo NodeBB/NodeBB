@@ -1,8 +1,8 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts', 'api', 'scrollStop', 'resizable',
-], function (components, taskbar, translator, hooks, bootbox, alerts, api, scrollStop, resizable) {
+	'components', 'taskbar', 'translator', 'hooks', 'modals', 'alerts', 'api', 'scrollStop', 'resizable', 'helpers',
+], function (components, taskbar, translator, hooks, modals, alerts, api, scrollStop, resizable, helpers) {
 	const Chat = {};
 
 	Chat.openChat = function (roomId, uid) {
@@ -74,7 +74,7 @@ define('chat', [
 				return createChat();
 			}
 
-			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+			modals.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
 				if (ok) {
 					createChat();
 				}
@@ -236,14 +236,12 @@ define('chat', [
 		if (titleEl.length) {
 			titleEl.html(
 				data.newName ?
-					`<i class="fa ${icon} text-muted"></i> ${data.newName}` :
+					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
 					data.chatWithMessage
 			);
 		}
-
-		const newTitle = $('<div></div>').html(data.newName).text();
 		taskbar.update('chat', modal.attr('data-uuid'), {
-			title: newTitle,
+			title: helpers.escape(data.newName),
 		});
 		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
@@ -275,15 +273,20 @@ define('chat', [
 
 		const usernames = [];
 		typingUsersList.children().each((i, el) => {
-			usernames.push($(el).text());
+			usernames.push(translator.escape($(el).text()));
 		});
 
+		const totalTyping = usernames.length;
 		const typingTextEl = typingEl.find('[component="chat/composer/typing/text"]');
-		const count = usernames.length > 3 ? 'n' : usernames.length;
-		if (count) {
-			const key = `modules:chat.user-typing-${count}`;
-			const compiled = translator.compile.apply(null, [key, ...usernames]);
-			typingTextEl.html(await translator.translate(compiled));
+		if (totalTyping) {
+			const key = `modules:chat.user-typing-${totalTyping > 3 ? 'n' : totalTyping}`;
+			const args = [];
+			if (totalTyping > 3) {
+				args.push(usernames[0], usernames[1], totalTyping - 2);
+			} else {
+				args.push(...usernames);
+			}
+			typingTextEl.html(await translator.translateKey(key, args));
 		}
 		typingTextEl.toggleClass('hidden', !usernames.length);
 	};

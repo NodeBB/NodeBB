@@ -111,7 +111,7 @@
 							</div>
 							<div class="text-sm lh-1">
 								{{{ if posts.user.userslug}}}
-								<a class="text-decoration-none d-flex align-items-center gap-1" href="{config.relative_path}/uid/{posts.user.uid}">{buildAvatar(posts.user, "24px", true, "not-responsive")} {posts.user.username}</a>
+								<a class="text-decoration-none d-flex align-items-center gap-1" href="{config.relative_path}/uid/{posts.user.uid}">{{buildAvatar(posts.user, "24px", true, "not-responsive")}} {posts.user.username}</a>
 								{{{ else }}}
 								{posts.user.username}
 								{{{ end }}}
@@ -147,18 +147,18 @@
 							<span class="small topic-title text-break">
 								{{{ if posts.data.tid }}}
 								<div class="d-flex flex-column align-items-start gap-1">
-									<a href="{config.relative_path}/topic/{posts.data.tid}">{txEscape(posts.topic.title)}</a>
+									<a href="{config.relative_path}/topic/{posts.data.tid}">{posts.topic.title}</a>
 									<span class="badge text-body border border-gray-300 stats text-xs">
 										<span class="text-lowercase fw-normal">[[global:lastpost]]</span>
 										<span title="{posts.topic.lastposttimeISO}" class="timeago fw-bold"></span>
 									</span>
 								</div>
 								{{{ end }}}
-								<span class="title-text">{txEscape(posts.data.title)}</span>
+								<span class="title-text">{posts.data.title}</span>
 							</span>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
-								<input class="form-control form-control-sm" type="text" value="{txEscape(posts.data.title)}"/>
+								<input class="form-control form-control-sm" type="text" value="{posts.data.title}"/>
 							</div>
 							{{{end}}}
 						</li>
@@ -176,7 +176,7 @@
 							<div class="topic-category">
 								<a href="{config.relative_path}/category/{posts.category.slug}">
 									<div class="category-item d-inline-block">
-										{buildCategoryIcon(./category, "24px", "rounded-circle")}
+										{{buildCategoryIcon(./category, "24px", "rounded-circle")}}
 										<span class="text-sm">{posts.category.name}</span>
 									</div>
 								</a>
@@ -195,7 +195,7 @@
 							<div class="topic-category">
 								<a href="{config.relative_path}/category/{posts.crosspostCategory.slug}">
 									<div class="category-item d-inline-block">
-										{buildCategoryIcon(./crosspostCategory, "24px", "rounded-circle")}
+										{{buildCategoryIcon(./crosspostCategory, "24px", "rounded-circle")}}
 										<span class="text-sm">{posts.crosspostCategory.name}</span>
 									</div>
 								</a>
@@ -214,7 +214,7 @@
 							</div>
 							<div class="tag-list">
 								{{{ each posts.data.tags }}}
-								<a href="{config.relative_path}/tags/{encodeURIComponent(@value)}"><span class="badge border border-gray-300 fw-normal tag">{escape(@value)}</span></a>
+								<a href="{config.relative_path}/tags/{encodeURIComponent(@value)}"><span class="badge border border-gray-300 fw-normal tag">{@value}</span></a>
 								{{{ end }}}
 							</div>
 							<div class="topic-tags-editable hidden">
@@ -250,9 +250,9 @@
 						<button data-action="editContent" class="btn btn-ghost btn-sm ff-secondary border text-xs">[[post-queue:edit]]</button>
 						{{{ end }}}
 					</div>
-					<div class="post-content mb-auto text-break px-3 py-0 h-100">{txEscape(posts.data.content)}</div>
-					<div class="post-content-editable flex-grow-1 hidden">
-						<textarea class="form-control w-100 h-100 p-3">{txEscape(posts.data.rawContent)}</textarea>
+					<div class="post-content mb-auto text-break px-3 py-0 px-1 h-100">{{txEscape(posts.data.content)}}</div>
+					<div class="post-content-editable flex-grow-1 hidden px-2">
+						<textarea class="form-control w-100 h-100 px-2">{posts.data.rawContent}</textarea>
 					</div>
 					<div component="post-queue/link-container" class="hidden border-top mx-3 py-3">
 						<label class="text-secondary form-text mb-2">[[post-queue:links-in-this-post]]</label>
@@ -265,9 +265,9 @@
 							{{{ each posts.data.thumbs }}}
 							<div class="position-relative">
 								<a class="d-inline-block" href="#">
-									<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{escape(@value)}" />
+									<img class="rounded-1 bg-light" style="width:auto; max-width: 5.33rem; height: 3.33rem; object-fit: contain;" src="{@value}" />
 								</a>
-								<a href="#" data-action="removeThumb" class="link-danger position-absolute btn top-0 start-100 translate-middle p-1"><i class="fa-solid fa-circle-xmark"></i></button>
+								<a href="#" data-action="removeThumb" class="link-danger position-absolute btn shadow-none top-0 start-100 translate-middle p-1"><i class="fa-solid fa-circle-xmark"></i></button>
 							</div>
 							{{{ end }}}
 							<a class="btn btn-ghost d-inline-block p-0" href="#" data-action="uploadThumb">

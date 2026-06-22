@@ -1,9 +1,9 @@
 'use strict';
 
 define('admin/manage/users', [
-	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'bootbox', 'alerts',
+	'translator', 'benchpress', 'autocomplete', 'api', 'slugify', 'modals', 'alerts',
 	'accounts/invite', 'accounts/moderate','helpers', 'admin/modules/change-email',
-], function (translator, Benchpress, autocomplete, api, slugify, bootbox, alerts,
+], function (translator, Benchpress, autocomplete, api, slugify, modals, alerts,
 	AccountInvite, AccountModerate, helpers, changeEmail) {
 	const Users = {};
 
@@ -15,7 +15,7 @@ define('admin/manage/users', [
 			ajaxify.go(window.location.pathname + '?' + qs);
 		});
 
-		$('.export-csv').on('click', function () {
+		$('.export-csv').on('click', async function () {
 			socket.once('event:export-users-csv', function () {
 				alerts.remove('export-users-start');
 				alerts.alert({
@@ -63,7 +63,7 @@ define('admin/manage/users', [
 				</div>`
 			)).join('');
 
-			const modal = bootbox.dialog({
+			const modal = await modals.dialog({
 				message: options,
 				title: '[[admin/manage/users:export-users-fields-title]]',
 				buttons: {
@@ -154,8 +154,8 @@ define('admin/manage/users', [
 				if (err) {
 					return alerts.error(err);
 				}
-				Benchpress.render('admin/partials/manage_user_groups', data).then(function (html) {
-					const modal = bootbox.dialog({
+				Benchpress.render('admin/partials/manage_user_groups', data).then(async function (html) {
+					const modal = await modals.dialog({
 						message: html,
 						title: '[[admin/manage/users:manage-groups]]',
 						onEscape: true,
@@ -164,7 +164,6 @@ define('admin/manage/users', [
 						autocomplete.group(modal.find('.group-search'), function (ev, ui) {
 							const uid = $(ev.target).attr('data-uid');
 							api.put('/groups/' + ui.item.group.slug + '/membership/' + uid, undefined).then(() => {
-								ui.item.group.nameEscaped = translator.escape(ui.item.group.displayName);
 								app.parseAndTranslate('admin/partials/manage_user_groups', { users: [{ groups: [ui.item.group] }] }, function (html) {
 									$('[data-uid=' + uid + '] .group-area').append(html.find('.group-area').html());
 								});
@@ -187,7 +186,7 @@ define('admin/manage/users', [
 			});
 		});
 
-		$('.set-reputation').on('click', function () {
+		$('.set-reputation').on('click', async function () {
 			const uids = getSelectedUids();
 			if (!uids.length) {
 				alerts.error('[[error:no-users-selected]]');
@@ -200,7 +199,7 @@ define('admin/manage/users', [
 					currentValue = String(user.reputation);
 				}
 			}
-			const modal = bootbox.dialog({
+			const modal = await modals.dialog({
 				message: `<input id="new-reputation" type="text" class="form-control" value="${currentValue}">`,
 				title: '[[admin/manage/users:set-reputation]]',
 				onEscape: true,
@@ -362,7 +361,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-validate-email]]', function (confirm) {
+			modals.confirm('[[admin/manage/users:alerts.confirm-validate-email]]', function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -411,7 +410,7 @@ define('admin/manage/users', [
 				})));
 			}
 
-			const modal = bootbox.dialog({
+			const modal = await modals.dialog({
 				message: `<div class="d-flex flex-column gap-2">
 					<label class="form-label">[[user:new-password]]</label>
 					<input id="newPassword" class="form-control" type="text">
@@ -445,7 +444,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			bootbox.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
+			modals.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[admin/manage/users:alerts.password-reset-email-sent]]'));
 				}
@@ -458,7 +457,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-force-password-reset]]', function (confirm) {
+			modals.confirm('[[admin/manage/users:alerts.confirm-force-password-reset]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.forcePasswordReset', uids, done('[[admin/manage/users:alerts.validate-force-password-reset-success]]'));
 				}
@@ -553,7 +552,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			bootbox.confirm(confirmMsg, function (confirm) {
+			modals.confirm(confirmMsg, function (confirm) {
 				if (confirm) {
 					Promise.all(
 						uids.map(
@@ -580,8 +579,8 @@ define('admin/manage/users', [
 
 		function handleUserCreate() {
 			$('[data-action="create"]').on('click', function () {
-				Benchpress.render('admin/partials/create_user_modal', {}).then(function (html) {
-					const modal = bootbox.dialog({
+				Benchpress.render('admin/partials/create_user_modal', {}).then(async function (html) {
+					const modal = await modals.dialog({
 						message: html,
 						title: '[[admin/manage/users:alerts.create]]',
 						onEscape: true,
@@ -696,11 +695,11 @@ define('admin/manage/users', [
 				return;
 			}
 			if (data && data.users.length === 0) {
-				$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
+				$('#user-notfound-notify').translateText('[[admin/manage/users:search.not-found]]')
 					.removeClass('hidden');
 				$('#user-found-notify').addClass('hidden');
 			} else {
-				$('#user-found-notify').translateHtml(
+				$('#user-found-notify').translateText(
 					translator.compile('admin/manage/users:alerts.x-users-found', data.matchCount, data.timing)
 				).removeClass('hidden');
 				$('#user-notfound-notify').addClass('hidden');

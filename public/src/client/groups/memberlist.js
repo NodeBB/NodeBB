@@ -1,6 +1,8 @@
 'use strict';
 
-define('forum/groups/memberlist', ['api', 'bootbox', 'alerts', 'helpers'], function (api, bootbox, alerts, helpers) {
+define('forum/groups/memberlist', [
+	'api', 'modals', 'alerts', 'helpers', 'benchpress',
+], function (api, modals, alerts, helpers, Benchpress) {
 	const MemberList = {};
 	let templateName;
 
@@ -33,9 +35,9 @@ define('forum/groups/memberlist', ['api', 'bootbox', 'alerts', 'helpers'], funct
 
 	function handleMemberAdd() {
 		$('[component="groups/members/add"]').on('click', function () {
-			app.parseAndTranslate('admin/partials/groups/add-members', {}, function (html) {
+			Benchpress.render('admin/partials/groups/add-members', {}).then(async function (html) {
 				const foundUsers = [];
-				const modal = bootbox.dialog({
+				const modal = await modals.dialog({
 					title: '[[groups:details.add-member]]',
 					message: html,
 					buttons: {

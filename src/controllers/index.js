@@ -2,7 +2,6 @@
 
 const path = require('path');
 const nconf = require('nconf');
-const validator = require('validator');
 const mime = require('mime').default;
 
 const meta = require('../meta');
@@ -11,7 +10,6 @@ const plugins = require('../plugins');
 const image = require('../image');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
-const translator = require('../translator');
 
 const Controllers = module.exports;
 
@@ -110,7 +108,7 @@ Controllers.login = async function (req, res) {
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	} else if (req.query.error) {
-		errorText = validator.escape(String(req.query.error));
+		errorText = req.query.error;
 	}
 
 	if (req.headers['x-return-to']) {
@@ -432,11 +430,9 @@ Controllers.outgoing = function (req, res, next) {
 	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
 	}
-	const escapedSearch = validator.escape(translator.escape(parsed.search || ''));
-	const escapedUrl = parsed.search ? parsed.href.replace(parsed.search, escapedSearch) : parsed.href;
 
 	res.render('outgoing', {
-		outgoing: escapedUrl,
+		outgoing: url,
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{
 			text: '[[notifications:outgoing-link]]',

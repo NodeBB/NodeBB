@@ -18,8 +18,6 @@ require('./sockets');
 require('./overrides');
 require('./ajaxify');
 
-app = window.app || {};
-
 Object.defineProperty(app, 'isFocused', {
 	get() {
 		return document.visibilityState === 'visible';
@@ -268,14 +266,9 @@ if (document.readyState === 'loading') {
 		if (!el.length) {
 			return;
 		}
-
-		require(['translator'], function (translator) {
-			translator.translate('[[global:' + status + ']]', function (translated) {
-				el.removeClass('online offline dnd away')
-					.addClass(status)
-					.attr('data-new-title', translated);
-			});
-		});
+		el.removeClass('online offline dnd away')
+			.addClass(status)
+			.translateAttr('data-new-title', `[[global:${status}]]`);
 	};
 
 	app.newTopic = function (params) {
@@ -308,8 +301,8 @@ if (document.readyState === 'loading') {
 
 		const [hooks, api] = await app.require(['hooks', 'api']);
 		params.title = (ajaxify.data.template.topic ?
-			ajaxify.data.titleRaw :
-			(await api.get(`/topics/${params.tid}`)).titleRaw);
+			ajaxify.data.title :
+			(await api.get(`/topics/${params.tid}`)).title);
 
 		hooks.fire('action:composer.post.new', params);
 	};
@@ -337,12 +330,24 @@ if (document.readyState === 'loading') {
 		return new Promise((resolve, reject) => {
 			require(['translator', 'benchpress'], function (translator, Benchpress) {
 				Benchpress.render(template, data, blockName)
+					// TODO: remove once all tx tokens are migrated to tx("") helper
 					.then(rendered => translator.translate(rendered))
 					.then(translated => translator.unescape(translated))
 					.then(resolve, reject);
 			});
 		}).then((html) => {
-			html = $(html);
+			try {
+				html = $(html);
+			} catch (err) {
+				// handle cases where the template parsed has multiple elements at the root level
+				// this breaks the jquery selector so we wrap it in a div
+				if (err.startsWith('Syntax error, unrecognized expression')) {
+					html = $(`<div>${html}</div>`);
+				} else {
+					throw err;
+				}
+			}
+
 			if (callback && typeof callback === 'function') {
 				setTimeout(callback, 0, html);
 			}

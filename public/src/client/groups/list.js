@@ -1,14 +1,14 @@
 'use strict';
 
 define('forum/groups/list', [
-	'api', 'bootbox', 'alerts',
-], function (api, bootbox, alerts) {
+	'api', 'modals', 'alerts',
+], function (api, modals, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
 		// Group creation
-		$('button[data-action="new"]').on('click', function () {
-			const modal = bootbox.prompt('[[groups:new-group.group-name]]', function (name) {
+		$('button[data-action="new"]').on('click', async function () {
+			const modal = await modals.prompt('[[groups:new-group.group-name]]', function (name) {
 				if (name === '') {
 					return false;
 				}

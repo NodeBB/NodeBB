@@ -5,7 +5,7 @@
 	{{{ end }}}
 
 	<div class="message-header lh-1 d-flex align-items-center gap-2 text-sm {{{ if !messages.newSet }}}hidden{{{ end }}} pb-2">
-		<a href="{config.relative_path}/user/{messages.fromUser.userslug}" class="text-decoration-none">{buildAvatar(messages.fromUser, "18px", true, "not-responsive")}</a>
+		<a href="{config.relative_path}/user/{messages.fromUser.userslug}" class="text-decoration-none">{{buildAvatar(messages.fromUser, "18px", true, "not-responsive")}}</a>
 		<span class="chat-user fw-semibold"><a href="{config.relative_path}/user/{messages.fromUser.userslug}">{messages.fromUser.displayname}</a></span>
 		{{{ if messages.fromUser.banned }}}
 		<span class="badge bg-danger">[[user:banned]]</span>
@@ -18,8 +18,8 @@
 		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="[[global:edited-timestamp, {isoTimeToLocaleString(messages.editedISO, config.userLang)}]]"><i class="fa fa-edit"></i></span></div>
 	</div>
 	<div class="message-body-wrapper">
-		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break">
-			{messages.content}
+		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break mb-last-0 mb-3">
+			{{renderContent(messages.content, messages.deleted)}}
 		</div>
 		<!-- IMPORT partials/chats/reactions.tpl -->
 		<div component="chat/message/controls" class="position-relative">

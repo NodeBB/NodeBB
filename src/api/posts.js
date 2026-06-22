@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -17,7 +16,7 @@ const activitypub = require('../activitypub');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
-const translator = require('../translator');
+const tx = require('../translator');
 const notifications = require('../notifications');
 
 const postsAPI = module.exports;
@@ -139,8 +138,8 @@ postsAPI.edit = async function (caller, data) {
 			uid: caller.uid,
 			ip: caller.ip,
 			tid: editResult.topic.tid,
-			oldTitle: validator.escape(String(editResult.topic.oldTitle)),
-			newTitle: validator.escape(String(editResult.topic.title)),
+			oldTitle: editResult.topic.oldTitle,
+			newTitle: editResult.topic.title,
 		});
 	}
 	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
@@ -599,7 +598,7 @@ postsAPI.removeQueuedPost = async (caller, data) => {
 	await canEditQueue(caller.uid, data, 'reject');
 	const result = await posts.removeFromQueue(data.id);
 	if (result && caller.uid !== parseInt(result.uid, 10)) {
-		const msg = validator.escape(String(data.message ? data.message : ''));
+		const msg = String(data.message ? data.message : '');
 		await sendQueueNotification(
 			msg ? 'post-queue-rejected-for-reason' : 'post-queue-rejected', result.uid, '/', msg
 		);
@@ -625,7 +624,7 @@ postsAPI.notifyQueuedPostOwner = async (caller, data) => {
 	await canEditQueue(caller.uid, data, 'notify');
 	const result = await posts.getFromQueue(data.id);
 	if (result) {
-		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, validator.escape(String(data.message || '')));
+		await sendQueueNotification('post-queue-notify', result.uid, `/post-queue/${data.id}`, String(data.message || ''));
 	}
 };
 
@@ -667,8 +666,8 @@ async function logQueueEvent(caller, result, type) {
 
 async function sendQueueNotification(type, targetUid, path, notificationText) {
 	const bodyShort = notificationText ?
-		translator.compile(`notifications:${type}`, notificationText) :
-		translator.compile(`notifications:${type}`);
+		tx.compile(`notifications:${type}`, tx.escape(notificationText)) :
+		tx.compile(`notifications:${type}`);
 	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,

@@ -141,13 +141,13 @@ app.onDomReady();
 	}
 
 	function setupRestartLinks() {
-		require(['benchpress', 'bootbox', 'admin/modules/instance'], function (benchpress, bootbox, instance) {
+		require(['benchpress', 'modals', 'admin/modules/instance'], function (benchpress, modals, instance) {
 			// need to preload the compiled alert template
 			// otherwise it can be unloaded when rebuild & restart is run
 			// the client can't fetch the template file, resulting in an error
 			benchpress.render('partials/toast', {}).then(function () {
 				$('[component="rebuild-and-restart"]').off('click').on('click', function () {
-					bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
+					modals.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
 						if (confirm) {
 							instance.rebuildAndRestart();
 						}
@@ -155,7 +155,7 @@ app.onDomReady();
 				});
 
 				$('[component="restart"]').off('click').on('click', function () {
-					bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
+					modals.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
 						if (confirm) {
 							instance.restart();
 						}

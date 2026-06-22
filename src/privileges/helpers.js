@@ -2,14 +2,12 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const groups = require('../groups');
 const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const utils = require('../utils');
 
 const helpers = module.exports;
@@ -188,8 +186,7 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 			types[key] = getType(key);
 		}
 		return {
-			name: validator.escape(member),
-			nameEscaped: translator.escape(validator.escape(member)),
+			name: member,
 			privileges: memberPrivs,
 			types: types,
 			isPrivate: groupData[index] && !!groupData[index].private,

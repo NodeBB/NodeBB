@@ -18,7 +18,7 @@ const utils = require('./utils');
 const emailer = require('./emailer');
 const ttlCache = require('./cache/ttl');
 const cron = require('./cron');
-const translator = require('./translator');
+const tx = require('./translator');
 
 const Notifications = module.exports;
 
@@ -554,8 +554,8 @@ Notifications.merge = async function (notifications) {
 					const { roomId, roomName, type, user } = set[0];
 					const isGroupChat = type === 'new-group-chat';
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
-						translator.compile('notifications:new-messages-in', set.length, roomName) :
-						translator.compile('notifications:new-messages-from', set.length, user.displayname);
+						tx.compile('notifications:new-messages-in', set.length, roomName) :
+						tx.compile('notifications:new-messages-from', set.length, user.displayname);
 					break;
 				}
 
@@ -571,7 +571,7 @@ Notifications.merge = async function (notifications) {
 						notifObj.roomName,
 					];
 
-					notifObj.bodyShort = translator.compile(...txArgs);
+					notifObj.bodyShort = tx.compile(...txArgs);
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}
@@ -590,7 +590,7 @@ Notifications.merge = async function (notifications) {
 						...(isMultiple ? [usernames.length - 2] : []),
 						utils.decodeHTMLEntities(notifObj.topicTitle || ''),
 					];
-					notifObj.bodyShort = translator.compile(...txArgs);
+					notifObj.bodyShort = tx.compile(...txArgs);
 					notifObj.path = set[set.length - 1].path;
 					break;
 				}

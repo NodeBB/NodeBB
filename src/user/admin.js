@@ -4,7 +4,6 @@
 const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
-const validator = require('validator');
 const { AsyncParser } = require('@json2csv/node');
 
 const { baseDir } = require('../constants').paths;
@@ -28,8 +27,7 @@ module.exports = function (User) {
 	};
 
 	User.getIPs = async function (uid, stop) {
-		const ips = await db.getSortedSetRevRange(`uid:${uid}:ip`, 0, stop);
-		return ips.map(ip => validator.escape(String(ip)));
+		return await db.getSortedSetRevRange(`uid:${uid}:ip`, 0, stop);
 	};
 
 	User.getUsersCSV = async function () {

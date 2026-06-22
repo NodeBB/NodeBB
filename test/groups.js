@@ -17,7 +17,7 @@ const apiGroups = require('../src/api/groups');
 const meta = require('../src/meta');
 const navigation = require('../src/navigation/admin');
 const translator = require('../src/translator');
-
+const request = require('../src/request');
 
 describe('Groups', () => {
 	let adminUid;
@@ -150,15 +150,20 @@ describe('Groups', () => {
 	describe('description', () => {
 		it('should not translate group description', async () => {
 			const desc = '[[global:403.login, javascript:alert(document.domain)]]';
-			const txEscapedDesc = translator.escape(desc);
 			await Groups.create({
-				name: 'tx escape',
+				name: 'tx-escape',
 				description: desc,
 				private: 0,
 				hidden: 0,
 			});
-			const data = await Groups.get('tx escape', {});
-			assert.strictEqual(data.descriptionParsed, txEscapedDesc);
+			const data = await Groups.get('tx-escape', {});
+			// should not be tx escaped in api
+			assert.strictEqual(data.descriptionParsed, desc);
+
+			// should not be translated in the html
+			const { response, body } = await request.get(`${nconf.get('url')}/groups/tx-escape`, {});
+			assert(body.includes('[[global:403.login, javascript:alert(document.domain)]]'));
+			assert(!body.includes('Perhaps you should'));
 		});
 	});
 
@@ -493,7 +498,7 @@ describe('Groups', () => {
 			assert.strictEqual('updatetestgroup', groupObj.slug);
 
 			const navItems = await navigation.get();
-			assert.strictEqual(navItems[0].route, '&#x2F;categories');
+			assert.strictEqual(navItems[0].route, '/categories');
 		});
 
 		it('should fail if system groups is being renamed', (done) => {

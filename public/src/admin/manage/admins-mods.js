@@ -1,8 +1,8 @@
 'use strict';
 
 define('admin/manage/admins-mods', [
-	'autocomplete', 'api', 'bootbox', 'alerts', 'categorySelector',
-], function (autocomplete, api, bootbox, alerts, categorySelector) {
+	'autocomplete', 'api', 'modals', 'alerts', 'categorySelector',
+], function (autocomplete, api, modals, alerts, categorySelector) {
 	const AdminsMods = {};
 
 	AdminsMods.init = function () {
@@ -30,7 +30,7 @@ define('admin/manage/admins-mods', [
 			if (parseInt(uid, 10) === parseInt(app.user.uid, 10)) {
 				return alerts.error('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			}
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
+			modals.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.removeAdmins', [uid], function (err) {
 						if (err) {
@@ -61,7 +61,7 @@ define('admin/manage/admins-mods', [
 			const userCard = $(this).parents('[data-uid]');
 			const uid = userCard.attr('data-uid');
 
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-global-mod]]', function (confirm) {
+			modals.confirm('[[admin/manage/users:alerts.confirm-remove-global-mod]]', function (confirm) {
 				if (confirm) {
 					api.del('/groups/global-moderators/membership/' + uid).then(() => {
 						userCard.remove();
@@ -109,7 +109,7 @@ define('admin/manage/admins-mods', [
 			const userCard = $(this).parents('[data-uid]');
 			const uid = userCard.attr('data-uid');
 
-			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
+			modals.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
 				if (confirm) {
 					api.del(`/categories/${cid}/moderator/${uid}`, {}, function (err) {
 						if (err) {

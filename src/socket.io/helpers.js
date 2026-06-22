@@ -94,30 +94,23 @@ SocketHelpers.sendNotificationToPostOwner = async function (pid, fromuid, comman
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
-	fromuid = utils.isNumber(fromuid) ? parseInt(fromuid, 10) : fromuid;
-	const [postData, fromCategory] = await Promise.all([
-		posts.getPostFields(pid, ['tid', 'uid', 'content', 'sourceContent']),
-		!utils.isNumber(fromuid) && categories.exists(fromuid),
-	]);
+	const postData = await posts.getPostFields(pid, ['tid', 'uid', 'content', 'sourceContent']);
 	const [canRead, isIgnoring] = await Promise.all([
 		privileges.posts.can('topics:read', pid, postData.uid),
 		topics.isIgnoring([postData.tid], postData.uid),
 	]);
-	if (!canRead || isIgnoring[0] || !postData.uid || fromuid === postData.uid) {
+	if (!canRead || isIgnoring[0] || !postData.uid || String(fromuid) === String(postData.uid)) {
 		return;
 	}
-	const [userData, topicTitle, postObj] = await Promise.all([
-		fromCategory ? categories.getCategoryFields(fromuid, ['name']) : user.getUserFields(fromuid, ['username']),
-		topics.getTopicField(postData.tid, 'title'),
+	const [displayName, topicTitle, postObj] = await Promise.all([
+		user.getNotificationDisplayname(fromuid),
+		topics.getNotificationTitle(postData.tid),
 		posts.parsePost(postData),
 	]);
 
-	const title = utils.decodeHTMLEntities(topicTitle);
-	const bodyShort = translator.compile(notification, userData.displayname || userData.name, title);
-
 	const notifObj = await notifications.create({
 		type: command,
-		bodyShort: bodyShort,
+		bodyShort: translator.compile(notification, displayName, topicTitle),
 		bodyLong: postObj.content,
 		pid: pid,
 		tid: postData.tid,
@@ -137,21 +130,15 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 		return;
 	}
 
-	fromuid = parseInt(fromuid, 10);
-
-	const [userData, topicData] = await Promise.all([
-		user.getUserFields(fromuid, ['username']),
-		topics.getTopicFields(tid, ['uid', 'slug', 'title']),
+	const [displayname, title, topicData] = await Promise.all([
+		user.getNotificationDisplayname(fromuid),
+		topics.getNotificationTitle(tid),
+		topics.getTopicFields(tid, ['uid', 'slug']),
 	]);
 
-	if (fromuid === topicData.uid) {
+	if (String(fromuid) === String(topicData.uid) || !topicData.uid) {
 		return;
 	}
-
-	const { displayname } = userData;
-
-	const ownerUid = topicData.uid;
-	const title = utils.decodeHTMLEntities(topicData.title);
 
 	const notifObj = await notifications.create({
 		bodyShort: translator.compile(notification, displayname, title),
@@ -160,9 +147,7 @@ SocketHelpers.sendNotificationToTopicOwner = async function (tid, fromuid, comma
 		from: fromuid,
 	});
 
-	if (ownerUid) {
-		notifications.push(notifObj, [ownerUid]);
-	}
+	notifications.push(notifObj, [topicData.uid]);
 };
 
 SocketHelpers.upvote = async function (data, notification) {

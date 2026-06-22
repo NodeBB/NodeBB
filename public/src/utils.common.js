@@ -526,7 +526,7 @@ const utils = {
 	},
 
 	escapeHTML: function (str) {
-		if (str == null) {
+		if (str == null || str === '') {
 			return '';
 		}
 		if (!str) {

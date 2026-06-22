@@ -42,7 +42,7 @@
 
 						{{{ each regFormEntry }}}
 						<div class="mb-2 regFormEntry d-flex flex-column gap-2 {./styleName}">
-							<label for="{./inputId}">{./label}</label>
+							<label for="{./inputId}">{tx(./label)}</label>
 							<div>{{./html}}</div>
 						</div>
 						{{{ end }}}
@@ -68,6 +68,9 @@
 						<input id="token" type="hidden" name="token" value="" />
 						<input id="noscript" type="hidden" name="noscript" value="true" />
 						<input type="hidden" name="_csrf" value="{config.csrf_token}" />
+						{{{ if (config.userLang != config.defaultLang) }}}
+						<input type="hidden" name="userLang" value="{config.userLang}" />
+						{{{ end }}}
 					</form>
 				</div>
 			</div>
@@ -86,7 +89,7 @@
 								<i class="flex-shrink-0 {./icons.normal}" style="color:{./color};"></i>
 								{{{ end }}}
 								{{{ if ./labels.register }}}
-								<div class="flex-grow-1 text-body text-sm">{./labels.register}</div>
+								<div class="flex-grow-1 text-body text-sm">{tx(./labels.register)}</div>
 								{{{ end }}}
 							</a>
 						</li>

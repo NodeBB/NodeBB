@@ -7,7 +7,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const user = require('../user');
 const notifications = require('../notifications');
-const translator = require('../translator');
+const tx = require('../translator');
 const batch = require('../batch');
 const utils = require('../utils');
 
@@ -161,17 +161,14 @@ module.exports = function (Categories) {
 		return await topics.tools.checkPinExpiry(pinnedTids);
 	};
 
-	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
+	Categories.modifyTopicsByPrivilege = async function (topics, privileges) {
 		if (!Array.isArray(topics) || !topics.length || privileges.view_deleted) {
 			return;
 		}
 
 		topics.forEach((topic) => {
-			if (!topic.scheduled && topic.deleted && !topic.isOwner) {
+			if (topic && !topic.scheduled && topic.deleted && !topic.isOwner) {
 				topic.title = '[[topic:topic-is-deleted]]';
-				if (topic.hasOwnProperty('titleRaw')) {
-					topic.titleRaw = '[[topic:topic-is-deleted]]';
-				}
 				topic.slug = topic.tid;
 				topic.teaser = null;
 				topic.noAnchor = true;
@@ -238,15 +235,18 @@ module.exports = function (Categories) {
 			return;
 		}
 
-		const { displayname } = postData.user;
-		const [categoryName, title] = await Promise.all([
+		const [displayname, categoryName, title] = await Promise.all([
+			user.getNotificationDisplayname(postData.user.uid),
 			Categories.getCategoryField(cid, 'name'),
-			topics.getTopicField(postData.topic.tid, 'title'),
+			topics.getNotificationTitle(postData.topic.tid),
 		]);
 
-		const notifBase = 'notifications:user-posted-topic-in-category';
-
-		const bodyShort = translator.compile(notifBase, displayname, title, categoryName);
+		const bodyShort = tx.compile(
+			'notifications:user-posted-topic-in-category',
+			displayname,
+			title,
+			categoryName
+		);
 
 		const notification = await notifications.create({
 			type: 'new-topic-in-category',

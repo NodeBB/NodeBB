@@ -142,7 +142,7 @@ define('quickreply', [
 			storage.removeItem(qrDraftId);
 			const textEl = components.get('topic/quickreply/text');
 			hooks.fire('action:composer.post.new', {
-				title: ajaxify.data.tid ? ajaxify.data.titleRaw : '',
+				title: ajaxify.data.tid ? ajaxify.data.title : '',
 				body: textEl.val(),
 				...opts.body,
 			});

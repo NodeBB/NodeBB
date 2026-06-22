@@ -47,9 +47,9 @@ define('forum/topic/change-owner', [
 
 	function showPostsSelected() {
 		if (postSelect.pids.length) {
-			modal.find('#pids').translateHtml('[[topic:fork-pid-count, ' + postSelect.pids.length + ']]');
+			modal.find('#pids').translateText('[[topic:fork-pid-count, ' + postSelect.pids.length + ']]');
 		} else {
-			modal.find('#pids').translateHtml('[[topic:fork-no-pids]]');
+			modal.find('#pids').translateText('[[topic:fork-no-pids]]');
 		}
 	}
 

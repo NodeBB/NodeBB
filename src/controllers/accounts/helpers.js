@@ -10,7 +10,6 @@ const plugins = require('../../plugins');
 const meta = require('../../meta');
 const utils = require('../../utils');
 const privileges = require('../../privileges');
-const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
 const posts = require('../../posts');
@@ -155,7 +154,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 					key: slugify(name),
 					name,
 					value,
-					linkValue: validator.escape(String(value.replace('http://', '').replace('https://', ''))),
+					linkValue: value.replace('http://', '').replace('https://', ''),
 					type: isUrl ? 'input-link' : 'input-text',
 					'min-rep': '',
 					icon: 'fa-solid fa-circle-info',
@@ -195,7 +194,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			userValue = JSON.parse(userValue || '[]');
 		}
 		if (f.type === 'input-link' && userValue) {
-			f.linkValue = validator.escape(String(userValue.replace('http://', '').replace('https://', '')));
+			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
 		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
 		if (f.type === 'select') {
@@ -213,7 +212,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			if (Array.isArray(userValue)) {
 				userValue = userValue.join(', ');
 			}
-			f.value = translator.escape(validator.escape(String(userValue)));
+			f.value = String(userValue);
 		}
 	});
 	return fields;
@@ -352,13 +351,11 @@ async function parseAboutMe(userData) {
 		userData.aboutmeParsed = '';
 		return;
 	} else if (activitypub.helpers.isUri(userData.uid)) {
-		userData.aboutme = posts.sanitize(validator.unescape(String(userData.aboutme)));
+		userData.aboutme = posts.sanitize(String(userData.aboutme));
 		userData.aboutmeParsed = userData.aboutme;
 		return;
 	}
-	const parsed = await plugins.hooks.fire('filter:parse.aboutme', validator.unescape(String(userData.aboutme || '')));
-	userData.aboutme = translator.escape(userData.aboutme);
-	userData.aboutmeParsed = translator.escape(parsed);
+	userData.aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));
 }
 
 function filterLinks(links, states) {

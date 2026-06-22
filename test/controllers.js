@@ -213,7 +213,7 @@ describe('Controllers', () => {
 			{ it: 'should load recent rss feed', url: `/recent.rss` },
 			{ it: 'should load top rss feed', url: `/top.rss` },
 			{ it: 'should load popular rss feed', url: `/popular.rss` },
-			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
+			{ it: 'should load popular rss feed with term', url: `/popular/daily.rss` },
 			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
 			{ it: 'should load category recent posts rss feed', url: `/category/1/recentposts.rss` },
 			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
@@ -249,9 +249,11 @@ describe('Controllers', () => {
 	});
 
 	it('should properly escape outgoing url query params', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
+		const { response, body } = await request.get(`${nconf.get('url')}/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
 		assert.equal(response.statusCode, 200);
-		assert.strictEqual(body.outgoing, 'https://foo.com/?best=&amp;lsqb;&amp;lsqb;topic:merged-message,%20javascript:alert(origin)&amp;rsqb;&amp;rsqb;');
+
+		assert(body.includes('<a href="https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]"'));
+		assert(body.includes('https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]'));
 	});
 
 	it('should load /register/complete', async () => {
@@ -1300,12 +1302,18 @@ describe('Controllers', () => {
 		it('should parse about me', async () => {
 			await user.setUserFields(fooUid, {
 				picture: '/assets/uploads/path/to/picture',
-				aboutme: 'hi i am a bot [[topic:moved-from]] <script>alert("xss")</script>',
+				aboutme: 'hi i am a bot [[topic:moved-from]]<script>alert("xss")</script>',
 			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutmeParsed, 'hi i am a bot &lsqb;&lsqb;topic:moved-from&rsqb;&rsqb; ');
+			// should be unescaped in api
+			assert.equal(body.aboutmeParsed, 'hi i am a bot [[topic:moved-from]]');
 			assert.equal(body.picture, '/assets/uploads/path/to/picture');
+
+			const { response: response2, body: body2 } = await request.get(`${nconf.get('url')}/user/foo`);
+			// should not be translated in html
+			assert(body2.includes('hi i am a bot [[topic:moved-from]]'));
+			assert(!body2.includes('Moved from'));
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {
@@ -1436,16 +1444,16 @@ describe('Controllers', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 			assert.equal(response.statusCode, 200);
 			assert.ok(body.cookies);
-			assert.equal(translator.escape('[[global:cookies.message]]'), body.cookies.message);
-			assert.equal(translator.escape('[[global:cookies.accept]]'), body.cookies.dismiss);
-			assert.equal(translator.escape('[[global:cookies.learn-more]]'), body.cookies.link);
+			assert.equal('[[global:cookies.message]]', body.cookies.message);
+			assert.equal('[[global:cookies.accept]]', body.cookies.dismiss);
+			assert.equal('[[global:cookies.learn-more]]', body.cookies.link);
 		});
 
 		it('response should be parseable when entries have apostrophes', async () => {
 			await meta.configs.set('cookieConsentMessage', 'Julian\'s Message');
 			const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 			assert.equal(response.statusCode, 200);
-			assert.equal('Julian&#x27;s Message', body.cookies.message);
+			assert.equal(body.cookies.message, 'Julian\'s Message');
 		});
 	});
 

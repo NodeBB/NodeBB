@@ -17,6 +17,7 @@ const posts = require('../posts');
 const ttlCache = require('../cache/ttl');
 const websockets = require('../socket.io');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
@@ -496,9 +497,12 @@ Notes.assertPrivate = async (object) => {
 	try {
 		await messaging.checkContent(payload.content, false);
 	} catch (e) {
-		const { displayname, userslug } = await user.getUserFields(payload.uid, ['displayname', 'userslug']);
+		const [displayname, userslug] = await Promise.all([
+			user.getNotificationDisplayname(payload.uid),
+			user.getUserField(payload.uid, 'userslug'),
+		]);
 		const notification = await notifications.create({
-			bodyShort: `[[error:remote-chat-received-too-long, ${displayname}]]`,
+			bodyShort: translator.compile('error:remote-chat-received-too-long', displayname),
 			path: `/user/${userslug}`,
 			nid: `error:chat:uid:${payload.uid}`,
 			from: payload.uid,

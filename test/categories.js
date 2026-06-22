@@ -49,7 +49,7 @@ describe('Categories', () => {
 			assert.ifError(err);
 
 			assert(categoryData);
-			assert.equal('Test Category &amp; NodeBB', categoryData.name);
+			assert.equal('Test Category & NodeBB', categoryData.name);
 			assert.equal(categoryObj.description, categoryData.description);
 			assert.strictEqual(categoryObj.disabled, 0);
 			done();
@@ -80,7 +80,7 @@ describe('Categories', () => {
 	it('should load a category route', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`);
 		assert.equal(response.statusCode, 200);
-		assert.equal(body.name, 'Test Category &amp; NodeBB');
+		assert.equal(body.name, 'Test Category & NodeBB');
 		assert(body);
 	});
 
@@ -897,23 +897,11 @@ describe('Categories', () => {
 			description: '[[topic:forked-message, javascript:alert(origin), foobar]]',
 		});
 
-		const data = await Categories.getCategoryData(category.cid);
-		assert.strictEqual(data.name, '&lsqb;&lsqb;topic:merged-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
-		assert.strictEqual(data.description, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
-		assert.strictEqual(data.descriptionParsed, '&lsqb;&lsqb;topic:forked-message, javascript:alert(origin), foobar&rsqb;&rsqb;');
-		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${category.cid}/test-category`);
-
-		// title comes from category.name so should be escaped as well
-		assert.strictEqual(body.title, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
-
-		// breadcrumbs should be translated & escaped too
-		assert.strictEqual(body.breadcrumbs[1].text, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
-
-		assert.strictEqual(body.name, 'This topic has been merged into &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
-
-		assert.strictEqual(body.description, 'This topic was forked from &lt;a href=&quot;&quot;&gt;foobar&lt;&#x2F;a&gt;');
-
-		assert.strictEqual(body.descriptionParsed, 'This topic was forked from &lt;a href=""&gt;foobar&lt;/a&gt;');
+		const { response, body } = await request.get(`${nconf.get('url')}/category/${category.cid}/test-category`);
+		const debug = body.slice(0, 1000);
+		assert(body.includes('<title>This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt; | NodeBB</title>'), debug);
+		assert(body.includes('<meta name="title" content="This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'), debug);
+		assert(body.includes('<meta name="description" content="This topic was forked from &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'), debug);
 	});
 });
 

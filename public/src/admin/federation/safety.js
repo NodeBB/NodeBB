@@ -3,8 +3,8 @@
 import { get, post, del } from 'api';
 import { error } from 'alerts';
 import { render } from 'benchpress';
-import { alert, dialog } from 'bootbox';
 import { translate } from 'translator';
+import * as modals from 'modals';
 
 export function init() {
 	setupBlocklists();
@@ -55,7 +55,7 @@ async function renderList(blocklists) {
 }
 
 function throwModal() {
-	render('admin/partials/activitypub/blocklists', {}).then(function (html) {
+	render('admin/partials/activitypub/blocklists', {}).then(async function (html) {
 		const submit = function () {
 			const formEl = modal.find('form').get(0);
 			if (!formEl.reportValidity()) {
@@ -71,7 +71,7 @@ function throwModal() {
 				}
 			}).catch(error);
 		};
-		const modal = bootbox.dialog({
+		const modal = await modals.dialog({
 			title: '[[admin/settings/activitypub:blocklists.add]]',
 			message: html,
 			buttons: {
@@ -163,10 +163,9 @@ async function removeDomain(domain) {
 }
 
 async function view(url) {
-	console.log('ehjre');
 	try {
 		const { domains, count } = await get(`/admin/activitypub/blocklists/${encodeURIComponent(url)}`);
-		dialog({
+		modals.dialog({
 			title: '[[admin/settings/activitypub:blocklists.view.title]]',
 			message: `\
 				<p>[[admin/settings/activitypub:blocklists.view.intro, ${count}]]</p> \

@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const nconf = require('nconf');
 
 const meta = require('../meta');
@@ -11,30 +10,29 @@ const privileges = require('../privileges');
 const pagination = require('../pagination');
 const utils = require('../utils');
 const helpers = require('./helpers');
-const translator = require('../translator');
+const tx = require('../translator');
 
 const tagsController = module.exports;
 
 const url = nconf.get('url');
 
 tagsController.getTag = async function (req, res) {
-	const escapedTag = translator.escape(
-		validator.escape(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength))
-	);
-
+	const escapedTag = utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength);
 	const page = parseInt(req.query.page, 10) || 1;
 	const cid = Array.isArray(req.query.cid) || !req.query.cid ? req.query.cid : [req.query.cid];
 
 	const templateData = {
 		topics: [],
 		tag: escapedTag,
-		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: escapedTag }]),
-		title: `[[pages:tag, ${escapedTag}]]`,
+		breadcrumbs: helpers.buildBreadcrumbs([
+			{ text: '[[tags:tags]]', url: '/tags' }, { text: tx.escape(escapedTag) },
+		]),
+		title: tx.compile('pages:tag', escapedTag),
 	};
 	const [settings, cids, categoryData, canPost, isPrivileged, rssToken, isFollowing] = await Promise.all([
 		user.getSettings(req.uid),
 		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
-		helpers.getSelectedCategory(cid, req.uid),
+		helpers.getSelectedCategory(cid),
 		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
 		user.auth.getFeedToken(req.uid),
@@ -62,12 +60,10 @@ tagsController.getTag = async function (req, res) {
 		{
 			name: 'title',
 			content: escapedTag,
-			noEscape: true,
 		},
 		{
 			property: 'og:title',
 			content: escapedTag,
-			noEscape: true,
 		},
 	];
 

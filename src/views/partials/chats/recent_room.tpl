@@ -8,11 +8,11 @@
 				{{{ if ./users.length }}}
 				{{{ if ./groupChat}}}
 				<div class="position-relative stacked-avatars">
-					<span class="text-decoration-none position-absolute" href="{config.relative_path}/user/{./users.1.userslug}">{buildAvatar(./users.1, "24px", true)}</span>
-					<span class="text-decoration-none position-absolute" href="{config.relative_path}/user/{./users.0.userslug}" >{buildAvatar(./users.0, "24px", true)}</span>
+					<span class="text-decoration-none position-absolute" href="{config.relative_path}/user/{./users.1.userslug}">{{buildAvatar(./users.1, "24px", true)}}</span>
+					<span class="text-decoration-none position-absolute" href="{config.relative_path}/user/{./users.0.userslug}" >{{buildAvatar(./users.0, "24px", true)}}</span>
 				</div>
 				{{{ else }}}
-				<span href="{config.relative_path}/user/{./users.0.userslug}" class="text-decoration-none">{buildAvatar(./users.0, "32px", true)}</span>
+				<span href="{config.relative_path}/user/{./users.0.userslug}" class="text-decoration-none">{{buildAvatar(./users.0, "32px", true)}}</span>
 				{{{ end }}}
 				{{{ else }}}
 				<span class="avatar avatar-rounded text-bg-warning" component="avatar/icon" style="--avatar-size: 32px;">?</span>
@@ -27,7 +27,7 @@
 					{{{ if !./lastUser.uid }}}
 					[[modules:chat.no-users-in-room]]
 					{{{ else }}}
-					{./usernames}
+					{tx(./usernames)}
 					{{{ end  }}}
 				{{{ end }}}
 				</div>

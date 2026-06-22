@@ -5,6 +5,7 @@ import { error } from 'alerts';
 import { render } from 'benchpress';
 import { translate } from 'translator';
 import * as categorySelector from 'categorySelector';
+import * as modals from 'modals';
 
 export function init() {
 	setupRules();
@@ -65,7 +66,7 @@ function setupRules() {
 }
 
 function throwModal() {
-	render('admin/partials/activitypub/rules', {}).then(function (html) {
+	render('admin/partials/activitypub/rules', {}).then(async function (html) {
 		const submit = function () {
 			const formEl = modal.find('form').get(0);
 			if (!formEl.reportValidity()) {
@@ -84,7 +85,7 @@ function throwModal() {
 
 			return false;
 		};
-		const modal = bootbox.dialog({
+		const modal = await modals.dialog({
 			title: '[[admin/settings/activitypub:rules.add]]',
 			message: html,
 			buttons: {

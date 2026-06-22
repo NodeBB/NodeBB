@@ -10,7 +10,7 @@ import {
 } from 'chart.js';
 
 import * as Benchpress from 'benchpressjs';
-import * as bootbox from 'bootbox';
+import * as modals from 'modals';
 import * as translator from '../../modules/translator';
 import * as api from '../../modules/api';
 import * as hooks from '../../modules/hooks';
@@ -127,8 +127,8 @@ function handleUpdateControls({ set }) {
 	});
 
 	function throwCustomRangeSelector(targetEl) {
-		Benchpress.render('admin/partials/pageviews-range-select', {}).then(function (html) {
-			const modal = bootbox.dialog({
+		Benchpress.render('admin/partials/pageviews-range-select', {}).then(async (html) => {
+			const modal = await modals.dialog({
 				title: '[[admin/dashboard:page-views-custom]]',
 				message: html,
 				buttons: {

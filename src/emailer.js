@@ -16,6 +16,7 @@ const User = require('./user');
 const Plugins = require('./plugins');
 const meta = require('./meta');
 const translator = require('./translator');
+const languages = require('./languages');
 const pubsub = require('./pubsub');
 const file = require('./file');
 
@@ -268,7 +269,7 @@ Emailer.send = async (template, uid, params) => {
 	params.uid = uid;
 	params.username = userData.username;
 	params.displayname = userData.displayname;
-	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
+	params.rtl = translator.languageDirection(userSettings.userLang) === 'rtl';
 
 	const result = await Plugins.hooks.fire('filter:email.cancel', {
 		cancel: false, // set to true in plugin to cancel sending email
@@ -376,7 +377,8 @@ Emailer.sendViaFallback = async (data) => {
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
-	const html = await app.renderAsync(`emails/${template}`, params);
+	const _i18n = languages.getFull(lang);
+	const html = await app.renderAsync(`emails/${template}`, { ...params, _i18n: _i18n });
 	return await translator.translate(html, lang);
 };
 

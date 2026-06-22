@@ -1,12 +1,10 @@
 'use strict';
 
-const validator = require('validator');
 const diff = require('diff');
 
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const topics = require('../topics');
 
 module.exports = function (Posts) {
@@ -65,7 +63,6 @@ module.exports = function (Posts) {
 		post.content = String(post.content || '');
 
 		const result = await plugins.hooks.fire('filter:parse.post', { postData: post });
-		result.postData.content = translator.escape(result.postData.content);
 		return result.postData;
 	};
 
@@ -88,7 +85,7 @@ module.exports = function (Posts) {
 		getValidatedTimestamp(timestamp);
 
 		const [post, diffs, timestamps] = await Promise.all([
-			Posts.getPostSummaryByPids([pid], uid, { parse: false, escape: true }),
+			Posts.getPostSummaryByPids([pid], uid, { parse: false }),
 			Diffs.get(pid),
 			Diffs.list(pid),
 		]);
@@ -107,7 +104,7 @@ module.exports = function (Posts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		const postContent = validator.unescape(post[0].content);
+		const postContent = post[0].content;
 		const versionContents = {};
 		for (let i = 0, content = postContent; i < timestamps.length; ++i) {
 			versionContents[timestamps[i]] = applyPatch(content, diffs[i]);
@@ -133,16 +130,16 @@ module.exports = function (Posts) {
 	async function postDiffLoad(pid, since, uid) {
 		// Retrieves all diffs made since `since` and replays them to reconstruct what the post looked like at `since`
 		const [post, diffs] = await Promise.all([
-			Posts.getPostSummaryByPids([pid], uid, { parse: false, escape: true }),
+			Posts.getPostSummaryByPids([pid], uid, { parse: false }),
 			Posts.diffs.get(pid, since),
 		]);
 
 		// Replace content with re-constructed content from that point in time
-		post[0].content = diffs.reduce(applyPatch, validator.unescape(post[0].content));
+		post[0].content = diffs.reduce(applyPatch, post[0].content);
 
 		const titleDiffs = diffs.filter(d => d.hasOwnProperty('title') && d.title);
 		if (titleDiffs.length && post[0].topic) {
-			post[0].topic.title = validator.unescape(String(titleDiffs[titleDiffs.length - 1].title));
+			post[0].topic.title = String(titleDiffs[titleDiffs.length - 1].title);
 		}
 		const tagDiffs = diffs.filter(d => d.hasOwnProperty('tags') && d.tags);
 		if (tagDiffs.length && post[0].topic) {

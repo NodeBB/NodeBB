@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const user = require('../user');
 const meta = require('../meta');
 const analytics = require('../analytics');
@@ -22,7 +20,7 @@ globalModsController.ipBlacklist = async function (req, res, next) {
 	]);
 	res.render('ip-blacklist', {
 		title: '[[pages:ip-blacklist]]',
-		rules: validator.escape(String(rules)),
+		rules: rules,
 		analytics: analyticsData,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:ip-blacklist]]' }]),
 	});

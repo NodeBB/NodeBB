@@ -11,6 +11,7 @@ const io = require('../socket.io');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const tx = require('../translator');
 
 module.exports = function (Messaging) {
 	Messaging.setUserNotificationSetting = async (uid, roomId, value) => {
@@ -41,45 +42,45 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
-		const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
-
-		let data = {
-			roomId: roomId,
-			fromUid: fromUid,
-			message: messageObj,
-			public: isPublic,
-		};
-		data = await plugins.hooks.fire('filter:messaging.notify', data);
-		if (!data) {
-			return;
-		}
-
-		// delivers full message to all online users in roomId
-		io.in(`chat_room_${roomId}`).emit('event:chats.receive', data);
-
-		const unreadData = { roomId, fromUid, public: isPublic };
-		if (isPublic && !messageObj.system) {
-			// delivers unread public msg to all online users on the chats page
-			io.in(`chat_room_public_${roomId}`).emit('event:chats.public.unread', unreadData);
-		}
-		if (messageObj.system) {
-			return;
-		}
-
-		// push unread count only for private rooms
-		if (!isPublic) {
-			const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
-			unreadData.teaser = {
-				content: validator.escape(
-					String(utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)))
-				),
-				user: messageObj.fromUser,
-				timestampISO: messageObj.timestampISO,
-			};
-			Messaging.pushUnreadCount(uids, unreadData);
-		}
-
 		try {
+			const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
+
+			let data = {
+				roomId: roomId,
+				fromUid: fromUid,
+				message: messageObj,
+				public: isPublic,
+			};
+			data = await plugins.hooks.fire('filter:messaging.notify', data);
+			if (!data) {
+				return;
+			}
+
+			// delivers full message to all online users in roomId
+			io.in(`chat_room_${roomId}`).emit('event:chats.receive', data);
+
+			const unreadData = { roomId, fromUid, public: isPublic };
+			if (isPublic && !messageObj.system) {
+				// delivers unread public msg to all online users on the chats page
+				io.in(`chat_room_public_${roomId}`).emit('event:chats.public.unread', unreadData);
+			}
+			if (messageObj.system) {
+				return;
+			}
+
+			// push unread count only for private rooms
+			if (!isPublic) {
+				const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
+				unreadData.teaser = {
+					content: validator.escape(
+						utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content))
+					),
+					user: messageObj.fromUser,
+					timestampISO: messageObj.timestampISO,
+				};
+				Messaging.pushUnreadCount(uids, unreadData);
+			}
+
 			await sendNotification(fromUid, roomId, messageObj);
 			if (!isPublic && utils.isNumber(fromUid)) {
 				setImmediate(() => {
@@ -116,15 +117,19 @@ module.exports = function (Messaging) {
 		});
 
 		if (uidsToNotify.length) {
-			const { displayname } = messageObj.fromUser;
-			const isGroupChat = await Messaging.isGroupChat(roomId);
-			const roomName = roomData.roomName || `[[modules:chat.room-id, ${roomId}]]`;
+			const [displayname, isGroupChat] = await Promise.all([
+				user.getNotificationDisplayname(fromUid),
+				Messaging.isGroupChat(roomId),
+			]);
+			const roomName = tx.escape(roomData.roomName) || `[[modules:chat.room-id, ${roomId}]]`;
 			const notifData = {
 				type: isGroupChat ? 'new-group-chat' : 'new-chat',
 				subject: roomData.roomName ?
-					`[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]` :
-					`[[email:notif.chat.new-message-from-user, ${displayname}]]`,
-				bodyShort: isGroupChat || roomData.roomName ? `[[notifications:new-message-in, ${roomName}]]` : `[[notifications:new-message-from, ${displayname}]]`,
+					tx.compile('email:notif.chat.new-message-from-user-in-room', displayname, roomName) :
+					tx.compile('email:notif.chat.new-message-from-user', displayname),
+				bodyShort: isGroupChat || roomData.roomName ?
+					tx.compile('notifications:new-message-in', roomName) :
+					tx.compile('notifications:new-message-from', displayname),
 				bodyLong: messageObj.content,
 				nid: `chat_${roomId}_${fromUid}_${Date.now()}`,
 				mergeId: `new-chat|${roomId}`, // as roomId is the differentiator, no distinction between direct vs. group req'd.
@@ -137,8 +142,8 @@ module.exports = function (Messaging) {
 				const icon = Messaging.getRoomIcon(roomData);
 				notifData.type = 'new-public-chat';
 				notifData.roomIcon = icon;
-				notifData.subject = `[[email:notif.chat.new-message-from-user-in-room, ${displayname}, ${roomName}]]`;
-				notifData.bodyShort = `[[notifications:user-posted-in-public-room, ${displayname}, ${icon}, ${roomName}]]`;
+				notifData.subject = tx.compile('email:notif.chat.new-message-from-user-in-room', displayname, roomName);
+				notifData.bodyShort = tx.compile('notifications:user-posted-in-public-room', displayname, icon, roomName);
 				notifData.mergeId = `notifications:user-posted-in-public-room|${roomId}`;
 			}
 			const notification = await notifications.create(notifData);

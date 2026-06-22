@@ -25,7 +25,7 @@
 					</thead>
 					<tbody>
 						{{{ each users }}}
-						<tr data-username="{./usernameEscaped}">
+						<tr data-username="{./username}">
 							<td>
 								{{{ if ./usernameSpam }}}
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {./spamData.username.frequency}, {./spamData.username.appears}, {./spamData.username.confidence}]]"></i>
@@ -60,7 +60,7 @@
 								{./ip}
 								{{{ each ./ipMatch }}}
 								<br>
-								{buildAvatar(@value, "24px", true)}
+								{{buildAvatar(@value, "24px", true)}}
 								<a href="{config.relative_path}/uid/{./uid}">{./username}</a>
 								{{{ end }}}
 							</td>

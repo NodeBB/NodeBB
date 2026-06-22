@@ -1,16 +1,20 @@
 'use strict';
 
-module.exports = function (utils, Benchpress, translator, relative_path) {
+module.exports = function (utils, Benchpress, tx, relative_path) {
 	Benchpress.setGlobal('true', true);
 	Benchpress.setGlobal('false', false);
 	const oneDayInMs = 24 * 60 * 60 * 1000;
 
 	const helpers = {
-		displayMenuItem,
+		__escape: escape,
+		escape,
+		txEscape: tx.escape,
+		txEscapeArg: tx.escapeArg,
+		tx: _tx,
 		buildMetaTag,
 		buildLinkTag,
 		stringify,
-		escape,
+		displayMenuItem,
 		stripTags,
 		buildCategoryIcon,
 		buildCategoryLabel,
@@ -27,6 +31,11 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		increment,
 		lessthan,
 		greaterthan,
+		max,
+		min,
+		clamp,
+		quote,
+		renderContent,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -36,16 +45,78 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		humanReadableNumber,
 		formattedNumber,
 		isNumber,
-		tx,
-		txEscape,
 		uploadBasename,
 		generatePlaceholderWave,
 		register,
-		__escape: identity,
 	};
 
-	function identity(str) {
-		return str;
+	function escape(str) {
+		// decoding HTML entities before escaping to prevent double escaping
+		// and allow translators to use HTML entities in translations
+		return tx.escape(
+			utils.escapeHTML(utils.decodeHTMLEntities(str))
+		);
+	}
+
+	function _tx(token, ...args) {
+		if (Array.isArray(token) && token.length) {
+			args = [...token.slice(1)];
+			token = token[0];
+		}
+		if (!token) {
+			return '';
+		}
+
+		const hasPassedArgs = args.length > 0;
+		const [txToken, argsFromToken] = tx.normalizeToken(token, hasPassedArgs);
+		if (!hasPassedArgs && argsFromToken.length > 0) {
+			args = argsFromToken;
+		}
+		const [namespace, key] = txToken.split(':', 2);
+		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
+			return tx.escape(tx.fixDoubleEscaped(tx.escapeHTML(token)));
+		}
+
+		const escapedArgs = args.map((arg) => {
+			const escapedArg = tx.fixDoubleEscaped(tx.escapeHTML(arg));
+
+			if (escapedArg.startsWith('[[') && escapedArg.endsWith(']]')) {
+				return _tx.call(this, escapedArg);
+			}
+			return escapedArg;
+		});
+
+		const translation = this._i18n[namespace][key];
+		const result = tx.replaceArguments(translation, escapedArgs);
+		// prevents the translator.translate() in
+		// app.parseAndTraslate and page render from translating again
+		// can be removed once whole page translation is removed
+		return tx.escape(result);
+	}
+
+	function buildMetaTag(tag) {
+		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
+		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
+		const content = tag.content ? `content="${escape(tag.content).replace(/\n/g, ' ')}" ` : '';
+
+		return '<meta ' + name + property + content + '/>\n\t';
+	}
+
+	function buildLinkTag(tag) {
+		const attributes = [
+			'link', 'rel', 'as', 'type', 'href', 'hreflang', 'sizes', 'title', 'crossorigin',
+		];
+		const [link, rel, as, type, href, hreflang, sizes, title, crossorigin] = attributes.map(
+			attr => (tag[attr] ? `${attr}="${escape(tag[attr])}" ` : '')
+		);
+
+		return '<link ' + link + rel + as + type + sizes + title + href + hreflang + crossorigin + '/>\n\t';
+	}
+
+	function stringify(obj) {
+		// Turns the incoming object into a JSON string
+		return JSON.stringify(obj).replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;')
+			.replace(/"/g, '&quot;');
 	}
 
 	function displayMenuItem(data, index) {
@@ -69,33 +140,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		return true;
 	}
 
-	function buildMetaTag(tag) {
-		const name = tag.name ? 'name="' + tag.name + '" ' : '';
-		const property = tag.property ? 'property="' + tag.property + '" ' : '';
-		const content = tag.content ? 'content="' + helpers.txEscape(tag.content).replace(/\n/g, ' ') + '" ' : '';
-
-		return '<meta ' + name + property + content + '/>\n\t';
-	}
-
-	function buildLinkTag(tag) {
-		const attributes = [
-			'link', 'rel', 'as', 'type', 'href', 'hreflang', 'sizes', 'title', 'crossorigin',
-		];
-		const [link, rel, as, type, href, hreflang, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
-
-		return '<link ' + link + rel + as + type + sizes + title + href + hreflang + crossorigin + '/>\n\t';
-	}
-
-	function stringify(obj) {
-		// Turns the incoming object into a JSON string
-		return JSON.stringify(obj).replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;')
-			.replace(/"/g, '&quot;');
-	}
-
-	function escape(str) {
-		return utils.escapeHTML(str);
-	}
-
 	function stripTags(str) {
 		return utils.stripHTMLTags(str);
 	}
@@ -104,19 +148,26 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		if (!category) {
 			return '';
 		}
-
-		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${size}; height: ${size}; font-size: ${parseInt(size, 10) / 2}px;">${category.icon ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}</span>`;
+		const sizeEscaped = escape(size);
+		const fontSize = (parseInt(size, 10) / 2) || 16;
+		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${category.icon ? `<i class="fa fa-fw ${escape(category.icon)}"></i>` : ''}</span>`;
 	}
 
 	function buildCategoryLabel(category, tag = 'a', className = '') {
 		if (!category) {
 			return '';
 		}
-
-		const href = tag === 'a' ? `href="${relative_path}/category/${category.slug}"` : '';
-		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${category.color};background-color: ${category.bgColor};border-color: ${category.bgColor}!important; max-width: 70vw;">
-			${category.icon && category.icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${category.icon}"></i>` : ''}
-			${category.name}
+		className = className ? escape(className) : '';
+		const icon = category.icon ? escape(category.icon) : '';
+		const bgColor = escape(category.bgColor);
+		const color = escape(category.color);
+		if (!['a', 'span'].includes(tag)) {
+			tag = 'span';
+		}
+		const href = tag === 'a' ? `href="${relative_path}/category/${escape(category.slug)}"` : '';
+		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${color};background-color: ${bgColor};border-color: ${bgColor}!important; max-width: 70vw;">
+			${icon && icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${icon}"></i>` : ''}
+			${escape(_tx.call(this, String(category.name)))}
 		</${tag}>`;
 	}
 
@@ -127,22 +178,22 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		const style = [];
 
 		if (category.bgColor) {
-			style.push('background-color: ' + category.bgColor);
-			style.push(`border-color: ${category.bgColor}!important`);
+			style.push(`background-color: ${category.bgColor}`);
+			style.push(`border-color: ${category.bgColor} !important`);
 		}
 
 		if (category.color) {
-			style.push('color: ' + category.color);
+			style.push(`color: ${category.color}`);
 		}
 
 		if (category.backgroundImage) {
-			style.push('background-image: url(' + category.backgroundImage + ')');
+			style.push(`background-image: url(${category.backgroundImage})`);
 			if (category.imageClass) {
-				style.push('background-size: ' + category.imageClass);
+				style.push(`background-size: ${category.imageClass}`);
 			}
 		}
 
-		return style.join('; ') + ';';
+		return escape(style.join('; ') + ';');
 	}
 
 	function generateChildrenCategories(category) {
@@ -153,15 +204,14 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
 				const link = child.link ? child.link : (relative_path + '/category/' + child.slug);
-				html += '<span class="category-children-item float-start">' +
-					'<div role="presentation" class="icon float-start" style="' + generateCategoryBackground(child) + '">' +
-					'<i class="fa fa-fw ' + child.icon + '"></i>' +
+				html += '<span class="category-children-item">' +
+					`<div role="presentation" class="icon" style="${generateCategoryBackground(child)}">` +
+					`<i class="fa fa-fw ${escape(child.icon)}"></i>` +
 					'</div>' +
-					'<a href="' + link + '"><small>' + child.name + '</small></a></span>';
+					`<a href="${escape(link)}"><small>${escape(child.name)}</small></a></span>`;
 			}
 		});
-		html = html ? ('<span class="category-children">' + html + '</span>') : html;
-		return html;
+		return html ? (`<span class="category-children">${html}</span>`) : html;
 	}
 
 	function generateTopicClass(topic) {
@@ -170,21 +220,24 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function generateGroupDisplayName(group) {
-		return group.system ? group.displayName.replace(/-/g, ' ') : helpers.txEscape(group.displayName);
+		return group.system ? group.displayName.replace(/-/g, ' ') : group.displayName;
 	}
 
 	// Groups helpers
 	function membershipBtn(groupObj, btnClass = '') {
+		btnClass = btnClass ? escape(btnClass) : '';
+		const displayName = groupObj.displayName ? escape(groupObj.displayName) : '';
+
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${groupObj.displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
+			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
 			return `<button class="btn btn-warning text-nowrap disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
 		} else if (groupObj.isInvited) {
-			return `<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
+			return `<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="${displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${escape(groupObj.name)}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-success text-nowrap ${btnClass}" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
+			return `<button class="btn btn-success text-nowrap ${btnClass}" data-action="join" data-group="${displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
 		}
 		return '';
 	}
@@ -213,7 +266,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
 
 			return `
-				<td data-privilege="${priv.name}" data-value="${priv.state}" data-type="${priv.type}">
+				<td data-privilege="${escape(priv.name)}" data-value="${escape(priv.state)}" data-type="${escape(priv.type)}">
 					<div class="form-check text-center">
 						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
 					</div>
@@ -228,16 +281,15 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 	}
 
 	function renderDigestAvatar(block) {
-		if (block.teaser) {
-			if (block.teaser.user.picture) {
-				return '<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
-			}
-			return '<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block; border-radius: 50%;">' + block.teaser.user['icon:text'] + '</div>';
+		const user = block.teaser && block.teaser.user ? block.teaser.user : block.user;
+		if (!user) return '';
+		const imgStyle = `vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;`;
+		const iconStyle = `vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%; background-color: ${escape(user['icon:bgColor'])};`;
+
+		if (user.picture) {
+			return `<img style="${imgStyle}" src="${escape(user.picture)}" title="${escape(user.username)}" />`;
 		}
-		if (block.user.picture) {
-			return '<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
-		}
-		return '<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block; border-radius: 50%;">' + block.user['icon:text'] + '</div>';
+		return `<div style="${iconStyle}">${escape(user['icon:text'])}</div>`;
 	}
 
 	function userAgentIcons(data) {
@@ -309,7 +361,8 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		if (!userObj) {
 			userObj = this;
 		}
-		classNames = classNames || '';
+		classNames = escape(classNames || '');
+		component = escape(component || '');
 		const displayname = escape(String(userObj.displayname || ''));
 		const picture = escape(String(userObj.picture || ''));
 		const iconBgColor = escape(String(userObj['icon:bgColor'] || ''));
@@ -319,7 +372,7 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			['data-uid', userObj.uid],
 			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
-		const styles = [`--avatar-size: ${size};`];
+		const style = escape(`--avatar-size: ${size};`);
 		const attr2String = attributes => Array.from(attributes).reduce((output, [prop, value]) => {
 			output += ` ${prop}="${value}"`;
 			return output;
@@ -328,9 +381,9 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
+			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${style}" onError="this.remove()" itemprop="image" />`;
 		}
-		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${iconBgColor}">${iconText}</span>`;
+		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${style} background-color: ${iconBgColor}">${iconText}</span>`;
 		return output;
 	}
 
@@ -346,11 +399,37 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		return parseInt(a, 10) > parseInt(b, 10);
 	}
 
+	function max(a, b) {
+		return Math.max(parseInt(a, 10), parseInt(b, 10));
+	}
+
+	function min(a, b) {
+		return Math.min(parseInt(a, 10), parseInt(b, 10));
+	}
+
+	function clamp(value, minValue, maxValue) {
+		return Math.min(Math.max(parseInt(value, 10), parseInt(minValue, 10)), parseInt(maxValue, 10));
+	}
+
+	function quote(str) {
+		return `"${str}"`;
+	}
+
+	const deletedMsgs = new Set([
+		'[[topic:topic-is-deleted]]',
+		'[[topic:post-is-deleted]]',
+		'[[modules:chat.message-deleted]]',
+	]);
+	function renderContent(content, deleted = 0) {
+		const translateDeletedMsg = parseInt(deleted, 10) === 1 && deletedMsgs.has(content);
+		return translateDeletedMsg ? _tx.call(this, content) : tx.escape(content);
+	}
+
 	function generateWroteReplied(post, timeagoCutoff) {
 		if (post.toPid) {
-			return generateRepliedTo(post, timeagoCutoff);
+			return generateRepliedTo.call(this, post, timeagoCutoff);
 		}
-		return generateWrote(post, timeagoCutoff);
+		return generateWrote.call(this, post, timeagoCutoff);
 	}
 
 	function generateRepliedTo(post, timeagoCutoff) {
@@ -358,13 +437,24 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${encodeURIComponent(post.toPid)}, ${displayname}, ${relative_path}/post/${encodeURIComponent(post.pid)}, ${post.timestampISO}]]`;
+		return _tx.call(this,
+			`topic:replied-to-user-${langSuffix}`,
+			escape(post.toPid),
+			`${relative_path}/post/${encodeURIComponent(post.toPid)}`,
+			escape(displayname),
+			`${relative_path}/post/${encodeURIComponent(post.pid)}`,
+			post.timestampISO,
+		);
 	}
 
 	function generateWrote(post, timeagoCutoff) {
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${encodeURIComponent(post.pid)}, ${post.timestampISO}]]`;
+		return _tx.call(this,
+			`topic:wrote-${langSuffix}`,
+			`${relative_path}/post/${encodeURIComponent(post.pid)}`,
+			post.timestampISO
+		);
 	}
 
 	function _encodeURIComponent(value) {
@@ -394,37 +484,6 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 		return utils.isNumber(value);
 	}
 
-	function tx(token, ...args) {
-		if (!token) {
-			return '';
-		}
-		const [txToken, argsFromToken] = translator.normalizeToken(token);
-		if (Array.isArray(argsFromToken) && argsFromToken.length > 0) {
-			args = argsFromToken;
-		}
-		const [namespace, key] = txToken.split(':', 2);
-		if (!namespace || !key || !this._i18n || !this._i18n[namespace] || !this._i18n[namespace][key]) {
-			return token;
-		}
-		// translate the arguments if they are tokens themselves
-		args = args.map((arg) => {
-			arg = translator.escapeHTML(arg);
-			if (typeof arg === 'string' && arg.startsWith('[[') && arg.endsWith(']]')) {
-				return helpers.tx.call(this, arg, []); // no arguments on nested tokens for now
-			}
-			return arg;
-		});
-
-		const translation = this._i18n[namespace][key];
-		return translator.replaceArguments(translation, args);
-	}
-
-	function txEscape(text) {
-		return String(text)
-			.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;')
-			.replace(/,/g, '&#44;').replace(/%/g, '&#37;');
-	}
-
 	function uploadBasename(str, sep = '/') {
 		const hasTimestampPrefix = /^\d+-/;
 		const name = str.substr(str.lastIndexOf(sep) + 1);
@@ -436,10 +495,11 @@ module.exports = function (utils, Benchpress, translator, relative_path) {
 			if (i === 'divider') {
 				return '<li class="dropdown-divider"></li>';
 			}
+			const size = parseInt(i, 10) || 1;
 			return `
 			<li class="dropdown-item placeholder-wave">
 				<div class="placeholder" style="width: 20px;"></div>
-				<div class="placeholder col-${i}"></div>
+				<div class="placeholder col-${size}"></div>
 			</li>`;
 		});
 

@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-ghost btn-sm d-flex align-items-center ff-secondary d-flex gap-2 dropdown-toggle h-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     {{{ if selectedCategory }}}
     <span class="category-item d-inline-flex align-items-center gap-1">
-        {buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}
+        {{buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}}
         <span class="d-none d-md-inline fw-semibold">{selectedCategory.name}</span>
     </span>
     {{{ else }}}
@@ -30,13 +30,12 @@
         {{{each categoryItems}}}
         <li role="presentation" class="category {{{ if ./disabledClass }}}disabled{{{ end }}}" data-cid="{./cid}" data-parent-cid="{./parentCid}" data-name="{./name}">
             <a class="dropdown-item rounded-1 d-flex align-items-center gap-2 {{{ if ./disabledClass }}}disabled{{{ end }}}" role="menuitem" href="#">
-                {./level}
-                <span component="category-markup" class="flex-grow-1" style="{{{ if ./match }}}font-weight: bold;{{{end}}}">
+                <span component="category-markup" class="flex-grow-1" style="{{{ if ./match }}}font-weight: bold;{{{end}}} margin-left: calc({./depth} * 24px);">
                     <div class="category-item d-inline-flex align-items-center gap-1">
                         {{{ if ./icon }}}
-                        {buildCategoryIcon(@value, "24px", "rounded-circle")}
+                        {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
                         {{{ end }}}
-                        <span class="category-name">{./name}</span>
+                        <span class="category-name">{tx(./name)}</span>
                     </div>
                 </span>
                 <i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{ if !./selected }}}invisible{{{ end }}}"></i>

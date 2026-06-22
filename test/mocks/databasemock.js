@@ -142,8 +142,8 @@ before(async function () {
 	this.timeout(30000);
 
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
-	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony/templates'));
+	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony', 'theme.json'));
 	nconf.set('bcrypt_rounds', 1);
 	nconf.set('socket.io:origins', '*:*');
 	nconf.set('version', packageInfo.version);
@@ -210,7 +210,7 @@ async function setupMockDefaults() {
 
 	await meta.themes.set({
 		type: 'local',
-		id: 'nodebb-theme-persona',
+		id: 'nodebb-theme-harmony',
 	});
 
 	const fs = require('fs');

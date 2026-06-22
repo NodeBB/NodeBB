@@ -1,8 +1,8 @@
 'use strict';
 
 define('categorySelector', [
-	'categorySearch', 'bootbox', 'hooks', 'translator',
-], function (categorySearch, bootbox, hooks, translator) {
+	'categorySearch', 'modals', 'hooks', 'translator', 'benchpress',
+], function (categorySearch, modals, hooks, translator, Benchpress) {
 	const categorySelector = {};
 
 	categorySelector.init = function (el, options) {
@@ -71,39 +71,41 @@ define('categorySelector', [
 		return selector;
 	};
 
-	categorySelector.modal = function (options) {
+	categorySelector.modal = async function (options) {
 		options = options || {};
 		options.onSelect = options.onSelect || function () {};
 		options.onSubmit = options.onSubmit || function () {};
-		app.parseAndTranslate('admin/partials/categories/select-category', { message: options.message }, function (html) {
-			const modal = bootbox.dialog({
-				title: options.title || '[[modules:composer.select-category]]',
-				message: html,
-				buttons: {
-					save: {
-						label: '[[global:select]]',
-						className: 'btn-primary',
-						callback: submit,
-					},
-				},
-			});
-
-			const selector = categorySelector.init(modal.find('[component="category-selector"]'), options);
-			function submit(ev) {
-				ev.preventDefault();
-				if (selector.selectedCategory) {
-					options.onSubmit(selector.selectedCategory);
-					modal.modal('hide');
-				}
-				return false;
-			}
-			if (options.openOnLoad) {
-				modal.on('shown.bs.modal', function () {
-					modal.find('.dropdown-toggle').dropdown('toggle');
-				});
-			}
-			modal.find('form').on('submit', submit);
+		const html = await Benchpress.render('admin/partials/categories/select-category', {
+			message: options.message,
 		});
+		console.log('pre translate', html);
+		const modal = await modals.dialog({
+			title: options.title || '[[modules:composer.select-category]]',
+			message: html,
+			buttons: {
+				save: {
+					label: '[[global:select]]',
+					className: 'btn-primary',
+					callback: submit,
+				},
+			},
+		});
+
+		const selector = categorySelector.init(modal.find('[component="category-selector"]'), options);
+		function submit(ev) {
+			ev.preventDefault();
+			if (selector.selectedCategory) {
+				options.onSubmit(selector.selectedCategory);
+				modal.modal('hide');
+			}
+			return false;
+		}
+		if (options.openOnLoad) {
+			modal.on('shown.bs.modal', function () {
+				modal.find('.dropdown-toggle').dropdown('toggle');
+			});
+		}
+		modal.find('form').on('submit', submit);
 	};
 
 	return categorySelector;

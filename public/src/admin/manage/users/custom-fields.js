@@ -1,6 +1,6 @@
 define('admin/manage/user/custom-fields', [
-	'bootbox', 'alerts', 'iconSelect', 'jquery-ui/widgets/sortable',
-], function (bootbox, alerts, iconSelect) {
+	'modals', 'alerts', 'iconSelect', 'jquery-ui/widgets/sortable',
+], function (modals, alerts, iconSelect) {
 	const manageUserFields = {};
 
 	manageUserFields.init = function () {
@@ -14,7 +14,7 @@ define('admin/manage/user/custom-fields', [
 		table.on('click', '[data-action="delete"]', function () {
 			const key = $(this).attr('data-key');
 			const row = $(this).parents('[data-key]');
-			bootbox.confirm(`[[admin/manage/user-custom-fields:delete-field-confirm-x, ${key}]]`, function (ok) {
+			modals.confirm(`[[admin/manage/user-custom-fields:delete-field-confirm-x, ${key}]]`, function (ok) {
 				if (!ok) {
 					return;
 				}
@@ -59,7 +59,7 @@ define('admin/manage/user/custom-fields', [
 	async function showModal(field = null) {
 		const html = await app.parseAndTranslate('admin/partials/manage-custom-user-fields-modal', field);
 
-		const modal = bootbox.dialog({
+		const modal = await modals.dialog({
 			message: html,
 			onEscape: true,
 			title: field ?

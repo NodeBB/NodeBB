@@ -6,7 +6,7 @@
 			<div class="mx-auto p-4 bg-light border rounded">
 				<i class="text-secondary fa fa-fw fa-4x fa-key"></i>
 			</div>
-			{{{ if error }}}{error}{{{ else }}}[[global:403.message]]{{{ end }}}
+			{{{ if error }}}{tx(error)}{{{ else }}}[[global:403.message]]{{{ end }}}
 			{{{ if !loggedIn }}}
 			[[global:403.login, {config.relative_path}]]
 			{{{ end }}}

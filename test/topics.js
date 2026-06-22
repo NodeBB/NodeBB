@@ -588,22 +588,6 @@ describe('Topic\'s', () => {
 		});
 	});
 
-	describe('Title escaping', () => {
-		it('should properly escape topic title', (done) => {
-			const title = '"<script>alert(\'ok1\');</script> new topic test';
-			const titleEscaped = validator.escape(title);
-			topics.post({ uid: topic.userId, title: title, content: topic.content, cid: topic.categoryId }, (err, result) => {
-				assert.ifError(err);
-				topics.getTopicData(result.topicData.tid, (err, topicData) => {
-					assert.ifError(err);
-					assert.strictEqual(topicData.titleRaw, title);
-					assert.strictEqual(topicData.title, titleEscaped);
-					done();
-				});
-			});
-		});
-	});
-
 	describe('tools/delete/restore/purge', () => {
 		let newTopic;
 		let followerUid;
@@ -1174,6 +1158,25 @@ describe('Topic\'s', () => {
 				pageCount: 1,
 			});
 		});
+
+		it('should not translate the title of a topic in meta tags even if it is a translation key', async () => {
+			const { topicData } = await topics.post({
+				uid: topic.userId,
+				title: '[[topic:deleted]]',
+				content: 'topic content',
+				cid: topic.categoryId,
+			});
+
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
+			assert.equal(response.statusCode, 200);
+			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '[[topic:deleted]]');
+			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '[[topic:deleted]]');
+
+			const { body: body2 } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
+			const debug = body2.slice(0, 1000);
+			assert(body2.includes('<meta property="og:title" content="[[topic:deleted]]" />'), debug);
+			assert(body2.includes('<meta name="title" content="[[topic:deleted]]" />'), debug);
+		});
 	});
 
 
@@ -1504,11 +1507,11 @@ describe('Topic\'s', () => {
 				assert.equal(data.matchCount, 5);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
-					{ value: 'nodebb', valueEscaped: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
-					{ value: 'node & c++', valueEscaped: 'node &amp; c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&amp;-c++' },
-					{ value: 'node icon', valueEscaped: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
-					{ value: 'nodejs', valueEscaped: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
-					{ value: 'nosql', valueEscaped: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
+					{ value: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
+					{ value: 'node & c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&-c++' },
+					{ value: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
+					{ value: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
+					{ value: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -1761,17 +1764,17 @@ describe('Topic\'s', () => {
 			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
 			let result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1', valueEncoded: 'cattag1', class: 'cattag1' },
-				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2', valueEncoded: 'cattag2', class: 'cattag2' },
-				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3', valueEncoded: 'cattag3', class: 'cattag3' },
+				{ value: 'cattag1', score: 3, valueEncoded: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 2, valueEncoded: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag3', score: 1, valueEncoded: 'cattag3', class: 'cattag3' },
 			]);
 
 			// after purging values should update properly
 			await topics.purge(postResult.topicData.tid, adminUid);
 			result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1', valueEncoded: 'cattag1', class: 'cattag1' },
-				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2', valueEncoded: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag1', score: 2, valueEncoded: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 1, valueEncoded: 'cattag2', class: 'cattag2' },
 			]);
 		});
 
@@ -1790,11 +1793,11 @@ describe('Topic\'s', () => {
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 2, valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, valueEncoded: 'movedtag2', class: 'movedtag2' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag2', score: 1, valueEncoded: 'movedtag2', class: 'movedtag2' },
 			]);
 
 			// after moving values should update properly
@@ -1803,11 +1806,11 @@ describe('Topic\'s', () => {
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag1', score: 1, valueEncoded: 'movedtag1', class: 'movedtag1' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 2, valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, valueEncoded: 'movedtag1', class: 'movedtag1' },
 			]);
 		});
 

@@ -107,13 +107,13 @@ define('forum/topic/move-post', [
 						return alerts.error('[[error:cant-move-posts-to-scheduled]]');
 					}
 					const translateStr = translator.compile('topic:x-posts-will-be-moved-to-y', postSelect.pids.length, data.title);
-					moveModal.find('#pids').translateHtml(translateStr);
+					moveModal.find('#pids').translateText(translateStr);
 				});
 			} else {
-				moveModal.find('#pids').translateHtml('[[topic:x-posts-selected, ' + postSelect.pids.length + ']]');
+				moveModal.find('#pids').translateText('[[topic:x-posts-selected, ' + postSelect.pids.length + ']]');
 			}
 		} else {
-			moveModal.find('#pids').translateHtml('[[topic:no-posts-selected]]');
+			moveModal.find('#pids').translateText('[[topic:no-posts-selected]]');
 		}
 	}
 

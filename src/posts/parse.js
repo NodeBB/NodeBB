@@ -7,7 +7,6 @@ const _ = require('lodash');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const utils = require('../utils');
 const postCache = require('./cache');
 const devMode = process.env.NODE_ENV === 'development';
@@ -62,7 +61,6 @@ module.exports = function (Posts) {
 			postData.content = postData.content.replace(meta.config.activitypubBreakString, '');
 		}
 		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
-		postData.content = translator.escape(postData.content);
 		if (postData.pid) {
 			cache.set(cacheKey, postData.content);
 		}
@@ -78,7 +76,6 @@ module.exports = function (Posts) {
 	Posts.parseSignature = async function (userData, uid) {
 		userData.signature = sanitizeSignature(userData.signature || '');
 		const result = await plugins.hooks.fire('filter:parse.signature', { userData: userData, uid: uid });
-		userData.signature = translator.escape(result.userData.signature);
 		return result;
 	};
 
@@ -167,7 +164,6 @@ module.exports = function (Posts) {
 	};
 
 	function sanitizeSignature(signature) {
-		signature = translator.escape(signature);
 		const tagsToStrip = [];
 
 		if (meta.config['signatures:disableLinks']) {

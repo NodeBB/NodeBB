@@ -27,7 +27,9 @@ widgets.render = async function (uid, options) {
 		config = await apiController.loadConfig(options.req);
 	}
 
-	const widgetData = await Promise.all(locations.map(location => renderLocation(location, data, uid, options, config)));
+	const widgetData = await Promise.all(
+		locations.map(location => renderLocation(location, data, uid, options, config))
+	);
 
 	const returnData = {};
 	locations.forEach((location, i) => {

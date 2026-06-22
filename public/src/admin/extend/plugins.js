@@ -3,11 +3,12 @@
 
 define('admin/extend/plugins', [
 	'translator',
-	'benchpress',
-	'bootbox',
+	'modals',
 	'alerts',
+	'helpers',
+	'benchpress',
 	'jquery-ui/widgets/sortable',
-], function (translator, Benchpress, bootbox, alerts) {
+], function (translator, modals, alerts, helpers, Benchpress) {
 	const Plugins = {};
 	Plugins.init = function () {
 		const pluginsList = $('.plugins');
@@ -62,7 +63,7 @@ define('admin/extend/plugins', [
 
 			if (pluginData.license && pluginData.active !== true) {
 				Benchpress.render('admin/partials/plugins/license', pluginData).then(function (html) {
-					bootbox.dialog({
+					modals.dialog({
 						title: '[[admin/extend/plugins:license.title]]',
 						message: html,
 						size: 'large',
@@ -101,7 +102,7 @@ define('admin/extend/plugins', [
 
 			Plugins.suggest(pluginID, function (err, payload) {
 				if (err) {
-					bootbox.confirm(translator.compile('admin/extend/plugins:alert.suggest-error', err.status, err.responseText), function (confirm) {
+					modals.confirm(translator.compile('admin/extend/plugins:alert.suggest-error', err.status, err.responseText), function (confirm) {
 						if (confirm) {
 							Plugins.toggleInstall(pluginID, 'latest');
 						} else {
@@ -134,7 +135,7 @@ define('admin/extend/plugins', [
 
 			Plugins.suggest(pluginID, function (err, payload) {
 				if (err) {
-					return bootbox.alert('[[admin/extend/plugins:alert.package-manager-unreachable]]');
+					return modals.alert('[[admin/extend/plugins:alert.package-manager-unreachable]]');
 				}
 
 				require(['compare-versions'], function (compareVersions) {
@@ -148,7 +149,7 @@ define('admin/extend/plugins', [
 							}
 						});
 					} else {
-						bootbox.alert(translator.compile('admin/extend/plugins:alert.incompatible', app.config.version, payload.version));
+						modals.alert(translator.compile('admin/extend/plugins:alert.incompatible', app.config.version, payload.version));
 					}
 				});
 			});
@@ -195,8 +196,8 @@ define('admin/extend/plugins', [
 				let html = '';
 				activePlugins.forEach(function (plugin) {
 					html += `
-						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2" data-plugin="${plugin}">
-							${plugin}
+						<li class="d-flex justify-content-between gap-1 pointer border-bottom pb-2" data-plugin="${helpers.escape(plugin)}">
+							${helpers.escape(plugin)}
 							<div class="d-flex gap-1">
 								<div class="btn btn-ghost btn-sm move-up">
 									<i class="fa fa-chevron-up"></i>
@@ -209,9 +210,9 @@ define('admin/extend/plugins', [
 					`;
 				});
 				if (!activePlugins.length) {
-					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
-						$('#order-active-plugins-modal .plugin-list').html(text).sortable();
-					});
+					$('#order-active-plugins-modal .plugin-list')
+						.translateText('[[admin/extend/plugins:none-active]]')
+						.sortable();
 					return;
 				}
 				const list = $('#order-active-plugins-modal .plugin-list');
@@ -267,7 +268,7 @@ define('admin/extend/plugins', [
 	}
 
 	function confirmInstall(pluginID, callback) {
-		bootbox.confirm(translator.compile('admin/extend/plugins:alert.possibly-incompatible', pluginID), function (confirm) {
+		modals.confirm(translator.compile('admin/extend/plugins:alert.possibly-incompatible', pluginID), function (confirm) {
 			callback(confirm);
 		});
 	}

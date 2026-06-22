@@ -350,7 +350,7 @@
 				{{{ each notificationSettings }}}
 				<div class="row">
 					<div class="mb-3 col-7">
-						<label class="form-label">{./label}</label>
+						<label class="form-label">{tx(./label)}</label>
 					</div>
 					<div class="mb-3 col-5">
 						<select class="form-select" data-field="{./name}">

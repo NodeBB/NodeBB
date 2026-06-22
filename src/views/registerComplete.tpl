@@ -27,7 +27,7 @@
 		<div class="col-12 col-sm-8 offset-sm-2">
 			<div class="card">
 				<div class="card-body">
-					{@value}
+					{{@value}}
 				</div>
 			</div>
 		</div>

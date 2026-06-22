@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">[[global:close]]</button>
 				<button class="btn btn-primary upload-btn {{{ if !allowSkippingCrop }}}hidden{{{ end }}}">[[user:upload-picture]]</button>
 				<button class="btn btn-primary crop-btn">[[user:upload-cropped-picture]]</button>
 			</div>

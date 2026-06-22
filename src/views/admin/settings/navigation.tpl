@@ -59,7 +59,7 @@
 						<div class="row mb-3">
 							<div class="col-sm-4">
 								<label class="form-label" for="nav:text">[[admin/settings/navigation:text]]</label>
-								<input id="nav:text" class="form-control unescape" type="text" name="text" value="{enabled.text}" />
+								<input id="nav:text" class="form-control" type="text" name="text" value="{enabled.text}" />
 							</div>
 
 							<div class="col-sm-4">
@@ -69,7 +69,7 @@
 
 							<div class="col-sm-4">
 								<label class="form-label" for="nav:tooltip">[[admin/settings/navigation:tooltip]]</label>
-								<input id="nav:tooltip" class="form-control unescape" type="text" name="title" value="{enabled.title}" />
+								<input id="nav:tooltip" class="form-control" type="text" name="title" value="{enabled.title}" />
 							</div>
 						</div>
 
@@ -137,15 +137,15 @@
 							</div>
 							<div class="d-flex flex-column">
 								<p class="mb-0">
-									<strong>{available.text}</strong>
+									<strong>{tx(./text)}</strong>
 								</p>
 								<p class="mb-0">
-									{{{ if available.core }}}
+									{{{ if ./core }}}
 									<span class="badge bg-primary-subtle text-primary">[[admin/settings/navigation:core]]</span>
 									{{{ else }}}
 									<span class="badge bg-secondary-subtle text-secondary">[[admin/settings/navigation:plugin]]</span>
 									{{{ end }}}
-									<span class="badge text-bg-none"><code>{available.route}</code></span>
+									<span class="badge text-bg-none"><code>{./route}</code></span>
 								</p>
 							</div>
 						</li>

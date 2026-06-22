@@ -10,26 +10,25 @@ const shim = require('../src/translator');
 const { Translator } = shim;
 const db = require('./mocks/databasemock');
 const helpers = require('../src/helpers');
+const languages = require('../src/languages');
 
 describe('Translator shim', () => {
 
 	describe('tx helper', () => {
-		const context = {
-			_i18n: {
-				topic: {
-					'moved-from': 'Moved from %1',
-					'merged-message': 'This topic has been merged into <a href="%1/topic/%2">%3</a>',
-					'argument-test': 'Test arguments like %1 and %2, in them: %3',
-					'no-arguments': 'no arguments here',
-				},
-			},
-		};
+
+		const context = { };
+
+		before(async () => {
+			context._i18n = await languages.getFull('en-GB');
+			context._i18n.topic['argument-test'] = 'Test arguments like %1 and %2, in them: %3';
+			context._i18n.topic['no-arguments'] = 'no arguments here';
+		});
 
 		shim.addTranslation('en-GB', 'topic', {
 			'argument-test': 'Test arguments like %1 and %2, in them: %3',
 		});
 
-		it('should return translated string with interpolation when has _i18n', (done) => {
+		it('should return translated string with interpolation', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', 'general discussion');
 			assert.strictEqual(str, 'Moved from general discussion');
 			done();
@@ -47,7 +46,7 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should work with handle % and , in arguments syntax', async () => {
+		it('should work with % and , in arguments syntax', async () => {
 			const compiled = shim.compile('topic:argument-test', 'ar%1g1', 'arg,2', 'arg3');
 			const shimStr = await shim.translate(compiled);
 			const str = helpers.tx.call(context, '[[topic:argument-test, ar&#37;1g1, arg&#44;2, arg3]]');
@@ -56,14 +55,26 @@ describe('Translator shim', () => {
 			assert.strictEqual(str, shimStr);
 		});
 
-		it('should escape html escape arguments', (done) => {
+		it('should html escape the token if it is not found in _i18n', (done) => {
+			const str = helpers.tx.call(context, '<script>alert("xss")</script>');
+			assert.strictEqual(str, '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+			done();
+		});
+
+		it('should html escape arguments', (done) => {
 			const str = helpers.tx.call(context, 'topic:moved-from', '<script>alert("xss")</script>');
 			assert.strictEqual(str, 'Moved from &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
 			done();
 		});
 
+		it('should escape html and tx, if everything is passed as first string and its not a valid token', (done) => {
+			const str = helpers.tx.call(context, '[[<script>alert("xss")</script>, <script>alert("xss")</script>]]');
+			assert.strictEqual(str, '&lsqb;&lsqb;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;, &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;&rsqb;&rsqb;');
+			done();
+		});
+
 		it('should validate href arguments', (done) => {
-			const str = helpers.tx.call(context, 'topic:merged-message', 'javascript:alert(origin)', 'foo', 'baz');
+			const str = helpers.tx.call(context, 'topic:merged-message', 'javascript:alert(origin)', 'baz');
 			assert.strictEqual(str, 'This topic has been merged into <a href="">baz</a>');
 			done();
 		});
@@ -80,9 +91,14 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should escape html escape arguments but keep it if it\'s coming from tx file', (done) => {
-			const str = helpers.tx.call(context, 'topic:merged-message', '/forum', '<script>alert("xss")</script>', 'topic name');
-			assert.strictEqual(str, 'This topic has been merged into <a href="/forum/topic/&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;">topic name</a>');
+		it('should translate nested keys with arguments', async () => {
+			const translated = helpers.tx.call(context, '[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]');
+			assert.strictEqual(translated, 'New message in <strong>Room 8</strong>');
+		});
+
+		it('should html escape arguments but keep it if it\'s coming from tx file', (done) => {
+			const str = helpers.tx.call(context, 'topic:merged-message', '/forum/<script>alert("xss")</script>', 'topic name');
+			assert.strictEqual(str, 'This topic has been merged into <a href="/forum/&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;">topic name</a>');
 			done();
 		});
 
@@ -103,6 +119,26 @@ describe('Translator shim', () => {
 				},
 			});
 			assert.strictEqual(compiled, 'some bar with translation Moved from general discussion');
+		});
+	});
+
+	describe('.normalizeToken', () => {
+		it('should normalize a token into its key and arguments', (done) => {
+			assert.deepStrictEqual(
+				shim.normalizeToken('[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]'),
+				['notifications:new-message-in', ['[[modules:chat.room-id, 8]]']]
+			);
+
+			assert.deepStrictEqual(
+				shim.normalizeToken('[[notifications:new-message-in, arg1, arg]]'),
+				['notifications:new-message-in', ['arg1', 'arg']]
+			);
+
+			assert.deepStrictEqual(
+				shim.normalizeToken('[[notifications:new-message-in, [[modules:chat.room-id, 8]], arg]]'),
+				['notifications:new-message-in', ['[[modules:chat.room-id, 8]]', 'arg']]
+			);
+			done();
 		});
 	});
 
@@ -136,7 +172,11 @@ describe('Translator shim', () => {
 
 		it('should not allow path traversal', async () => {
 			const t = await shim.translate('[[../../../../config:secret]]');
-			assert.strictEqual(t, 'secret');
+			assert.strictEqual(t, '[[../../../../config:secret]]');
+			await assert.rejects(
+				languages.get('en-GB', '../../../../config'),
+				{ message: '[[error:invalid-path]]' }
+			);
 		});
 	});
 
@@ -147,22 +187,27 @@ describe('Translator shim', () => {
 
 		it('should translate a single key with no arguments', async () => {
 			const translated = await shim.translateKey('global:search', [], 'en-GB');
-			assert.deepStrictEqual(translated, 'Search');
+			assert.strictEqual(translated, 'Search');
 		});
 
 		it('should translate a single key with arguments', async () => {
 			const translated = await shim.translateKey('topic:moved-from', ['general discussion']);
-			assert.deepStrictEqual(translated, 'Moved from general discussion');
+			assert.strictEqual(translated, 'Moved from general discussion');
 		});
 
 		it('should translate a single key with brackets arguments', async () => {
 			const translated = await shim.translateKey('[[topic:moved-from]]', ['general discussion']);
-			assert.deepStrictEqual(translated, 'Moved from general discussion');
+			assert.strictEqual(translated, 'Moved from general discussion');
 		});
 
 		it('should translate nested keys', async () => {
 			const translated = await shim.translateKey('[[topic:moved-from, [[topic:merged-message]]]]');
-			assert.deepStrictEqual(translated, 'Moved from This topic has been merged into <a href="">&#37;2</a>');
+			assert.strictEqual(translated, 'Moved from This topic has been merged into <a href="">&#37;2</a>');
+		});
+
+		it('should translate nested keys with arguments', async () => {
+			const translated = await shim.translateKey('[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]');
+			assert.strictEqual(translated, 'New message in <strong>Room 8</strong>');
 		});
 
 		it('should translate arguments if they are tokens themselves', async () => {
@@ -171,19 +216,19 @@ describe('Translator shim', () => {
 		});
 
 		it('should return string untouched if it\'s not a tx string', async () => {
-			assert.deepStrictEqual(
+			assert.strictEqual(
 				await shim.translateKey('nodebb forum', [], 'en-GB'),
 				'nodebb forum',
 			);
 
-			assert.deepStrictEqual(
+			assert.strictEqual(
 				await shim.translateKey('this is a [[foo:baz]] regular string %1 test', [], 'en-GB'),
 				'this is a [[foo:baz]] regular string %1 test',
 			);
 
-			assert.deepStrictEqual(
-				await shim.translateKey('[[this is a [[foo:baz, "foo"]], regular string %1 test]]', [], 'en-GB'),
-				'[[this is a [[foo:baz, "foo"]], regular string %1 test]]'
+			assert.strictEqual(
+				await shim.translateKey('[[this is a [[foo:baz, "foo"]] regular string %1 test]]', [], 'en-GB'),
+				'[[this is a [[foo:baz, &quot;foo&quot;]] regular string %1 test]]'
 			);
 		});
 
@@ -499,22 +544,28 @@ describe('new Translator(language)', () => {
 		it('should use key for unknown keys without arguments', () => {
 			const translator = Translator.create('en-GB');
 			return translator.translate('[[unknown:key.without.args]]').then((translated) => {
-				assert.strictEqual(translated, 'key.without.args');
+				assert.strictEqual(translated, '[[unknown:key.without.args]]');
 			});
 		});
 
 		it('should use backup for unknown keys with arguments', () => {
 			const translator = Translator.create('en-GB');
 			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then((translated) => {
-				assert.strictEqual(translated, 'unknown:key.with.args, arguments are here, derpity, derp');
+				assert.strictEqual(translated, '[[unknown:key.with.args, arguments are here, derpity, derp]]');
 			});
 		});
 
-		it('should ignore unclosed tokens', () => {
+		it('should ignore unclosed tokens', async () => {
 			const translator = Translator.create('en-GB');
-			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then((translated) => {
-				assert.strictEqual(translated, 'here is some stuff and other things abc:xyz, other random stuff should be fine here Home and more things Latest Users');
-			});
+			assert.strictEqual(
+				await translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]'),
+				'here is some stuff and other things [[abc:xyz, other random stuff should be fine here Home and more things Latest Users'
+			);
+
+			assert.strictEqual(
+				await translator.translate('mine]] [[topic:merged-message, foo, best'),
+				'mine]] [[topic:merged-message, foo, best'
+			);
 		});
 	});
 });

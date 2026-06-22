@@ -2,7 +2,6 @@
 
 const nconf = require('nconf');
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const posts = require('../posts');
@@ -14,6 +13,7 @@ const categories = require('../categories');
 const activitypub = require('../activitypub');
 const privileges = require('../privileges');
 const social = require('../social');
+const translator = require('../translator');
 
 const relative_path = nconf.get('relative_path');
 
@@ -139,7 +139,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 			topic.category = result.categoriesMap[topic.cid];
 			topic.user = topic.uid ? result.usersMap[topic.uid] : { ...result.usersMap[topic.uid] };
 			if (result.tidToGuestHandle[topic.tid]) {
-				topic.user.username = validator.escape(result.tidToGuestHandle[topic.tid]);
+				topic.user.username = result.tidToGuestHandle[topic.tid];
 				topic.user.displayname = topic.user.username;
 			}
 			topic.teaser = result.teasers[i] || null;
@@ -321,6 +321,11 @@ async function getMainPosts(mainPids, uid) {
 Topics.isLocked = async function (tid) {
 	const locked = await Topics.getTopicField(tid, 'locked');
 	return locked === 1;
+};
+
+Topics.getNotificationTitle = async function (tid) {
+	const title = await Topics.getTopicField(tid, 'title');
+	return translator.escape(title);
 };
 
 Topics.search = async function (tid, term) {

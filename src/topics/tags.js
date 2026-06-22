@@ -2,7 +2,6 @@
 'use strict';
 
 const async = require('async');
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -12,7 +11,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const notifications = require('../notifications');
-const translator = require('../translator');
+const tx = require('../translator');
 const utils = require('../utils');
 const batch = require('../batch');
 const cache = require('../cache');
@@ -339,9 +338,8 @@ module.exports = function (Topics) {
 			return [];
 		}
 		tags.forEach((tag) => {
-			tag.valueEscaped = validator.escape(String(tag.value));
 			tag.valueEncoded = encodeURIComponent(tag.value);
-			tag.class = tag.valueEscaped.replace(/\s/g, '-');
+			tag.class = tag.value.replace(/\s/g, '-');
 		});
 		return tags;
 	};
@@ -609,15 +607,15 @@ module.exports = function (Topics) {
 	};
 
 	Topics.notifyTagFollowers = async function (postData, exceptUid) {
-		let { tags } = postData.topic;
+		const { tags } = postData.topic;
 		if (!tags.length) {
 			return;
 		}
-		tags = tags.map(tag => tag.value);
 
-		const [followersOfPoster, allFollowers, title] = await Promise.all([
+		const [followersOfPoster, allFollowers, displayname, title] = await Promise.all([
 			db.getSortedSetRange(`followers:${exceptUid}`, 0, -1),
-			db.getSortedSetRange(tags.map(tag => `tag:${tag}:followers`), 0, -1),
+			db.getSortedSetRange(tags.map(tag => `tag:${tag.value}:followers`), 0, -1),
+			user.getNotificationDisplayname(exceptUid),
 			Topics.getTopicField(postData.topic.tid, 'title'),
 		]);
 		const followerSet = new Set(followersOfPoster);
@@ -628,17 +626,18 @@ module.exports = function (Topics) {
 			return;
 		}
 
-		const { displayname } = postData.user;
-
 		const notifBase = 'notifications:user-posted-topic-with-tag';
-		let bodyShort = translator.compile(notifBase, displayname, title, tags[0]);
+		let suffix = '';
+		let tagArgs = tags.map(tag => tx.escape(tag.value));
 		if (tags.length === 2) {
-			bodyShort = translator.compile(`${notifBase}-dual`, displayname, title, tags[0], tags[1]);
+			suffix = '-dual';
 		} else if (tags.length === 3) {
-			bodyShort = translator.compile(`${notifBase}-triple`, displayname, title, tags[0], tags[1], tags[2]);
+			suffix = '-triple';
 		} else if (tags.length > 3) {
-			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, title, tags.join(', '));
+			suffix = '-multiple';
+			tagArgs = [tags.join(', ')];
 		}
+		const bodyShort = tx.compile(`${notifBase}${suffix}`, displayname, title, ...tagArgs);
 
 		const notification = await notifications.create({
 			type: 'new-topic-with-tag',

@@ -22,9 +22,9 @@
 			<tr>
 				<td class="fw-semibold text-nowrap">
 					{{{ if ./href }}}
-						<a href="{./href}">{./name}</a>
+						<a href="{./href}">{tx(./name)}</a>
 					{{{ else }}}
-						{./name}
+						{tx(./name)}
 					{{{ end }}}
 				</td>
 				<td class="text-end">{formattedNumber(./yesterday)}</td>

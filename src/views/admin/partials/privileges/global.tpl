@@ -20,13 +20,13 @@
 				<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
 				<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
 				{{{ each privileges.labelData }}}
-				<th class="text-center" data-type="{./type}">{./label}</th>
+				<th class="text-center" data-type="{./type}">{tx(./label)}</th>
 				{{{ end }}}
 			</tr>
 		</thead>
 		<tbody>
 			{{{ each privileges.groups }}}
-			<tr data-group-name="{privileges.groups.nameEscaped}" data-private="{{{ if privileges.groups.isPrivate }}}1{{{ else }}}0{{{ end }}}">
+			<tr data-group-name="{privileges.groups.name}" data-private="{{{ if privileges.groups.isPrivate }}}1{{{ else }}}0{{{ end }}}">
 				<td>
 					{{{ if privileges.groups.isPrivate }}}
 						{{{ if (privileges.groups.name == "banned-users") }}}
@@ -41,7 +41,7 @@
 				</td>
 				<td></td>
 				<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
-				{spawnPrivilegeStates(cid, privileges.groups.name, ../privileges, ../types)}
+				{{spawnPrivilegeStates(cid, privileges.groups.name, ../privileges, ../types)}}
 			</tr>
 			{{{ end }}}
 		</tbody>
@@ -86,7 +86,7 @@
 				<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
 				<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
 				{{{ each privileges.labelData }}}
-				<th class="text-center" data-type="{./type}">{./label}</th>
+				<th class="text-center" data-type="{./type}">{tx(./label)}</th>
 				{{{ end }}}
 			</tr>
 		</thead>
@@ -94,7 +94,7 @@
 			{{{ each privileges.users }}}
 			<tr data-uid="{privileges.users.uid}"{{{ if privileges.users.banned }}} data-banned{{{ end }}}>
 				<td>
-					{buildAvatar(privileges.users, "24px", true)}
+					{{buildAvatar(privileges.users, "24px", true)}}
 					{{{ if privileges.users.banned }}}
 						<i class="ban fa fa-gavel text-danger" title="[[admin/manage/categories:privileges.banned-user-inheritance]]"></i>
 					{{{ end }}}
@@ -104,7 +104,7 @@
 					<!-- need this empty -->
 				</td>
 				<td class="text-center"><input autocomplete="off" type="checkbox" class="checkbox-helper"></td>
-				{spawnPrivilegeStates(cid, privileges.users.username, ../privileges, ../types)}
+				{{spawnPrivilegeStates(cid, privileges.users.username, ../privileges, ../types)}}
 			</tr>
 			{{{ end }}}
 		</tbody>

@@ -1,14 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const user = require('../user');
 const posts = require('../posts');
 const utils = require('../utils');
 const plugins = require('../plugins');
-const translator = require('../translator');
 
 const intFields = ['mid', 'timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
@@ -148,7 +146,7 @@ module.exports = function (Messaging) {
 
 		await Promise.all(parentMessages.map(async (parentMsg) => {
 			if (parentMsg.deleted && parentMsg.fromuid !== parseInt(uid, 10)) {
-				parentMsg.content = `<p>[[modules:chat.message-deleted]]</p>`;
+				parentMsg.content = `[[modules:chat.message-deleted]]`;
 				return;
 			}
 			const foundMsg = messages.find(msg => parseInt(msg.mid, 10) === parseInt(parentMsg.mid, 10));
@@ -178,7 +176,7 @@ module.exports = function (Messaging) {
 	async function parseMessages(messages, uid, roomId, isNew) {
 		await Promise.all(messages.map(async (msg) => {
 			if (msg.deleted && !msg.isOwner) {
-				msg.content = `<p>[[modules:chat.message-deleted]]</p>`;
+				msg.content = `[[modules:chat.message-deleted]]`;
 				return;
 			}
 			msg.content = await parseMessage(msg, uid, roomId, isNew);
@@ -186,7 +184,7 @@ module.exports = function (Messaging) {
 	}
 	async function parseMessage(message, uid, roomId, isNew) {
 		if (message.system) {
-			return translator.escape(validator.escape(String(message.content)));
+			return message.content;
 		} else if (!utils.isNumber(message.mid)) {
 			return posts.sanitize(message.content);
 		}

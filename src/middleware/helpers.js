@@ -1,7 +1,6 @@
 'use strict';
 
 const winston = require('winston');
-const validator = require('validator');
 const slugify = require('../slugify');
 
 const meta = require('../meta');
@@ -38,7 +37,6 @@ helpers.buildBodyClass = function (req, res, templateData = {}) {
 			winston.error(err.stack);
 			p = '';
 		}
-		p = validator.escape(String(p));
 		parts[index] = index ? `${parts[0]}-${p}` : `page-${p || 'home'}`;
 	});
 	const { template } = templateData;

@@ -15,8 +15,8 @@
 		<button type="button" class="filter-btn btn btn-light btn-sm border dropdown-toggle {{{ if filters.cid }}}active-filter{{{ end }}}" data-bs-toggle="dropdown">
 			{{{ if selectedCategory }}}
 			<span class="category-item d-inline-flex align-items-baseline gap-1">
-				{buildCategoryIcon(selectedCategory, "18px", "rounded-circle align-self-center")}
-				<span class="visible-md-inline visible-lg-inline">{selectedCategory.name}</span>
+				{{buildCategoryIcon(selectedCategory, "18px", "rounded-circle align-self-center")}}
+				<span class="visible-md-inline visible-lg-inline">{tx(selectedCategory.name)}</span>
 			</span>
 			{{{ else }}}
 			<span class="visible-md-inline visible-lg-inline">[[unread:all-categories]]</span>
@@ -30,22 +30,7 @@
 				<hr class="mt-2 mb-0"/>
 			</div>
 			<ul component="category/list" class="list-unstyled mb-0 text-sm category-dropdown-menu ghost-scrollbar" role="menu">
-				{{{each categoryItems}}}
-				<li role="presentation" class="category {{{ if ../disabledClass }}}disabled{{{ end }}}" data-cid="{../cid}" data-parent-cid="{../parentCid}" data-name="{../name}">
-					<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="#">
-						{../level}
-						<span component="category-markup" class="flex-grow-1" style="{{{ if ../match }}}font-weight: bold;{{{end}}}">
-							<div class="category-item d-inline-flex align-items-center gap-1">
-								{{{ if ./icon }}}
-								{buildCategoryIcon(@value, "24px", "rounded-circle")}
-								{{{ end }}}
-								{./name}
-							</div>
-						</span>
-						<i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{ if !../selected }}}invisible{{{ end }}}"></i>
-					</a>
-				</li>
-				{{{end}}}
+				<!-- filled by categorySearch module-->
 			</ul>
 		</div>
 	</div>
@@ -104,7 +89,7 @@
 				<div component="user/filter/selected" class="d-flex flex-wrap gap-2">
 					{{{ each selected.assignee }}}
 					<div class="d-flex px-2 py-1 rounded-1 text-bg-primary gap-2 align-items-center text-sm">
-						{buildAvatar(@value, "16px", true)} {./username}
+						{{buildAvatar(@value, "16px", true)}} {./username}
 						<button component="user/filter/delete" data-uid="{./uid}" class="btn btn-primary btn-sm py-0"><i class="fa fa-times fa-xs"></i></button>
 					</div>
 					{{{ end }}}
@@ -112,7 +97,7 @@
 				<hr/>
 				<div component="user/filter/results" class="d-flex flex-wrap gap-2">
 					{{{ each userFilterResults }}}
-					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{buildAvatar(@value, "16px", true)} {./username}</button>
+					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{{buildAvatar(@value, "16px", true)}} {./username}</button>
 					{{{ end }}}
 				</div>
 			</li>
@@ -131,7 +116,7 @@
 				<div component="user/filter/selected" class="d-flex flex-wrap gap-2">
 					{{{ each selected.reporterId }}}
 					<div class="d-flex px-2 py-1 rounded-1 text-bg-primary gap-2 align-items-center text-sm">
-						{buildAvatar(@value, "16px", true)} {./username}
+						{{buildAvatar(@value, "16px", true)}} {./username}
 						<button component="user/filter/delete" data-uid="{./uid}" class="btn btn-primary btn-sm py-0"><i class="fa fa-times fa-xs"></i></button>
 					</div>
 					{{{ end }}}
@@ -139,7 +124,7 @@
 				<hr/>
 				<div component="user/filter/results" class="d-flex flex-wrap gap-2">
 					{{{ each userFilterResults }}}
-					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{buildAvatar(@value, "16px", true)} {./username}</button>
+					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{{buildAvatar(@value, "16px", true)}} {./username}</button>
 					{{{ end }}}
 				</div>
 			</li>
@@ -158,7 +143,7 @@
 				<div component="user/filter/selected" class="d-flex flex-wrap gap-2">
 					{{{ each selected.targetUid }}}
 					<div class="d-flex px-2 py-1 rounded-1 text-bg-primary gap-2 align-items-center text-sm">
-						{buildAvatar(@value, "16px", true)} {./username}
+						{{buildAvatar(@value, "16px", true)}} {./username}
 						<button component="user/filter/delete" data-uid="{./uid}" class="btn btn-primary btn-sm py-0"><i class="fa fa-times fa-xs"></i></button>
 					</div>
 					{{{ end }}}
@@ -166,7 +151,7 @@
 				<hr/>
 				<div component="user/filter/results" class="d-flex flex-wrap gap-2">
 					{{{ each userFilterResults }}}
-					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{buildAvatar(@value, "16px", true)} {./username}</button>
+					<button class="btn btn-light btn-sm border" data-uid="{./uid}" data-username="{./username}">{{buildAvatar(@value, "16px", true)}} {./username}</button>
 					{{{ end }}}
 				</div>
 			</li>

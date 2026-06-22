@@ -1,12 +1,9 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../utils');
-const translator = require('../translator');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
@@ -27,7 +24,7 @@ const worldCategory = {
 	disabled: 0,
 	handle: 'world',
 	link: '',
-	class: '', // todo
+	class: '',
 };
 worldCategory.descriptionParsed = worldCategory.description;
 
@@ -130,16 +127,6 @@ function modifyCategory(category, fields) {
 
 	db.parseIntFields(category, intFields, fields);
 
-	const escapeFields = [
-		'name', 'nickname', 'description', 'color', 'bgColor',
-		'backgroundImage', 'imageClass', 'class', 'link',
-	];
-	escapeFields.forEach((field) => {
-		if (hasField(field)) {
-			category[field] = validator.escape(String(category[field] || ''));
-		}
-	});
-
 	if (hasField('icon')) {
 		category.icon = category.icon || 'hidden';
 		if (category.icon === 'fa-none') {
@@ -155,16 +142,11 @@ function modifyCategory(category, fields) {
 		category.totalTopicCount = category.topic_count;
 	}
 
+	if (hasField('nickname')) {
+		category.nickname = category.nickname || '';
+	}
+
 	if (hasField('name')) {
-		category.name = translator.escape(category.name);
-	}
-
-	if (hasField('description')) {
-		category.descriptionParsed = translator.escape(category.descriptionParsed || category.description);
-		category.description = translator.escape(category.description);
-	}
-
-	if (category.nickname) {
-		category.name = translator.escape(category.nickname);
+		category.name = category.nickname || category.name;
 	}
 }

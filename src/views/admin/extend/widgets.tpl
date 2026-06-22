@@ -33,7 +33,7 @@
 						<div class="tab-pane {{{ if @first }}}active{{{ end }}}" data-template="{./template}">
 						{{{ each templates.areas }}}
 							<div class="area" data-template="{templates.template}" data-location="{./location}">
-								<h5>{./name} <span class="fs-6 text-secondary">{templates.template} / {./location}</span></h5>
+								<h5>{tx(./name)} <span class="fs-6 text-secondary">{templates.template} / {./location}</span></h5>
 								<div class="card card-body text-bg-light widget-area {{{ if (./location == "drafts")}}} overflow-auto{{{ end }}}" {{{ if (./location == "drafts")}}}style="max-height: calc(100vh - 200px);"{{{ end }}}>
 
 								</div>
@@ -75,7 +75,7 @@
 									</div>
 									<div class="card-body hidden">
 										<form>
-											{./content}
+											{{./content}}
 										</form>
 									</div>
 								</div>

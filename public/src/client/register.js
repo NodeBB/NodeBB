@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'zxcvbn', 'jquery-form',
-], function (translator, slugify, api, bootbox, Login, zxcvbn) {
+	'translator', 'slugify', 'api', 'modals', 'forum/login', 'zxcvbn', 'jquery-form',
+], function (translator, slugify, api, modals, Login, zxcvbn) {
 	const Register = {};
 	let validationError = false;
 	const successIcon = '';
@@ -13,8 +13,6 @@ define('forum/register', [
 		const password = $('#password');
 		const password_confirm = $('#password-confirm');
 		const register = $('#register');
-
-		handleLanguageOverride();
 
 		$('#content #noscript').val('false');
 
@@ -89,10 +87,8 @@ define('forum/register', [
 
 							window.location.href = pathname + '?' + qs;
 						} else if (data.message) {
-							translator.translate(data.message, function (msg) {
-								bootbox.alert(msg);
-								ajaxify.go('/');
-							});
+							modals.alert(data.message);
+							ajaxify.go('/');
 						}
 					},
 					error: function (data) {
@@ -210,15 +206,6 @@ define('forum/register', [
 				.addClass('register-success');
 			element.show();
 		});
-	}
-
-	function handleLanguageOverride() {
-		if (!app.user.uid && config.defaultLang !== config.userLang) {
-			const formEl = $('[component="register/local"]');
-			const langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
-
-			formEl.append(langEl);
-		}
 	}
 
 	return Register;

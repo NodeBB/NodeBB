@@ -15,17 +15,17 @@ define('forum/chats', [
 	'forum/chats/search',
 	'autocomplete',
 	'hooks',
-	'bootbox',
+	'modals',
+	'benchpress',
 	'alerts',
 	'chat',
 	'api',
 	'uploadHelpers',
-	'translator',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
-	events, search, autocomplete, hooks, bootbox, alerts,
-	chatModule, api, uploadHelpers, translator
+	events, search, autocomplete, hooks, modals, benchpress, alerts,
+	chatModule, api, uploadHelpers
 ) {
 	const Chats = {
 		activeAutocomplete: {},
@@ -473,7 +473,7 @@ define('forum/chats', [
 
 	Chats.addLeaveHandler = function (roomId, buttonEl) {
 		buttonEl.on('click', function () {
-			bootbox.confirm({
+			modals.confirm({
 				size: 'small',
 				title: '[[modules:chat.leave]]',
 				message: '<p>[[modules:chat.leave-prompt]]</p><p class="form-text">[[modules:chat.leave-help]]</p>',
@@ -497,7 +497,7 @@ define('forum/chats', [
 
 	Chats.addDeleteHandler = function (roomId, buttonEl) {
 		buttonEl.on('click', function () {
-			bootbox.confirm({
+			modals.confirm({
 				size: 'small',
 				title: '[[modules:chat.delete]]',
 				message: '<p>[[modules:chat.delete-prompt]]</p>',
@@ -522,8 +522,8 @@ define('forum/chats', [
 	Chats.addRenameHandler = function (roomId, buttonEl) {
 		buttonEl.on('click', async function () {
 			const { roomName } = await api.get(`/chats/${roomId}`);
-			const html = await app.parseAndTranslate('modals/rename-room', {});
-			const modal = bootbox.dialog({
+			const html = await benchpress.render('modals/rename-room', { roomName });
+			const modal = await modals.dialog({
 				title: '[[modules:chat.rename-room]]',
 				message: html,
 				onEscape: true,
@@ -542,12 +542,8 @@ define('forum/chats', [
 					},
 				},
 			});
-			modal.on('show.bs.modal', function () {
-				const val = translator.unescape(roomName);
-				modal.find('#roomName').val(val).selectRange(0, val.length);
-			});
 			modal.on('shown.bs.modal', function () {
-				modal.find('#roomName').focus();
+				modal.find('#roomName').selectRange(0, roomName.length).focus();
 			});
 		});
 	};

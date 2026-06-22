@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -11,6 +10,7 @@ const groups = require('../groups');
 const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
+const tx = require('../translator');
 
 module.exports = function (User) {
 	User.createOrQueue = async function (req, userData, opts = {}) {
@@ -69,7 +69,7 @@ module.exports = function (User) {
 	async function sendNotificationToAdmins(username) {
 		const notifObj = await notifications.create({
 			type: 'new-register',
-			bodyShort: `[[notifications:new-register, ${username}]]`,
+			bodyShort: tx.compile('notifications:new-register', tx.escape(username)),
 			nid: `new-register:${username}`,
 			path: '/admin/manage/registration',
 			mergeId: 'new-register',
@@ -167,8 +167,6 @@ module.exports = function (User) {
 		let users = await db.getObjects(keys);
 		users = users.filter(Boolean).map((user, index) => {
 			user.timestampISO = utils.toISOString(data[index].score);
-			user.email = validator.escape(String(user.email));
-			user.usernameEscaped = validator.escape(String(user.username));
 			delete user.hashedPassword;
 			return user;
 		});

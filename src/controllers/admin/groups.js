@@ -55,7 +55,7 @@ groupsController.get = async function (req, res, next) {
 
 	const groupNameData = groupNames.map(g => ({
 		encodedName: encodeURIComponent(g.name),
-		displayName: validator.escape(String(g.name)),
+		displayName: g.name,
 		slug: g.slug,
 		selected: g.name === groupName,
 	}));

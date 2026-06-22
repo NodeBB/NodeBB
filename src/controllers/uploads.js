@@ -4,7 +4,6 @@ const path = require('path');
 const { fileTypeFromFile } = require('file-type');
 const mime = require('mime').default;
 const nconf = require('nconf');
-const validator = require('validator');
 
 const user = require('../user');
 const meta = require('../meta');
@@ -18,14 +17,8 @@ const helpers = require('./helpers');
 const uploadsController = module.exports;
 
 uploadsController.upload = async function (req, res, filesIterator) {
-	let files;
-	try {
-		files = req.files;
-	} catch (e) {
-		return helpers.formatApiResponse(400, res);
-	}
+	const { files } = req;
 
-	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
 		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
 	}
@@ -201,7 +194,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
-	const filename = `${Date.now()}-${validator.escape(name.slice(0, -extension.length)).slice(0, 255)}${extension}`;
+	const filename = `${Date.now()}-${name.slice(0, -extension.length).slice(0, 255)}${extension}`;
 
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 	const storedFile = {

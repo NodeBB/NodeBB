@@ -9,7 +9,6 @@ const db = require('../../database');
 const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
-const translator = require('../../translator');
 const utils = require('../../utils');
 const sockets = require('..');
 
@@ -149,9 +148,6 @@ User.loadGroups = async function (socket, uids) {
 	]);
 	userData.forEach((data, index) => {
 		data.groups = groupData[index].filter(group => !groups.isPrivilegeGroup(group.name));
-		data.groups.forEach((group) => {
-			group.nameEscaped = translator.escape(group.displayName);
-		});
 	});
 	return { users: userData };
 };

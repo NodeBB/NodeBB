@@ -98,10 +98,10 @@
 				{{{ each notices}}}
 				<div class="text-sm">
 					{{{ if ./done }}}
-					<i class="fa fa-fw fa-check text-success"></i> {./doneText}
+					<i class="fa fa-fw fa-check text-success"></i> {tx(./doneText)}
 					{{{ else }}}
 					{{{ if ./link }}}<a href="{config.relative_path}{./link}" data-bs-toggle="tooltip" title="{./tooltip}">{{{ end }}}
-					<i class="fa fa-fw fa-times text-danger"></i> {./notDoneText}
+					<i class="fa fa-fw fa-times text-danger"></i> {tx(./notDoneText)}
 					{{{ if ./link }}}</a>{{{ end }}}
 					{{{ end }}}
 				</div>

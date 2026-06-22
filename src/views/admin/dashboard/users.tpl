@@ -19,10 +19,10 @@
 					{{{ end }}}
 					{{{ each users }}}
 					<tr>
-						<td>{../uid}</td>
-						<td>{../username}</td>
-						<td>{../email}</td>
-						<td class="text-nowrap"><span class="timeago" title="{../joindateISO}"></span></td>
+						<td>{./uid}</td>
+						<td>{./username}</td>
+						<td>{./email}</td>
+						<td class="text-nowrap"><span class="timeago" title="{./joindateISO}"></span></td>
 					</tr>
 					{{{ end }}}
 				</tbody>

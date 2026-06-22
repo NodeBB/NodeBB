@@ -3,7 +3,6 @@
 
 const async = require('async');
 const nconf = require('nconf');
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -17,7 +16,7 @@ const plugins = require('../plugins');
 module.exports = function (User) {
 	User.getInvites = async function (uid) {
 		const emails = await db.getSetMembers(`invitation:uid:${uid}`);
-		return emails.map(email => validator.escape(String(email)));
+		return emails;
 	};
 
 	User.getInvitesNumber = async function (uid) {
