@@ -9,6 +9,8 @@
 	"user-pruning-help": "חשבונות משתמשים מהמידע המרוחק ימחקו רק במידה ואין להם פוסטים. אחרת הם יאוחזרו מחדש. (0 להשבתה)",
 	"enabled": "הפעלת פדרציה",
 	"enabled-help": "אם זה מופעל, NodeBB זה יוכל גם לתקשר עם כל הלקוחות התומכים ב-Activitypub במרחב הפדראלי הרחב.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "אפשר עיבוד loopback",
 	"allowLoopback-help": "שימושי למטרות ניפוי באגים בלבד. אתם כנראה תרצו להשאיר את זה מושבת.",
 	"parentTraversalDepth": "Parent traversal depth",

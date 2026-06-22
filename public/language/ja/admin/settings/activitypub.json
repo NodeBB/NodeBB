@@ -9,6 +9,8 @@
 	"user-pruning-help": "リモートユーザーアカウントは、投稿がない場合にのみ削除されます。投稿がある場合は再取得されます。（0で無効）",
 	"enabled": "フェデレーションを有効にする",
 	"enabled-help": "有効にすると、このNodeBBは広いフェディバース上のすべてのActivityPub対応クライアントと通信できるようになります。",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "ループバック処理を許可",
 	"allowLoopback-help": "デバッグ目的でのみ有用です。無効のままにしておくことをお勧めします。",
 	"parentTraversalDepth": "Parent traversal depth",

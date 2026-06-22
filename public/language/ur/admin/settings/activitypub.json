@@ -9,6 +9,8 @@
 	"user-pruning-help": "ریموٹ صارف اکاؤنٹس صرف اس صورت میں ہٹائے جائیں گے اگر انہوں نے کچھ پوسٹ نہ کیا ہو۔ بصورت دیگر، وہ دوبارہ حاصل کیے جائیں گے۔ (0 = غیر فعال)",
 	"enabled": "فیڈریشن فعال کریں",
 	"enabled-help": "اگر فعال ہو، تو یہ نوڈ بی بی پوری فیڈیورس میں ایکٹیویٹی پب استعمال کرنے والے تمام کلائنٹس کے ساتھ رابطہ قائم کر سکے گا۔",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "لوکل لوپ بیک پروسیسنگ کی اجازت دیں",
 	"allowLoopback-help": "صرف ڈیبگنگ کے لیے مفید۔ اسے غیر فعال رکھنا بہتر ہے۔",
 	"parentTraversalDepth": "Parent traversal depth",

@@ -9,6 +9,8 @@
 	"user-pruning-help": "Uzaqdan olan istifadəçi hesabları yalnız yazıları olmadıqda kəsiləcək. Əks halda onlar yenidən geri alınacaq. (əlillər üçün 0)",
 	"enabled": "Federasiyanı aktivləşdirin",
 	"enabled-help": "Aktivləşdirilərsə, bu NodeBB daha geniş fediverse üzrə bütün Activitypub-u aktivləşdirən müştərilərlə əlaqə saxlamağa imkan verəcək.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Geri dönmə emalına icazə verin",
 	"allowLoopback-help": "Yalnız sazlama məqsədləri üçün faydalıdır. Yəqin ki, bunu əlil buraxmalısınız.",
 	"parentTraversalDepth": "Parent traversal depth",

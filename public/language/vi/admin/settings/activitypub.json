@@ -9,6 +9,8 @@
 	"user-pruning-help": "Tài khoản người dùng từ xa sẽ chỉ bị cắt bớt nếu họ không có bài viết. Nếu không chúng sẽ được lấy lại. (0 là tắt)",
 	"enabled": "Bật Liên Đoàn",
 	"enabled-help": "Nếu được bật, sẽ cho phép NodeBB này có thể giao tiếp với tất cả các máy khách đã bật  Activitypub trên toàn bộ liên đoàn rộng hơn.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Cho phép xử lý vòng lặp",
 	"allowLoopback-help": "Chỉ hữu ích cho mục đích gỡ lỗi. Có lẽ bạn nên tắt tính năng này.",
 	"parentTraversalDepth": "Độ sâu duyệt cha",
