@@ -12,6 +12,6 @@
 	"disable": "無効",
 
 	"alert.delete-success": "報酬を削除しました",
-	"alert.no-inputs-found": "違法報酬 - 入力が見つかりません！",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "報酬を保存しました"
 }

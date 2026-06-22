@@ -50,6 +50,8 @@
     "details.hidden": "Скривена",
     "details.hidden-help": "Уколико је укључено, група неће бити видљива на списку група, и корисницима се позивнице морају слати ручно.",
     "details.delete-group": "Избриши групу",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Приватне групе су искључене на системском нивоу, ова опција нема ефекта",
     "event.updated": "Детаљи групе су ажурирани",
     "event.deleted": "Група „%1“ је избрисана",

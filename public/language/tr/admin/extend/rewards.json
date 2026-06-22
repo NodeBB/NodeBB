@@ -12,6 +12,6 @@
 	"disable": "Etkinsizleştir",
 
 	"alert.delete-success": "Ödül başarıyla silindi",
-	"alert.no-inputs-found": "Usulsüz ödül - girdi bulunamadı!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Ödüller başarıyla kaydedildi"
 }

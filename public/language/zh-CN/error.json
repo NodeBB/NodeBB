@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "您不允许删除这条消息",
     "chat-edit-duration-expired": "您只能在发布 %1 秒后修改聊天信息",
     "chat-delete-duration-expired": "您只能在发布 %1 秒后删除聊天信息",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "此聊天消息已经被删除",
     "chat-restored-already": "此聊天消息已经恢复。",
     "chat-room-does-not-exist": "聊天室不存在。",

@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Nuk ju lejohet ta fshini këtë mesazh",
     "chat-edit-duration-expired": "Ju lejohet të modifikoni mesazhet e bisedës vetëm për %1 sekond(a) pas postimit",
     "chat-delete-duration-expired": "Ju lejohet të fshini mesazhet e bisedës vetëm për %1 sekond(a) pas postimit",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Ky mesazh është fshirë tashmë.",
     "chat-restored-already": "Ky mesazh është rikthyer tashmë.",
     "chat-room-does-not-exist": "Kjo dhomë bisede nuk ekziston.",

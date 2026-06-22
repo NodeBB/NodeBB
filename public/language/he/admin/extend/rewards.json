@@ -12,6 +12,6 @@
 	"disable": "השבתה",
 
 	"alert.delete-success": "תגמול נמחק בהצלחה",
-	"alert.no-inputs-found": "תגמול לא חוקי - לא נמצא מידע!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "תגמולים נשמרו בהצלחה"
 }

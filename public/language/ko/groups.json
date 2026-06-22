@@ -50,6 +50,8 @@
     "details.hidden": "숨김",
     "details.hidden-help": "활성화하면 이 그룹은 그룹 목록에서 찾을 수 없으며 사용자가 수동으로 초대해야 합니다",
     "details.delete-group": "그룹 삭제",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "시스템 레벨에서 비공개 그룹이 비활성화되었습니다. 이 옵션은 아무것도 수행하지 않습니다",
     "event.updated": "그룹 세부정보가 업데이트되었습니다",
     "event.deleted": "\\\"%1\\\" 그룹이 삭제되었습니다",

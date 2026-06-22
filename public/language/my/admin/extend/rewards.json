@@ -12,6 +12,6 @@
 	"disable": "ပိတ်ရန်",
 
 	"alert.delete-success": "ဖျက်ပြီးပါပြီ",
-	"alert.no-inputs-found": "ထည့်သွင်းမှုများ မတွေ့ပါ",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "သိမ်းဆည်းပြီးပါပြီ"
 }

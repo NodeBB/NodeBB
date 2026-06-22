@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Nem törölheted ezt az üzenetet",
     "chat-edit-duration-expired": "Üzenetet a beküldés után csak %1 másodpercig szerkeszthetsz",
     "chat-delete-duration-expired": "Üzenetet a beküldés után csak %1 másodpecen belül törölhetsz",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Ezt a csevegőüzenetet már törölték.",
     "chat-restored-already": "Ez az üzenet már vissza van állítva.",
     "chat-room-does-not-exist": "Csevegő szoba nem létezik.",

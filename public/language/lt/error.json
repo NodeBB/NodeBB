@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Jūs neturite teisės trinti šios žinutės",
     "chat-edit-duration-expired": "Redaguoti susirašinėjimo žinutes galima tik %1 sekundę(-es/-ių) po paskelbimo",
     "chat-delete-duration-expired": "Trinti žinutes galima tik %1 sekundę(-es/-ių) po paskelbimo",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Ši žinutė buvo pašalinta",
     "chat-restored-already": "This chat message has already been restored.",
     "chat-room-does-not-exist": "Chat room does not exist.",

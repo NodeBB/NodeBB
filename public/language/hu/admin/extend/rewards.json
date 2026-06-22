@@ -12,6 +12,6 @@
 	"disable": "Tiltás",
 
 	"alert.delete-success": "Jutalom sikeresen törölve",
-	"alert.no-inputs-found": "Helytelen jutalom - nem található bevitel!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Jutalmak sikeresen elmentve"
 }

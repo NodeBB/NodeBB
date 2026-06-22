@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Du har ikke lov til å slette denne brukeren",
     "chat-edit-duration-expired": "Du har kun lov til å redigere meldinger i %1 sekund(er) etter at den er sendt",
     "chat-delete-duration-expired": "Du har kun lov til å slette meldinger i %1 sekund(er) etter den er sendt",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Denne meldingen har allerede blitt slettet.",
     "chat-restored-already": "Denne meldingen har allerede blitt gjenopprettet.",
     "chat-room-does-not-exist": "Denne chatten finnes ikke.",
@@ -272,6 +273,6 @@
     "activitypub.pubKey-not-found": "Kan ikke løse opp offentlig nøkkel, så verifisering av nyttelasten kan ikke gjennomføres.",
     "activitypub.origin-mismatch": "Det mottatte objektets opprinnelse samsvarer ikke med avsenderens opprinnelse.",
     "activitypub.not-implemented": "Forespørselen ble avvist fordi den, eller deler av den, ikke er støttet av mottakerserveren.",
-    "activitypub.orphan": "The received object is not associated with any known local user.",
-    "activitypub.rate-limited": "Your IP address has been rate-limited."
+    "activitypub.orphan": "Det mottatte objektet er ikke knyttet til noen kjent lokal bruker.",
+    "activitypub.rate-limited": "IP-adressen din har blitt hastighetsbegrenset."
 }

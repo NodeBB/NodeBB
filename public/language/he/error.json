@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "אינכם רשאים למחוק הודעה זו",
     "chat-edit-duration-expired": "ניתן לערוך הודעות צ'אט עד %1 שניות מרגע כתיבת ההודעה",
     "chat-delete-duration-expired": "ניתן למחוק הודעות צ'אט עד %1 שניות מרגע כתיבת ההודעה",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "הודעת צ'אט זו כבר נמחקה.",
     "chat-restored-already": "הודעת צ'אט זו כבר שוחזרה.",
     "chat-room-does-not-exist": "חדר צ'אט אינו קיים.",

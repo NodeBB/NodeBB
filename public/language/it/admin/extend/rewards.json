@@ -12,6 +12,6 @@
 	"disable": "Disabilita",
 
 	"alert.delete-success": "Premi eliminati con successo",
-	"alert.no-inputs-found": "Premio illegale - immissioni non trovate!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Premi salvati con successo"
 }

@@ -50,6 +50,8 @@
     "details.hidden": "Скрытая",
     "details.hidden-help": "Если включено, группа будет скрыта в списках, а участников необходимо будет приглашать вручную",
     "details.delete-group": "Удалить группу",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Закрытые группы отключены на уровне системы, эта опция ничего не даст",
     "event.updated": "Настройки группы обновлены",
     "event.deleted": "Группа \"%1\" удалена",

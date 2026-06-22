@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Ձեզ չի թույլատրվում ջնջել այս հաղորդագրությունը",
     "chat-edit-duration-expired": "Ձեզ թույլատրվում է խմբագրել զրույցի հաղորդագրությունները փակցնելուց հետո միայն %1 վայրկյան",
     "chat-delete-duration-expired": "Ձեզ թույլատրվում է ջնջել զրույցի հաղորդագրությունները փակցնելուց հետո միայն %1 վայրկյանի ընթացքում",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Այս զրույցի հաղորդագրությունն արդեն ջնջված է",
     "chat-restored-already": "This chat message has already been restored.",
     "chat-room-does-not-exist": "Այս զրուցարանը գոյություն չունի:",

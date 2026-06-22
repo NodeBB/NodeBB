@@ -50,6 +50,8 @@
     "details.hidden": "Скрита",
     "details.hidden-help": "Ако е включено, групата няма да е видима в списъка с групи и ще трябва потребителите да бъдат поканени специално.",
     "details.delete-group": "Изтриване на групата",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Частните групи са забранени на системно ниво; тази възможност не върши нищо",
     "event.updated": "Подробностите за групата бяха обновени",
     "event.deleted": "Групата „%1“ е изтрита",

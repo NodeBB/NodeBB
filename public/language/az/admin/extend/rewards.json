@@ -12,6 +12,6 @@
 	"disable": "Qeyri-aktiv et",
 
 	"alert.delete-success": "Mükafat uğurla silindi",
-	"alert.no-inputs-found": "Xətalı mükafat - heç bir giriş tapılmadı!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Mükafatlar müvəffəqiyyətlə yadda saxlanıldı"
 }

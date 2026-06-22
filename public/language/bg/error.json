@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Нямате право да изтриете това съобщение",
     "chat-edit-duration-expired": "Можете да редактирате съобщенията си в разговорите до %1 секунда/и, след като ги пуснете",
     "chat-delete-duration-expired": "Можете да изтривате съобщенията си в разговорите до %1 секунда/и след пускането им",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Това съобщение вече е изтрито.",
     "chat-restored-already": "Това съобщение вече е възстановено.",
     "chat-room-does-not-exist": "Стаята за разговори не съществува.",

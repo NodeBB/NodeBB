@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Ви не можете видалити це повідомлення",
     "chat-edit-duration-expired": "Ви можете редагувати повідомлення чату лише через %1 секунд після публікації",
     "chat-delete-duration-expired": "Ви можете видаляти повідомлення чату лише через %1 секунд після публікації",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Це повідомлення чату вже було видалено.",
     "chat-restored-already": "Це чат повідомлення вже було відновлене",
     "chat-room-does-not-exist": "Chat room does not exist.",

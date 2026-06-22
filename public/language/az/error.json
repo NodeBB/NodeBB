@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Bu mesajı silmək icazəniz yoxdur",
     "chat-edit-duration-expired": "Söhbət mesajlarını dərc etdikdən sonra yalnız %1 saniyə ərzində redaktə etmək icazəniz var",
     "chat-delete-duration-expired": "Söhbət mesajlarını yazdıqdan sonra yalnız %1 saniyə ərzində silmək icazəniz var",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Bu söhbət mesajı artıq silinib.",
     "chat-restored-already": "Bu söhbət mesajı artıq bərpa edilib.",
     "chat-room-does-not-exist": "Söhbət otağı mövcud deyil.",

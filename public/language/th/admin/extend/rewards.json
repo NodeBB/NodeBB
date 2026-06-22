@@ -12,6 +12,6 @@
 	"disable": "ปิดการใช้งาน",
 
 	"alert.delete-success": "ลบรางวัลสำเร็จ",
-	"alert.no-inputs-found": "รางวัลไม่ถูกต้อง - ยังไม่ได้ใส่ข้อมูล!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "บันทึกรางวัลสำเร็จ"
 }

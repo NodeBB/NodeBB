@@ -12,6 +12,6 @@
 	"disable": "Tắt",
 
 	"alert.delete-success": "Đã xóa thành công phần thưởng",
-	"alert.no-inputs-found": "Phần thưởng không hợp lệ - không tìm thấy đầu vào!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Đã lưu thành công phần thưởng"
 }

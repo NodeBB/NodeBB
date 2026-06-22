@@ -50,6 +50,8 @@
     "details.hidden": "隐藏",
     "details.hidden-help": "启用此选项后，群组将不在群组列表中展现，成员只能通过邀请加入。",
     "details.delete-group": "删除群组",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "系统禁用了私有群组，这个选项不起任何作用",
     "event.updated": "群组信息已更新",
     "event.deleted": "群组 \"%1\" 已被删除",

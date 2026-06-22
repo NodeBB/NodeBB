@@ -50,6 +50,8 @@
     "details.hidden": "Peidetud",
     "details.hidden-help": "Kui sisse lülitatud, siis seda gruppi ei kuvata gruppide nimekirjas ning liikmed tuleb lisada manuaalselt",
     "details.delete-group": "Kustuta grupp",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Privaatset gruppid on keelatud sellel süsteemi tasemel, see sätte ei tee midagi",
     "event.updated": "Grupi lisainformatsiooni on uuendatud",
     "event.deleted": "Grupp \"%1\" on kustutatud",

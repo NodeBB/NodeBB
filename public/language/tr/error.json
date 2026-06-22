@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Bu mesajı silmek için izin verilmez",
     "chat-edit-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) düzenlemene izin verilir",
     "chat-delete-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) silmene izin verilir",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Bu sohbet mesajı zaten silinmiş.",
     "chat-restored-already": "Bu sohbet mesajı zaten geri yüklendi.",
     "chat-room-does-not-exist": "Sohbet Odası Mevcut Değil",

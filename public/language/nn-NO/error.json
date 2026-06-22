@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Du har ikkje løyve til å slette denne meldinga",
     "chat-edit-duration-expired": "Du kan berre redigere meldingar i %1 sekund etter posting",
     "chat-delete-duration-expired": "Du kan berre slette meldingar i %1 sekund etter posting",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Denne meldinga har allereie blitt sletta.",
     "chat-restored-already": "Denne meldinga har allereie blitt gjenoppretta.",
     "chat-room-does-not-exist": "Chatten eksisterer ikkje.",

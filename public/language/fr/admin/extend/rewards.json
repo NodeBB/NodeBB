@@ -12,6 +12,6 @@
 	"disable": "Désactiver",
 
 	"alert.delete-success": "Récompense supprimée",
-	"alert.no-inputs-found": "Récompense invalide - aucune entrée trouvée !",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Récompenses sauvegardées"
 }

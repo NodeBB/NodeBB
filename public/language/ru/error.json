@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "У вас нет прав доступа, чтобы удалить это сообщение",
     "chat-edit-duration-expired": "Вам разрешено редактировать сообщения чата за %1 секунд после публикации",
     "chat-delete-duration-expired": "Вам разрешено удалять сообщения чата за %1 секунду после публикации",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Это сообщение чата уже удалено.",
     "chat-restored-already": "Это сообщение чата уже было восстановлено.",
     "chat-room-does-not-exist": "Комната чата не существует.",

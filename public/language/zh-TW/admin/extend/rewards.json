@@ -12,6 +12,6 @@
 	"disable": "禁用",
 
 	"alert.delete-success": "已成功刪除獎勵",
-	"alert.no-inputs-found": "非法獎勵 － 輸入為空！",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "已成功儲存獎勵"
 }

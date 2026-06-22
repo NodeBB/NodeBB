@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Bạn không được phép xoá tin nhắn này",
     "chat-edit-duration-expired": "Bạn chỉ được phép sửa tin nhắn trò chuyện này trong %1 giây sau khi đăng.",
     "chat-delete-duration-expired": "Bạn chỉ được phép xóa tin nhắn trò chuyện này trong %1 giây sau khi đăng.",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Tin nhắn trò chuyện này đã bị xóa.",
     "chat-restored-already": "Tin nhắn trò chuyện này đã được khôi phục.",
     "chat-room-does-not-exist": "Phòng trò chuyện không tồn tại.",

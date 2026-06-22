@@ -209,7 +209,7 @@
     "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "revoke-session": "Revoke Session",
     "browser-version-on-platform": "%1 %2 on %3",
-    "consent.title": "Your Rights &amp; Consent",
+    "consent.title": "Your Rights & Consent",
     "consent.lead": "Šis bendruomenės forumas renka ir apdoroja jūsų asmeninę informaciją.",
     "consent.intro": "We use this information strictly to personalise your experience in this community, as well as to associate the posts you make to your user account. During the registration step you were asked to provide a username and email address, you can also optionally provide additional information to complete your user profile on this website.<br /><br />We retain this information for the life of your user account, and you are able to withdraw consent at any time by deleting your account. At any time you may request a copy of your contribution to this website, via your Rights &amp; Consent page.<br /><br />If you have any questions or concerns, we encourage you to reach out to this forum's administrative team.",
     "consent.email-intro": "Occasionally, we may send emails to your registered email address in order to provide updates and/or to notify you of new activity that is pertinent to you. You can customise the frequency of the community digest (including disabling it outright), as well as select which types of notifications to receive via email, via your user settings page.",

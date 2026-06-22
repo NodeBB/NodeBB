@@ -50,6 +50,8 @@
     "details.hidden": "Rejtett",
     "details.hidden-help": "Ha engedélyezett, a csoport nem jelenik meg a csoportlistán, és a felhasználókat manuálisan kell meghívni",
     "details.delete-group": "Csoport törlése",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "A privát csoportok rendszerszinten vannak kikapcsolva, így ez a beállítás semmit sem csinál",
     "event.updated": "A csoport részletei frissítve",
     "event.deleted": "A(z) \"%1\" csoport törölve",
