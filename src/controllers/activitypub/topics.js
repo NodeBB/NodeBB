@@ -162,7 +162,7 @@ controller.list = async function (req, res) {
 		data.categories = [];
 	}
 
-	data.title = translator.escape(data.name);
+	data.title = data.name;
 	data.breadcrumbs = helpers.buildBreadcrumbs([]);
 
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / userSettings.topicsPerPage));
