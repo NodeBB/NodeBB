@@ -147,7 +147,7 @@
 							<span class="small topic-title text-break">
 								{{{ if posts.data.tid }}}
 								<div class="d-flex flex-column align-items-start gap-1">
-									<a href="{config.relative_path}/topic/{posts.data.tid}">{txEscape(posts.topic.title})</a>
+									<a href="{config.relative_path}/topic/{posts.data.tid}">{txEscape(posts.topic.title)}</a>
 									<span class="badge text-body border border-gray-300 stats text-xs">
 										<span class="text-lowercase fw-normal">[[global:lastpost]]</span>
 										<span title="{posts.topic.lastposttimeISO}" class="timeago fw-bold"></span>
