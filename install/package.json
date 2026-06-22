@@ -70,7 +70,7 @@
         "csv-parse": "6.2.1",
         "daemon": "1.1.0",
         "diff": "9.0.0",
-        "esbuild": "0.28.0",
+        "esbuild": "0.28.1",
         "express": "4.22.2",
         "express-session": "1.19.0",
         "express-useragent": "2.2.0",
