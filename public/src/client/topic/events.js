@@ -207,12 +207,13 @@ define('forum/topic/events', [
 
 		const { isAdminOrMod } = ajaxify.data.privileges;
 		const isSelfPost = String(data.uid) === String(app.user.uid);
+		const canSeeDeleted = isAdminOrMod || isSelfPost;
 		const isDeleted = !!data.deleted;
 		if (postEl.length) {
 			postEl.toggleClass('deleted');
 			postTools.toggle(data.pid, isDeleted);
 
-			if (!isAdminOrMod && !isSelfPost) {
+			if (!canSeeDeleted) {
 				postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
 				if (isDeleted) {
 					postEl.find('[component="post/content"]').translateText('[[topic:post-is-deleted]]');
@@ -223,7 +224,7 @@ define('forum/topic/events', [
 		}
 
 		const parentEl = $(`[component="post/parent"][data-parent-pid="${data.pid}"]`);
-		if (parentEl.length) {
+		if (parentEl.length && !canSeeDeleted) {
 			parentEl.each((i, el) => {
 				const $parent = $(el);
 				if (isDeleted) {

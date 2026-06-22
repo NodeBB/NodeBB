@@ -200,7 +200,7 @@ module.exports = function (Topics) {
 		await Promise.all(parentPosts.map(async (parentPost) => {
 			const postPrivs = pidToPrivs[parentPost.pid];
 			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
-				parentPost.content = `<p>[[topic:post-is-deleted]]</p>`;
+				parentPost.content = `[[topic:post-is-deleted]]`;
 				return;
 			}
 			const foundPost = postData.find(p => String(p.pid) === String(parentPost.pid));

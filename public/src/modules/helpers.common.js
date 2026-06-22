@@ -35,6 +35,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		min,
 		clamp,
 		quote,
+		renderTitle,
 		renderContent,
 		generateWroteReplied,
 		generateRepliedTo,
@@ -416,13 +417,18 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	}
 
 	const deletedMsgs = new Set([
-		'[[topic:topic-is-deleted]]',
 		'[[topic:post-is-deleted]]',
 		'[[modules:chat.message-deleted]]',
 	]);
+
+	function renderTitle(title, deleted = 0) {
+		const translateDeletedMsg = parseInt(deleted, 10) === 1 && title === '[[topic:topic-is-deleted]]';
+		return translateDeletedMsg ? _tx.call(this, title) : escape(title); // full escape on titles
+	}
+
 	function renderContent(content, deleted = 0) {
 		const translateDeletedMsg = parseInt(deleted, 10) === 1 && deletedMsgs.has(content);
-		return translateDeletedMsg ? _tx.call(this, content) : tx.escape(content);
+		return translateDeletedMsg ? _tx.call(this, content) : tx.escape(content); // just tx.escape on html content
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {
