@@ -67,7 +67,7 @@
         "cronstrue": "3.14.0",
         "cropperjs": "1.6.2",
         "csrf-sync": "4.2.1",
-        "csv-parse": "6.2.1",
+        "csv-parse": "7.0.0",
         "daemon": "1.1.0",
         "diff": "9.0.0",
         "esbuild": "0.28.1",
