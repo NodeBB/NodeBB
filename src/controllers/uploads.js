@@ -217,6 +217,7 @@ const mimeAliases = new Map([
 	['audio/x-wav', 'audio/wav'],
 	['video/x-msvideo', 'video/avi'],
 	['image/vnd.microsoft.icon', 'image/x-icon'],
+	['application/vnd.rar', 'application/x-rar-compressed'],
 ]);
 
 function normalizeMimeType(mimeType) {
