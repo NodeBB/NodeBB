@@ -79,12 +79,12 @@
 						<li class="{./name} mb-2">
 							<a class="btn btn-outline-light d-flex align-items-center" rel="nofollow noopener noreferrer" target="_top" href="{config.relative_path}{./url}">
 								{{{ if ./icons.svg }}}
-								{./icons.svg}
+								{{./icons.svg}}
 								{{{ else }}}
 								<i class="flex-shrink-0 {./icons.normal}" style="color:{./color};"></i>
 								{{{ end }}}
 								{{{ if ./labels.login }}}
-								<div class="flex-grow-1 text-body text-sm">{tx(./labels.login)}</div>
+								<div class="flex-grow-1 text-body text-sm">{{tx(./labels.login)}}</div>
 								{{{ end }}}
 							</a></li>
 						{{{ end }}}
