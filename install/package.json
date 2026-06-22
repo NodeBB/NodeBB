@@ -161,7 +161,7 @@
         "winston": "3.19.0",
         "workerpool": "10.0.2",
         "xml": "1.0.1",
-        "yargs": "17.7.2",
+        "yargs": "17.7.3",
         "zxcvbn": "4.4.2"
     },
     "devDependencies": {
