@@ -168,7 +168,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		const href = tag === 'a' ? `href="${relative_path}/category/${escape(category.slug)}"` : '';
 		return `<${tag} component="topic/category" ${href} class="badge px-1 text-truncate text-decoration-none ${className}" style="color: ${color};background-color: ${bgColor};border-color: ${bgColor}!important; max-width: 70vw;">
 			${icon && icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${icon}"></i>` : ''}
-			${escape(_tx.call(this, String(category.name)))}
+			${_tx.call(this, String(category.name))}
 		</${tag}>`;
 	}
 
