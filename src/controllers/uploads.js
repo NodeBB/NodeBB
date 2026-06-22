@@ -212,10 +212,23 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	return data.storedFile;
 }
 
+const mimeAliases = new Map([
+	['application/x-zip-compressed', 'application/zip'],
+	['audio/x-wav', 'audio/wav'],
+	['video/x-msvideo', 'video/avi'],
+	['image/vnd.microsoft.icon', 'image/x-icon'],
+]);
+
+function normalizeMimeType(mimeType) {
+	return mimeAliases.get(mimeType) || mimeType;
+}
+
 async function validateUploadedFileMime(uploadedFile) {
 	const detected = await fileTypeFromFile(uploadedFile.path);
 	const detectedMimeType = detected ? detected.mime : mime.getType(uploadedFile.name);
-	if (detectedMimeType && uploadedFile.type && detectedMimeType !== uploadedFile.type) {
+	if (detectedMimeType && uploadedFile.type &&
+		normalizeMimeType(detectedMimeType) !== normalizeMimeType(uploadedFile.type)
+	) {
 		throw new Error('[[error:invalid-mime-type]]');
 	}
 }
