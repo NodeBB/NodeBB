@@ -6,6 +6,8 @@ require('../app');
 // from plugins that add files to "acpScripts" block in plugin.json
 require('../../scripts-admin');
 
+const translator = require('translator');
+
 app.onDomReady();
 
 (function () {
@@ -98,46 +100,44 @@ app.onDomReady();
 		});
 	}
 
-	function updatePageTitle(url) {
-		require(['translator'], function (translator) {
-			url = url
-				.replace(/\/\d+$/, '')
-				.split('/').slice(0, 3).join('/')
-				.split(/[?#]/)[0].replace(/(\/+$)|(^\/+)/, '');
+	async function updatePageTitle(url) {
+		url = url
+			.replace(/\/\d+$/, '')
+			.split('/').slice(0, 3).join('/')
+			.split(/[?#]/)[0].replace(/(\/+$)|(^\/+)/, '');
 
-			// If index is requested, load the dashboard
-			if (url === 'admin') {
-				url = 'admin/dashboard';
-			}
+		// If index is requested, load the dashboard
+		if (url === 'admin') {
+			url = 'admin/dashboard';
+		}
 
-			url = [config.relative_path, url].join('/');
-			let fallback;
+		url = [config.relative_path, url].join('/');
+		let fallback;
 
-			$(`[component="acp/accordion"] a[href="${url}"]`).each(function () {
-				fallback = $(this).text();
-			});
-
-			let pageTitle;
-			if (/admin\/plugins\//.test(url)) {
-				pageTitle = '[[admin/menu:section-plugins]] > ' + fallback;
-			} else {
-				const matches = url.match(/admin\/(.+?)\/(.+?)$/);
-				if (matches) {
-					const mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
-					pageTitle = '[[admin/menu:section-' +
-						(matches[1] === 'development' ? 'advanced' : matches[1]) +
-						']]' + (matches[2] ? (' > ' + mainTitle) : '');
-				} else {
-					pageTitle = '[[admin/menu:section-dashboard]]';
-				}
-			}
-
-			pageTitle = translator.compile('admin/admin:acp-title', pageTitle);
-
-			translator.translate(pageTitle, function (title) {
-				document.title = title.replace(/&gt;/g, '>');
-			});
+		$(`[component="acp/accordion"] a[href="${url}"]`).each(function () {
+			fallback = $(this).text();
 		});
+
+		let pageTitle;
+		if (/admin\/plugins\//.test(url)) {
+			pageTitle = await translator.translateKey('[[admin/menu:section-plugins]]') + ' > ' + fallback;
+		} else {
+			const matches = url.match(/admin\/(.+?)\/(.+?)$/);
+			if (matches) {
+				const [mainTitle, subTitle] = await translator.translateKeys([
+					'[[admin/menu:' + matches[1] + '/' + matches[2] + ']]',
+					'[[admin/menu:section-' +
+						(matches[1] === 'development' ? 'advanced' : matches[1]) +
+					']]',
+				]);
+				pageTitle = subTitle + (matches[2] ? (' > ' + mainTitle) : '');
+			} else {
+				pageTitle = await translator.translateKey('[[admin/menu:section-dashboard]]');
+			}
+		}
+
+		pageTitle = translator.compile('admin/admin:acp-title', pageTitle);
+		document.title = (await translator.translateKey(pageTitle)).replace(/&gt;/g, '>');
 	}
 
 	function setupRestartLinks() {
