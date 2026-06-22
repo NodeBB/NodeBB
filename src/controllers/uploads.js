@@ -217,6 +217,7 @@ const mimeAliases = new Map([
 	['audio/x-wav', 'audio/wav'],
 	['video/x-msvideo', 'video/avi'],
 	['image/vnd.microsoft.icon', 'image/x-icon'],
+	['application/vnd.rar', 'application/x-rar-compressed'],
 ]);
 
 function normalizeMimeType(mimeType) {
@@ -226,7 +227,10 @@ function normalizeMimeType(mimeType) {
 async function validateUploadedFileMime(uploadedFile) {
 	const detected = await fileTypeFromFile(uploadedFile.path);
 	const detectedMimeType = detected ? detected.mime : mime.getType(uploadedFile.name);
-	if (detectedMimeType && uploadedFile.type &&
+	if (
+		detectedMimeType &&
+		uploadedFile.type &&
+		uploadedFile.type !== 'application/octet-stream' &&
 		normalizeMimeType(detectedMimeType) !== normalizeMimeType(uploadedFile.type)
 	) {
 		throw new Error('[[error:invalid-mime-type]]');
