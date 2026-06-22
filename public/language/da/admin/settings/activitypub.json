@@ -9,6 +9,8 @@
 	"user-pruning-help": "Fjerne brugerkontoer vil kun blive frasorteret, hvis de ikke har nogle opslag. Ellers vil det blive gen-hentet. (0 for at slå fra)",
 	"enabled": "Tænd for Føderation",
 	"enabled-help": "Hvis slået til, vil denne NodeBB instans kunne kommunikere med alle klienter der bruger ActivityPub på det bredere fødivers.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Tillad loopback proccesering",
 	"allowLoopback-help": "Kun brugbart for debugging-formål. Du bør formentlig efterlade det slukket.",
 	"parentTraversalDepth": "Parent traversal depth",

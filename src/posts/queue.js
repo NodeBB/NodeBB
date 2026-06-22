@@ -217,6 +217,15 @@ module.exports = function (Posts) {
 		const id = `${type}-${now}`;
 		await canPost(type, data);
 
+		if (type === 'crosspost' && data.tid && await db.isSetMember('post:queue:rejected:crosspost', String(data.tid))) {
+			return {
+				id: id,
+				type: type,
+				queued: false,
+				message: '[[success:crosspost-already-rejected]]',
+			};
+		}
+
 		if (data.pid) {
 			await removeFromQueueByPid(data.pid);
 		}
@@ -348,6 +357,9 @@ module.exports = function (Posts) {
 		}
 		const result = await plugins.hooks.fire('filter:post-queue:removeFromQueue', { data: data });
 		await removeFromQueue(id);
+		if (result.data.type === 'crosspost' && result.data.data.tid) {
+			await db.setAdd('post:queue:rejected:crosspost', String(result.data.data.tid));
+		}
 		plugins.hooks.fire('action:post-queue:removeFromQueue', { data: result.data });
 		return result.data;
 	};

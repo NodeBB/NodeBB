@@ -9,6 +9,8 @@
 	"user-pruning-help": "Konta użytkowników zdalnych będą usuwane tylko jeśli nie mają postów. W przeciwnych wypadku będą ponownie pobierane. (0 aby wyłączyć)",
 	"enabled": "Włącz Federację",
 	"enabled-help": "Po włączeniu NodeBB będzie komunikować się ze wszystkimi klientami obsługującymi ActivityPub zapewniając dostęp do fediverse.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Zezwól na przetwarzanie pętli zwrotnej",
 	"allowLoopback-help": "Użyteczne tylko do debugowania. Raczej powinieneś(-aś) zostawić to wyłączone.",
 	"parentTraversalDepth": "Parent traversal depth",

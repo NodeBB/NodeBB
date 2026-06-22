@@ -9,6 +9,8 @@
 	"user-pruning-help": "Conturile de utilizatori de la distanță vor fi eliminate doar dacă nu au postări. În caz contrar, vor fi recuperate. (0 pentru dezactivat)",
 	"enabled": "Activează Federația",
 	"enabled-help": "Dacă este activat, acest lucru va permite ca NodeBB să poată comunica cu toți clienții compatibili cu Activitypub de pe fediverse.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Permite procesarea loopback",
 	"allowLoopback-help": "Util doar pentru depanare. Probabil ar trebui să lași această opțiune dezactivată.",
 	"parentTraversalDepth": "Parent traversal depth",

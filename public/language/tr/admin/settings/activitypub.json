@@ -9,6 +9,8 @@
 	"user-pruning-help": "Remote user accounts will only be pruned if they have no posts. Otherwise they will be re-retrieved. (0 for disabled)",
 	"enabled": "Enable Federation",
 	"enabled-help": "If enabled, will allow this NodeBB will be able to communicate with all Activitypub-enabled clients on the wider fediverse.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Allow loopback processing",
 	"allowLoopback-help": "Useful for debugging purposes only. You should probably leave this disabled.",
 	"parentTraversalDepth": "Parent traversal depth",

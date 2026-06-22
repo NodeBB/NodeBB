@@ -2,7 +2,7 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "4.13.1",
+    "version": "4.13.2",
     "homepage": "https://www.nodebb.org",
     "repository": {
         "type": "git",
@@ -106,7 +106,7 @@
         "nodebb-plugin-dbsearch": "7.0.0",
         "nodebb-plugin-emoji": "6.0.12",
         "nodebb-plugin-emoji-android": "4.1.1",
-        "nodebb-plugin-link-preview": "2.2.7",
+        "nodebb-plugin-link-preview": "2.2.8",
         "nodebb-plugin-markdown": "13.2.5",
         "nodebb-plugin-mentions": "5.0.0",
         "nodebb-plugin-spam-be-gone": "2.3.3",

@@ -1,9 +1,9 @@
 {
     "category": "Kategori",
     "subcategories": "Underkategorier",
-    "uncategorized": "World",
-    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
-    "handle.description": "This category can be followed from the open social web via the handle %1",
+    "uncategorized": "Verden",
+    "uncategorized.description": "Innlegg som kommer utenfra dette forumet. Synspunkter og meninger som uttrykkes her, gjenspeiler ikke nødvendigvis synspunktene til dette forumet og medlemmene.",
+    "handle.description": "Denne kategorien kan følges fra det åpne sosiale nettet via brukernavnet %1",
     "new-topic-button": "Nytt innlegg",
     "guest-login-post": "Logg inn for å publisere innlegg",
     "no-topics": "<strong>Denne kategorien er foreløpig tom.</strong><br />Har du noe å dele? Opprett et innlegg her!",

@@ -9,6 +9,8 @@
 	"user-pruning-help": "Отдалечените потребителски акаунти ще бъдат премахнати, само ако не са публикували нищо. Иначе ще бъдат извличани повторно. (0 = изключено)",
 	"enabled": "Включване на федерирането",
 	"enabled-help": "Ако е включено, този NodeBB ще може да осъществява връзка с всички клиенти ползващи ActivityPub в цялата федивселена.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Разрешаване на обработката на локална обратна връзка",
 	"allowLoopback-help": "Полезно само за дебъгване. Най-добре е това да бъде изключено",
 	"parentTraversalDepth": "Дълбочина на обхождане нагоре",

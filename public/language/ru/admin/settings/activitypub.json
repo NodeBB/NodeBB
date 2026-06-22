@@ -9,6 +9,8 @@
 	"user-pruning-help": "Учетные записи удаленных пользователей будут удалены только в том случае, если в них нет записей. В противном случае они будут восстановлены повторно. (значение 0 отключено)",
 	"enabled": "Включить федерацию",
 	"enabled-help": "Если этот параметр включен, NodeBB сможет взаимодействовать со всеми клиентами, поддерживающими Activitypub, в более широком федеративном пространстве.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Разрешить обработку обратной связи",
 	"allowLoopback-help": "Полезно только для отладки. Вероятно, вам следует оставить это отключенным.",
 	"parentTraversalDepth": "Parent traversal depth",

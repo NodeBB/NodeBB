@@ -9,6 +9,8 @@
 	"user-pruning-help": "Eksterne brukerkontoer blir bare fjernet hvis de ikke har noen innlegg. Ellers blir de hentet inn på nytt. (0 for å deaktivere)",
 	"enabled": "Aktiver føderering",
 	"enabled-help": "Hvis dette er aktivert, kan denne NodeBB-installasjonen kommunisere med alle ActivityPub-aktiverte klienter i det større fediverset.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Tillat behandling av egne aktiviteter",
 	"allowLoopback-help": "Bare nyttig ved feilsøking. Du bør vanligvis la dette være deaktivert.",
 	"parentTraversalDepth": "Parent traversal depth",

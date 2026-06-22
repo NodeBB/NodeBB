@@ -9,6 +9,8 @@
 	"user-pruning-help": "Cuentas de usuarios remotos solo serán purgadas si no tienen publicaciones. De lo contrario serán re-obtenidas. (0 para deshabilitar)",
 	"enabled": "Habilitar Federación",
 	"enabled-help": "Si se activa, esto habilitará a NodeBB comunicarse con todos los clientes que tengan habilitado ActivityPub en el fediverso.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Permitir procesamiento de bucle invertido",
 	"allowLoopback-help": "Útil únicamente para fines de depuración. Probablemente debería dejar esta opción desactivada.",
 	"parentTraversalDepth": "Parent traversal depth",

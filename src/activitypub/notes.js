@@ -444,12 +444,20 @@ Notes.assertPrivate = async (object) => {
 		}
 	});
 
-	// Locate the roomId based on `inReplyTo`
+	// Locate the `roomId` and set `toMid` based on `inReplyTo`
 	let roomId;
+	let toMid;
 	const resolved = await activitypub.helpers.resolveLocalId(object.inReplyTo);
-	let toMid = resolved.type === 'message' && resolved.id;
-	if (object.inReplyTo && await messaging.messageExists(toMid || object.inReplyTo)) {
-		roomId = await messaging.getMessageField(toMid || object.inReplyTo, 'roomId');
+	if (resolved.type === 'message' && resolved.id) {
+		toMid = resolved.id;
+	} else {
+		toMid = object.inReplyTo;
+	}
+	if (toMid && await messaging.messageExists(toMid)) {
+		roomId = await messaging.getMessageField(toMid, 'roomId');
+	} else {
+		toMid = undefined;
+		// roomId stays undefined
 	}
 
 	// Compare room members with object recipients; if someone in-room is omitted, start new chat

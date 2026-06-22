@@ -10,6 +10,7 @@ const batch = require('../batch');
 const categories = require('../categories');
 const user = require('../user');
 const utils = require('../utils');
+const plugins = require('../plugins');
 const TTLCache = require('../cache/ttl');
 
 const failedWebfingerCache = TTLCache({
@@ -269,6 +270,10 @@ Actors.assert = async (ids, options = {}) => {
 		db.sortedSetAddBulk(queries.searchAdd),
 		db.setObject('handle:uid', queries.handleAdd),
 	]);
+
+	if (profiles.length) {
+		await plugins.hooks.fire('action:userRemote.create', { profiles });
+	}
 
 	// Handle any actors that should be asserted as a group instead
 	if (categories.size) {
@@ -543,6 +548,8 @@ Actors.remove = async (id) => {
 		db.delete(`userRemote:${id}`),
 		db.sortedSetRemove('usersRemote:lastCrawled', id),
 	]);
+
+	await plugins.hooks.fire('action:userRemote.delete', { id });
 };
 
 Actors.removeGroup = async (id) => {

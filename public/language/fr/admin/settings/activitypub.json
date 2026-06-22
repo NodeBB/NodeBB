@@ -9,6 +9,8 @@
 	"user-pruning-help": "Les comptes d’utilisateurs distants seront supprimés s’ils n’ont aucune publication. Sinon, ils seront récupérés à nouveau. (0 pour désactiver)",
 	"enabled": "Activer la fédération",
 	"enabled-help": "Si activé, cette instance NodeBB pourra communiquer avec tous les clients compatibles ActivityPub sur le fediverse.",
+	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
 	"allowLoopback": "Autoriser le traitement en boucle",
 	"allowLoopback-help": "À utiliser uniquement à des fins de débogage. Il est recommandé de laisser cette option désactivée.",
 	"parentTraversalDepth": "Parent traversal depth",

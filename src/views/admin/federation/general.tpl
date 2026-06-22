@@ -29,6 +29,13 @@
 							[[admin/settings/activitypub:parentTraversalDepth-help]]
 						</div>
 					</div>
+					<div class="mb-3">
+						<label class="form-label" for="activitypubPublicKeyFetchRateLimit">[[admin/settings/activitypub:publicKeyFetchRateLimit]]</label>
+						<input type="number" id="activitypubPublicKeyFetchRateLimit" name="activitypubPublicKeyFetchRateLimit" data-field="activitypubPublicKeyFetchRateLimit" title="[[admin/settings/activitypub:publicKeyFetchRateLimit]]" class="form-control" />
+						<div class="form-text">
+							[[admin/settings/activitypub:publicKeyFetchRateLimit-help]]
+						</div>
+					</div>
 				</form>
 			</div>
 
