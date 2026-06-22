@@ -239,7 +239,7 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 	const lockId = `pubkey:${ip}`;
 	const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
 	const lockStatus = await db.incrObjectField('locks', lockId);
-	if (lockStatus > 1 || currentCount >= 60) {
+	if (lockStatus > 1 || currentCount >= meta.config.activitypubPublicKeyFetchRateLimit) {
 		winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
 		throw new Error('[[error:activitypub.rate-limited]]');
 	}
