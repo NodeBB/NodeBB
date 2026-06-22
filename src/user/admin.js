@@ -33,14 +33,14 @@ module.exports = function (User) {
 	User.getUsersCSV = async function () {
 		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
 
-		const data = await plugins.hooks.fire('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
-		let csvContent = `${data.fields.join(',')}\n`;
+		const { fields, showIps } = await plugins.hooks.fire('filter:user.csvFields', {
+			fields: ['uid', 'email', 'username'],
+			showIps: false,
+		});
+
+		let csvContent = `${fields.map(f => `"${f}"`).join(',')}\n`;
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			const usersData = await User.getUsersFields(uids, data.fields);
-			csvContent += usersData.reduce((memo, user) => {
-				memo += `${data.fields.map(field => user[field]).join(',')}\n`;
-				return memo;
-			}, '');
+			csvContent += await userDataToCsv(uids, fields, [], showIps);
 		}, {});
 
 		return csvContent;
@@ -54,7 +54,6 @@ module.exports = function (User) {
 			showIps: fieldsToExport.includes('ip'),
 		});
 		const customUserFields = await db.getSortedSetRange('user-custom-fields', 0, -1);
-		const fieldsToWrapInQuotes = ['fullname', 'signature', 'aboutme', ...customUserFields];
 		if (!showIps && fields.includes('ip')) {
 			fields.splice(fields.indexOf('ip'), 1);
 		}
@@ -64,27 +63,7 @@ module.exports = function (User) {
 		);
 		await fs.promises.appendFile(fd, `${fields.map(f => `"${f}"`).join(',')}\n`);
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			const userFieldsToLoad = fields.filter(field => field !== 'ip' && field !== 'password');
-			const usersData = await User.getUsersFields(uids, userFieldsToLoad);
-			let userIps = [];
-			if (showIps) {
-				userIps = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
-			}
-
-			usersData.forEach((user, index) => {
-				if (Array.isArray(userIps[index])) {
-					user.ip = userIps[index].join(',');
-				}
-				fieldsToWrapInQuotes.forEach((field) => {
-					if (user[field]) {
-						user[field] = `"${String(user[field])}"`;
-					}
-				});
-			});
-
-			const opts = { fields, header: false };
-			const json2csvAsync = new AsyncParser(opts);
-			const csv = await json2csvAsync.parse(usersData).promise();
+			const csv = await userDataToCsv(uids, fields, customUserFields, showIps);
 			await fs.promises.appendFile(fd, csv);
 		}, {
 			batch: 5000,
@@ -92,4 +71,29 @@ module.exports = function (User) {
 		});
 		await fd.close();
 	};
+
+	async function userDataToCsv(uids, fields, customUserFields, showIps) {
+		const fieldsToWrapInQuotes = ['fullname', 'signature', 'aboutme', ...customUserFields];
+		const userFieldsToLoad = fields.filter(field => field !== 'ip' && field !== 'password');
+		const usersData = await User.getUsersFields(uids, userFieldsToLoad);
+		let userIps = [];
+		if (showIps) {
+			userIps = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:ip`));
+		}
+
+		usersData.forEach((user, index) => {
+			if (Array.isArray(userIps[index])) {
+				user.ip = userIps[index].join(',');
+			}
+			fieldsToWrapInQuotes.forEach((field) => {
+				if (user[field]) {
+					user[field] = `"${String(user[field])}"`;
+				}
+			});
+		});
+
+		const opts = { fields, header: false };
+		const json2csvAsync = new AsyncParser(opts);
+		return await json2csvAsync.parse(usersData).promise();
+	}
 };

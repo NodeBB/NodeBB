@@ -1,7 +1,6 @@
 'use strict';
 
 const winston = require('winston');
-const validator = require('validator');
 
 const batch = require('../batch');
 const db = require('../database');
@@ -72,9 +71,7 @@ module.exports = function (Messaging) {
 			if (!isPublic) {
 				const uids = await Messaging.getAllUidsInRoomFromSet(`chat:room:${roomId}:uids:online`);
 				unreadData.teaser = {
-					content: validator.escape(
-						utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content))
-					),
+					content: utils.stripHTMLTags(utils.decodeHTMLEntities(messageObj.content)),
 					user: messageObj.fromUser,
 					timestampISO: messageObj.timestampISO,
 				};

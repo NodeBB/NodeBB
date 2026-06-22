@@ -1,7 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
-const validator = require('validator');
+const { AsyncParser } = require('@json2csv/node');
 
 const db = require('../../database');
 const user = require('../../user');
@@ -9,6 +9,7 @@ const groups = require('../../groups');
 const meta = require('../../meta');
 const pagination = require('../../pagination');
 const events = require('../../events');
+const slugify = require('../../slugify');
 
 const groupsController = module.exports;
 
@@ -96,13 +97,10 @@ groupsController.getCSV = async function (req, res) {
 	const members = (await groups.getMembersOfGroups([groupName]))[0];
 	const fields = ['email', 'username', 'uid'];
 	const userData = await user.getUsersFields(members, fields);
-	let csvContent = `${fields.join(',')}\n`;
-	csvContent += userData.reduce((memo, user) => {
-		memo += `${user.email},${user.username},${user.uid}\n`;
-		return memo;
-	}, '');
+	const json2csvAsync = new AsyncParser({ fields });
+	const csvContent = await json2csvAsync.parse(userData).promise();
 
-	res.attachment(`${validator.escape(groupName)}_members.csv`);
+	res.attachment(`${slugify(groupName)}_members.csv`);
 	res.setHeader('Content-Type', 'text/csv');
 	res.end(csvContent);
 };
