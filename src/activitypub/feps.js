@@ -36,7 +36,7 @@ Feps.announce = async function announce(id, activity) {
 		}
 		return memo;
 	}, []);
-	const followers = localCid ? await activitypub.notes.getCategoryFollowers(cid) : [cid];
+	const followers = localCid ? await activitypub.notes.getCategoryFollowers(cid) : (cid ? [cid] : []);
 	const targets = relays.concat(followers);
 	if (!targets.length) {
 		return;
