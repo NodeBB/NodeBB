@@ -227,7 +227,10 @@ function normalizeMimeType(mimeType) {
 async function validateUploadedFileMime(uploadedFile) {
 	const detected = await fileTypeFromFile(uploadedFile.path);
 	const detectedMimeType = detected ? detected.mime : mime.getType(uploadedFile.name);
-	if (detectedMimeType && uploadedFile.type &&
+	if (
+		detectedMimeType &&
+		uploadedFile.type &&
+		uploadedFile.type !== 'application/octet-stream' &&
 		normalizeMimeType(detectedMimeType) !== normalizeMimeType(uploadedFile.type)
 	) {
 		throw new Error('[[error:invalid-mime-type]]');
