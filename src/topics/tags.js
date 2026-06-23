@@ -629,19 +629,19 @@ module.exports = function (Topics) {
 		const notifBase = 'notifications:user-posted-topic-with-tag';
 		let suffix = '';
 		let tagArgs = tags.map(tag => tx.escape(tag.value));
-		if (tags.length === 2) {
+		if (tagArgs.length === 2) {
 			suffix = '-dual';
-		} else if (tags.length === 3) {
+		} else if (tagArgs.length === 3) {
 			suffix = '-triple';
-		} else if (tags.length > 3) {
+		} else if (tagArgs.length > 3) {
 			suffix = '-multiple';
-			tagArgs = [tags.join(', ')];
+			tagArgs = [tagArgs.join(', ')];
 		}
 		const bodyShort = tx.compile(`${notifBase}${suffix}`, displayname, title, ...tagArgs);
 
 		const notification = await notifications.create({
 			type: 'new-topic-with-tag',
-			nid: `new_topic:tags:${tags.join('.')}:tid:${postData.topic.tid}:uid:${exceptUid}`,
+			nid: `new_topic:tags:${tagArgs.join('.')}:tid:${postData.topic.tid}:uid:${exceptUid}`,
 			bodyShort: bodyShort,
 			bodyLong: postData.content,
 			pid: postData.pid,
