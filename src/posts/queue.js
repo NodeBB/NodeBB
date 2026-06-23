@@ -15,7 +15,6 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
-const tx = require('../translator');
 const helpers = require('../helpers');
 
 const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
@@ -259,9 +258,7 @@ module.exports = function (Posts) {
 		};
 		let bodyLong;
 		if (type === 'reply') {
-			bodyLong = tx.escape(
-				await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content)
-			);
+			bodyLong = await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content);
 		} else {
 			bodyLong = helpers.escape(String(data.title));
 		}
@@ -304,7 +301,9 @@ module.exports = function (Posts) {
 			topic.url = `${url}/topic/${data.tid}`;
 		}
 		const { app } = require('../webserver');
+		const _i18n = require('../languages').getFull(meta.config.defaultLang);
 		return await app.renderAsync('emails/partials/post-queue-body', {
+			_i18n,
 			content: content,
 			category: category,
 			user: userData,
