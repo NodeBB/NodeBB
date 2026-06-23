@@ -170,7 +170,7 @@
 									<td>
 										<div class="d-flex gap-2 align-items-center">
 											{invites.invitations.username}
-											<div class="d-flex justify-content-end">
+											<div class="d-flex justify-content-end ms-auto">
 												<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 											</div>
 										</div>
