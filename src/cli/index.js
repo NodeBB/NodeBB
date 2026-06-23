@@ -70,14 +70,14 @@ try {
 			}
 		});
 
-		const chalk = require('chalk');
+		const chalk = require('chalk').default;
 		console.log(`${chalk.green('OK')}\n`);
 	} else {
 		throw e;
 	}
 }
 
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 const nconf = require('nconf');
 const { program } = require('commander');
 const yargs = require('yargs');

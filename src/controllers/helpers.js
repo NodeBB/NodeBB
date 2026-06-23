@@ -4,7 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 const querystring = require('querystring');
 const _ = require('lodash');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const translator = require('../translator');
 const user = require('../user');

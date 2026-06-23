@@ -6,7 +6,7 @@ const util = require('util');
 const path = require('path');
 const nconf = require('nconf');
 const express = require('express');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));

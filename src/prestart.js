@@ -3,7 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const path = require('path');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const pkg = require('../package.json');
 const { paths } = require('./constants');
