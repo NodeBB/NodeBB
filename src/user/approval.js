@@ -92,7 +92,7 @@ module.exports = function (User) {
 			});
 		}
 		await removeFromQueue(username);
-		await markNotificationRead(username);
+		await rescindNotification(username);
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });
 		await emailer.send('registration_accepted', uid, {
 			username: username,
@@ -117,16 +117,15 @@ module.exports = function (User) {
 		}
 	}
 
-	async function markNotificationRead(username) {
-		const nid = `new-register:${username}`;
+	async function rescindNotification(username) {
+		await notifications.rescind(`new-register:${username}`);
 		const uids = await groups.getMembers('administrators', 0, -1);
-		const promises = uids.map(uid => notifications.markRead(nid, uid));
-		await Promise.all(promises);
+		uids.forEach(uid => User.notifications.pushCount(uid));
 	}
 
 	User.rejectRegistration = async function (username) {
 		await removeFromQueue(username);
-		await markNotificationRead(username);
+		await rescindNotification(username);
 	};
 
 	async function removeFromQueue(username) {
