@@ -19,7 +19,7 @@
 	</div>
 	<div class="message-body-wrapper">
 		<div component="chat/message/body" class="message-body ps-0 py-0 text-break mb-last-0 mb-3">
-			{{{ if messages.txContent }}}{{tx(messages.content)}}{{{ else }}}{{messages.content}}{{{ end }}}
+			{{{ if messages.txContent }}}{{tx(messages.content)}}{{{ else }}}{{txEscape(messages.content)}}{{{ end }}}
 		</div>
 		<!-- IMPORT partials/chats/reactions.tpl -->
 		<div component="chat/message/controls" class="position-relative">
