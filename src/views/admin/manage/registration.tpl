@@ -86,27 +86,29 @@
 										{{{ end }}}
 										{./email}
 									</td>
-									<td class="hidden-xs d-flex gap-2 align-items-center">
-										{{{ if ./ipSpam }}}
-										<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {./spamData.ip.frequency}, {./spamData.ip.appears}]]"></i>
-										{{{ else }}}
-										{{{ if ./spamChecked }}}
-										<i class="fa fa-check text-success"></i>
-										{{{ end }}}
-										{{{ end }}}
-										{./ip}
-										{{{ if ./ipMatch.length }}}
-										<div class="dropdown position-static">
-											<button type="button" class="btn btn-ghost btn-sm dropdown-toggle border" data-bs-toggle="dropdown" aria-expanded="false">{./ipMatch.length} <i class="fa-solid fa-users"></i></button>
-											<ul class="dropdown-menu p-1 overflow-auto" style="max-height:300px;">
-												{{{ each ./ipMatch}}}
-												<li class="d-flex gap-1 align-items-center">
-													<a href="{config.relative_path}/uid/{./uid}" class="dropdown-item rounded-1">{{buildAvatar(@value, "24px", true)}} {./username}</a>
-												</li>
-												{{{ end }}}
-											</ul>
+									<td class="hidden-xs">
+										<div class="d-flex gap-2 align-items-center">
+											{{{ if ./ipSpam }}}
+											<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {./spamData.ip.frequency}, {./spamData.ip.appears}]]"></i>
+											{{{ else }}}
+											{{{ if ./spamChecked }}}
+											<i class="fa fa-check text-success"></i>
+											{{{ end }}}
+											{{{ end }}}
+											{./ip}
+											{{{ if ./ipMatch.length }}}
+											<div class="dropdown position-static">
+												<button type="button" class="btn btn-ghost btn-sm dropdown-toggle border" data-bs-toggle="dropdown" aria-expanded="false">{./ipMatch.length} <i class="fa-solid fa-users"></i></button>
+												<ul class="dropdown-menu p-1 overflow-auto" style="max-height:300px;">
+													{{{ each ./ipMatch}}}
+													<li class="d-flex gap-1 align-items-center">
+														<a href="{config.relative_path}/uid/{./uid}" class="dropdown-item rounded-1">{{buildAvatar(@value, "24px", true)}} {./username}</a>
+													</li>
+													{{{ end }}}
+												</ul>
+											</div>
+											{{{ end }}}
 										</div>
-										{{{ end }}}
 									</td>
 									<td class="hidden-xs">
 										<span class="timeago" title="{./timestampISO}"></span>
