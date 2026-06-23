@@ -9,5 +9,6 @@
     "no-moderators": "Ingen moderatorar",
     "add-administrator": "Legg til administrator",
     "add-global-moderator": "Legg til global moderator",
-    "add-moderator": "Legg til moderator"
+    "add-moderator": "Legg til moderator",
+    "disabled": "Disabled"
 }

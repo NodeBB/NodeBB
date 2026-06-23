@@ -9,5 +9,6 @@
     "no-moderators": "Нет модераторов",
     "add-administrator": "Добавить администратора",
     "add-global-moderator": "Добавить глобального модератора",
-    "add-moderator": "Добавить модератора"
+    "add-moderator": "Добавить модератора",
+    "disabled": "Disabled"
 }

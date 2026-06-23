@@ -9,5 +9,6 @@
     "no-moderators": "没有版主",
     "add-administrator": "添加管理员",
     "add-global-moderator": "添加全局版主",
-    "add-moderator": "添加版主"
+    "add-moderator": "添加版主",
+    "disabled": "Disabled"
 }
