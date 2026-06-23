@@ -99,7 +99,7 @@
         "mongodb": "7.3.0",
         "morgan": "1.11.0",
         "mousetrap": "1.6.5",
-        "multer": "2.1.1",
+        "multer": "2.2.0",
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "8.0.0",
         "nodebb-plugin-composer-default": "11.0.0",
