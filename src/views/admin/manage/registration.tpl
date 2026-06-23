@@ -165,7 +165,7 @@
 								<tr data-invitation-mail="{invites.invitations.email}" data-invited-by="{invites.username}" class="align-middle">
 									<td class ="invited-by">{{{ if @first }}}{invites.username}{{{ end }}}</td>
 									<td>{invites.invitations.email}</td>
-									<td>{invites.invitations.username}
+									<td class="d-flex gap-2 align-items-center">{invites.invitations.username}
 										<div class="d-flex justify-content-end">
 											<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
 										</div>
