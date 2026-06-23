@@ -545,7 +545,7 @@ module.exports = function (utils, load, warn) {
 			lang = lang || Translator.getLanguage();
 
 			// convert old format([[topic:moved-from]]) to new format [token, args, language]
-			data = data.map(key => (typeof key === 'string' ? [key, [], lang] : key));
+			data = data.map(key => (typeof key === 'string' ? [key || '', [], lang] : key));
 
 			const translations = await Promise.all(data.map(async (item) => {
 				const [token, itemArgs, language] = item;
