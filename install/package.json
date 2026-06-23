@@ -44,7 +44,7 @@
         "ace-builds": "1.44.0",
         "archiver": "8.0.0",
         "async": "3.2.6",
-        "autoprefixer": "10.5.0",
+        "autoprefixer": "10.5.1",
         "bcryptjs": "3.0.3",
         "benchpressjs": "2.5.5",
         "body-parser": "2.3.0",
