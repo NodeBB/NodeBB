@@ -65,7 +65,7 @@
 								<tr data-username="{./username}" class="align-middle">
 									<td>
 										{{{ if ./usernameSpam }}}
-										<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {./spamData.username.frequency}, {./spamData.username.appears}, {./spamData.username.confidence}]]"></i>
+										<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {./spamData.username.frequency}, {./spamData.username.appears}, {./spamData.username.confidence}]]" data-bs-toggle="tooltip" data-bs-html="true"></i>
 										{{{ else }}}
 										{{{ if ./spamChecked }}}
 										<i class="fa fa-check text-success"></i>
@@ -78,7 +78,7 @@
 									</td>
 									<td>
 										{{{ if ./emailSpam }}}
-										<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.email-spam, {./spamData.email.frequency}, {./spamData.email.appears}]]"></i>
+										<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.email-spam, {./spamData.email.frequency}, {./spamData.email.appears}, {./spamData.email.confidence}]]" data-bs-toggle="tooltip" data-bs-html="true"></i>
 										{{{ else }}}
 										{{{ if ./spamChecked }}}
 										<i class="fa fa-check text-success"></i>
@@ -89,7 +89,7 @@
 									<td class="hidden-xs">
 										<div class="d-flex gap-2 align-items-center">
 											{{{ if ./ipSpam }}}
-											<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {./spamData.ip.frequency}, {./spamData.ip.appears}]]"></i>
+											<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {./spamData.ip.frequency}, {./spamData.ip.appears}, {./spamData.ip.confidence}]]" data-bs-toggle="tooltip" data-bs-html="true"></i>
 											{{{ else }}}
 											{{{ if ./spamChecked }}}
 											<i class="fa fa-check text-success"></i>
