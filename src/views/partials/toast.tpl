@@ -6,7 +6,7 @@
 		{{{ end }}}
 		<div class="d-flex flex-column gap-2">
 			{{{ if title }}}
-			<strong component="toast/title">{tx(title)}</strong>
+			<strong component="toast/title">{{tx(title)}}</strong>
 			{{{ end }}}
 
 			{{{ if message }}}

@@ -42,7 +42,7 @@
 
 						{{{ each regFormEntry }}}
 						<div class="mb-2 regFormEntry d-flex flex-column gap-2 {./styleName}">
-							<label for="{./inputId}">{tx(./label)}</label>
+							<label for="{./inputId}">{{tx(./label)}}</label>
 							<div>{{./html}}</div>
 						</div>
 						{{{ end }}}

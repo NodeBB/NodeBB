@@ -22,7 +22,7 @@
 			<tr>
 				<td class="fw-semibold text-nowrap">
 					{{{ if ./href }}}
-						<a href="{./href}">{tx(./name)}</a>
+						<a href="{./href}">{{tx(./name)}}</a>
 					{{{ else }}}
 						{tx(./name)}
 					{{{ end }}}

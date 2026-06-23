@@ -2,14 +2,14 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">{tx(title)}</h5>
+				<h5 class="modal-title">{{tx(title)}}</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
 			</div>
 			<div class="modal-body">
 				<form class="mb-3" id="uploadForm" action="" method="post" enctype="multipart/form-data">
 					<div>
 						{{{ if description }}}
-						<label class="form-label" for="fileInput">{tx(description)}</label>
+						<label class="form-label" for="fileInput">{{tx(description)}}</label>
 						{{{ end }}}
 						<input type="file" id="fileInput" name="files[]" {{{ if accept }}}accept="{accept}"{{{ end }}}>
 						{{{ if showHelp }}}
@@ -37,7 +37,7 @@
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">[[global:close]]</button>
-				<button id="fileUploadSubmitBtn" class="btn btn-primary">{tx(button)}</button>
+				<button id="fileUploadSubmitBtn" class="btn btn-primary">{{tx(button)}}</button>
 			</div>
 		</div>
 	</div>

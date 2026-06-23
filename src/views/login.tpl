@@ -12,7 +12,7 @@
 				<div class="login-block">
 					<form class="d-flex flex-column gap-3" role="form" method="post" id="login-form">
 						<div class="mb-2 d-flex flex-column gap-2">
-							<label for="username">{tx(allowLoginWith)}</label>
+							<label for="username">{{tx(allowLoginWith)}}</label>
 							<input class="form-control" type="text" placeholder="{tx(allowLoginWith)}" name="username" id="username" autocorrect="off" autocapitalize="off" autocomplete="nickname" value="{username}" aria-required="true"/>
 						</div>
 
@@ -33,7 +33,7 @@
 
 						{{{ each loginFormEntry }}}
 						<div class="mb-2 loginFormEntry d-flex flex-column gap-2 {./styleName}">
-							<label for="{./inputId}">{tx(./label)}</label>
+							<label for="{./inputId}">{{tx(./label)}}</label>
 							<div>{{./html}}</div>
 						</div>
 						{{{ end }}}

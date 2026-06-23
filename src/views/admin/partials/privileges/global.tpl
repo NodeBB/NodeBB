@@ -20,7 +20,7 @@
 				<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
 				<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
 				{{{ each privileges.labelData }}}
-				<th class="text-center" data-type="{./type}">{tx(./label)}</th>
+				<th class="text-center" data-type="{./type}">{{tx(./label)}}</th>
 				{{{ end }}}
 			</tr>
 		</thead>
@@ -86,7 +86,7 @@
 				<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
 				<th class="text-center">[[admin/manage/privileges:select-clear-all]]</th>
 				{{{ each privileges.labelData }}}
-				<th class="text-center" data-type="{./type}">{tx(./label)}</th>
+				<th class="text-center" data-type="{./type}">{{tx(./label)}}</th>
 				{{{ end }}}
 			</tr>
 		</thead>

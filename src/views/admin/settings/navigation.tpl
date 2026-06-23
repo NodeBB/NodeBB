@@ -137,7 +137,7 @@
 							</div>
 							<div class="d-flex flex-column">
 								<p class="mb-0">
-									<strong>{tx(./text)}</strong>
+									<strong>{{tx(./text)}}</strong>
 								</p>
 								<p class="mb-0">
 									{{{ if ./core }}}
