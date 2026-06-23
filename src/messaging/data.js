@@ -147,6 +147,7 @@ module.exports = function (Messaging) {
 		await Promise.all(parentMessages.map(async (parentMsg) => {
 			if (parentMsg.deleted && parentMsg.fromuid !== parseInt(uid, 10)) {
 				parentMsg.content = `[[modules:chat.message-deleted]]`;
+				parentMsg.txContent = true;
 				return;
 			}
 			const foundMsg = messages.find(msg => parseInt(msg.mid, 10) === parseInt(parentMsg.mid, 10));
@@ -177,6 +178,7 @@ module.exports = function (Messaging) {
 		await Promise.all(messages.map(async (msg) => {
 			if (msg.deleted && !msg.isOwner) {
 				msg.content = `[[modules:chat.message-deleted]]`;
+				msg.txContent = true;
 				return;
 			}
 			msg.content = await parseMessage(msg, uid, roomId, isNew);

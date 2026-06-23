@@ -98,6 +98,7 @@ Posts.getPostIndices = async function (posts, uid) {
 Posts.modifyPostByPrivilege = function (post, privileges) {
 	if (post && post.deleted && !(post.selfPost || privileges['posts:view_deleted'])) {
 		post.content = '[[topic:post-is-deleted]]';
+		post.txContent = true;
 		if (post.user) {
 			post.user.signature = '';
 		}
