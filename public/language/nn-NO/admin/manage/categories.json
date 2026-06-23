@@ -1,8 +1,8 @@
 {
 	"manage-categories": "Administrer kategoriar",
 	"add-category": "Legg til kategori",
-	"add-local-category": "Add Local category",
-	"add-remote-category": "Add Remote category",
+	"add-local-category": "Legg til lokal kategori",
+	"add-remote-category": "Legg til ekstern kategori",
 	"remove": "Remove",
 	"rename": "Rename",
 	"jump-to": "Hopp til",

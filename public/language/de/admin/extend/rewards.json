@@ -12,6 +12,6 @@
 	"disable": "Deaktivieren",
 
 	"alert.delete-success": "Belohnung wurde erfolgreich gelöscht",
-	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
+	"alert.no-inputs-found": "Illegale Belohnung – keine Einträge gefunden! %1",
 	"alert.save-success": "Belohnungen erfolgreich gespeichert"
 }
