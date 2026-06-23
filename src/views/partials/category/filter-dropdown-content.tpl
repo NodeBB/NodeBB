@@ -2,7 +2,7 @@
     {{{ if selectedCategory }}}
     <span class="category-item d-inline-flex align-items-center gap-1">
         {{buildCategoryIcon(selectedCategory, "18px", "rounded-circle")}}
-        <span class="d-none d-md-inline fw-semibold">{selectedCategory.name}</span>
+        <span class="d-none d-md-inline fw-semibold">{{stripTags(tx(selectedCategory.name))}}</span>
     </span>
     {{{ else }}}
     <i class="fa fa-fw fa-list text-primary"></i>
@@ -35,7 +35,7 @@
                         {{{ if ./icon }}}
                         {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
                         {{{ end }}}
-                        <span class="category-name">{tx(./name)}</span>
+                        <span class="category-name">{{stripTags(tx(./name))}}</span>
                     </div>
                 </span>
                 <i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{ if !./selected }}}invisible{{{ end }}}"></i>

@@ -16,7 +16,7 @@
 			{{{ if selectedCategory }}}
 			<span class="category-item d-inline-flex align-items-baseline gap-1">
 				{{buildCategoryIcon(selectedCategory, "18px", "rounded-circle align-self-center")}}
-				<span class="visible-md-inline visible-lg-inline">{tx(selectedCategory.name)}</span>
+				<span class="visible-md-inline visible-lg-inline">{{stripTags(tx(selectedCategory.name))}}</span>
 			</span>
 			{{{ else }}}
 			<span class="visible-md-inline visible-lg-inline">[[unread:all-categories]]</span>

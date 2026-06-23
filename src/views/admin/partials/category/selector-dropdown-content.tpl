@@ -3,11 +3,11 @@
 		{{{ if (selectedCategory && !showCategorySelectLabel) }}}
 		<span class="category-item d-inline-flex align-items-center gap-1">
 			{{buildCategoryIcon(selectedCategory, "24px", "rounded-circle")}}
-			<span class="fw-semibold text-truncate" style="max-width:200px;">{tx(selectedCategory.name)}</span>
+			<span class="fw-semibold text-truncate" style="max-width:200px;">{{stripTags(tx(selectedCategory.name))}}</span>
 		</span>
 		{{{ else }}}
 		<i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}}"></i>
-		{{{ if selectCategoryLabel }}}{tx(selectCategoryLabel)}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}
+		{{{ if selectCategoryLabel }}}{{stripTags(tx(selectCategoryLabel))}}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}
 		{{{ end }}}
 	</span>
 	<span class="caret"></span>
@@ -31,7 +31,7 @@
 						{{{ if ./icon }}}
 						{{buildCategoryIcon(@value, "24px", "rounded-circle")}}
 						{{{ end }}}
-						{./name}
+						{{stripTags(tx(./name))}}
 					</div>
 				</span>
 			</a>
