@@ -379,6 +379,7 @@ const utils = {
 			'fa-IR': 'fa',
 			'pt-BR': 'pt-br',
 			nb: 'no',
+			'nn-NO': 'no',
 		};
 		return mapping.hasOwnProperty(userLang) ? mapping[userLang] : userLang;
 	},
