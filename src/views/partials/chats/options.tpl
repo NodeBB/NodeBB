@@ -25,11 +25,11 @@
 				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-value="{./value}" data-icon="{./icon}" role="menuitem">
 					<div class="d-flex flex-column gap-1">
 						<div class="d-flex align-items-center gap-2">
-							<div class="flex-grow-1">{./label}</div>
+							<div class="flex-grow-1">{{tx(./label)}}</div>
 							<i class="flex-shrink-0 fa fa-fw fa-check {{{ if !./selected }}}hidden{{{ end }}}"></i>
 						</div>
 						{{{ if @first}}}
-						<div component="chat/notification/setting/sub-label" class="text-sm text-muted">{./subLabel}</div>
+						<div component="chat/notification/setting/sub-label" class="text-sm text-muted">{{tx(./subLabel)}}</div>
 						{{{ end }}}
 					</div>
 				</a>
