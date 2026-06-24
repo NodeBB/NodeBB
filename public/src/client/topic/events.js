@@ -69,14 +69,14 @@ define('forum/topic/events', [
 			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
 		});
 		const reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
-		votes.html(data.post.votes).attr('data-votes', data.post.votes);
-		reputationElements.html(data.user.reputation).attr('data-reputation', data.user.reputation);
+		votes.text(data.post.votes).attr('data-votes', data.post.votes);
+		reputationElements.text(data.user.reputation).attr('data-reputation', data.user.reputation);
 	}
 
 	function updateBookmarkCount(data) {
 		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').filter(function (index, el) {
 			return $(el).closest('[data-pid]').attr('data-pid') === String(data.post.pid);
-		}).html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
+		}).text(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
 	}
 
 	function onTopicPurged(data) {

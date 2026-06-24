@@ -4,10 +4,11 @@
 define('forum/post-queue', [
 	'categoryFilter', 'categorySelector', 'api', 'alerts',
 	'translator', 'modals', 'accounts/moderate', 'accounts/delete',
-	'autocomplete', 'uploader', 'benchpress',
+	'autocomplete', 'uploader', 'benchpress', 'helpers',
 ], function (
-	categoryFilter, categorySelector, api, alerts, translator,
-	modals, AccountModerate, AccountsDelete, autocomplete, uploader, Benchpress
+	categoryFilter, categorySelector, api, alerts,
+	translator, modals, AccountModerate, AccountsDelete,
+	autocomplete, uploader, Benchpress, helpers
 ) {
 	const PostQueue = {};
 
@@ -121,7 +122,7 @@ define('forum/post-queue', [
 			const linkList = linkContainer.find('[component="post-queue/link-container/list"]');
 			const linksInPost = $el.find('.post-content a');
 			linksInPost.each((idx, link) => {
-				const href = $(link).attr('href');
+				const href = helpers.escape($(link).attr('href'));
 				linkList.append(`<li><a href="${href}">${href}</a></li>`);
 			});
 			linkContainer.toggleClass('hidden', !linksInPost.length);
