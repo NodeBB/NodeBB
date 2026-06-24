@@ -89,7 +89,16 @@ Languages.getFull = function (language) {
 	if (!pathToLanguageFile.startsWith(languagesPath)) {
 		throw new Error('[[error:invalid-path]]');
 	}
-	return require(pathToLanguageFile);
+
+	try {
+		return require(pathToLanguageFile);
+	} catch (err) {
+		try {
+			return require(path.join(languagesPath, 'en-GB', 'full.json'));
+		} catch (err) {
+			return {};
+		}
+	}
 };
 
 require('./promisify')(Languages);
