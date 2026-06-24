@@ -11,7 +11,7 @@ define('accounts/invite', ['api', 'benchpress', 'modals', 'alerts'], function (a
 		$('[component="user/invite"]').on('click', function (e) {
 			e.preventDefault();
 			api.get(`/api/v3/users/${app.user.uid}/invites/groups`, {}).then((groups) => {
-				Benchpress.parse('modals/invite', { groups }, function (html) {
+				Benchpress.render('modals/invite', { groups }, function (html) {
 					modals.dialog({
 						message: html,
 						title: `[[${isACP() ? 'admin/manage/users:invite' : 'users:invite'}]]`,

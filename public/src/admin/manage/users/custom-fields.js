@@ -1,6 +1,6 @@
 define('admin/manage/user/custom-fields', [
-	'modals', 'alerts', 'iconSelect', 'jquery-ui/widgets/sortable',
-], function (modals, alerts, iconSelect) {
+	'modals', 'alerts', 'iconSelect', 'benchpress', 'jquery-ui/widgets/sortable',
+], function (modals, alerts, iconSelect, Benchpress) {
 	const manageUserFields = {};
 
 	manageUserFields.init = function () {
@@ -57,7 +57,7 @@ define('admin/manage/user/custom-fields', [
 	}
 
 	async function showModal(field = null) {
-		const html = await app.parseAndTranslate('admin/partials/manage-custom-user-fields-modal', field);
+		const html = await Benchpress.render('admin/partials/manage-custom-user-fields-modal', field);
 
 		const modal = await modals.dialog({
 			message: html,

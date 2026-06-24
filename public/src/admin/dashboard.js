@@ -15,6 +15,7 @@ import {
 import * as modals from '../modules/modals';
 import * as alerts from '../modules/alerts';
 import * as translator from '../modules/translator';
+import * as Benchpress from 'benchpressjs';
 import { formattedNumber, escape } from '../modules/helpers';
 
 import { setupFullscreen } from './modules/fullscreen';
@@ -370,7 +371,7 @@ function setupGraphs(callback) {
 		});
 
 		async function throwCustomRangeSelector(targetEl) {
-			const html = await app.parseAndTranslate('admin/partials/pageviews-range-select', {});
+			const html = await Benchpress.render('admin/partials/pageviews-range-select', {});
 			const modal = await modals.dialog({
 				title: '[[admin/dashboard:page-views-custom]]',
 				message: html,

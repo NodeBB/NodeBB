@@ -78,7 +78,6 @@ define('categorySelector', [
 		const html = await Benchpress.render('admin/partials/categories/select-category', {
 			message: options.message,
 		});
-		console.log('pre translate', html);
 		const modal = await modals.dialog({
 			title: options.title || '[[modules:composer.select-category]]',
 			message: html,

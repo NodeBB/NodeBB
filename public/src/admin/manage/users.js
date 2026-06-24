@@ -15,7 +15,8 @@ define('admin/manage/users', [
 			ajaxify.go(window.location.pathname + '?' + qs);
 		});
 
-		$('.export-csv').on('click', async function () {
+		$('.export-csv').on('click', async function (ev) {
+			ev.preventDefault();
 			socket.once('event:export-users-csv', function () {
 				alerts.remove('export-users-start');
 				alerts.alert({

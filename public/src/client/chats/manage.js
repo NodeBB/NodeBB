@@ -2,8 +2,8 @@
 
 
 define('forum/chats/manage', [
-	'api', 'alerts', 'autocomplete', 'forum/chats/user-list', 'modals',
-], function (api, alerts, autocomplete, userList, modals) {
+	'api', 'alerts', 'autocomplete', 'forum/chats/user-list', 'modals', 'benchpress',
+], function (api, alerts, autocomplete, userList, modals, Benchpress) {
 	const manage = {};
 
 	manage.init = function (roomId, buttonEl) {
@@ -25,7 +25,7 @@ define('forum/chats/manage', [
 				}
 			}
 
-			const html = await app.parseAndTranslate('modals/manage-room', {
+			const html = await Benchpress.render('modals/manage-room', {
 				groups,
 				user: app.user,
 				room: ajaxify.data,
