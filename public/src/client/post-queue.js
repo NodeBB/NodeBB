@@ -281,6 +281,10 @@ define('forum/post-queue', [
 					const action = subselector.getAttribute('data-action');
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
 					switch (action) {
+						case 'editTitle':
+						case 'editContent':
+							// handled in handleContentEdit
+							break;
 						case 'editCategory': {
 							const postEl = e.target.closest('[data-id]');
 							if (e.target.closest('[data-crosspost]')) {
