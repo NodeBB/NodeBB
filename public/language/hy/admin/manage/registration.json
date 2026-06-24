@@ -6,9 +6,9 @@
 	"list.email": "Էլ. փոստ",
 	"list.ip": "IP",
 	"list.time": "Ժամանակ",
-	"list.username-spam": "Հաճախականություն՝ %1 Հայտնվում է՝ %2 Վստահություն՝ %3",
-	"list.email-spam": "Հաճախականություն՝ %1 Հայտնվում է՝ %2",
-	"list.ip-spam": "Հաճախականություն՝ %1 Հայտնվում է՝ %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Հրավերներ",
 	"invitations.description": "Ստորև ներկայացված է ուղարկված հրավերների ամբողջական ցանկը: Օգտագործեք ctrl-f՝ ցանկը էլեկտրոնային փոստով կամ օգտատիրոջ անունով որոնելու համար: Օգտատիրոջ անունը կցուցադրվի նամակների աջ կողմում այն օգտատերերի համար, ովքեր օգտագործել են իրենց հրավերները:",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Հրավիրողի օգտանունը (եթե գրանցված է)",
 
 	"invitations.confirm-delete": "Վստա՞հ եք, որ ցանկանում եք ջնջել այս հրավերը:"
-} 
+}

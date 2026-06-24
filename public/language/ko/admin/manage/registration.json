@@ -6,9 +6,9 @@
 	"list.email": "이메일",
 	"list.ip": "IP",
 	"list.time": "시간",
-	"list.username-spam": "빈도: %1 출현: %2 신뢰도: %3",
-	"list.email-spam": "빈도: %1 출현: %2",
-	"list.ip-spam": "빈도: %1 출현: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "초청",
 	"invitations.description": "아래는 보낸 초대장의 완전한 목록입니다. 이메일 또는 사용자 이름으로 목록을 검색하려면 ctrl-f를 사용하세요.<br /><br />사용자 이름은 초대장을 사용한 사용자에게 이메일 오른쪽에 표시됩니다.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "초대자 사용자 이름 (등록된 경우)",
 
 	"invitations.confirm-delete": "이 초청을 삭제하시겠습니까?"
-} 
+}

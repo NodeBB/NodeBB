@@ -6,9 +6,9 @@
 	"list.email": "อีเมล",
 	"list.ip": "IP",
 	"list.time": "เวลา",
-	"list.username-spam": "ความถี่: %1  ปรากฎ: %2 ความมั่นใจ: %3",
-	"list.email-spam": "ความถี่: %1  ปรากฎ: %2",
-	"list.ip-spam": "ความถี่: %1  ปรากฎ: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "การเชิญ",
 	"invitations.description": "<br>ด้านล่างนี้เป็นรายการคำเชิญที่ส่งแล้ว ใช้ ctrl-f เพื่อค้นหาผ่านรายการทางอีเมลหรือชื่อผู้ใช้ <br>ชื่อผู้ใช้จะปรากฏทางด้านขวาของอีเมลสำหรับผู้ใช้ที่รับคำเชิญแล้ว",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "ชื่อผู้ได้รับเชิญ (ถ้าลงทะเบียน)",
 
 	"invitations.confirm-delete": "คุณแน่ใจหรือไม่ว่าต้องการลบคำเชิญนี้"
-} 
+}

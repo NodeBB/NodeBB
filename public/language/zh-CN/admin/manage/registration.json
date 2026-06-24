@@ -6,9 +6,9 @@
 	"list.email": "邮件",
 	"list.ip": "IP",
 	"list.time": "时间",
-	"list.username-spam": "频率： %1 显示：%2 信心：%3",
-	"list.email-spam": "频率：%1 显示： %2",
-	"list.ip-spam": "频率：%1 显示： %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "邀请",
 	"invitations.description": "下面列出了所有已发送的邀请。您可以使用 Ctrl+F 快捷键搜索列表中的邮箱或用户名。<br><br>如果用户接受了邀请，他的用户名将会被显示在邮箱右边。",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "受邀请的用户名(如果已经注册)",
 
 	"invitations.confirm-delete": "确认删除这个邀请？"
-} 
+}

@@ -6,9 +6,9 @@
 	"list.email": "E-mail",
 	"list.ip": "IP",
 	"list.time": "Date",
-	"list.username-spam": "Fréquence : %1 Apparait : %2 Confiance : %3",
-	"list.email-spam": "Fréquence : %1 Apparait : %2",
-	"list.ip-spam": "Fréquence : %1 Apparait : %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Invitations",
 	"invitations.description": "Ci-dessous se trouve une liste complète des invitations envoyées. Utilisez CTRL + F pour rechercher un e-mail ou nom d'utilisateur dans la liste. <br>\n<br>Le nom d'utilisateur sera affiché à droite des e-mails pour les utilisateurs qui ont accepté leur invitation.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Nom d'utilisateur de l'invité (si inscrit)",
 
 	"invitations.confirm-delete": "Êtes-vous sûr de vouloir supprimer l'invitation ?"
-} 
+}

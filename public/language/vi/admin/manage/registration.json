@@ -6,9 +6,9 @@
 	"list.email": "Thư điện tử",
 	"list.ip": "IP",
 	"list.time": "Thời gian",
-	"list.username-spam": "Tần suất: %1 Xuất hiện: %2 Độ tin cậy: %3",
-	"list.email-spam": "Tần suất: %1 Xuất hiện: %2",
-	"list.ip-spam": "Tần suất: %1 Xuất hiện: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Lời mời",
 	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách theo email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ hiển thị bên phải email đối với những người dùng đã đổi lời mời.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Mời Tên Đăng Nhập (nếu đã đăng ký)",
 
 	"invitations.confirm-delete": "Bạn có chắc chắn muốn xóa lời mời này không?"
-} 
+}

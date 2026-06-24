@@ -6,9 +6,9 @@
 	"list.email": "Електронна пошта",
 	"list.ip": "IP-адреса",
 	"list.time": "Час",
-	"list.username-spam": "Частота: %1 Появи: %2 Впевненість: %3",
-	"list.email-spam": "Частота: %1 Появи: %2",
-	"list.ip-spam": "Частота: %1 Появи: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Запрошення",
 	"invitations.description": "Нижче наведено список надісланих запрошень. Використовуйте Ctrl+F щоб здійснити пошук за поштою чи іменем користувача. <br><br> Ім'я користувача буде показано справа від електронної пошти для тих користувачів, що використали свої запрошення.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Ім'я запрошуваного (якщо зареєстрований)",
 
 	"invitations.confirm-delete": "Ви впевнені, що бажаєте видалити це запрошення?"
-} 
+}

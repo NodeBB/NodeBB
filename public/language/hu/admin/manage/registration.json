@@ -6,9 +6,9 @@
 	"list.email": "Email",
 	"list.ip": "IP",
 	"list.time": "idő",
-	"list.username-spam": "Gyakoriság: %1 Megjelenik: %2 Magabiztosság: %3",
-	"list.email-spam": "Gyakoriság: %1 Megjelenik: %2",
-	"list.ip-spam": "Gyakoriság: %1 Megjelenik: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Meghívások",
 	"invitations.description": "Alább a teljes lista a kiküldött meghívókról. Használd a ctrl-f billentyűkombinációt hogy keress az email címek és felhasználónevek között. <br><br>Az email címek mellett látható felhasználónév azoknál jelenik meg, akik már felhasználták a meghívójukat.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Meghívott felhasználóneve (ha regisztrált)",
 
 	"invitations.confirm-delete": "Biztosan törölni szeretnéd ezt a meghívót?"
-} 
+}

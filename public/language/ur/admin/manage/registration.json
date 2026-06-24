@@ -6,9 +6,9 @@
 	"list.email": "ای میل",
 	"list.ip": "آئی پی ایڈریس",
 	"list.time": "وقت",
-	"list.username-spam": "تکرار: %1 ظاہر ہونا: %2 اعتماد: %3",
-	"list.email-spam": "تکرار: %1 ظاہر ہونا: %2",
-	"list.ip-spam": "تکرار: %1 ظاہر ہونا: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "دعوتیں",
 	"invitations.description": "نیچے بھیجی گئی دعوتوں کی مکمل فہرست ملے گی۔ فہرست میں ای میل یا صارف نام تلاش کرنے کے لیے 'Ctrl-F' استعمال کریں۔ <br><br>صارف نام اس صارف کے ای میل کے دائیں جانب دکھایا جائے گا جنہوں نے اپنی دعوت قبول کی ہو۔",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "مدعو کیے گئے کا صارف نام (اگر رجسٹرڈ ہو)",
 
 	"invitations.confirm-delete": "کیا آپ واقعی اس دعوت کو حذف کرنا چاہتے ہیں؟"
-} 
+}

@@ -4,8 +4,8 @@
 	"lead-text": "Administrer API-token og tilgangsinnstillingar her.",
 	"intro": "API-token kan brukast for å få tilgang til forumets API. Ver forsiktig med deling av token.",
 	"warning": "Merk: For å sikre kommunikasjon, bør HTTPS vere aktivert.",
-	"docs": "Click here to access the Read API specification",
-	"docs.write": "Click here to access the Write API specification",
+	"docs": "Klikk her for å opne Read API-spesifikasjonen",
+	"docs.write": "Klikk her for å opne Write API-spesifikasjonen",
 
 	"require-https": "Krev HTTPS",
 	"require-https-caveat": "Dette alternativet sikrar at all API-kommunikasjon går over HTTPS. Dette bør vere aktivert for å sikre dataene dine.",

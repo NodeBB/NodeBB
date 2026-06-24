@@ -1,9 +1,9 @@
 {
-	"jobs": "Jobs",
-	"job-name": "Job Name",
-	"schedule": "Schedule",
-	"next-run": "Next Run",
-	"last-duration": "Last Duration",
-	"running": "Running",
-	"active": "Active"
+	"jobs": "Jobber",
+	"job-name": "Jobbnavn",
+	"schedule": "Tidsplan",
+	"next-run": "Neste kjøring",
+	"last-duration": "Tid for siste kjøring",
+	"running": "Kjører",
+	"active": "Aktiv"
 }

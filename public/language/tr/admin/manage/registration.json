@@ -6,9 +6,9 @@
 	"list.email": "E-posta",
 	"list.ip": "IP",
 	"list.time": "Zaman",
-	"list.username-spam": "Sıklık: %1 Görüntülenme: %2 Güvenirlilik: %3",
-	"list.email-spam": "Sıklık: %1 Görüntülenme: %2",
-	"list.ip-spam": "Sıklık: %1 Görüntülenme: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Davetiyeler",
 	"invitations.description": "Aşağıda, gönderilen davetiyelerin tam listesi bulunmaktadır. E-posta veya kullanıcı adı ile listede arama yapmak için ctrl-f kısayolunu kullanın. <br><br>Davetiyelerini kullanan kullanıcıların e-postalarının sağında kullanıcı adı görüntülenir.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "(Eğer kaydolmuşsa) Davetlinin Kullanıcı Adı",
 
 	"invitations.confirm-delete": "Bu daveti silmek istediğinizden emin misiniz?"
-} 
+}

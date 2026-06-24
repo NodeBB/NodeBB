@@ -5,7 +5,7 @@
 	"disable-rss-feeds": "Deaktiver RSS-feedar",
 	"disable-sitemap-xml": "Deaktiver sitemap.xml",
 	"sitemap-topics": "Sitemap-emne",
-	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
+	"sitemap-cache-duration-hours": "Varigheit for mellomlagring av nettstadskart (timar)",
 	"clear-sitemap-cache": "Tøm sitemap-cache",
 	"view-sitemap": "Vis sitemap"
 }

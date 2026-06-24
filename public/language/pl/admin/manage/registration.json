@@ -6,9 +6,9 @@
 	"list.email": "Adres e-mail",
 	"list.ip": "IP",
 	"list.time": "Czas",
-	"list.username-spam": "Częstotliwość: %1 Występowanie: %2 Pewność: %3",
-	"list.email-spam": "Częstotliwość: %1 Występowanie: %2",
-	"list.ip-spam": "Częstotliwość: %1 Występowanie: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Zaproszenia",
 	"invitations.description": "Poniżej znajduje się pełna lista wysłanych zaproszeń. Użyj CTRL-f , by przeszukać listę po adresie e-mail lub nazwie użytkownika. <br><br>Nazwa użytkownika, który skorzystał z zaproszenia, zostanie wyświetlona po prawej stronie jego adresu e-mail.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Nazwa użytkownika zaproszonego (jeśli zarejestrowany)",
 
 	"invitations.confirm-delete": "Czy na pewno skasować to zaproszenie?"
-} 
+}

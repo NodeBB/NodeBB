@@ -4,8 +4,8 @@
 	"lead-text": "Fra denne siden kan du konfigurere tilgang til Write API i NodeBB.",
 	"intro": "Som standard autentiserer Write API brukere basert på deres øktinformasjonskapsel, men NodeBB støtter også Bearer-autentisering via tokens generert fra denne siden.",
 	"warning": "<strong>Vær oppmerksom</strong> — behandle tokens som passord. Hvis de lekker, bør kontoen din anses som kompromittert.",
-	"docs": "Click here to access the Read API specification",
-	"docs.write": "Click here to access the Write API specification",
+	"docs": "Klikk her for å åpne Read API-spesifikasjonen",
+	"docs.write": "Klikk her for å åpne Write API-spesifikasjonen",
 
 	"require-https": "Krev API-bruk kun via HTTPS",
 	"require-https-caveat": "<strong>Merk</strong>: Noen installasjoner med lastbalanserere kan videresende forespørslene sine til NodeBB via HTTP, i så fall bør dette alternativet forbli deaktivert.",

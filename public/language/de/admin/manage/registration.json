@@ -6,9 +6,9 @@
 	"list.email": "E-Mail",
 	"list.ip": "IP",
 	"list.time": "Zeit",
-	"list.username-spam": "Häufigkeit: %1 Erscheint: %2 Vertrauen: %3",
-	"list.email-spam": "Häufigkeit: %1 Erscheint: %2",
-	"list.ip-spam": "Häufigkeit: %1 Erscheint: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Häufigkeit: %1<br/>Erscheint: %2<br/>Vertrauen: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Häufigkeit: %1<br/>Erscheint: %2<br/>Vertrauen: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Häufigkeit: %1<br/>Erscheint: %2<br/>Vertrauen: %3</div>",
 
 	"invitations": "Einladungen",
 	"invitations.description": "Nachfolgend findest du eine vollständige Liste der gesendeten Einladungen. Verwende Strg-F, um die Liste nach E-Mail oder Benutzername zu durchsuchen. Der Benutzername wird rechts neben den E-Mails für Benutzer angezeigt, die ihre Einladungen eingelöst haben.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Benutzername des Eingeladenen (falls registriert)",
 
 	"invitations.confirm-delete": "Möchtest du diese Einladung wirklich löschen?"
-} 
+}

@@ -6,9 +6,9 @@
 	"list.email": "Е-поща",
 	"list.ip": "IP адрес",
 	"list.time": "Време",
-	"list.username-spam": "Честота: %1 Появяване: %2 Увереност: %3",
-	"list.email-spam": "Честота: %1 Появяване: %2",
-	"list.ip-spam": "Честота: %1 Появяване: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Покани",
 	"invitations.description": "По-долу ще намерите пълен списък от изпратените покани. Използвайте „Ctrl-F“, за да търсите е-поща или потребителско име в списъка. <br><br>Потребителското име ще бъде показано вдясно от е-пощата за потребителите, които са приели поканата си.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Потребителско име на поканения (ако е регистриран)",
 
 	"invitations.confirm-delete": "Наистина ли искате да изтриете тази покана?"
-} 
+}

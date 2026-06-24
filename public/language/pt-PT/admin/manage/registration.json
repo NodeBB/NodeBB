@@ -6,9 +6,9 @@
 	"list.email": "E-mail",
 	"list.ip": "IP",
 	"list.time": "Tempo",
-	"list.username-spam": "Frequência: %1 Aparência: %2 Confidência: %3",
-	"list.email-spam": "Frequência: %1 Aparência: %2",
-	"list.ip-spam": "Frequência: %1 Aparência: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Convites",
 	"invitations.description": "Em baixo está uma lista completa de convites enviados. Utiliza CTRL+F para procurar na lista por um e-mail ou um utilizador. <br><br>O nome de utilizador será exibido à direita dos e-mails para os utilizadores que aceitaram os seus convites.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Nome de Utilizador do Convidado (se registado)",
 
 	"invitations.confirm-delete": "Tens a certeza que desejas eliminar este convite?"
-} 
+}

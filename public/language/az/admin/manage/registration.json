@@ -6,9 +6,9 @@
 	"list.email": "E-poçt",
 	"list.ip": "IP",
 	"list.time": "Zaman",
-	"list.username-spam": "Tezlik: %1 Görünür: %2 Etibarlılıq: %3",
-	"list.email-spam": "Tezlik: %1 Görünür: %2",
-	"list.ip-spam": "Tezlik: %1 Görünür: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Dəvətlər",
 	"invitations.description": "Aşağıda göndərilən dəvətlərin tam siyahısı verilmişdir. Siyahıda e-poçt və ya istifadəçi adı ilə axtarış etmək üçün ctrl-f düymələrindən istifadə edin. <br><br>İstifadəçi adı dəvətnamələrini istifadə etmiş istifadəçilər üçün e-poçtların sağında göstəriləcək.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Dəvət edən istifadəçi adı (qeydiyyatdan keçmişdirsə)",
 
 	"invitations.confirm-delete": "Bu dəvəti silmək istədiyinizə əminsiniz?"
-} 
+}

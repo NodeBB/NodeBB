@@ -6,9 +6,9 @@
 	"list.email": "E-mail",
 	"list.ip": "IP adresa",
 	"list.time": "Čas",
-	"list.username-spam": "Frekvencia: %1 Zdá sa: %2 Dôveryhodnosť: %3",
-	"list.email-spam": "Frekvencia: %1 zdá sa: %2",
-	"list.ip-spam": "Frekvencia: %1 zdá sa: %2",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "Pozvánky",
 	"invitations.description": "Nižšie je kompletný zoznam odoslaných pozvánok. Pre hľadanie v zozname pomocou e-mailu alebo mena používateľa, použite kláves Ctrl + F.<br><br> Pri používateľov, ktorí využili pozvanie, bude používateľské meno zobrazené napravo od e-mailov.",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "Používateľské meno pozvaného (ak je registrovaný)",
 
 	"invitations.confirm-delete": "Ste si istý, že chcete odstrániť túto pozvánku?"
-} 
+}

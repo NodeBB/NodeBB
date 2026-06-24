@@ -6,9 +6,9 @@
 	"list.email": "အီးမေးလ်",
 	"list.ip": "IP",
 	"list.time": "အချိန်",
-	"list.username-spam": "အမည်-စပမ်း",
-	"list.email-spam": "အီးမေးလ်-စပမ်း",
-	"list.ip-spam": "IP-စပမ်း",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frequency: %1<br/>Appears: %2<br/>Confidence: %3</div>",
 
 	"invitations": "ဖိတ်ကြားမှုများ",
 	"invitations.description": "ဖိတ်ကြားမှု ဖော်ပြချက်",
@@ -17,4 +17,4 @@
 	"invitations.invitee-username": "ဖိတ်ကြားခံ အမည်",
 
 	"invitations.confirm-delete": "ဖျက်ရန် အတည်ပြုပါ"
-} 
+}

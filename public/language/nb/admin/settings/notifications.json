@@ -4,10 +4,10 @@
 	"welcome-notification-link": "Lenke for velkomstvarsel",
 	"welcome-notification-uid": "Bruker-ID for velkomstvarsel (UID)",
 	"post-queue-notification-uid": "Bruker-ID for innleggskø (UID)",
-	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
-	"notification-delay": "Delay for sending notification emails (seconds)",
-	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds.",
+	"notification-uid-help": "Hvis dette er angitt, blir varselet sendt fra den brukeren. Ellers blir det et systemvarsel.",
+	"notification-delay": "Forsinkelse før sending av varsel på e-post (sekunder)",
+	"notification-delay-help": "Hvis brukeren har lest varselet innen denne tiden, blir ikke e-posten sendt. <br/>Standard: 60 sekunder.",
 	"tinycon.settings": "Tinycon",
-	"tinycon.notification-color": "Notification Colour",
-	"tinycon.notification-background": "Notification Background"
+	"tinycon.notification-color": "Varslingsfarge",
+	"tinycon.notification-background": "Varslingsbakgrunn"
 }

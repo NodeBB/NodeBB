@@ -12,6 +12,6 @@
 	"disable": "Deaktiver",
 
 	"alert.delete-success": "Utmerking sletta med suksess",
-	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
+	"alert.no-inputs-found": "Ugyldig belønning: ingen inndata funne! %1",
 	"alert.save-success": "Utmerking lagra med suksess"
 }
