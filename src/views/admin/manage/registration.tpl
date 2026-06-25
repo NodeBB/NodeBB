@@ -40,14 +40,17 @@
 				aria-labelledby="registration-queue-tab"
 				tabindex="0"
 			>
-				<div class="registration card mb-3">
+				<div class="text-end">
+					<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">[[admin/manage/registration:reject-all]]</button>
+				</div>
+				<div class="registration mb-3">
 					{{{ if !users.length }}}
-					<p class="card-body">
+					<p class="">
 						[[admin/manage/registration:description, {config.relative_path}/admin/settings/user#user-registration]]
 					</p>
 					{{{ end }}}
 					<div class="table-responsive">
-						<table class="table users-list">
+						<table class="table table-sm text-sm users-list">
 							<thead>
 								<tr>
 									<th>[[admin/manage/registration:list.name]]</th>
@@ -120,8 +123,8 @@
 
 									<td>
 										<div class="d-flex gap-1 justify-content-end">
-											<button class="btn btn-success btn-sm" data-action="accept"><i class="fa fa-check"></i></button>
-											<button class="btn btn-danger btn-sm" data-action="delete"><i class="fa fa-times"></i></button>
+											<button class="btn btn-light btn-sm" data-action="accept"><i class="fa fa-check text-success"></i></button>
+											<button class="btn btn-light btn-sm" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
 											{{{ each ./customActions }}}
 											<button id="{./id}" title="{./title}" class="btn btn-sm {./class}">
 												<i class="fa {./icon}"></i>
@@ -148,12 +151,12 @@
 				aria-labelledby="invitations-tab"
 				tabindex="0"
 			>
-				<div class="invitations card">
-					<p class="card-body">
+				<div class="invitations">
+					<p class="">
 						[[admin/manage/registration:invitations.description]]
 					</p>
 					<div class="table-responsive">
-						<table class="table invites-list">
+						<table class="table table-sm text-sm invites-list">
 							<thead>
 								<tr>
 									<th>[[admin/manage/registration:invitations.inviter-username]]</th>

@@ -5,18 +5,32 @@ define('admin/manage/registration', ['modals', 'alerts'], function (modals, aler
 	const Registration = {};
 
 	Registration.init = function () {
-		$('.users-list').on('click', '[data-action]', function () {
-			const parent = $(this).parents('[data-username]');
-			const action = $(this).attr('data-action');
-			const username = parent.attr('data-username');
-			const method = action === 'accept' ? 'user.acceptRegistration' : 'user.rejectRegistration';
+		$('[data-action="reject-all"]').on('click', () => {
+			modals.confirm('[[admin/manage/registration:reject-all-confirm]]', (ok) => {
+				if (ok) {
+					const rowEls = $('.users-list [data-username]');
+					rowEls.each((index, rowEl) => {
+						doAction($(rowEl), 'reject');
+					});
+				}
+			});
+		});
 
-			socket.emit(method, { username: username }, function (err) {
+		function doAction(row, action) {
+			const method = action === 'accept' ? 'user.acceptRegistration' : 'user.rejectRegistration';
+			const username = row.attr('data-username');
+			socket.emit(method, { username }, function (err) {
 				if (err) {
 					return alerts.error(err);
 				}
-				parent.remove();
+				row.remove();
 			});
+		}
+
+		$('.users-list').on('click', '[data-action]', function () {
+			const rowEl = $(this).parents('[data-username]');
+			const action = $(this).attr('data-action');
+			doAction(rowEl, action);
 			return false;
 		});
 
