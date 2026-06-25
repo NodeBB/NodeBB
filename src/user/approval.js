@@ -96,6 +96,7 @@ module.exports = function (User) {
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });
 		await emailer.send('registration_accepted', uid, {
 			username: username,
+			email: userData.email,
 			subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
 			template: 'registration_accepted',
 			uid: uid,

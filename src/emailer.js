@@ -228,8 +228,8 @@ Emailer.send = async (template, uid, params) => {
 
 	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed', 'banned']);
 
-	// 'welcome' and 'verify-email' explicitly used passed-in email address
-	if (['welcome', 'verify-email'].includes(template)) {
+	// 'welcome', 'verify-email' & 'registration_accepted' explicitly use passed-in email address
+	if (['welcome', 'verify-email', 'registration_accepted'].includes(template)) {
 		userData.email = params.email;
 	} else if (meta.config.includeUnverifiedEmails && !userData.email) {
 		// get unconfirmed email to use
