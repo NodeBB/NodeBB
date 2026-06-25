@@ -172,7 +172,7 @@
     "cant-delete-chat-message": "あなたはこのメッセージを削除する権限を持っていません。",
     "chat-edit-duration-expired": "投稿後%1秒間だけチャットメッセージを編集できます",
     "chat-delete-duration-expired": "投稿後%1秒間だけチャットメッセージを削除できます",
-    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
+    "chat-message-editing-disabled": "チャットメッセージの編集は無効です。",
     "chat-deleted-already": "このチャットメッセージはすでに削除されています",
     "chat-restored-already": "このチャットメッセージはすでに復元されています",
     "chat-room-does-not-exist": "チャットルームは存在しません。",
