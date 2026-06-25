@@ -1,7 +1,8 @@
 {
 	"queue": "Fila de espera",
 	"description": "Não existem usuários na fila de espera. <br>Para abilitar esta funcionalidade, vá para <a href=\"%1\">Configurações &arr; Usuário &arr; Registro de usuário </a> e configure <strong>Tipo de registro </strong>como \"Com aprovação de administrador\"",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Nome",
 	"list.email": "E-mail",
 	"list.ip": "IP",

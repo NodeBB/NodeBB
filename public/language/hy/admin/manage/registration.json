@@ -1,7 +1,8 @@
 {
 	"queue": "Հերթ",
 	"description": "Գրանցման հերթում օգտատերեր չկան: Այս գործառույթը միացնելու համար անցեք Կարգավորումներ &rarr; Օգտատեր &rarr; Օգտագործողի գրանցում և գրանցման տեսակը սահմանեք «Ադմինիստրատորի հաստատում»:",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Անուն ",
 	"list.email": "Էլ. փոստ",
 	"list.ip": "IP",

@@ -1,7 +1,8 @@
 {
 	"queue": "คิว",
 	"description": "ไม่มีผู้ใช้ในคิวการลงทะเบียน <br> เมื่อต้องการเปิดใช้คุณลักษณะนี้ ไปที่<a href=\"%1\"> การตั้งค่า &rarr; ผู้ใช้ &rarr; การลงทะเบียนผู้ใช้</a>และตั้ง<strong>ประเภทการลงทะเบียน</strong>เป็น \"การอนุมัติโดยผู้ดูแลระบบ\"",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "ชื่อ",
 	"list.email": "อีเมล",
 	"list.ip": "IP",

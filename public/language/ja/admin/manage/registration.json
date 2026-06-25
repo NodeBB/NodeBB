@@ -1,7 +1,8 @@
 {
 	"queue": "キュー",
 	"description": "登録キューにユーザーがいません。<br> この機能を有効にするには、<a href=\"%1\">設定 &rarr; ユーザー &rarr; ユーザー登録</a>に移動し、<strong>登録タイプ</strong>を「管理者承認」に設定してください。",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "名前",
 	"list.email": "メール",
 	"list.ip": "IP",

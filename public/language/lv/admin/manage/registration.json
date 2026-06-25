@@ -1,7 +1,8 @@
 {
 	"queue": "Reģistrācijas rinda",
 	"description": "Reģistrācijas rindā nav lietotāju. <br>Lai iespējotu šo funkciju, doties uz <a href=\"%1\">Iestatījumi &rarr; Lietotāji &rarr; Reģistrācija</a> un iestatīt <strong>Reģistrācijas veidu</strong> uz \"Administratora apstiprināts\".",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Vārds",
 	"list.email": "E-pasta adrese",
 	"list.ip": "IP adrese",

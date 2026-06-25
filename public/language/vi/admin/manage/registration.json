@@ -1,7 +1,8 @@
 {
 	"queue": "Xếp hàng",
 	"description": "Không có ai trong hàng đợi đăng ký. <br> Để bật tính năng này, vào <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Người dùng đăng ký</a> và đặt <strong>Kiểu Đăng Ký</strong> là \"Phê Duyệt Của Quản Trị Viên\".",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Tên",
 	"list.email": "Thư điện tử",
 	"list.ip": "IP",

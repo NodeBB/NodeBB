@@ -1,7 +1,8 @@
 {
 	"queue": "Növbə",
 	"description": "Qeydiyyat növbəsində heç bir istifadəçi yoxdur. <br>Bu funksiyanı aktivləşdirmək üçün <a href=\"%1\">Parametrlərə keçin &rarr; İstifadəçi &rarr;</a> İstifadəçi Qeydiyyatı və <strong>Qeydiyyat Tipini</strong> \"Admin Təsdiqi\" olaraq təyin edin.",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Adı",
 	"list.email": "E-poçt",
 	"list.ip": "IP",

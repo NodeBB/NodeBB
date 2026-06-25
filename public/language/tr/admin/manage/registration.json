@@ -1,7 +1,8 @@
 {
 	"queue": "Kuyruk",
 	"description": "Kayıt kuyruğunda hiç kullanıcı yok. <br>Bu özelliği etkinleştirmek için, şuraya gidin: <a href=\"%1\">Ayarlar; Kullanıcı; Kullanıcı Kaydı</a> ve <strong>Kayıt Tipi</strong>ni \"Yönetici Onayı\" olarak ayarlayın.",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "İsim",
 	"list.email": "E-posta",
 	"list.ip": "IP",

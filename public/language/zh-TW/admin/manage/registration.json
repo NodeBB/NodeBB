@@ -1,7 +1,8 @@
 {
 	"queue": "申請",
 	"description": "註冊申請隊伍裡目前沒人排隊。<br>要開啟本功能，請前往<a href=\"%1\">設定 &rarr; 用戶 &rarr; 用戶註冊</a> 並設定<strong>註冊類型</strong>為“管理員批准”。",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "姓名",
 	"list.email": "郵件",
 	"list.ip": "IP",

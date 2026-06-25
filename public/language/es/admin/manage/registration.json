@@ -1,7 +1,8 @@
 {
 	"queue": "Cola",
 	"description": "No hay usuarios en la cola de registro. <br>Para activar esta función, vaya a <a href=\"%1\">Configuración &rarr; Usuario &rarr; Registro de Usuario</a>y configure<strong>Tipo de Registro</strong>a \"Aprobación de Administrador\".",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Nombre",
 	"list.email": "Correo electrónico",
 	"list.ip": "IP",

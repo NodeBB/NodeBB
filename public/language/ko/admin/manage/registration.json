@@ -1,7 +1,8 @@
 {
 	"queue": "대기열",
 	"description": "등록 대기열에 사용자가 없습니다.<br /> 이 기능을 활성화하려면 <a href=\"%1\">설정 → 사용자 → 사용자 등록</a>으로 이동하여 <strong>등록 유형</strong>을 \"관리자 승인\"으로 설정하세요.",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "이름",
 	"list.email": "이메일",
 	"list.ip": "IP",

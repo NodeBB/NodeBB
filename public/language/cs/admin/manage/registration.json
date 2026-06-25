@@ -1,7 +1,8 @@
 {
 	"queue": "Fronta",
 	"description": "V registrační frontě nejsou žádní uživatelé. <br>Pro povolení této funkce, přejděte do nabídky <a href=\"%1\">Nastavení &rarr; Uživatel &rarr; Registrace uživatele</a> a nastavte <strong> Typ registrace</strong> na „Schválení správcem”.",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Jméno",
 	"list.email": "E-mail",
 	"list.ip": "IP",

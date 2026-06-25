@@ -1,7 +1,8 @@
 {
 	"queue": "Очередь",
 	"description": "В очереди регистраций нет пользователей. </br>Чтобы включить эту возможность перейдите в <a href=\"%1\">Настройки &arr; Пользователь &arr; Регистрация пользователя</a> и задайте <strong>Тип регистрации</strong> как \"Подтверждение администратором\"",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Имя",
 	"list.email": "Email",
 	"list.ip": "IP",

@@ -1,7 +1,8 @@
 {
 	"queue": "Coda",
 	"description": "Non ci sono utenti nella coda di registrazione. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Utente &rarr; Registrazione Utente</a> e imposta <strong>Tipo Registrazione</strong> su \"Approvazione Amministratore\".",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Nome",
 	"list.email": "Email",
 	"list.ip": "IP",

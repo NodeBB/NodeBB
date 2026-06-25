@@ -1,7 +1,8 @@
 {
 	"queue": "Várólista",
 	"description": "Nincs felhasználó a regisztrációs várólistán. <br> A funkció engedélyezéséhez menj a <a href=\"%1\">Beállítások &rarr; Felhasználók &rarr; Felhasználó regisztráció</a> menüpontba és a <strong>Regisztráció típusa</strong> lehetőségnél válaszd az  \"Adminisztrátori jóváhagyás\"-t.",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Név",
 	"list.email": "Email",
 	"list.ip": "IP",

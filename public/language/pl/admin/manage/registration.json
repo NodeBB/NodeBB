@@ -1,7 +1,8 @@
 {
 	"queue": "Kolejka",
 	"description": "Brak użytkowników w kolejce rejestracji. <br> W celu włączenia tej funkcji, przejdź do <a href=\"%1\">Ustawienia &rarr; Użytkownik &rarr; Rejestracja użytkownika</a> i jako <strong>Typ rejestracji </strong> ustaw „Zatwierdzenie przez administratora”. ",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Nazwa",
 	"list.email": "Adres e-mail",
 	"list.ip": "IP",

@@ -1,7 +1,8 @@
 {
 	"queue": "Na čekanju",
 	"description": "Nema korisnika na čekanju za registraciju. <br/> Za pokretanje ove mogućnosti odite na  <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> i postavite <strong>tip registracije</strong> u \"Admin Approval\".",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Ime",
 	"list.email": "Email",
 	"list.ip": "IP",

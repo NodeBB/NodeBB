@@ -1,7 +1,8 @@
 {
 	"queue": "Черга",
 	"description": "В черзі на реєстрацію немає користувачів. <br> Щоб активувати цю функцію перейдіть до <a href=\"%1\">Налаштування &rarr; користувачів та реєстрації</a> і встановіть <strong>Тип реєстрації</strong> на \"Підтвердження адміна\".",
-
+	"reject-all": "Reject All",
+	"reject-all-confirm": "Do you want to reject all registration requests?",
 	"list.name": "Ім'я",
 	"list.email": "Електронна пошта",
 	"list.ip": "IP-адреса",
