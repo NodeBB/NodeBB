@@ -328,6 +328,7 @@ define('chat', [
 			Chats.addTextareaResizeHandler(chatModal);
 			Chats.addTypingHandler(chatModal, roomId);
 			Chats.addIPHandler(chatModal);
+			Chats.addCopyTextLinkHandler(chatModal);
 			Chats.addTooltipHandler(chatModal);
 			Chats.addUploadHandler({
 				dragDropAreaEl: chatModal.find('.modal-content'),
@@ -431,6 +432,7 @@ define('chat', [
 				Chats.addTextareaResizeHandler(chatModal);
 				Chats.addTypingHandler(chatModal, roomId);
 				Chats.addIPHandler(chatModal);
+				Chats.addCopyTextLinkHandler(chatModal);
 				Chats.addTooltipHandler(chatModal);
 				Chats.addUploadHandler({
 					dragDropAreaEl: chatModal.find('.modal-content'),
