@@ -32,7 +32,7 @@
         "@fontsource-utils/scss": "0.2.2",
         "@fontsource/inter": "5.2.8",
         "@fontsource/poppins": "5.2.7",
-        "@fortawesome/fontawesome-free": "7.2.0",
+        "@fortawesome/fontawesome-free": "7.3.0",
         "@isaacs/ttlcache": "2.1.5",
         "@json2csv/node": "7.0.6",
         "@nodebb/spider-detector": "2.0.3",
