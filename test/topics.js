@@ -11,6 +11,7 @@ const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
+const activitypub = require('../src/activitypub');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
 const categories = require('../src/categories');
@@ -24,6 +25,8 @@ const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');
 const apiPosts = require('../src/api/posts');
 const request = require('../src/request');
+
+const wait = util.promisify(setTimeout);
 
 describe('Topic\'s', () => {
 	let topic;
@@ -2381,6 +2384,84 @@ describe('Topic\'s', () => {
 				`cid:${categoryObj.cid}:tids:posts`,
 			], topicData.tid);
 			assert.deepStrictEqual(isMember, [false, false, false]);
+		});
+
+		it('should send an ActivityPub Create activity for a non-scheduled topic with remote followers', async () => {
+			const helpers = require('./activitypub/helpers');
+			const { id: remoteActor } = helpers.mocks.person();
+			const { activity: followActivity } = helpers.mocks.follow({
+				actor: remoteActor,
+				object: {
+					id: `${nconf.get('url')}/uid/${adminUid}`,
+				},
+			});
+			await activitypub.inbox.follow({ body: followActivity });
+			activitypub._sent.clear();
+
+			const normalTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Normal Topic With AP',
+				content: 'This topic should be federated',
+			};
+			await apiTopics.create({ uid: adminUid }, normalTopic);
+			await wait(50);
+			assert.strictEqual(activitypub._sent.size, 1);
+			const sent = Array.from(activitypub._sent.values()).pop();
+			assert.strictEqual(sent.payload.type, 'Create');
+			assert(sent.targets.includes(remoteActor));
+		});
+
+		it('should not send out any ActivityPub activities for a scheduled topic', async () => {
+			const helpers = require('./activitypub/helpers');
+			const { id: remoteActor } = helpers.mocks.person();
+			const { activity: followActivity } = helpers.mocks.follow({
+				actor: remoteActor,
+				object: {
+					id: `${nconf.get('url')}/uid/${adminUid}`,
+				},
+			});
+			await activitypub.inbox.follow({ body: followActivity });
+			activitypub._sent.clear();
+
+			const scheduledTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Scheduled Topic No AP',
+				content: 'This topic should not be federated',
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+			await apiTopics.create({ uid: adminUid }, scheduledTopic);
+			await wait(50);
+			assert.strictEqual(activitypub._sent.size, 0);
+		});
+
+		it('should not send out any ActivityPub activities when editing a post in a scheduled topic', async () => {
+			const helpers = require('./activitypub/helpers');
+			const { id: remoteActor } = helpers.mocks.person();
+			const { activity: followActivity } = helpers.mocks.follow({
+				actor: remoteActor,
+				object: {
+					id: `${nconf.get('url')}/uid/${adminUid}`,
+				},
+			});
+			await activitypub.inbox.follow({ body: followActivity });
+			activitypub._sent.clear();
+
+			const scheduledTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Scheduled Topic For Edit Test',
+				content: 'Original content',
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+			const result = await apiTopics.create({ uid: adminUid }, scheduledTopic);
+			await sleep(50);
+			activitypub._sent.clear();
+
+			await apiPosts.edit({ uid: adminUid }, { pid: result.mainPid, content: 'Edited scheduled content', timestamp: new Date(Date.now() + 86400000).getTime() });
+			await sleep(50);
+			assert.strictEqual(activitypub._sent.size, 0);
 		});
 
 		it('should update poster\'s lastposttime with "action time"', async () => {

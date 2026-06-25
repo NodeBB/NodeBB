@@ -149,10 +149,13 @@ postsAPI.edit = async function (caller, data) {
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
 	if (!editResult.post.deleted) {
+		const topicScheduled = await topics.getTopicField(editResult.topic.tid, 'scheduled');
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
-		setImmediate(() => {
-			activitypub.out.update.note(caller.uid, postObj[0]);
-		});
+		if (!topicScheduled) {
+			setImmediate(() => {
+				activitypub.out.update.note(caller.uid, postObj[0]);
+			});
+		}
 
 		return returnData;
 	}
