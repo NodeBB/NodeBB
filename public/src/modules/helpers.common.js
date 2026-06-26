@@ -35,6 +35,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		min,
 		clamp,
 		quote,
+		concat,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -413,6 +414,10 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 	function quote(str) {
 		return `"${str}"`;
+	}
+
+	function concat(...args) {
+		return args.join('');
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {
