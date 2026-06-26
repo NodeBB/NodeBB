@@ -95,20 +95,20 @@ module.exports = function (middleware) {
 
 				const optionsString = JSON.stringify(options).replace(/<\//g, '<\\/');
 				const headerFooterData = await loadHeaderFooterData(req, res, options);
-				const results = await utils.promiseParallel({
-					header: renderHeaderFooter(render, 'renderHeader', req, res, options, headerFooterData),
-					content: renderContent(render, templateToRender, req, res, options),
-					footer: renderHeaderFooter(render, 'renderFooter', req, res, options, headerFooterData),
-				});
+				const [header, content, footer] = await Promise.all([
+					renderHeaderFooter(render, 'renderHeader', req, res, options, headerFooterData),
+					renderContent(render, templateToRender, req, res, options),
+					renderHeaderFooter(render, 'renderFooter', req, res, options, headerFooterData),
+				]);
 
-				const str = `${results.header +
+				const str = `${header +
 					(res.locals.postHeader || '') +
-					results.content
+					content
 				}<script id="ajaxify-data" type="application/json">${
 					optionsString
 				}</script>${
 					res.locals.preFooter || ''
-				}${results.footer}`;
+				}${footer}`;
 
 				if (typeof fn !== 'function') {
 					self.send(str);
