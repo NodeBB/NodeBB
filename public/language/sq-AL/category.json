@@ -26,5 +26,6 @@
     "notwatching.message": "Tani nuk je duke ndjekur përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
     "ignoring.message": "Tani je duke injoruar përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
     "watched-categories": "Kategoritë që keni ndjekur",
-    "x-more-categories": "%1 më shumë kategori"
+    "x-more-categories": "%1 më shumë kategori",
+    "view-original": "View Original"
 }

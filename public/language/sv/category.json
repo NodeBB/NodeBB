@@ -26,5 +26,6 @@
     "notwatching.message": "Du får inga uppdateringar från den här kategorin eller alla underkategorier",
     "ignoring.message": "Nu ignorerar du alla uppdateringar från den här kategorin och alla underkategorier.",
     "watched-categories": "Bevakade kategorier",
-    "x-more-categories": "%1 more categories"
+    "x-more-categories": "%1 more categories",
+    "view-original": "View Original"
 }

@@ -26,5 +26,6 @@
     "notwatching.message": "このカテゴリとサブカテゴリの更新をウォッチしていません",
     "ignoring.message": "このカテゴリとサブカテゴリの更新を無視しています",
     "watched-categories": "ウォッチ中のカテゴリ",
-    "x-more-categories": "あと%1件のカテゴリ"
+    "x-more-categories": "あと%1件のカテゴリ",
+    "view-original": "View Original"
 }

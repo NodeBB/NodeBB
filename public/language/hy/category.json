@@ -26,5 +26,6 @@
     "notwatching.message": "Դուք չեք դիտում այս կատեգորիայի և բոլոր ենթակատեգորիաների թարմացումները",
     "ignoring.message": "Դուք այժմ անտեսում եք այս կատեգորիայի և բոլոր ենթակատեգորիաների թարմացումները",
     "watched-categories": "Դիտված կատեգորիաներ",
-    "x-more-categories": "Եվս %1 կատեգորիա"
+    "x-more-categories": "Եվս %1 կատեգորիա",
+    "view-original": "View Original"
 }

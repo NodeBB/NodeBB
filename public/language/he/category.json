@@ -26,5 +26,6 @@
     "notwatching.message": "בחרת לא לעקוב אחר עדכונים בקטגוריה זו וכל תת-הקטגוריות",
     "ignoring.message": "בחרת להתעלם מעדכונים בקטגוריה זו וכל תת-הקטגוריות",
     "watched-categories": "קטגוריות במעקב",
-    "x-more-categories": "%1 קטגוריות נוספות"
+    "x-more-categories": "%1 קטגוריות נוספות",
+    "view-original": "View Original"
 }

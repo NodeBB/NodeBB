@@ -26,5 +26,6 @@
     "notwatching.message": "คุณไม่ได้เฝ้าดูการอัพเดทจากหมวดหมู่นี้และทุกหมวดหมู่ย่อย",
     "ignoring.message": "คุณไม่สนใจการอัพเดทจากหมวดหมู่นี้และทุกหมวดหมู่ย่อย",
     "watched-categories": "หมวดหมู่ที่เฝ้าดู",
-    "x-more-categories": "มีอีก %1 หมวดหมู่"
+    "x-more-categories": "มีอีก %1 หมวดหมู่",
+    "view-original": "View Original"
 }

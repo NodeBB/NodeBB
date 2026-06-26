@@ -26,5 +26,6 @@
     "notwatching.message": "Agora, você não está acompanhando as novidades nem desta categoria e nem de suas subcategorias",
     "ignoring.message": "Agora, você está ignorando as novidades desta categorias e de todas as suas subcategorias",
     "watched-categories": "Categorias acompanhadas",
-    "x-more-categories": "mais %1 categorias"
+    "x-more-categories": "mais %1 categorias",
+    "view-original": "View Original"
 }

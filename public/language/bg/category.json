@@ -26,5 +26,6 @@
     "notwatching.message": "Вече не наблюдавате новите неща в категорията и подкатегориите ѝ",
     "ignoring.message": "Вече пренебрегвате новите неща в тази категория и всички нейни подкатегории",
     "watched-categories": "Наблюдавани категории",
-    "x-more-categories": "Още %1 категории"
+    "x-more-categories": "Още %1 категории",
+    "view-original": "View Original"
 }

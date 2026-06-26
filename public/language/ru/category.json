@@ -26,5 +26,6 @@
     "notwatching.message": "Вы более не отслеживаете обновления этой категории, включая все подкатегории",
     "ignoring.message": "Вы игнорируете обновления этой категории, включая все подкатегории",
     "watched-categories": "Отслеживаемые категории",
-    "x-more-categories": "Еще %1 категорий"
+    "x-more-categories": "Еще %1 категорий",
+    "view-original": "View Original"
 }
