@@ -26,5 +26,6 @@
     "notwatching.message": "Nem figyeled ennek a kategóriának és alkategóriáinak frissítéseit",
     "ignoring.message": "Nem kapsz most már frissítéseket erről a kategóriáról és az alkategóriáiról",
     "watched-categories": "Figyelt kategóriák",
-    "x-more-categories": "%1 további kategória"
+    "x-more-categories": "%1 további kategória",
+    "view-original": "View Original"
 }

@@ -26,5 +26,6 @@
     "notwatching.message": "Deze categorie en alle sub-categorieën worden niet gevolgd",
     "ignoring.message": "Er worden geen meldingen van deze categorie en alle sub-categorieën  ontvangen",
     "watched-categories": "Categorieën die bekeken zijn.",
-    "x-more-categories": "%1 meer categorieën"
+    "x-more-categories": "%1 meer categorieën",
+    "view-original": "View Original"
 }

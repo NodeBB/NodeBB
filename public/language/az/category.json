@@ -26,5 +26,6 @@
     "notwatching.message": "Siz bu kateqoriyadan və bütün altkateqoriyalardan olan yeniləmələri izləmirsiniz",
     "ignoring.message": "İndi bu kateqoriyadan və bütün alt kateqoriyalardan olan yeniləmələrə iqnor qoymursunuz",
     "watched-categories": "İzlənilən kateqoriyalar",
-    "x-more-categories": "daha %1 kateqoriya"
+    "x-more-categories": "daha %1 kateqoriya",
+    "view-original": "View Original"
 }

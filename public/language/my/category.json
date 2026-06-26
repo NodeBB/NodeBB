@@ -26,5 +26,6 @@
     "notwatching.message": "ဤကဏ္ဍနှင့် ကဏ္ဍခွဲအားလုံးမှ အပ်ဒိတ်များကို သင် စောင့်ကြည့်မနေပါ။",
     "ignoring.message": "ယခု ဤကဏ္ဍနှင့် ကဏ္ဍခွဲအားလုံးမှ အပ်ဒိတ်များကို လျစ်လျူရှုထားပါသည်။",
     "watched-categories": "စောင့်ကြည့်ထားသောကဏ္ဍများ",
-    "x-more-categories": "နောက်ထပ် ကဏ္ဍ %1 ခု"
+    "x-more-categories": "နောက်ထပ် ကဏ္ဍ %1 ခု",
+    "view-original": "View Original"
 }

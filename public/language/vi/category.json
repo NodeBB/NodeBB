@@ -26,5 +26,6 @@
     "notwatching.message": "Bạn không xem các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "ignoring.message": "Bạn hiện đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "watched-categories": "Danh mục đã xem",
-    "x-more-categories": "%1 danh mục khác"
+    "x-more-categories": "%1 danh mục khác",
+    "view-original": "View Original"
 }

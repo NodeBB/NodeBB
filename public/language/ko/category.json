@@ -26,5 +26,6 @@
     "notwatching.message": "이 카테고리와 모든 하위 카테고리 업데이트의 알림을 수신하지 않습니다.",
     "ignoring.message": "이 카테고리와 모든 하위 카테고리 업데이트를 무시합니다.",
     "watched-categories": "알림을 받는 중인 카테고리",
-    "x-more-categories": "%1개의 추가 카테고리"
+    "x-more-categories": "%1개의 추가 카테고리",
+    "view-original": "View Original"
 }
