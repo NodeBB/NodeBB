@@ -860,19 +860,33 @@ Notes.delete = async (pids) => {
 Notes.prune = async () => {
 	/**
 	 * Prune topics in cid -1 and handle:cid that have received no engagement.
+	 * Categories in cid:0:children (shown on forum index) are skipped.
 	 * Engagement is defined as:
 	 *   - Replied to (contains a local reply)
 	 *   - Post within is liked
+	 * Cutoffs:
+	 *   - cid -1: activitypubContentPruneDays
+	 *   - remote cid, no followers: max(60, activitypubContentPruneDays * 2)
+	 *   - remote cid, has followers: max(730, activitypubContentPruneDays)
 	 */
 
-	const cids = await db.getObjectValues('handle:cid');
-	winston.info(`[notes/prune] Starting scheduled pruning of topics in ${cids.length} categories`);
+	const allCids = await db.getObjectValues('handle:cid');
+	const indexCids = await db.getSortedSetMembers('cid:0:children');
+	const cids = allCids.filter(cid => !indexCids.includes(cid));
+	winston.info(`[notes/prune] Starting scheduled pruning of topics in ${cids.length} categories (${allCids.length - cids.length} skipped: shown on index)`);
 
-	const cuttoff = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
+	const cutoff = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
 	const remoteCutoff = Date.now() - (1000 * 60 * 60 * 24 * Math.max(60, meta.config.activitypubContentPruneDays * 2));
-	await pruneCidTids(-1, cuttoff);
-	await batch.processArray(cids, async function (cids) {
-		await Promise.all(cids.map(cid => pruneCidTids(cid, remoteCutoff)));
+	const remoteCutoffWithFollowers = Date.now() - (
+		1000 * 60 * 60 * 24 * Math.max(730, meta.config.activitypubContentPruneDays)
+	);
+	await pruneCidTids(-1, cutoff);
+	const followerCounts = await db.sortedSetsCard(cids.map(cid => `followersRemote:${cid}`));
+	const cidCutoffs = new Map(
+		cids.map((cid, idx) => [cid, followerCounts[idx] > 0 ? remoteCutoffWithFollowers : remoteCutoff]),
+	);
+	await batch.processArray(cids, async function (batch) {
+		await Promise.all(batch.map(cid => pruneCidTids(cid, cidCutoffs.get(cid))));
 	}, {
 		batch: 10,
 	});
@@ -880,7 +894,7 @@ Notes.prune = async () => {
 };
 
 
-async function pruneCidTids(cid, cuttoff) {
+async function pruneCidTids(cid, cutoff) {
 	if (utils.isNumber(cid) && parseInt(cid, 10) !== -1) {
 		// safety incase a local cid is in handle:cid
 		return;
@@ -900,7 +914,7 @@ async function pruneCidTids(cid, cuttoff) {
 		}));
 	}, {
 		min: '-inf',
-		max: cuttoff,
+		max: cutoff,
 		batch: 500,
 	});
 	if (!tidsWithNoEngagement.length) {
