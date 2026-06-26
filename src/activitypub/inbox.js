@@ -606,7 +606,7 @@ inbox.follow = async (req) => {
 			user.syncFollowCounts(id, false, true),
 			user.syncFollowCounts(actor, true, false),
 		]);
-		activitypub.actors._followerCache.del(id);
+		activitypub.actors._followerCache.del(parseInt(id, 10));
 
 		await user.onFollow(actor, id);
 		activitypub.send('uid', id, actor, {
@@ -735,7 +735,7 @@ inbox.undo = async (req) => {
 						user.syncFollowCounts(actor, true, false),
 					]);
 					notifications.rescind(`follow:${id}:uid:${actor}`);
-					activitypub.actors._followerCache.del(id);
+					activitypub.actors._followerCache.del(parseInt(id, 10));
 					break;
 				}
 
