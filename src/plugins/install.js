@@ -83,7 +83,7 @@ module.exports = function (Plugins) {
 		if (!response.ok) {
 			throw new Error(`[[error:cant-connect-to-nbbpm]]`);
 		}
-		if (body && body.code === 'ok' && (version === 'latest' || body.payload.valid.includes(version))) {
+		if (body && body.code === 'ok' && (!version || version === 'latest' || body.payload.valid.includes(version))) {
 			return;
 		}
 
