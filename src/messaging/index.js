@@ -397,12 +397,10 @@ Messaging.canMessageUser = async (uid, toUid) => {
 	if (parseInt(uid, 10) === parseInt(toUid, 10)) {
 		throw new Error('[[error:cant-chat-with-yourself]]');
 	}
-	const [exists, isTargetPrivileged, canChat, canChatWithPrivileged] = await Promise.all([
+	const [exists, isTargetPrivileged, [canChat, canChatWithPrivileged]] = await Promise.all([
 		user.exists(toUid),
 		user.isPrivileged(toUid),
-		privileges.global.can('chat', uid),
-		privileges.global.can('chat:privileged', uid),
-		checkReputation(uid),
+		privileges.global.can(['chat', 'chat:privileged'], uid),
 	]);
 
 	if (!exists) {
@@ -411,6 +409,11 @@ Messaging.canMessageUser = async (uid, toUid) => {
 
 	if (!canChat && !(canChatWithPrivileged && isTargetPrivileged)) {
 		throw new Error('[[error:no-privileges]]');
+	}
+
+	// only check reputation when messaging regular users
+	if (!isTargetPrivileged) {
+		await checkReputation(uid);
 	}
 
 	const [settings, isAdmin, isModerator, isBlocked] = await Promise.all([
@@ -453,7 +456,6 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		Messaging.getRoomData(roomId),
 		Messaging.isUserInRoom(uid, roomId),
 		privileges.global.can(['chat', 'chat:privileged'], uid),
-		checkReputation(uid),
 		user.checkMuted(uid),
 	]);
 	if (!roomData) {
