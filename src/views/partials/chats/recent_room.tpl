@@ -27,8 +27,12 @@
 					{{{ if !./lastUser.uid }}}
 					[[modules:chat.no-users-in-room]]
 					{{{ else }}}
+					{{{ if greaterthan(./users.length, "3") }}}
 					{{tx(./usernames)}}
-					{{{ end  }}}
+					{{{ else }}}
+					{./usernames}
+					{{{ end }}}
+					{{{ end }}}
 				{{{ end }}}
 				</div>
 				<!-- IMPORT partials/chats/room-teaser.tpl -->

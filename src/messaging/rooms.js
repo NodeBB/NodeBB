@@ -565,7 +565,8 @@ module.exports = function (Messaging) {
 
 		users.forEach((user) => {
 			if (user) {
-				user.online = parseInt(user.uid, 10) === parseInt(uid, 10) || onlineUids.includes(String(user.uid));
+				const userUid = String(user.uid);
+				user.online = userUid === String(uid) || onlineUids.includes(userUid);
 			}
 		});
 

@@ -84,7 +84,7 @@ Sockets.init = async function (server) {
 
 function onConnection(socket) {
 	socket.uid = socket.request.uid;
-	socket.data.uid = socket.uid; // socket.data is shared between nodes via fetchSockets
+	socket.data.uid = String(socket.uid); // socket.data is shared between nodes via fetchSockets
 	socket.ip = (
 		socket.request.headers['x-forwarded-for'] ||
 		socket.request.connection.remoteAddress || ''

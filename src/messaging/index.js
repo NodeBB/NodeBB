@@ -172,7 +172,7 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 
 async function getUsers(roomIds, exceptUid) {
 	const arrayOfUids = await Promise.all(
-		roomIds.map(roomId => Messaging.getUidsInRoom(roomId, 0, 9))
+		roomIds.map(roomId => Messaging.getUidsInRoomFromSet(`chat:room:${roomId}:uids:online`, 0, 9, true))
 	);
 	const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
 		_uid => _uid && parseInt(_uid, 10) !== parseInt(exceptUid, 10)
@@ -278,11 +278,12 @@ async function modifyChatRooms(uid, results) {
 
 Messaging.generateUsernames = function (room, excludeUid) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
-	const usernames = users.map(u => tx.escape(u.displayname));
+	const usernames = users.map(u => u.displayname);
 	if (users.length > 3) {
 		return tx.compile(
 			'modules:chat.usernames-and-x-others',
-			...[usernames.slice(0, 2), room.userCount - 2]
+			usernames.slice(0, 2).map(tx.escape).join(', '),
+			room.userCount - 2
 		);
 	}
 	return usernames.join(', ');
