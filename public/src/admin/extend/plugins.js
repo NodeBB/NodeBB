@@ -119,8 +119,10 @@ define('admin/extend/plugins', [
 							btn.removeAttr('disabled');
 						}
 					});
-				} else {
+				} else if (payload.version) {
 					Plugins.toggleInstall(pluginID, payload.version);
+				} else {
+					btn.removeAttr('disabled');
 				}
 			});
 		});
