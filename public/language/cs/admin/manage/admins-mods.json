@@ -1,14 +1,14 @@
 {
-    "manage-admins-and-mods": "Manage Admins & Mods",
+    "manage-admins-and-mods": "Spravovat Správce a Moderátory",
     "administrators": "Správci",
     "global-moderators": "Hlavní moderátoři",
-    "moderators": "Moderators",
+    "moderators": "Moderatoři",
     "no-global-moderators": "Žádní hlavní moderátoři",
-    "no-sub-categories": "No subcategories",
-    "view-children": "View children (%1)",
+    "no-sub-categories": "Žádné podkategorie",
+    "view-children": "Zobrazit podřízené (%1)",
     "no-moderators": "Žádní moderátoři",
     "add-administrator": "Přidat správce",
     "add-global-moderator": "Přidat hlavního moderátora",
     "add-moderator": "Přidat moderátora",
-    "disabled": "Disabled"
+    "disabled": "Zakázán"
 }
