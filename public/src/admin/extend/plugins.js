@@ -111,9 +111,7 @@ define('admin/extend/plugins', [
 					return;
 				}
 
-				if (payload.version !== 'latest') {
-					Plugins.toggleInstall(pluginID, payload.version);
-				} else if (payload.version === 'latest') {
+				if (payload.version === null || payload.version === 'latest') {
 					confirmInstall(pluginID, function (confirm) {
 						if (confirm) {
 							Plugins.toggleInstall(pluginID, 'latest');
@@ -121,6 +119,8 @@ define('admin/extend/plugins', [
 							btn.removeAttr('disabled');
 						}
 					});
+				} else if (payload.version) {
+					Plugins.toggleInstall(pluginID, payload.version);
 				} else {
 					btn.removeAttr('disabled');
 				}
