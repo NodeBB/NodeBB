@@ -9,15 +9,22 @@ const privilegesController = module.exports;
 privilegesController.get = async function (req, res) {
 	const cid = req.params.cid ? parseInt(req.params.cid, 10) || 0 : 0;
 	const isAdminPriv = req.params.cid === 'admin';
+	const isAllCategories = req.params.cid === 'all';
 
 	let privilegesData;
-	if (cid === 0) {
+	if (isAllCategories) {
+		privilegesData = await privileges.categories.listAll();
+	} else if (cid === 0) {
 		privilegesData = await (isAdminPriv ? privileges.admin.list(req.uid) : privileges.global.list());
 	} else if (utils.isNumber(cid)) {
 		privilegesData = await privileges.categories.list(cid);
 	}
 
 	const categoriesData = [{
+		cid: 'all',
+		name: '[[admin/manage/privileges:all-categories]]',
+		icon: 'fa-list',
+	}, {
 		cid: 0,
 		name: '[[admin/manage/privileges:global]]',
 		icon: 'fa-list',
@@ -27,10 +34,17 @@ privilegesController.get = async function (req, res) {
 		icon: 'fa-lock',
 	}];
 
+	let selectedCid = cid;
+	if (isAdminPriv) {
+		selectedCid = 'admin';
+	} else if (isAllCategories) {
+		selectedCid = 'all';
+	}
+
 	let selectedCategory;
 	categoriesData.forEach((category) => {
 		if (category) {
-			category.selected = category.cid === (!isAdminPriv ? cid : 'admin');
+			category.selected = category.cid === selectedCid;
 
 			if (category.selected) {
 				selectedCategory = category;
@@ -46,7 +60,7 @@ privilegesController.get = async function (req, res) {
 		privileges: privilegesData,
 		categories: categoriesData,
 		selectedCategory,
-		cid,
+		cid: isAllCategories ? 'all' : cid,
 		group,
 		isAdminPriv,
 	});
