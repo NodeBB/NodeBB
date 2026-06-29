@@ -56,7 +56,7 @@ module.exports = function (Categories) {
 			fields: fields,
 			keys: keys,
 		});
-		result.categories.forEach(category => modifyCategory(category, fields));
+		await modifyCategories(result.categories, result.fields);
 		return result.categories;
 	};
 
@@ -114,39 +114,45 @@ function defaultIntField(category, hasField, fieldName, defaultField) {
 	}
 }
 
-function modifyCategory(category, fields) {
-	if (!category) {
+async function modifyCategories(categories, fields) {
+	if (!categories || !categories.length) {
 		return;
 	}
-
 	const hasField = utils.createFieldChecker(fields);
 
-	defaultIntField(category, hasField, 'minTags', 'minimumTagsPerTopic');
-	defaultIntField(category, hasField, 'maxTags', 'maximumTagsPerTopic');
-	defaultIntField(category, hasField, 'postQueue', 'postQueue');
+	await Promise.all(categories.map(async (category) => {
+		if (!category) return;
+		defaultIntField(category, hasField, 'minTags', 'minimumTagsPerTopic');
+		defaultIntField(category, hasField, 'maxTags', 'maximumTagsPerTopic');
+		defaultIntField(category, hasField, 'postQueue', 'postQueue');
 
-	db.parseIntFields(category, intFields, fields);
+		db.parseIntFields(category, intFields, fields);
 
-	if (hasField('icon')) {
-		category.icon = category.icon || 'hidden';
-		if (category.icon === 'fa-none') {
-			category.icon = 'fa-nbb-none';
+		if (hasField('icon')) {
+			category.icon = category.icon || 'hidden';
+			if (category.icon === 'fa-none') {
+				category.icon = 'fa-nbb-none';
+			}
 		}
-	}
 
-	if (hasField('post_count')) {
-		category.totalPostCount = category.post_count;
-	}
+		if (hasField('post_count')) {
+			category.totalPostCount = category.post_count;
+		}
 
-	if (hasField('topic_count')) {
-		category.totalTopicCount = category.topic_count;
-	}
+		if (hasField('topic_count')) {
+			category.totalTopicCount = category.topic_count;
+		}
 
-	if (hasField('nickname')) {
-		category.nickname = category.nickname || '';
-	}
+		if (hasField('nickname')) {
+			category.nickname = category.nickname || '';
+		}
 
-	if (hasField('name')) {
-		category.name = category.nickname || category.name;
-	}
+		if (hasField('name')) {
+			category.name = category.nickname || category.name;
+		}
+
+		if (hasField('description')) {
+			category.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', category.description);
+		}
+	}));
 }
