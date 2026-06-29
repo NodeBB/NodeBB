@@ -1,0 +1,21 @@
+{
+	"queue": "Kuyruk",
+	"description": "Kayıt kuyruğunda hiç kullanıcı yok. <br>Bu özelliği etkinleştirmek için, şuraya gidin: <a href=\"%1\">Ayarlar; Kullanıcı; Kullanıcı Kaydı</a> ve <strong>Kayıt Tipi</strong>ni \"Yönetici Onayı\" olarak ayarlayın.",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "İsim",
+	"list.email": "E-posta",
+	"list.ip": "IP",
+	"list.time": "Zaman",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Davetiyeler",
+	"invitations.description": "Aşağıda, gönderilen davetiyelerin tam listesi bulunmaktadır. E-posta veya kullanıcı adı ile listede arama yapmak için ctrl-f kısayolunu kullanın. <br><br>Davetiyelerini kullanan kullanıcıların e-postalarının sağında kullanıcı adı görüntülenir.",
+	"invitations.inviter-username": "Davet Edenin Kullanıcı Adı",
+	"invitations.invitee-email": "Davetli E-postası",
+	"invitations.invitee-username": "(Eğer kaydolmuşsa) Davetlinin Kullanıcı Adı",
+
+	"invitations.confirm-delete": "Bu daveti silmek istediğinizden emin misiniz?"
+}

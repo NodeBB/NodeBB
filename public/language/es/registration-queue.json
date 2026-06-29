@@ -1,0 +1,21 @@
+{
+	"queue": "Cola",
+	"description": "No hay usuarios en la cola de registro. <br>Para activar esta función, vaya a <a href=\"%1\">Configuración &rarr; Usuario &rarr; Registro de Usuario</a>y configure<strong>Tipo de Registro</strong>a \"Aprobación de Administrador\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Nombre",
+	"list.email": "Correo electrónico",
+	"list.ip": "IP",
+	"list.time": "Hora",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Invitaciones",
+	"invitations.description": "Abajo hay una lista completa de invitaciones enviadas. Use ctrl-f para buscar a través de la lista por correo electrónico o nombre de usuario.<br><br>EL nombre de usuario será mostrado a la derecha de los correos electrónicos para los usuarios que han aceptado sus invitaciones.",
+	"invitations.inviter-username": "Nombre del Usuario que Invita",
+	"invitations.invitee-email": "Correo Electrónico del Invitado",
+	"invitations.invitee-username": "Nombre del Usuario Invitado (si está registrado)",
+
+	"invitations.confirm-delete": "¿Está seguro de que desea eliminar esta invitación?"
+}

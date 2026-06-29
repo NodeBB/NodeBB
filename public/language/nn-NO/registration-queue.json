@@ -1,0 +1,21 @@
+{
+	"queue": "Kø",
+	"description": "Administrer registreringskøen og godkjenningsførespurnader.",
+	"reject-all": "Avvis alle",
+	"reject-all-confirm": "Vil du avvise alle registreringsførespurnader?",
+	"list.name": "Namn",
+	"list.email": "E-post",
+	"list.ip": "IP-adresse",
+	"list.time": "Tidspunkt",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Frekvens: %1<br/>Vises: %2<br/>Tillit: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Frekvens: %1<br/>Vises: %2<br/>Tillit: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Frekvens %1<br/>Vises: %2<br/>Tillit: %3</div>",
+
+	"invitations": "Invitasjonar",
+	"invitations.description": "Administrer invitasjonar sendt til potensielle brukarar.",
+	"invitations.inviter-username": "Inviterande brukarnamn",
+	"invitations.invitee-email": "E-post til inviterte",
+	"invitations.invitee-username": "Brukarnamn til inviterte",
+
+	"invitations.confirm-delete": "Er du sikker på at du vil slette denne invitasjonen?"
+}

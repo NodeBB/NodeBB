@@ -1,0 +1,21 @@
+{
+	"queue": "Jono",
+	"description": "",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Nimi",
+	"list.email": "Sähköpostiosoite",
+	"list.ip": "IP-osoite",
+	"list.time": "Aika",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Kutsut",
+	"invitations.description": "",
+	"invitations.inviter-username": "Kutsujan käyttäjätunnus",
+	"invitations.invitee-email": "Kutsujan sähköpostiosoite",
+	"invitations.invitee-username": "Kutsujan käyttäjätunnus (jos rekisteröity)",
+
+	"invitations.confirm-delete": "Haluatko varmasti poistaa kutsun?"
+}

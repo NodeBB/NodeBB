@@ -1,0 +1,21 @@
+{
+	"queue": "Fronta",
+	"description": "V registračnej fronte nie sú žiadny používatelia. <br> Pre povolenie tejto funkcie, prejdite do ponuky <a href=\"%1\"> Nastavení &rarr; Používateľ &rarr; </a>a nastavte <strong> Typ registrácie </strong> na \"Schválené správcom\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Meno",
+	"list.email": "E-mail",
+	"list.ip": "IP adresa",
+	"list.time": "Čas",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Pozvánky",
+	"invitations.description": "Nižšie je kompletný zoznam odoslaných pozvánok. Pre hľadanie v zozname pomocou e-mailu alebo mena používateľa, použite kláves Ctrl + F.<br><br> Pri používateľov, ktorí využili pozvanie, bude používateľské meno zobrazené napravo od e-mailov.",
+	"invitations.inviter-username": "Používateľské meno pozvaného",
+	"invitations.invitee-email": "E-mail pozvaného",
+	"invitations.invitee-username": "Používateľské meno pozvaného (ak je registrovaný)",
+
+	"invitations.confirm-delete": "Ste si istý, že chcete odstrániť túto pozvánku?"
+}
