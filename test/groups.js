@@ -784,6 +784,35 @@ describe('Groups', () => {
 			await apiGroups.join({ uid: adminUid }, { uid: adminUid, slug: 'global-moderators' });
 			assert(await Groups.isMember(adminUid, 'Global Moderators'));
 		});
+
+		it('should let a user who can approve membership requests join a private group immediately', async () => {
+			meta.config.allowPrivateGroups = 1;
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			// global moderators can approve requests for non-system groups
+			await Groups.join('Global Moderators', uid);
+			const slug = await Groups.getGroupField('PrivateCanJoin', 'slug');
+			await apiGroups.join({ uid: uid }, { slug: slug, uid: uid });
+			const [isMember, isPending] = await Promise.all([
+				Groups.isMember(uid, 'PrivateCanJoin'),
+				Groups.isPending(uid, 'PrivateCanJoin'),
+			]);
+			assert.strictEqual(isMember, true);
+			assert.strictEqual(isPending, false);
+			await Groups.leave('Global Moderators', uid);
+		});
+
+		it('should place a user who cannot approve requests into the pending queue', async () => {
+			meta.config.allowPrivateGroups = 1;
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			const slug = await Groups.getGroupField('PrivateCanJoin', 'slug');
+			await apiGroups.join({ uid: uid }, { slug: slug, uid: uid });
+			const [isMember, isPending] = await Promise.all([
+				Groups.isMember(uid, 'PrivateCanJoin'),
+				Groups.isPending(uid, 'PrivateCanJoin'),
+			]);
+			assert.strictEqual(isMember, false);
+			assert.strictEqual(isPending, true);
+		});
 	});
 
 	describe('.leave()', () => {
