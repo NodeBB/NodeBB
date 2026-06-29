@@ -91,6 +91,7 @@ describe('Middlewares', () => {
 					ban: true,
 					mute: true,
 					'view:users:info': true,
+					'group:manage': true,
 					'admin:dashboard': true,
 					'admin:categories': true,
 					'admin:privileges': true,

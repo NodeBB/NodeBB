@@ -734,6 +734,7 @@ describe('Categories', () => {
 					signature: false,
 					'local:login': false,
 					'group:create': false,
+					'group:manage': false,
 					'view:users': false,
 					'view:tags': false,
 					'view:groups': false,
@@ -791,6 +792,7 @@ describe('Categories', () => {
 					'groups:signature': true,
 					'groups:local:login': true,
 					'groups:group:create': false,
+					'groups:group:manage': false,
 				});
 
 				done();
