@@ -7,6 +7,7 @@ const db = require('../database');
 const meta = require('../meta');
 const posts = require('../posts');
 const topics = require('../topics');
+const categories = require('../categories');
 const user = require('../user');
 const activitypub = require('../activitypub');
 const helpers = require('./helpers');
@@ -33,6 +34,7 @@ privsPosts.get = async function (pids, uid) {
 		'posts:edit': helpers.isAllowedTo('posts:edit', uid, uniqueCids),
 		'posts:history': helpers.isAllowedTo('posts:history', uid, uniqueCids),
 		'posts:view_deleted': helpers.isAllowedTo('posts:view_deleted', uid, uniqueCids),
+		categoryData: categories.getCategoriesFields(uniqueCids, ['disabled']),
 	});
 
 	const isModerator = _.zipObject(uniqueCids, results.isModerator);
@@ -42,6 +44,7 @@ privsPosts.get = async function (pids, uid) {
 	privData['posts:edit'] = _.zipObject(uniqueCids, results['posts:edit']);
 	privData['posts:history'] = _.zipObject(uniqueCids, results['posts:history']);
 	privData['posts:view_deleted'] = _.zipObject(uniqueCids, results['posts:view_deleted']);
+	privData.disabled = _.zipObject(uniqueCids, results.categoryData.map(c => c && c.disabled));
 
 	const privileges = cids.map((cid, i) => {
 		const isAdminOrMod = results.isAdmin || isModerator[cid];
@@ -57,6 +60,7 @@ privsPosts.get = async function (pids, uid) {
 			read: privData.read[cid] || results.isAdmin,
 			'posts:history': viewHistory,
 			'posts:view_deleted': viewDeletedPosts,
+			disabled: privData.disabled[cid],
 		};
 	});
 

@@ -29,7 +29,7 @@ postsAPI.get = async function (caller, data) {
 	]);
 	const userPrivilege = userPrivileges[0];
 
-	if (!post || !userPrivilege.read || !userPrivilege['topics:read']) {
+	if (!post || !userPrivilege.read || !userPrivilege['topics:read'] || userPrivilege.disabled) {
 		return null;
 	}
 
