@@ -1919,13 +1919,13 @@ describe('User', () => {
 				gdpr_consent: true,
 			});
 			const { jar } = await helpers.loginUser('admin', '123456');
-			const { body: { users } } = await request.get(`${nconf.get('url')}/api/admin/manage/registration`, { jar });
+			const { body: { users } } = await request.get(`${nconf.get('url')}/api/registration-queue`, { jar });
 			assert.equal(users[0].username, 'rejectme');
 			// not escaped in api
 			assert.equal(users[0].email, '<script>alert("ok")<script>reject@me.com');
 
 			// escaped in html
-			const { body } = await request.get(`${nconf.get('url')}/admin/manage/registration`, { jar });
+			const { body } = await request.get(`${nconf.get('url')}/registration-queue`, { jar });
 			assert(body.includes('&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com'));
 		});
 
@@ -2147,7 +2147,7 @@ describe('User', () => {
 				assert.strictEqual(data[0], '<script>alert("ok");</script>');
 
 				// escaped in html
-				const { body } = await request.get(`${nconf.get('url')}/admin/manage/registration`, { jar });
+				const { body } = await request.get(`${nconf.get('url')}/registration-queue`, { jar });
 				assert(body.includes('&lt;script&gt;alert(&quot;ok&quot;);&lt;/script&gt;'));
 				await User.deleteInvitationKey('<script>alert("ok");</script>');
 			});
