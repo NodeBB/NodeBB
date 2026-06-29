@@ -120,10 +120,12 @@ async function canModifyGroup(uid, groupName) {
 		isOwner: groups.ownership.isOwner(uid, groupName),
 		system: groups.getGroupField(groupName, 'system'),
 		hasAdminPrivilege: privileges.admin.can('admin:groups', uid),
+		canManageGroups: privileges.global.can('group:manage', uid),
 		isGlobalMod: user.isGlobalModerator(uid),
 	});
 
-	if (!(results.isOwner || results.hasAdminPrivilege || (results.isGlobalMod && !results.system))) {
+	const canManage = results.isGlobalMod || results.canManageGroups;
+	if (!(results.isOwner || results.hasAdminPrivilege || (canManage && !results.system))) {
 		throw new Error('[[error:no-privileges]]');
 	}
 }

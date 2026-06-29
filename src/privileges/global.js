@@ -34,6 +34,7 @@ const _privilegeMap = new Map([
 	['ban', { label: '[[admin/manage/privileges:ban]]', type: 'moderation' }],
 	['mute', { label: '[[admin/manage/privileges:mute]]', type: 'moderation' }],
 	['view:users:info', { label: '[[admin/manage/privileges:view-users-info]]', type: 'moderation' }],
+	['group:manage', { label: '[[admin/manage/privileges:manage-groups]]', type: 'moderation' }],
 ]);
 
 privsGlobal.init = async () => {

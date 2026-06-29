@@ -599,6 +599,40 @@ describe('Groups', () => {
 		});
 	});
 
+	describe('group:manage global privilege', () => {
+		const privileges = require('../src/privileges');
+		let managerUid;
+		before(async () => {
+			managerUid = await User.create({ username: 'groupmanager' });
+			await Groups.create({ name: 'managePrivGroup', description: 'foo' });
+		});
+
+		it('should not allow a regular user to update a group', async () => {
+			const slug = await Groups.getGroupField('managePrivGroup', 'slug');
+			await assert.rejects(
+				apiGroups.update({ uid: managerUid }, { slug: slug, description: 'nope' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
+		it('should allow a user with the group:manage privilege to update a non-system group', async () => {
+			await privileges.global.give(['groups:group:manage'], 'registered-users');
+			const slug = await Groups.getGroupField('managePrivGroup', 'slug');
+			await apiGroups.update({ uid: managerUid }, { slug: slug, description: 'managed' });
+			const groupObj = await Groups.get('managePrivGroup', {});
+			assert.strictEqual(groupObj.description, 'managed');
+		});
+
+		it('should still not allow updating a system group with only the group:manage privilege', async () => {
+			const slug = await Groups.getGroupField('administrators', 'slug');
+			await assert.rejects(
+				apiGroups.update({ uid: managerUid }, { slug: slug, description: 'nope' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+			await privileges.global.rescind(['groups:group:manage'], 'registered-users');
+		});
+	});
+
 	describe('.destroy()', () => {
 		before((done) => {
 			Groups.join('foobar?', 1, done);
