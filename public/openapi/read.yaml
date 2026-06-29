@@ -132,8 +132,6 @@ paths:
     $ref: 'read/admin/manage/users/custom-fields.yaml'
   /api/admin/manage/users/custom-reasons:
     $ref: 'read/admin/manage/users/custom-reasons.yaml'
-  /api/admin/manage/registration:
-    $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:
     $ref: 'read/admin/manage/admins-mods.yaml'
   /api/admin/manage/groups:

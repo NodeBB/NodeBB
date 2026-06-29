@@ -50,13 +50,13 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a>
 				{{{ end }}}
 				{{{ if user.privileges.superadmin }}}
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a>
 				<hr/>
 				<h6 class="text-xs ps-4">[[pages:moderator-tools]]</h6>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/flags">[[admin/menu:manage/flagged-content]] <i class="fa fa-external-link"></i></a>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/post-queue">[[admin/menu:manage/post-queue]] <i class="fa fa-external-link"></i></a>
+				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/registration-queue">[[admin/menu:manage/registration]] <i class="fa fa-external-link"></i></a>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/ip-blacklist">[[admin/menu:manage/ip-blacklist]] <i class="fa fa-external-link"></i></a>
 				{{{ end }}}
 			</div>
