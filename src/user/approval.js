@@ -71,7 +71,7 @@ module.exports = function (User) {
 			type: 'new-register',
 			bodyShort: tx.compile('notifications:new-register', tx.escape(username)),
 			nid: `new-register:${username}`,
-			path: '/admin/manage/registration',
+			path: '/registration-queue',
 			mergeId: 'new-register',
 		});
 		await notifications.pushGroup(notifObj, 'administrators');

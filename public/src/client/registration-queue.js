@@ -1,12 +1,12 @@
 'use strict';
 
 
-define('admin/manage/registration', ['modals', 'alerts'], function (modals, alerts) {
+define('forum/registration', ['modals', 'alerts'], function (modals, alerts) {
 	const Registration = {};
 
 	Registration.init = function () {
 		$('[data-action="reject-all"]').on('click', () => {
-			modals.confirm('[[admin/manage/registration:reject-all-confirm]]', (ok) => {
+			modals.confirm('[[registration-queue:reject-all-confirm]]', (ok) => {
 				if (ok) {
 					const rowEls = $('.users-list [data-username]');
 					rowEls.each((index, rowEl) => {
@@ -51,7 +51,7 @@ define('admin/manage/registration', ['modals', 'alerts'], function (modals, aler
 				parent.remove();
 			};
 			if (action === 'delete') {
-				modals.confirm('[[admin/manage/registration:invitations.confirm-delete]]', function (confirm) {
+				modals.confirm('[[registration-queue:invitations.confirm-delete]]', function (confirm) {
 					if (confirm) {
 						socket.emit(method, { email: email, invitedBy: invitedBy }, function (err) {
 							if (err) {
