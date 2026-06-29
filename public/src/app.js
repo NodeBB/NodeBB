@@ -118,6 +118,16 @@ if (document.readyState === 'loading') {
 			overrides.overrideTimeago();
 			hooks.fire('action:app.load');
 			messages.show();
+
+			if (config.showWelcomeModal && app.user.uid === 0) {
+				require(['bootbox'], function (bootbox) {
+					bootbox.alert({
+						title: 'Welcome to NodeBB!',
+						message: 'Your NodeBB installation was successful. To get started, please log in with your admin account.',
+					});
+				});
+			}
+
 			appLoaded = true;
 		});
 	};

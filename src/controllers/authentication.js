@@ -346,6 +346,13 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 
 		req.session.meta = {};
 
+		if (meta.config.showWelcomeModal === 1) {
+			const isPrivileged = await privileges.users.isAdministrator(uid);
+			if (isPrivileged) {
+				await meta.configs.set('showWelcomeModal', 0);
+			}
+		}
+
 		delete req.session.forceLogin;
 		// Associate IP used during login with user account
 		req.session.meta.ip = req.ip;

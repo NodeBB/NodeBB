@@ -39,6 +39,7 @@ apiController.loadConfig = async function (req) {
 		'brand:logo': validator.escape(String(meta.config['brand:logo'])),
 		titleLayout: (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;'),
 		showSiteTitle: meta.config.showSiteTitle === 1,
+		showWelcomeModal: meta.config.showWelcomeModal === 1,
 		maintenanceMode: meta.config.maintenanceMode === 1,
 		postQueue: meta.config.postQueue,
 		minimumTitleLength: meta.config.minimumTitleLength,

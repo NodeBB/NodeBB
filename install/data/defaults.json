@@ -1,5 +1,6 @@
 {
     "title": "NodeBB",
+    "showWelcomeModal": 1,
     "showSiteTitle": 1,
     "defaultLang": "en-GB",
     "loginDays": 14,
