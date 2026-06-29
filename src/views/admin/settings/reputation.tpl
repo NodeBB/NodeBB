@@ -39,6 +39,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:chat">[[admin/settings/reputation:min-rep-chat]]</label>
 					<input type="number" class="form-control" placeholder="0" data-field="min:rep:chat" id="min:rep:chat">
+					<p class="form-text">[[admin/settings/reputation:min-rep-chat-help]]</p>
 				</div>
 				<div class="mb-3">
 					<label class="form-label" for="min:rep:upvote">[[admin/settings/reputation:min-rep-upvote]]</label>

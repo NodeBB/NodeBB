@@ -395,7 +395,6 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		user.isPrivileged(toUid),
 		privileges.global.can('chat', uid),
 		privileges.global.can('chat:privileged', uid),
-		checkReputation(uid),
 	]);
 
 	if (!exists) {
@@ -404,6 +403,11 @@ Messaging.canMessageUser = async (uid, toUid) => {
 
 	if (!canChat && !(canChatWithPrivileged && isTargetPrivileged)) {
 		throw new Error('[[error:no-privileges]]');
+	}
+
+	// The reputation gate does not apply when messaging a privileged user (admin/mod)
+	if (!isTargetPrivileged) {
+		await checkReputation(uid);
 	}
 
 	const [settings, isAdmin, isModerator, isBlocked] = await Promise.all([
@@ -446,7 +450,6 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		Messaging.getRoomData(roomId),
 		Messaging.isUserInRoom(uid, roomId),
 		privileges.global.can(['chat', 'chat:privileged'], uid),
-		checkReputation(uid),
 		user.checkMuted(uid),
 	]);
 	if (!roomData) {
@@ -459,6 +462,11 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 
 	if (!canChat.includes(true)) {
 		throw new Error('[[error:no-privileges]]');
+	}
+
+	// The reputation gate is skipped when every other participant in the room is privileged (admin/mod)
+	if (!await allOtherUsersPrivileged(uid, roomId)) {
+		await checkReputation(uid);
 	}
 
 	await plugins.hooks.fire('static:messaging.canMessageRoom', {
@@ -478,6 +486,18 @@ async function checkReputation(uid) {
 	if (!isPrivileged && meta.config['min:rep:chat'] > reputation) {
 		throw new Error(`[[error:not-enough-reputation-to-chat, ${meta.config['min:rep:chat']}]]`);
 	}
+}
+
+// Returns true when there is at least one other participant and every other
+// participant in the room is privileged (admin/mod), so the reputation gate can be skipped.
+async function allOtherUsersPrivileged(uid, roomId) {
+	const uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+	const others = uids.filter(u => parseInt(u, 10) !== parseInt(uid, 10));
+	if (!others.length) {
+		return false;
+	}
+	const privileged = await Promise.all(others.map(u => user.isPrivileged(u)));
+	return privileged.every(Boolean);
 }
 
 Messaging.hasPrivateChat = async (uid, withUid) => {

@@ -18,6 +18,7 @@
 	"downvotes-per-day": "Downvotes per day (set to 0 for unlimited downvotes)",
 	"downvotes-per-user-per-day": "Downvotes per user per day (set to 0 for unlimited downvotes)",
 	"min-rep-chat": "Minimum reputation to send chat messages",
+	"min-rep-chat-help": "This restriction only blocks chatting with regular users. Chatting with administrators and global moderators is always allowed, even when below the threshold.",
 	"min-rep-post-links": "Minimum reputation to post links",
 	"min-rep-flag": "Minimum reputation to flag posts",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
