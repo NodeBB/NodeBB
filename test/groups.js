@@ -613,6 +613,9 @@ describe('Groups', () => {
 				apiGroups.update({ uid: managerUid }, { slug: slug, description: 'nope' }),
 				{ message: '[[error:no-privileges]]' }
 			);
+			// the manage UI (Admin tab) is gated by group.isOwner
+			const groupData = await Groups.get('managePrivGroup', { uid: managerUid });
+			assert.strictEqual(groupData.isOwner, false);
 		});
 
 		it('should allow a user with the group:manage privilege to update a non-system group', async () => {
@@ -621,6 +624,9 @@ describe('Groups', () => {
 			await apiGroups.update({ uid: managerUid }, { slug: slug, description: 'managed' });
 			const groupObj = await Groups.get('managePrivGroup', {});
 			assert.strictEqual(groupObj.description, 'managed');
+			// the privilege should also expose the manage UI for non-system groups
+			const asManager = await Groups.get('managePrivGroup', { uid: managerUid });
+			assert.strictEqual(asManager.isOwner, true);
 		});
 
 		it('should still not allow updating a system group with only the group:manage privilege', async () => {
@@ -629,6 +635,9 @@ describe('Groups', () => {
 				apiGroups.update({ uid: managerUid }, { slug: slug, description: 'nope' }),
 				{ message: '[[error:no-privileges]]' }
 			);
+			// and the manage UI must stay hidden for system groups
+			const sysGroup = await Groups.get('administrators', { uid: managerUid });
+			assert.strictEqual(sysGroup.isOwner, false);
 			await privileges.global.rescind(['groups:group:manage'], 'registered-users');
 		});
 	});

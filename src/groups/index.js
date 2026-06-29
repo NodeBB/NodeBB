@@ -154,7 +154,9 @@ Groups.get = async function (groupName, options) {
 		stop = (parseInt(options.userListCount, 10) || 4) - 1;
 	}
 
-	const [groupData, members, isMember, isPending, isInvited, isOwner, isAdmin, isGlobalMod] = await Promise.all([
+	const [
+		groupData, members, isMember, isPending, isInvited, isOwner, isAdmin, isGlobalMod, canManage,
+	] = await Promise.all([
 		Groups.getGroupData(groupName),
 		Groups.getOwnersAndMembers(groupName, options.uid, 0, stop),
 		Groups.isMember(options.uid, groupName),
@@ -163,13 +165,14 @@ Groups.get = async function (groupName, options) {
 		Groups.ownership.isOwner(options.uid, groupName),
 		privileges.admin.can('admin:groups', options.uid),
 		user.isGlobalModerator(options.uid),
+		privileges.global.can('group:manage', options.uid),
 	]);
 
 	if (!groupData) {
 		return null;
 	}
 
-	groupData.isOwner = isOwner || isAdmin || (isGlobalMod && !groupData.system);
+	groupData.isOwner = isOwner || isAdmin || ((isGlobalMod || canManage) && !groupData.system);
 	if (groupData.isOwner) {
 		([groupData.pending, groupData.invited] = await Promise.all([
 			Groups.getPending(groupName),
