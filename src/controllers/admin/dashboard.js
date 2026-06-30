@@ -5,6 +5,7 @@ const semver = require('semver');
 const winston = require('winston');
 const _ = require('lodash');
 
+const tx = require('../../translator');
 const versions = require('../../admin/versions');
 const db = require('../../database');
 const meta = require('../../meta');
@@ -21,7 +22,7 @@ const dashboardController = module.exports;
 dashboardController.get = async function (req, res) {
 	const [stats, notices, latestVersion, lastrestart, isAdmin, popularSearches] = await Promise.all([
 		getStats(),
-		getNotices(),
+		getNotices(req),
 		getLatestVersion(),
 		getLastRestart(),
 		user.isAdministrator(req.uid),
@@ -47,7 +48,7 @@ dashboardController.get = async function (req, res) {
 	});
 };
 
-async function getNotices() {
+async function getNotices(req) {
 	const notices = [
 		{
 			done: !meta.reloadRequired,
@@ -75,6 +76,25 @@ async function getNotices() {
 			done: false,
 			notDoneText: '[[admin/dashboard:running-in-development]]',
 		});
+	}
+
+	const configuredUrl = nconf.get('url');
+	if (configuredUrl === 'http://localhost:4567') {
+		notices.push({
+			done: false,
+			notDoneText: '[[admin/dashboard:localhost-warning]]',
+		});
+	}
+
+	if (configuredUrl && req) {
+		const requestHost = req.get('host');
+		const configuredHost = new URL(configuredUrl).host;
+		if (requestHost !== configuredHost) {
+			notices.push({
+				done: false,
+				notDoneText: tx.compile('admin/dashboard:url-mismatch-warning', requestHost, configuredHost),
+			});
+		}
 	}
 
 	return await plugins.hooks.fire('filter:admin.notices', notices);
