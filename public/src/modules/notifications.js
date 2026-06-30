@@ -61,13 +61,18 @@ define('notifications', [
 						const nid = notifEl.attr('data-nid');
 						markNotification(nid, true);
 					});
-					components.get('notifications').on('click', '.mark-all-read', () => {
-						Notifications.markAllRead();
-						triggerEl?.dropdown('toggle');
-					});
-					components.get('notifications').on('click', `[href="${config.relative_path}/notifications"]`, () => {
-						triggerEl?.dropdown('toggle');
-					});
+					const notifComponent = components.get('notifications');
+					notifComponent
+						.off('click', '.mark-all-read')
+						.on('click', '.mark-all-read', () => {
+							Notifications.markAllRead();
+							triggerEl?.dropdown('toggle');
+						});
+					notifComponent
+						.off('click', `[href="${config.relative_path}/notifications"]`)
+						.on('click', `[href="${config.relative_path}/notifications"]`, () => {
+							triggerEl?.dropdown('toggle');
+						});
 
 					Notifications.handleUnreadButton(notifList);
 
