@@ -27,5 +27,9 @@
     "ignoring.message": "您忽略了此版面和全部子版面的動態。",
     "watched-categories": "已關注的版面",
     "x-more-categories": "還有 %1 個版面",
-    "view-original": "View Original"
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

@@ -27,5 +27,9 @@
     "ignoring.message": "Bạn hiện đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "watched-categories": "Danh mục đã xem",
     "x-more-categories": "%1 danh mục khác",
-    "view-original": "View Original"
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

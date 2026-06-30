@@ -27,5 +27,9 @@
     "ignoring.message": "Ignorujesz teraz aktualizacje w tej kategorii i jej podkategoriach",
     "watched-categories": "Obserwowane kategorie",
     "x-more-categories": "%1 więcej kategorii",
-    "view-original": "View Original"
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

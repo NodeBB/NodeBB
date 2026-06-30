@@ -27,5 +27,9 @@
     "ignoring.message": "이 카테고리와 모든 하위 카테고리 업데이트를 무시합니다.",
     "watched-categories": "알림을 받는 중인 카테고리",
     "x-more-categories": "%1개의 추가 카테고리",
-    "view-original": "View Original"
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

@@ -27,5 +27,9 @@
     "ignoring.message": "ယခု ဤကဏ္ဍနှင့် ကဏ္ဍခွဲအားလုံးမှ အပ်ဒိတ်များကို လျစ်လျူရှုထားပါသည်။",
     "watched-categories": "စောင့်ကြည့်ထားသောကဏ္ဍများ",
     "x-more-categories": "နောက်ထပ် ကဏ္ဍ %1 ခု",
-    "view-original": "View Original"
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

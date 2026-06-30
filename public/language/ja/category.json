@@ -27,5 +27,9 @@
     "ignoring.message": "このカテゴリとサブカテゴリの更新を無視しています",
     "watched-categories": "ウォッチ中のカテゴリ",
     "x-more-categories": "あと%1件のカテゴリ",
-    "view-original": "View Original"
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }
