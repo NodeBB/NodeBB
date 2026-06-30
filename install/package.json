@@ -110,7 +110,7 @@
         "nodebb-plugin-markdown": "13.2.5",
         "nodebb-plugin-mentions": "5.0.0",
         "nodebb-plugin-spam-be-gone": "2.3.4",
-        "nodebb-plugin-web-push": "0.8.0",
+        "nodebb-plugin-web-push": "0.8.1",
         "nodebb-rewards-essentials": "1.0.3",
         "nodebb-theme-harmony": "3.0.12",
         "nodebb-theme-lavender": "8.0.6",
