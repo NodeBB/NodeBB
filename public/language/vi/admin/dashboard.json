@@ -35,6 +35,8 @@
 	"prerelease-warning": "Đây là một phiên bản NodeBB <strong>trước khi phát hành</strong>. Lỗi ngoài ý muốn có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "Không tìm thấy trình gửi email dự phòng!",
 	"running-in-development": "Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở ra các lỗ hổng tiềm ẩn; hãy liên hệ với quản trị hệ thống của bạn",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "Không tìm được phiên bản mới nhất hiện có của NodeBB",
 
 	"notices": "Thông báo",

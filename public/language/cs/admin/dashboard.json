@@ -35,6 +35,8 @@
 	"prerelease-warning": "Toto je <strong>předběžná</strong> verze NodeBB. Mohou se vyskytnout neočekávané chyby.<i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "Nebyla nalezena záložní e-mailová služba!",
 	"running-in-development": "Fórum běží v vývojovém režimu. Fórum může být vystaveno potenciálním bezpečnostním rizikům; obraťte se na správce systému.",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "Nepodařilo se vyhledat nejnovější dostupnou verzi NodeBB",
 
 	"notices": "Oznámení",

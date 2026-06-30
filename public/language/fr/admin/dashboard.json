@@ -35,6 +35,8 @@
 	"prerelease-warning": "Ceci est une <strong>pré-version</strong> de NodeBB. Des bugs inattendus peuvent survenir. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "E-mail de secours introuvable !",
 	"running-in-development": "Le forum est en mode développement et peut présenter certaines vulnérabilités. Veuillez contacter votre administrateur système.",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "Échec de la vérification de la dernière version disponible de NodeBB",
 
 	"notices": "Informations",

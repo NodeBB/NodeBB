@@ -35,6 +35,8 @@
 	"prerelease-warning": "이는 <strong>사전 릴리스</strong> 버전의 NodeBB입니다. 의도하지 않은 버그가 발생할 수 있습니다. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "폴백 이메일러를 찾을 수 없습니다!",
 	"running-in-development": "포럼이 개발 모드에서 실행 중입니다. 잠재적인 취약점에 노출될 수 있으므로 시스템 관리자에게 문의하세요.",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "NodeBB의 최신 사용 가능한 버전을 조회하는 데 실패했습니다.",
 
 	"notices": "공지",

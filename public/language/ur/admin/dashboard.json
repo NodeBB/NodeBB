@@ -35,6 +35,8 @@
 	"prerelease-warning": "یہ نوڈ بی بی کا <strong>پری ریلیز ورژن</strong> ہے۔ غیر متوقع خرابیاں ہو سکتی ہیں۔ <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "بیک اپ ای میلر نہیں ملا",
 	"running-in-development": "فورم ڈیولپمنٹ موڈ میں چل رہا ہے، اس لیے یہ کمزور ہو سکتا ہے۔ براہ کرم اپنے سسٹم ایڈمنسٹریٹر سے رابطہ کریں۔",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "نوڈ بی بی کے تازہ ترین دستیاب ورژن کی جانچ نہیں کی جا سکی",
 
 	"notices": "نوٹسز",

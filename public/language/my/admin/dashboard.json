@@ -35,6 +35,8 @@
 	"prerelease-warning": "ကြိုတင်ဖြန့်ချိမှု သတိပေးချက်",
 	"fallback-emailer-not-found": "အီးမေးလ်ပို့စနစ် မတွေ့ပါ",
 	"running-in-development": "Development မုဒ်ဖြင့် အလုပ်လုပ်နေသည်",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "နောက်ဆုံးဗားရှင်း ရှာဖွေမှု ကျရှုံးသည်",
 
 	"notices": "အသိပေးချက်များ",

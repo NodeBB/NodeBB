@@ -35,6 +35,8 @@
 	"prerelease-warning": "这是 NodeBB 的<strong>预发布</strong>版本。可能存在意外的错误。<i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "备用邮箱发送器没有找到！",
 	"running-in-development": "论坛正以开发模式运行。处于该模式的论坛可能存在潜在的漏洞，请联系您的论坛管理员。",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "查询NodeBB的最新版本失败",
 
 	"notices": "提醒",
