@@ -77,6 +77,6 @@
 <!-- plugins only add to thread_tools if user has permission to perform action -->
 {{{ each thread_tools }}}
 <li>
-	<a href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {./class}" role="menuitem"><i class="fa fa-fw text-secondary {./icon}"></i> {./title}</a>
+	<a href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2 {./class}" role="menuitem"><i class="fa fa-fw text-secondary {./icon}"></i> {{tx(./title)}}</a>
 </li>
 {{{ end }}}

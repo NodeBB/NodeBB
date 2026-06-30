@@ -67,7 +67,7 @@
 {{{ each posts.tools }}}
 <li {{{ if ./disabled }}}class="disabled" {{{ end }}}>
 	<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" {{{ if ./action}}}component="{./action}"{{{ end }}} role="menuitem" href="{{{ if ./href }}}{./href}{{{ else }}}#{{{ end }}}">
-		<span class="menu-icon"><i class="fa fa-fw text-secondary {./icon}"></i></span> {{./html}}
+		<span class="menu-icon"><i class="fa fa-fw text-secondary {./icon}"></i></span> {{tx(./html)}}
 	</a>
 </li>
 {{{ end }}}
