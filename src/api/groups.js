@@ -170,11 +170,23 @@ groupsAPI.join = async function (caller, data) {
 			targetUid: data.uid,
 		});
 	} else if (isSelf) {
-		await groups.requestMembership(groupName, caller.uid);
-		logGroupEvent(caller, 'group-request-membership', {
-			groupName: groupName,
-			targetUid: data.uid,
-		});
+		// users who can approve membership requests for this group (owners,
+		// global moderators) would only have to approve themselves, so let
+		// them join immediately instead of queueing a pointless request
+		const canApprove = await isOwner(caller, groupName, false);
+		if (canApprove) {
+			await groups.join(groupName, data.uid);
+			logGroupEvent(caller, 'group-join', {
+				groupName: groupName,
+				targetUid: data.uid,
+			});
+		} else {
+			await groups.requestMembership(groupName, caller.uid);
+			logGroupEvent(caller, 'group-request-membership', {
+				groupName: groupName,
+				targetUid: data.uid,
+			});
+		}
 	} else {
 		throw new Error('[[error:not-allowed]]');
 	}

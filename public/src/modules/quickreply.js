@@ -89,11 +89,14 @@ define('quickreply', [
 				...opts.body,
 			};
 
-			const replyLen = replyMsg.length;
-			if (replyLen < parseInt(config.minimumPostLength, 10)) {
-				return alerts.error('[[error:content-too-short, ' + config.minimumPostLength + ']]');
-			} else if (replyLen > parseInt(config.maximumPostLength, 10)) {
-				return alerts.error('[[error:content-too-long, ' + config.maximumPostLength + ']]');
+			// Administrators bypass post length limits (mirrors server-side check in src/topics/create.js)
+			if (!app.user.isAdmin) {
+				const replyLen = replyMsg.length;
+				if (replyLen < parseInt(config.minimumPostLength, 10)) {
+					return alerts.error('[[error:content-too-short, ' + config.minimumPostLength + ']]');
+				} else if (replyLen > parseInt(config.maximumPostLength, 10)) {
+					return alerts.error('[[error:content-too-long, ' + config.maximumPostLength + ']]');
+				}
 			}
 
 			ready = false;
