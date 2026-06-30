@@ -5,6 +5,8 @@ define('forum/registration', ['modals', 'alerts'], function (modals, alerts) {
 	const Registration = {};
 
 	Registration.init = function () {
+		$('[data-bs-toggle="tooltip"]').tooltip();
+
 		$('[data-action="reject-all"]').on('click', () => {
 			modals.confirm('[[registration-queue:reject-all-confirm]]', (ok) => {
 				if (ok) {
