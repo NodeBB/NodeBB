@@ -26,6 +26,9 @@ get:
                   selectCategoryLabel:
                     type: string
                     description: Label to use for the category selector
+                  firstRun:
+                    type: boolean
+                    description: True if no user has ever logged in to this instance
                   categories:
                     description: A collection of category data objects
                     type: array
