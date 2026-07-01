@@ -61,7 +61,7 @@
 
 	"server-filtering": "フィルタリング",
 	"count": "このNodeBBは現在<strong>%1</strong>台のサーバーを認識しています",
-	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.<br /><br /><strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
+	"server.filter-help": "NodeBB とのやり取りを制限したいサーバーを指定できます。代わりに、特定のサーバーとのやり取りのみを選択的に<em>許可</em>することも可能です。どちらの方法も利用できますが、同時には使用できません。<br /><br /><strong>注意:</strong> 現時点では、<em>Silence</em> と <em>Suspend</em> の重要度は同じ扱いです — どちらもやり取りを完全にブロックします。<em>Filter</em> はやり取りを許可しますが、コンテンツはレビュー用の投稿キューに入れられます。",
 	"server.filter-allow-list": "これを許可リストとして使用",
 	"server.filter-allow-list-help": "有効にすると、リストに登録されたドメインのみがフェデレーションできます。許可リストモードでは、重大度設定は無視されます。",
 

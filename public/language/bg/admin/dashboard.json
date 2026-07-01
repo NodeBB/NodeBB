@@ -35,8 +35,8 @@
 	"prerelease-warning": "Това е <strong>предварителна версия</strong> на NodeBB. Възможно е да има неочаквани неизправности. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "Не е намерен резервен изпращач на е-поща",
 	"running-in-development": "Форумът работи в режим за разработчици, така че може да бъде уязвим. Моля, свържете се със системния си администратор.",
-	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
-	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
+	"localhost-warning": "NodeBB е настроен с адрес на localhost. Това трябва да бъде променено с истинския домейн.",
+	"url-mismatch-warning": "Осъществен е достъп до администраторския панел от адрес, който е различен от настроения в config.json. (Заявен: %1, Настроен: %2)",
 	"latest-lookup-failed": "Не може да бъде извършена проверка за последната налична версия на NodeBB",
 
 	"notices": "Забележки",

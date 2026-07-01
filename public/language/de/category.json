@@ -28,8 +28,8 @@
     "watched-categories": "Beobachtete Kategorien",
     "x-more-categories": "%1 weitere Kategorien",
     "view-original": "Original anzeigen",
-    "first-run.welcome": "Welcome to your new NodeBB forum!",
-    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
-    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
-    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
+    "first-run.welcome": "Willkommen in deinem neuen NodeBB-Forum!",
+    "first-run.description": "Dein Forum ist startklar. Melde dich an, um deine Kategorien, Einstellungen und vieles mehr anzupassen.",
+    "first-run.admin-panel": "Du kannst dein Forum über das Admin-Panel verwalten",
+    "first-run.admin-panel-desc": "über das Zahnrad-Symbol in der Seitenleiste erreichbar"
 }
