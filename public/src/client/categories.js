@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/categories', ['categorySelector', 'bootbox', 'translator'], function (categorySelector, bootbox, tx) {
+define('forum/categories', ['categorySelector', 'modals', 'benchpress'], function (categorySelector, modals, benchpress) {
 	const categories = {};
 
 	categories.init = async function () {
@@ -15,10 +15,9 @@ define('forum/categories', ['categorySelector', 'bootbox', 'translator'], functi
 		});
 
 		if (ajaxify.data.firstRun) {
-			const html = await app.parseAndTranslate('modals/first-run');
-			const title = await tx.translate(tx.compile('category:first-run.welcome'));
-			bootbox.dialog({
-				title,
+			const html = await benchpress.render('modals/first-run');
+			modals.dialog({
+				title: '[[category:first-run.welcome]]',
 				message: html,
 				backdrop: true,
 				scrollback: false,
