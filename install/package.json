@@ -159,7 +159,7 @@
         "webpack": "5.108.3",
         "webpack-merge": "6.0.1",
         "winston": "3.19.0",
-        "workerpool": "10.0.2",
+        "workerpool": "10.0.3",
         "xml": "1.0.1",
         "yargs": "18.0.0",
         "zxcvbn": "4.4.2"
