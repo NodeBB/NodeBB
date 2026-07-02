@@ -10,7 +10,7 @@
 	"enabled": "Enable Federation",
 	"enabled-help": "If enabled, will allow this NodeBB will be able to communicate with all Activitypub-enabled clients on the wider fediverse.",
 	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
-	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. Disabled by default; enable if you need to guard against outbound request flooding, but may impact federation. A value of 512 is a reasonable starting point for active instances.",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Allow loopback processing",
 	"allowLoopback-help": "Useful for debugging purposes only. You should probably leave this disabled.",
 	"parentTraversalDepth": "Parent traversal depth",

@@ -236,16 +236,14 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 	}
 
 	// Check rate limit for this IP (0 = disabled)
-	let lockId;
-	let currentCount;
 	if (meta.config.activitypubPublicKeyFetchRateLimit > 0) {
-		lockId = `pubkey:${ip}`;
-		currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
-		const lockStatus = await db.incrObjectField('locks', lockId);
-		if (lockStatus > 1 || currentCount >= meta.config.activitypubPublicKeyFetchRateLimit) {
+		const lockId = `pubkey:${ip}`;
+		const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
+		if (currentCount >= meta.config.activitypubPublicKeyFetchRateLimit) {
 			winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
 			throw new Error('[[error:activitypub.rate-limited]]');
 		}
+		publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
 	}
 
 	try {
@@ -290,11 +288,6 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 			throw new Error('[[error:activitypub.invalid-id]]');
 		}
 		throw err;
-	} finally {
-		if (lockId) {
-			await db.deleteObjectField('locks', lockId);
-			publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
-		}
 	}
 };
 
