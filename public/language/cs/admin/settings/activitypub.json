@@ -10,7 +10,7 @@
 	"enabled": "Povolit federaci",
 	"enabled-help": "Pokud je povoleno, umožní to tomuto NodeBB komunikovat se všemi klienty podporujícími ActivityPub v širším fediverse.",
 	"publicKeyFetchRateLimit": "Limit rychlosti stahování veřejných klíčů",
-	"publicKeyFetchRateLimit-help": "Maximální počet požadavků na načtení veřejného klíče povolených za minutu na jednu IP adresu. (Výchozí hodnota: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Povolit zpracování smyčky",
 	"allowLoopback-help": "Užitečné pouze pro účely ladění. Pravděpodobně byste měli ponechat tuto možnost vypnutou.",
 	"parentTraversalDepth": "Hloubka prohledávání stromové struktury",

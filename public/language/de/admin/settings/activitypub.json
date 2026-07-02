@@ -10,7 +10,7 @@
 	"enabled": "Föderation aktivieren",
 	"enabled-help": "Wenn diese Option aktiviert ist, kann dieses NodeBB mit allen Activitypub-fähigen Clients im gesamten Fediverse kommunizieren.",
 	"publicKeyFetchRateLimit": "Ratenbegrenzung für das Abrufen öffentlicher Schlüssel",
-	"publicKeyFetchRateLimit-help": "Maximale Anzahl an Anfragen zum Abrufen öffentlicher Schlüssel pro Minute und IP-Adresse. (Standard: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Loopback-Verarbeitung erlauben",
 	"allowLoopback-help": "Nur für Debugging-Zwecke nützlich. Sollte am besten deaktiviert bleiben.",
 	"parentTraversalDepth": "Tiefe der Eltern-Traversierung",

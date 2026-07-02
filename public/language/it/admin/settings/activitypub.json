@@ -10,7 +10,7 @@
 	"enabled": "Abilita federazione",
 	"enabled-help": "Se abilitato, consentirà a questo NodeBB di comunicare con tutti i client abilitati ad Activitypub nel più ampio fediverso.",
 	"publicKeyFetchRateLimit": "Limite di frequenza per il recupero delle chiavi pubbliche",
-	"publicKeyFetchRateLimit-help": "Numero massimo di richieste di recupero della chiave pubblica consentite al minuto per IP. (Predefinito: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Consenti l'elaborazione del loopback",
 	"allowLoopback-help": "Utile solo a scopo di debug. Probabilmente è meglio lasciarlo disattivato.",
 	"parentTraversalDepth": "Profondità della traversata parentale",

@@ -10,7 +10,7 @@
 	"enabled": "Aktiver føderering",
 	"enabled-help": "Dersom aktivert, vil dette gjere at NodeBB kan kommunisere med alle ActivityPub-aktiverte klientar i det større fødiverset.",
 	"publicKeyFetchRateLimit": "Grense for henting av offentlege nøklar",
-	"publicKeyFetchRateLimit-help": "Maksimalt tal på førespurnader om henting av offentlege nøklar per IP-adresse per minutt. (Standard: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Tillat loopback-prosessering",
 	"allowLoopback-help": "Nyttig berre for feilsøking. Du bør sannsynlegvis la dette vere deaktivert.",
 	"parentTraversalDepth": "Nivå for gjennomgang av svartråd",

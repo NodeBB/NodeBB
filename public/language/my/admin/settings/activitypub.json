@@ -10,7 +10,7 @@
 	"enabled": "ဖွင့်ထားသည်",
 	"enabled-help": "ဖွင့်ထားမှု အကူအညီ",
 	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
-	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Loopback ခွင့်ပြုရန်",
 	"allowLoopback-help": "Loopback ခွင့်ပြုမှု အကူအညီ",
 	"parentTraversalDepth": "Parent traversal depth",

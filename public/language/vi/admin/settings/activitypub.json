@@ -10,7 +10,7 @@
 	"enabled": "Bật Liên Đoàn",
 	"enabled-help": "Nếu được bật, sẽ cho phép NodeBB này có thể giao tiếp với tất cả các máy khách đã bật  Activitypub trên toàn bộ liên đoàn rộng hơn.",
 	"publicKeyFetchRateLimit": "Giới Hạn Tốc Độ Truy Xuất Khóa Công Khai",
-	"publicKeyFetchRateLimit-help": "Số lượng tối đa các yêu cầu truy xuất khóa công khai được phép mỗi phút cho mỗi địa chỉ IP. (Mặc định: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Cho phép xử lý vòng lặp",
 	"allowLoopback-help": "Chỉ hữu ích cho mục đích gỡ lỗi. Có lẽ bạn nên tắt tính năng này.",
 	"parentTraversalDepth": "Độ sâu duyệt cha",

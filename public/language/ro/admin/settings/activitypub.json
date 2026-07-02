@@ -10,7 +10,7 @@
 	"enabled": "Activează Federația",
 	"enabled-help": "Dacă este activat, acest lucru va permite ca NodeBB să poată comunica cu toți clienții compatibili cu Activitypub de pe fediverse.",
 	"publicKeyFetchRateLimit": "Public Key Fetch Rate Limit",
-	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Permite procesarea loopback",
 	"allowLoopback-help": "Util doar pentru depanare. Probabil ar trebui să lași această opțiune dezactivată.",
 	"parentTraversalDepth": "Parent traversal depth",

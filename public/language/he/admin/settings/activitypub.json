@@ -10,7 +10,7 @@
 	"enabled": "הפעלת פדרציה",
 	"enabled-help": "אם זה מופעל, NodeBB זה יוכל גם לתקשר עם כל הלקוחות התומכים ב-Activitypub במרחב הפדראלי הרחב.",
 	"publicKeyFetchRateLimit": "מגבלת קצב (Rate Limit) שליפת מפתח ציבורי",
-	"publicKeyFetchRateLimit-help": "המספר המרבי של בקשות אחזור מפתח ציבורי המותר לדקה לכל IP. (ברירת מחדל: 180)",
+	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "אפשר עיבוד loopback",
 	"allowLoopback-help": "שימושי למטרות ניפוי באגים בלבד. אתם כנראה תרצו להשאיר את זה מושבת.",
 	"parentTraversalDepth": "Parent traversal עומק",
