@@ -562,6 +562,16 @@ $(document).ready(function () {
 		}
 	});
 
+	window.addEventListener('pageshow', (ev) => {
+		// If a full-page navigation was triggered mid-ajaxify (e.g. a redirect to an
+		// external or login URL), the loading state was still running when this page
+		// was put into the back/forward cache. On restore, reload the current page so
+		// the loading indicator clears and the socket reconnects, instead of hanging.
+		if (ev.persisted && $('#content').hasClass('ajaxifying')) {
+			ajaxify.refresh();
+		}
+	});
+
 	function ajaxifyAnchors() {
 		const location = document.location || window.location;
 		const rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
