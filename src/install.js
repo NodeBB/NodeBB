@@ -47,11 +47,16 @@ questions.optional = [
 ];
 
 function checkSetupFlagEnv() {
-	let setupVal = install.values;
+	// Caller may pass an initial config object (e.g. `./nodebb setup '{...}'` or install.values from tests).
+	// Treat an empty/missing object as "no automated values yet".
+	let setupVal = (install.values && typeof install.values === 'object' && Object.keys(install.values).length) ?
+		{ ...install.values } :
+		undefined;
+	const hadExplicitInstallValues = !!setupVal;
 
+	// CONFIG / NODEBB_CONFIG are path selectors only. The CLI sets process.env.CONFIG whenever
+	// config.json already exists (see src/cli/index.js), so they must NOT force automated setup.
 	const envConfMap = {
-		CONFIG: 'config',
-		NODEBB_CONFIG: 'config',
 		NODEBB_URL: 'url',
 		NODEBB_PORT: 'port',
 		NODEBB_ADMIN_USERNAME: 'admin:username',
@@ -66,39 +71,61 @@ function checkSetupFlagEnv() {
 		NODEBB_DB_SSL: 'ssl',
 	};
 
-	// Set setup values from env vars (if set)
+	// Set setup values from NODEBB_* env vars (if set)
+	const setupEnvKeys = Object.keys(envConfMap);
 	const envKeys = Object.keys(process.env);
-	if (Object.keys(envConfMap).some(key => envKeys.includes(key))) {
+	const hasSetupEnv = setupEnvKeys.some(key => envKeys.includes(key));
+	if (hasSetupEnv) {
 		winston.info('[install/checkSetupFlagEnv] checking env vars for setup info...');
 		setupVal = setupVal || {};
 
 		Object.entries(process.env).forEach(([evName, evValue]) => { // get setup values from env
-			if (evName.startsWith('NODEBB_DB_')) {
-				setupVal[`${process.env.NODEBB_DB}:${envConfMap[evName]}`] = evValue;
-			} else if (evName.startsWith('NODEBB_')) {
+			if (evName.startsWith('NODEBB_DB_') && envConfMap[evName]) {
+				const dbType = process.env.NODEBB_DB;
+				if (dbType) {
+					setupVal[`${dbType}:${envConfMap[evName]}`] = evValue;
+				}
+			} else if (envConfMap[evName]) {
 				setupVal[envConfMap[evName]] = evValue;
 			}
 		});
 
-		setupVal['admin:password:confirm'] = setupVal['admin:password'];
+		if (setupVal['admin:password'] && !setupVal['admin:password:confirm']) {
+			setupVal['admin:password:confirm'] = setupVal['admin:password'];
+		}
 	}
 
 	// try to get setup values from json, if successful this overwrites all values set by env
 	// TODO: better behaviour would be to support overrides per value, i.e. in order of priority (generic pattern):
 	//       flag, env, config file, default
+	let hadSetupFlag = false;
 	try {
 		if (nconf.get('setup')) {
 			const setupJSON = JSON.parse(nconf.get('setup'));
 			setupVal = { ...setupVal, ...setupJSON };
+			hadSetupFlag = true;
 		}
 	} catch (err) {
 		winston.error('[install/checkSetupFlagEnv] invalid json in nconf.get(\'setup\'), ignoring setup values from json');
 	}
 
+	function hasCompleteAdminCredentials(values) {
+		return !!(values &&
+			values['admin:username'] &&
+			values['admin:password'] &&
+			values['admin:password:confirm'] &&
+			values['admin:email']);
+	}
+
+	// Automated setup is only required when the operator explicitly requested it
+	// (CLI JSON arg, --setup flag, or complete NODEBB_ADMIN_* credentials).
+	// Partial env (e.g. NODEBB_URL only) or CONFIG set by the CLI must not abort interactive setup.
+	const explicitAutomated = hadSetupFlag || hadExplicitInstallValues || hasCompleteAdminCredentials(setupVal);
+
 	if (setupVal && typeof setupVal === 'object') {
-		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
+		if (hasCompleteAdminCredentials(setupVal)) {
 			install.values = setupVal;
-		} else {
+		} else if (explicitAutomated) {
 			winston.error('[install/checkSetupFlagEnv] required values are missing for automated setup:');
 			if (!setupVal['admin:username']) {
 				winston.error('  admin:username');
@@ -113,7 +140,11 @@ function checkSetupFlagEnv() {
 				winston.error('  admin:email');
 			}
 
-			process.exit();
+			process.exit(1);
+		} else {
+			// Partial values only — fall back to interactive prompts (config/env still used as defaults).
+			winston.info('[install/checkSetupFlagEnv] incomplete automated setup values; falling back to interactive setup');
+			install.values = undefined;
 		}
 	} else if (nconf.get('database')) {
 		install.values = install.values || {};
