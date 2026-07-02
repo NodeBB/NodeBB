@@ -26,10 +26,20 @@ describe('Post Queue', () => {
 	});
 
 	describe('addToQueue deduplication by pid', () => {
-		afterEach(async () => {
-			const queue = await posts.getQueuedPosts();
+		// Full-suite isolation: other test files may leave items in post:queue.
+		async function clearQueue() {
+			const queue = await posts.getQueuedPosts({}, { metadata: false });
 			await Promise.all(queue.map(q => posts.removeFromQueue(q.id)));
+		}
+
+		beforeEach(async () => {
+			await clearQueue();
 		});
+
+		afterEach(async () => {
+			await clearQueue();
+		});
+
 		it('should replace existing queue item when same pid is queued again', async () => {
 			const pid = 'https://example.org/post/1';
 

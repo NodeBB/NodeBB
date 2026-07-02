@@ -213,7 +213,9 @@ module.exports = function (Posts) {
 	Posts.addToQueue = async function (data) {
 		const type = getType(data);
 		const now = Date.now();
-		const id = `${type}-${now}`;
+		// Include a UUID so two items enqueued in the same millisecond get distinct ids
+		// (sorted-set members are unique; colliding ids would silently overwrite).
+		const id = `${type}-${now}-${utils.generateUUID()}`;
 		await canPost(type, data);
 
 		if (data.pid) {
@@ -386,10 +388,14 @@ module.exports = function (Posts) {
 		}
 		const keys = ids.map(id => `post:queue:${id}`);
 		const items = await db.getObjects(keys);
+		const pidStr = String(pid);
 		const toRemove = [];
 		items.forEach((item, idx) => {
-			const data = JSON.parse(item.data);
-			if (data.pid === pid) {
+			if (!item || item.data == null) {
+				return;
+			}
+			const data = typeof item.data === 'string' ? JSON.parse(item.data) : item.data;
+			if (data && data.pid != null && String(data.pid) === pidStr) {
 				toRemove.push(ids[idx]);
 			}
 		});
