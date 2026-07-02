@@ -140,7 +140,7 @@
         "sbd": "^1.0.19",
         "semver": "7.8.5",
         "serve-favicon": "2.5.1",
-        "sharp": "0.35.2",
+        "sharp": "0.35.3",
         "sitemap": "9.0.1",
         "socket.io": "4.8.3",
         "socket.io-client": "4.8.3",
