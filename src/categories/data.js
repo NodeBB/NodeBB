@@ -15,6 +15,7 @@ const worldCategory = {
 	cid: -1,
 	name: '[[category:uncategorized]]',
 	description: '[[category:uncategorized.description]]',
+	descriptionParsed: '[[category:uncategorized.description]]',
 	icon: 'fa-globe',
 	imageClass: 'cover',
 	bgColor: '#eee',
@@ -26,7 +27,6 @@ const worldCategory = {
 	link: '',
 	class: '',
 };
-worldCategory.descriptionParsed = worldCategory.description;
 
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = async function (cids, fields) {
@@ -151,7 +151,7 @@ async function modifyCategories(categories, fields) {
 			category.name = category.nickname || category.name;
 		}
 
-		if (hasField('description')) {
+		if (hasField('description') && category.cid !== -1) {
 			category.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', category.description);
 		}
 	}));
