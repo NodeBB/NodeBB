@@ -207,7 +207,7 @@
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
     "activitypubParentTraversalDepth": 50,
-    "activitypubPublicKeyFetchRateLimit": 180,
+    "activitypubPublicKeyFetchRateLimit": 0,
     "activitypubProbe": 1,
     "activitypubProbeTimeout": 2000,
     "activitypubContentPruneDays": 30,
