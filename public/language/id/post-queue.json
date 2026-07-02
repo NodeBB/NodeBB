@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Post Queue",
 	"no-queued-posts": "There are no posts in the post queue.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Title",
 	"content": "Content",
+	"edit": "Perbarui",
 	"posted": "Posted",
 	"reply-to": "Reply to \"%1\"",
 	"content-editable": "Click on content to edit",

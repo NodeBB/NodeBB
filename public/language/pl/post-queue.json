@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Kolejka postów",
 	"no-queued-posts": "Nie ma postów w kolejce.",
@@ -14,6 +13,7 @@
 	"tags": "Tagi",
 	"title": "Tytuł",
 	"content": "Zawartość",
+	"edit": "Edytuj",
 	"posted": "Napisano",
 	"reply-to": "Odpowiedz \"%1\"",
 	"content-editable": "Kliknij na treść, by edytować",

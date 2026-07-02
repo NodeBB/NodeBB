@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Berichtenwachtrij",
 	"no-queued-posts": "There are no posts in the post queue.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Titel",
 	"content": "Inhoud",
+	"edit": "Bewerken",
 	"posted": "Geplaatst",
 	"reply-to": "Antwoord naar \"%1\"",
 	"content-editable": "Klik op inhoud om aan te passen",

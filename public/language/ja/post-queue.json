@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "投稿キュー",
 	"no-queued-posts": "投稿キューに投稿はありません。",
@@ -14,6 +13,7 @@
 	"tags": "タグ",
 	"title": "タイトル",
 	"content": "内容",
+	"edit": "編集",
 	"posted": "投稿済み",
 	"reply-to": "「%1」に返信",
 	"content-editable": "内容をクリックして編集",

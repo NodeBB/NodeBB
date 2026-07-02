@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Innleggskø",
 	"no-queued-posts": "Det er ingen innlegg i innleggskøen.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Tittel",
 	"content": "Innhold",
+	"edit": "Rediger",
 	"posted": "Postet",
 	"reply-to": "Svar til \"%1\"",
 	"content-editable": "Klikk på innhold for å redigere",

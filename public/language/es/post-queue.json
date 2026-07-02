@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Cola de Mensajes",
 	"no-queued-posts": "There are no posts in the post queue.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Título",
 	"content": "Contenido",
+	"edit": "Editar",
 	"posted": "Publicado",
 	"reply-to": "Responder a %1",
 	"content-editable": "Click en el contenido para editar",

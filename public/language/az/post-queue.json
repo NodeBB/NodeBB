@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Yazı növbəsi",
 	"no-queued-posts": "Yazı növbəsində heç bir yazı yoxdur.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Başlıq",
 	"content": "Məzmun",
+	"edit": "Redaktə et",
 	"posted": "Dərc olunub",
 	"reply-to": "\"% 1\" cavab yazın",
 	"content-editable": "Redaktə etmək üçün məzmuna klikləyin",

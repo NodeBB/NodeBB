@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Coda post",
 	"no-queued-posts": "Non ci sono post nella coda dei post.",
@@ -14,6 +13,7 @@
 	"tags": "Tag",
 	"title": "Titolo",
 	"content": "Contenuto",
+	"edit": "Modifica",
 	"posted": "Postato",
 	"reply-to": "Rispondi a \"%1\"",
 	"content-editable": "Clicca sul contenuto da modificare",

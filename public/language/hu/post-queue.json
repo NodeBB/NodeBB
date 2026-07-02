@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Hozzászólási várósor",
 	"no-queued-posts": "Nincsenek hozzászólások a bejegyzési sorban.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Cím",
 	"content": "Tartalom",
+	"edit": "Szerkesztés",
 	"posted": "Bejegyzés létrehozva",
 	"reply-to": "Válasz neki \"%1\"",
 	"content-editable": "Kattints a tartalomra, hogy szerkeszthesd",

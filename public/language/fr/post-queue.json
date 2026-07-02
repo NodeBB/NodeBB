@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "File d’attente des messages",
 	"no-queued-posts": "Il n'y a pas de messages dans la file d'attente des messages.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Titre",
 	"content": "Contenu",
+	"edit": "Éditer",
 	"posted": "Posté",
 	"reply-to": "Répondre à \"%1\"",
 	"content-editable": "Cliquer sur le contenu pour modifier",

@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Innleggskø",
 	"no-queued-posts": "Ingen innlegg i kø.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Tittel",
 	"content": "Innhald",
+	"edit": "Rediger",
 	"posted": "Posta",
 	"reply-to": "Svar til",
 	"content-editable": "Innhald kan redigerast",

@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "게시물 대기열",
 	"no-queued-posts": "게시물 대기열에 게시물이 없습니다.",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "제목",
 	"content": "내용",
+	"edit": "편집",
 	"posted": "작성됨",
 	"reply-to": "\"%1\"에 대한 답글",
 	"content-editable": "편집하려면 내용을 클릭하세요",

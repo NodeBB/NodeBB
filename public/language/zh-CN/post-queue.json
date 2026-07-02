@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "发布队列",
 	"no-queued-posts": "发帖队列中没有帖子。",
@@ -14,6 +13,7 @@
 	"tags": "标签",
 	"title": "标题",
 	"content": "内容",
+	"edit": "编辑",
 	"posted": "发布",
 	"reply-to": "回复\"%1\"",
 	"content-editable": "点击内容开始编辑",

@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Գրառումների հերթ",
 	"no-queued-posts": "Գրառումների հերթում գրառումներ չկան:",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Կոչում",
 	"content": "Կոնտենտ",
+	"edit": "Խմբագրել",
 	"posted": "Հրապարակված",
 	"reply-to": "Reply to \"%1\"",
 	"content-editable": "Click on content to edit",

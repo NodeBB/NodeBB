@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Beitragswarteschlange",
 	"no-queued-posts": "Es sind keine Beiträge in der Beitragswarteschlange",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Titel",
 	"content": "Inhalt",
+	"edit": "Ändern",
 	"posted": "Gepostet",
 	"reply-to": "Auf \"%1\" antworten",
 	"content-editable": "Inhalt zum Bearbeiten anklicken",

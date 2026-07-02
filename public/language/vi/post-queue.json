@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Xếp Hàng Bài Đăng",
 	"no-queued-posts": "Không có bài trong xếp hàng đăng bài",
@@ -14,6 +13,7 @@
 	"tags": "Thẻ",
 	"title": "Tiêu đề",
 	"content": "Nội dung",
+	"edit": "Sửa",
 	"posted": "Đã đăng",
 	"reply-to": "Trả lời đến \"%1\"",
 	"content-editable": "Nhấp vào nội dung để chỉnh sửa",

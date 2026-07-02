@@ -1,4 +1,3 @@
-
 {
 	"post-queue": "Julkaisujono",
 	"no-queued-posts": "Ei uusia viestejä julkaisujonossa",
@@ -14,6 +13,7 @@
 	"tags": "Tags",
 	"title": "Title",
 	"content": "Content",
+	"edit": "Muokkaa",
 	"posted": "Posted",
 	"reply-to": "Reply to \"%1\"",
 	"content-editable": "Click on content to edit",
