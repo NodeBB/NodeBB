@@ -230,15 +230,15 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		const displayName = groupObj.displayName ? escape(groupObj.displayName) : '';
 
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>`;
+			return `<button class="btn btn-danger text-nowrap ${btnClass}" data-action="leave" data-group="${displayName}" ${(groupObj.disableLeave ? ' disabled' : '')}><i class="fa fa-times"></i> ${_tx.call(this, 'groups:membership.leave-group')}</button>`;
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-warning text-nowrap disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
+			return `<button class="btn btn-warning text-nowrap disabled ${btnClass}"><i class="fa fa-clock-o"></i> ${_tx.call(this, 'groups:membership.invitation-pending')}</button>`;
 		} else if (groupObj.isInvited) {
-			return `<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="${displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${escape(groupObj.name)}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
+			return `<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="${displayName}">${_tx.call(this, 'groups:membership.reject')}</button><button class="btn btn-success" data-action="acceptInvite" data-group="${escape(groupObj.name)}"><i class="fa fa-plus"></i> ${_tx.call(this, 'groups:membership.accept-invitation')}</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-success text-nowrap ${btnClass}" data-action="join" data-group="${displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
+			return `<button class="btn btn-success text-nowrap ${btnClass}" data-action="join" data-group="${displayName}"><i class="fa fa-plus"></i> ${_tx.call(this, 'groups:membership.join-group')}</button>`;
 		}
 		return '';
 	}
