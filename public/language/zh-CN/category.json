@@ -27,9 +27,9 @@
     "ignoring.message": "您正在忽略此版块及其所有子版块的更新",
     "watched-categories": "已关注的版块",
     "x-more-categories": "还有 %1 个版块",
-    "view-original": "View Original",
-    "first-run.welcome": "Welcome to your new NodeBB forum!",
-    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
-    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
-    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
+    "view-original": "查看原文",
+    "first-run.welcome": "欢迎来到您全新的 NodeBB 论坛！",
+    "first-run.description": "您的论坛已准备就绪。请登录以自定义版块、设置等内容。",
+    "first-run.admin-panel": "您可以通过管理员面板来管理您的论坛",
+    "first-run.admin-panel-desc": "可通过侧边栏中的齿轮图标访问"
 }

@@ -27,9 +27,9 @@
     "ignoring.message": "Bạn hiện đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "watched-categories": "Danh mục đã xem",
     "x-more-categories": "%1 danh mục khác",
-    "view-original": "View Original",
-    "first-run.welcome": "Welcome to your new NodeBB forum!",
-    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
-    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
-    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
+    "view-original": "Xem Bản Gốc",
+    "first-run.welcome": "Chào mừng bạn đến với diễn đàn NodeBB mới của bạn.",
+    "first-run.description": "Diễn đàn của bạn đã sẵn sàng. Hãy đăng nhập để tùy chỉnh danh mục, cài đặt và nhiều hơn nữa.",
+    "first-run.admin-panel": "Bạn có thể quản lý diễn đàn của mình thông qua Bảng quản trị.",
+    "first-run.admin-panel-desc": "có thể truy cập thông qua biểu tượng bánh răng ở thanh bên"
 }
