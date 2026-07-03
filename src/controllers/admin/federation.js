@@ -122,7 +122,7 @@ federationController.errors = async function (req, res) {
 		if (!errorObj[idx]) {
 			return null;
 		}
-		let { type, body, stack } = errorObj[idx];
+		let { type, body, stack, recipient } = errorObj[idx];
 		let activityType;
 		let hostname = 'Invalid hostname';
 		const timestampISO = new Date(timestamp).toISOString();
@@ -148,6 +148,7 @@ federationController.errors = async function (req, res) {
 			type: type || '',
 			activityType: activityType || '',
 			body: body || '',
+			recipient: recipient || '',
 			stack,
 			hostname,
 			timestamp,
