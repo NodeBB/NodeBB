@@ -48,7 +48,7 @@ unreadController.get = async function (req, res) {
 		data.title = '[[pages:unread]]';
 		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
 	}
-
+	data.topic_count = data.topicCount;
 	data.pageCount = Math.max(1, Math.ceil(data.topicCount / userSettings.topicsPerPage));
 	data.pagination = pagination.create(page, data.pageCount, req.query);
 	helpers.addLinkTags({

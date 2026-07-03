@@ -91,7 +91,7 @@ recentController.getData = async function (req, url, sort, selectedTerm = 'allti
 	data.selectedFilter = data.filters.find(filter => filter && filter.selected);
 	data.terms = helpers.buildTerms(baseUrl, term, query);
 	data.selectedTerm = data.terms.find(term => term && term.selected);
-
+	data.topic_count = data.topicCount;
 	const pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 	data.pagination = pagination.create(page, pageCount, req.query);
 	helpers.addLinkTags({
