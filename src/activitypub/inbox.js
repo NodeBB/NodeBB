@@ -365,14 +365,14 @@ inbox.like = async (req) => {
 			// Proactively pull in the note
 			const asserted = await activitypub.notes.assert(0, object.id, { skipChecks: 1 });
 			if (!asserted) {
-				throw new Error('[[error:invalid-pid]]');
+				return;
 			}
 			exists = true;
 		}
 		id = object.id;
 	}
 	if (!id || !exists) {
-		throw new Error('[[error:invalid-pid]]');
+		return;
 	}
 
 	const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
