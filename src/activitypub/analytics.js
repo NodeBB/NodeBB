@@ -37,6 +37,7 @@ Analytics.sendError = async ({ payload, uri, error }) => {
 			type: 'out',
 			body: JSON.stringify(payload),
 			stack: error.message,
+			recipient: uri,
 		}),
 		analytics.increment(['ap.outErr', `ap.outErr:byType:${payload.type}`, `ap.outErr:byHost:${hostname}`]),
 	]);

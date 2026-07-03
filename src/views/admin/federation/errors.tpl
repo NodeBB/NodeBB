@@ -36,6 +36,10 @@
 				<code>{./id}</code>
 			</summary>
 
+			{{{ if ./recipient }}}
+			<i class="fa fa-arrow-right"></i> <code>{./recipient}</code>
+			{{{ end }}}
+
 			{{{ if ./stack }}}
 			<pre class="m-2 border p-2"><code>{./stack}</code></pre>
 			{{{ end }}}
