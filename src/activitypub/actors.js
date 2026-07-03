@@ -660,9 +660,10 @@ Actors.prune = async () => {
 					await user.deleteAccount(uid);
 					deletionCount += 1;
 				} catch (err) {
-					winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
 					if (err.message === '[[error:no-user]]') {
 						missing.add(uid);
+					} else {
+						winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
 					}
 				}
 			} else {
