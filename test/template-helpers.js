@@ -5,6 +5,7 @@ const assert = require('assert');
 
 const db = require('./mocks/databasemock');
 const helpers = require('../src/helpers');
+const languages = require('../src/languages');
 
 describe('helpers', () => {
 	it('should return false if item doesn\'t exist', (done) => {
@@ -177,26 +178,30 @@ describe('helpers', () => {
 	});
 
 	it('should show leave button if isMember and group is not administrators', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isMember: true });
-		assert.equal(btn, '<button class="btn btn-danger text-nowrap " data-action="leave" data-group="some group" ><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', isMember: true });
+		assert.equal(btn, '<button class="btn btn-danger text-nowrap " data-action="leave" data-group="some group" ><i class="fa fa-times"></i> Leave Group</button>');
 		done();
 	});
 
 	it('should show pending button if isPending and group is not administrators', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isPending: true });
-		assert.equal(btn, '<button class="btn btn-warning text-nowrap disabled "><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', isPending: true });
+		assert.equal(btn, '<button class="btn btn-warning text-nowrap disabled "><i class="fa fa-clock-o"></i> Invitation Pending</button>');
 		done();
 	});
 
 	it('should show reject invite button if isInvited', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isInvited: true });
-		assert.equal(btn, '<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="some group">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', isInvited: true });
+		assert.equal(btn, '<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="some group">Reject</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> Accept Invitation</button>');
 		done();
 	});
 
 	it('should show join button if join requests are not disabled and group is not administrators', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', disableJoinRequests: false });
-		assert.equal(btn, '<button class="btn btn-success text-nowrap " data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', disableJoinRequests: false });
+		assert.equal(btn, '<button class="btn btn-success text-nowrap " data-action="join" data-group="some group"><i class="fa fa-plus"></i> Join Group</button>');
 		done();
 	});
 
