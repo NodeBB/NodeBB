@@ -441,6 +441,13 @@ ActivityPub.get = async (type, id, uri, options) => {
 			throw e;
 		}
 
+		if (!body || typeof body !== 'object' || Array.isArray(body)) {
+			ActivityPub.helpers.log(`[activitypub/get] Received non-object response from ${uri}`);
+			const e = new Error(`[[error:activitypub.get-failed]]`);
+			e.code = 'ap_get_invalid_response';
+			throw e;
+		}
+
 		requestCache.set(cacheKey, body);
 		return body;
 	} catch (err) {
