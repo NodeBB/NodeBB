@@ -445,7 +445,12 @@ inbox.announce = async (req) => {
 
 			req.body = object;
 			if (typeof req.body.object === 'string') {
-				req.body.object = await activitypub.helpers.resolveObjects(req.body.object);
+				try {
+					req.body.object = await activitypub.helpers.resolveObjects(req.body.object);
+				} catch (e) {
+					activitypub.helpers.log(`[activitypub/inbox.like] Failed to resolve like object, using raw id: ${req.body.object}`);
+					req.body.object = { id: req.body.object };
+				}
 			}
 
 			await inbox.like(req);
@@ -810,7 +815,14 @@ inbox.flag = async (req) => {
 	}
 
 	await Promise.all(objects.map(async (subject, index) => {
-		const { type, id } = await activitypub.helpers.resolveObjects(subject.id);
+		let type, id;
+		try {
+			({ type, id } = await activitypub.helpers.resolveObjects(subject.id));
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subject.id}`);
+			inbox._reject('Flag', objects[index], actor);
+			return;
+		}
 		try {
 			await flags.create(activitypub.helpers.mapToLocalType(type), id, actor, content);
 		} catch (e) {
