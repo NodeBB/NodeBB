@@ -215,11 +215,13 @@ function setupHelmet(app) {
 	};
 
 	if (meta.config['hsts-enabled']) {
-		options.hsts = {
+		options.strictTransportSecurity = {
 			maxAge: Math.max(0, meta.config['hsts-maxage']),
 			includeSubDomains: !!meta.config['hsts-subdomains'],
 			preload: !!meta.config['hsts-preload'],
 		};
+	} else {
+		options.strictTransportSecurity = false;
 	}
 
 	try {
