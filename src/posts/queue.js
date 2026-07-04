@@ -246,10 +246,6 @@ module.exports = function (Posts) {
 		cache.del('post-queue');
 
 		await plugins.hooks.fire('action:post-queue.save', payload);
-		const cid = await getCid(type, data);
-		const uids = await getNotificationUids(cid);
-		const bodyEmail = await parseBodyEmail(cid, type, data);
-
 
 		const typeToTx = {
 			reply: '[[notifications:post-awaiting-review]]',
@@ -269,11 +265,18 @@ module.exports = function (Posts) {
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
 			bodyShort: typeToTx[type],
 			bodyLong: bodyLong,
-			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
 			from: data.uid,
 		});
-		await notifications.push(notifObj, uids);
+		if (notifObj) {
+			const cid = await getCid(type, data);
+			const [uids, emailData] = await Promise.all([
+				getNotificationUids(cid),
+				getEmailData(cid, type, data),
+			]);
+			await notifications.push({ ...notifObj, ...emailData }, uids);
+		}
+
 		return {
 			id: id,
 			type: type,
@@ -282,7 +285,7 @@ module.exports = function (Posts) {
 		};
 	};
 
-	async function parseBodyEmail(cid, type, data) {
+	async function getEmailData(cid, type, data) {
 		const url = nconf.get('url');
 		const [content, category, userData] = await Promise.all([
 			plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content),
@@ -300,15 +303,7 @@ module.exports = function (Posts) {
 			topic.title = await topics.getTopicField(data.tid, 'title');
 			topic.url = `${url}/topic/${data.tid}`;
 		}
-		const { app } = require('../webserver');
-		const _i18n = require('../languages').getFull(meta.config.defaultLang);
-		return await app.renderAsync('emails/partials/post-queue-body', {
-			_i18n,
-			content: content,
-			category: category,
-			user: userData,
-			topic: topic,
-		});
+		return { content, category, topic, user: userData };
 	}
 
 	async function getCid(type, data) {

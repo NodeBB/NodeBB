@@ -20,7 +20,11 @@
 				<tr class="notification-body">
 					<td style="padding: 20px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">
+							{{{ if (notification.type == "post-queue") }}}
+							<!-- IMPORT emails/partials/post-queue-body.tpl -->
+							{{{ else }}}
 							{{txEscape(body)}}
+							{{{ end }}}
 						</p>
 					</td>
 				</tr>

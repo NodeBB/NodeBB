@@ -377,8 +377,10 @@ Emailer.sendViaFallback = async (data) => {
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
-	const _i18n = languages.getFull(lang);
-	const html = await app.renderAsync(`emails/${template}`, { ...params, _i18n: _i18n });
+	const html = await app.renderAsync(`emails/${template}`, {
+		...params,
+		_i18n: languages.getFull(lang),
+	});
 	return await translator.translate(html, lang);
 };
 
