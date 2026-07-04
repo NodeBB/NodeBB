@@ -2,15 +2,10 @@
 'use strict';
 
 const fs = require('fs');
-const util = require('util');
 const path = require('path');
 const nconf = require('nconf');
 const express = require('express');
 const chalk = require('chalk').default;
-
-const app = express();
-app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
-let server;
 const winston = require('winston');
 const flash = require('connect-flash');
 const bodyParser = require('body-parser');
@@ -35,9 +30,32 @@ const topicEvents = require('./topics/events');
 const privileges = require('./privileges');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
-
 const helpers = require('./helpers');
+const user = require('./user');
+const languages = require('./languages');
+const als = require('./als');
 
+const app = express();
+
+app.renderAsync = async (tpl, data) => {
+	if (!Object.hasOwn(data, '_i18n')) {
+		const store = als.getStore();
+		if (!store) {
+			winston.warn('[app.renderAsync] No ALS store found, unable to determine user language for template rendering');
+		}
+		const uid = store?.uid || 0;
+		const { userLang, acpLang } = await user.getSettings(uid);
+		data._i18n = languages.getFull(tpl.startsWith('admin/') ? acpLang : userLang);
+	}
+	return new Promise((resolve, reject) => {
+		app.render(tpl, data, (err, html) => {
+			if (err) return reject(err);
+			resolve(html);
+		});
+	});
+};
+
+let server;
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
