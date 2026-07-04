@@ -390,10 +390,29 @@ inbox.like = async (req) => {
 
 inbox.dislike = async (req) => {
 	const { actor, object } = req.body;
-	const { type, id } = await activitypub.helpers.resolveLocalId(object.id);
 
-	if (type !== 'post' || !(await posts.exists(id))) {
-		throw new Error('[[error:invalid-pid]]');
+	let exists;
+	let id;
+	if (object.id.startsWith(nconf.get('url'))) {
+		const { type, id: _id } = await activitypub.helpers.resolveLocalId(object.id);
+		if (type === 'post') {
+			exists = await posts.exists(_id);
+			id = _id;
+		}
+	} else {
+		exists = await posts.exists(object.id);
+		if (!exists) {
+			// Proactively pull in the note
+			const asserted = await activitypub.notes.assert(0, object.id, { skipChecks: 1 });
+			if (!asserted) {
+				return;
+			}
+			exists = true;
+		}
+		id = object.id;
+	}
+	if (!id || !exists) {
+		return;
 	}
 
 	const allowed = await privileges.posts.can('posts:downvote', id, activitypub._constants.uid);
