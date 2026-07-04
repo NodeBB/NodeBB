@@ -476,9 +476,9 @@ inbox.announce = async (req) => {
 			}
 
 			// Deletions must be made by an actor of the same origin
-			const actorHostname = new URL(actor).hostname;
-			const objectHostname = new URL(id).hostname;
-			if (actorHostname !== objectHostname) {
+			const announcerHostname = new URL(actor).hostname;
+			const actorHostname = new URL(object.actor).hostname;
+			if (announcerHostname !== actorHostname) {
 				throw new Error('[[error:activitypub.origin-mismatch]]');
 			}
 
