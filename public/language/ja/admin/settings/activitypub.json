@@ -10,7 +10,7 @@
 	"enabled": "フェデレーションを有効にする",
 	"enabled-help": "有効にすると、このNodeBBは広いフェディバース上のすべてのActivityPub対応クライアントと通信できるようになります。",
 	"publicKeyFetchRateLimit": "公開鍵取得のレート制限",
-	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
+	"publicKeyFetchRateLimit-help": "IPアドレスあたり1分間に許可される公開鍵取得リクエストの最大数。（デフォルト: 256）",
 	"allowLoopback": "ループバック処理を許可",
 	"allowLoopback-help": "デバッグ目的でのみ有用です。無効のままにしておくことをお勧めします。",
 	"parentTraversalDepth": "返信チェーンのたどり深度",
