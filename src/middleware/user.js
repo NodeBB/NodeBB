@@ -351,4 +351,16 @@ module.exports = function (middleware) {
 
 		return !registeredAllowed && verifiedAllowed;
 	}
+
+	middleware.noIndexRemoteUser = function (req, res, next) {
+		res.locals.metaTags = res.locals.metaTags || [];
+		const isLocal = res.locals.uid > 0;
+		if (!isLocal) {
+			res.locals.metaTags.push({
+				name: 'robots',
+				content: 'noindex',
+			});
+		}
+		next();
+	};
 };

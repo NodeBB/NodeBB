@@ -9,6 +9,7 @@ module.exports = function (app, name, middleware, controllers) {
 		middleware.exposeUid,
 		middleware.canViewUsers,
 		middleware.buildAccountData,
+		middleware.noIndexRemoteUser,
 	];
 	const accountMiddlewares = [
 		...middlewares,

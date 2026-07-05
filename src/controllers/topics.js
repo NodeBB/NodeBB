@@ -268,6 +268,13 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		},
 	];
 
+	if (!utils.isNumber(topicData.tid)) {
+		res.locals.metaTags.push({
+			name: 'robots',
+			content: 'noindex',
+		});
+	}
+
 	const description = getDescriptionFromPost(postAtIndex);
 	if (description) {
 		res.locals.metaTags.push(
