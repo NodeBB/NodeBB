@@ -54,10 +54,10 @@ Topics.getTopicsFromSet = async function (set, uid, start, stop) {
 };
 
 Topics.getTopics = async function (tids, options) {
-	let uid = options;
-	if (typeof options === 'object') {
-		uid = options.uid;
+	if (typeof options !== 'object' || options === null) {
+		options = { uid: options };
 	}
+	const { uid } = options;
 
 	tids = await privileges.topics.filterTids('topics:read', tids, uid);
 	return await Topics.getTopicsByTids(tids, options);
@@ -67,10 +67,11 @@ Topics.getTopicsByTids = async function (tids, options) {
 	if (!Array.isArray(tids) || !tids.length) {
 		return [];
 	}
-	let uid = options;
-	if (typeof options === 'object') {
-		uid = options.uid;
+
+	if (typeof options !== 'object' || options === null) {
+		options = { uid: options };
 	}
+	const { uid } = options;
 
 	async function loadTopics() {
 		const topics = await Topics.getTopicsData(tids);
@@ -189,7 +190,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		getMerger(topicData),
 		getForker(topicData),
 		Topics.getRelatedTopics(topicData, uid),
-		Topics.thumbs.load([topicData]),
+		Topics.thumbs.load([topicData], { uid }),
 		Topics.events.get(topicData.tid, uid, reverse),
 	]);
 

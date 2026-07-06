@@ -21,6 +21,9 @@ Thumbs.exists = async function (tid, path) {
 };
 
 Thumbs.load = async function (topicData, options = {}) {
+	if (meta.config.privateUploads && parseInt(options.uid, 10) <= 0) {
+		return topicData.map(() => ([]));
+	}
 	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
 	const mainPostData = await posts.getPostsFields(mainPids, ['attachments', 'uploads']);
 	const hasUploads = mainPostData.map(p => Array.isArray(p.uploads) && p.uploads.length > 0);

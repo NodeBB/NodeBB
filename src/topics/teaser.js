@@ -15,14 +15,15 @@ module.exports = function (Topics) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return [];
 		}
-		let uid = options;
-		let { teaserPost } = meta.config;
-		let teaserParseType = 'plaintext';
-		if (typeof options === 'object') {
-			uid = options.uid;
-			teaserPost = options.teaserPost || meta.config.teaserPost;
-			teaserParseType = options.teaserParseType || 'plaintext';
+		if (typeof options !== 'object' || options === null) {
+			options = { uid: options };
 		}
+
+		const {
+			uid,
+			teaserPost = meta.config.teaserPost,
+			teaserParseType = 'plaintext',
+		} = options;
 
 		const counts = [];
 		const teaserPids = [];
