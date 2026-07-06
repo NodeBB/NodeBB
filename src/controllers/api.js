@@ -101,7 +101,7 @@ apiController.loadConfig = async function (req) {
 			version: fontawesome_version,
 		},
 		activitypub: {
-			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe,
+			probe: meta.config.activitypubEnabled && meta.config.activitypubProbe && req.loggedIn,
 			worldDefaultCid: meta.config.activitypubWorldDefaultCid,
 		},
 		tinycon: {
