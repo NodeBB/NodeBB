@@ -383,7 +383,15 @@ inbox.like = async (req) => {
 
 	activitypub.helpers.log(`[activitypub/inbox/like] id ${id} via ${actor}`);
 
-	const result = await posts.upvote(id, actor);
+	let result;
+	try {
+		result = await posts.upvote(id, actor);
+	} catch (e) {
+		if (e.message === '[[error:already-voting-for-this-post]]') {
+			return;
+		}
+		throw e;
+	}
 	await activitypub.feps.announce(object.id, req.body);
 	socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
 };
@@ -423,7 +431,14 @@ inbox.dislike = async (req) => {
 
 	activitypub.helpers.log(`[activitypub/inbox/dislike] id ${id} via ${actor}`);
 
-	await posts.downvote(id, actor);
+	try {
+		await posts.downvote(id, actor);
+	} catch (e) {
+		if (e.message === '[[error:already-voting-for-this-post]]') {
+			return;
+		}
+		throw e;
+	}
 	await activitypub.feps.announce(object.id, req.body);
 };
 
