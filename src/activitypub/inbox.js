@@ -494,10 +494,17 @@ inbox.announce = async (req) => {
 				break;
 			}
 
-			// Deletions must be made by an actor of the same origin
+			/**
+			 * Deletions must be made by:
+			 *   - an actor of the same origin as announcer (mod deletion), OR
+			 *   - an actor of the same origin as the object id (use case: self-deletion), OR
+			 *   - (TBD) an actor in the announcer's moderators list
+			 */
 			const announcerHostname = new URL(actor).hostname;
 			const actorHostname = new URL(object.actor).hostname;
-			if (announcerHostname !== actorHostname) {
+			const objectHostname = new URL(id).hostname;
+			const pass = (announcerHostname === actorHostname) || (actorHostname === objectHostname);
+			if (!pass) {
 				throw new Error('[[error:activitypub.origin-mismatch]]');
 			}
 
