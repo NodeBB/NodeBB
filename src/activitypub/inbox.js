@@ -621,7 +621,7 @@ inbox.follow = async (req) => {
 	if (type === 'application') {
 		return activitypub.relays.handshake(req.body);
 	} else if (!['category', 'user'].includes(type)) {
-		throw new Error('[[error:activitypub.invalid-id]]');
+		return;
 	}
 
 	const assertion = await activitypub.actors.assert(actor);
