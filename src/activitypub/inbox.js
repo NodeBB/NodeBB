@@ -185,7 +185,7 @@ inbox.update = async (req) => {
 					const tid = await posts.getPostField(object.id, 'tid');
 					const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
 					if (generatedTitle && (!postData.title || !postData.title.trim())) {
-						const newTitle = activitypub.helpers.generateTitle(postData.content);
+						const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
 						await topics.setTopicField(tid, 'title', newTitle);
 						await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
 					}
