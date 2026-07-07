@@ -22,12 +22,11 @@ const notifications = require('../notifications');
 const postsAPI = module.exports;
 
 postsAPI.get = async function (caller, data) {
-	const [userPrivileges, post, voted] = await Promise.all([
+	const [[userPrivilege], post, voted] = await Promise.all([
 		privileges.posts.get([data.pid], caller.uid),
 		posts.getPostData(data.pid),
 		posts.hasVoted(data.pid, caller.uid),
 	]);
-	const userPrivilege = userPrivileges[0];
 
 	if (!post || !userPrivilege.read || !userPrivilege['topics:read'] || userPrivilege.disabled) {
 		return null;
@@ -68,9 +67,8 @@ postsAPI.getSummary = async (caller, { pid }) => {
 };
 
 postsAPI.getRaw = async (caller, { pid }) => {
-	const userPrivileges = await privileges.posts.get([pid], caller.uid);
-	const userPrivilege = userPrivileges[0];
-	if (!userPrivilege['topics:read']) {
+	const [userPrivilege] = await privileges.posts.get([pid], caller.uid);
+	if (!userPrivilege.read || !userPrivilege['topics:read'] || userPrivilege.disabled) {
 		return null;
 	}
 
@@ -81,7 +79,7 @@ postsAPI.getRaw = async (caller, { pid }) => {
 		return null;
 	}
 	postData.pid = pid;
-	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: caller.uid, postData: postData });
+	const result = await plugins.hooks.fire('filter:post.getRawPost', { uid: caller.uid, postData });
 	return result.postData.sourceContent || result.postData.content;
 };
 
