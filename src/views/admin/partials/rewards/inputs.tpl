@@ -9,7 +9,7 @@
 {{{ end }}}
 
 {{{ if (./type == "text") }}}
-<input type="text" class="form-control form-control-sm" name="${./name}" />
+<input type="text" class="form-control form-control-sm" name="{./name}" />
 {{{ end }}}
 {{{ end }}}
 
