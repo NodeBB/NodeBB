@@ -803,7 +803,8 @@ inbox.undo = async (req) => {
 		case 'Like': {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
-				throw new Error('[[error:invalid-pid]]');
+				// Not a valid pid, ignore.
+				return;
 			}
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
