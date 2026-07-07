@@ -332,6 +332,11 @@ inbox.delete = async (req) => {
 		}
 
 		case isMessage: {
+			const deleted = await messaging.getMessageField(id, 'deleted');
+			if (deleted) {
+				return;
+			}
+
 			await api.chats.deleteMessage({ uid: actor }, { mid: id });
 			break;
 		}
