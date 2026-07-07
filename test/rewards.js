@@ -1,47 +1,27 @@
 'use strict';
 
 const assert = require('assert');
-const async = require('async');
 
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
 const User = require('../src/user');
 const Groups = require('../src/groups');
+const Topics = require('../src/topics');
+const Categories = require('../src/categories');
+const rewards = require('../src/rewards');
+const socketAdmin = require('../src/socket.io/admin');
 
 describe('rewards', () => {
 	let adminUid;
-	let bazUid;
-	let herpUid;
 
-	before((done) => {
+	before(async () => {
 		// Create 3 users: 1 admin, 2 regular
-		async.series([
-			async.apply(User.create, { username: 'foo' }),
-			async.apply(User.create, { username: 'baz' }),
-			async.apply(User.create, { username: 'herp' }),
-		], (err, uids) => {
-			if (err) {
-				return done(err);
-			}
-
-			adminUid = uids[0];
-			bazUid = uids[1];
-			herpUid = uids[2];
-
-			async.series([
-				function (next) {
-					Groups.join('administrators', adminUid, next);
-				},
-				function (next) {
-					Groups.join('rewardGroup', adminUid, next);
-				},
-			], done);
-		});
+		adminUid = await User.create({ username: 'foo' });
+		await Groups.join('administrators', adminUid);
+		await Groups.join('rewardGroup', adminUid);
 	});
 
 	describe('rewards create', () => {
-		const socketAdmin = require('../src/socket.io/admin');
-		const rewards = require('../src/rewards');
 		it('it should save a reward', (done) => {
 			const data = [
 				{
@@ -61,7 +41,9 @@ describe('rewards', () => {
 				done();
 			});
 		});
+	});
 
+	describe('rewards checkCondition', () => {
 		it('should check condition', (done) => {
 			function method(next) {
 				next(null, 1);
@@ -74,6 +56,35 @@ describe('rewards', () => {
 				assert.ifError(err);
 				done();
 			});
+		});
+
+		it('should award user 10 reputation after posting 2 times only once', async () => {
+			const data = [
+				{
+					rewards: { reputation: 10 },
+					condition: 'essentials/user.postcount',
+					conditional: 'greaterthan',
+					value: '1',
+					rid: 'essentials/award-reputation',
+					claimable: '1',
+					id: '',
+					disabled: false,
+				},
+			];
+			const { cid } = await Categories.create({
+				name: 'test category',
+				description: 'test category description',
+			});
+
+			await socketAdmin.rewards.save({ uid: adminUid }, data);
+			const uid = await User.create({ username: 'poster' });
+			await Topics.post({ uid, cid, title: 'test topic', content: 'test content' });
+			await Topics.post({ uid, cid, title: 'test topic 2', content: 'test content' });
+			const reputation = await User.getUserField(uid, 'reputation');
+			assert.equal(reputation, 10);
+			await Topics.post({ uid, cid, title: 'test topic 3', content: 'test content' });
+			const reputation2 = await User.getUserField(uid, 'reputation');
+			assert.equal(reputation2, 10);
 		});
 	});
 });
