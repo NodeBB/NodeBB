@@ -481,7 +481,13 @@ Notes.assertPrivate = async (object) => {
 		timestamp = Date.now();
 	}
 
-	const payload = await activitypub.mocks.message(object);
+	let payload;
+	try {
+		payload = await activitypub.mocks.message(object);
+	} catch (e) {
+		activitypub.helpers.log(`[activitypub/notes.assertPrivate] Failed to mock message: ${e.message}`);
+		return null;
+	}
 
 	// Naive image appending (using src/posts/attachments.js is likely better, but not worth the effort)
 	const attachments = payload._activitypub.attachment;

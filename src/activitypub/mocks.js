@@ -66,9 +66,13 @@ Mocks._normalize = async (object) => {
 			break;
 		}
 
-		case typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
+		case attributedTo && typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
 			attributedTo = attributedTo.id;
 		}
+	}
+
+	if (!activitypub.helpers.isUri(attributedTo)) {
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;

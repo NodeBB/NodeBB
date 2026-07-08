@@ -177,6 +177,170 @@ describe('Inbox', () => {
 			});
 		});
 
+		describe('attributedTo validation', () => {
+			describe('private messages (non-public)', () => {
+				before(async function () {
+					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				});
+
+				it('should not create a message when attributedTo is numeric', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: 1,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				});
+
+				it('should not create a message when attributedTo is null', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: null,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				});
+
+				it('should not create a message when attributedTo is boolean', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: true,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				});
+
+				it('should not create a message when attributedTo is non-URI string', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: 'not-a-uri',
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				});
+
+				it('should not create a message when attributedTo is array of non-URI values', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: [1, 'not-a-uri'],
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				});
+
+				it('should accept a Create(Note) with valid URI attributedTo', async () => {
+					const { id: actor } = helpers.mocks.person();
+					const { note } = helpers.mocks.note({
+						attributedTo: actor,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						actor,
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.notStrictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), true);
+				});
+			});
+
+			describe('public posts', () => {
+				it('should not create a post when attributedTo is numeric', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: 42,
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						cc: [],
+					});
+
+					const result = await activitypub.notes.assert(0, note, { skipChecks: true });
+					assert.strictEqual(result, null);
+				});
+
+				it('should not create a post when attributedTo is object with numeric id', async () => {
+					const { note } = helpers.mocks.note({
+						attributedTo: { type: 'Person', id: 99 },
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						object: note,
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						cc: [],
+					});
+
+					const result = await activitypub.notes.assert(0, note, { skipChecks: true });
+					assert.strictEqual(result, null);
+				});
+
+				it('should accept a Create(Note) with valid URI attributedTo', async () => {
+					const { id: actor } = helpers.mocks.person();
+					const { note } = helpers.mocks.note({
+						attributedTo: actor,
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						actor,
+						object: note,
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						cc: [],
+					});
+
+					const result = await activitypub.notes.assert(0, note, { skipChecks: true });
+					assert.notStrictEqual(result, null);
+				});
+			});
+		});
+
 		describe('Announce', () => {
 			let cid;
 
