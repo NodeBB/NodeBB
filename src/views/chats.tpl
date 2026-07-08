@@ -53,7 +53,7 @@
 					</div>
 				</div>
 			</div>
-			<div component="chat/main-wrapper" class="flex-grow-1 ms-md-2 ps-md-2 border-1 border-start-md h-100" style="min-width: 0;" data-roomid="{roomId}">
+			<div component="chat/main-wrapper" class="flex-grow-1 ms-lg-2 ps-lg-2 border-1 border-start-lg h-100" style="min-width: 0;" data-roomid="{roomId}">
 				<!-- IMPORT partials/chats/message-window.tpl -->
 			</div>
 			<div class="imagedrop"><div>[[topic:composer.drag-and-drop-images]]</div></div>

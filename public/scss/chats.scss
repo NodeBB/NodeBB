@@ -96,19 +96,11 @@ body.page-user-chats {
 	.page-user-chats.chat-loaded  {
 		padding-bottom: 4.75rem;
 	}
-}
-
-@include media-breakpoint-down(md) {
-	.page-user-chats.chat-loaded  {
-		padding-bottom: initial;
+	.page-user-chats.chat-loaded .bottombar {
+		display: none!important;
 	}
 	[component="chat/nav-wrapper"] {
 		width: 100%;
-	}
-
-
-	.page-user-chats.chat-loaded .bottombar {
-		display: none!important;
 	}
 
 	[component="chat/nav-wrapper"][data-loaded="1"] {
@@ -117,6 +109,12 @@ body.page-user-chats {
 
 	[component="chat/nav-wrapper"][data-loaded="0"] + [component="chat/main-wrapper"] {
 		display: none!important;
+	}
+}
+
+@include media-breakpoint-down(md) {
+	.page-user-chats.chat-loaded  {
+		padding-bottom: initial;
 	}
 }
 
