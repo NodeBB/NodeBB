@@ -1,6 +1,7 @@
 {
 	"queue": "Kø",
-	"description": "Administrer registreringskøen og godkjenningsførespurnader.",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "Avvis alle",
 	"reject-all-confirm": "Vil du avvise alle registreringsførespurnader?",
 	"list.name": "Namn",

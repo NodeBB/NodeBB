@@ -1,6 +1,7 @@
 {
 	"queue": "Várólista",
-	"description": "Nincs felhasználó a regisztrációs várólistán. <br> A funkció engedélyezéséhez menj a <a href=\"%1\">Beállítások &rarr; Felhasználók &rarr; Felhasználó regisztráció</a> menüpontba és a <strong>Regisztráció típusa</strong> lehetőségnél válaszd az  \"Adminisztrátori jóváhagyás\"-t.",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Név",

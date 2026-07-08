@@ -1,6 +1,7 @@
 {
 	"queue": "Fila de espera",
-	"description": "Não existem usuários na fila de espera. <br>Para abilitar esta funcionalidade, vá para <a href=\"%1\">Configurações &arr; Usuário &arr; Registro de usuário </a> e configure <strong>Tipo de registro </strong>como \"Com aprovação de administrador\"",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Nome",

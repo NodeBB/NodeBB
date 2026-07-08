@@ -1,6 +1,7 @@
 {
 	"queue": "Reģistrācijas rinda",
-	"description": "Reģistrācijas rindā nav lietotāju. <br>Lai iespējotu šo funkciju, doties uz <a href=\"%1\">Iestatījumi &rarr; Lietotāji &rarr; Reģistrācija</a> un iestatīt <strong>Reģistrācijas veidu</strong> uz \"Administratora apstiprināts\".",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Vārds",

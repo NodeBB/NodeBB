@@ -1,6 +1,7 @@
 {
 	"queue": "Na čekanju",
-	"description": "Nema korisnika na čekanju za registraciju. <br/> Za pokretanje ove mogućnosti odite na  <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> i postavite <strong>tip registracije</strong> u \"Admin Approval\".",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Ime",

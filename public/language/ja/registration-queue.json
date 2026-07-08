@@ -1,6 +1,7 @@
 {
 	"queue": "キュー",
-	"description": "登録キューにユーザーがいません。<br> この機能を有効にするには、<a href=\"%1\">設定 &rarr; ユーザー &rarr; ユーザー登録</a>に移動し、<strong>登録タイプ</strong>を「管理者承認」に設定してください。",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "名前",

@@ -1,6 +1,7 @@
 {
 	"queue": "Fronta",
-	"description": "V registrační frontě nejsou žádní uživatelé. <br>Pro povolení této funkce, přejděte do nabídky <a href=\"%1\">Nastavení &rarr; Uživatel &rarr; Registrace uživatele</a> a nastavte <strong> Typ registrace</strong> na „Schválení správcem”.",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Jméno",

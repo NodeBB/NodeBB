@@ -1,6 +1,7 @@
 {
 	"queue": "Cola",
-	"description": "No hay usuarios en la cola de registro. <br>Para activar esta función, vaya a <a href=\"%1\">Configuración &rarr; Usuario &rarr; Registro de Usuario</a>y configure<strong>Tipo de Registro</strong>a \"Aprobación de Administrador\".",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Nombre",

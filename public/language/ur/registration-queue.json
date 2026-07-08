@@ -1,6 +1,7 @@
 {
 	"queue": "قطار",
-	"description": "رجسٹریشن کی قطار میں کوئی صارفین نہیں ہیں۔ <br> اس فعالیت کو فعال کرنے کے لیے، <a href=\"%1\">ترتیبات &rarr; صارف &rarr; صارفین کی رجسٹریشن</a> پر جائیں اور <strong>رجسٹریشن کی قسم</strong> کو 'ایڈمنسٹریٹر کی منظوری' پر سیٹ کریں۔",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "نام",

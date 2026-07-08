@@ -1,6 +1,7 @@
 {
 	"queue": "대기열",
-	"description": "등록 대기열에 사용자가 없습니다.<br /> 이 기능을 활성화하려면 <a href=\"%1\">설정 → 사용자 → 사용자 등록</a>으로 이동하여 <strong>등록 유형</strong>을 \"관리자 승인\"으로 설정하세요.",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "이름",

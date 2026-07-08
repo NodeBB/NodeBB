@@ -1,6 +1,7 @@
 {
 	"queue": "申请",
-	"description": "注册申请队列里面还没有用户申请。<br>要开启这项功能，请去<a href=\"%1\">设置 &rarr; 用户 &rarr; 用户注册</a> 并设置<strong>注册类型</strong>为“管理员批准”。",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "全部拒绝",
 	"reject-all-confirm": "您要拒绝所有注册请求吗？",
 	"list.name": "姓名",

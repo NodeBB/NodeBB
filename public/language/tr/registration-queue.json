@@ -1,6 +1,7 @@
 {
 	"queue": "Kuyruk",
-	"description": "Kayıt kuyruğunda hiç kullanıcı yok. <br>Bu özelliği etkinleştirmek için, şuraya gidin: <a href=\"%1\">Ayarlar; Kullanıcı; Kullanıcı Kaydı</a> ve <strong>Kayıt Tipi</strong>ni \"Yönetici Onayı\" olarak ayarlayın.",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "İsim",

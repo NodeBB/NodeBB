@@ -1,6 +1,7 @@
 {
 	"queue": "คิว",
-	"description": "ไม่มีผู้ใช้ในคิวการลงทะเบียน <br> เมื่อต้องการเปิดใช้คุณลักษณะนี้ ไปที่<a href=\"%1\"> การตั้งค่า &rarr; ผู้ใช้ &rarr; การลงทะเบียนผู้ใช้</a>และตั้ง<strong>ประเภทการลงทะเบียน</strong>เป็น \"การอนุมัติโดยผู้ดูแลระบบ\"",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "ชื่อ",
