@@ -8,12 +8,15 @@ define('forum/registration', ['modals', 'alerts'], function (modals, alerts) {
 		$('[data-bs-toggle="tooltip"]').tooltip();
 
 		$('[data-action="reject-all"]').on('click', () => {
-			modals.confirm('[[registration-queue:reject-all-confirm]]', (ok) => {
+			modals.confirm('[[registration-queue:reject-all-confirm]]', async (ok) => {
 				if (ok) {
 					const rowEls = $('.users-list [data-username]');
-					rowEls.each((index, rowEl) => {
-						doAction($(rowEl), 'reject');
-					});
+					await Promise.all(rowEls.map((index, rowEl) => {
+						return socket.emit('user.rejectRegistration', {
+							username: $(rowEl).attr('data-username'),
+						}).catch(alerts.error);
+					}));
+					ajaxify.refresh();
 				}
 			});
 		});
