@@ -1176,6 +1176,16 @@ describe('Groups', () => {
 			const { users } = await apiGroups.listMembers({ uid: adminUid }, { after: 0, groupName: 'PrivateCanJoin' });
 			assert(Array.isArray(users));
 		});
+
+		it('should not allow loading group list if user does not have view:groups privilege', async () => {
+			const privileges = require('../src/privileges');
+			await privileges.global.rescind(['groups:view:groups'], 'registered-users');
+			await assert.rejects(
+				apiGroups.list({ uid: testUid }, { after: 0, sort: 'name' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+			await privileges.global.give(['groups:view:groups'], 'registered-users');
+		});
 	});
 
 	describe('api methods', () => {

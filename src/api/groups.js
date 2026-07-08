@@ -12,6 +12,10 @@ const tx = require('../translator');
 const groupsAPI = module.exports;
 
 groupsAPI.list = async (caller, data) => {
+	const canView = await privileges.global.can('view:groups', caller.uid);
+	if (!canView) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const page = parseInt(data.page, 10) || 1;
 	const groupsPerPage = 15;
 	const start = Math.max(0, page - 1) * groupsPerPage;
