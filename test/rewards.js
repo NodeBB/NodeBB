@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { setTimout } = require('timers');
+const { setTimeout } = require('node:timers/promises');
 
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
