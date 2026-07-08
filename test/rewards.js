@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const { setTimout } = require('timers');
 
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
@@ -80,6 +81,7 @@ describe('rewards', () => {
 			const uid = await User.create({ username: 'poster' });
 			await Topics.post({ uid, cid, title: 'test topic', content: 'test content' });
 			await Topics.post({ uid, cid, title: 'test topic 2', content: 'test content' });
+			await setTimeout(2000);
 			const reputation = await User.getUserField(uid, 'reputation');
 			assert.equal(reputation, 10);
 			await Topics.post({ uid, cid, title: 'test topic 3', content: 'test content' });
