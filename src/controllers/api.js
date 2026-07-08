@@ -30,7 +30,7 @@ apiController.loadConfig = async function (req) {
 		upload_url,
 		asset_base_url,
 		siteTitle: meta.config.title || meta.config.browserTitle || 'NodeBB',
-		browserTitle: meta.config.browserTitle || meta.config.title || 'NodeB',
+		browserTitle: meta.config.browserTitle || meta.config.title || 'NodeBB',
 		description: meta.config.description || '',
 		keywords: meta.config.keywords || '',
 		'brand:logo': meta.config['brand:logo'],

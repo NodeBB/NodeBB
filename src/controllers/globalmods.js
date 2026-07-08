@@ -54,6 +54,7 @@ globalModsController.registrationQueue = async function (req, res, next) {
 		invites,
 		users,
 		registrationQueueCount,
+		queueEnabled: meta.config.registrationApprovalType === 'admin-approval' || meta.config.registrationApprovalType === 'admin-approval-ip',
 	});
 };
 

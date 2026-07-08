@@ -39,15 +39,20 @@
 			aria-labelledby="registration-queue-tab"
 			tabindex="0"
 		>
+			{{{ if users.length }}}
 			<div class="text-end">
 				<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">[[registration-queue:reject-all]]</button>
 			</div>
+			{{{ end }}}
 			<div class="registration mb-3">
-				{{{ if !users.length }}}
-				<p class="">
-					[[registration-queue:description, {config.relative_path}/admin/settings/user#user-registration]]
-				</p>
+				{{{ if !queueEnabled }}}
+				<p>{{tx("registration-queue:description", concat(config.relative_path, "/admin/settings/user#user-registration"))}}</p>
 				{{{ end }}}
+				{{{ if queueEnabled }}}
+				{{{ end }}}
+				{{{ if !users.length }}}
+				<p>[[registration-queue:no-users-in-queue]]</p>
+				{{{ else }}}
 				<div class="table-responsive">
 					<table class="table table-sm text-sm users-list">
 						<thead>
@@ -136,6 +141,7 @@
 						</tbody>
 					</table>
 				</div>
+				{{{ end }}}
 
 				<!-- IMPORT admin/partials/paginator.tpl -->
 			</div>
