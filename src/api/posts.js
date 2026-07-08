@@ -482,12 +482,14 @@ postsAPI.unbookmark = async function (caller, data) {
 };
 
 async function diffsPrivilegeCheck(pid, uid) {
-	const [deleted, privilegesData] = await Promise.all([
+	const [deleted, [privilegesData]] = await Promise.all([
 		posts.getPostField(pid, 'deleted'),
 		privileges.posts.get([pid], uid),
 	]);
 
-	const allowed = privilegesData[0]['posts:history'] && (deleted ? privilegesData[0]['posts:view_deleted'] : true);
+	const allowed = privilegesData['posts:history'] &&
+		privilegesData['topics:read'] &&
+		(!deleted || privilegesData['posts:view_deleted']);
 	if (!allowed) {
 		throw new Error('[[error:no-privileges]]');
 	}

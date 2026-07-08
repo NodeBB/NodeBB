@@ -572,6 +572,16 @@ describe('Post\'s', () => {
 			assert.strictEqual(err.message, '[[error:no-privileges]]');
 		});
 
+		it('should not allow registered-users group to view diffs if they do not have the topics:read privilege', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
+			await assert.rejects(
+				apiPosts.getDiffs({ uid: voterUid }, { pid: 1 }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			await privileges.categories.give(['groups:topics:read'], cid, 'registered-users');
+		});
+
 		it('should allow registered-users group to view diffs', async () => {
 			const data = await apiPosts.getDiffs({ uid: 1 }, { pid: 1 });
 
