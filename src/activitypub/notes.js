@@ -568,6 +568,15 @@ async function assertRelation(post) {
 }
 
 async function assignCategory(post) {
+	const ageLimitDays = meta.config.activitypubRulesCutoffDays || 0;
+	if (ageLimitDays > 0 && post.timestamp) {
+		const ageDays = (Date.now() - post.timestamp) / (1000 * 60 * 60 * 24);
+		if (ageDays > ageLimitDays) {
+			activitypub.helpers.log(`[activitypub] Post ${post.pid} is ${ageDays.toFixed(1)} days old, skipping categorization (limit: ${ageLimitDays} days)`);
+			return { cid: undefined, filter: false };
+		}
+	}
+
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
 	const rules = await activitypub.rules.list();
 	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
