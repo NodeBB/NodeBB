@@ -10,6 +10,19 @@
 				<div class="alert alert-warning">[[admin/settings/activitypub:rules.filter-warning]]</div>
 				{{{ end }}}
 
+				<div id="cutoff" class="mb-4">
+					<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/activitypub:rules.cutoff.title]]</h5>
+					<form>
+						<div class="mb-3">
+							<label class="form-label" for="activitypubRulesCutoffDays">[[admin/settings/activitypub:rules.cutoff.label]]</label>
+							<input type="number" id="activitypubRulesCutoffDays" name="activitypubRulesCutoffDays" data-field="activitypubRulesCutoffDays" title="[[admin/settings/activitypub:rules.cutoff.label]]" class="form-control" value="{activitypubRulesCutoffDays}" min="0" />
+							<div class="form-text">
+								[[admin/settings/activitypub:rules.cutoff.help]]
+							</div>
+						</div>
+					</form>
+				</div>
+
 				<div class="mb-3 table-responsive-md">
 					<table class="table table-striped" id="rules">
 						<thead>

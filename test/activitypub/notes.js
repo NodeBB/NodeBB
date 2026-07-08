@@ -821,4 +821,204 @@ describe('Notes', () => {
 			assert.strictEqual(parsedData.tid, assertion.tid);
 		});
 	});
+
+	describe('auto-categorization age cutoff', () => {
+		let remoteCid;
+		let targetCid;
+		let rid;
+		const tagName = utils.generateUUID().slice(0, 8);
+
+		before(async () => {
+			// Create a remote group actor
+			({ id: remoteCid } = helpers.mocks.group());
+			// Create a local target category
+			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			// Add a hashtag-type auto-categorization rule with filter (queue=true)
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, true);
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			delete meta.config.activitypubRulesCutoffDays;
+			if (rid) {
+				await activitypub.rules.delete(rid);
+			}
+		});
+
+		beforeEach(async () => {
+			// Clear the queue
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		});
+
+		describe('cutoff disabled (0)', () => {
+			beforeEach(() => {
+				meta.config.activitypubRulesCutoffDays = 0;
+			});
+
+			afterEach(() => {
+				delete meta.config.activitypubRulesCutoffDays;
+			});
+
+			it('should queue crosspost for old posts when cutoff is 0', async () => {
+				// Create a very old post (365 days ago)
+				const publishedDate = new Date(Date.now() - (365 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify crosspost was queued despite post age
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+
+				const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+				assert.strictEqual(queueData.type, 'crosspost');
+				const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+				assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			});
+		});
+
+		describe('cutoff enabled', () => {
+			const cutoffDays = 30;
+
+			beforeEach(() => {
+				meta.config.activitypubRulesCutoffDays = cutoffDays;
+			});
+
+			afterEach(() => {
+				delete meta.config.activitypubRulesCutoffDays;
+			});
+
+			it('should queue crosspost for recent posts when within cutoff', async () => {
+				// Create a recent post (1 day old)
+				const publishedDate = new Date(Date.now() - (1 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+
+				const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+				assert.strictEqual(queueData.type, 'crosspost');
+				const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+				assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			});
+
+			it('should queue crosspost for posts at the cutoff boundary', async () => {
+				// Create a post just under the cutoff (29 days old, leaving room for test timing)
+				const publishedDate = new Date(Date.now() - ((cutoffDays - 1) * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+
+				// Verify crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for posts older than cutoff', async () => {
+				// Create a post older than cutoff (31 days old)
+				const publishedDate = new Date(Date.now() - ((cutoffDays + 1) * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should still be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for very old posts (60 days)', async () => {
+				// Create a post older than cutoff (60 days old)
+				const publishedDate = new Date(Date.now() - (60 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for very old posts (1 year)', async () => {
+				// Create a very old post (365 days old)
+				const publishedDate = new Date(Date.now() - (365 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should still be created');
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+		});
+	});
 });

@@ -215,5 +215,6 @@
     "activitypubFilter": 0,
     "activitypubSummaryLimit": 500,
     "activitypubBreakString": "[...]",
-    "activitypubWorldDefaultCid": -1
+    "activitypubWorldDefaultCid": -1,
+    "activitypubRulesCutoffDays": 30
 }

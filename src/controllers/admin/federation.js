@@ -29,7 +29,6 @@ federationController.rules = async function (req, res) {
 		rules,
 		postQueueEnabled,
 		hasFilterRules,
-		hideSave: true,
 	});
 };
 
