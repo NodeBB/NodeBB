@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const posts = require('../posts');
@@ -27,7 +26,7 @@ module.exports = function (User) {
 			expiry: expire, /* backward compatible alias */
 			banned_until_readable: expire_readable,
 			expiry_readable: expire_readable, /* backward compatible alias */
-			reason: validator.escape(String(banInfo.reason || '')),
+			reason: banInfo.reason || '',
 		};
 	};
 
@@ -64,8 +63,8 @@ module.exports = function (User) {
 			set.timestamp = set.score;
 			set.timestampISO = utils.toISOString(set.score);
 			const parts = set.value.split(':');
-			set.value = validator.escape(String(parts[0]));
-			set.byUid = validator.escape(String(parts[2] || ''));
+			set.value = parts[0];
+			set.byUid = parts[2] || '';
 			delete set.score;
 		});
 
@@ -116,7 +115,7 @@ module.exports = function (User) {
 			banObj.until = parseInt(banObj.expire, 10);
 			banObj.untilISO = utils.toISOString(banObj.until);
 			banObj.timestampISO = utils.toISOString(banObj.timestamp);
-			banObj.reason = validator.escape(String(banObj.reason || '')) || noReasonLangKey;
+			banObj.reason = banObj.reason || noReasonLangKey;
 			return banObj;
 		});
 	}
@@ -141,7 +140,7 @@ module.exports = function (User) {
 		const userData = await User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 		await Promise.all(notes.map(async (note, index) => {
 			if (note) {
-				note.rawNote = validator.escape(String(note.note));
+				note.rawNote = note.note;
 				note.note = await plugins.hooks.fire('filter:parse.raw', String(note.note));
 				note.user = userData[index];
 			}

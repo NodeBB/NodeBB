@@ -1,0 +1,22 @@
+{
+	"queue": "Xếp hàng",
+	"no-users-in-queue": "Hiện không có người dùng nào đang chờ đăng ký.",
+	"description": "Để bật tính năng này, đi đến <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Đăng Ký Người Dùng</a> và đặt <strong>Kiểu Đăng Ký</strong> thành \"Quản Trị Viên Phê Duyệt\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Tên",
+	"list.email": "Thư điện tử",
+	"list.ip": "IP",
+	"list.time": "Thời gian",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Lời mời",
+	"invitations.description": "Dưới đây là danh sách hoàn tất các lời mời đã gửi. Bấm ctrl-f để tìm kiếm trong danh sách theo email hoặc tên đăng nhập. <br><br>Tên đăng nhập sẽ hiển thị bên phải email đối với những người dùng đã đổi lời mời.",
+	"invitations.inviter-username": "Tên Đăng Nhập Người Mời",
+	"invitations.invitee-email": "Email của người được mời",
+	"invitations.invitee-username": "Mời Tên Đăng Nhập (nếu đã đăng ký)",
+
+	"invitations.confirm-delete": "Bạn có chắc chắn muốn xóa lời mời này không?"
+}

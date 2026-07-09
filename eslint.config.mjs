@@ -51,6 +51,7 @@ export default defineConfig([
 				beforeEach: 'readonly',
 				after: 'readonly',
 				afterEach: 'readonly',
+				nodebb: 'readonly',
 			},
 		},
 		rules: {
@@ -69,7 +70,6 @@ export default defineConfig([
 	{
 		files: [
 			'nodebb-global.js',
-			'src/test1.js'
 		],
 		languageOptions: {
 			sourceType: 'module',

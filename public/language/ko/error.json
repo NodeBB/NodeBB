@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "이 메시지를 삭제할 수 없습니다",
     "chat-edit-duration-expired": "게시한 후 %1초 동안만 채팅 메시지를 편집할 수 있습니다",
     "chat-delete-duration-expired": "게시한 후 %1초 동안만 채팅 메시지를 삭제할 수 있습니다",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "이 채팅 메시지는 삭제되었습니다.",
     "chat-restored-already": "이 채팅 메시지는 복원되었습니다.",
     "chat-room-does-not-exist": "채팅 방이 존재하지 않습니다.",

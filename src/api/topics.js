@@ -39,8 +39,8 @@ topicsAPI.get = async function (caller, data) {
 	]);
 	if (
 		!topic ||
-		!userPrivileges.read ||
 		!userPrivileges['topics:read'] ||
+		userPrivileges.disabled ||
 		!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)
 	) {
 		return null;

@@ -27,7 +27,7 @@
 	"restrictions.post-length": "Lengd på innlegg",
 	"restrictions.days-until-stale": "Dagar til innlegg vert rekna som utdatert",
 	"restrictions.stale-help": "Hjelp for utdatert innlegg",
-	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "Maksimalt tal på svar i eit innlegg før brukarar ikkje lenger kan flytte sitt eige innlegg (sett til 0 for å deaktivere)",
 	"timestamp": "Tidsstempel",
 	"timestamp.cut-off": "Avskjering for tidsstempel",
 	"timestamp.cut-off-help": " Datoar og klokkeslett blir vist på ein relativ måte (t.d. \"3 timar sidan\" / \"5 dagar sidan\"), og tilpassa til ulike språk\n\t\t\t\t\t.  Etter eit visst punkt kan denne teksten endrast til å vise den lokaliserte datoen direkte\n\t\t\t\t\t(t.d 5. Nov 2024 15:30).<br /><em>(Standard: <code>30</code>, eller ein månad). Sett til 0 for å alltid vise datoar. La vere tom for å alltid vise relative tider.</em>",

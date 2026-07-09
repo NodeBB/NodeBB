@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "شما اجازه حذف این پیام را ندارید.",
     "chat-edit-duration-expired": "شما قادر هستید پیام های چت را فقط بعد از %1 ثانیه ویرایش کنید",
     "chat-delete-duration-expired": "شما قادر هستید پیام های چت را فقط بعد از %1 ثانیه پاک کنید",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "این پیام قبلا حذف شده است",
     "chat-restored-already": "این پیام چت قبلاً بازیابی شده است",
     "chat-room-does-not-exist": "چت روم وجود ندارد",

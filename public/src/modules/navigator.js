@@ -1,8 +1,8 @@
 'use strict';
 
 define('navigator', [
-	'forum/pagination', 'components', 'hooks', 'alerts', 'translator', 'storage',
-], function (pagination, components, hooks, alerts, translator, storage) {
+	'forum/pagination', 'components', 'hooks', 'alerts', 'storage',
+], function (pagination, components, hooks, alerts, storage) {
 	const navigator = {};
 	let index = 0;
 	let count = 0;
@@ -379,7 +379,7 @@ define('navigator', [
 			anchorEl.innerText = text;
 			anchorEl.style.display = text ? 'inline' : 'none';
 			if (text) {
-				translator.translate(text).then(translated => anchorEl.innerText = translated);
+				$(anchorEl).translateText(text);
 			}
 			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
 			if (text) {
@@ -567,7 +567,7 @@ define('navigator', [
 		if (config.usePagination) {
 			paginationTextEl.html(`<i class="fa fa-file"></i> ${ajaxify.data.pagination.currentPage} / ${ajaxify.data.pagination.pageCount}`);
 		} else {
-			paginationTextEl.translateHtml('[[global:pagination.out-of, ' + index + ', ' + count + ']]');
+			paginationTextEl.translateText(`[[global:pagination.out-of, ${index}, ${count}]]`);
 		}
 
 		const fraction = (index - 1) / (count - 1 || 1);

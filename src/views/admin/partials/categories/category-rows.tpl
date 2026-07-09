@@ -10,14 +10,14 @@
 					</button>
 					<div class="information flex-1 align-items-start d-flex gap-2">
 						<div>
-						{buildCategoryIcon(@value, "28px", "rounded-1")}
+						{{buildCategoryIcon(@value, "28px", "rounded-1")}}
 						</div>
 						<div class="d-grid gap-0">
 							<div class="title fw-semibold">
 								<a class="category-header text-reset" href="{config.relative_path}/admin/manage/categories/{categories.cid}">{categories.name}</a> {{{ if categories.link }}}<a class="text-xs text-muted" href="{categories.link}"><i class="fa fa-link"></i> {categories.link}</a>{{{ end }}}
 							</div>
-							{{{ if categories.descriptionParsed }}}
-							<div class="description text-muted text-xs w-100">{categories.descriptionParsed}</div>
+							{{{ if categories.description }}}
+							<div class="description text-muted text-xs w-100">{categories.description}</div>
 							{{{ end }}}
 						</div>
 					</div>

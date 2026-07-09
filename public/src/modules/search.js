@@ -101,12 +101,11 @@ define('search', [
 		let oldValue = inputEl.val();
 		const filterCategoryEl = quickSearchResults.find('.filter-category');
 
-		function updateCategoryFilterName() {
+		async function updateCategoryFilterName() {
 			if (ajaxify.data.template.category && ajaxify.data.cid) {
-				translator.translate('[[search:search-in-category, ' + ajaxify.data.name + ']]', function (translated) {
-					const name = $('<div></div>').html(translated).text();
-					filterCategoryEl.find('.name').text(name);
-				});
+				const translated = await translator.translateKey('search:search-in-category', [ajaxify.data.name]);
+				const name = $('<div></div>').html(translated).text();
+				filterCategoryEl.find('.name').text(name);
 			}
 			filterCategoryEl.toggleClass('hidden', !(ajaxify.data.template.category && ajaxify.data.cid));
 		}

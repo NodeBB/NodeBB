@@ -1,7 +1,7 @@
 'use strict';
 
 // todo: replace with styleText from node:util in node 20+
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 // https://github.com/tj/commander.js/blob/master/examples/color-help.mjs
 module.exports = {

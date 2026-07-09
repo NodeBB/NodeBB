@@ -235,25 +235,26 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	// Check rate limit for this IP
-	const lockId = `pubkey:${ip}`;
-	const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
-	const lockStatus = await db.incrObjectField('locks', lockId);
-	if (lockStatus > 1 || currentCount >= 60) {
-		winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
-		throw new Error('[[error:activitypub.rate-limited]]');
+	// Check rate limit for this IP (0 = disabled)
+	if (meta.config.activitypubPublicKeyFetchRateLimit > 0) {
+		const lockId = `pubkey:${ip}`;
+		const currentCount = publicKeyFetchRateLimit.get(lockId) || 0;
+		if (currentCount >= meta.config.activitypubPublicKeyFetchRateLimit) {
+			winston.warn(`[activitypub/fetchPublicKey] Rate limit exceeded for IP ${ip}`);
+			throw new Error('[[error:activitypub.rate-limited]]');
+		}
+		publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
 	}
 
 	try {
-		// Use requests.get with built-in SSRF protections
-		// Set reasonable timeout and response size limit
+		// Use request.get with built-in SSRF protections
+		// Set reasonable timeout
 		const { body } = await request.get(uri, {
 			timeout: 5000, // 5 seconds
 			headers: {
 				'accept': ActivityPub._constants.acceptableTypes.at(1),
 			},
 			redirect: 'manual',
-			maxBodyLength: 1024 * 1024, // 1MB limit
 		});
 
 		// Process response and cache
@@ -287,9 +288,6 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 			throw new Error('[[error:activitypub.invalid-id]]');
 		}
 		throw err;
-	} finally {
-		await db.deleteObjectField('locks', lockId);
-		publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
 	}
 };
 
@@ -440,6 +438,13 @@ ActivityPub.get = async (type, id, uri, options) => {
 
 			const e = new Error(`[[error:activitypub.get-failed]]`);
 			e.code = `ap_get_${response.statusCode}`;
+			throw e;
+		}
+
+		if (!body || typeof body !== 'object' || Array.isArray(body)) {
+			ActivityPub.helpers.log(`[activitypub/get] Received non-object response from ${uri}`);
+			const e = new Error(`[[error:activitypub.get-failed]]`);
+			e.code = 'ap_get_invalid_response';
 			throw e;
 		}
 

@@ -18,7 +18,7 @@ utils.makeNumbersHumanReadable = function (elements) {
 	elements.each(function () {
 		const $this = $(this);
 		const toFixed = $this.attr('data-toFixed') || 1;
-		$this.html(utils.makeNumberHumanReadable($this.attr('title'), toFixed))
+		$this.text(utils.makeNumberHumanReadable($this.attr('title'), toFixed))
 			.removeClass('hidden');
 	});
 };
@@ -27,7 +27,7 @@ utils.addCommasToNumbers = function (elements) {
 	elements.each(function (index, element) {
 		const $element = $(element);
 		$element
-			.html(utils.addCommas($element.html()))
+			.text(utils.addCommas($element.text()))
 			.removeClass('hidden');
 	});
 };

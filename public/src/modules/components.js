@@ -58,6 +58,10 @@ define('components', function () {
 		'chat/recent/room': function (roomid) {
 			return $('[component="chat/recent/room"][data-roomid="' + roomid + '"]');
 		},
+
+		'chat/public/room': function (roomid) {
+			return $('[component="chat/public/room"][data-roomid="' + roomid + '"]');
+		},
 	};
 
 	components.get = function () {

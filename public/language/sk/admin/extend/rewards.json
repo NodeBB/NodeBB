@@ -12,6 +12,6 @@
 	"disable": "Zakázať",
 
 	"alert.delete-success": "Odmena bola úspešne vymazaná",
-	"alert.no-inputs-found": "Nepovolená odmena - nebol nájdený žiadny záznam.",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Odmeny boli úspešne uložené"
 }

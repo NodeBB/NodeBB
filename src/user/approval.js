@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -11,6 +10,7 @@ const groups = require('../groups');
 const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
+const tx = require('../translator');
 
 module.exports = function (User) {
 	User.createOrQueue = async function (req, userData, opts = {}) {
@@ -69,9 +69,9 @@ module.exports = function (User) {
 	async function sendNotificationToAdmins(username) {
 		const notifObj = await notifications.create({
 			type: 'new-register',
-			bodyShort: `[[notifications:new-register, ${username}]]`,
+			bodyShort: tx.compile('notifications:new-register', tx.escape(username)),
 			nid: `new-register:${username}`,
-			path: '/admin/manage/registration',
+			path: '/registration-queue',
 			mergeId: 'new-register',
 		});
 		await notifications.pushGroup(notifObj, 'administrators');
@@ -92,10 +92,11 @@ module.exports = function (User) {
 			});
 		}
 		await removeFromQueue(username);
-		await markNotificationRead(username);
+		await rescindNotification(username);
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });
 		await emailer.send('registration_accepted', uid, {
 			username: username,
+			email: userData.email,
 			subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
 			template: 'registration_accepted',
 			uid: uid,
@@ -117,16 +118,15 @@ module.exports = function (User) {
 		}
 	}
 
-	async function markNotificationRead(username) {
-		const nid = `new-register:${username}`;
+	async function rescindNotification(username) {
+		await notifications.rescind(`new-register:${username}`);
 		const uids = await groups.getMembers('administrators', 0, -1);
-		const promises = uids.map(uid => notifications.markRead(nid, uid));
-		await Promise.all(promises);
+		uids.forEach(uid => User.notifications.pushCount(uid));
 	}
 
 	User.rejectRegistration = async function (username) {
 		await removeFromQueue(username);
-		await markNotificationRead(username);
+		await rescindNotification(username);
 	};
 
 	async function removeFromQueue(username) {
@@ -167,8 +167,6 @@ module.exports = function (User) {
 		let users = await db.getObjects(keys);
 		users = users.filter(Boolean).map((user, index) => {
 			user.timestampISO = utils.toISOString(data[index].score);
-			user.email = validator.escape(String(user.email));
-			user.usernameEscaped = validator.escape(String(user.username));
 			delete user.hashedPassword;
 			return user;
 		});

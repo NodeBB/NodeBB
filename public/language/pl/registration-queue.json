@@ -1,0 +1,22 @@
+{
+	"queue": "Kolejka",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Nazwa",
+	"list.email": "Adres e-mail",
+	"list.ip": "IP",
+	"list.time": "Czas",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Zaproszenia",
+	"invitations.description": "Poniżej znajduje się pełna lista wysłanych zaproszeń. Użyj CTRL-f , by przeszukać listę po adresie e-mail lub nazwie użytkownika. <br><br>Nazwa użytkownika, który skorzystał z zaproszenia, zostanie wyświetlona po prawej stronie jego adresu e-mail.",
+	"invitations.inviter-username": "Nazwa użytkownika zapraszającego",
+	"invitations.invitee-email": "Adres e-mail zaproszonego",
+	"invitations.invitee-username": "Nazwa użytkownika zaproszonego (jeśli zarejestrowany)",
+
+	"invitations.confirm-delete": "Czy na pewno skasować to zaproszenie?"
+}

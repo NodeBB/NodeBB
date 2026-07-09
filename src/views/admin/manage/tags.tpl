@@ -31,10 +31,10 @@
 
 					<div class="tag-list">
 						{{{ each tags }}}
-						<div class="tag-row p-2 me-3 mb-1" data-tag="{tags.valueEscaped}">
+						<div class="tag-row p-2 me-3 mb-1" data-tag="{tags.value}">
 							<div>
 								<button disabled class="rounded-3 btn btn-light border position-relative">
-									{tags.valueEscaped}
+									{tags.value}
 									<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">{tags.score} <span class="visually-hidden">[[tags:tags]]</span>
 								</button>
 							</div>

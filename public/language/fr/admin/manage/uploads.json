@@ -9,5 +9,5 @@
     "filecount": "%1 fichiers",
     "new-folder": "Nouveau Dossier",
     "name-new-folder": "Entrer un nom pour le nouveau dossier",
-    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
+    "unsafe-file-warning": "Avertissement : ne téléversez pas de fichiers auxquels vous ne faites pas confiance. Les fichiers de certaines extensions seront téléchargés comme pièces jointes afin de prévenir les attaques XSS, mais des fichiers malveillants peuvent tout de même causer des dommages s’ils sont ouverts sur votre ordinateur."
 }

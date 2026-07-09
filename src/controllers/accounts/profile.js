@@ -134,11 +134,10 @@ async function getPosts(callerUid, userData, setSuffix) {
 
 function addTags(res, userData) {
 	const plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
-	res.locals.metaTags = [
+	res.locals.metaTags.push(...[
 		{
 			name: 'title',
 			content: userData.fullname || userData.username,
-			noEscape: true,
 		},
 		{
 			name: 'description',
@@ -147,25 +146,22 @@ function addTags(res, userData) {
 		{
 			property: 'og:title',
 			content: userData.fullname || userData.username,
-			noEscape: true,
 		},
 		{
 			property: 'og:description',
 			content: plainAboutMe,
 		},
-	];
+	]);
 
 	if (userData.picture) {
 		res.locals.metaTags.push(
 			{
 				property: 'og:image',
 				content: `${url}${userData.picture}`,
-				noEscape: true,
 			},
 			{
 				property: 'og:image:url',
 				content: `${url}${userData.picture}`,
-				noEscape: true,
 			}
 		);
 	}
@@ -181,10 +177,6 @@ function addTags(res, userData) {
 		res.locals.linkTags.push({
 			rel: 'canonical',
 			href: userData.url || userData.uid,
-		});
-		res.locals.metaTags.push({
-			name: 'robots',
-			content: 'noindex',
 		});
 	}
 

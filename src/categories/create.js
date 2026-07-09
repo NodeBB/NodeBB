@@ -84,7 +84,6 @@ module.exports = function (Categories) {
 		category = result.category;
 
 		await db.setObject(`category:${category.cid}`, category);
-
 		await db.sortedSetAddBulk([
 			['categories:cid', category.order, category.cid],
 			[`cid:${parentCid}:children`, category.order, category.cid],

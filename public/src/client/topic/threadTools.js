@@ -8,11 +8,12 @@ define('forum/topic/threadTools', [
 	'forum/topic/posts',
 	'api',
 	'hooks',
-	'bootbox',
+	'modals',
 	'alerts',
 	'bootstrap',
 	'helpers',
-], function (components, translator, handleBack, posts, api, hooks, bootbox, alerts, bootstrap, helpers) {
+	'benchpress',
+], function (components, translator, handleBack, posts, api, hooks, modals, alerts, bootstrap, helpers, Benchpress) {
 	const ThreadTools = {};
 
 	ThreadTools.init = function (tid, topicContainer) {
@@ -86,7 +87,7 @@ define('forum/topic/threadTools', [
 		topicContainer.on('click', '[component="topic/event/delete"]', function () {
 			const eventId = $(this).attr('data-topic-event-id');
 			const eventEl = $(this).parents('[data-topic-event-id]');
-			bootbox.confirm('[[topic:delete-event-confirm]]', (ok) => {
+			modals.confirm('[[topic:delete-event-confirm]]', (ok) => {
 				if (ok) {
 					api.del(`/topics/${tid}/events/${eventId}`, {})
 						.then(function () {
@@ -258,7 +259,7 @@ define('forum/topic/threadTools', [
 			case 'delete':
 			case 'restore':
 			case 'purge':
-				bootbox.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
+				modals.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
 				break;
 
 			case 'pin':
@@ -272,8 +273,8 @@ define('forum/topic/threadTools', [
 	}
 
 	ThreadTools.requestPinExpiry = function (body, onSuccess) {
-		app.parseAndTranslate('modals/set-pin-expiry', {}, function (html) {
-			const modal = bootbox.dialog({
+		Benchpress.render('modals/set-pin-expiry', {}).then(async (html) => {
+			const modal = await modals.dialog({
 				title: '[[topic:thread-tools.pin]]',
 				message: html,
 				onEscape: true,

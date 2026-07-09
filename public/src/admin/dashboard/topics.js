@@ -24,6 +24,7 @@ define('admin/dashboard/topics', [
 							const tbodyEl = document.querySelector('.topics-list tbody');
 							tbodyEl.innerHTML = '';
 							tbodyEl.append(...html.map((idx, el) => el));
+							html.find('.timeago').timeago();
 						});
 					});
 				}

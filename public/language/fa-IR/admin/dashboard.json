@@ -35,6 +35,8 @@
 	"prerelease-warning": "این یک نسخه <strong>پیش از انتشار</strong> NodeBB است. ممکن است اشکالات ناخواسته رخ دهد.<i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "ایمیل بازگشتی پیدا نشد!",
 	"running-in-development": "انجمن در حالت توسعه (development mode) در حال اجرا است. انجمن ممکن است برای اسیب پذیری های بالقوه باز باشد؛ لطفا با مدیر سیستم خود تماس بگیرید",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "جستجو در اخرین نسخه موجود NodeBB شکست خورد",
 
 	"notices": "اطلاعیه ها",

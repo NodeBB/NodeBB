@@ -47,8 +47,8 @@ module.exports = function (SocketUser) {
 		list.pictures = list.pictures.map(({ type, url, text }) => ({
 			type,
 			username: text,
-			picture: String(url),
-			selected: url === String(userObj.picture),
+			picture: url,
+			selected: url === userObj.picture,
 		}));
 
 		list.pictures.unshift({

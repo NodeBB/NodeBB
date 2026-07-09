@@ -13,7 +13,7 @@
 		<div class="administrator-area d-flex flex-wrap">
 		{{{ each admins.members }}}
 			<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{admins.members.uid}">
-				{buildAvatar(admins.members, "24px", true)}
+				{{buildAvatar(admins.members, "24px", true)}}
 				<a href="{config.relative_path}/user/{admins.members.userslug}">{admins.members.username}</a>
 				<button class="btn btn-ghost btn-sm p-0 remove-user-icon">
 					<i class="fa fa-fw fa-times"></i>
@@ -33,7 +33,7 @@
 		<div class="global-moderator-area mb-2 d-flex flex-wrap">
 		{{{ each globalMods.members }}}
 			<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{globalMods.members.uid}">
-				{buildAvatar(globalMods.members, "24px", true)}
+				{{buildAvatar(globalMods.members, "24px", true)}}
 				<a href="{config.relative_path}/user/{globalMods.members.userslug}">{globalMods.members.username}</a>
 				<button class="btn btn-ghost btn-sm p-0 remove-user-icon">
 					<i class="fa fa-fw fa-times"></i>
@@ -69,7 +69,7 @@
 			<div class="d-flex gap-2 justify-content-between flex-column flex-md-row align-items-start align-items-md-center mb-2 flex-wrap">
 				<div class="d-flex flex-column flex-md-row gap-2 align-items-md-center">
 					<div class="d-flex gap-1 align-items-center">
-						{buildCategoryIcon(@value, "28px", "rounded-1")}
+						{{buildCategoryIcon(@value, "28px", "rounded-1")}}
 						<h5 class="mb-0">{categoryMods.name}</h5>
 					</div>
 					{{{ if categoryMods.subCategoryCount }}}
@@ -85,7 +85,7 @@
 			<div class="moderator-area d-flex flex-wrap" data-cid="{categoryMods.cid}">
 				{{{ each categoryMods.moderators }}}
 				<div class="badge text-bg-light m-1 p-1 border d-inline-flex gap-1 align-items-center" data-uid="{categoryMods.moderators.uid}">
-					{buildAvatar(categoryMods.moderators, "24px", true)}
+					{{buildAvatar(categoryMods.moderators, "24px", true)}}
 					<a href="{config.relative_path}/user/{categoryMods.moderators.userslug}">{categoryMods.moderators.username}</a>
 					<button class="btn btn-ghost btn-sm p-0 remove-user-icon">
 						<i class="fa fa-fw fa-times" role="button"></i>

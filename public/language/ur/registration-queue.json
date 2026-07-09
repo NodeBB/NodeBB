@@ -1,0 +1,22 @@
+{
+	"queue": "قطار",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "نام",
+	"list.email": "ای میل",
+	"list.ip": "آئی پی ایڈریس",
+	"list.time": "وقت",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "دعوتیں",
+	"invitations.description": "نیچے بھیجی گئی دعوتوں کی مکمل فہرست ملے گی۔ فہرست میں ای میل یا صارف نام تلاش کرنے کے لیے 'Ctrl-F' استعمال کریں۔ <br><br>صارف نام اس صارف کے ای میل کے دائیں جانب دکھایا جائے گا جنہوں نے اپنی دعوت قبول کی ہو۔",
+	"invitations.inviter-username": "دعوت دینے والے کا صارف نام",
+	"invitations.invitee-email": "مدعو کیے گئے کا ای میل",
+	"invitations.invitee-username": "مدعو کیے گئے کا صارف نام (اگر رجسٹرڈ ہو)",
+
+	"invitations.confirm-delete": "کیا آپ واقعی اس دعوت کو حذف کرنا چاہتے ہیں؟"
+}

@@ -1,0 +1,22 @@
+{
+	"queue": "申请",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "全部拒绝",
+	"reject-all-confirm": "您要拒绝所有注册请求吗？",
+	"list.name": "姓名",
+	"list.email": "邮件",
+	"list.ip": "IP",
+	"list.time": "时间",
+	"list.username-spam": "<div class=&quot;text-start&quot;>频率: %1<br/>出现次数: %2<br/>置信度: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>频率: %1<br/>出现次数: %2<br/>置信度: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>频率: %1<br/>出现次数: %2<br/>置信度: %3</div>",
+
+	"invitations": "邀请",
+	"invitations.description": "下面列出了所有已发送的邀请。您可以使用 Ctrl+F 快捷键搜索列表中的邮箱或用户名。<br><br>如果用户接受了邀请，他的用户名将会被显示在邮箱右边。",
+	"invitations.inviter-username": "邀请人用户名",
+	"invitations.invitee-email": "受邀请的电子邮箱",
+	"invitations.invitee-username": "受邀请的用户名(如果已经注册)",
+
+	"invitations.confirm-delete": "确认删除这个邀请？"
+}

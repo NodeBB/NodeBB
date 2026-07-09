@@ -59,14 +59,15 @@ Crossposts.add = async function (tid, cid, uid) {
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
 	}
-	const [exists, allowed] = await Promise.all([
+	const [exists, destAllowed, sourceAllowed] = await Promise.all([
 		categories.exists(cid),
 		uid === 0 || privileges.categories.can('topics:crosspost', cid, uid),
+		uid === 0 || privileges.topics.can('topics:read', tid, uid),
 	]);
 	if (!exists) {
 		throw new Error('[[error:invalid-cid]]');
 	}
-	if (!allowed) {
+	if (!destAllowed || !sourceAllowed) {
 		throw new Error('[[error:not-allowed]]');
 	}
 	if (uid < 0) {

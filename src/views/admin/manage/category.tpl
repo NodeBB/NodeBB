@@ -1,7 +1,7 @@
 <div class="category acp-page-container" data-cid="{category.cid}">
 	<div component="settings/main/header" class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
 		<div class="col-12 col-md-8 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:edit-category]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0 text-nowrap">[[admin/manage/categories:edit-category]]</h4>
 			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 		</div>
 		<div class="col-12 col-md-4 px-0 px-md-3 ">

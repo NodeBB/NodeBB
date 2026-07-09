@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/tag', [
-	'topicList', 'api', 'alerts', 'hooks', 'translator', 'bootstrap', 'components',
-], function (topicList, api, alerts, hooks, translator, bootstrap, components) {
+	'topicList', 'api', 'alerts', 'hooks', 'bootstrap', 'components',
+], function (topicList, api, alerts, hooks, bootstrap, components) {
 	const Tag = {};
 
 	Tag.init = function () {
@@ -41,24 +41,12 @@ define('forum/tag', [
 		}
 
 		function setFollowState(state) {
-			const titles = {
-				follow: '[[tags:watching]]',
-				unfollow: '[[tags:not-watching]]',
-			};
-
-			translator.translate(titles[state], function (translatedTitle) {
-				const tooltip = bootstrap.Tooltip.getInstance('[component="tag/watch"]');
-				if (tooltip) {
-					tooltip.setContent({ '.tooltip-inner': translatedTitle });
-				}
-			});
-
-			let menu = components.get('tag/following/menu');
-			menu.toggleClass('hidden', state !== 'follow');
+			const followingMenu = components.get('tag/following/menu');
+			followingMenu.toggleClass('hidden', state !== 'follow');
 			components.get('tag/following/check').toggleClass('fa-check', state === 'follow');
 
-			menu = components.get('tag/not-following/menu');
-			menu.toggleClass('hidden', state !== 'unfollow');
+			const notFollowingMenu = components.get('tag/not-following/menu');
+			notFollowingMenu.toggleClass('hidden', state !== 'unfollow');
 			components.get('tag/not-following/check').toggleClass('fa-check', state === 'unfollow');
 		}
 	};

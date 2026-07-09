@@ -1,14 +1,14 @@
 {
 	"name": "Verda",
-	"latest": "Latest",
-	"latest-local": "Latest (Local)",
-	"latest-all": "Latest (All)",
-	"popular-day": "Popular (Day)",
-	"popular-week": "Popular (Week)",
-	"popular-month": "Popular (Month)",
-	"popular-year": "Popular (Year)",
-	"popular-alltime": "Popular (All Time)",
-	"recent": "All",
+	"latest": "Siste",
+	"latest-local": "Siste (lokal)",
+	"latest-all": "Siste (alle)",
+	"popular-day": "Populært (dag)",
+	"popular-week": "Populært (veke)",
+	"popular-month": "Populært (månad)",
+	"popular-year": "Populært (år)",
+	"popular-alltime": "Populært (heile perioden)",
+	"recent": "Alle",
 	"help": "Hjelp",
 
 	"help.title": "Kva er denne sida?",
@@ -18,12 +18,12 @@
 	"help.federating": "På same måte, dersom brukarar frå utsida av dette forumet begynner å følge <em>deg</em>, vil innlegga dine òg begynne å visast på desse appane og nettsidene.",
 	"help.next-generation": "Dette er den neste generasjonen av sosiale medium, begynn å bidra i dag!",
 
-	"onboard.title": "A world of content at your fingertips&hellip;",
-	"onboard.what": "Think of this as your global discovery feed. It brings together interesting discussions from across the web and other communities, all in one place.",
-	"onboard.why": "While you can browse what's trending now, the best way to use this feed is to make it your own. By creating an account, you can follow specific creators and topics to filter out the noise and see only what matters to you.",
-	"onboard.how": "Ready to dive in? Create an account to start following others, get notified when people reply to you, and save your favorite finds.",
+	"onboard.title": "Ei verd av innhald rett framfor deg&hellip;",
+	"onboard.what": "Tenk på dette som ein global oppdagingsstraum. Han samlar interessante diskusjonar frå heile nettet og andre fellesskap på éin stad.",
+	"onboard.why": "Du kan utforske det som er populært akkurat no, men denne straumen fungerer best når du gjer han til din eigen. Ved å opprette ein konto kan du følge bestemte skaparar og tema, filtrere bort støyen og berre sjå det som er relevant for deg.",
+	"onboard.how": "Klar for å kome i gang? Opprett ein konto for å begynne å følge andre, få varsel når nokon svarar deg, og lagre favorittane dine.",
 
-	"category-search": "Find a category...",
-	"see-more": "See more",
-	"see-less": "See less"
+	"category-search": "Finn kategori",
+	"see-more": "Sjå meir",
+	"see-less": "Sjå mindre"
 }

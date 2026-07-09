@@ -1,0 +1,22 @@
+{
+	"queue": "Kuyruk",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "İsim",
+	"list.email": "E-posta",
+	"list.ip": "IP",
+	"list.time": "Zaman",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Davetiyeler",
+	"invitations.description": "Aşağıda, gönderilen davetiyelerin tam listesi bulunmaktadır. E-posta veya kullanıcı adı ile listede arama yapmak için ctrl-f kısayolunu kullanın. <br><br>Davetiyelerini kullanan kullanıcıların e-postalarının sağında kullanıcı adı görüntülenir.",
+	"invitations.inviter-username": "Davet Edenin Kullanıcı Adı",
+	"invitations.invitee-email": "Davetli E-postası",
+	"invitations.invitee-username": "(Eğer kaydolmuşsa) Davetlinin Kullanıcı Adı",
+
+	"invitations.confirm-delete": "Bu daveti silmek istediğinizden emin misiniz?"
+}

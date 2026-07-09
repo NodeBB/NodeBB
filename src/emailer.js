@@ -16,6 +16,7 @@ const User = require('./user');
 const Plugins = require('./plugins');
 const meta = require('./meta');
 const translator = require('./translator');
+const languages = require('./languages');
 const pubsub = require('./pubsub');
 const file = require('./file');
 
@@ -227,8 +228,8 @@ Emailer.send = async (template, uid, params) => {
 
 	let userData = await User.getUserFields(uid, ['email', 'username', 'email:confirmed', 'banned']);
 
-	// 'welcome' and 'verify-email' explicitly used passed-in email address
-	if (['welcome', 'verify-email'].includes(template)) {
+	// 'welcome', 'verify-email' & 'registration_accepted' explicitly use passed-in email address
+	if (['welcome', 'verify-email', 'registration_accepted'].includes(template)) {
 		userData.email = params.email;
 	} else if (meta.config.includeUnverifiedEmails && !userData.email) {
 		// get unconfirmed email to use
@@ -268,7 +269,7 @@ Emailer.send = async (template, uid, params) => {
 	params.uid = uid;
 	params.username = userData.username;
 	params.displayname = userData.displayname;
-	params.rtl = await translator.translate('[[language:dir]]', userSettings.userLang) === 'rtl';
+	params.rtl = translator.languageDirection(userSettings.userLang) === 'rtl';
 
 	const result = await Plugins.hooks.fire('filter:email.cancel', {
 		cancel: false, // set to true in plugin to cancel sending email
@@ -376,7 +377,10 @@ Emailer.sendViaFallback = async (data) => {
 };
 
 Emailer.renderAndTranslate = async (template, params, lang) => {
-	const html = await app.renderAsync(`emails/${template}`, params);
+	const html = await app.renderAsync(`emails/${template}`, {
+		...params,
+		_i18n: languages.getFull(lang),
+	});
 	return await translator.translate(html, lang);
 };
 

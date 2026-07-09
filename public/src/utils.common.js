@@ -364,8 +364,7 @@ const utils = {
 		}
 		// Basic PEM validation
 		return pem.startsWith('-----BEGIN PUBLIC KEY-----') &&
-			pem.trim().endsWith('-----END PUBLIC KEY-----') &&
-			pem.includes('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA');
+			pem.trim().endsWith('-----END PUBLIC KEY-----');
 	},
 
 	languageKeyRegex: /\[\[[\w]+:.+\]\]/,
@@ -379,6 +378,7 @@ const utils = {
 			'fa-IR': 'fa',
 			'pt-BR': 'pt-br',
 			nb: 'no',
+			'nn-NO': 'no',
 		};
 		return mapping.hasOwnProperty(userLang) ? mapping[userLang] : userLang;
 	},
@@ -526,7 +526,7 @@ const utils = {
 	},
 
 	escapeHTML: function (str) {
-		if (str == null) {
+		if (str == null || str === '') {
 			return '';
 		}
 		if (!str) {

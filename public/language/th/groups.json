@@ -50,6 +50,8 @@
     "details.hidden": "ซ่อน",
     "details.hidden-help": "หากเป็นไปได้ จะไม่แสดงในรายชื่อกลุ่ม และผู้ใช้จะต้องได้รับการเชิญเท่านั้นจึงจะเข้าเป็นสมาชิกได้",
     "details.delete-group": "ลบกลุ่ม",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "กลุ่มส่วนตัวถูกปิดใช้งานโดยเลเวลระบบ ตัวเลือกนี้จะไม่ได้ทำอะไรทั้งสิ้น",
     "event.updated": "ข้อมูลกลุ่มได้รับการบันทึกแล้ว",
     "event.deleted": "กลุ่ม  \"%1\" ได้ถูกลบไปแล้ว",

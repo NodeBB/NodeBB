@@ -18,7 +18,7 @@ const utils = require('./utils');
 const emailer = require('./emailer');
 const ttlCache = require('./cache/ttl');
 const cron = require('./cron');
-const translator = require('./translator');
+const tx = require('./translator');
 
 const Notifications = module.exports;
 
@@ -334,7 +334,7 @@ async function sendEmail({ uids, notification }, cacheKey, reason) {
 	if (['new-reply', 'new-chat'].includes(notification.type)) {
 		notification['cta-type'] = notification.type;
 	}
-	let body = notification.bodyEmail || notification.bodyLong || '';
+	let body = notification.bodyLong || '';
 	if (meta.config.removeEmailNotificationImages) {
 		body = body.replace(/<img[^>]*>/, '');
 	}
@@ -527,16 +527,6 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
-			function typeFromLength(items) {
-				if (items.length <= 1) {
-					return '';
-				} else if (items.length === 2) {
-					return 'dual';
-				} else if (items.length === 3) {
-					return 'triple';
-				}
-				return 'multiple';
-			}
 			let set;
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
@@ -554,25 +544,15 @@ Notifications.merge = async function (notifications) {
 					const { roomId, roomName, type, user } = set[0];
 					const isGroupChat = type === 'new-group-chat';
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
-						translator.compile('notifications:new-messages-in', set.length, roomName) :
-						translator.compile('notifications:new-messages-from', set.length, user.displayname);
+						tx.compile('notifications:new-messages-in', set.length, tx.escape(roomName)) :
+						tx.compile('notifications:new-messages-from', set.length, tx.escape(user.displayname));
 					break;
 				}
 
 				case 'notifications:user-posted-in-public-room': {
-					const usernames = _.uniq(set.map(n => n?.user?.displayname)).filter(Boolean);
-					const type = typeFromLength(usernames);
-					const isMultiple = type === 'multiple';
-					const txArgs = [
-						`${mergeId}${type ? `-${type}` : ''}`,
-						...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
-						...(isMultiple ? [usernames.length - 2] : []),
-						notifObj.roomIcon,
-						notifObj.roomName,
-					];
-
-					notifObj.bodyShort = translator.compile(...txArgs);
-					notifObj.path = set[set.length - 1].path;
+					buildMergedNotif(mergeId, notifObj, set, [
+						notifObj.roomIcon, tx.escape(notifObj.roomName),
+					]);
 					break;
 				}
 				case 'notifications:upvoted-your-post-in':
@@ -581,17 +561,9 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-flagged-post-in':
 				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
-					const usernames = _.uniq(set.map(n => n?.user?.displayname)).filter(Boolean);
-					const type = typeFromLength(usernames);
-					const isMultiple = type === 'multiple';
-					const txArgs = [
-						`${mergeId}${type ? `-${type}` : ''}`,
-						...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
-						...(isMultiple ? [usernames.length - 2] : []),
-						utils.decodeHTMLEntities(notifObj.topicTitle || ''),
-					];
-					notifObj.bodyShort = translator.compile(...txArgs);
-					notifObj.path = set[set.length - 1].path;
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.topicTitle),
+					]);
 					break;
 				}
 
@@ -618,5 +590,30 @@ Notifications.merge = async function (notifications) {
 	});
 	return data && data.notifications;
 };
+
+function buildMergedNotif(mergeId, notifObj, notifObjsToMerge, args) {
+	const usernames = _.uniq(notifObjsToMerge.map(n => tx.escape(n?.user?.displayname))).filter(Boolean);
+	const type = typeFromLength(usernames);
+	const isMultiple = type === 'multiple';
+	const txArgs = [
+		`${mergeId}${type ? `-${type}` : ''}`,
+		...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
+		...(isMultiple ? [usernames.length - 2] : []),
+		...args,
+	];
+	notifObj.bodyShort = tx.compile(...txArgs);
+	notifObj.path = notifObjsToMerge[notifObjsToMerge.length - 1].path;
+}
+
+function typeFromLength(items) {
+	if (items.length <= 1) {
+		return '';
+	} else if (items.length === 2) {
+		return 'dual';
+	} else if (items.length === 3) {
+		return 'triple';
+	}
+	return 'multiple';
+}
 
 require('./promisify')(Notifications);

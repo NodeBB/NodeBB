@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Você não possui permissão para deletar esta mensagem",
     "chat-edit-duration-expired": "Você só pode editar mensagens de chat %1 segundo(s) após postar",
     "chat-delete-duration-expired": "Você só pode deletar mensagens de chat %1 segundo(s) após postar",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Essa mensagem de chat já foi deletada",
     "chat-restored-already": "Essa mensagem de chat já foi restaurada.",
     "chat-room-does-not-exist": "A sala de chat não existe.",

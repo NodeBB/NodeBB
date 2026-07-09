@@ -12,6 +12,6 @@
 	"disable": "Desativar",
 
 	"alert.delete-success": "Recompensa apagada com sucesso",
-	"alert.no-inputs-found": "Recompensa ilegal - não foram encontradas entradas!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Recompensas guardadas com sucesso"
 }

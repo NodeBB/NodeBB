@@ -80,7 +80,7 @@ settingsController.get = async function (req, res, next) {
 	];
 
 	userData.upvoteNotifFreq = notifFreqOptions.map(
-		name => ({ name: name, selected: name === userData.settings.upvoteNotifFreq })
+		name => ({ name: name, label: `user:upvote-notif-freq.${name}`, selected: name === userData.settings.upvoteNotifFreq })
 	);
 
 	userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };

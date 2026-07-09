@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function (bootbox, translator, alerts) {
+define('admin/appearance/themes', ['modals', 'translator', 'alerts'], function (modals, translator, alerts) {
 	const Themes = {};
 
 	Themes.init = function () {
@@ -49,7 +49,7 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 			if (config['theme:id'] === 'nodebb-theme-harmony') {
 				return;
 			}
-			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
+			modals.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
@@ -76,25 +76,19 @@ define('admin/appearance/themes', ['bootbox', 'translator', 'alerts'], function 
 	};
 
 	function highlightSelectedTheme(themeId) {
-		translator.translate('[[admin/appearance/themes:select-theme]]  ||  [[admin/appearance/themes:current-theme]]', function (text) {
-			text = text.split('  ||  ');
-			const select = text[0];
-			const current = text[1];
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]')
+			.translateText('[[admin/appearance/themes:select-theme]]')
+			.removeClass('btn-success')
+			.addClass('btn-primary');
 
-			$('[data-theme]')
-				.removeClass('selected')
-				.find('[data-action="use"]')
-				.html(select)
-				.removeClass('btn-success')
-				.addClass('btn-primary');
-
-			$('[data-theme="' + themeId + '"]')
-				.addClass('selected')
-				.find('[data-action="use"]')
-				.html(current)
-				.removeClass('btn-primary')
-				.addClass('btn-success');
-		});
+		$('[data-theme="' + themeId + '"]')
+			.addClass('selected')
+			.find('[data-action="use"]')
+			.translateText('[[admin/appearance/themes:current-theme]]')
+			.removeClass('btn-primary')
+			.addClass('btn-success');
 	}
 
 	return Themes;

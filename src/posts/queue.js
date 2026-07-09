@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const nconf = require('nconf');
 
 const db = require('../database');
@@ -16,6 +15,7 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
+const helpers = require('../helpers');
 
 const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
 
@@ -42,13 +42,13 @@ module.exports = function (Posts) {
 				if (postData) {
 					postData.user = userData[index];
 					if (postData.user.uid === 0 && postData.data.handle) {
-						postData.user.username = validator.escape(String(postData.data.handle));
+						postData.user.username = String(postData.data.handle);
 						postData.user.displayname = postData.user.username;
 						postData.user.fullname = postData.user.username;
 					}
 					postData.data.content = postData.data.sourceContent || postData.data.content;
-					postData.data.rawContent = validator.escape(String(postData.data.content));
-					postData.data.title = validator.escape(String(postData.data.title || ''));
+					postData.data.rawContent = String(postData.data.content);
+					postData.data.title = String(postData.data.title || '');
 				}
 			});
 			cache.set('post-queue', _.cloneDeep(postData));
@@ -216,6 +216,15 @@ module.exports = function (Posts) {
 		const id = `${type}-${now}`;
 		await canPost(type, data);
 
+		if (type === 'crosspost' && data.tid && await db.isSetMember('post:queue:rejected:crosspost', String(data.tid))) {
+			return {
+				id: id,
+				type: type,
+				queued: false,
+				message: '[[success:crosspost-already-rejected]]',
+			};
+		}
+
 		if (data.pid) {
 			await removeFromQueueByPid(data.pid);
 		}
@@ -237,37 +246,37 @@ module.exports = function (Posts) {
 		cache.del('post-queue');
 
 		await plugins.hooks.fire('action:post-queue.save', payload);
-		const cid = await getCid(type, data);
-		const uids = await getNotificationUids(cid);
-		const bodyEmail = await parseBodyEmail(cid, type, data);
 
-		let bodyShort;
-		if (type === 'reply') {
-			bodyShort = '[[notifications:post-awaiting-review]]';
-		} else if (type === 'crosspost') {
-			bodyShort = '[[notifications:crosspost-awaiting-review]]';
-		} else {
-			bodyShort = '[[notifications:topic-awaiting-review]]';
-		}
-
+		const typeToTx = {
+			reply: '[[notifications:post-awaiting-review]]',
+			crosspost: '[[notifications:crosspost-awaiting-review]]',
+			topic: '[[notifications:topic-awaiting-review]]',
+		};
 		let bodyLong;
 		if (type === 'reply') {
 			bodyLong = await plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content);
 		} else {
-			bodyLong = validator.escape(String(data.title));
+			bodyLong = helpers.escape(String(data.title));
 		}
 
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
 			mergeId: `post-queue-${type}-uid-${data.uid}`,
-			bodyShort,
+			bodyShort: typeToTx[type],
 			bodyLong: bodyLong,
-			bodyEmail: bodyEmail,
 			path: `/post-queue/${id}`,
 			from: data.uid,
 		});
-		await notifications.push(notifObj, uids);
+		if (notifObj) {
+			const cid = await getCid(type, data);
+			const [uids, emailData] = await Promise.all([
+				getNotificationUids(cid),
+				getEmailData(cid, type, data),
+			]);
+			await notifications.push({ ...notifObj, ...emailData }, uids);
+		}
+
 		return {
 			id: id,
 			type: type,
@@ -276,7 +285,7 @@ module.exports = function (Posts) {
 		};
 	};
 
-	async function parseBodyEmail(cid, type, data) {
+	async function getEmailData(cid, type, data) {
 		const url = nconf.get('url');
 		const [content, category, userData] = await Promise.all([
 			plugins.hooks.fire('filter:parse.raw', data.sourceContent || data.content),
@@ -294,13 +303,7 @@ module.exports = function (Posts) {
 			topic.title = await topics.getTopicField(data.tid, 'title');
 			topic.url = `${url}/topic/${data.tid}`;
 		}
-		const { app } = require('../webserver');
-		return await app.renderAsync('emails/partials/post-queue-body', {
-			content: content,
-			category: category,
-			user: userData,
-			topic: topic,
-		});
+		return { content, category, topic, user: userData };
 	}
 
 	async function getCid(type, data) {
@@ -341,26 +344,6 @@ module.exports = function (Posts) {
 		}
 	}
 
-	Posts.removeFromQueueByTid = async function (tid) {
-		// todo: refactor this to be more general (search by different values in queue hash or hash.data)
-		const tids = Array.isArray(tid) ? tid : [tid];
-		const ids = await db.getSortedSetRange('post:queue', 0, -1);
-		if (!ids.length) {
-			return [];
-		}
-		const keys = ids.map(id => `post:queue:${id}`);
-		const items = await db.getObjects(keys);
-		const toRemove = [];
-		items.forEach((item, idx) => {
-			const data = JSON.parse(item.data);
-			if (tids.includes(String(data.tid))) {
-				toRemove.push(ids[idx]);
-			}
-		});
-		await Promise.all(toRemove.map(removeFromQueue));
-		return toRemove;
-	};
-
 	Posts.removeFromQueue = async function (id) {
 		const data = await getParsedObject(id);
 		if (!data) {
@@ -368,6 +351,9 @@ module.exports = function (Posts) {
 		}
 		const result = await plugins.hooks.fire('filter:post-queue:removeFromQueue', { data: data });
 		await removeFromQueue(id);
+		if (result.data.type === 'crosspost' && result.data.data.tid) {
+			await db.setAdd('post:queue:rejected:crosspost', String(result.data.data.tid));
+		}
 		plugins.hooks.fire('action:post-queue:removeFromQueue', { data: result.data });
 		return result.data;
 	};
@@ -441,7 +427,7 @@ module.exports = function (Posts) {
 	}
 
 	async function createCrosspost(data) {
-		await topics.crossposts.add(data.tid, data.crosspostCid, 'system');
+		await topics.crossposts.add(data.tid, data.crosspostCid, 0);
 		return { tid: data.tid };
 	}
 

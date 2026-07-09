@@ -2,12 +2,12 @@
 
 
 define('admin/extend/widgets', [
-	'bootbox',
+	'modals',
 	'alerts',
 	'jquery-ui/widgets/sortable',
 	'jquery-ui/widgets/draggable',
 	'jquery-ui/widgets/droppable',
-], function (bootbox, alerts) {
+], function (modals, alerts) {
 	const Widgets = {};
 
 	Widgets.init = function () {
@@ -89,7 +89,7 @@ define('admin/extend/widgets', [
 		}).on('click', '.delete-widget', function () {
 			const panel = $(this).parents('.widget-panel');
 
-			bootbox.confirm('[[admin/extend/widgets:alert.confirm-delete]]', function (confirm) {
+			modals.confirm('[[admin/extend/widgets:alert.confirm-delete]]', function (confirm) {
 				if (confirm) {
 					panel.remove();
 				}

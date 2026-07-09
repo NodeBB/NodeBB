@@ -9,7 +9,7 @@ module.exports = function (opts) {
 
 	// lru-cache@7 deprecations
 	const winston = require('winston');
-	const chalk = require('chalk');
+	const chalk = require('chalk').default;
 
 	// sometimes we kept passing in `length` with no corresponding `maxSize`.
 	// This is now enforced in v7; drop superfluous property

@@ -124,7 +124,7 @@
 					<label for="hsts-preload" class="form-check-label">[[admin/settings/advanced:hsts.preload]]</label>
 				</div>
 				<p class="form-text">
-					[[admin/settings/advanced:hsts.help, https:\/\/hstspreload.org\/]]
+					[[admin/settings/advanced:hsts.help, https://hstspreload.org]]
 				</p>
 
 			</div>

@@ -241,12 +241,6 @@ describe('Admin Controllers', () => {
 		assert.strictEqual(body.users.length, 0);
 	});
 
-	it('should load /admin/manage/registration', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar });
-		assert.equal(response.statusCode, 200);
-		assert(body);
-	});
-
 	it('should 404 if users is not privileged', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/registration-queue`);
 		assert.equal(response.statusCode, 404);

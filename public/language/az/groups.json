@@ -50,6 +50,8 @@
     "details.hidden": "Gizli",
     "details.hidden-help": "Aktivləşdirilərsə, bu qrup qruplar siyahısında tapılmayacaq və istifadəçilər əl ilə dəvət olunmalı olacaqlar",
     "details.delete-group": "Qrupu sil",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Şəxsi qruplar sistem səviyyəsində deaktiv edilib, bu seçim heç bir şey etmir",
     "event.updated": "Qrup təfərrüatları yeniləndi",
     "event.deleted": "\"%1\" qrupu silindi",

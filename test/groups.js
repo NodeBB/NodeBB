@@ -17,7 +17,7 @@ const apiGroups = require('../src/api/groups');
 const meta = require('../src/meta');
 const navigation = require('../src/navigation/admin');
 const translator = require('../src/translator');
-
+const request = require('../src/request');
 
 describe('Groups', () => {
 	let adminUid;
@@ -150,15 +150,20 @@ describe('Groups', () => {
 	describe('description', () => {
 		it('should not translate group description', async () => {
 			const desc = '[[global:403.login, javascript:alert(document.domain)]]';
-			const txEscapedDesc = translator.escape(desc);
 			await Groups.create({
-				name: 'tx escape',
+				name: 'tx-escape',
 				description: desc,
 				private: 0,
 				hidden: 0,
 			});
-			const data = await Groups.get('tx escape', {});
-			assert.strictEqual(data.descriptionParsed, txEscapedDesc);
+			const data = await Groups.get('tx-escape', {});
+			// should not be tx escaped in api
+			assert.strictEqual(data.descriptionParsed, desc);
+
+			// should not be translated in the html
+			const { response, body } = await request.get(`${nconf.get('url')}/groups/tx-escape`, {});
+			assert(body.includes('[[global:403.login, javascript:alert(document.domain)]]'));
+			assert(!body.includes('Perhaps you should'));
 		});
 	});
 
@@ -493,7 +498,7 @@ describe('Groups', () => {
 			assert.strictEqual('updatetestgroup', groupObj.slug);
 
 			const navItems = await navigation.get();
-			assert.strictEqual(navItems[0].route, '&#x2F;categories');
+			assert.strictEqual(navItems[0].route, '/categories');
 		});
 
 		it('should fail if system groups is being renamed', (done) => {
@@ -783,6 +788,35 @@ describe('Groups', () => {
 		it('should allow admins to join private groups', async () => {
 			await apiGroups.join({ uid: adminUid }, { uid: adminUid, slug: 'global-moderators' });
 			assert(await Groups.isMember(adminUid, 'Global Moderators'));
+		});
+
+		it('should let a user who can approve membership requests join a private group immediately', async () => {
+			meta.config.allowPrivateGroups = 1;
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			// global moderators can approve requests for non-system groups
+			await Groups.join('Global Moderators', uid);
+			const slug = await Groups.getGroupField('PrivateCanJoin', 'slug');
+			await apiGroups.join({ uid: uid }, { slug: slug, uid: uid });
+			const [isMember, isPending] = await Promise.all([
+				Groups.isMember(uid, 'PrivateCanJoin'),
+				Groups.isPending(uid, 'PrivateCanJoin'),
+			]);
+			assert.strictEqual(isMember, true);
+			assert.strictEqual(isPending, false);
+			await Groups.leave('Global Moderators', uid);
+		});
+
+		it('should place a user who cannot approve requests into the pending queue', async () => {
+			meta.config.allowPrivateGroups = 1;
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			const slug = await Groups.getGroupField('PrivateCanJoin', 'slug');
+			await apiGroups.join({ uid: uid }, { slug: slug, uid: uid });
+			const [isMember, isPending] = await Promise.all([
+				Groups.isMember(uid, 'PrivateCanJoin'),
+				Groups.isPending(uid, 'PrivateCanJoin'),
+			]);
+			assert.strictEqual(isMember, false);
+			assert.strictEqual(isPending, true);
 		});
 	});
 
@@ -1141,6 +1175,16 @@ describe('Groups', () => {
 		it('should load more members', async () => {
 			const { users } = await apiGroups.listMembers({ uid: adminUid }, { after: 0, groupName: 'PrivateCanJoin' });
 			assert(Array.isArray(users));
+		});
+
+		it('should not allow loading group list if user does not have view:groups privilege', async () => {
+			const privileges = require('../src/privileges');
+			await privileges.global.rescind(['groups:view:groups'], 'registered-users');
+			await assert.rejects(
+				apiGroups.list({ uid: testUid }, { after: 0, sort: 'name' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+			await privileges.global.give(['groups:view:groups'], 'registered-users');
 		});
 	});
 

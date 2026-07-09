@@ -1,0 +1,22 @@
+{
+	"queue": "Հերթ",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Անուն ",
+	"list.email": "Էլ. փոստ",
+	"list.ip": "IP",
+	"list.time": "Ժամանակ",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Հրավերներ",
+	"invitations.description": "Ստորև ներկայացված է ուղարկված հրավերների ամբողջական ցանկը: Օգտագործեք ctrl-f՝ ցանկը էլեկտրոնային փոստով կամ օգտատիրոջ անունով որոնելու համար: Օգտատիրոջ անունը կցուցադրվի նամակների աջ կողմում այն օգտատերերի համար, ովքեր օգտագործել են իրենց հրավերները:",
+	"invitations.inviter-username": "Հրավիրողի օգտանունը",
+	"invitations.invitee-email": "Հրավիրվածի էլ. փոստը",
+	"invitations.invitee-username": "Հրավիրողի օգտանունը (եթե գրանցված է)",
+
+	"invitations.confirm-delete": "Վստա՞հ եք, որ ցանկանում եք ջնջել այս հրավերը:"
+}

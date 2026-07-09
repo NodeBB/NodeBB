@@ -5,7 +5,7 @@ const cproc = require('child_process');
 const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 
 const { paths, pluginNamePattern } = require('../constants');

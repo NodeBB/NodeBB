@@ -3,11 +3,12 @@
 
 define('forum/post-queue', [
 	'categoryFilter', 'categorySelector', 'api', 'alerts',
-	'translator', 'bootbox', 'accounts/moderate', 'accounts/delete',
-	'autocomplete', 'uploader',
+	'translator', 'modals', 'accounts/moderate', 'accounts/delete',
+	'autocomplete', 'uploader', 'benchpress', 'helpers',
 ], function (
-	categoryFilter, categorySelector, api, alerts, translator,
-	bootbox, AccountModerate, AccountsDelete, autocomplete, uploader
+	categoryFilter, categorySelector, api, alerts,
+	translator, modals, AccountModerate, AccountsDelete,
+	autocomplete, uploader, Benchpress, helpers
 ) {
 	const PostQueue = {};
 
@@ -121,7 +122,7 @@ define('forum/post-queue', [
 			const linkList = linkContainer.find('[component="post-queue/link-container/list"]');
 			const linksInPost = $el.find('.post-content a');
 			linksInPost.each((idx, link) => {
-				const href = $(link).attr('href');
+				const href = helpers.escape($(link).attr('href'));
 				linkList.append(`<li><a href="${href}">${href}</a></li>`);
 			});
 			linkContainer.toggleClass('hidden', !linksInPost.length);
@@ -130,7 +131,7 @@ define('forum/post-queue', [
 
 	function confirmReject(msg) {
 		return new Promise((resolve) => {
-			bootbox.confirm(msg, resolve);
+			modals.confirm(msg, resolve);
 		});
 	}
 
@@ -280,6 +281,10 @@ define('forum/post-queue', [
 					const action = subselector.getAttribute('data-action');
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
 					switch (action) {
+						case 'editTitle':
+						case 'editContent':
+							// handled in handleContentEdit
+							break;
 						case 'editCategory': {
 							const postEl = e.target.closest('[data-id]');
 							if (e.target.closest('[data-crosspost]')) {
@@ -400,51 +405,52 @@ define('forum/post-queue', [
 	}
 
 	async function getMessage(title) {
-		const reasons = await socket.emit('user.getCustomReasons', { type: 'post-queue' });
-		const html = await app.parseAndTranslate('partials/custom-reason', { reasons });
-
-		return new Promise((resolve) => {
+		let done;
+		const userInputPromise = new Promise((resolve) => {
 			let resolved = false;
-			const done = (value) => {
+			done = (value) => {
 				if (resolved) {
 					return;
 				}
 				resolved = true;
 				resolve(value);
 			};
+		});
 
-			const modal = bootbox.dialog({
-				title: title,
-				message: `<form class="form">${html.html()}</form>`,
-				show: true,
-				onEscape: true,
-				buttons: {
-					close: {
-						label: '[[global:close]]',
-						className: 'btn-link',
-						callback: function () {
-							done(false);
-						},
-					},
-					submit: {
-						label: '[[modules:bootbox.confirm]]',
-						callback: function () {
-							done(modal.find('[name="reason"]').val());
-						},
+		const reasons = await socket.emit('user.getCustomReasons', { type: 'post-queue' });
+		const html = await Benchpress.render('partials/custom-reason', { reasons });
+		const modal = await modals.dialog({
+			title: title,
+			message: `<form class="form">${html}</form>`,
+			show: true,
+			onEscape: true,
+			buttons: {
+				close: {
+					label: '[[global:close]]',
+					className: 'btn-link',
+					callback: function () {
+						done(false);
 					},
 				},
-			});
-
-			modal.on('hidden.bs.modal', () => {
-				done(false);
-			});
-			modal.find('[data-key]').on('click', function () {
-				const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
-				if (reason && reason.body) {
-					modal.find('[name="reason"]').val(translator.unescape(reason.body));
-				}
-			});
+				submit: {
+					label: '[[modules:bootbox.confirm]]',
+					callback: function () {
+						done(modal.find('[name="reason"]').val());
+					},
+				},
+			},
 		});
+
+		modal.on('hidden.bs.modal', () => {
+			done(false);
+		});
+		modal.find('[data-key]').on('click', function () {
+			const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+			if (reason && reason.body) {
+				modal.find('[name="reason"]').val(reason.body);
+			}
+		});
+		return userInputPromise;
 	}
 
 	async function doAction(action, id, message = '') {

@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "آپ کو اس پیغام کو حذف کرنے کا اختیار نہیں ہے",
     "chat-edit-duration-expired": "آپ اپنے گفتگو کے پیغامات کو پوسٹ کرنے کے %1 سیکنڈ تک ترمیم کر سکتے ہیں",
     "chat-delete-duration-expired": "آپ اپنے گفتگو کے پیغامات کو پوسٹ کرنے کے %1 سیکنڈ تک حذف کر سکتے ہیں",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "یہ پیغام پہلے سے حذف ہو چکا ہے۔",
     "chat-restored-already": "یہ پیغام پہلے سے بحال ہو چکا ہے۔",
     "chat-room-does-not-exist": "گفتگو کا کمرہ موجود نہیں ہے۔",

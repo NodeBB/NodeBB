@@ -1,0 +1,22 @@
+{
+	"queue": "תור",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "שם",
+	"list.email": "אימייל",
+	"list.ip": "IP",
+	"list.time": "זמן",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "הזמנות",
+	"invitations.description": "להלן רשימה של הזמנות שנשלחו. השתמש ב- Ctrl+F כדי לחפש בתוך הרשימה על פי אימייל או שם משתמש. <br><br>שם המשתמש יוצג בצד ימין של האימייל למשתמשים שממשו את הזמנתם.",
+	"invitations.inviter-username": "משתמש מזמין",
+	"invitations.invitee-email": "מייל מוזמן",
+	"invitations.invitee-username": "משתמש מוזמן (אם נרשם)",
+
+	"invitations.confirm-delete": "האם אתה בטוח שאתה רוצה למחוק את ההזמנה?"
+}

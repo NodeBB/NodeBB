@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/digest', ['bootbox', 'alerts'], function (bootbox, alerts) {
+define('admin/manage/digest', ['modals', 'alerts'], function (modals, alerts) {
 	const Digest = {};
 
 	Digest.init = function () {
@@ -11,7 +11,7 @@ define('admin/manage/digest', ['bootbox', 'alerts'], function (bootbox, alerts) 
 
 			if (action.startsWith('resend-')) {
 				const interval = action.slice(7);
-				bootbox.confirm('[[admin/manage/digest:resend-all-confirm]]', function (ok) {
+				modals.confirm('[[admin/manage/digest:resend-all-confirm]]', function (ok) {
 					if (ok) {
 						Digest.send(action, undefined, function (err) {
 							if (err) {

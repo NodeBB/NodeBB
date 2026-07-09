@@ -4,7 +4,8 @@
 	"lead-text": "Na tej strani lahko konfigurirate dostop do API-ja za pisanje v NodeBB.",
 	"intro": "API za pisanje privzeto preverja uporabnike na podlagi njihovega piškotka seje, vendar NodeBB podpira tudi preverjanje pristnosti nosilca prek žetonov, ustvarjenih na tej strani.",
 	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
-	"docs": "Kliknite tukaj za dostop do celotne specifikacije API-ja",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "Zahtevaj uporabo API samo prek protokola HTTPS",
 	"require-https-caveat": "<strong>Opomba</strong>: Nekatere namestitve, ki vključujejo izravnalnike obremenitve, lahko svoje zahteve posredujejo NodeBB prek protokola HTTP, v tem primeru bi morala ta možnost ostati onemogočena.",

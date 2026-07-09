@@ -907,7 +907,7 @@ describe('Flags', () => {
 				assert(exists);
 			});
 
-			it('should escape flag reason', async () => {
+			it('should escape flag reason and not translate it', async () => {
 				const postData = await Topics.reply({
 					tid: tid,
 					uid: 1,
@@ -922,12 +922,19 @@ describe('Flags', () => {
 					body: {
 						type: 'post',
 						id: postData.pid,
-						reason: '"<script>alert(\'ok\');</script>',
+						reason: '"<script>alert(\'ok\');</script> [[global:votes]]',
 					},
 				});
 
 				const flagData = await Flags.get(body.response.flagId);
-				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
+				// unescape in api
+				assert.strictEqual(flagData.reports[0].value, '"<script>alert(\'ok\');</script> [[global:votes]]');
+
+				// escaped in html
+				const { body: body2 } = await request.get(`${nconf.get('url')}/flags/${body.response.flagId}`, {
+					jar, body: {},
+				});
+				assert(body2.includes('&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;/script&gt; [[global:votes]]'));
 			});
 
 			it('should return undefined for invalid filters', async () => {

@@ -108,8 +108,6 @@ paths:
     $ref: 'read/admin/settings/pagination.yaml'
   /api/admin/settings/notifications:
     $ref: 'read/admin/settings/notifications.yaml'
-  /api/admin/settings/api:
-    $ref: 'read/admin/settings/api.yaml'
   /api/admin/settings/cookies:
     $ref: 'read/admin/settings/cookies.yaml'
   /api/admin/settings/web-crawler:
@@ -134,8 +132,6 @@ paths:
     $ref: 'read/admin/manage/users/custom-fields.yaml'
   /api/admin/manage/users/custom-reasons:
     $ref: 'read/admin/manage/users/custom-reasons.yaml'
-  /api/admin/manage/registration:
-    $ref: 'read/admin/manage/registration.yaml'
   /api/admin/manage/admins-mods:
     $ref: 'read/admin/manage/admins-mods.yaml'
   /api/admin/manage/groups:
@@ -146,6 +142,8 @@ paths:
     $ref: 'read/admin/manage/uploads.yaml'
   /api/admin/manage/digest:
     $ref: 'read/admin/manage/digest.yaml'
+  /api/admin/manage/api:
+    $ref: 'read/admin/manage/api.yaml'
   /api/admin/federation/general:
     $ref: 'read/admin/federation/general.yaml'
   /api/admin/federation/content:

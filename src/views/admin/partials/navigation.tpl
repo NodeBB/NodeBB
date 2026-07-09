@@ -45,17 +45,18 @@
 				{{{ if user.privileges.admin:admins-mods }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a>
 				{{{ end }}}
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/api">[[admin/menu:settings/api]]</a>
 				{{{ if user.privileges.admin:tags }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a>
 				{{{ end }}}
 				{{{ if user.privileges.superadmin }}}
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/digest">[[admin/menu:manage/digest]]</a>
 				<hr/>
 				<h6 class="text-xs ps-4">[[pages:moderator-tools]]</h6>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/flags">[[admin/menu:manage/flagged-content]] <i class="fa fa-external-link"></i></a>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/post-queue">[[admin/menu:manage/post-queue]] <i class="fa fa-external-link"></i></a>
+				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/registration-queue">[[admin/menu:manage/registration]] <i class="fa fa-external-link"></i></a>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/ip-blacklist">[[admin/menu:manage/ip-blacklist]] <i class="fa fa-external-link"></i></a>
 				{{{ end }}}
 			</div>
@@ -85,7 +86,6 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/chat">[[admin/menu:settings/chat]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/pagination">[[admin/menu:settings/pagination]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/notifications">[[admin/menu:settings/notifications]]</a>
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/api">[[admin/menu:settings/api]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/cookies">[[admin/menu:settings/cookies]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/web-crawler">[[admin/menu:settings/web-crawler]]</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a>
@@ -160,14 +160,14 @@
 		<div id="collapsePlugins" class="accordion-collapse collapse" data-bs-parent="#accordionACP">
 			<div class="accordion-body p-0 d-grid">
 				{{{ each plugins }}}
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{./name}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{{tx(./name)}}</a>
 				{{{ end }}}
 
 				{{{ if authentication.length }}}
 				<hr/>
 				<div class="text-sm ms-4">[[admin/menu:section-social-auth]]</div>
 				{{{ each authentication }}}
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{./name}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin{./route}">{{tx(./name)}}</a>
 				{{{ end }}}
 				{{{ end }}}
 				<hr/>

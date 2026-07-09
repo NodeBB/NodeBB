@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 const nconf = require('nconf');
 const db = require('../database');
@@ -9,7 +8,7 @@ const user = require('../user');
 const posts = require('../posts');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const translator = require('../translator');
+const tx = require('../translator');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const helpers = require('../helpers');
@@ -87,8 +86,10 @@ Events.init = async () => {
 
 async function translateEventArgs(event, language, prefix, ...args) {
 	const key = getTranslationKey(event, prefix);
-	const compiled = translator.compile.apply(null, [key, ...args]);
-	return utils.decodeHTMLEntities(await translator.translate(compiled, language));
+	const txArgs = args.map(arg => utils.escapeHTML(arg));
+	const compiled = tx.compile.apply(null, [key, ...txArgs]);
+	const translated = await tx.translateKey(compiled, [], language);
+	return utils.decodeHTMLEntities(translated);
 }
 
 async function translateSimple(event, language, prefix) {
@@ -115,11 +116,12 @@ function renderUser(event) {
 
 	const user = {
 		...event.user,
-		displayname: validator.escape(String(event.user.displayname)),
-		userslug: validator.escape(String(event.user.userslug)),
+		displayname: String(event.user.displayname),
+		userslug: String(event.user.userslug),
 	};
-
-	return `${helpers.buildAvatar(user, '16px', true)} <a href="${relative_path}/user/${user.userslug}">${user.displayname}</a>`;
+	const avatar = helpers.buildAvatar(user, '16px', true);
+	const link = `<a href="${relative_path}/user/${helpers.escape(user.userslug)}">${helpers.escape(user.displayname)}</a>`;
+	return `${avatar} ${link}`;
 }
 
 function renderCategory(category) {

@@ -17,6 +17,7 @@ const posts = require('../posts');
 const ttlCache = require('../cache/ttl');
 const websockets = require('../socket.io');
 const utils = require('../utils');
+const translator = require('../translator');
 
 const activitypub = module.parent.exports;
 const Notes = module.exports;
@@ -161,14 +162,14 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
 			await activitypub.actors.assert(Array.from(set));
 
-			// Local
+			// Local (set if found)
 			const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 			const recipientCids = resolved
 				.filter(Boolean)
 				.filter(({ type }) => type === 'category')
 				.map(obj => obj.id);
 
-			// Remote
+			// Remote (set only if cid and object domains match or cid is set in `audience`)
 			let remoteCid;
 			const assertedGroups = await categories.exists(Array.from(set));
 			try {
@@ -443,12 +444,20 @@ Notes.assertPrivate = async (object) => {
 		}
 	});
 
-	// Locate the roomId based on `inReplyTo`
+	// Locate the `roomId` and set `toMid` based on `inReplyTo`
 	let roomId;
+	let toMid;
 	const resolved = await activitypub.helpers.resolveLocalId(object.inReplyTo);
-	let toMid = resolved.type === 'message' && resolved.id;
-	if (object.inReplyTo && await messaging.messageExists(toMid || object.inReplyTo)) {
-		roomId = await messaging.getMessageField(toMid || object.inReplyTo, 'roomId');
+	if (resolved.type === 'message' && resolved.id) {
+		toMid = resolved.id;
+	} else {
+		toMid = object.inReplyTo;
+	}
+	if (toMid && await messaging.messageExists(toMid)) {
+		roomId = await messaging.getMessageField(toMid, 'roomId');
+	} else {
+		toMid = undefined;
+		// roomId stays undefined
 	}
 
 	// Compare room members with object recipients; if someone in-room is omitted, start new chat
@@ -472,7 +481,13 @@ Notes.assertPrivate = async (object) => {
 		timestamp = Date.now();
 	}
 
-	const payload = await activitypub.mocks.message(object);
+	let payload;
+	try {
+		payload = await activitypub.mocks.message(object);
+	} catch (e) {
+		activitypub.helpers.log(`[activitypub/notes.assertPrivate] Failed to mock message: ${e.message}`);
+		return null;
+	}
 
 	// Naive image appending (using src/posts/attachments.js is likely better, but not worth the effort)
 	const attachments = payload._activitypub.attachment;
@@ -488,9 +503,12 @@ Notes.assertPrivate = async (object) => {
 	try {
 		await messaging.checkContent(payload.content, false);
 	} catch (e) {
-		const { displayname, userslug } = await user.getUserFields(payload.uid, ['displayname', 'userslug']);
+		const [displayname, userslug] = await Promise.all([
+			user.getNotificationDisplayname(payload.uid),
+			user.getUserField(payload.uid, 'userslug'),
+		]);
 		const notification = await notifications.create({
-			bodyShort: `[[error:remote-chat-received-too-long, ${displayname}]]`,
+			bodyShort: translator.compile('error:remote-chat-received-too-long', displayname),
 			path: `/user/${userslug}`,
 			nid: `error:chat:uid:${payload.uid}`,
 			from: payload.uid,
@@ -618,7 +636,20 @@ Notes.getParentChain = async (uid, input) => {
 	const id = activitypub.helpers.isUri(input) ? input : input.id;
 
 	const chain = new Set();
+	const visited = new Set();
+	let depth = 0;
 	const traverse = async (uid, id) => {
+		const maxDepth = meta.config.activitypubParentTraversalDepth || 50;
+		if (depth >= maxDepth) {
+			activitypub.helpers.log(`[activitypub/notes/getParentChain] Depth limit reached (${maxDepth}), terminating.`);
+			return;
+		}
+		if (visited.has(id)) {
+			return;
+		}
+		visited.add(id);
+		depth += 1;
+
 		// Handle remote reference to local post
 		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
 		if (type === 'post' && localId) {
@@ -835,19 +866,33 @@ Notes.delete = async (pids) => {
 Notes.prune = async () => {
 	/**
 	 * Prune topics in cid -1 and handle:cid that have received no engagement.
+	 * Categories in cid:0:children (shown on forum index) are skipped.
 	 * Engagement is defined as:
 	 *   - Replied to (contains a local reply)
 	 *   - Post within is liked
+	 * Cutoffs:
+	 *   - cid -1: activitypubContentPruneDays
+	 *   - remote cid, no followers: max(60, activitypubContentPruneDays * 2)
+	 *   - remote cid, has followers: max(730, activitypubContentPruneDays)
 	 */
 
-	const cids = await db.getObjectValues('handle:cid');
-	winston.info(`[notes/prune] Starting scheduled pruning of topics in ${cids.length} categories`);
+	const allCids = await db.getObjectValues('handle:cid');
+	const indexCids = await db.getSortedSetMembers('cid:0:children');
+	const cids = allCids.filter(cid => !indexCids.includes(cid));
+	winston.info(`[notes/prune] Starting scheduled pruning of topics in ${cids.length} categories (${allCids.length - cids.length} skipped: shown on index)`);
 
-	const cuttoff = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
+	const cutoff = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
 	const remoteCutoff = Date.now() - (1000 * 60 * 60 * 24 * Math.max(60, meta.config.activitypubContentPruneDays * 2));
-	await pruneCidTids(-1, cuttoff);
-	await batch.processArray(cids, async function (cids) {
-		await Promise.all(cids.map(cid => pruneCidTids(cid, remoteCutoff)));
+	const remoteCutoffWithFollowers = Date.now() - (
+		1000 * 60 * 60 * 24 * Math.max(730, meta.config.activitypubContentPruneDays)
+	);
+	await pruneCidTids(-1, cutoff);
+	const followerCounts = await db.sortedSetsCard(cids.map(cid => `followersRemote:${cid}`));
+	const cidCutoffs = new Map(
+		cids.map((cid, idx) => [cid, followerCounts[idx] > 0 ? remoteCutoffWithFollowers : remoteCutoff]),
+	);
+	await batch.processArray(cids, async function (batch) {
+		await Promise.all(batch.map(cid => pruneCidTids(cid, cidCutoffs.get(cid))));
 	}, {
 		batch: 10,
 	});
@@ -855,7 +900,7 @@ Notes.prune = async () => {
 };
 
 
-async function pruneCidTids(cid, cuttoff) {
+async function pruneCidTids(cid, cutoff) {
 	if (utils.isNumber(cid) && parseInt(cid, 10) !== -1) {
 		// safety incase a local cid is in handle:cid
 		return;
@@ -875,7 +920,7 @@ async function pruneCidTids(cid, cuttoff) {
 		}));
 	}, {
 		min: '-inf',
-		max: cuttoff,
+		max: cutoff,
 		batch: 500,
 	});
 	if (!tidsWithNoEngagement.length) {

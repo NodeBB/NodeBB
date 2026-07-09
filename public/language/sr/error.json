@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Није вам дозвољено да избришете ову поруку",
     "chat-edit-duration-expired": "Време у којем вам је дозвољено уређивање порука ћаскања након објављивања: %1 сек.",
     "chat-delete-duration-expired": "Време у којем вам је дозвољено брисање порука ћаскања након објављивања: %1 сек.",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Ова порука ћаскања је већ избрисана.",
     "chat-restored-already": "Ова порука ћаскања је већ обновљена.",
     "chat-room-does-not-exist": "Соба за ћаскање не постоји.",

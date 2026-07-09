@@ -7,7 +7,7 @@ const path = require('path');
 const winston = require('winston');
 const mime = require('mime').default;
 const validator = require('validator');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const db = require('../database');
 const image = require('../image');

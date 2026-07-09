@@ -5,6 +5,7 @@ import { error } from 'alerts';
 import { render } from 'benchpress';
 import { get } from 'api';
 import { translate } from 'translator';
+import * as modals from 'modals';
 import {
 	Chart,
 	LineController,
@@ -82,7 +83,7 @@ function setupRelays() {
 }
 
 function throwModal() {
-	render('admin/partials/activitypub/relays', {}).then(function (html) {
+	render('admin/partials/activitypub/relays', {}).then(async function (html) {
 		const submit = function () {
 			const formEl = modal.find('form').get(0);
 			if (!formEl.reportValidity()) {
@@ -98,7 +99,7 @@ function throwModal() {
 				}
 			}).catch(error);
 		};
-		const modal = bootbox.dialog({
+		const modal = await modals.dialog({
 			title: '[[admin/settings/activitypub:relays.add]]',
 			message: html,
 			buttons: {

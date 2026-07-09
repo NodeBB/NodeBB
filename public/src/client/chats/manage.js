@@ -2,8 +2,8 @@
 
 
 define('forum/chats/manage', [
-	'api', 'alerts', 'translator', 'autocomplete', 'forum/chats/user-list',
-], function (api, alerts, translator, autocomplete, userList) {
+	'api', 'alerts', 'autocomplete', 'forum/chats/user-list', 'modals', 'benchpress',
+], function (api, alerts, autocomplete, userList, modals, Benchpress) {
 	const manage = {};
 
 	manage.init = function (roomId, buttonEl) {
@@ -25,12 +25,12 @@ define('forum/chats/manage', [
 				}
 			}
 
-			const html = await app.parseAndTranslate('modals/manage-room', {
+			const html = await Benchpress.render('modals/manage-room', {
 				groups,
 				user: app.user,
 				room: ajaxify.data,
 			});
-			modal = bootbox.dialog({
+			modal = await modals.dialog({
 				title: '[[modules:chat.manage-room]]',
 				size: 'large',
 				message: html,
@@ -67,9 +67,7 @@ define('forum/chats/manage', [
 					refreshParticipantsList(roomId, modal, body);
 					searchInput.val('');
 				}).catch((err) => {
-					translator.translate(err.message, function (translated) {
-						errorEl.text(translated);
-					});
+					errorEl.translateText(err.message);
 				});
 			});
 
@@ -137,7 +135,7 @@ define('forum/chats/manage', [
 				data = await api.get(`/chats/${roomId}/users`, {});
 			} catch (err) {
 				console.error(err);
-				listEl.find('li').text(await translator.translate('[[error:invalid-data]]'));
+				listEl.find('li').translateText('[[error:invalid-data]]');
 			}
 		}
 		listEl.find('[data-bs-toggle="tooltip"]').tooltip('dispose');

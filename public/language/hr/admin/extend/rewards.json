@@ -12,6 +12,6 @@
 	"disable": "onemogući",
 
 	"alert.delete-success": "Uspješno obrisana nagrada",
-	"alert.no-inputs-found": "Ilegalna nagrada - nije pronađen unos!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Uspješno spremljene nagrade"
 }

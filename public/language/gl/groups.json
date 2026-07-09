@@ -50,6 +50,8 @@
     "details.hidden": "Oculto",
     "details.hidden-help": "Se está habilitado, este grupo non se poderá atopar na listaxe de grupos e os usuarios deberán ser convidados manualmente.",
     "details.delete-group": "Eliminar Grupo",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Os grupos privados están desactivados ao nivel do sistema, esta opción non trocará nada.",
     "event.updated": "Os detalles do grupo foron actualizados",
     "event.deleted": "O grupo \"%1\" foi borrado.",

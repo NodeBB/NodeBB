@@ -51,7 +51,7 @@ modsController.flags.list = async function (req, res) {
 		res.locals.cids = moderatedCids.map(cid => String(cid));
 	}
 
-	const validFilters = helpers.validateParameters(req.query, Object.keys(allFilters), validation);
+	const validFilters = helpers.validateParameters(req.query, allFilters, validation);
 
 	let hasFilter = !!Object.keys(validFilters).length;
 
@@ -90,7 +90,7 @@ modsController.flags.list = async function (req, res) {
 			query: req.query,
 		}),
 		analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30),
-		helpers.getSelectedCategory(validFilters.cid, req.uid),
+		helpers.getSelectedCategory(validFilters.cid),
 	]);
 
 	// Send back information for userFilter module
@@ -221,7 +221,7 @@ modsController.postQueue = async function (req, res, next) {
 		user.isAdministrator(req.uid),
 		user.isGlobalModerator(req.uid),
 		user.getModeratedCids(req.uid),
-		helpers.getSelectedCategory(cid, req.uid),
+		helpers.getSelectedCategory(cid),
 		Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	]);
 	_privileges = { ..._privileges[0], ..._privileges[1] };

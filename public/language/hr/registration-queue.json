@@ -1,0 +1,22 @@
+{
+	"queue": "Na čekanju",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Ime",
+	"list.email": "Email",
+	"list.ip": "IP",
+	"list.time": "Vrijeme",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Pozivnice",
+	"invitations.description": "Ispod je potpuni popis poslanih pozivnica.Koristite ctrl + f za pretragu liste po emailu ili korisničkom imenu. <br><br> Korisničko ime će biti prikazano na desno od emaila za korisnike koji su iskoristili svoje pozivnice.",
+	"invitations.inviter-username": "Korisničko ime pozivatelja",
+	"invitations.invitee-email": "Email adresa pozivatelja",
+	"invitations.invitee-username": "Korisničko ime pozivatelja (ako je registriran)",
+
+	"invitations.confirm-delete": "Sigurni ste da želite obrisati ovu pozivnicu?"
+}

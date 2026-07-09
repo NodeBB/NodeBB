@@ -36,7 +36,12 @@ Thumbs.load = async function (topicData, options = {}) {
 	const thumbsOnly = Object.hasOwn(options, 'thumbsOnly') ?
 		options.thumbsOnly :
 		meta.config.showPostUploadsAsThumbnails !== 1;
-	const thumbs = await loadFromTopicData(topicsWithThumbs, { thumbsOnly });
+	let thumbs = await loadFromTopicData(topicsWithThumbs, { thumbsOnly });
+	if (meta.config.privateUploads && parseInt(options.uid, 10) <= 0) {
+		thumbs = thumbs.map((thumbSet) => {
+			return thumbSet.filter(thumb => thumb && !thumb.url.startsWith(upload_url));
+		});
+	}
 
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
 	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));

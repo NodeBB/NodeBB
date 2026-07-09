@@ -1,13 +1,10 @@
 'use strict';
 
-const validator = require('validator');
-
 const user = require('../../user');
 const meta = require('../../meta');
 const db = require('../../database');
 const pagination = require('../../pagination');
 const events = require('../../events');
-const plugins = require('../../plugins');
 const privileges = require('../../privileges');
 const utils = require('../../utils');
 
@@ -35,7 +32,7 @@ async function getUsers(req, res) {
 	if (![50, 100, 250, 500].includes(resultsPerPage)) {
 		resultsPerPage = 50;
 	}
-	let sortBy = validator.escape(req.query.sortBy || '');
+	let sortBy = req.query.sortBy || '';
 	const filterBy = Array.isArray(req.query.filters || []) ? (req.query.filters || []) : [req.query.filters];
 	const start = Math.max(0, page - 1) * resultsPerPage;
 	const stop = start + resultsPerPage - 1;
@@ -50,7 +47,7 @@ async function getUsers(req, res) {
 		};
 
 		const set = [];
-		if (sortBy) {
+		if (sortBy && Object.hasOwn(sortToSet, sortBy)) {
 			set.push(sortToSet[sortBy]);
 		}
 		if (filterBy.includes('unverified')) {
@@ -162,7 +159,7 @@ usersController.search = async function (req, res) {
 			user.ip = user.ips.find(ip => ip.includes(String(req.query.query)));
 		});
 	}
-	searchData.query = validator.escape(String(req.query.query || ''));
+	searchData.query = String(req.query.query || '');
 	searchData.page = page;
 	searchData.resultsPerPage = resultsPerPage;
 	searchData.sortBy = req.query.sortBy;
@@ -202,57 +199,11 @@ async function loadUserInfo(callerUid, uids) {
 				const confirmObj = confirmObjs[index];
 				user['email:expired'] = !confirmObj.expires || Date.now() >= confirmObj.expires;
 				user['email:pending'] = confirmObj.expires && Date.now() < confirmObj.expires;
-				user.emailToConfirm = validator.escape(String(confirmObj.email));
+				user.emailToConfirm = confirmObj.email;
 			}
 		}
 	});
 	return userData;
-}
-
-usersController.registrationQueue = async function (req, res) {
-	const page = parseInt(req.query.page, 10) || 1;
-	const itemsPerPage = 20;
-	const start = (page - 1) * 20;
-	const stop = start + itemsPerPage - 1;
-
-	const data = await utils.promiseParallel({
-		registrationQueueCount: db.sortedSetCard('registration:queue'),
-		users: user.getRegistrationQueue(start, stop),
-		customHeaders: plugins.hooks.fire('filter:admin.registrationQueue.customHeaders', { headers: [] }),
-		invites: getInvites(),
-	});
-	const pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
-	data.pagination = pagination.create(page, pageCount);
-	data.customHeaders = data.customHeaders.headers;
-	data.title = '[[pages:registration-queue]]';
-	res.render('admin/manage/registration', data);
-};
-
-async function getInvites() {
-	const invitations = await user.getAllInvites();
-	const uids = invitations.map(invite => invite.uid);
-	let usernames = await user.getUsersFields(uids, ['username']);
-	usernames = usernames.map(user => user.username);
-
-	invitations.forEach((invites, index) => {
-		invites.username = usernames[index];
-	});
-
-	async function getUsernamesByEmails(emails) {
-		const uids = await db.sortedSetScores('email:uid', emails.map(email => String(email).toLowerCase()));
-		const usernames = await user.getUsersFields(uids, ['username']);
-		return usernames.map(user => user.username);
-	}
-
-	usernames = await Promise.all(invitations.map(invites => getUsernamesByEmails(invites.invitations)));
-
-	invitations.forEach((invites, index) => {
-		invites.invitations = invites.invitations.map((email, i) => ({
-			email: email,
-			username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
-		}));
-	});
-	return invitations;
 }
 
 async function render(req, res, data) {
@@ -264,11 +215,11 @@ async function render(req, res, data) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data[`sort_${data.sortBy}`] = true;
 	if (req.query.searchBy) {
-		data[`searchBy_${validator.escape(String(req.query.searchBy))}`] = true;
+		data[`searchBy_${req.query.searchBy}`] = true;
 	}
 	const filterBy = Array.isArray(req.query.filters || []) ? (req.query.filters || []) : [req.query.filters];
 	filterBy.forEach((filter) => {
-		data[`filterBy_${validator.escape(String(filter))}`] = true;
+		data[`filterBy_${filter}`] = true;
 	});
 	data.userCount = parseInt(await db.getObjectField('global', 'userCount'), 10);
 	if (data.adminInviteOnly) {

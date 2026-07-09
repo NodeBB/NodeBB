@@ -25,11 +25,11 @@
 				<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" data-value="{./value}" data-icon="{./icon}" role="menuitem">
 					<div class="d-flex flex-column gap-1">
 						<div class="d-flex align-items-center gap-2">
-							<div class="flex-grow-1">{./label}</div>
+							<div class="flex-grow-1">{{tx(./label)}}</div>
 							<i class="flex-shrink-0 fa fa-fw fa-check {{{ if !./selected }}}hidden{{{ end }}}"></i>
 						</div>
 						{{{ if @first}}}
-						<div component="chat/notification/setting/sub-label" class="text-sm text-muted">{./subLabel}</div>
+						<div component="chat/notification/setting/sub-label" class="text-sm text-muted">{{tx(./subLabel)}}</div>
 						{{{ end }}}
 					</div>
 				</a>
@@ -85,13 +85,13 @@
 	<div component="chat/user/list/btn" class="btn btn-ghost btn-sm d-none d-lg-flex flex-nowrap align-items-center gap-2" title="[[modules:chat.view-users-list]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 		<div class="d-flex text-nowrap">
 			{{{ if ./users.0 }}}
-			<span style="width: 18px; z-index: 3;" class="text-decoration-none" href="{config.relative_path}/user/{./users.0.userslug}">{buildAvatar(./users.0, "24px", true)}</span>
+			<span style="width: 18px; z-index: 3;" class="text-decoration-none" href="{config.relative_path}/user/{./users.0.userslug}">{{buildAvatar(./users.0, "24px", true)}}</span>
 			{{{ end }}}
 			{{{ if ./users.1 }}}
-			<span style="width: 18px; z-index: 2;" class="text-decoration-none" href="{config.relative_path}/user/{./users.1.userslug}">{buildAvatar(./users.1, "24px", true)}</span>
+			<span style="width: 18px; z-index: 2;" class="text-decoration-none" href="{config.relative_path}/user/{./users.1.userslug}">{{buildAvatar(./users.1, "24px", true)}}</span>
 			{{{ end }}}
 			{{{ if ./users.2 }}}
-			<span style="width: 24px; z-index: 1;" class="text-decoration-none" href="{config.relative_path}/user/{./users.2.userslug}">{buildAvatar(./users.2, "24px", true)}</span>
+			<span style="width: 24px; z-index: 1;" class="text-decoration-none" href="{config.relative_path}/user/{./users.2.userslug}">{{buildAvatar(./users.2, "24px", true)}}</span>
 			{{{ end }}}
 		</div>
 		{formattedNumber(./userCount)}

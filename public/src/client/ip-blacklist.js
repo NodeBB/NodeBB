@@ -10,7 +10,7 @@ import {
 } from 'chart.js';
 
 import * as Benchpress from 'benchpressjs';
-import * as bootbox from 'bootbox';
+import * as modals from 'modals';
 import * as alerts from '../modules/alerts';
 
 Chart.register(LineController, CategoryScale, LinearScale, LineElement, PointElement, Tooltip, Filler);
@@ -35,18 +35,14 @@ export function init() {
 		});
 	});
 
-	$('[data-action="test"]').on('click', function () {
-		socket.emit('blacklist.validate', {
+	$('[data-action="test"]').on('click', async function () {
+		const data = await socket.emit('blacklist.validate', {
 			rules: blacklist.val(),
-		}, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
+		}).catch(alerts.error);
 
-			Benchpress.render('admin/partials/blacklist-validate', data).then(function (html) {
-				bootbox.alert(html);
-			});
-		});
+		const html = await Benchpress.render('admin/partials/blacklist-validate', data);
+		console.log('html', html);
+		modals.alert(html);
 	});
 
 	setupAnalytics();

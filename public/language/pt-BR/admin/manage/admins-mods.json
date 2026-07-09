@@ -9,5 +9,6 @@
     "no-moderators": "Sem moderadores",
     "add-administrator": "Adicionar Administrador",
     "add-global-moderator": "Adicionar Moderador Global",
-    "add-moderator": "Adicionar Moderador"
+    "add-moderator": "Adicionar Moderador",
+    "disabled": "Disabled"
 }

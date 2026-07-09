@@ -2,8 +2,8 @@
 
 
 define('forum/chats/create', [
-	'components', 'api', 'alerts', 'forum/chats/user-search',
-], function (components, api, alerts, userSearch) {
+	'components', 'api', 'alerts', 'forum/chats/user-search', 'modals', 'benchpress',
+], function (components, api, alerts, userSearch, modals, Benchpress) {
 	const create = {};
 	create.init = function () {
 		components.get('chat/create').on('click', handleCreate);
@@ -18,12 +18,12 @@ define('forum/chats/create', [
 				return { name, displayName };
 			});
 		}
-		const html = await app.parseAndTranslate('modals/create-room', {
+		const html = await Benchpress.render('modals/create-room', {
 			user: app.user,
 			groups,
 		});
 
-		const modal = bootbox.dialog({
+		const modal = await modals.dialog({
 			title: '[[modules:chat.create-room]]',
 			message: html,
 			onEscape: true,

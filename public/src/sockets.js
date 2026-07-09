@@ -5,8 +5,7 @@ const $ = require('jquery');
 
 const { alert } = require('alerts');
 const hooks = require('hooks');
-
-app = window.app || {};
+const helpers = require('helpers');
 
 (function () {
 	let reconnecting = false;
@@ -48,7 +47,7 @@ app = window.app || {};
 		socket.connect();
 	}
 
-	window.app.reconnect = (showAlert = false) => {
+	app.reconnect = (showAlert = false) => {
 		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}
@@ -58,7 +57,7 @@ app = window.app || {};
 				.removeClass('alert-danger alert-success pointer hide')
 				.addClass('alert-warning show')
 				.find('p')
-				.translateText(`[[global:reconnecting-message, ${config.siteTitle}]]`);
+				.translateHtml(`[[global:reconnecting-message, ${config.siteTitle}]]`);
 		}
 
 		$('#reconnect').html('<i class="fa fa-spinner fa-spin"></i>');
@@ -151,7 +150,7 @@ app = window.app || {};
 				.removeClass('alert-warning alert-danger')
 				.addClass('alert-success')
 				.find('p')
-				.translateText(`[[global:reconnected-message, ${config.siteTitle}]]`);
+				.translateHtml(`[[global:reconnected-message, ${config.siteTitle}]]`);
 
 			setTimeout(() => {
 				reconnectEl.removeClass('active').addClass('hide');
@@ -221,26 +220,25 @@ app = window.app || {};
 	}
 
 	function onEventBanned(data) {
-		require(['bootbox', 'translator'], function (bootbox, translator) {
+		require(['modals', 'translator'], function (modals, translator) {
 			const message = data.until ?
-				translator.compile('error:user-banned-reason-until', (new Date(data.until).toLocaleString()), data.reason) :
-				'[[error:user-banned-reason, ' + data.reason + ']]';
-			translator.translate(message, function (message) {
-				bootbox.alert({
-					title: '[[error:user-banned]]',
-					message: message,
-					closeButton: false,
-					callback: function () {
-						window.location.href = config.relative_path + '/';
-					},
-				});
+				translator.compile('error:user-banned-reason-until', new Date(data.until).toLocaleString(), helpers.escape(data.reason)) :
+				translator.compile('error:user-banned-reason', helpers.escape(data.reason));
+
+			modals.alert({
+				title: '[[error:user-banned]]',
+				message: message,
+				closeButton: false,
+				callback: function () {
+					window.location.href = config.relative_path + '/';
+				},
 			});
 		});
 	}
 
 	function onEventUnbanned() {
-		require(['bootbox'], function (bootbox) {
-			bootbox.alert({
+		require(['modals'], function (modals) {
+			modals.alert({
 				title: '[[global:alert.unbanned]]',
 				message: '[[global:alert.unbanned.message]]',
 				closeButton: false,

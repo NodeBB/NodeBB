@@ -6,7 +6,7 @@
 			<div class="mx-auto p-4">
 				<i class="text-secondary fa fa-fw fa-4x {{{ if icon }}}{icon}{{{ else }}}fa-otter{{{ end }}}"></i>
 			</div>
-			{{{ if error }}}{error}{{{ else }}}[[global:404.message, {config.relative_path}]]{{{ end }}}
+			{{{ if error }}}{tx(error)}{{{ else }}}[[global:404.message, {config.relative_path}]]{{{ end }}}
 		</div>
 	</div>
 </div>

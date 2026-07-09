@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Het is niet toegestaan om dit bericht te verwijderen",
     "chat-edit-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te bewerken.",
     "chat-delete-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te verwijderen.",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Dit chat bericht is al verwijderd.",
     "chat-restored-already": "Dit chat bericht is al hersteld.",
     "chat-room-does-not-exist": "Chat room does not exist.",

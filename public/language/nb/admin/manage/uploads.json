@@ -9,5 +9,5 @@
     "filecount": "%1 filer",
     "new-folder": "Ny mappe",
     "name-new-folder": "Skriv inn et navn for den nye mappen",
-    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
+    "unsafe-file-warning": "Advarsel: Ikke last opp filer du ikke stoler på. Filer med bestemte filtyper blir lastet ned som vedlegg for å hindre XSS-angrep, men skadelige filer kan fortsatt gjøre skade hvis de åpnes på datamaskinen din."
 }

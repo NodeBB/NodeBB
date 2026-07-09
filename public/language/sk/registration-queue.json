@@ -1,0 +1,22 @@
+{
+	"queue": "Fronta",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Meno",
+	"list.email": "E-mail",
+	"list.ip": "IP adresa",
+	"list.time": "Čas",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Pozvánky",
+	"invitations.description": "Nižšie je kompletný zoznam odoslaných pozvánok. Pre hľadanie v zozname pomocou e-mailu alebo mena používateľa, použite kláves Ctrl + F.<br><br> Pri používateľov, ktorí využili pozvanie, bude používateľské meno zobrazené napravo od e-mailov.",
+	"invitations.inviter-username": "Používateľské meno pozvaného",
+	"invitations.invitee-email": "E-mail pozvaného",
+	"invitations.invitee-username": "Používateľské meno pozvaného (ak je registrovaný)",
+
+	"invitations.confirm-delete": "Ste si istý, že chcete odstrániť túto pozvánku?"
+}

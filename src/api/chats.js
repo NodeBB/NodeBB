@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -186,7 +185,7 @@ chatsAPI.update = async (caller, data) => {
 		if (ioRoom) {
 			ioRoom.emit('event:chats.roomRename', {
 				roomId: data.roomId,
-				newName: validator.escape(String(data.name)),
+				newName: data.name,
 				chatWithMessage: loadedRoom.chatWithMessage,
 			});
 		}

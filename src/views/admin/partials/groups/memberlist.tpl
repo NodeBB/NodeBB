@@ -17,7 +17,7 @@
 		<tr data-uid="{group.members.uid}">
 			<td class="member-name d-flex justify-content-between align-items-center">
 				<div class="d-flex align-items-center gap-2">
-					<a href="{config.relative_path}/user/{group.members.userslug}">{buildAvatar(group.members, "24px", true)}</a>
+					<a href="{config.relative_path}/user/{group.members.userslug}">{{buildAvatar(group.members, "24px", true)}}</a>
 					<a href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a> <i title="[[groups:owner]]" class="user-owner-icon fa fa-star text-warning {{{ if !group.members.isOwner }}}invisible{{{ end }}}"></i>
 				</div>
 

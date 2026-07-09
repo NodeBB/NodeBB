@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const meta = require('../../meta');
 const emailer = require('../../emailer');
 const notifications = require('../../notifications');
@@ -9,10 +7,7 @@ const groups = require('../../groups');
 const languages = require('../../languages');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
-const api = require('../../api');
-const pagination = require('../../pagination');
 const helpers = require('../helpers');
-const translator = require('../../translator');
 const plugins = require('../../plugins');
 
 const settingsController = module.exports;
@@ -46,9 +41,6 @@ settingsController.navigation = async function (req, res) {
 	admin.enabled.forEach((enabled, index) => {
 		enabled.index = index;
 		enabled.selected = index === 0;
-		enabled.title = translator.escape(enabled.title);
-		enabled.text = translator.escape(enabled.text);
-		enabled.dropdownContent = translator.escape(validator.escape(String(enabled.dropdownContent || '')));
 		enabled.groups = admin.groups.map(group => ({
 			displayName: group.displayName,
 			selected: enabled.groups.includes(group.name),
@@ -143,23 +135,6 @@ settingsController.pagination = async (req, res) => {
 settingsController.notifications = async (req, res) => {
 	res.render(`admin/settings/notifications`, {
 		title: `[[admin/menu:settings/notifications]]`,
-	});
-};
-
-settingsController.api = async (req, res) => {
-	const page = parseInt(req.query.page, 10) || 1;
-	const resultsPerPage = 50;
-	const start = Math.max(0, page - 1) * resultsPerPage;
-	const stop = start + resultsPerPage - 1;
-	const [tokens, count] = await Promise.all([
-		api.utils.tokens.list(start, stop),
-		api.utils.tokens.count(),
-	]);
-	const pageCount = Math.ceil(count / resultsPerPage);
-	res.render('admin/settings/api', {
-		title: '[[admin/menu:settings/api]]',
-		tokens,
-		pagination: pagination.create(page, pageCount, req.query),
 	});
 };
 

@@ -50,6 +50,8 @@
     "details.hidden": "Ahishe",
     "details.hidden-help": "Nubyemera, iri tsinda ntabwo rizajya rigaragara ku rutonde rw'andi matsinda kandi abantu bazajya basabwa kuritumirwamo buri wese ku giti cye mbere yo kurijyamo",
     "details.delete-group": "Senya Itsinda",
+    "details.delete-group-confirm": "Are you sure you want to delete the group: <strong>\"%1\"</strong>?",
+    "details.delete-group-confirm-label": "Please enter the name of this group in order to delete it:",
     "details.private-system-help": "Amatsinda aheza ntabwo ari kwemerera aha, hano ntabwo byahahindurirwa",
     "event.updated": "Amakuru ku itsinda yahinduweho bijyanye n'igihe",
     "event.deleted": "Itsinda rya \"%1\" ryakuweho",

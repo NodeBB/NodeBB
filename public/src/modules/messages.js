@@ -1,6 +1,8 @@
 'use strict';
 
-define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], function (bootbox, translator, storage, alerts, hooks) {
+define('messages', [
+	'modals', 'translator', 'storage', 'alerts', 'hooks',
+], function (modals, translator, storage, alerts, hooks) {
 	const messages = {};
 
 	let registerMessage;
@@ -48,11 +50,6 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 			return;
 		}
 
-		config.cookies.message = translator.unescape(config.cookies.message);
-		config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
-		config.cookies.link = translator.unescape(config.cookies.link);
-		config.cookies.link_url = translator.unescape(config.cookies.link_url);
-
 		app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
 			$(document.body).append(html);
 			$(document.body).addClass('cookie-consent-open');
@@ -75,7 +72,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 		registerMessage = params.get('register');
 
 		if (registerMessage) {
-			bootbox.alert({
+			modals.alert({
 				message: utils.escapeHTML(decodeURIComponent(registerMessage)),
 			});
 
@@ -94,7 +91,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 	}
 
 	messages.showInvalidSession = function () {
-		bootbox.alert({
+		modals.alert({
 			title: '[[error:invalid-session]]',
 			message: '[[error:invalid-session-text]]',
 			closeButton: false,
@@ -105,7 +102,7 @@ define('messages', ['bootbox', 'translator', 'storage', 'alerts', 'hooks'], func
 	};
 
 	messages.showSessionMismatch = function () {
-		bootbox.alert({
+		modals.alert({
 			title: '[[error:session-mismatch]]',
 			message: '[[error:session-mismatch-text]]',
 			closeButton: false,

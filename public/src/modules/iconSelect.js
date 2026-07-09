@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
+define('iconSelect', ['benchpress', 'modals'], function (Benchpress, modals) {
 	const fontawesome_license = config.fontawesome.pro ? 'pro' : 'free';
 	const iconSelect = {};
 	const initialIcons = [
@@ -239,10 +239,8 @@ define('iconSelect', ['benchpress', 'bootbox'], function (Benchpress, bootbox) {
 			}
 		}
 
-		Benchpress.render('partials/fontawesome', { icons: initialIcons }).then(function (html) {
-			html = $(html);
-
-			const picker = bootbox.dialog({
+		Benchpress.render('partials/fontawesome', { icons: initialIcons }).then(async function (html) {
+			const picker = await modals.dialog({
 				onEscape: true,
 				backdrop: true,
 				show: false,

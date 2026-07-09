@@ -6,7 +6,7 @@ const util = require('util');
 const semver = require('semver');
 const readline = require('readline');
 const winston = require('winston');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const plugins = require('./plugins');
 const db = require('./database');

@@ -6,6 +6,7 @@ const plugins = require('../plugins');
 const activitypub = require('../activitypub');
 const db = require('../database');
 const utils = require('../utils');
+const tx = require('../translator');
 
 module.exports = function (User) {
 	User.follow = async function (uid, followuid) {
@@ -132,12 +133,14 @@ module.exports = function (User) {
 	};
 
 	User.onFollow = async function (uid, targetUid) {
-		const userData = await User.getUserFields(uid, ['username', 'userslug']);
-		const { displayname } = userData;
+		const [displayname, userData] = await Promise.all([
+			User.getNotificationDisplayname(uid),
+			User.getUserFields(uid, ['username', 'userslug']),
+		]);
 
 		const notifObj = await notifications.create({
 			type: 'follow',
-			bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
+			bodyShort: tx.compile('notifications:user-started-following-you', displayname),
 			nid: `follow:${targetUid}:uid:${uid}`,
 			from: uid,
 			path: `/user/${userData.userslug}`,

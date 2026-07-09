@@ -1,9 +1,9 @@
 'use strict';
 
 const path = require('path');
+const { fileTypeFromFile } = require('file-type');
 const mime = require('mime').default;
 const nconf = require('nconf');
-const validator = require('validator');
 
 const user = require('../user');
 const meta = require('../meta');
@@ -17,14 +17,8 @@ const helpers = require('./helpers');
 const uploadsController = module.exports;
 
 uploadsController.upload = async function (req, res, filesIterator) {
-	let files;
-	try {
-		files = req.files;
-	} catch (e) {
-		return helpers.formatApiResponse(400, res);
-	}
+	const { files } = req;
 
-	// These checks added because of odd behaviour by request: https://github.com/request/request/issues/2445
 	if (!Array.isArray(files)) {
 		return helpers.formatApiResponse(500, res, new Error('[[error:invalid-file]]'));
 	}
@@ -48,7 +42,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
-		validateUploadedFileMime(uploadedFile);
+		await validateUploadedFileMime(uploadedFile);
 		const isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
@@ -138,7 +132,7 @@ uploadsController.uploadThumb = async function (req, res) {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
-		validateUploadedFileMime(uploadedFile);
+		await validateUploadedFileMime(uploadedFile);
 		await image.isFileTypeAllowed(uploadedFile.path);
 		const dimensions = await image.checkDimensions(uploadedFile.path);
 
@@ -200,7 +194,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
-	const filename = `${Date.now()}-${validator.escape(name.slice(0, -extension.length)).slice(0, 255)}${extension}`;
+	const filename = `${Date.now()}-${name.slice(0, -extension.length).slice(0, 255)}${extension}`;
 
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 	const storedFile = {
@@ -218,9 +212,27 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	return data.storedFile;
 }
 
-function validateUploadedFileMime(uploadedFile) {
-	const detectedMimeType = mime.getType(uploadedFile.name) || mime.getType(uploadedFile.path);
-	if (detectedMimeType && uploadedFile.type && detectedMimeType !== uploadedFile.type) {
+const mimeAliases = new Map([
+	['application/x-zip-compressed', 'application/zip'],
+	['audio/x-wav', 'audio/wav'],
+	['video/x-msvideo', 'video/avi'],
+	['image/vnd.microsoft.icon', 'image/x-icon'],
+	['application/vnd.rar', 'application/x-rar-compressed'],
+]);
+
+function normalizeMimeType(mimeType) {
+	return mimeAliases.get(mimeType) || mimeType;
+}
+
+async function validateUploadedFileMime(uploadedFile) {
+	const detected = await fileTypeFromFile(uploadedFile.path);
+	const detectedMimeType = detected ? detected.mime : mime.getType(uploadedFile.name);
+	if (
+		detectedMimeType &&
+		uploadedFile.type &&
+		uploadedFile.type !== 'application/octet-stream' &&
+		normalizeMimeType(detectedMimeType) !== normalizeMimeType(uploadedFile.type)
+	) {
 		throw new Error('[[error:invalid-mime-type]]');
 	}
 }

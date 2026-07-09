@@ -27,7 +27,7 @@
 	"restrictions.post-length": "Innleggslengde",
 	"restrictions.days-until-stale": "Antall dager før en tråd anses som utdatert",
 	"restrictions.stale-help": "Hvis en tråd anses som \"utdatert\", vil en advarsel vises til brukere som prøver å svare på den. (Sett til 0 for å deaktivere.)",
-	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "Maksimalt antall svar i et innlegg før brukere ikke lenger kan flytte sitt eget innlegg (sett til 0 for å deaktivere)",
 	"timestamp": "Tidsstempel",
 	"timestamp.cut-off": "Avskjæring for dato (i dager)",
 	"timestamp.cut-off-help": "Datoer og tider vil bli vist på en relativ måte (f.eks. \"for 3 timer siden\" / \"for 5 dager siden\") og lokaliseres til ulike språk. Etter en viss tid kan dette byttes til å vise den lokaliserte datoen selv (f.eks. 5. nov. 2016 15:30).<br /><em>(Standard: <code>30</code>, eller én måned). Sett til 0 for alltid å vise datoer, eller la stå tomt for alltid å vise relative tider.</em>",

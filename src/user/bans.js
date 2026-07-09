@@ -176,8 +176,7 @@ module.exports = function (User) {
 		]);
 		await Promise.all(reasons.map(async (reason, i) => {
 			reason.key = i;
-			reason.parsedBody = translator.escape(await plugins.hooks.fire('filter:parse.raw', reason.body || ''));
-			reason.body = translator.escape(reason.body);
+			reason.parsedBody = await plugins.hooks.fire('filter:parse.raw', reason.body || '');
 			reason.translatedType = translations.get(reason.type) || '';
 		}));
 		if (type !== '') {

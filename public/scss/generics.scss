@@ -178,6 +178,7 @@ $hidden-elements-for-first-last-child: br, hr;
 }
 
 .trim-last-divider > *:last-child hr {	display: none;	}
+.mb-last-0 > :last-child { margin-bottom: 0 !important; }
 
 // some classes that are used commonly in themes from bs3
 .hidden, .hide {

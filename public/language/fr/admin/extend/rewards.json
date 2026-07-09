@@ -12,6 +12,6 @@
 	"disable": "Désactiver",
 
 	"alert.delete-success": "Récompense supprimée",
-	"alert.no-inputs-found": "Récompense invalide - aucune entrée trouvée !",
+	"alert.no-inputs-found": "Veuillez saisir le nom de ce groupe pour le supprimer :",
 	"alert.save-success": "Récompenses sauvegardées"
 }

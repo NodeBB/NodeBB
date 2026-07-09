@@ -14,11 +14,11 @@ describe('Navigation', () => {
 
 	it('should toggle /world route when ap is toggled', async () => {
 		let nav = await navAdmin.get();
-		let world = nav.find(item => item.route === '&#x2F;world');
+		let world = nav.find(item => item.route === '/world');
 		assert.strictEqual(!!world.enabled, true);
 		await meta.configs.setMultiple({ activitypubEnabled: 0 });
 		nav = await navAdmin.get();
-		world = nav.find(item => item.route === '&#x2F;world');
+		world = nav.find(item => item.route === '/world');
 		assert.strictEqual(!!world.enabled, false);
 	});
 });

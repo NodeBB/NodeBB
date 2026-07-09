@@ -1,0 +1,104 @@
+// used in group and account pages
+.cover {
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 200px;
+	position: absolute;
+	background-origin: content-box;
+	width: 100%;
+	top: var(--panel-offset)!important;
+	left: auto;
+	right: 0px;
+
+	&:hover .controls, .controls:focus-within {
+		opacity: 1;
+	}
+
+	.controls {
+		height: 200px;
+		line-height: 200px;
+		opacity: 0;
+		@include transition(opacity .15s linear);
+		cursor: pointer;
+		pointer-events: none;
+
+		> * {
+			pointer-events: all;
+		}
+	}
+
+	&.active {
+		&:hover {
+			cursor: move;
+		}
+
+		.controls {
+			> * {
+				display: none;
+			}
+		}
+
+		.save {
+			display: inline-block;
+		}
+	}
+
+	&.saving {
+		.save {
+			display: none;
+		}
+
+		.indicator {
+			display: inline-block;
+		}
+	}
+
+	.save, .indicator {
+		display: inline-block;
+		position: absolute;
+		bottom: 1em;
+		left: 50%;
+		transform: translateX(-50%);
+		opacity: 1;
+		padding: 0.5em;
+		font-weight: bold;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+	.save {
+		display: none;
+	}
+
+	.indicator {
+		display: none;
+	}
+}
+
+.cover > .container {
+	height: 200px;
+	position: relative;
+	pointer-events: none;
+	.save {
+		pointer-events: all;
+	}
+	.controls {
+		pointer-events: none;
+		> * {
+			pointer-events: all;
+		}
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.cover,  .cover > .container {
+		height: 300px;
+
+		.controls {
+			height: 300px;
+			line-height: 300px;
+		}
+	}
+}

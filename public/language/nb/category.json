@@ -1,9 +1,9 @@
 {
     "category": "Kategori",
     "subcategories": "Underkategorier",
-    "uncategorized": "World",
-    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
-    "handle.description": "This category can be followed from the open social web via the handle %1",
+    "uncategorized": "Verden",
+    "uncategorized.description": "Innlegg som kommer utenfra dette forumet. Synspunkter og meninger som uttrykkes her, gjenspeiler ikke nødvendigvis synspunktene til dette forumet og medlemmene.",
+    "handle.description": "Denne kategorien kan følges fra det åpne sosiale nettet via brukernavnet %1",
     "new-topic-button": "Nytt innlegg",
     "guest-login-post": "Logg inn for å publisere innlegg",
     "no-topics": "<strong>Denne kategorien er foreløpig tom.</strong><br />Har du noe å dele? Opprett et innlegg her!",
@@ -26,5 +26,10 @@
     "notwatching.message": "Du ser ikke på oppdateringer fra denne kategorien og alle underkategorier",
     "ignoring.message": "Du ignorerer nå oppdateringer fra denne kategorien og alle underkategorier",
     "watched-categories": "Overvåkede kategorier",
-    "x-more-categories": "%1 flere kategorier"
+    "x-more-categories": "%1 flere kategorier",
+    "view-original": "Vis original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

@@ -2,10 +2,10 @@
 
 define('forum/account/moderate', [
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-	'translator',
-], function (api, bootbox, alerts, translator) {
+	'benchpress',
+], function (api, modals, alerts, Benchpress) {
 	const AccountModerate = {};
 
 	AccountModerate.banAccount = function (theirid, onSuccess) {
@@ -81,11 +81,10 @@ define('forum/account/moderate', [
 
 	async function throwModal(options) {
 		const reasons = await socket.emit('user.getCustomReasons', { type: options.type || '' });
-		const html = await app.parseAndTranslate(options.tpl, { reasons });
-		const modal = bootbox.dialog({
+		const html = await Benchpress.render(options.tpl, { reasons });
+		const modal = await modals.dialog({
 			title: options.title,
 			message: html,
-			show: true,
 			onEscape: true,
 			buttons: {
 				close: {
@@ -118,9 +117,10 @@ define('forum/account/moderate', [
 		modal.find('[data-key]').on('click', function () {
 			const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
 			if (reason && reason.body) {
-				modal.find('[name="reason"]').val(translator.unescape(reason.body));
+				modal.find('[name="reason"]').val(reason.body);
 			}
 		});
+		return modal;
 	}
 
 	AccountModerate.throwModal = throwModal;

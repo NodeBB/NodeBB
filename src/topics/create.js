@@ -16,7 +16,7 @@ const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
 const categories = require('../categories');
-const translator = require('../translator');
+
 
 module.exports = function (Topics) {
 	Topics.create = async function (data) {
@@ -244,7 +244,6 @@ module.exports = function (Topics) {
 				try {
 					await Topics.notifyFollowers(postData, uid, {
 						type: 'new-reply',
-						bodyShort: translator.compile('notifications:user-posted-to', postData.user.displayname, postData.topic.title),
 						nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
 						mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
 					});

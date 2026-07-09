@@ -1,0 +1,22 @@
+{
+	"queue": "キュー",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "名前",
+	"list.email": "メール",
+	"list.ip": "IP",
+	"list.time": "時間",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "招待",
+	"invitations.description": "以下は送信された招待の一覧です。Ctrl-F を使って、メールアドレスまたはユーザー名で一覧を検索できます。<br><br>招待を利用して登録したユーザーがいる場合は、そのユーザー名がメールアドレスの右側に表示されます。",
+	"invitations.inviter-username": "招待者のユーザー名",
+	"invitations.invitee-email": "招待された人のメールアドレス",
+	"invitations.invitee-username": "招待されたユーザー名（登録済みの場合）",
+
+	"invitations.confirm-delete": "この招待を削除してもよろしいですか？"
+}

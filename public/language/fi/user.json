@@ -209,7 +209,7 @@
     "sessions.description": "Tältä sivulta näet kaikki aktiiviset istuntosi tällä keskustelualueella ja voit tarvittaessa mitätöidä niitä. Voit mitätöidä nykyisen istuntosi kirjautumalla ulos.",
     "revoke-session": "Lopeta istunto",
     "browser-version-on-platform": "%1 %2 on %3",
-    "consent.title": "Your Rights &amp; Consent",
+    "consent.title": "Your Rights & Consent",
     "consent.lead": "Tämä yhteisöfoorumi kerää ja käsittelee henkilötietojasi.",
     "consent.intro": "Käytämme näitä tietoja ainoastaan henkilökohtaisen käyttökokemuksesi parantamiseen tässä yhteisössä sekä liittämään tekemäsi julkaisut käyttäjätiliisi. Rekisteröitymisen yhteydessä sinua pyydettiin antamaan käyttäjänimi ja sähköpostiosoite, ja voit halutessasi täydentää profiiliasi lisätiedoilla tällä sivustolla.<br /><br />Säilytämme nämä tiedot käyttäjätilisi olemassaolon ajan, ja voit milloin tahansa peruuttaa suostumuksesi poistamalla tilisi. Voit myös milloin tahansa pyytää kopion sivustolle tekemästäsi sisällöstä Rights & Consent -sivun kautta.<br /><br />Jos sinulla on kysyttävää tai huolenaiheita, voit ottaa yhteyttä tämän foorumin ylläpitoon",
     "consent.email-intro": "Saatamme ajoittain lähettää rekisteröimääsi sähköpostiosoitteeseen viestejä palvelun päivityksistä ja/tai sinua koskevista tapahtumista. Tilisi asetuksista voit mukauttaa yhteisökoosteiden lähetystiheyttä (tai poistaa ne käytöstä täysin), sekä valita mitä ilmoituksia haluat sähköpostitse vastaanottaa.",

@@ -3,7 +3,6 @@
 const nconf = require('nconf');
 const mime = require('mime').default;
 const path = require('path');
-const validator = require('validator');
 const sanitize = require('sanitize-html');
 const tokenizer = require('sbd');
 
@@ -67,9 +66,13 @@ Mocks._normalize = async (object) => {
 			break;
 		}
 
-		case typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
+		case attributedTo && typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
 			attributedTo = attributedTo.id;
 		}
+	}
+
+	if (!activitypub.helpers.isUri(attributedTo)) {
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
@@ -407,9 +410,7 @@ Mocks.actors.user = async (uid) => {
 
 	let aboutmeParsed = '';
 	if (aboutme) {
-		aboutme = validator.escape(String(aboutme || ''));
 		aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', aboutme);
-		aboutmeParsed = translator.escape(aboutmeParsed);
 	}
 
 	if (picture) {
@@ -448,7 +449,7 @@ Mocks.actors.user = async (uid) => {
 				attachment.push({
 					type: 'Link',
 					name,
-					href: validator.unescape(value),
+					href: value,
 				});
 			} else {
 				attachment.push({
@@ -462,7 +463,7 @@ Mocks.actors.user = async (uid) => {
 			attachment.push({
 				type: 'PropertyValue',
 				name,
-				value: validator.unescape(value),
+				value,
 			});
 		}
 	});
@@ -595,7 +596,7 @@ Mocks.notes.public = async (post) => {
 	let tag = null;
 	let followersUrl;
 
-	let { titleRaw: name, generatedTitle } = await topics.getTopicFields(post.tid, ['title', 'generatedTitle']);
+	let { title: name, generatedTitle } = await topics.getTopicFields(post.tid, ['title', 'generatedTitle']);
 	if (generatedTitle) {
 		name = null;
 	}
@@ -648,7 +649,7 @@ Mocks.notes.public = async (post) => {
 		};
 	}
 	if (mentionsEnabled) {
-		const mentions = require.main.require('nodebb-plugin-mentions');
+		const mentions = nodebb.require('nodebb-plugin-mentions');
 		const matches = await mentions.getMatches(content);
 
 		if (matches.size) {

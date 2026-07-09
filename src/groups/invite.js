@@ -7,6 +7,7 @@ const user = require('../user');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
 const notifications = require('../notifications');
+const tx = require('../translator');
 
 module.exports = function (Groups) {
 	Groups.getPending = async function (groupName) {
@@ -19,13 +20,13 @@ module.exports = function (Groups) {
 
 	Groups.requestMembership = async function (groupName, uid) {
 		await inviteOrRequestMembership(groupName, uid, 'request');
-		const { displayname } = await user.getUserFields(uid, ['username']);
+		const displayname = await user.getNotificationDisplayname(uid);
 
 		const [notification, owners] = await Promise.all([
 			notifications.create({
 				type: 'group-request-membership',
-				bodyShort: `[[groups:request.notification-title, ${displayname}]]`,
-				bodyLong: `[[groups:request.notification-text, ${displayname}, ${groupName}]]`,
+				bodyShort: tx.compile('groups:request.notification-title', displayname),
+				bodyLong: tx.compile('groups:request.notification-text', displayname, tx.escape(groupName)),
 				nid: `group:${groupName}:uid:${uid}:request`,
 				path: `/groups/${slugify(groupName)}`,
 				from: uid,
@@ -42,7 +43,7 @@ module.exports = function (Groups) {
 
 		const notification = await notifications.create({
 			type: 'group-invite',
-			bodyShort: `[[groups:membership.accept.notification-title, ${groupName}]]`,
+			bodyShort: tx.compile('groups:membership.accept.notification-title', tx.escape(groupName)),
 			nid: `group:${groupName}:uid:${uid}:invite-accepted`,
 			path: `/groups/${slugify(groupName)}`,
 			icon: 'fa-users',
@@ -71,7 +72,7 @@ module.exports = function (Groups) {
 
 		const notificationData = await Promise.all(uids.map(uid => notifications.create({
 			type: 'group-invite',
-			bodyShort: `[[groups:invited.notification-title, ${groupName}]]`,
+			bodyShort: tx.compile('groups:invited.notification-title', tx.escape(groupName)),
 			nid: `group:${groupName}:uid:${uid}:invite`,
 			path: `/groups/${slugify(groupName)}`,
 			icon: 'fa-users',

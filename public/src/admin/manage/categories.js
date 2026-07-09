@@ -1,14 +1,13 @@
 'use strict';
 
 define('admin/manage/categories', [
-	'translator',
 	'benchpress',
 	'categorySelector',
 	'api',
 	'Sortable',
-	'bootbox',
+	'modals',
 	'alerts',
-], function (translator, Benchpress, categorySelector, api, Sortable, bootbox, alerts) {
+], function (Benchpress, categorySelector, api, Sortable, modals, alerts) {
 	Sortable = Sortable.default;
 	const Categories = {};
 	let newCategoryId = '-1';
@@ -53,12 +52,12 @@ define('admin/manage/categories', [
 			}
 		});
 
-		$('.categories').on('click', '.set-order', function () {
+		$('.categories').on('click', '.set-order', async function () {
 			const cid = $(this).attr('data-cid');
 			const order = $(this).attr('data-order');
-			const modal = bootbox.dialog({
+			const modal = await modals.dialog({
 				title: '[[admin/manage/categories:set-order]]',
-				message: '<input type="number" min="1" class="form-control input-lg" value=' + order + ' /><p class="form-text">[[admin/manage/categories:set-order-help]]</p>',
+				message: `<input type="number" min="1" class="form-control input-lg" value="${order}" /><p class="form-text">[[admin/manage/categories:set-order-help]]</p>`,
 				show: true,
 				buttons: {
 					save: {
@@ -115,8 +114,8 @@ define('admin/manage/categories', [
 	};
 
 	Categories.throwCreateModal = function () {
-		Benchpress.render('admin/partials/categories/create', {}).then(function (html) {
-			const modal = bootbox.dialog({
+		Benchpress.render('admin/partials/categories/create', {}).then(async (html) => {
+			const modal = await modals.dialog({
 				title: '[[admin/manage/categories:alert.create]]',
 				message: html,
 				buttons: {
@@ -169,8 +168,8 @@ define('admin/manage/categories', [
 	};
 
 	Categories.throwAddModal = function () {
-		Benchpress.render('admin/partials/categories/add', {}).then(function (html) {
-			const modal = bootbox.dialog({
+		Benchpress.render('admin/partials/categories/add', {}).then(async (html) => {
+			const modal = await modals.dialog({
 				title: '[[admin/manage/categories:alert.add]]',
 				message: html,
 				buttons: {
@@ -196,7 +195,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.remove = function (cid) {
-		bootbox.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
+		modals.confirm('[[admin/manage/categories:alert.confirm-remove]]', (ok) => {
 			if (ok) {
 				api.del(`/api/admin/manage/categories/${encodeURIComponent(cid)}`).then(ajaxify.refresh);
 			}
@@ -204,7 +203,7 @@ define('admin/manage/categories', [
 	};
 
 	Categories.rename = function (cid) {
-		bootbox.prompt({
+		modals.prompt({
 			title: '[[admin/manage/categories:alert.rename]]',
 			message: '<p class="mb-3">[[admin/manage/categories:alert.rename-help]]</p>',
 			callback: (name) => {
@@ -235,12 +234,10 @@ define('admin/manage/categories', [
 		const container = $('.categories');
 
 		if (!categories || !categories.length) {
-			translator.translate('[[admin/manage/categories:alert.none-active]]', function (text) {
-				$('<div></div>')
-					.addClass('alert alert-info text-center')
-					.text(text)
-					.appendTo(container);
-			});
+			$('<div></div>')
+				.addClass('alert alert-info text-center')
+				.translateText('[[admin/manage/categories:alert.none-active]]')
+				.appendTo(container);
 		} else {
 			sortables = {};
 			renderList(categories, container, { cid: 0 });
@@ -254,7 +251,11 @@ define('admin/manage/categories', [
 		}).then(() => {
 			const categoryEl = listEl.querySelector(`li[data-cid="${cid}"]`);
 			categoryEl.classList[disabled ? 'add' : 'remove']('disabled');
-			$(categoryEl).find('li a[data-action="toggle"]').first().translateText(disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]');
+			$(categoryEl).find('li a[data-action="toggle"]').first()
+				.translateText(disabled ?
+					'[[admin/manage/categories:enable]]' :
+					'[[admin/manage/categories:disable]]'
+				);
 		}).catch(alerts.error)));
 	};
 
@@ -314,61 +315,41 @@ define('admin/manage/categories', [
 	 * @param parentId {number} parent category identifier
 	 */
 	function renderList(categories, container, parentCategory) {
-		// Translate category names if needed
-		let count = 0;
 		const parentId = parentCategory.cid;
-		categories.forEach(function (category, idx, parent) {
-			translator.translate(category.name, function (translated) {
-				if (category.name !== translated) {
-					category.name = translated;
-				}
-				count += 1;
 
-				if (count === parent.length) {
-					continueRender();
-				}
+		app.parseAndTranslate('admin/partials/categories/category-rows', {
+			cid: parentCategory.cid,
+			categories: categories,
+			parentCategory: parentCategory,
+		}, function (html) {
+			if (container.find('.category-row').length) {
+				container.find('.category-row').after(html);
+			} else {
+				container.append(html);
+			}
+
+			// Disable expand toggle
+			if (!categories.length) {
+				const toggleEl = container.get(0).querySelector('.toggle');
+				toggleEl.classList.toggle('invisible', true);
+			}
+
+			// Handle and children categories in this level have
+			for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
+				renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x]);
+			}
+
+			// Make list sortable
+			sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+				group: 'cross-categories',
+				animation: 150,
+				handle: '.information',
+				dataIdAttr: 'data-cid',
+				ghostClass: 'placeholder',
+				onAdd: itemDidAdd,
+				onEnd: itemDragDidEnd,
 			});
 		});
-
-		if (!categories.length) {
-			continueRender();
-		}
-
-		function continueRender() {
-			app.parseAndTranslate('admin/partials/categories/category-rows', {
-				cid: parentCategory.cid,
-				categories: categories,
-				parentCategory: parentCategory,
-			}, function (html) {
-				if (container.find('.category-row').length) {
-					container.find('.category-row').after(html);
-				} else {
-					container.append(html);
-				}
-
-				// Disable expand toggle
-				if (!categories.length) {
-					const toggleEl = container.get(0).querySelector('.toggle');
-					toggleEl.classList.toggle('invisible', true);
-				}
-
-				// Handle and children categories in this level have
-				for (let x = 0, numCategories = categories.length; x < numCategories; x += 1) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x]);
-				}
-
-				// Make list sortable
-				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-					group: 'cross-categories',
-					animation: 150,
-					handle: '.information',
-					dataIdAttr: 'data-cid',
-					ghostClass: 'placeholder',
-					onAdd: itemDidAdd,
-					onEnd: itemDragDidEnd,
-				});
-			});
-		}
 	}
 
 	return Categories;

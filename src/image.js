@@ -28,7 +28,7 @@ image.isFileTypeAllowed = async function (path) {
 	}
 	const sharp = require('sharp');
 	await sharp(path, {
-		failOnError: true,
+		failOn: 'error',
 	}).metadata();
 };
 
@@ -46,7 +46,7 @@ image.resizeImage = async function (data) {
 		const sharp = requireSharp();
 		const buffer = await fs.promises.readFile(data.path);
 		const sharpImage = sharp(buffer, {
-			failOnError: true,
+			failOn: 'error',
 			animated: data.type === 'image/gif',
 		});
 		const metadata = await sharpImage.metadata();
@@ -88,7 +88,7 @@ image.normalise = async function (path) {
 		});
 	} else {
 		const sharp = requireSharp();
-		await sharp(path, { failOnError: true }).png().toFile(`${path}.png`);
+		await sharp(path, { failOn: 'error' }).png().toFile(`${path}.png`);
 	}
 	return `${path}.png`;
 };
@@ -101,7 +101,7 @@ image.size = async function (path) {
 		});
 	} else {
 		const sharp = requireSharp();
-		imageData = await sharp(path, { failOnError: true }).metadata();
+		imageData = await sharp(path, { failOn: 'error' }).metadata();
 	}
 	return imageData ? { width: imageData.width, height: imageData.height } : undefined;
 };
@@ -120,7 +120,7 @@ image.stripEXIF = async function ({ path, type }) {
 		}
 		const buffer = await fs.promises.readFile(path);
 		const sharp = requireSharp();
-		await sharp(buffer, { failOnError: true, pages: -1 }).rotate().toFile(path);
+		await sharp(buffer, { failOn: 'error', pages: -1 }).rotate().toFile(path);
 	} catch (err) {
 		winston.error(err.stack);
 	}

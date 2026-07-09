@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 
 const db = require('../database');
 const utils = require('../utils');
@@ -15,7 +14,6 @@ Rules.list = async () => {
 	rules = rules.map((rule, idx) => {
 		rule.rid = rids[idx];
 		rule.cid = parseInt(rule.cid, 10);
-		rule.value = validator.escape(rule.value);
 		rule.filter = typeof rule.filter === 'string' ? rule.filter === 'true' : rule.filter;
 		return rule;
 	});

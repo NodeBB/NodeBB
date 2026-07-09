@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const db = require('../../database');
 const meta = require('../../meta');
 const activitypub = require('../../activitypub');
@@ -124,7 +122,7 @@ federationController.errors = async function (req, res) {
 		if (!errorObj[idx]) {
 			return null;
 		}
-		let { type, body, stack } = errorObj[idx];
+		let { type, body, stack, recipient } = errorObj[idx];
 		let activityType;
 		let hostname = 'Invalid hostname';
 		const timestampISO = new Date(timestamp).toISOString();
@@ -132,7 +130,7 @@ federationController.errors = async function (req, res) {
 			const parsed = JSON.parse(body);
 			({ type: activityType } = parsed);
 			body = JSON.stringify(parsed, null, 4);
-			stack = validator.escape(stack.replace(/\s+$/gm, ''));
+			stack = stack.replace(/\s+$/gm, '');
 			({ hostname } = new URL(id));
 		} catch (e) {
 			// noop
@@ -146,10 +144,11 @@ federationController.errors = async function (req, res) {
 		}
 
 		return {
-			id: validator.escape(String(id || '')),
-			type: validator.escape(String(type || '')),
-			activityType: validator.escape(String(activityType || '')),
-			body: validator.escape(String(body || '')),
+			id: id || '',
+			type: type || '',
+			activityType: activityType || '',
+			body: body || '',
+			recipient: recipient || '',
 			stack,
 			hostname,
 			timestamp,

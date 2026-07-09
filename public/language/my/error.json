@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "ဤမက်ဆေ့ဂျ်ကို ဖျက်ရန် သင့်အား ခွင့်ပြုမထားပါ",
     "chat-edit-duration-expired": "ပို့စ်တင်ပြီးနောက် (%1) စက္ကန့်အတွင်းသာ စကားပြော မက်ဆေ့ဂျ်များကို တည်းဖြတ်ခွင့်ရှိသည်",
     "chat-delete-duration-expired": "ပို့စ်တင်ပြီးနောက် (%1) စက္ကန့်အတွင်းသာ စကားပြော မက်ဆေ့ဂျ်များကို ဖျက်ခွင့်ရှိသည်",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "ဤစကားပြော မက်ဆေ့ဂျ်ကို ဖျက်လိုက်ပါပြီ။",
     "chat-restored-already": "ဤစကားပြော မက်ဆေ့ဂျ်ကို ပြန်လည်ဖော်ဆောင်လိုက်ပါပြီ။",
     "chat-room-does-not-exist": "စကားပြောခန်း မရှိပါ။",

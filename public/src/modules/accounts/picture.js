@@ -3,98 +3,82 @@
 define('accounts/picture', [
 	'pictureCropper',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-], (pictureCropper, api, bootbox, alerts) => {
+	'benchpress',
+], (pictureCropper, api, modals, alerts, Benchpress) => {
 	const Picture = {};
 
-	Picture.openChangeModal = () => {
-		socket.emit('user.getProfilePictures', {
+	Picture.openChangeModal = async () => {
+		const pictures = await socket.emit('user.getProfilePictures', {
 			uid: ajaxify.data.uid,
-		}, function (err, pictures) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			// boolean to signify whether an uploaded picture is present in the pictures list
-			const uploaded = pictures.reduce(function (memo, cur) {
-				return memo || cur.type === 'uploaded';
-			}, false);
-
-			app.parseAndTranslate('modals/change-picture', {
-				pictures: pictures,
-				uploaded: uploaded,
-				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
-				defaultAvatar: ajaxify.data.defaultAvatar,
-				allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
-				iconBackgrounds: ajaxify.data.iconBackgrounds.map((color) => {
-					return {
-						color,
-						selected: color === ajaxify.data['icon:bgColor'],
-					};
-				}),
-				user: {
-					uid: ajaxify.data.uid,
-					username: ajaxify.data.username,
-					picture: ajaxify.data.picture,
-					'icon:text': ajaxify.data['icon:text'],
-					'icon:bgColor': ajaxify.data['icon:bgColor'],
-				},
-			}, function (html) {
-				const modal = bootbox.dialog({
-					className: 'picture-switcher',
-					title: '[[user:change-picture]]',
-					message: html,
-					show: true,
-					size: 'large',
-					buttons: {
-						close: {
-							label: '[[global:close]]',
-							callback: onCloseModal,
-							className: 'btn-link',
-						},
-						update: {
-							label: '[[global:save-changes]]',
-							callback: saveSelection,
-						},
-					},
-				});
-
-				modal.on('click', '[component="profile/picture/button"]', function selectImageType() {
-					modal.find('[component="profile/picture/button"]').removeClass('active');
-					$(this).addClass('active');
-				});
-
-				modal.on('click', '[data-bg-color]', function () {
-					const value = $(this).attr('data-bg-color');
-					$(this).addClass('selected').siblings().removeClass('selected');
-					modal.find('[component="avatar/icon"]').css('background-color', value);
-				});
-
-				handleImageUpload(modal);
-
-				function saveSelection() {
-					const activeBtn = modal.find('[component="profile/picture/button"].active');
-					const type = activeBtn.attr('data-type');
-					const picture = activeBtn.find('img').attr('src');
-					const bgColor = modal.find('[data-bg-color].selected').attr('data-bg-color') || 'transparent';
-
-					api.put(`/users/${ajaxify.data.theirid}/picture`, {
-						type, picture, bgColor,
-					}).then(() => {
-						Picture.updateHeader(
-							type === 'default' ? '' : picture,
-							bgColor
-						);
-						ajaxify.refresh();
-					}).catch(alerts.error);
-				}
-
-				function onCloseModal() {
-					modal.modal('hide');
-				}
-			});
 		});
+
+		const html = await Benchpress.render('modals/change-picture', {
+			pictures: pictures,
+			icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
+			defaultAvatar: ajaxify.data.defaultAvatar,
+			allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
+			iconBackgrounds: ajaxify.data.iconBackgrounds.map((color) => {
+				return {
+					color,
+					selected: color === ajaxify.data['icon:bgColor'],
+				};
+			}),
+			user: {
+				uid: ajaxify.data.uid,
+				username: ajaxify.data.username,
+				picture: ajaxify.data.picture,
+				'icon:text': ajaxify.data['icon:text'],
+				'icon:bgColor': ajaxify.data['icon:bgColor'],
+			},
+		});
+
+		const modal = await modals.dialog({
+			className: 'picture-switcher',
+			title: '[[user:change-picture]]',
+			message: html,
+			show: true,
+			size: 'large',
+			buttons: {
+				close: {
+					label: '[[global:close]]',
+					className: 'btn-link',
+				},
+				update: {
+					label: '[[global:save-changes]]',
+					callback: function () {
+						const activeBtn = modal.find('[component="profile/picture/button"].active');
+						const type = activeBtn.attr('data-type');
+						const picture = activeBtn.find('img').attr('src');
+						const bgColor = modal.find('[data-bg-color].selected').attr('data-bg-color') || 'transparent';
+
+						api.put(`/users/${ajaxify.data.theirid}/picture`, {
+							type, picture, bgColor,
+						}).then(() => {
+							Picture.updateHeader(
+								type === 'default' ? '' : picture,
+								bgColor
+							);
+							ajaxify.refresh();
+						}).catch(alerts.error);
+					},
+				},
+			},
+		});
+
+		modal.on('click', '[component="profile/picture/button"]', function () {
+			modal.find('[component="profile/picture/button"]').removeClass('active');
+			$(this).addClass('active');
+		});
+
+		modal.on('click', '[data-bg-color]', function () {
+			const value = $(this).attr('data-bg-color');
+			$(this).addClass('selected').siblings().removeClass('selected');
+			modal.find('[component="avatar/icon"]').css('background-color', value);
+		});
+
+		handleImageUpload(modal);
 	};
 
 	Picture.updateHeader = (picture, iconBgColor) => {

@@ -4,8 +4,8 @@ const nconf = require('nconf');
 const semver = require('semver');
 const winston = require('winston');
 const _ = require('lodash');
-const validator = require('validator');
 
+const tx = require('../../translator');
 const versions = require('../../admin/versions');
 const db = require('../../database');
 const meta = require('../../meta');
@@ -22,7 +22,7 @@ const dashboardController = module.exports;
 dashboardController.get = async function (req, res) {
 	const [stats, notices, latestVersion, lastrestart, isAdmin, popularSearches] = await Promise.all([
 		getStats(),
-		getNotices(),
+		getNotices(req),
 		getLatestVersion(),
 		getLastRestart(),
 		user.isAdministrator(req.uid),
@@ -48,7 +48,7 @@ dashboardController.get = async function (req, res) {
 	});
 };
 
-async function getNotices() {
+async function getNotices(req) {
 	const notices = [
 		{
 			done: !meta.reloadRequired,
@@ -76,6 +76,25 @@ async function getNotices() {
 			done: false,
 			notDoneText: '[[admin/dashboard:running-in-development]]',
 		});
+	}
+
+	const configuredUrl = nconf.get('url');
+	if (configuredUrl === 'http://localhost:4567') {
+		notices.push({
+			done: false,
+			notDoneText: '[[admin/dashboard:localhost-warning]]',
+		});
+	}
+
+	if (configuredUrl && req) {
+		const requestHost = req.get('host');
+		const configuredHost = new URL(configuredUrl).host;
+		if (requestHost !== configuredHost) {
+			notices.push({
+				done: false,
+				notDoneText: tx.compile('admin/dashboard:url-mismatch-warning', requestHost, configuredHost),
+			});
+		}
 	}
 
 	return await plugins.hooks.fire('filter:admin.notices', notices);
@@ -262,8 +281,7 @@ async function getLastRestart() {
 }
 
 async function getPopularSearches() {
-	const searches = await db.getSortedSetRevRangeWithScores('searches:all', 0, 9);
-	return searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score }));
+	return await db.getSortedSetRevRangeWithScores('searches:all', 0, 9);
 }
 
 dashboardController.getLogins = async (req, res) => {
@@ -280,7 +298,7 @@ dashboardController.getLogins = async (req, res) => {
 
 	// List recent sessions
 	const start = Date.now() - (1000 * 60 * 60 * 24 * meta.config.loginDays);
-	const uids = await db.getSortedSetRangeByScore('users:online', 0, 500, start, Date.now());
+	const uids = await db.getSortedSetRevRangeByScore('users:online', 0, 500, '+inf', start);
 	const usersData = await user.getUsersData(uids);
 	let sessions = await Promise.all(uids.map(async (uid) => {
 		const sessions = await user.auth.getSessions(uid);
@@ -318,7 +336,7 @@ dashboardController.getUsers = async (req, res) => {
 	// List of users registered within time frame
 	const end = parseInt(req.query.until, 10) || Date.now();
 	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
-	const uids = await db.getSortedSetRangeByScore('users:joindate', 0, 500, start, end);
+	const uids = await db.getSortedSetRevRangeByScore('users:joindate', 0, 500, '+inf', start);
 	const users = await user.getUsersData(uids);
 
 	res.render('admin/dashboard/users', {
@@ -346,7 +364,7 @@ dashboardController.getTopics = async (req, res) => {
 	// List of topics created within time frame
 	const end = parseInt(req.query.until, 10) || Date.now();
 	const start = end - (1000 * 60 * 60 * (req.query.units === 'days' ? 24 : 1) * (req.query.count || (req.query.units === 'days' ? 30 : 24)));
-	const tids = await db.getSortedSetRangeByScore('topics:tid', 0, 500, start, end);
+	const tids = await db.getSortedSetRevRangeByScore('topics:tid', 0, 500, '+inf', start);
 	const topicData = await topics.getTopicsByTids(tids);
 
 	res.render('admin/dashboard/topics', {
@@ -419,9 +437,9 @@ dashboardController.getSearches = async (req, res) => {
 	const pageCount = Math.ceil(itemCount / perPage);
 
 	res.render('admin/dashboard/searches', {
-		searches: searches.map(s => ({ value: validator.escape(String(s.value)), score: s.score })),
-		startDate: req.query.start ? validator.escape(String(req.query.start)) : null,
-		endDate: req.query.end ? validator.escape(String(req.query.end)) : null,
+		searches: searches,
+		startDate: req.query.start ? req.query.start : null,
+		endDate: req.query.end ? req.query.end : null,
 		pagination: pagination.create(page, pageCount, req.query),
 	});
 };

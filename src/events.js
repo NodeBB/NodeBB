@@ -1,7 +1,6 @@
 
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('./database');
@@ -201,11 +200,6 @@ events.getEventsByEventIds = async (eids) => {
 	await addUserData(eventsData, 'uid', 'user');
 	await addUserData(eventsData, 'targetUid', 'targetUser');
 	eventsData.forEach((event) => {
-		Object.keys(event).forEach((key) => {
-			if (typeof event[key] === 'string') {
-				event[key] = validator.escape(String(event[key] || ''));
-			}
-		});
 		const e = utils.merge(event);
 		e.eid = undefined;
 		e.uid = undefined;

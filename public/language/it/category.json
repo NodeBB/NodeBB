@@ -26,5 +26,10 @@
     "notwatching.message": "Ora non stai seguendo gli aggiornamenti di questa categoria e di tutte le sottocategorie",
     "ignoring.message": "Ora stai ignorando gli aggiornamenti di questa categoria e di tutte le sottocategorie",
     "watched-categories": "Categorie seguite",
-    "x-more-categories": "Altre %1 categorie"
+    "x-more-categories": "Altre %1 categorie",
+    "view-original": "Visualizza l'originale",
+    "first-run.welcome": "Benvenuto nel tuo nuovo forum NodeBB!",
+    "first-run.description": "Il tuo forum è pronto. Accedi per personalizzare le categorie, le impostazioni e altro ancora.",
+    "first-run.admin-panel": "Puoi gestire il forum tramite il Pannello di amministrazione",
+    "first-run.admin-panel-desc": "accessibile tramite l'icona a forma di ingranaggio nella barra laterale"
 }

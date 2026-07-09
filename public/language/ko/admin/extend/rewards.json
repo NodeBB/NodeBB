@@ -12,6 +12,6 @@
 	"disable": "비활성화",
 
 	"alert.delete-success": "리워드를 성공적으로 삭제했습니다",
-	"alert.no-inputs-found": "부적절한 리워드 - 입력이 없습니다!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "리워드를 성공적으로 저장했습니다"
 }

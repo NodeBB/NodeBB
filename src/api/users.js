@@ -16,7 +16,7 @@ const privileges = require('../privileges');
 const notifications = require('../notifications');
 const plugins = require('../plugins');
 const events = require('../events');
-const translator = require('../translator');
+const tx = require('../translator');
 const sockets = require('../socket.io');
 const utils = require('../utils');
 
@@ -86,14 +86,14 @@ usersAPI.update = async function (caller, data) {
 
 	await user.updateProfile(caller.uid, data);
 	const userData = await user.getUserData(data.uid);
-	const oldUsernameEscaped = validator.escape(String(oldUserData.username));
-	if (userData.username !== oldUsernameEscaped) {
+
+	if (userData.username !== oldUserData.username) {
 		await events.log({
 			type: 'username-change',
 			uid: caller.uid,
 			targetUid: data.uid,
 			ip: caller.ip,
-			oldUsername: oldUsernameEscaped,
+			oldUsername: oldUserData.username,
 			newUsername: userData.username,
 		});
 	}
@@ -207,12 +207,12 @@ usersAPI.ban = async function (caller, data) {
 	await db.setObjectField(`uid:${data.uid}:ban:${banData.timestamp}`, 'fromUid', caller.uid);
 
 	if (!data.reason) {
-		data.reason = await translator.translate('[[user:info.banned-no-reason]]');
+		data.reason = await tx.translateKey('[[user:info.banned-no-reason]]');
 	}
 
 	sockets.in(`uid_${data.uid}`).emit('event:banned', {
 		until: data.until,
-		reason: validator.escape(String(data.reason || '')),
+		reason: data.reason || '',
 	});
 
 	await flags.resolveFlag('user', data.uid, caller.uid);
@@ -744,9 +744,9 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 	});
 	child.on('exit', async () => {
 		await db.deleteObjectField('locks', `export:${uid}${type}`);
-		const { displayname } = await user.getUserFields(uid, ['username']);
+		const displayname = await user.getNotificationDisplayname(uid);
 		const n = await notifications.create({
-			bodyShort: `[[notifications:${type}-exported, ${displayname}]]`,
+			bodyShort: tx.compile(`notifications:${type}-exported`, displayname),
 			path: `/api/v3/users/${uid}/exports/${type}`,
 			nid: `${type}:export:${uid}`,
 			from: uid,

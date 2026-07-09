@@ -2,10 +2,10 @@
 
 
 define('forum/chats/messages', [
-	'components', 'hooks', 'bootbox', 'alerts',
-	'messages', 'api', 'forum/topic/images', 'imagesloaded',
+	'components', 'hooks', 'modals', 'alerts',
+	'messages', 'api', 'forum/topic/images', 'imagesloaded', 'translator',
 ], function (
-	components, hooks, bootbox, alerts, messagesModule, api, images, imagesLoaded
+	components, hooks, modals, alerts, messagesModule, api, images, imagesLoaded, tx
 ) {
 	const messages = {};
 
@@ -196,7 +196,7 @@ define('forum/chats/messages', [
 		const replyToEl = composerEl.find('[component="chat/composer/replying-to"]');
 		replyToEl.attr('data-tomid', mid)
 			.find('[component="chat/composer/replying-to-text"]')
-			.translateText(`[[modules:chat.replying-to, ${msgEl.attr('data-displayname')}]]`);
+			.translateHtml(tx.compile('modules:chat.replying-to', tx.escape(msgEl.attr('data-displayname'))));
 		replyToEl.removeClass('hidden');
 		replyToEl.find('[component="chat/composer/replying-to-cancel"]').off('click')
 			.on('click', () => {
@@ -326,12 +326,12 @@ define('forum/chats/messages', [
 		msgEl.toggleClass('deleted', true);
 		parentEl.toggleClass('deleted', true);
 		if (!isSelf) {
-			msgEl.find('[component="chat/message/body"]')
-				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+			msgEl.find('[component="chat/message/body"]').html('<p></p>')
+				.translateText('[[modules:chat.message-deleted]]');
 		}
 		if (!isParentSelf) {
-			parentEl.find('[component="chat/message/parent/content"]')
-				.translateHtml('<p>[[modules:chat.message-deleted]]</p>');
+			parentEl.find('[component="chat/message/parent/content"]').html('<p></p>')
+				.translateText('[[modules:chat.message-deleted]]');
 		}
 	}
 
@@ -403,7 +403,7 @@ define('forum/chats/messages', [
 	};
 
 	messages.delete = function (messageId, roomId) {
-		bootbox.confirm('[[modules:chat.delete-message-confirm]]', function (ok) {
+		modals.confirm('[[modules:chat.delete-message-confirm]]', function (ok) {
 			if (!ok) {
 				return;
 			}

@@ -1,0 +1,22 @@
+{
+	"queue": "Опашка",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "Отхвърляне на всички",
+	"reject-all-confirm": "Наистина ли искате да отхвърлите всички заявки за регистрация?",
+	"list.name": "Няма",
+	"list.email": "Е-поща",
+	"list.ip": "IP адрес",
+	"list.time": "Време",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Честота: %1<br/>Появявания: %2<br/>Увереност: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Честота: %1<br/>Появявания: %2<br/>Увереност: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Честота: %1<br/>Появявания: %2<br/>Увереност: %3</div>",
+
+	"invitations": "Покани",
+	"invitations.description": "По-долу ще намерите пълен списък от изпратените покани. Използвайте „Ctrl-F“, за да търсите е-поща или потребителско име в списъка. <br><br>Потребителското име ще бъде показано вдясно от е-пощата за потребителите, които са приели поканата си.",
+	"invitations.inviter-username": "Потребителско име на канещия",
+	"invitations.invitee-email": "Е-поща на поканения",
+	"invitations.invitee-username": "Потребителско име на поканения (ако е регистриран)",
+
+	"invitations.confirm-delete": "Наистина ли искате да изтриете тази покана?"
+}

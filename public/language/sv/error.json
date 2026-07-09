@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Du har inte rättigheter att radera det här meddelandet",
     "chat-edit-duration-expired": "Du kan endast redigera chattmeddelanden %1 sekunder efter att du skrivit dem",
     "chat-delete-duration-expired": "Du kan endast radera chattmeddelanden %1 sekunder efter att du skrivit dem",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Detta chattmeddelande har redan raderats.",
     "chat-restored-already": "This chat message has already been restored.",
     "chat-room-does-not-exist": "Chat room does not exist.",

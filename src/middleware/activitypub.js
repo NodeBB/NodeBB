@@ -40,6 +40,11 @@ middleware.assertS2S = async function (req, res, next) {
 };
 
 middleware.verify = async function (req, res, next) {
+	// Skip verification for GET /actor
+	if (req.method === 'GET' && req.path === '/actor') {
+		return next();
+	}
+
 	// Verifies the HTTP Signature if present (required for POST)
 	if (req.headers.hasOwnProperty('signature')) {
 		const verified = await activitypub.verify(req);

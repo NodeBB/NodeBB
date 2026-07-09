@@ -2,12 +2,12 @@
 
 define('forum/world', [
 	'forum/infinitescroll', 'search', 'sort', 'hooks',
-	'alerts', 'api', 'bootbox', 'helpers', 'forum/category/tools',
+	'alerts', 'api', 'modals', 'helpers', 'forum/category/tools',
 	'translator', 'quickreply', 'handleBack', 'imagesloaded',
 	'forum/topic/votes',
 	'modules/intents',
 ], function (infinitescroll, search, sort, hooks,
-	alerts, api, bootbox, helpers, categoryTools,
+	alerts, api, modals, helpers, categoryTools,
 	translator, quickreply, handleBack, imagesLoaded, votes, intents) {
 	const World = {};
 
@@ -208,7 +208,7 @@ define('forum/world', [
 		];
 
 		trigger.addEventListener('click', () => {
-			bootbox.dialog({
+			modals.dialog({
 				title: '[[world:help.title]]',
 				message: content.join('\n'),
 				size: 'large',

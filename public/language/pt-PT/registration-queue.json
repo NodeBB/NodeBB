@@ -1,0 +1,22 @@
+{
+	"queue": "Fila de espera",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Nome",
+	"list.email": "E-mail",
+	"list.ip": "IP",
+	"list.time": "Tempo",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Convites",
+	"invitations.description": "Em baixo está uma lista completa de convites enviados. Utiliza CTRL+F para procurar na lista por um e-mail ou um utilizador. <br><br>O nome de utilizador será exibido à direita dos e-mails para os utilizadores que aceitaram os seus convites.",
+	"invitations.inviter-username": "Nome de Utilizador do Convidador",
+	"invitations.invitee-email": "E-mail do Convidado",
+	"invitations.invitee-username": "Nome de Utilizador do Convidado (se registado)",
+
+	"invitations.confirm-delete": "Tens a certeza que desejas eliminar este convite?"
+}

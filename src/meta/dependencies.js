@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const semver = require('semver');
 const winston = require('winston');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const pkg = require('../../package.json');
 const { paths, pluginNamePattern } = require('../constants');

@@ -1,7 +1,5 @@
 'use strict';
 
-const validator = require('validator');
-
 const privileges = require('../privileges');
 const events = require('../events');
 const groups = require('../groups');
@@ -9,10 +7,15 @@ const user = require('../user');
 const meta = require('../meta');
 const notifications = require('../notifications');
 const slugify = require('../slugify');
+const tx = require('../translator');
 
 const groupsAPI = module.exports;
 
 groupsAPI.list = async (caller, data) => {
+	const canView = await privileges.global.can('view:groups', caller.uid);
+	if (!canView) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const page = parseInt(data.page, 10) || 1;
 	const groupsPerPage = 15;
 	const start = Math.max(0, page - 1) * groupsPerPage;
@@ -171,11 +174,23 @@ groupsAPI.join = async function (caller, data) {
 			targetUid: data.uid,
 		});
 	} else if (isSelf) {
-		await groups.requestMembership(groupName, caller.uid);
-		logGroupEvent(caller, 'group-request-membership', {
-			groupName: groupName,
-			targetUid: data.uid,
-		});
+		// users who can approve membership requests for this group (owners,
+		// global moderators) would only have to approve themselves, so let
+		// them join immediately instead of queueing a pointless request
+		const canApprove = await isOwner(caller, groupName, false);
+		if (canApprove) {
+			await groups.join(groupName, data.uid);
+			logGroupEvent(caller, 'group-join', {
+				groupName: groupName,
+				targetUid: data.uid,
+			});
+		} else {
+			await groups.requestMembership(groupName, caller.uid);
+			logGroupEvent(caller, 'group-request-membership', {
+				groupName: groupName,
+				targetUid: data.uid,
+			});
+		}
 	} else {
 		throw new Error('[[error:not-allowed]]');
 	}
@@ -227,12 +242,12 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const { displayname } = await user.getUserFields(data.uid, ['username']);
+	const displayname = await user.getNotificationDisplayname(data.uid);
 
 	const notification = await notifications.create({
 		type: 'group-leave',
-		bodyShort: `[[groups:membership.leave.notification-title, ${displayname}, ${groupName}]]`,
-		nid: `group:${validator.escape(groupName)}:uid:${data.uid}:group-leave`,
+		bodyShort: tx.compile('groups:membership.leave.notification-title', displayname, tx.escape(groupName)),
+		nid: `group:${groupName}:uid:${data.uid}:group-leave`,
 		path: `/groups/${slugify(groupName)}`,
 		from: data.uid,
 	});

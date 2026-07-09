@@ -12,8 +12,8 @@
 				<div class="login-block">
 					<form class="d-flex flex-column gap-3" role="form" method="post" id="login-form">
 						<div class="mb-2 d-flex flex-column gap-2">
-							<label for="username">{allowLoginWith}</label>
-							<input class="form-control" type="text" placeholder="{allowLoginWith}" name="username" id="username" autocorrect="off" autocapitalize="off" autocomplete="nickname" value="{username}" aria-required="true"/>
+							<label for="username">{{tx(allowLoginWith)}}</label>
+							<input class="form-control" type="text" placeholder="{tx(allowLoginWith)}" name="username" id="username" autocorrect="off" autocapitalize="off" autocomplete="nickname" value="{username}" aria-required="true"/>
 						</div>
 
 						<div class="mb-2 d-flex flex-column gap-2">
@@ -33,7 +33,7 @@
 
 						{{{ each loginFormEntry }}}
 						<div class="mb-2 loginFormEntry d-flex flex-column gap-2 {./styleName}">
-							<label for="{./inputId}">{./label}</label>
+							<label for="{./inputId}">{{tx(./label)}}</label>
 							<div>{{./html}}</div>
 						</div>
 						{{{ end }}}
@@ -79,12 +79,12 @@
 						<li class="{./name} mb-2">
 							<a class="btn btn-outline-light d-flex align-items-center" rel="nofollow noopener noreferrer" target="_top" href="{config.relative_path}{./url}">
 								{{{ if ./icons.svg }}}
-								{./icons.svg}
+								{{./icons.svg}}
 								{{{ else }}}
 								<i class="flex-shrink-0 {./icons.normal}" style="color:{./color};"></i>
 								{{{ end }}}
 								{{{ if ./labels.login }}}
-								<div class="flex-grow-1 text-body text-sm">{./labels.login}</div>
+								<div class="flex-grow-1 text-body text-sm">{{tx(./labels.login)}}</div>
 								{{{ end }}}
 							</a></li>
 						{{{ end }}}

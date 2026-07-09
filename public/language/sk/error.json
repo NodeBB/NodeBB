@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "Nemáte oprávanie k odstráneniu tejto správy",
     "chat-edit-duration-expired": "Je Vám umožnené upraviť správy konverzácie po dobu %1 sekúnd po ich odoslaní",
     "chat-delete-duration-expired": "Je Vám umožnené odstrániť správy konverzácie po dobu %1 sekúnd po ich odoslaní",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "Táto správa konverzácie už bola odstránená.",
     "chat-restored-already": "This chat message has already been restored.",
     "chat-room-does-not-exist": "Chat room does not exist.",

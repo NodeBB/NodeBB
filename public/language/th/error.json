@@ -172,6 +172,7 @@
     "cant-delete-chat-message": "คุณไม่ได้รับอนุญาตให้ลบข้อความ",
     "chat-edit-duration-expired": "คุณสามารถแก้ไขข้อความแชทได้ภายใน %1 วินาทีหลังการโพสต์",
     "chat-delete-duration-expired": "คุณสามารถลบข้อความแชทได้ภายใน %1 วินาทีหลังการโพสต์",
+    "chat-message-editing-disabled": "Chat messaging editing is disabled.",
     "chat-deleted-already": "ข้อความแชทนี้ถูกลบแล้ว",
     "chat-restored-already": "ข้อความแชทนี้ถูกกู้กลับมาแล้ว",
     "chat-room-does-not-exist": "ไม่มีห้องแชทนี้",

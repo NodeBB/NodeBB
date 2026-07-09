@@ -332,14 +332,15 @@ Controller.postInbox = async (req, res) => {
 		return res.sendStatus(200);
 	}
 
+	const originalBody = structuredClone(req.body);
 	try {
 		await activitypub.inbox[method](req);
 		await activitypub.analytics.receipt(req.body);
 		await helpers.formatApiResponse(202, res);
 	} catch (e) {
-		activitypub.analytics.receiptError(req.body, e);
-		if (req.body?.type && req.body?.object && req.body?.actor) {
-			activitypub.inbox._reject(req.body.type, req.body.object, req.body.actor);
+		activitypub.analytics.receiptError(originalBody, e);
+		if (originalBody?.type && originalBody?.object && originalBody?.actor) {
+			activitypub.inbox._reject(originalBody.type, originalBody.object, originalBody.actor);
 		} else {
 			helpers.formatApiResponse(500, res, e).catch(err => winston.error(err.stack));
 		}

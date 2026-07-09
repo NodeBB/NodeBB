@@ -1,6 +1,6 @@
 <div component="settings/main/header" class="row border-bottom py-2 m-0 mb-3 sticky-top acp-page-main-header align-items-center">
 	<div class="col-12 col-md-8 px-0 mb-1 mb-md-0">
-		<h4 class="fw-bold tracking-tight mb-0">{title}</h4>
+		<h4 class="fw-bold tracking-tight mb-0">{{tx(title)}}</h4>
 	</div>
 </div>
 
@@ -19,7 +19,7 @@
 					{{{ each relays }}}
 					<tr data-url="{./url}">
 						<td>{./url}</td>
-						<td>{./label}</td>
+						<td>{tx(./label)}</td>
 						<td><a href="#" data-action="relays.remove"><i class="fa fa-trash link-danger"></i></a></td>
 					</tr>
 					{{{ end }}}

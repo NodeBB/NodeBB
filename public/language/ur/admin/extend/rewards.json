@@ -12,6 +12,6 @@
 	"disable": "غیر فعال کریں",
 
 	"alert.delete-success": "انعام کامیابی سے حذف ہو گیا",
-	"alert.no-inputs-found": "غلط انعام — کچھ بھی درج نہیں کیا گیا!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "انعامات کامیابی سے محفوظ ہو گئے"
 }

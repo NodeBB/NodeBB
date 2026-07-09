@@ -35,6 +35,8 @@
 	"prerelease-warning": "Bu, NodeBB-nin <strong>buraxılışdan öncəki</strong> versiyasıdır. Gözlənilməz səhvlər baş verə bilər. <i class=\"fa fa-exclamation-triangle\"></i>",
 	"fallback-emailer-not-found": "Yekun e-poçt göndərişi tapılmadı!",
 	"running-in-development": "Forum inkişaf rejimində işləyir. Forum potensial boşluqlar üçün açıq ola bilər; lütfən sistem inzibatçısı ilə əlaqə saxlayın",
+	"localhost-warning": "NodeBB is configured with a localhost URL. This should be updated to your actual domain.",
+	"url-mismatch-warning": "Admin panel accessed from a URL different from what is configured in config.json. (Requested: %1, Configured: %2)",
 	"latest-lookup-failed": "NodeBB-nin ən son mövcud versiyasını axtarmaq alınmadı",
 
 	"notices": "Bildirişlər",

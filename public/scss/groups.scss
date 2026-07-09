@@ -1,0 +1,20 @@
+.template-groups-details #panel {
+	margin-top: 0px!important;
+}
+
+.group-hover-bg {
+	$hover-color: mix($body-bg, $body-color, 90%);
+	$border-color: mix($body-bg, $body-color, 90%);
+	border-color: $border-color!important;
+	&:hover {
+		background-color: $hover-color;
+	}
+}
+
+.groups.details {
+	margin-top: 200px;
+
+	@include media-breakpoint-up(md) {
+		margin-top: 300px;
+	}
+}

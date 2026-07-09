@@ -257,6 +257,7 @@ ajaxify.widgets = { render: render };
 	function renderTemplate(url, tpl_url, data, callback) {
 		hooks.fire('action:ajaxify.loadingTemplates', {});
 		benchpress.render(tpl_url, data)
+			// TODO: remove once all tx tokens are migrated to tx("") helper
 			.then(rendered => translator.translate(rendered))
 			.then(function (translated) {
 				translated = translator.unescape(translated);
@@ -277,26 +278,31 @@ ajaxify.widgets = { render: render };
 			});
 	}
 
-	function updateTitle(title) {
+	async function updateTitle(title) {
 		if (!title) {
 			return;
 		}
 
-		title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-			.replace('{pageTitle}', () => title)
-			.replace('{browserTitle}', () => config.browserTitle);
-
 		const data = { title: title };
 		hooks.fire('action:ajaxify.updateTitle', data);
-		translator.translate(data.title, function (translated) {
-			window.document.title = $('<div></div>').html(translated).text();
-		});
+
+		const [titleTranslated, browserTitleTranslated] = await Promise.all([
+			ajaxify.data.template.topic ? data.title : translator.translateKey(data.title),
+			translator.translateKey(config.browserTitle || ''),
+		]);
+
+		const documentTitle = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
+			.replace('{pageTitle}', () => titleTranslated.slice(0, 60))
+			.replace('{browserTitle}', () => browserTitleTranslated);
+		window.document.title = utils.decodeHTMLEntities(documentTitle);
 	}
 	ajaxify.updateTitle = updateTitle;
 
 	function updateTags() {
 		const metaWhitelist = ['title', 'description', /og:.+/, /article:.+/, 'robots'].map(val => new RegExp(val));
+		const validMetaAttributes = ['name', 'property', 'content', 'http-equiv'];
 		const linkWhitelist = ['canonical', 'alternate', 'up'];
+		const validLinkAttributes = ['rel', 'href', 'type', 'sizes', 'hreflang', 'media'];
 
 		// Delete the old meta tags
 		document.querySelectorAll('head meta').forEach(el => {
@@ -310,11 +316,10 @@ ajaxify.widgets = { render: render };
 		ajaxify.data._header.tags.meta.forEach(async (tagObj) => {
 			const name = tagObj.name || tagObj.property;
 			if (metaWhitelist.some(exp => exp.test(name))) {
-				if (tagObj.content) {
-					tagObj.content = await translator.translate(tagObj.content);
-				}
 				const metaEl = document.createElement('meta');
-				Object.keys(tagObj).forEach(prop => metaEl.setAttribute(prop, tagObj[prop]));
+				validMetaAttributes.forEach(
+					attr => Object.hasOwn(tagObj, attr) && metaEl.setAttribute(attr, tagObj[attr])
+				);
 				document.head.appendChild(metaEl);
 			}
 		});
@@ -331,7 +336,9 @@ ajaxify.widgets = { render: render };
 		ajaxify.data._header.tags.link.forEach(async (tagObj) => {
 			if (linkWhitelist.some(item => item === tagObj.rel)) {
 				const linkEl = document.createElement('link');
-				Object.keys(tagObj).forEach(prop => linkEl.setAttribute(prop, tagObj[prop]));
+				validLinkAttributes.forEach(
+					attr => Object.hasOwn(tagObj, attr) && linkEl.setAttribute(attr, tagObj[attr])
+				);
 				document.head.appendChild(linkEl);
 			}
 		});
@@ -555,6 +562,16 @@ $(document).ready(function () {
 		}
 	});
 
+	window.addEventListener('pageshow', (ev) => {
+		// If a full-page navigation was triggered mid-ajaxify (e.g. a redirect to an
+		// external or login URL), the loading state was still running when this page
+		// was put into the back/forward cache. On restore, reload the current page so
+		// the loading indicator clears and the socket reconnects, instead of hanging.
+		if (ev.persisted && $('#content').hasClass('ajaxifying')) {
+			ajaxify.refresh();
+		}
+	});
+
 	function ajaxifyAnchors() {
 		const location = document.location || window.location;
 		const rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
@@ -609,8 +626,8 @@ $(document).ready(function () {
 							return;
 						}
 
-						require(['bootbox'], function (bootbox) {
-							bootbox.confirm('[[global:unsaved-changes]]', function (navigate) {
+						require(['modals'], function (modals) {
+							modals.confirm('[[global:unsaved-changes]]', function (navigate) {
 								if (navigate) {
 									app.flags._unsaved = false;
 									process.call(_self);

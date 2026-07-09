@@ -15,7 +15,6 @@ JS.scripts = {
 		'node_modules/@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput.js',
 		'node_modules/jquery-serializeobject/jquery.serializeObject.js',
 		'node_modules/jquery-deserialize/src/jquery.deserialize.js',
-		'public/vendor/bootbox/wrapper.js',
 	],
 
 	// plugins add entries into this object,

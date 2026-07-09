@@ -253,7 +253,7 @@ module.exports = function (Posts) {
 			return;
 		}
 		const threshold = meta.config['flags:autoFlagOnDownvoteThreshold'];
-		if (threshold && postData.votes <= (-threshold)) {
+		if (threshold && postData.votes <= -threshold) {
 			const adminUid = await user.getFirstAdminUid();
 			const reportMsg = await translator.translate(`[[flags:auto-flagged, ${-postData.votes}]]`);
 			const flagObj = await flags.create('post', postData.pid, adminUid, reportMsg, null, true);

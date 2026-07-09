@@ -1,7 +1,6 @@
 
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -89,7 +88,7 @@ searchController.search = async function (req, res, next) {
 
 	searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
 	searchData.multiplePages = searchData.pageCount > 1;
-	searchData.search_query = validator.escape(String(req.query.term || ''));
+	searchData.search_query = String(req.query.term || '');
 	searchData.term = req.query.term;
 
 	if (searchOnly) {
@@ -101,11 +100,13 @@ searchController.search = async function (req, res, next) {
 	searchData.showAsTopics = req.query.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
 	if (Array.isArray(data.categories)) {
-		searchData.selectedCids = data.categories.map(cid => validator.escape(String(cid)));
+		searchData.selectedCids = data.categories.map(cid => String(cid));
 		if (!searchData.selectedCids.includes('all') && searchData.selectedCids.length) {
 			searchData.selectedCategory = { cid: 0 };
 		}
 	}
+	const userFilter = await getSelectedUsers(data.postedBy);
+	searchData.userFilterSelected = userFilter;
 
 	searchData.filters = {
 		replies: {
@@ -114,18 +115,18 @@ searchController.search = async function (req, res, next) {
 		},
 		time: {
 			active: !!(data.timeFilter && data.timeRange),
-			label: `search:time-${data.timeFilter}-than-${data.timeRange}`,
+			label: `[[search:time-${data.timeFilter}-than-${data.timeRange}]]`,
 		},
 		sort: {
 			active: !!(data.sortBy && data.sortBy !== 'relevance'),
-			label: `search:sort-by-${data.sortBy}-${data.sortDirection}`,
+			label: `[[search:sort-by-${data.sortBy}-${data.sortDirection}]]`,
 		},
 		users: {
-			active: !!data.postedBy,
+			active: !!userFilter.length,
 			label: tx.compile(
 				'search:posted-by-usernames',
-				(Array.isArray(data.postedBy) ? data.postedBy : [])
-					.map(u => validator.escape(String(u))).join(', ')
+				(Array.isArray(userFilter) ? userFilter : [])
+					.map(u => tx.escape(String(u.username))).join(', ')
 			),
 		},
 		tags: {
@@ -133,7 +134,7 @@ searchController.search = async function (req, res, next) {
 			label: tx.compile(
 				'search:tags-x',
 				(Array.isArray(data.hasTags) ? data.hasTags : [])
-					.map(u => validator.escape(String(u))).join(', ')
+					.map(u => tx.escape(String(u))).join(', ')
 			),
 		},
 		categories: {
@@ -143,7 +144,7 @@ searchController.search = async function (req, res, next) {
 		},
 	};
 
-	searchData.userFilterSelected = await getSelectedUsers(data.postedBy);
+
 	searchData.tagFilterSelected = getSelectedTags(data.hasTags);
 	searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 	searchData.searchDefaultIn = meta.config.searchDefaultIn || 'titlesposts';
@@ -193,7 +194,8 @@ async function getSelectedUsers(postedBy) {
 		return [];
 	}
 	const uids = await user.getUidsByUsernames(postedBy);
-	return await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+	return userData.filter(u => u && u.userslug);
 }
 
 function getSelectedTags(hasTags) {

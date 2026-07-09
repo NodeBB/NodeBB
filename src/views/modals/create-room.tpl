@@ -12,14 +12,14 @@
 				<li component="chat/search/start-typing"><a href="#" class="dropdown-item rounded-1" role="menuitem">[[admin/menu:search.start-typing]]</a></li>
 				<li component="chat/search/no-users" class="hidden"><a href="#" class="dropdown-item rounded-1" role="menuitem">[[users:no-users-found]]</a></li>
 				{{{ each searchUsers }}}
-				<li component="chat/search/user" data-uid="{./uid}"><a href="#" class="dropdown-item rounded-1" role="menuitem">{buildAvatar(@value, "24px", true)} {./username}</a></li>
+				<li component="chat/search/user" data-uid="{./uid}"><a href="#" class="dropdown-item rounded-1" role="menuitem">{{buildAvatar(@value, "24px", true)}} {./username}</a></li>
 				{{{ end }}}
 			</ul>
 		</div>
 		<ul component="chat/room/users" class="list-group mt-2">
 			{{{ each selectedUsers }}}
 			<li class="list-group-item d-flex gap-2 align-items-center justify-content-between" component="chat/user" data-uid="{./uid}">
-				<a href="#" class="text-reset text-decoration-none">{buildAvatar(@value, "24px", true)} {./username}</a>
+				<a href="#" class="text-reset text-decoration-none">{{buildAvatar(@value, "24px", true)}} {./username}</a>
 				<button component="chat/room/users/remove" class="btn btn-sm btn-light"><i class="fa fa-times text-danger"></i></button>
 			</li>
 			{{{ end }}}

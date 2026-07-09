@@ -5,6 +5,7 @@ const assert = require('assert');
 
 const db = require('./mocks/databasemock');
 const helpers = require('../src/helpers');
+const languages = require('../src/languages');
 
 describe('helpers', () => {
 	it('should return false if item doesn\'t exist', (done) => {
@@ -69,9 +70,9 @@ describe('helpers', () => {
 		done();
 	});
 
-	it('should escape html', (done) => {
-		const str = helpers.escape('gdkfhgk < some > and &');
-		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp;');
+	it('should escape html and translation tokens', (done) => {
+		const str = helpers.escape('gdkfhgk < some > and & [[global:posts]] foo');
+		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp; &lsqb;&lsqb;global:posts&rsqb;&rsqb; foo');
 		done();
 	});
 
@@ -83,7 +84,7 @@ describe('helpers', () => {
 				backgroundImage: '/assets/uploads/image.png',
 				imageClass: 'auto',
 			}, 16, 'rounded-circle'),
-			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"></span>'
+			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"></span>'
 		);
 		assert.strictEqual(
 			helpers.buildCategoryIcon({
@@ -93,7 +94,7 @@ describe('helpers', () => {
 				imageClass: 'auto',
 				icon: 'fa-book',
 			}, 16, 'rounded-circle'),
-			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"><i class="fa fa-fw fa-book"></i></span>'
+			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"><i class="fa fa-fw fa-book"></i></span>'
 		);
 		done();
 	});
@@ -106,8 +107,9 @@ describe('helpers', () => {
 				backgroundImage: '/assets/uploads/image.png',
 				imageClass: 'auto',
 				name: 'Category 1',
+				slug: 'category-1',
 			}, 'a', ''),
-			`<a component="topic/category" href="${nconf.get('relative_path')}/category/undefined" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
+			`<a component="topic/category" href="${nconf.get('relative_path')}/category/category-1" class="badge px-1 text-truncate text-decoration-none " style="color: #00ff00;background-color: #ff0000;border-color: #ff0000!important; max-width: 70vw;">\n\t\t\t\n\t\t\tCategory 1\n\t\t</a>`
 		);
 		assert.strictEqual(
 			helpers.buildCategoryLabel({
@@ -138,7 +140,7 @@ describe('helpers', () => {
 			imageClass: 'auto',
 		};
 		const bg = helpers.generateCategoryBackground(category);
-		assert.equal(bg, 'background-color: #ff0000; border-color: #ff0000!important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto;');
+		assert.equal(bg, 'background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto;');
 		done();
 	});
 
@@ -159,11 +161,13 @@ describe('helpers', () => {
 					bgColor: '#ff0000',
 					color: '#00ff00',
 					name: 'children',
+					slug: 'children',
+					icon: 'fa-users',
 				},
 			],
 		};
 		const html = helpers.generateChildrenCategories(category);
-		assert.equal(html, `<span class="category-children"><span class="category-children-item float-start"><div role="presentation" class="icon float-start" style="background-color: #ff0000; border-color: #ff0000!important; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="${nconf.get('relative_path')}/category/undefined"><small>children</small></a></span></span>`);
+		assert.equal(html, `<span class="category-children"><span class="category-children-item"><div role="presentation" class="icon" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00;"><i class="fa fa-fw fa-users"></i></div><a href="${nconf.get('relative_path')}/category/children"><small>children</small></a></span></span>`);
 		done();
 	});
 
@@ -174,26 +178,30 @@ describe('helpers', () => {
 	});
 
 	it('should show leave button if isMember and group is not administrators', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isMember: true });
-		assert.equal(btn, '<button class="btn btn-danger text-nowrap " data-action="leave" data-group="some group" ><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', isMember: true });
+		assert.equal(btn, '<button class="btn btn-danger text-nowrap " data-action="leave" data-group="some group" ><i class="fa fa-times"></i> Leave Group</button>');
 		done();
 	});
 
 	it('should show pending button if isPending and group is not administrators', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isPending: true });
-		assert.equal(btn, '<button class="btn btn-warning text-nowrap disabled "><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', isPending: true });
+		assert.equal(btn, '<button class="btn btn-warning text-nowrap disabled "><i class="fa fa-clock-o"></i> Invitation Pending</button>');
 		done();
 	});
 
 	it('should show reject invite button if isInvited', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', isInvited: true });
-		assert.equal(btn, '<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="some group">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', isInvited: true });
+		assert.equal(btn, '<button class="btn btn-warning text-nowrap" data-action="rejectInvite" data-group="some group">Reject</button><button class="btn btn-success" data-action="acceptInvite" data-group="some group"><i class="fa fa-plus"></i> Accept Invitation</button>');
 		done();
 	});
 
 	it('should show join button if join requests are not disabled and group is not administrators', (done) => {
-		const btn = helpers.membershipBtn({ displayName: 'some group', name: 'some group', disableJoinRequests: false });
-		assert.equal(btn, '<button class="btn btn-success text-nowrap " data-action="join" data-group="some group"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>');
+		const ctx = languages.getFull('en-GB');
+		const btn = helpers.membershipBtn.call({ _i18n: ctx }, { displayName: 'some group', name: 'some group', disableJoinRequests: false });
+		assert.equal(btn, '<button class="btn btn-success text-nowrap " data-action="join" data-group="some group"><i class="fa fa-plus"></i> Join Group</button>');
 		done();
 	});
 
@@ -239,7 +247,7 @@ describe('helpers', () => {
 	it('should render digest avatar', (done) => {
 		const block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
 		const html = helpers.renderDigestAvatar(block);
-		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ${block.teaser.user['icon:bgColor']}; color: white; text-align: center; display: inline-block; border-radius: 50%;">${block.teaser.user['icon:text']}</div>`);
+		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%; background-color: ${block.teaser.user['icon:bgColor']};">${block.teaser.user['icon:text']}</div>`);
 		done();
 	});
 
@@ -253,7 +261,7 @@ describe('helpers', () => {
 	it('should render digest avatar', (done) => {
 		const block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
 		const html = helpers.renderDigestAvatar(block);
-		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ${block.user['icon:bgColor']}; color: white; text-align: center; display: inline-block; border-radius: 50%;">${block.user['icon:text']}</div>`);
+		assert.equal(html, `<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; color: white; text-align: center; display: inline-block; border-radius: 50%; background-color: ${block.user['icon:bgColor']};">${block.user['icon:text']}</div>`);
 		done();
 	});
 
@@ -303,19 +311,30 @@ describe('helpers', () => {
 		const now = Date.now();
 		const iso = new Date().toISOString();
 		let post = { pid: 2, toPid: 1, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
-		let str = helpers.generateWroteReplied(post, 1);
-		assert.strictEqual(str, `[[topic:replied-to-user-ago, 1, ${nconf.get('relative_path')}/post/1, baris, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+		const txContext = {
+			_i18n: {
+				topic: {
+					'wrote-ago': 'wrote <a href="%1" class="timeago text-muted" title="%2"></a>',
+					'wrote-on': 'wrote on <a href="%1" class="timeago text-muted" title="%2"></a>',
+					'replied-to-user-ago': 'replied to <a component="post/parent" data-topid="%1" href="%2">%3</a> <a href="%4" class="timeago text-muted" title="%5"></a>',
+					'replied-to-user-on': 'replied to <a component="post/parent" data-topid="%1" href="%2">%3</a> on <a href="%4" class="timeago text-muted" title="%5"></a>',
+				},
+			},
+		};
+		const relative_path = nconf.get('relative_path');
+		let str = helpers.generateWroteReplied.call(txContext, post, 1);
+		assert.strictEqual(str, `replied to <a component="post/parent" data-topid="1" href="${relative_path}/post/1">baris</a> <a href="${relative_path}/post/2" class="timeago text-muted" title="${iso}"></a>`);
 
 		post = { pid: 2, toPid: 1, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
-		str = helpers.generateWroteReplied(post, -1);
-		assert.strictEqual(str, `[[topic:replied-to-user-on, 1, ${nconf.get('relative_path')}/post/1, baris, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+		str = helpers.generateWroteReplied.call(txContext, post, -1);
+		assert.strictEqual(str, `replied to <a component="post/parent" data-topid="1" href="${relative_path}/post/1">baris</a> on <a href="${relative_path}/post/2" class="timeago text-muted" title="${iso}"></a>`);
 
 		post = { pid: 2, timestamp: now, timestampISO: iso, parent: { displayname: 'baris' } };
-		str = helpers.generateWroteReplied(post, 1);
-		assert.strictEqual(str, `[[topic:wrote-ago, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+		str = helpers.generateWroteReplied.call(txContext, post, 1);
+		assert.strictEqual(str, `wrote <a href="${relative_path}/post/2" class="timeago text-muted" title="${iso}"></a>`);
 
-		str = helpers.generateWroteReplied(post, -1);
-		assert.strictEqual(str, `[[topic:wrote-on, ${nconf.get('relative_path')}/post/2, ${iso}]]`);
+		str = helpers.generateWroteReplied.call(txContext, post, -1);
+		assert.strictEqual(str, `wrote on <a href="${relative_path}/post/2" class="timeago text-muted" title="${iso}"></a>`);
 
 		done();
 	});

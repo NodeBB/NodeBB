@@ -3,7 +3,7 @@
 const winston = require('winston');
 const childProcess = require('child_process');
 const CliGraph = require('cli-graph');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 const nconf = require('nconf');
 
 const build = require('../meta/build');

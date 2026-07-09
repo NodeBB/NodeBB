@@ -15,14 +15,15 @@ define('forum/topic', [
 	'hooks',
 	'api',
 	'alerts',
-	'bootbox',
+	'modals',
+	'benchpress',
 	'clipboard',
 	'modules/intents',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard, intents
+	modals, Benchpress, clipboard, intents
 ) {
 	const Topic = {};
 	let tid = '0';
@@ -191,12 +192,12 @@ define('forum/topic', [
 				thumbs.forEach((t, i) => {
 					t.selected = i === clickedThumbIndex;
 				});
-				const html = await app.parseAndTranslate('modals/topic-thumbs-view', {
+				const html = await Benchpress.render('modals/topic-thumbs-view', {
 					src: clickedThumb.href,
 					thumbs: thumbs,
 				});
 
-				const modal = bootbox.dialog({
+				const modal = await modals.dialog({
 					size: 'lg',
 					onEscape: true,
 					backdrop: true,
@@ -452,7 +453,7 @@ define('forum/topic', [
 			anchorEl.addEventListener('click', async () => {
 				const { crossposts } = ajaxify.data;
 				const html = await app.parseAndTranslate('modals/crossposts', { crossposts });
-				bootbox.dialog({
+				modals.dialog({
 					onEscape: true,
 					backdrop: true,
 					title: '[[global:crossposts]]',
@@ -475,12 +476,13 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		const span = components.get('navbar/title').find('span');
-		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
-			span.html(ajaxify.data.title).removeClass('hidden');
-		} else if ($(window).scrollTop() <= 50 && !span.hasClass('hidden')) {
-			span.html('').addClass('hidden');
+		const scrollTop = $(window).scrollTop();
+		if (scrollTop > 50 && span.hasClass('hidden')) {
+			span.text(ajaxify.data.title).removeClass('hidden');
+		} else if (scrollTop <= 50 && !span.hasClass('hidden')) {
+			span.text('').addClass('hidden');
 		}
-		if ($(window).scrollTop() > 300) {
+		if (scrollTop > 300) {
 			alerts.remove('bookmark');
 		}
 	}

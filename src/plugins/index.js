@@ -5,7 +5,7 @@ const path = require('path');
 const winston = require('winston');
 const semver = require('semver');
 const nconf = require('nconf');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const request = require('../request');
 const user = require('../user');

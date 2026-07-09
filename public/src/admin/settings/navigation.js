@@ -81,33 +81,22 @@ define('admin/settings/navigation', [
 		} : available[id];
 
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
-		data.title = translator.escape(data.title);
-		data.text = translator.escape(data.text);
 		data.groups = ajaxify.data.groups;
 
-		const renderNav = new Promise((resolve) => {
-			Benchpress.parse('admin/settings/navigation', 'navigation', { navigation: [data] }, function (li) {
-				translator.translate(li, function (li) {
-					li = $(translator.unescape(li));
-					el.after(li);
-					el.remove();
-					resolve();
-				});
-			});
-		});
-		const renderForm = new Promise((resolve) => {
-			Benchpress.parse('admin/settings/navigation', 'enabled', { enabled: [data] }, function (li) {
-				translator.translate(li, function (li) {
-					li = $(translator.unescape(li));
-					$('#enabled').append(li);
-					resolve();
-				});
-			});
-		});
+		const renderNav = async function () {
+			const li = await app.parseAndTranslate('admin/settings/navigation', 'navigation', { navigation: [data] });
+			el.after(li);
+			el.remove();
+		};
+
+		const renderForm = async function () {
+			const li = await app.parseAndTranslate('admin/settings/navigation', 'enabled', { enabled: [data] });
+			$('#enabled').append(li);
+		};
 
 		Promise.all([
-			renderNav,
-			renderForm,
+			renderNav(),
+			renderForm(),
 		]).then(() => selectIndex(data.index));
 	}
 

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="{localeToHTML(acpLang, defaultLang)" {{{if languageDirection}}}data-dir="{languageDirection}" style="direction: {languageDirection};"{{{end}}}>
+<html data-bs-theme="light" lang="{localeToHTML(acpLang, defaultLang)}" {{{if languageDirection}}}data-dir="{languageDirection}" style="direction: {languageDirection};"{{{end}}}>
 	<head>
 		<title>{title}</title>
 
-		{{{each metaTags}}}{buildMetaTag(@value)}{{{end}}}
-		{{{each linkTags}}}{buildLinkTag(@value)}{{{end}}}
+		{{{each metaTags}}}{{buildMetaTag(@value)}}{{{end}}}
+		{{{each linkTags}}}{{buildLinkTag(@value)}}{{{end}}}
 		<link rel="stylesheet" type="text/css" href="{relative_path}/assets/admin{{{ if (languageDirection=="rtl") }}}-rtl{{{ end }}}.css?{cache-buster}" />
 
 		<script>
@@ -21,6 +21,7 @@
 			}
 		</script>
 
+		<script src="{relative_path}/assets/language/{config.userLang}/full.min.js?{config.cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>
 
 		{{{ each scripts }}}
