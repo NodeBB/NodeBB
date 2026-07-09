@@ -1,7 +1,7 @@
 {
 	"queue": "Xếp hàng",
-	"no-users-in-queue": "There are no users in the registration queue.",
-	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"no-users-in-queue": "Hiện không có người dùng nào đang chờ đăng ký.",
+	"description": "Để bật tính năng này, đi đến <a href=\"%1\">Cài đặt &rarr; Người dùng &rarr; Đăng Ký Người Dùng</a> và đặt <strong>Kiểu Đăng Ký</strong> thành \"Quản Trị Viên Phê Duyệt\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Tên",

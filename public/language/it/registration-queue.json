@@ -1,7 +1,7 @@
 {
 	"queue": "Coda",
-	"no-users-in-queue": "There are no users in the registration queue.",
-	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"no-users-in-queue": "Non ci sono utenti nella coda di registrazione.",
+	"description": "Per attivare questa funzione, vai in <a href=\"%1\">SImpostazioni &rarr; Utente &rarr; Registrazione utente</a> e imposta <strong>Tipo di registrazione</strong> a \"Approvazione amministratore\".",
 	"reject-all": "Rifiuta tutto",
 	"reject-all-confirm": "Vuoi rifiutare tutte le richieste di registrazione?",
 	"list.name": "Nome",

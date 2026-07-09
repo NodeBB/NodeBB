@@ -1,7 +1,7 @@
 {
 	"queue": "Warteschlange",
-	"no-users-in-queue": "There are no users in the registration queue.",
-	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"no-users-in-queue": "Es befinden sich keine Benutzer in der Registrierungswarteschlange.",
+	"description": "Um diese Funktion zu aktivieren, geh zu <a href=\"%1\">Einstellungen &rarr; Benutzer &rarr; User Benutzerregistrierung</a> und stelle den <strong> Registrierungstyp</strong> auf „Genehmigung durch den Administrator“ ein.",
 	"reject-all": "Alle ablehnen",
 	"reject-all-confirm": "Möchtest du alle Registrierungsanfragen ablehnen?",
 	"list.name": "Name",
