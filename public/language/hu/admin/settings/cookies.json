@@ -9,5 +9,7 @@
 	"settings": "Beállítások",
 	"cookie-domain": "Munkamenet süti domain",
 	"max-user-sessions": "Aktív munkamenetek maximális száma felhasználónként",
-	"blank-default": "Hagyd üresen az alapértelmezett beállítás használatához"
+	"blank-default": "Hagyd üresen az alapértelmezett beállítás használatához",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }

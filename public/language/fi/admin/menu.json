@@ -13,6 +13,7 @@
 	"manage/tags": "Tunnisteet",
 	"manage/users": "Users",
 	"manage/admins-mods": "Admins & Mods",
+	"manage/api": "API Access",
 	"manage/registration": "Registration Queue",
 	"manage/flagged-content": "Ilmiannettu sisältö",
 	"manage/post-queue": "Julkaisujono",

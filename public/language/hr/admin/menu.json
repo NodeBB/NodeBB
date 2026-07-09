@@ -13,6 +13,7 @@
 	"manage/tags": "Oznake",
 	"manage/users": "Korisnici",
 	"manage/admins-mods": "Admins & Mods",
+	"manage/api": "API Access",
 	"manage/registration": "Lista zahtjeva za registraciju",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Post Queue",

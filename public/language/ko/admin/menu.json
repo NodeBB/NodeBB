@@ -13,6 +13,7 @@
 	"manage/tags": "태그",
 	"manage/users": "사용자",
 	"manage/admins-mods": "관리자 및 중재자",
+	"manage/api": "API Access",
 	"manage/registration": "등록 대기열",
 	"manage/flagged-content": "신고된 콘텐츠",
 	"manage/post-queue": "게시물 대기열",

@@ -13,6 +13,7 @@
 	"manage/tags": "タグ",
 	"manage/users": "ユーザー",
 	"manage/admins-mods": "管理者とモデレーター",
+	"manage/api": "API Access",
 	"manage/registration": "登録キュー",
 	"manage/flagged-content": "フラグ付きコンテンツ",
 	"manage/post-queue": "投稿キュー",

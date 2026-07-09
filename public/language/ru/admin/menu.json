@@ -13,6 +13,7 @@
 	"manage/tags": "Метки",
 	"manage/users": "Пользователи",
 	"manage/admins-mods": "Администраторы и модераторы",
+	"manage/api": "API Access",
 	"manage/registration": "Очередь на регистрацию",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Очередь на публикацию",

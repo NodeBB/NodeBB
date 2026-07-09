@@ -13,6 +13,7 @@
 	"manage/tags": "Etiketter",
 	"manage/users": "Users",
 	"manage/admins-mods": "Admins & Mods",
+	"manage/api": "API Access",
 	"manage/registration": "Registration Queue",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Post Queue",

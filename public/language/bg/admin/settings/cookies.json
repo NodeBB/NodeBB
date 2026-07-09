@@ -9,5 +9,7 @@
 	"settings": "Настройки",
 	"cookie-domain": "Домейн на бисквитката за сесията",
 	"max-user-sessions": "Максимален брой активни сесии за потребител",
-	"blank-default": "Оставете празно, за да използвате стойността по подразбиране"
+	"blank-default": "Оставете празно, за да използвате стойността по подразбиране",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }

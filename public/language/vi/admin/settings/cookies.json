@@ -9,5 +9,7 @@
 	"settings": "Cài đặt",
 	"cookie-domain": "Tên miền phiên cookie",
 	"max-user-sessions": "Số phiên hoạt động tối đa cho mỗi người dùng",
-	"blank-default": "Để trống mặc định"
+	"blank-default": "Để trống mặc định",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }
