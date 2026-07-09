@@ -2,15 +2,15 @@
 
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/groups:manage-groups]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/manage/groups:manage-groups")}}</h4>
 		</div>
 		<div class="d-flex gap-1">
 			<div class="input-group">
-				<input type="text" class="form-control form-control-sm" placeholder="[[admin/manage/groups:search-placeholder]]" id="group-search">
+				<input type="text" class="form-control form-control-sm" placeholder="{{tx("admin/manage/groups:search-placeholder")}}" id="group-search">
 				<span class="input-group-text search-button"><i class="fa fa-search"></i></span>
 			</div>
 
-			<button id="create" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary text-center text-nowrap">[[admin/manage/groups:add-group]]</button>
+			<button id="create" class="btn btn-primary btn-sm btn btn-primary btn-sm fw-semibold ff-secondary text-center text-nowrap">{{tx("admin/manage/groups:add-group")}}</button>
 		</div>
 	</div>
 
@@ -20,9 +20,9 @@
 				<table class="table groups-list">
 					<thead>
 						<tr>
-							<th>[[admin/manage/groups:name]]</th>
-							<th>[[admin/manage/groups:badge]]</th>
-							<th>[[admin/manage/groups:properties]]</th>
+							<th>{{tx("admin/manage/groups:name")}}</th>
+							<th>{{tx("admin/manage/groups:badge")}}</th>
+							<th>{{tx("admin/manage/groups:properties")}}</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -38,21 +38,21 @@
 							</td>
 							<td>
 								{{{ if ./system }}}
-								<span class="badge bg-danger">[[admin/manage/groups:system]]</span>
+								<span class="badge bg-danger">{{tx("admin/manage/groups:system")}}</span>
 								{{{ end }}}
 								{{{ if ./private }}}
-								<span class="badge bg-primary">[[admin/manage/groups:private]]</span>
+								<span class="badge bg-primary">{{tx("admin/manage/groups:private")}}</span>
 								{{{ end }}}
 								{{{ if ./hidden }}}
-								<span class="badge bg-secondary">[[admin/manage/groups:hidden]]</span>
+								<span class="badge bg-secondary">{{tx("admin/manage/groups:hidden")}}</span>
 								{{{ end }}}
 							</td>
 
 							<td>
 								<div class="d-flex justify-content-end gap-1">
-									<a href="{config.relative_path}/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:view]]</a>
+									<a href="{config.relative_path}/groups/{groups.slug}" class="btn btn-light btn-sm">{{tx("admin/admin:view")}}</a>
 
-									<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-light btn-sm">[[admin/admin:edit]]</a>
+									<a href="{config.relative_path}/admin/manage/groups/{groups.slug}" class="btn btn-light btn-sm">{{tx("admin/admin:edit")}}</a>
 
 
 									<button class="btn btn-light btn-sm {{{ if groups.system }}} disabled {{{ end }}}" data-action="delete"><i class="fa fa-trash text-danger"></i></button>

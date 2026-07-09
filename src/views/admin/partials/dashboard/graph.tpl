@@ -7,10 +7,10 @@
 				<a class="btn btn-sm btn-light lh-sm" target="_blank" id="view-as-json" href="{config.relative_path}/api/v3/admin/analytics/{set}?type=hourly" data-bs-toggle="tooltip" data-bs-placement="bottom" title="[[admin/dashboard:view-as-json]]"><i class="fa fa-fw fa-xs fa-terminal text-primary"></i></a>
 				<a class="btn btn-sm btn-light lh-sm" id="expand-analytics" href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="[[admin/dashboard:expand-analytics]]"><i class="fa fa-fw fa-xs fa-expand text-primary"></i></a>
 				<select data-action="updateGraph" class="form-select form-select-sm">
-					<option value="1">[[admin/dashboard:page-views-last-day]]</option>
-					<option value="7">[[admin/dashboard:page-views-seven]]</option>
-					<option value="30">[[admin/dashboard:page-views-thirty]]</option>
-					<option value="custom">[[admin/dashboard:page-views-custom]]</option>
+					<option value="1">{{tx("admin/dashboard:page-views-last-day")}}</option>
+					<option value="7">{{tx("admin/dashboard:page-views-seven")}}</option>
+					<option value="30">{{tx("admin/dashboard:page-views-thirty")}}</option>
+					<option value="custom">{{tx("admin/dashboard:page-views-custom")}}</option>
 					<option value="range" class="hidden"></option>
 				</select>
 			</div>

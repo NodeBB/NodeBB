@@ -1,5 +1,5 @@
-<p class="lead">[[admin/settings/activitypub:rules.modal.title]]</p>
-<p>[[admin/settings/activitypub:rules.modal.instructions]]</p>
+<p class="lead">{{tx("admin/settings/activitypub:rules.modal.title")}}</p>
+<p>{{tx("admin/settings/activitypub:rules.modal.instructions")}}</p>
 
 <hr />
 
@@ -26,7 +26,7 @@
 	</div>
 	<div class="mb-3 form-check">
 		<input type="checkbox" class="form-check-input" name="filter" id="filter" value="true" />
-		<label class="form-check-label" for="filter">[[admin/settings/activitypub:rules.filter]]</label>
-		<p class="form-text">[[admin/settings/activitypub:rules.filter.help]]</p>
+		<label class="form-check-label" for="filter">{{tx("admin/settings/activitypub:rules.filter")}}</label>
+		<p class="form-text">{{tx("admin/settings/activitypub:rules.filter.help")}}</p>
 	</div>
 </form>

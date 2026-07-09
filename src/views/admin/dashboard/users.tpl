@@ -6,15 +6,15 @@
 		<div class="table-responsive">
 			<table class="table users-list text-sm">
 				<thead>
-					<th class="text-muted">[[admin/manage/users:users.uid]]</th>
-					<th class="text-muted">[[admin/manage/users:users.username]]</th>
-					<th class="text-muted">[[admin/manage/users:users.email]]</th>
-					<th data-sort="joindate">[[admin/manage/users:users.joined]]</th>
+					<th class="text-muted">{{tx("admin/manage/users:users.uid")}}</th>
+					<th class="text-muted">{{tx("admin/manage/users:users.username")}}</th>
+					<th class="text-muted">{{tx("admin/manage/users:users.email")}}</th>
+					<th data-sort="joindate">{{tx("admin/manage/users:users.joined")}}</th>
 				</thead>
 				<tbody>
 					{{{ if !users.length}}}
 					<tr>
-						<td colspan=4" class="text-center"><em>[[admin/dashboard:details.no-users]]</em></td>
+						<td colspan="4" class="text-center"><em>{{tx("admin/dashboard:details.no-users")}}</em></td>
 					</tr>
 					{{{ end }}}
 					{{{ each users }}}

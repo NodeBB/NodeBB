@@ -1,10 +1,10 @@
 <div class="d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/extend/widgets:widgets]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/extend/widgets:widgets")}}</h4>
 		</div>
 		<div class="d-flex align-items-center gap-1">
-			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
+			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">{{tx("admin/admin:save-changes")}}</button>
 		</div>
 	</div>
 	<div id="widgets" class="row px-2">
@@ -21,8 +21,8 @@
 					</ul>
 				</div>
 				<div>
-					<button id="hide-drafts" class="btn btn-light btn-sm hidden">[[admin/extend/widgets:hide-drafts]]</button>
-					<button id="show-drafts" class="btn btn-light btn-sm">[[admin/extend/widgets:show-drafts]]</button>
+					<button id="hide-drafts" class="btn btn-light btn-sm hidden">{{tx("admin/extend/widgets:hide-drafts")}}</button>
+					<button id="show-drafts" class="btn btn-light btn-sm">{{tx("admin/extend/widgets:show-drafts")}}</button>
 				</div>
 			</div>
 
@@ -51,12 +51,12 @@
 
 		<div class="col-12 col-md-3">
 			<div class="card mb-3">
-				<div class="card-header">[[admin/extend/widgets:available]]</div>
+				<div class="card-header">{{tx("admin/extend/widgets:available")}}</div>
 				<div class="card-body pt-0">
 					<div class="available-widgets">
-						<p class="text-sm">[[admin/extend/widgets:explanation]]</p>
+						<p class="text-sm">{{tx("admin/extend/widgets:explanation")}}</p>
 						{{{ if !availableWidgets.length }}}
-						<div class="alert alert-info">[[admin/extend/widgets:none-installed, {config.relative_path}/admin/extend/plugins]]</div>
+						<div class="alert alert-info">{{tx("admin/extend/widgets:none-installed", concat(config.relative_path, "/admin/extend/plugins"))}}</div>
 						{{{ end }}}
 						<p>
 							<select id="widget-selector" class="form-select">
@@ -84,7 +84,7 @@
 						</div>
 
 						<div class="btn-group" component="clone">
-							<button type="button" class="btn btn-primary" component="clone/button">[[admin/extend/widgets:clone-from]] ...</button>
+							<button type="button" class="btn btn-primary" component="clone/button">{{tx("admin/extend/widgets:clone-from")}} ...</button>
 							<button type="button" class="btn btn-primary dropdown-toggle flex-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<span class="caret"></span>
 							</button>
@@ -101,38 +101,38 @@
 			</div>
 
 			<div class="card">
-				<div class="card-header">[[admin/extend/widgets:containers.available]]</div>
+				<div class="card-header">{{tx("admin/extend/widgets:containers.available")}}</div>
 				<div class="card-body pt-0">
-					<p class="text-sm">[[admin/extend/widgets:containers.explanation]]</p>
+					<p class="text-sm">{{tx("admin/extend/widgets:containers.explanation")}}</p>
 					<div class="available-containers">
 						<div class="containers">
 							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
-								[[admin/extend/widgets:containers.none]]
+								{{tx(admin/extend/widgets:containers.none)}}
 							</div>
 							<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3 pointer" data-container-html='<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3">\{{body}}</div>'>
-								[[admin/extend/widgets:container.well]]
+								{{tx(admin/extend/widgets:container.well)}}
 							</div>
 							<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
-								[[admin/extend/widgets:container.jumbotron]]
+								{{tx(admin/extend/widgets:container.jumbotron)}}
 							</div>
 
 							<div class="mb-3 pointer" data-container-html='<h5>\{{title}}</h5><hr/><div>\{{body}}</div>'>
-								<h5>[[admin/extend/widgets:container.title]]</h5>
+								<h5>{{tx(admin/extend/widgets:container.title)}}</h5>
 								<hr/>
 								<div class="">
-									[[admin/extend/widgets:container.body]]
+									{{tx(admin/extend/widgets:container.body)}}
 								</div>
 							</div>
 
 							<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-body pointer">
-									[[admin/extend/widgets:container.card]]
+									{{tx(admin/extend/widgets:container.card)}}
 								</div>
 							</div>
 
 							<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-header d-flex justify-content-between text-nowrap flex-wrap align-items-center">
-									[[admin/extend/widgets:container.card-header]]
+									{{tx(admin/extend/widgets:container.card-header)}}
 									<div class="d-flex gap-1 color-selector" style="height: 18px;">
 										<button data-class="text-bg-primary" class="btn btn-sm btn-primary"></button>
 										<button data-class="" class="btn btn-sm btn-secondary"></button>
@@ -143,13 +143,13 @@
 									</div>
 								</div>
 								<div class="card-body">
-									[[admin/extend/widgets:container.card-body]]
+									{{tx(admin/extend/widgets:container.card-body)}}
 								</div>
 							</div>
 
 							<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
 								<div class="d-flex justify-content-between text-nowrap flex-wrap align-items-center">
-									[[admin/extend/widgets:container.alert]]
+									{{tx(admin/extend/widgets:container.alert)}}
 									<div class="d-flex gap-1 color-selector" style="height: 18px;">
 										<button data-class="alert-success" class="btn btn-sm btn-success"></button>
 										<button data-class="alert-info" class="btn btn-sm btn-info"></button>

@@ -1,8 +1,8 @@
 <div class="row events px-lg-4">
 	<div class="col-lg-9">
-		<h5><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</h5>
+		<h5><i class="fa fa-calendar-o"></i> {{tx("admin/advanced/events:events")}}</h5>
 		{{{ if !events.length }}}
-		<div class="alert alert-info">[[admin/advanced/events:no-events]]</div>
+		<div class="alert alert-info">{{tx("admin/advanced/events:no-events")}}</div>
 		{{{ end }}}
 		<div class="events-list">
 			{{{ each events }}}
@@ -31,11 +31,11 @@
 	</div>
 	<div class="col-lg-3 acp-sidebar">
 		<div class="card">
-			<h5 class="card-header">[[admin/advanced/events:filters]]</h5>
+			<h5 class="card-header">{{tx("admin/advanced/events:filters")}}</h5>
 			<div class="card-body">
 				<form role="form" id="filters">
 					<div class="mb-3">
-						<label class="form-label" for="type">[[admin/advanced/events:filter-type]]</label>
+						<label class="form-label" for="type">{{tx("admin/advanced/events:filter-type")}}</label>
 						<select id="type" name="type" class="form-select">
 							{{{ each types }}}
 							<option value="{./value}" {{{ if ./selected }}}selected{{{ end }}}>{./name} - ({./count}) </option>
@@ -43,29 +43,29 @@
 						</select>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="start">[[admin/advanced/events:filter-start]]</label>
+						<label class="form-label" for="start">{{tx("admin/advanced/events:filter-start")}}</label>
 						<input type="date" id="start" name="start" value="{query.start}" class="form-control" />
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="end">[[admin/advanced/events:filter-end]]</label>
+						<label class="form-label" for="end">{{tx("admin/advanced/events:filter-end")}}</label>
 						<input type="date" id="end" name="end" value="{query.end}" class="form-control" />
 					</div>
 					<div class="mb-3 d-flex flex-column gap-3">
 						<select id="user-group-select" class="form-select">
-							<option value="username" {{{ if (query.username != "") }}}selected{{{ end }}}>[[admin/advanced/events:filter-user]]</option>
-							<option value="group" {{{ if (query.group != "") }}}selected{{{ end }}}>[[admin/advanced/events:filter-group]]</option>
+							<option value="username" {{{ if (query.username != "") }}}selected{{{ end }}}>{{tx("admin/advanced/events:filter-user")}}</option>
+							<option value="group" {{{ if (query.group != "") }}}selected{{{ end }}}>{{tx("admin/advanced/events:filter-group")}}</option>
 						</select>
-						<input type="text" id="username" name="username" value="{query.username}" class="form-control {{{ if (query.group != "") }}}hidden{{{ end }}}" placeholder="[[admin/advanced/events:filter-user.placeholder]]"/>
-						<input type="text" id="group" name="group" value="{query.group}" class="form-control {{{ if (query.group == "") }}}hidden{{{ end }}} {{{ if (query.username != "") }}}hidden{{{ end }}}" placeholder="[[admin/advanced/events:filter-group.placeholder]]" />
+						<input type="text" id="username" name="username" value="{query.username}" class="form-control {{{ if (query.group != "") }}}hidden{{{ end }}}" placeholder="{{tx("admin/advanced/events:filter-user.placeholder")}}"/>
+						<input type="text" id="group" name="group" value="{query.group}" class="form-control {{{ if (query.group == "") }}}hidden{{{ end }}} {{{ if (query.username != "") }}}hidden{{{ end }}}" placeholder="{{tx("admin/advanced/events:filter-group.placeholder")}}" />
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="perPage">[[admin/advanced/events:filter-per-page]]</label>
+						<label class="form-label" for="perPage">{{tx("admin/advanced/events:filter-per-page")}}</label>
 						<input type="text" id="perPage" name="perPage" value="{query.perPage}" class="form-control" />
 					</div>
 					<div class="d-grid gap-1">
-						<button type="submit" class="btn btn-sm btn-light" id="apply"><i class="fa fa-filter text-primary"></i> [[admin/advanced/events:filters-apply]]</button>
+						<button type="submit" class="btn btn-sm btn-light" id="apply"><i class="fa fa-filter text-primary"></i> {{tx("admin/advanced/events:filters-apply")}}</button>
 						<button class="btn btn-sm btn-light" data-action="clear">
-							<i class="fa fa-trash text-danger"></i> [[admin/advanced/events:delete-events]]
+							<i class="fa fa-trash text-danger"></i> {{tx("admin/advanced/events:delete-events")}}
 						</button>
 					</div>
 				</form>

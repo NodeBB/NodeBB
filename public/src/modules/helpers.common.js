@@ -53,9 +53,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	function escape(str) {
 		// decoding HTML entities before escaping to prevent double escaping
 		// and allow translators to use HTML entities in translations
-		return tx.escape(
-			utils.escapeHTML(utils.decodeHTMLEntities(str))
-		);
+		return utils.escapeHTML(utils.decodeHTMLEntities(str));
 	}
 
 	function _tx(token, ...args) {
@@ -74,7 +72,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		const [namespace, key] = txToken.split(':', 2);
 		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
-			return tx.escape(tx.fixDoubleEscaped(tx.escapeHTML(token)));
+			return tx.fixDoubleEscaped(tx.escapeHTML(token));
 		}
 
 		const escapedArgs = args.map((arg) => {
@@ -88,10 +86,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 		const translation = this._i18n[namespace][key];
 		const result = tx.replaceArguments(translation, escapedArgs);
-		// prevents the translator.translate() in
-		// app.parseAndTraslate and page render from translating again
-		// can be removed once whole page translation is removed
-		return tx.escape(result);
+		return result;
 	}
 
 	function buildMetaTag(tag) {

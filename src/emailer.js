@@ -381,7 +381,7 @@ Emailer.renderAndTranslate = async (template, params, lang) => {
 		...params,
 		_i18n: languages.getFull(lang),
 	});
-	return await translator.translate(html, lang);
+	return html;
 };
 
 require('./promisify')(Emailer, ['transports']);

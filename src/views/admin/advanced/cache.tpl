@@ -2,10 +2,10 @@
 <div class="post-cache settings d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/advanced/cache:cache]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/advanced/cache:cache")}}</h4>
 		</div>
 		<div class="d-flex align-items-center">
-			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
+			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">{{tx("admin/admin:save-changes")}}</button>
 		</div>
 	</div>
 

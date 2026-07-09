@@ -10,13 +10,13 @@
 
 			{{{ if ./url }}}
 			<p>
-				<a href="{./url}" target="_blank">[[admin/appearance/themes:homepage]]</a>
+				<a href="{./url}" target="_blank">{{tx("admin/appearance/themes:homepage")}}</a>
 			</p>
 			{{{ end }}}
 		</div>
 		<div class="card-footer">
 			<a class="btn btn-primary" data-action="use">
-				{{{ if ./skin }}}[[admin/appearance/skins:select-skin]]{{{ else }}}[[admin/appearance/themes:select-theme]]{{{ end }}}
+				{{{ if ./skin }}}{{tx("admin/appearance/skins:select-skin")}}{{{ else }}}{{tx("admin/appearance/themes:select-theme")}}{{{ end }}}
 			</a>
 		</div>
 	</div>

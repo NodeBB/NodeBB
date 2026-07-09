@@ -1,5 +1,5 @@
-<p>[[admin/settings/activitypub:relays.warning]]</p>
-<p>[[admin/settings/activitypub:relays.litepub]]</p>
+<p>{{tx("admin/settings/activitypub:relays.warning")}}</p>
+<p>{{tx("admin/settings/activitypub:relays.litepub")}}</p>
 
 <hr />
 

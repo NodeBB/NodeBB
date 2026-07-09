@@ -2,7 +2,7 @@
 <div class="d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/advanced/jobs:jobs]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/advanced/jobs:jobs")}}</h4>
 		</div>
 	</div>
 
@@ -11,12 +11,12 @@
 			<table id="jobs-table" class="table">
 				<thead>
 					<tr class="text-sm">
-						<th>[[admin/advanced/jobs:job-name]]</th>
-						<th>[[admin/advanced/jobs:schedule]]</th>
-						<th>[[admin/advanced/jobs:next-run]]</th>
-						<th class="text-end">[[admin/advanced/jobs:last-duration]]</th>
-						<th class="text-center">[[admin/advanced/jobs:running]]</th>
-						<th class="text-center">[[admin/advanced/jobs:active]]</th>
+						<th>{{tx("admin/advanced/jobs:job-name")}}</th>
+						<th>{{tx("admin/advanced/jobs:schedule")}}</th>
+						<th>{{tx("admin/advanced/jobs:next-run")}}</th>
+						<th class="text-end">{{tx("admin/advanced/jobs:last-duration")}}</th>
+						<th class="text-center">{{tx("admin/advanced/jobs:running")}}</th>
+						<th class="text-center">{{tx("admin/advanced/jobs:active")}}</th>
 					</tr>
 				</thead>
 				<tbody class="text-xs text-tabular">

@@ -1,36 +1,36 @@
-<div class="modal fade" id="create-modal" tabindex="-1" aria-label="[[admin/manage/groups:create]]">
+<div class="modal fade" id="create-modal" tabindex="-1" aria-label="{{tx("admin/manage/groups:create")}}">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">[[admin/manage/groups:create]]</h4>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
+				<h4 class="modal-title">{{tx("admin/manage/groups:create")}}</h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{tx("global:buttons.close")}}"></button>
 			</div>
 			<div class="modal-body">
 				<form>
 					<div class="mb-3">
-						<label class="form-label" for="create-group-name">[[admin/manage/groups:name]]</label>
-						<input type="text" class="form-control" id="create-group-name" placeholder="[[admin/manage/groups:name]]" />
+						<label class="form-label" for="create-group-name">{{tx("admin/manage/groups:name")}}</label>
+						<input type="text" class="form-control" id="create-group-name" placeholder="{{tx("admin/manage/groups:name")}}" />
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="create-group-desc">[[admin/manage/groups:description]]</label>
-						<input type="text" class="form-control" id="create-group-desc" placeholder="[[admin/manage/groups:description-placeholder]]" />
+						<label class="form-label" for="create-group-desc">{{tx("admin/manage/groups:description")}}</label>
+						<input type="text" class="form-control" id="create-group-desc" placeholder="{{tx("admin/manage/groups:description-placeholder")}}" />
 					</div>
 					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" id="create-group-private" name="private" type="checkbox" checked>
-						<label class="form-check-label" for="create-group-private">[[admin/manage/groups:private]]</label>
+						<label class="form-check-label" for="create-group-private">{{tx("admin/manage/groups:private")}}</label>
 					</div>
 					<div class="form-check form-switch mb-3">
 						<input class="form-check-input" id="create-group-hidden" name="hidden" type="checkbox">
-						<label class="form-check-label" for="create-group-hidden">[[admin/manage/groups:hidden]]</label>
+						<label class="form-check-label" for="create-group-hidden">{{tx("admin/manage/groups:hidden")}}</label>
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-					[[global:close]]
+					{{tx("global:close")}}
 				</button>
 				<button type="button" class="btn btn-primary" id="create-modal-go">
-					[[admin/manage/groups:create-button]]
+					{{tx("admin/manage/groups:create-button")}}
 				</button>
 			</div>
 		</div>

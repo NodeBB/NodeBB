@@ -328,11 +328,8 @@ if (document.readyState === 'loading') {
 		}
 
 		return new Promise((resolve, reject) => {
-			require(['translator', 'benchpress'], function (translator, Benchpress) {
+			require(['benchpress'], function (Benchpress) {
 				Benchpress.render(template, data, blockName)
-					// TODO: remove once all tx tokens are migrated to tx("") helper
-					.then(rendered => translator.translate(rendered))
-					.then(translated => translator.unescape(translated))
 					.then(resolve, reject);
 			});
 		}).then((html) => {

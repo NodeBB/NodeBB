@@ -4,10 +4,10 @@
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<div id="rules" class="mb-4">
-				<p class="lead">[[admin/settings/activitypub:rules-intro]]</p>
+				<p class="lead">{{tx("admin/settings/activitypub:rules-intro")}}</p>
 
 				{{{ if (hasFilterRules && !postQueueEnabled) }}}
-				<div class="alert alert-warning">[[admin/settings/activitypub:rules.filter-warning]]</div>
+				<div class="alert alert-warning">{{tx("admin/settings/activitypub:rules.filter-warning")}}</div>
 				{{{ end }}}
 
 				<div id="cutoff" class="mb-4">
@@ -27,10 +27,10 @@
 					<table class="table table-striped" id="rules">
 						<thead>
 							<th></th>
-							<th>[[admin/settings/activitypub:rules.type]]</th>
-							<th>[[admin/settings/activitypub:rules.value]]</th>
-							<th>[[admin/settings/activitypub:rules.filter]]</th>
-							<th>[[admin/settings/activitypub:rules.cid]]</th>
+							<th>{{tx("admin/settings/activitypub:rules.type")}}</th>
+							<th>{{tx("admin/settings/activitypub:rules.value")}}</th>
+							<th>{{tx("admin/settings/activitypub:rules.filter")}}</th>
+							<th>{{tx("admin/settings/activitypub:rules.cid")}}</th>
 							<th></th>
 						</thead>
 						<tbody>
@@ -50,7 +50,7 @@
 						<tfoot>
 							<tr>
 								<td colspan="6">
-									<button class="btn btn-sm btn-primary" data-action="rules.add">[[admin/settings/activitypub:rules.add]]</button>
+									<button class="btn btn-sm btn-primary" data-action="rules.add">{{tx("admin/settings/activitypub:rules.add")}}</button>
 								</td>
 							</tr>
 						</tfoot>

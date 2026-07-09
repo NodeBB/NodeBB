@@ -172,7 +172,7 @@ module.exports = function (middleware) {
 			widgets: options.widgets,
 		};
 
-		templateValues.configJSON = jsesc(translator.escape(JSON.stringify(res.locals.config)), { isScriptContext: true });
+		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
@@ -225,7 +225,7 @@ module.exports = function (middleware) {
 		templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
 		templateValues.canChat = (results.privileges.chat || results.privileges['chat:privileged']) && meta.config.disableChat !== 1;
 		templateValues.user = results.user;
-		templateValues.userJSON = jsesc(translator.escape(JSON.stringify(results.user)), { isScriptContext: true });
+		templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 		templateValues.useCustomCSS = meta.config.useCustomCSS && meta.config.customCSS;
 		templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
 		templateValues.useCustomHTML = meta.config.useCustomHTML;
@@ -287,13 +287,13 @@ module.exports = function (middleware) {
 		res.locals.config.isRTL = langDirection === 'rtl';
 		const templateValues = {
 			config: res.locals.config,
-			configJSON: jsesc(translator.escape(JSON.stringify(res.locals.config)), { isScriptContext: true }),
+			configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
 			relative_path: res.locals.config.relative_path,
 			adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 			metaTags: results.tags.meta,
 			linkTags: results.tags.link,
 			user: userData,
-			userJSON: jsesc(translator.escape(JSON.stringify(userData)), { isScriptContext: true }),
+			userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
 			plugins: results.custom_header.plugins,
 			authentication: results.custom_header.authentication,
 			scripts: results.scripts,
@@ -319,7 +319,7 @@ module.exports = function (middleware) {
 		return new Promise((resolve, reject) => {
 			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
-				else resolve(await translate(str, getLang(req, res)));
+				else resolve(str);
 			});
 		});
 	}
@@ -404,12 +404,6 @@ module.exports = function (middleware) {
 			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
 		}
 		return req.query.lang ? req.query.lang : language;
-	}
-
-	async function translate(str, language) {
-		// TODO: remove once all tx tokens are migrated to tx("") helper
-		const translated = await translator.translate(str, language);
-		return translator.unescape(translated);
 	}
 
 	async function appendUnreadCounts({ uid, navigation, unreadData, query }) {

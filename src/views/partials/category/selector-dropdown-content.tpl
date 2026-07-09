@@ -7,7 +7,7 @@
         </span>
         {{{ else }}}
         <i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}} text-primary"></i>
-        <span class="d-none d-md-inline">{{{ if selectCategoryLabel }}}{{stripTags(tx(selectCategoryLabel))}}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}</span>
+        <span class="d-none d-md-inline">{{{ if selectCategoryLabel }}}{{stripTags(tx(selectCategoryLabel))}}{{{ else }}}{{tx("topic:thread-tools.select-category")}}{{{ end }}}</span>
         {{{ end }}}
     </span>
 </button>

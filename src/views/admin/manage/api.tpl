@@ -7,34 +7,34 @@
 			<div class="d-flex gap-1 justify-content-end">
 				<button type="button" class="btn btn-sm btn-primary text-nowrap" data-action="create">
 					<i class="fa fa-plus"></i>
-					[[admin/settings/api:create-token]]
+					{{tx("admin/settings/api:create-token")}}
 				</button>
-				<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary text-nowrap">[[admin/admin:save-changes]]</button>
+				<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary text-nowrap">{{tx("admin/admin:save-changes")}}</button>
 			</div>
 		</div>
 	</div>
 
 	<form role="form" class="core-api-settings">
-		<p class="lead">[[admin/settings/api:lead-text]]</p>
-		<p>[[admin/settings/api:intro]]</p>
-		<p class="text-danger">[[admin/settings/api:warning]]</p>
+		<p class="lead">{{tx("admin/settings/api:lead-text")}}</p>
+		<p>{{tx("admin/settings/api:intro")}}</p>
+		<p class="text-danger">{{tx("admin/settings/api:warning")}}</p>
 		<p class="d-flex flex-column gap-2">
 			<a href="https://docs.nodebb.org/api">
 				<i class="fa fa-external-link"></i>
-				[[admin/settings/api:docs]]
+				{{tx("admin/settings/api:docs")}}
 			</a>
 			<br />
 			<a href="https://docs.nodebb.org/api/write">
 				<i class="fa fa-external-link"></i>
-				[[admin/settings/api:docs.write]]
+				{{tx("admin/settings/api:docs.write")}}
 			</a>
 		</p>
 
 		<div class="mb-3">
 			<div class="form-check form-switch mb-3">
 				<input id="requireHttps" class="form-check-input" type="checkbox" id="requireHttps" name="requireHttps" />
-				<label for="requireHttps" class="form-check-label">[[admin/settings/api:require-https]]</label>
-				<p class="form-text">[[admin/settings/api:require-https-caveat]]</p>
+				<label for="requireHttps" class="form-check-label">{{tx("admin/settings/api:require-https")}}</label>
+				<p class="form-text">{{tx("admin/settings/api:require-https-caveat")}}</p>
 			</div>
 		</div>
 
@@ -42,12 +42,12 @@
 			<table class="table table-sm text-sm" data-component="acp/tokens">
 				<thead>
 					<tr>
-						<th>[[admin/settings/api:token]]</th>
-						<th>[[admin/settings/api:description]]</th>
-						<th>[[admin/settings/api:uid]]</th>
-						<th>[[admin/settings/api:last-seen]]</th>
-						<th>[[admin/settings/api:created]]</th>
-						<th>[[admin/settings/api:actions]]</th>
+						<th>{{tx("admin/settings/api:token")}}</th>
+						<th>{{tx("admin/settings/api:description")}}</th>
+						<th>{{tx("admin/settings/api:uid")}}</th>
+						<th>{{tx("admin/settings/api:last-seen")}}</th>
+						<th>{{tx("admin/settings/api:created")}}</th>
+						<th>{{tx("admin/settings/api:actions")}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -62,12 +62,12 @@
 							{{{ if ./description }}}
 							{./description}
 							{{{ else }}}
-							<em class="text-secondary">[[admin/settings/api:no-description]]</em>
+							<em class="text-secondary">{{tx("admin/settings/api:no-description")}}</em>
 							{{{ end }}}
 						</td>
 						<td class="align-middle">
 							{{{ if (./uid == "0") }}}
-							<em>[[admin/settings/api:master-token]]</em>
+							<em>{{tx("admin/settings/api:master-token")}}</em>
 							{{{ else }}}
 							{./uid}
 							{{{ end }}}
@@ -76,17 +76,17 @@
 							{{{ if ./lastSeen }}}
 							<span class="timeago" title="{./lastSeenISO}"></span>
 							{{{ else }}}
-							<em class="text-secondary">[[admin/settings/api:last-seen-never]]</em>
+							<em class="text-secondary">{{tx("admin/settings/api:last-seen-never")}}</em>
 							{{{ end }}}
 						</td>
 						<td class="align-middle">
 							<span class="timeago" title="{./timestampISO}"></span>
 						</td>
 						<td class="text-nowrap">
-							<button type="button" class="btn btn-light btn-sm" data-action="edit" title="[[admin/settings/api:edit]]">
+							<button type="button" class="btn btn-light btn-sm" data-action="edit" title="{{tx("admin/settings/api:edit")}}">
 								<i class="fa fa-edit text-primary"></i>
 							</button>
-							<button type="button" class="btn btn-light btn-sm" data-action="roll" title="[[admin/settings/api:roll]]">
+							<button type="button" class="btn btn-light btn-sm" data-action="roll" title="{{tx("admin/settings/api:roll")}}">
 								<i class="fa fa-refresh text-primary"></i>
 							</button>
 							<button type="button" class="btn btn-light btn-sm" data-action="delete">

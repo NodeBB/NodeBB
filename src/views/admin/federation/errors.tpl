@@ -6,14 +6,14 @@
 
 <div class="row border-bottom py-2 m-0 mb-3">
 	<div class="col-12">
-		<p class="lead">[[admin/settings/activitypub:errors.intro, {errors.length}]]</p>
+		<p class="lead">{{tx("admin/settings/activitypub:errors.intro", errors.length)}}</p>
 		<div class="mb-3 row">
 			<div class="col-6">
-				<label class="form-label" for="hostnameFilter">[[admin/settings/activitypub:errors.hostname]]</label>
-				<input class="form-control" id="hostnameFilter" placeholder="[[admin/settings/activitypub:errors.hostname]]" />
+				<label class="form-label" for="hostnameFilter">{{tx("admin/settings/activitypub:errors.hostname")}}</label>
+				<input class="form-control" id="hostnameFilter" placeholder="{{tx("admin/settings/activitypub:errors.hostname")}}" />
 			</div>
 			<div class="col-6">
-				<label class="form-label" for="typeFilter">[[admin/settings/activitypub:errors.type]]</label>
+				<label class="form-label" for="typeFilter">{{tx("admin/settings/activitypub:errors.type")}}</label>
 				<select class="form-select" id="typeFilter">
 					<option value="">All types</option>
 					<option value="in">IN</option>
