@@ -35,6 +35,9 @@
 	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
 	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "Categorie",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "Retransmițători",
 	"relays.intro": "O funcție de retransmitere îmbunătățește descoperirea conținutului către și de la NodeBB-ul dvs. Abonarea la o funcție de retransmitere înseamnă că respectivul conținut primit de către retransmitere este redirecționat aici, iar conținutul postat aici este sindicalizat către exterior de către retransmitere.",

@@ -35,6 +35,9 @@
 	"rules.filter.help": "Je-li tato možnost zaškrtnuta, bude odpovídající obsah před zařazením do příslušné kategorie předán do fronty příspěvků ke kontrole.",
 	"rules.filter-warning": "Máte nastavená pravidla pro zařazování příspěvků do fronty, ale fronta příspěvků je momentálně deaktivována. Příspěvky, které těmto pravidlům odpovídají, budou zveřejněny okamžitě.",
 	"rules.cid": "Kategorie",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "Přeposílače",
 	"relays.intro": "Přeposílač zlepšuje objevování obsahu do vašeho NodeBB i z něj. Přihlášení k přeposílání znamená, že přijatý obsah je přeposlán sem a obsah zveřejněný zde je šířen dál.",

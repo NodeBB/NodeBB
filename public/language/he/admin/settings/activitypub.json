@@ -35,6 +35,9 @@
 	"rules.filter.help": "אם מסומן, תוכן תואם יועבר לתור הפוסטים לבדיקה לפני סיווג.",
 	"rules.filter-warning": "יש כללי סיווג שהוגדרו בתור פוסטים, אבל תור הפוסטים מושבת כרגע. פוסטים התואמים את הכללים הללו יפורסמו באופן מיידי.",
 	"rules.cid": "קטגוריה",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "ממסרים",
 	"relays.intro": "ממסר משפר את הגילוי של תוכן אל וממנו ה-NodeBB שלך. הרשמה לממסר פירושה שתוכן המתקבל על ידי הממסר מועבר לכאן, ותוכן שמתפרסם כאן מועבר החוצה על ידי הממסר.",

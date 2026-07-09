@@ -35,6 +35,9 @@
 	"rules.filter.help": "チェックすると、一致するコンテンツはカテゴリ分けされる前に、審査のため投稿キューに送られます。",
 	"rules.filter-warning": "カテゴリ分けルールで投稿をキューに入れる設定になっていますが、投稿キューは現在無効です。これらのルールに一致する投稿は即座に公開されます。",
 	"rules.cid": "カテゴリ",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "リレー",
 	"relays.intro": "リレーは、NodeBBとのコンテンツの発見を改善します。リレーを購読すると、リレーが受信したコンテンツがここに転送され、ここで投稿されたコンテンツがリレーによって外部に配信されます。",

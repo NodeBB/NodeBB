@@ -35,6 +35,9 @@
 	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
 	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "Catégorie",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "Relais",
 	"relays.intro": "Un relais améliore la découverte de contenu vers et depuis votre instance NodeBB. S’abonner à un relais signifie que le contenu reçu par celui-ci est transmis ici, et que le contenu publié ici est diffusé vers l’extérieur par le relais.",

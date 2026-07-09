@@ -35,6 +35,9 @@
 	"rules.filter.help": "Hvis dette er valgt, sendes samsvarende innhold til innleggskøen for gjennomgang før det kategoriseres.",
 	"rules.filter-warning": "Du har kategoriseringsregler som er satt til å sende innlegg til kø, men innleggskøen er deaktivert. Innlegg som samsvarer med disse reglene, blir publisert umiddelbart.",
 	"rules.cid": "Kategori",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "Relays/Videresendingstjenester",
 	"relays.intro": "En relay gjør det enklere å oppdage innhold til og fra din NodeBB. Når du abonnerer på en relay, blir innhold som mottas av relayen videresendt hit, og innhold som publiseres her, blir distribuert videre av relayen.",

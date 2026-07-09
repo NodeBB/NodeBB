@@ -35,6 +35,9 @@
 	"rules.filter.help": "If checked, matching content will be passed to the post queue for review before being categorized.",
 	"rules.filter-warning": "You have categorization rules set to queue posts, but the post queue is currently disabled. Posts matching these rules will be published immediately.",
 	"rules.cid": "Kategoria",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "Przekaźniki",
 	"relays.intro": "Przekaźnik usprawnia odnajdowanie zawartości do i z Twojego NodeBB. Dodanie przekaźnika oznacza, że odebrana zawartość z jego udziałem jest przekierowywana w to miejsce i analogicznie z tym co ma być widoczne z zewnątrz.",

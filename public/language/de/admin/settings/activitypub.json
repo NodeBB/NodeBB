@@ -35,6 +35,9 @@
 	"rules.filter.help": "Wenn dieses Kontrollkästchen aktiviert ist, werden passende Inhalte vor der Kategorisierung zur Überprüfung an die Beitragswarteschlange weitergeleitet.",
 	"rules.filter-warning": "Du hast Kategorisierungsregeln eingerichtet, um Beiträge in die Warteschlange zu stellen, aber die Beitragswarteschlange ist derzeit deaktiviert. Beiträge, die diesen Regeln entsprechen, werden sofort veröffentlicht.",
 	"rules.cid": "Kategorie",
+	"rules.cutoff.title": "Age Cutoff",
+	"rules.cutoff.label": "Categorization age cutoff (days)",
+	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
 
 	"relays": "Relays",
 	"relays.intro": "Ein Relay verbessert die Auffindbarkeit von Inhalten zu und von deinem NodeBB. Wenn du ein Relay abonnierst, bedeutet dies, dass die vom Relay empfangenen Inhalte hier weitergeleitet werden und die hier geposteten Inhalte vom Relay nach außen syndiziert werden.",
