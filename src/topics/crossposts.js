@@ -14,7 +14,7 @@ const utils = require('../utils');
 
 const Crossposts = module.exports;
 
-Crossposts.get = async function (tids) {
+Crossposts.get = async function (tids, uid) {
 	const isArray = Array.isArray(tids);
 	if (!isArray) {
 		tids = [tids];
@@ -24,8 +24,11 @@ Crossposts.get = async function (tids) {
 	const allCrosspostIds = crosspostIds.flat();
 	const allCrossposts = await db.getObjects(allCrosspostIds.map(id => `crosspost:${id}`));
 
+	const allCids = _.uniq(allCrossposts.map(c => c.cid));
+	const allowedCids = uid ? await privileges.categories.filterCids('find', allCids, uid) : allCids;
+
 	const categoriesData = await categories.getCategoriesFields(
-		_.uniq(allCrossposts.map(c => c.cid)), ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
+		allowedCids, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
 	);
 
 	const categoriesMap = categoriesData.reduce((map, category) => {
@@ -33,8 +36,11 @@ Crossposts.get = async function (tids) {
 		return map;
 	}, new Map());
 
-	const crosspostMap = allCrossposts.reduce((map, crosspost, index) => {
-		const id = allCrosspostIds[index];
+	const allowedCidSet = new Set(allowedCids);
+	const crosspostEntries = allCrosspostIds.map((id, index) => ({ id, crosspost: allCrossposts[index] }))
+		.filter(({ crosspost }) => !uid || allowedCidSet.has(crosspost.cid));
+
+	const crosspostMap = crosspostEntries.reduce((map, { id, crosspost }) => {
 		if (id && crosspost) {
 			map.set(id, crosspost);
 			crosspost.id = id;
@@ -45,7 +51,7 @@ Crossposts.get = async function (tids) {
 		return map;
 	}, new Map());
 
-	const crossposts = crosspostIds.map(ids => ids.map(id => crosspostMap.get(id)));
+	const crossposts = crosspostIds.map(ids => ids.map(id => crosspostMap.get(id)).filter(Boolean));
 	return isArray ? crossposts : crossposts[0];
 };
 

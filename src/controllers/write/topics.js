@@ -222,7 +222,7 @@ Topics.move = async (req, res) => {
 };
 
 Topics.getCrossposts = async (req, res) => {
-	const crossposts = await topics.crossposts.get(req.params.tid);
+	const crossposts = await topics.crossposts.get(req.params.tid, req.uid);
 	helpers.formatApiResponse(200, res, { crossposts });
 };
 
