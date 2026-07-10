@@ -25,7 +25,7 @@ rewards.checkConditionAndRewardUser = async function (params) {
 			/* eslint-disable no-await-in-loop */
 			const count = await db.incrObjectField('locks', lockValue);
 			if (count > 1) {
-				winston.warn('Reward lock already exists for uid %d and reward %s, skipping', uid, reward.id);
+				winston.warn(`Reward lock already exists for uid ${uid} and reward ${reward.id}, skipping`);
 			} else {
 				try {
 					const canClaim = await isClaimable(uid, reward);
