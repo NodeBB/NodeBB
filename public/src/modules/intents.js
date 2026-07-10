@@ -1,6 +1,7 @@
 'use strict';
 
 import { dialog } from 'bootbox';
+import * as Benchpress from 'benchpressjs';
 import { get } from 'api';
 import storage from 'storage';
 import { translate, translateKeys } from 'translator';
@@ -99,11 +100,11 @@ export async function register() {
 		intents: (await mapIntentNames(intents)).join(', '),
 	})));
 
-	app.parseAndTranslate('modals/intents/register', {
+	Benchpress.render('modals/intents/register', {
 		description: '[[intents:description]]',
 		handles,
-	}, (html) => {
-		const modal = dialog({
+	}).then(async (html) => {
+		const modal = await dialog({
 			title: '[[intents:title]]',
 			message: html,
 		});
@@ -133,7 +134,7 @@ export async function register() {
 					handle,
 					intents: (await mapIntentNames(intents)).join(', '),
 				})));
-				const html = await app.parseAndTranslate('modals/intents/register', 'handles', { handles });
+				const html = await Benchpress.render('modals/intents/register', 'handles', { handles });
 				modal.find('#intents-registered-list').html(html);
 			} catch (e) {
 				alerts.error(e.message);
@@ -204,12 +205,12 @@ export async function trigger(intent, parameters) {
 		intents: (await mapIntentNames(intents)).join(', '),
 	})));
 
-	app.parseAndTranslate('modals/intents/trigger', {
+	Benchpress.render('modals/intents/trigger', {
 		displayIntent,
 		matchingHandles,
 		hasAnyHandles: map.size > 0,
-	}, (html) => {
-		const modal = dialog({
+	}).then(async (html) => {
+		const modal = await dialog({
 			title: `[[intents:trigger-title, ${displayIntent}]]`,
 			message: html,
 		});
