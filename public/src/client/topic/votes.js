@@ -98,6 +98,11 @@ define('forum/topic/votes', [
 		const pid = post.attr('data-pid');
 
 		if (!app.user.uid) {
+			if (!config.activitypub.enabled) {
+				ajaxify.go('login');
+				return;
+			}
+
 			let objectId;
 			if (utils.isNumber(pid)) {
 				objectId = config.url + '/post/' + pid;
