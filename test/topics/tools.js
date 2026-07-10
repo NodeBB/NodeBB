@@ -141,6 +141,46 @@ describe('Topic tools', () => {
 				{ message: '[[error:no-privileges]]' }
 			);
 		});
+
+		it('should disallow topic moving if owner lost topics:read on source category', async () => {
+			const { cid: restrictedCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			const { cid: destCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: restrictedCid,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+
+			// Owner can move before read is revoked
+			await api.topics.move({ uid: uid1 }, {
+				cid: destCid,
+				tid: topicData.tid,
+			});
+			assert.strictEqual(String(await topics.getTopicField(topicData.tid, 'cid')), String(destCid));
+
+			// Move back to restricted category
+			await api.topics.move({ uid: uid1 }, {
+				cid: restrictedCid,
+				tid: topicData.tid,
+			});
+
+			// Revoke topics:read from source category for registered-users
+			await privileges.categories.rescind(['groups:topics:read'], restrictedCid, 'registered-users');
+
+			// Owner should no longer be able to move the topic out
+			await assert.rejects(
+				api.topics.move({ uid: uid1 }, {
+					cid: destCid,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// Restore privilege for test isolation
+			await privileges.categories.give(['groups:topics:read'], restrictedCid, 'registered-users');
+		});
 	});
 
 	describe('with remote categories', () => {

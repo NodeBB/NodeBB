@@ -327,7 +327,11 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			const isModOfSourceAndDestination = isModOfDestination && isModOfTopicCid[index];
 			if (!isAdmin && !isModOfSourceAndDestination) {
 				const isOwnerOfTopic = parseInt(topicData.uid, 10) === parseInt(caller.uid, 10);
-				if (!isOwnerOfTopic || !canCreateAndReadDestination || topicData.locked || topicData.deleted) {
+				const canReadSource = await privileges.topics.can('topics:read', tid, caller.uid);
+				if (
+					!isOwnerOfTopic || !canCreateAndReadDestination ||
+					!canReadSource || topicData.locked || topicData.deleted
+				) {
 					throw new Error('[[error:no-privileges]]');
 				}
 				if (maxOwnerPosts > 0 && topicData.postcount > maxOwnerPosts) {
