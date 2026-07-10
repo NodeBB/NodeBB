@@ -85,6 +85,7 @@ async function renderWidget(widget, uid, options, config, location) {
 				title: widget.data.title,
 				body: html,
 				template: data.templateData && data.templateData.template,
+				_i18n: options?.res?.locals?._i18n,
 			});
 		}
 
