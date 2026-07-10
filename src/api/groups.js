@@ -11,6 +11,15 @@ const tx = require('../translator');
 
 const groupsAPI = module.exports;
 
+async function adminGroupCheck(caller, groupName) {
+	if (groupName === 'administrators') {
+		const isAdminsModsAdmin = await privileges.admin.can('admin:admins-mods', caller.uid);
+		if (!isAdminsModsAdmin) {
+			throw new Error('[[error:no-privileges]]');
+		}
+	}
+}
+
 groupsAPI.list = async (caller, data) => {
 	const canView = await privileges.global.can('view:groups', caller.uid);
 	if (!canView) {
@@ -143,6 +152,8 @@ groupsAPI.join = async function (caller, data) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
+	await adminGroupCheck(caller, groupName);
+
 	const [groupData, userExists] = await Promise.all([
 		groups.getGroupData(groupName),
 		user.exists(data.uid),
@@ -217,6 +228,10 @@ groupsAPI.leave = async function (caller, data) {
 		throw new Error('[[error:cant-remove-self-as-admin]]');
 	}
 
+	if (!isSelf) {
+		await adminGroupCheck(caller, groupName);
+	}
+
 	const [groupData, isCallerOwner, userExists, isMember] = await Promise.all([
 		groups.getGroupData(groupName),
 		isOwner(caller, groupName, false),
@@ -264,6 +279,11 @@ groupsAPI.grant = async (caller, data) => {
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	await isOwner(caller, groupName);
 
+	const isMember = await groups.isMember(data.uid, groupName);
+	if (!isMember) {
+		throw new Error('[[error:group-not-member]]');
+	}
+
 	await groups.ownership.grant(data.uid, groupName);
 	logGroupEvent(caller, 'group-owner-grant', {
 		groupName: groupName,
@@ -274,6 +294,11 @@ groupsAPI.grant = async (caller, data) => {
 groupsAPI.rescind = async (caller, data) => {
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	await isOwner(caller, groupName);
+
+	const isMember = await groups.isMember(data.uid, groupName);
+	if (!isMember) {
+		throw new Error('[[error:group-not-member]]');
+	}
 
 	await groups.ownership.rescind(data.uid, groupName);
 	logGroupEvent(caller, 'group-owner-rescind', {
