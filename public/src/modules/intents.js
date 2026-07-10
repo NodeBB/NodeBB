@@ -1,6 +1,6 @@
 'use strict';
 
-import { dialog } from 'bootbox';
+import { dialog } from 'modals';
 import * as Benchpress from 'benchpressjs';
 import { get } from 'api';
 import storage from 'storage';
@@ -134,7 +134,7 @@ export async function register() {
 					handle,
 					intents: (await mapIntentNames(intents)).join(', '),
 				})));
-				const html = await Benchpress.render('modals/intents/register', 'handles', { handles });
+				const html = await Benchpress.render('modals/intents/register', { handles });
 				modal.find('#intents-registered-list').html(html);
 			} catch (e) {
 				alerts.error(e.message);
