@@ -85,8 +85,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		});
 
 		const translation = this._i18n[namespace][key];
-		const result = tx.replaceArguments(translation, escapedArgs);
-		return result;
+		return tx.replaceArguments(translation, escapedArgs);
 	}
 
 	function buildMetaTag(tag) {

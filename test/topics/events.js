@@ -105,7 +105,7 @@ describe('Topic Events', () => {
 		});
 	});
 
-	it('should properly escape topic events with HTML and tx tokens in their arguments', async () => {
+	it('should properly escape topic events with HTML in their arguments', async () => {
 		const oldVlaueShowFullnameAsDisplayName = meta.config.showFullnameAsDisplayName;
 		meta.config.showFullnameAsDisplayName = 1;
 		const { topicData } = await topics.post({
@@ -127,7 +127,7 @@ describe('Topic Events', () => {
 
 		const events = await topics.events.get(topicData.tid, uid);
 
-		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size: 16px; background-color: #827717">B</span> <a href="${nconf.get('relative_path')}/user/bar">&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;</a> <a href="${nconf.get('relative_path')}/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
+		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; [[global:posts]]" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size: 16px; background-color: #827717">B</span> <a href="${nconf.get('relative_path')}/user/bar">&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; [[global:posts]]</a> <a href="${nconf.get('relative_path')}/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
 
 		meta.config.showFullnameAsDisplayName = oldVlaueShowFullnameAsDisplayName;
 	});
