@@ -1144,11 +1144,16 @@ describe('Post\'s', () => {
 		it('should add another user to post editors', async () => {
 			const ownerUid = await user.create({ username: 'owner user' });
 			const editorUid = await user.create({ username: 'editor user' });
+			const oldValue = meta.config.trackIpPerPost;
+			meta.config.trackIpPerPost = 1;
 			const topic = await topics.post({
 				uid: ownerUid,
 				cid,
 				title: 'just a topic for multi editor testing',
 				content: `Some text here for the OP`,
+				req: {
+					ip: '127.0.0.1',
+				},
 			});
 			const { pid } = topic.postData;
 			await socketPosts.saveEditors({ uid: ownerUid }, {
@@ -1158,6 +1163,13 @@ describe('Post\'s', () => {
 
 			const userData = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
 			assert.strictEqual(userData[0].username, 'editor user');
+
+			const result = await apiPosts.edit({ uid: editorUid }, { pid, content: 'edited by editor' });
+			assert.strictEqual(Object.hasOwn(result, 'ip'), false);
+			const content = await posts.getPostField(pid, 'content');
+			assert.strictEqual(content, 'edited by editor');
+
+			meta.config.trackIpPerPost = oldValue;
 		});
 	});
 
