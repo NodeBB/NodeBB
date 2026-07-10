@@ -67,7 +67,7 @@ export async function prompt(opts, callback) {
 function normalizeMessage(opts) {
 	const msg = opts && opts.message ? opts.message : opts;
 	if (msg instanceof jQuery) {
-		return msg.html();
+		return msg[0] ? msg[0].outerHTML : '';
 	}
 	return msg;
 }
