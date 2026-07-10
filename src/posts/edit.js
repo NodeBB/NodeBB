@@ -81,6 +81,7 @@ module.exports = function (Posts) {
 		returnPostData.changed = newContent !== oldContent;
 		returnPostData.oldContent = oldContent;
 		returnPostData.newContent = data.content;
+		delete returnPostData.ip;
 
 		await topics.syncBacklinks(returnPostData);
 
