@@ -2,7 +2,7 @@
 <div class="card card-header text-xs px-2 py-1 fw-semibold border-0 align-self-start">{{tx("search:results-matching", matchCount, txEscape(search_query), time)}}</div>
 {{{ else }}}
 {{{ if search_query }}}
-<div class="badge text-bg-warning align-self-start">[[search:no-matches]]</div>
+<div class="badge text-bg-warning align-self-start">{{tx("search:no-matches")}}</div>
 {{{ end }}}
 {{{ end }}}
 

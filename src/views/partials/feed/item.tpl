@@ -58,7 +58,7 @@
 				<a href="{config.relative_path}/post/{encodeURIComponent(./pid)}" class="stretched-link"></a>
 				{{./content}}
 			</div>
-			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">[[world:see-more]]</button>
+			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">{{tx("world:see-more")}}</button>
 			<hr class="my-2"/>
 			<div class="d-flex justify-content-between">
 				<a href="{config.relative_path}/post/{{{ if ./topic.teaserPid }}}{encodeURIComponent(./topic.teaserPid)}{{{ else }}}{encodeURIComponent(./pid)}{{{ end }}}" class="btn btn-link btn-sm text-body {{{ if !./isMainPost }}}invisible{{{ end }}}"><i class="fa-fw fa-regular fa-message text-muted"></i> {humanReadableNumber(./topic.postcount)}</a>
@@ -67,20 +67,20 @@
 
 				<a href="#" data-pid="{./pid}" data-action="upvote" data-upvoted="{./upvoted}" data-upvotes="{./upvotes}" class="btn btn-link btn-sm text-body{{{ if ./upvoted }}} upvoted{{{ end }}}"><i class="fa-fw fa-heart {{{ if ./upvoted }}}fa text-danger{{{ else }}}fa-regular text-muted{{{ end }}}"></i> <span component="upvote-count">{humanReadableNumber(./upvotes)}</span></a>
 
-				<a href="#" data-pid="{./pid}" data-is-main="{./isMainPost}" data-tid="{./tid}" data-action="reply" class="btn btn-link btn-sm text-body"><i class="fa-fw fa fa-reply text-muted"></i> [[topic:reply]]</a>
+				<a href="#" data-pid="{./pid}" data-is-main="{./isMainPost}" data-tid="{./tid}" data-action="reply" class="btn btn-link btn-sm text-body"><i class="fa-fw fa fa-reply text-muted"></i> {{tx("topic:reply")}}</a>
 			</div>
 			{{{ if ./topic.teaser }}}
 			<div class="d-flex flex-column gap-2 mt-1 text-xs border-start ps-3">
 				{{{ if (./replies && (./replies != "1")) }}}
-				<a href="{config.relative_path}/post/{./pid}" class="text-capitalize fw-semibold text-secondary">[[global:read-more]] &rarr;</a>
+				<a href="{config.relative_path}/post/{./pid}" class="text-capitalize fw-semibold text-secondary">{{tx("global:read-more")}} &rarr;</a>
 				{{{ end }}}
 				<div class="d-inline-flex flex-column px-3 py-2 rounded gap-2 bg-body-tertiary align-self-start">
 					<div class="d-flex align-items-top gap-2">
 						<a class="text-decoration-none avatar-tooltip" title="{./topic.teaser.user.displayname}" href="{config.relative_path}/user/{./topic.teaser.user.userslug}">{{buildAvatar(./topic.teaser.user, "18px", true)}} {./topic.teaser.user.displayname}</a>
-						<a class="permalink text-muted timeago text-xs" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./index }}}/{./index}{{{ end }}}" title="{./topic.teaser.timestampISO}" aria-label="[[global:lastpost]]"></a>
+						<a class="permalink text-muted timeago text-xs" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./index }}}/{./index}{{{ end }}}" title="{./topic.teaser.timestampISO}" aria-label="{{tx("global:lastpost")}}"></a>
 					</div>
 					<div class="post-content text-xs text-break line-clamp-sm-2 lh-sm position-relative flex-fill">
-						<a class="stretched-link" tabindex="-1" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./topic.teaser.index }}}/{./topic.teaser.index}{{{ end }}}" aria-label="[[global:lastpost]]"></a>
+						<a class="stretched-link" tabindex="-1" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./topic.teaser.index }}}/{./topic.teaser.index}{{{ end }}}" aria-label="{{tx("global:lastpost")}}"></a>
 						{{./topic.teaser.content}}
 					</div>
 				</div>

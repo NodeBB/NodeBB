@@ -9,12 +9,12 @@
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td style="padding: 40px 40px 6px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 24px; line-height: 27px; color: #333333; font-weight: normal;">[[email:greeting-with-name, {displayname}]]</h1>
+						<h1 style="margin: 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 24px; line-height: 27px; color: #333333; font-weight: normal;">{{tx("email:greeting-with-name", txEscape(displayname))}}</h1>
 					</td>
 				</tr>
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 0 0 10px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.title.{interval}]]</h1>
+						<h1 style="margin: 0 0 10px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">{{tx(concat("email:digest.title.", interval))}}</h1>
 					</td>
 				</tr>
 				{{{ if notifications.length }}}
@@ -46,14 +46,14 @@
 				{{{ if publicRooms.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.unread-rooms]]</h1>
+						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">{{tx("email:digest.unread-rooms")}}</h1>
 						<ul style="margin: 0; padding: 0;">
 							{{{ each publicRooms }}}
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 									<tr>
 										<td style="padding: 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px; color: #333333;">
-											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #333333;" href="{url}/chats/{./roomId}"># [[email:digest.room-name-unreadcount, {./roomName}, {./unreadCountText}]]</a></p>
+											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #333333;" href="{url}/chats/{./roomId}"># {{tx("email:digest.room-name-unreadcount", ./roomName, ./unreadCountText)}}</a></p>
 										</td>
 									</tr>
 								</table>
@@ -66,7 +66,7 @@
 				{{{ if topTopics.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.top-topics, {site_title}]]</h1>
+						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">{{tx("email:digest.top-topics", site_title)}}</h1>
 						<ul style="margin: 0; padding: 0;">
 							{{{ each topTopics }}}
 							<!-- IMPORT emails/partials/digest-topic.tpl -->
@@ -78,7 +78,7 @@
 				{{{ if popularTopics.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.popular-topics, {site_title}]]</h1>
+						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">{{tx("email:digest.popular-topics", site_title)}}</h1>
 						<ul style="margin: 0; padding: 0;">
 							{{{ each popularTopics }}}
 							<!-- IMPORT emails/partials/digest-topic.tpl -->
@@ -90,7 +90,7 @@
 				{{{ if recent.length }}}
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.latest-topics, {site_title}]]</h1>
+						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">{{tx("email:digest.latest-topics", site_title)}}</h1>
 						<ul style="margin: 0; padding: 0;">
 							{{{ each recent }}}
 							<!-- IMPORT emails/partials/digest-topic.tpl -->
@@ -106,7 +106,7 @@
 							<tr>
 								<td style="border-radius: 3px; background: #222222; text-align: center;" class="button-td">
 									<a href="{url}" style="background: #222222; border: 15px solid #222222; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
-										<span style="color:#ffffff;" class="button-link">[[email:digest.cta, {site_title}]] &rarr;</span>
+										<span style="color:#ffffff;" class="button-link">{{tx("email:digest.cta", site_title)}} &rarr;</span>
 									</a>
 								</td>
 							</tr>

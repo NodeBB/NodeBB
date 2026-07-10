@@ -10,7 +10,7 @@
 		<span class="chat-user fw-semibold"><a href="{config.relative_path}/user/{messages.fromUser.userslug}">{messages.fromUser.displayname}</a></span>
 
 		<span class="chat-timestamp text-muted timeago" title="{messages.timestampISO}"></span>
-		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="[[global:edited-timestamp, {isoTimeToLocaleString(messages.editedISO, config.userLang)}]]"><i class="fa fa-edit"></i></span></div>
+		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="{{tx("global:edited-timestamp", isoTimeToLocaleString(messages.editedISO, config.userLang))}}"><i class="fa fa-edit"></i></span></div>
 	</div>
 	<div class="message-body-wrapper">
 		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break">
@@ -19,11 +19,11 @@
 		<div component="chat/message/controls" class="position-relative">
 			<div class="btn-group border shadow-sm controls position-absolute bg-body end-0" style="bottom:1rem;">
 				{{{ if (isAdminOrGlobalMod || (!config.disableChatMessageEditing && messages.self)) }}}
-				<button class="btn btn-sm btn-link" data-action="edit" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
+				<button class="btn btn-sm btn-link" data-action="edit" title="{{tx("topic:edit")}}"><i class="fa fa-pencil"></i></button>
 				{{{ end }}}
 				{{{ if (isAdminOrGlobalMod || isOwner )}}}
-				<button class="btn btn-sm btn-link" data-action="pin" title="[[modules:chat.pin-message]]"><i class="fa fa-thumbtack"></i></button>
-				<button class="btn btn-sm btn-link" data-action="unpin" title="[[modules:chat.unpin-message]]"><i class="fa fa-thumbtack fa-rotate-90"></i></button>
+				<button class="btn btn-sm btn-link" data-action="pin" title="{{tx("modules:chat.pin-message")}}"><i class="fa fa-thumbtack"></i></button>
+				<button class="btn btn-sm btn-link" data-action="unpin" title="{{tx("modules:chat.unpin-message")}}"><i class="fa fa-thumbtack fa-rotate-90"></i></button>
 				{{{ end }}}
 			</div>
 		</div>

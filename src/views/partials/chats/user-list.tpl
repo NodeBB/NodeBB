@@ -4,7 +4,7 @@
 		<div>{{buildAvatar(users, "24px", true)}}</div>
 		<div class="d-flex gap-1 flex-grow-1 text-nowrap text-truncate">
 			<span component="chat/user/list/username" class="text-truncate">{./displayname}</span>
-			{{{ if ./isOwner }}}<span><i class="fa fa-star text-warning" data-bs-toggle="tooltip" title="[[modules:chat.owner]]"></i></span>{{{ end }}}
+			{{{ if ./isOwner }}}<span><i class="fa fa-star text-warning" data-bs-toggle="tooltip" title="{{tx("modules:chat.owner")}}"></i></span>{{{ end }}}
 		</div>
 	</a>
 	{{{ end }}}

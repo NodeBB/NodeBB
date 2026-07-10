@@ -11,7 +11,7 @@
 				aria-controls="registration-queue-pane"
 				aria-selected="true"
 			>
-				[[registration-queue:queue]]
+				{{tx("registration-queue:queue")}}
 			</button>
 		</li>
 
@@ -26,7 +26,7 @@
 				aria-controls="invitations-pane"
 				aria-selected="false"
 			>
-				[[registration-queue:invitations]]
+				{{tx("registration-queue:invitations")}}
 			</button>
 		</li>
 	</ul>
@@ -41,7 +41,7 @@
 		>
 			{{{ if users.length }}}
 			<div class="text-end">
-				<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">[[registration-queue:reject-all]]</button>
+				<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-all")}}</button>
 			</div>
 			{{{ end }}}
 			<div class="registration mb-3">
@@ -51,16 +51,16 @@
 				{{{ if queueEnabled }}}
 				{{{ end }}}
 				{{{ if !users.length }}}
-				<p>[[registration-queue:no-users-in-queue]]</p>
+				<p>{{tx("registration-queue:no-users-in-queue")}}</p>
 				{{{ else }}}
 				<div class="table-responsive">
 					<table class="table table-sm text-sm users-list">
 						<thead>
 							<tr>
-								<th>[[registration-queue:list.name]]</th>
-								<th>[[registration-queue:list.email]]</th>
-								<th class="hidden-xs">[[registration-queue:list.ip]]</th>
-								<th class="hidden-xs">[[registration-queue:list.time]]</th>
+								<th>{{tx("registration-queue:list.name")}}</th>
+								<th>{{tx("registration-queue:list.email")}}</th>
+								<th class="hidden-xs">{{tx("registration-queue:list.ip")}}</th>
+								<th class="hidden-xs">{{tx("registration-queue:list.time")}}</th>
 								{{{ each customHeaders }}}
 								<th class="hidden-xs">{./label}</th>
 								{{{ end }}}
@@ -72,7 +72,7 @@
 							<tr data-username="{./username}" class="align-middle">
 								<td>
 									{{{ if ./usernameSpam }}}
-									<i class="fa fa-times-circle text-danger" title="[[registration-queue:list.username-spam, {./spamData.username.frequency}, {./spamData.username.appears}, {./spamData.username.confidence}]]" data-bs-toggle="tooltip" data-bs-html="true"></i>
+									<i class="fa fa-times-circle text-danger" title="{{tx("registration-queue:list.username-spam", ./spamData.username.frequency, ./spamData.username.appears, ./spamData.username.confidence)}}" data-bs-toggle="tooltip" data-bs-html="true"></i>
 									{{{ else }}}
 									{{{ if ./spamChecked }}}
 									<i class="fa fa-check text-success"></i>
@@ -85,7 +85,7 @@
 								</td>
 								<td>
 									{{{ if ./emailSpam }}}
-									<i class="fa fa-times-circle text-danger" title="[[registration-queue:list.email-spam, {./spamData.email.frequency}, {./spamData.email.appears}, {./spamData.email.confidence}]]" data-bs-toggle="tooltip" data-bs-html="true"></i>
+									<i class="fa fa-times-circle text-danger" title="{{tx("registration-queue:list.email-spam", ./spamData.email.frequency, ./spamData.email.appears, ./spamData.email.confidence)}}" data-bs-toggle="tooltip" data-bs-html="true"></i>
 									{{{ else }}}
 									{{{ if ./spamChecked }}}
 									<i class="fa fa-check text-success"></i>
@@ -96,7 +96,7 @@
 								<td class="hidden-xs">
 									<div class="d-flex gap-2 align-items-center">
 										{{{ if ./ipSpam }}}
-										<i class="fa fa-times-circle text-danger" title="[[registration-queue:list.ip-spam, {./spamData.ip.frequency}, {./spamData.ip.appears}, {./spamData.ip.confidence}]]" data-bs-toggle="tooltip" data-bs-html="true"></i>
+										<i class="fa fa-times-circle text-danger" title="{{tx("registration-queue:list.ip-spam", ./spamData.ip.frequency, ./spamData.ip.appears, ./spamData.ip.confidence)}}" data-bs-toggle="tooltip" data-bs-html="true"></i>
 										{{{ else }}}
 										{{{ if ./spamChecked }}}
 										<i class="fa fa-check text-success"></i>
@@ -158,15 +158,15 @@
 		>
 			<div class="invitations">
 				<p class="">
-					[[registration-queue:invitations.description]]
+					{{tx("registration-queue:invitations.description")}}
 				</p>
 				<div class="table-responsive">
 					<table class="table table-sm text-sm invites-list">
 						<thead>
 							<tr>
-								<th>[[registration-queue:invitations.inviter-username]]</th>
-								<th>[[registration-queue:invitations.invitee-email]]</th>
-								<th>[[registration-queue:invitations.invitee-username]]</th>
+								<th>{{tx("registration-queue:invitations.inviter-username")}}</th>
+								<th>{{tx("registration-queue:invitations.invitee-email")}}</th>
+								<th>{{tx("registration-queue:invitations.invitee-username")}}</th>
 							</tr>
 						</thead>
 						<tbody>

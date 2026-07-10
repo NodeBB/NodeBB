@@ -3,24 +3,24 @@
 
 	<form id="intents-register-form" class="mt-3">
 		<div class="mb-3">
-			<label class="form-label" for="intents-handle-input">[[intents:handle-label]]</label>
+			<label class="form-label" for="intents-handle-input">{{tx("intents:handle-label")}}</label>
 			<input
 				id="intents-handle-input"
 				type="text"
 				class="form-control"
-				placeholder="[[intents:handle-placeholder]]"
+				placeholder="{{tx("intents:handle-placeholder")}}"
 				autocomplete="off"
 			/>
 		</div>
 
 		<button type="submit" class="btn btn-primary" id="intents-register-btn" disabled>
-			[[intents:register-button]]
+			{{tx("intents:register-button")}}
 		</button>
 	</form>
 
 	<hr />
 
-	<h6 class="mt-3">[[intents:registered-handles]]</h6>
+	<h6 class="mt-3">{{tx("intents:registered-handles")}}</h6>
 	<ul class="list-group list-group-flush" id="intents-registered-list">
 		{{{ each handles }}}
 		<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -36,6 +36,6 @@
 	</ul>
 
 	{{{ if (!handles || !handles.length) }}}
-	<p class="text-muted mt-3">[[intents:no-handles]]</p>
+	<p class="text-muted mt-3">{{tx("intents:no-handles")}}</p>
 	{{{ end }}}
 </div>

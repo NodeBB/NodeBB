@@ -6,4 +6,4 @@
 
 <p><strong>{{tx("post-queue:user")}}</strong></p>
 <p>{{{ if notification.user.url }}}<a href="{notification.user.url}">{notification.user.username}</a>{{{ else }}}{notification.user.username}{{{ end }}}</p>
-<p>{{txEscape(notification.content)}}</p>
+<p>{{notification.content}}</p>

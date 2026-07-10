@@ -2,8 +2,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h3 id="crop-picture">[[user:crop-picture]]</h3>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
+				<h3 id="crop-picture">{{tx("user:crop-picture")}}</h3>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{tx("global:buttons.close")}}"></button>
 			</div>
 			<div class="modal-body">
 				<div id="upload-progress-box" class="progress hide">
@@ -30,9 +30,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">[[global:close]]</button>
-				<button class="btn btn-primary upload-btn {{{ if !allowSkippingCrop }}}hidden{{{ end }}}">[[user:upload-picture]]</button>
-				<button class="btn btn-primary crop-btn">[[user:upload-cropped-picture]]</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">{{tx("global:close")}}</button>
+				<button class="btn btn-primary upload-btn {{{ if !allowSkippingCrop }}}hidden{{{ end }}}">{{tx("user:upload-picture")}}</button>
+				<button class="btn btn-primary crop-btn">{{tx("user:upload-cropped-picture")}}</button>
 			</div>
 		</div>
 	</div>
