@@ -69,7 +69,7 @@ define('forum/topic/votes', [
 
 	async function createTooltip(el, data) {
 		function doCreateTooltip(title) {
-			el.attr('title', title);
+			el.attr('title', utils.escapeHTML(title));
 			(new bootstrap.Tooltip(el, {
 				container: '#content',
 				html: true,
