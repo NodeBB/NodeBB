@@ -9,16 +9,16 @@ define('admin/modules/instance', [
 		alerts.alert({
 			alert_id: 'instance_rebuild_and_restart',
 			type: 'info',
-			title: 'Rebuilding... <i class="fa fa-spin fa-refresh"></i>',
-			message: 'NodeBB is rebuilding front-end assets (css, javascript, etc).',
+			title: '[[admin/admin:rebuilding.title]]',
+			message: '[[admin/admin:rebuilding.message]]',
 		});
 
 		$(window).one('action:reconnected', function () {
 			alerts.alert({
 				alert_id: 'instance_rebuild_and_restart',
 				type: 'success',
-				title: '<i class="fa fa-check"></i> Success',
-				message: 'NodeBB has rebuilt and restarted successfully.',
+				title: '[[admin/admin:rebuildrestart.success.title]]',
+				message: '[[admin/admin:rebuilding.success.message]]',
 				timeout: 5000,
 			});
 
@@ -31,8 +31,8 @@ define('admin/modules/instance', [
 			alerts.alert({
 				alert_id: 'instance_rebuild_and_restart',
 				type: 'info',
-				title: 'Build Complete!... <i class="fa fa-spin fa-refresh"></i>',
-				message: 'NodeBB is restarting.',
+				title: '[[admin/admin:build.complete]]',
+				message: '[[admin/admin:restarting.message]]',
 			});
 		});
 	};
@@ -41,16 +41,16 @@ define('admin/modules/instance', [
 		alerts.alert({
 			alert_id: 'instance_restart',
 			type: 'info',
-			title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
-			message: 'NodeBB is restarting.',
+			title: '[[admin/admin:restarting.title]]',
+			message: '[[admin/admin:restarting.message]]',
 		});
 
 		$(window).one('action:reconnected', function () {
 			alerts.alert({
 				alert_id: 'instance_restart',
 				type: 'success',
-				title: '<i class="fa fa-check"></i> Success',
-				message: 'NodeBB has restarted successfully.',
+				title: '[[admin/admin:rebuildrestart.success.title]]',
+				message: '[[admin/admin:restarting.success.message]]',
 				timeout: 5000,
 			});
 
