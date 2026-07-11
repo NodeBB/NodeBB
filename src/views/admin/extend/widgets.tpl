@@ -107,32 +107,32 @@
 					<div class="available-containers">
 						<div class="containers">
 							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
-								{{tx(admin/extend/widgets:containers.none)}}
+								{{tx("admin/extend/widgets:containers.none")}}
 							</div>
 							<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3 pointer" data-container-html='<div class="card card-header p-3 rounded-0 border-0 shadow-none mb-3">\{{body}}</div>'>
-								{{tx(admin/extend/widgets:container.well)}}
+								{{tx("admin/extend/widgets:container.well")}}
 							</div>
 							<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3 pointer" data-container-html='<div class="card card-header rounded-0 border-0 shadow-none p-5 mb-3">\{{body}}</div>'>
-								{{tx(admin/extend/widgets:container.jumbotron)}}
+								{{tx("admin/extend/widgets:container.jumbotron")}}
 							</div>
 
 							<div class="mb-3 pointer" data-container-html='<h5>\{{title}}</h5><hr/><div>\{{body}}</div>'>
-								<h5>{{tx(admin/extend/widgets:container.title)}}</h5>
+								<h5>{{tx("admin/extend/widgets:container.title")}}</h5>
 								<hr/>
 								<div class="">
-									{{tx(admin/extend/widgets:container.body)}}
+									{{tx("admin/extend/widgets:container.body")}}
 								</div>
 							</div>
 
 							<div class="card mb-3" data-container-html='<div class="card"><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-body pointer">
-									{{tx(admin/extend/widgets:container.card)}}
+									{{tx("admin/extend/widgets:container.card")}}
 								</div>
 							</div>
 
 							<div class="card mb-3 pointer" data-container-html='<div class="card"><h5 class="card-header">\{{title}}</h5><div class="card-body">\{{body}}</div></div>'>
 								<div class="card-header d-flex justify-content-between text-nowrap flex-wrap align-items-center">
-									{{tx(admin/extend/widgets:container.card-header)}}
+									{{tx("admin/extend/widgets:container.card-header")}}
 									<div class="d-flex gap-1 color-selector" style="height: 18px;">
 										<button data-class="text-bg-primary" class="btn btn-sm btn-primary"></button>
 										<button data-class="" class="btn btn-sm btn-secondary"></button>
@@ -143,13 +143,13 @@
 									</div>
 								</div>
 								<div class="card-body">
-									{{tx(admin/extend/widgets:container.card-body)}}
+									{{tx("admin/extend/widgets:container.card-body")}}
 								</div>
 							</div>
 
 							<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
 								<div class="d-flex justify-content-between text-nowrap flex-wrap align-items-center">
-									{{tx(admin/extend/widgets:container.alert)}}
+									{{tx("admin/extend/widgets:container.alert")}}
 									<div class="d-flex gap-1 color-selector" style="height: 18px;">
 										<button data-class="alert-success" class="btn btn-sm btn-success"></button>
 										<button data-class="alert-info" class="btn btn-sm btn-info"></button>
