@@ -35,9 +35,9 @@
 	"rules.filter.help": "Se selezionato, i contenuti corrispondenti saranno inviati alla coda dei post per la revisione prima di essere categorizzati.",
 	"rules.filter-warning": "Hai impostato delle regole di categorizzazione per mettere in coda i post, ma la coda dei post è attualmente disabilitata. I post che corrispondono a queste regole saranno pubblicati immediatamente.",
 	"rules.cid": "Categoria",
-	"rules.cutoff.title": "Age Cutoff",
-	"rules.cutoff.label": "Categorization age cutoff (days)",
-	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
+	"rules.cutoff.title": "Limite di età",
+	"rules.cutoff.label": "Limite di età per la categorizzazione (giorni)",
+	"rules.cutoff.help": "I contenuti più vecchi di questo numero di giorni non saranno categorizzati tramite regole. Imposta a 0 per disabilitare il limite. (Predefinito: 0)",
 
 	"relays": "Relè",
 	"relays.intro": "Un relè migliora la scoperta dei contenuti da e verso il tuo NodeBB. Iscriversi a un relè significa che i contenuti ricevuti dal relè vengono inoltrati qui, e i contenuti pubblicati qui vengono distribuiti all'esterno dal relè.",
