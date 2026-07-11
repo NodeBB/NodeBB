@@ -14,6 +14,7 @@ const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const privileges = require('../../src/privileges');
 const activitypub = require('../../src/activitypub');
+const helpers = require('../helpers');
 const utils = require('../../src/utils');
 
 describe('Crossposting (& related logic)', () => {
@@ -582,15 +583,15 @@ describe('Crossposting (& related logic)', () => {
 			let uid;
 			let pid;
 
-			const helpers = require('../activitypub/helpers');
+			const apHelpers = require('../activitypub/helpers');
 
 			before(async () => {
-				({ id: remoteCid } = helpers.mocks.group());
+				({ id: remoteCid } = apHelpers.mocks.group());
 				await activitypub.actors.assertGroup(remoteCid);
 				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
 				uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
 
-				({ id: pid } = helpers.mocks.note());
+				({ id: pid } = apHelpers.mocks.note());
 				await activitypub.notes.assert(0, pid, { skipChecks: 1, cid: remoteCid });
 
 				tid = await posts.getPostField(pid, 'tid');
@@ -607,6 +608,77 @@ describe('Crossposting (& related logic)', () => {
 				});
 				const mocked = await activitypub.mocks.notes.public(postData);
 				assert(mocked.to.includes(remoteCid));
+			});
+
+			it('should send an Announce to the topic author when crossposted to a local category', async () => {
+				const username = utils.generateUUID().slice(0, 8);
+				const crossposter = await user.create({ username, password: '123456' });
+				const login = await helpers.loginUser(username, '123456');
+				activitypub._sent.clear();
+
+				const crosspostCid = (await categories.create({ name: utils.generateUUID().slice(0, 8) })).cid;
+				const result = await helpers.request('post', `/api/v3/topics/${tid}/crossposts`, {
+					jar: login.jar,
+					csrf_token: login.csrf_token,
+					body: { cid: crosspostCid },
+				});
+
+				assert.strictEqual(result.response.statusCode, 200);
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const actual = Array.from(activitypub._sent).pop()[1];
+				assert.strictEqual(actual.payload.type, 'Announce');
+				assert.strictEqual(actual.payload.actor, `${nconf.get('url')}/uid/${crossposter}`);
+				assert.strictEqual(actual.payload.object, pid);
+
+				const authorUrl = await posts.getPostField(pid, 'uid');
+				assert(actual.payload.cc.includes(authorUrl));
+				assert(actual.targets.includes(authorUrl));
+			});
+		});
+
+		describe('world canonical category (cid -1)', () => {
+			let tid;
+			let cid;
+			let uid;
+			let pid;
+
+			const apHelpers = require('../activitypub/helpers');
+
+			before(async () => {
+				({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+				uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+
+				({ id: pid } = apHelpers.mocks.note());
+				await activitypub.notes.assert(0, pid, { skipChecks: 1 });
+
+				tid = await posts.getPostField(pid, 'tid');
+			});
+
+			it('should send an Announce to the topic author when crossposted to a local category', async () => {
+				const username = utils.generateUUID().slice(0, 8);
+				const crossposter = await user.create({ username, password: '123456' });
+				const login = await helpers.loginUser(username, '123456');
+				activitypub._sent.clear();
+
+				const crosspostCid = (await categories.create({ name: utils.generateUUID().slice(0, 8) })).cid;
+				const result = await helpers.request('post', `/api/v3/topics/${tid}/crossposts`, {
+					jar: login.jar,
+					csrf_token: login.csrf_token,
+					body: { cid: crosspostCid },
+				});
+
+				assert.strictEqual(result.response.statusCode, 200);
+				assert.strictEqual(activitypub._sent.size, 1);
+
+				const actual = Array.from(activitypub._sent).pop()[1];
+				assert.strictEqual(actual.payload.type, 'Announce');
+				assert.strictEqual(actual.payload.actor, `${nconf.get('url')}/uid/${crossposter}`);
+				assert.strictEqual(actual.payload.object, pid);
+
+				const authorUrl = await posts.getPostField(pid, 'uid');
+				assert(actual.payload.cc.includes(authorUrl));
+				assert(actual.targets.includes(authorUrl));
 			});
 		});
 	});
