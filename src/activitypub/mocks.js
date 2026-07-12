@@ -419,7 +419,7 @@ Mocks.actors.user = async (uid) => {
 		picture = {
 			type: 'Image',
 			mediaType: mime.getType(imagePath),
-			url: `${nconf.get('url')}${picture}`,
+			url: picture.startsWith('http') ? picture : `${nconf.get('url')}${picture}`,
 		};
 	}
 
@@ -429,7 +429,7 @@ Mocks.actors.user = async (uid) => {
 		cover = {
 			type: 'Image',
 			mediaType: mime.getType(imagePath),
-			url: `${nconf.get('url')}${cover}`,
+			url: cover.startsWith('http') ? cover : `${nconf.get('url')}${cover}`,
 		};
 	}
 
