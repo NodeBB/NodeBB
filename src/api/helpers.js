@@ -49,7 +49,9 @@ exports.buildReqObject = (req, payload) => {
 		path: referer.slice(referer.indexOf(host) + host.length),
 		baseUrl: req.baseUrl,
 		originalUrl: req.originalUrl,
-		headers: { ...headers },
+		headers: Object.fromEntries(
+			Object.entries(headers).filter(([key]) => key !== 'cookie'),
+		),
 	};
 };
 
