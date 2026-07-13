@@ -227,3 +227,63 @@ describe('email confirmation (v3 api)', () => {
 		await groups.leave('administrators', userObj.uid);
 	});
 });
+
+describe('GET /api/v3/users/:uid/emails/:email (email enumeration)', () => {
+	let attackerUid;
+	let attackerJar;
+	let victimUid;
+	let victimEmail;
+
+	before(async () => {
+		victimEmail = `${utils.generateUUID()}@example.org`;
+		const victim = await helpers.registerUser({
+			username: 'email-victim',
+			password: 'password123',
+			email: victimEmail,
+			gdpr_consent: true,
+			acceptTos: true,
+		});
+		victimUid = victim.body.uid;
+
+		// Confirm victim's email so it appears in email:uid index
+		await groups.join('administrators', victimUid);
+		await helpers.request('post', `/api/v3/users/${victimUid}/emails/${encodeURIComponent(victimEmail)}/confirm`, {
+			jar: victim.jar,
+		});
+		await groups.leave('administrators', victimUid);
+
+		const attacker = await helpers.registerUser({
+			username: 'email-attacker',
+			password: 'password456',
+			email: `${utils.generateUUID()}@other.org`,
+			gdpr_consent: true,
+			acceptTos: true,
+		});
+		attackerUid = attacker.body.uid;
+		attackerJar = attacker.jar;
+	});
+
+	it('should return 404 when querying own uid with another user\'s email', async () => {
+		const { response } = await helpers.request('get', `/api/v3/users/${attackerUid}/emails/${encodeURIComponent(victimEmail)}`, {
+			jar: attackerJar,
+		});
+
+		assert.strictEqual(response.statusCode, 404);
+	});
+
+	it('should return 404 when querying own uid with a non-existent email', async () => {
+		const { response } = await helpers.request('get', `/api/v3/users/${attackerUid}/emails/${encodeURIComponent('nonexistent@example.org')}`, {
+			jar: attackerJar,
+		});
+
+		assert.strictEqual(response.statusCode, 404);
+	});
+
+	it('should return 404 when querying victim uid with victim email (no privileges)', async () => {
+		const { response } = await helpers.request('get', `/api/v3/users/${victimUid}/emails/${encodeURIComponent(victimEmail)}`, {
+			jar: attackerJar,
+		});
+
+		assert.strictEqual(response.statusCode, 404);
+	});
+});

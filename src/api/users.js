@@ -475,12 +475,13 @@ usersAPI.listEmails = async (caller, { uid }) => {
 };
 
 usersAPI.getEmail = async (caller, { uid, email }) => {
-	const [isPrivileged, { showemail }, exists] = await Promise.all([
+	const [isPrivileged, { showemail }, ownerUid] = await Promise.all([
 		user.isPrivileged(caller.uid),
 		user.getSettings(uid),
-		db.isSortedSetMember('email:uid', email.toLowerCase()),
+		db.sortedSetScore('email:uid', email.toLowerCase()),
 	]);
 	const isSelf = caller.uid === parseInt(uid, 10);
+	const exists = ownerUid && parseInt(ownerUid, 10) === parseInt(uid, 10);
 
 	return exists && (isSelf || isPrivileged || showemail);
 };
