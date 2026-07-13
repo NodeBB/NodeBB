@@ -449,6 +449,22 @@ inbox.dislike = async (req) => {
 
 inbox.announce = async (req) => {
 	let { actor, object, published, to, cc } = req.body;
+
+	// Collapse nested Announces: unwrap until we reach a non-Announce object
+	while (object.type === 'Announce') {
+		object = object.object;
+	}
+
+	// Resolve string object references (e.g., Announce wrapping a post URL)
+	if (typeof object === 'string') {
+		try {
+			object = await activitypub.helpers.resolveObjects(object);
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/inbox.announce] Failed to resolve object, using raw id: ${object}`);
+			object = { id: object };
+		}
+	}
+
 	activitypub.helpers.log(`[activitypub/inbox/announce] Parsing Announce(${object.type}) from ${actor}`);
 	let timestamp = new Date(published);
 	timestamp = timestamp.toString() !== 'Invalid Date' ? timestamp.getTime() : Date.now();
