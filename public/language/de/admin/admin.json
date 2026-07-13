@@ -1,15 +1,15 @@
 {
 	"alert.confirm-rebuild-and-restart": "Bist du sicher, dass du NodeBB neu bauen und neu starten möchtest?",
 	"alert.confirm-restart": "Bist du sicher, dass du NodeBB neu starten möchtest?",
-	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
-	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
-	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
-	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.title": "Wird neu geladen... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB generiert gerade die Frontend-Dateien (CSS, JavaScript usw.) neu.",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Erfolg",
+	"rebuilding.success.message": "NodeBB wurde neu gestartet und läuft wieder einwandfrei.",
+	"build.complete": "Fertiggestellt!... <i class=\"fa fa-spin fa-refresh\"></i>",
 
-	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"restarting.message": "NodeBB is restarting.",
-	"restarting.success.message": "NodeBB has restarted successfully.",
+	"restarting.title": "Neustart... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB wird neu gestartet.",
+	"restarting.success.message": "NodeBB wurde erfolgreich neu gestartet.",
 
 
 	"acp-title": "%1 | NodeBB Admin Systemsteuerung",

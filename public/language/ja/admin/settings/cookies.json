@@ -10,6 +10,6 @@
 	"cookie-domain": "セッションCookieドメイン",
 	"max-user-sessions": "1ユーザーあたりの最大アクティブセッション数",
 	"blank-default": "デフォルトの場合は空白のまま",
-	"revoke-all-sessions": "Revoke All Sessions",
-	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
+	"revoke-all-sessions": "すべてのセッションを無効にする",
+	"revoke-all-sessions-desc": "すべてのセッションが削除され、ログアウトされます。再度ログインが必要になります。"
 }
