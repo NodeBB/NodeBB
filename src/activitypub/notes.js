@@ -416,12 +416,39 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 	}
 };
 
-Notes.assertPrivate = async (object) => {
+Notes.assertPrivate = async (object, actor) => {
 	// Given an object, adds it to an existing chat or creates a new chat otherwise
 	// todo: context stuff
 
 	if (!object || !object.id || !activitypub.helpers.isUri(object.id)) {
 		return null;
+	}
+
+	// attributedTo must be same-origin
+	if (actor && object.attributedTo) {
+		// Normalize `attributedTo`
+		let { attributedTo } = object;
+		if (typeof attributedTo === 'object' && !Array.isArray(attributedTo)) {
+			attributedTo = attributedTo.id;
+		} else if (Array.isArray(attributedTo)) {
+			attributedTo = attributedTo.find(a => typeof a === 'string' || (typeof a === 'object' && a.id)) || attributedTo.shift();
+			if (typeof attributedTo === 'object') {
+				attributedTo = attributedTo.id;
+			}
+		}
+
+		if (typeof attributedTo === 'string') {
+			try {
+				const actorHostname = typeof actor === 'string' ? new URL(actor).hostname : new URL(actor[0]).hostname;
+				const attributedToHostname = new URL(attributedTo).hostname;
+				if (actorHostname !== attributedToHostname) {
+					activitypub.helpers.log(`[activitypub/notes.assertPrivate] attributedTo origin mismatch (${attributedToHostname} !== ${actorHostname}).`);
+					return null;
+				}
+			} catch (e) {
+				return null;
+			}
+		}
 	}
 
 	const localUids = [];

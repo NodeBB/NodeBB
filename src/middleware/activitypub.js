@@ -126,6 +126,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 			activitypub.helpers.log('[middleware/activitypub] Origin check failed, stripping object down to id.');
 			req.body.object = [object.id];
 		}
+
 		activitypub.helpers.log('[middleware/activitypub] Origin check passed.');
 	}
 

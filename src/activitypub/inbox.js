@@ -45,7 +45,7 @@ inbox.create = async (req) => {
 	// Alternative logic for non-public objects
 	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 	if (!isPublic) {
-		return await activitypub.notes.assertPrivate(object);
+		return await activitypub.notes.assertPrivate(object, actor);
 	}
 
 	// Category sync, remove when cross-posting available
@@ -207,7 +207,7 @@ inbox.update = async (req) => {
 
 				default: {
 					if (!isPublic) {
-						return await activitypub.notes.assertPrivate(object);
+						return await activitypub.notes.assertPrivate(object, actor);
 					}
 
 					const { cids } = await activitypub.actors.getFollowers(actor);
