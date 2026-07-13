@@ -475,6 +475,40 @@ inbox.announce = async (req) => {
 	// Received via relay?
 	const fromRelay = await activitypub.relays.is(actor);
 
+	// Protections for non-Creates
+	const createish = object.type === 'Create' || activitypub._constants.acceptedPostTypes.includes(object.type);
+	if (!createish) {
+		let id = object.object.id || object.object; // expecting object reference
+		const { id: localId } = await activitypub.helpers.resolveLocalId(id);
+		id = localId || id;
+
+		const exists = await posts.exists(id);
+		if (!exists) {
+			activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
+			return;
+		}
+
+		/**
+		 * Activities must be made by:
+		 *   - an actor of the same origin as announcer (mod deletion, update etc.), OR
+		 *   - an actor of the same origin as the object id (use case: self-deletion/update), OR
+		 *   - (TBD) an actor in the announcer's moderators list
+		 */
+		const announcerHostname = new URL(actor).hostname;
+		const actorHostname = new URL(object.actor).hostname;
+		const objectHostname = new URL(id).hostname;
+		const pass = (announcerHostname === actorHostname) || (actorHostname === objectHostname);
+		if (!pass) {
+			throw new Error('[[error:activitypub.origin-mismatch]]');
+		}
+
+		// Category actors can only publish activities concerning objects in said category
+		const _cid = await posts.getCidByPid(id);
+		if (_cid !== cid) {
+			throw new Error('[[error:invalid-cid]]');
+		}
+	}
+
 	switch(true) {
 		case object.type === 'Like': {
 			const assertion = await activitypub.actors.assert(object.actor);
@@ -508,32 +542,7 @@ inbox.announce = async (req) => {
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			id = localId || id;
 
-			const exists = await posts.exists(id);
-			if (!exists) {
-				activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
-				break;
-			}
-
-			/**
-			 * Deletions must be made by:
-			 *   - an actor of the same origin as announcer (mod deletion), OR
-			 *   - an actor of the same origin as the object id (use case: self-deletion), OR
-			 *   - (TBD) an actor in the announcer's moderators list
-			 */
-			const announcerHostname = new URL(actor).hostname;
-			const actorHostname = new URL(object.actor).hostname;
-			const objectHostname = new URL(id).hostname;
-			const pass = (announcerHostname === actorHostname) || (actorHostname === objectHostname);
-			if (!pass) {
-				throw new Error('[[error:activitypub.origin-mismatch]]');
-			}
-
-			const _cid = await posts.getCidByPid(id);
-			if (!utils.isNumber(cid) && _cid !== cid) { // matching & remote categories only
-				throw new Error('[[error:invalid-cid]]');
-			}
-
-			const allowed = await privileges.categories.can('posts:edit', _cid, activitypub._constants.uid);
+			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
 			if (!allowed) {
 				throw new Error('[[error:no-privileges]]');
 			}
