@@ -442,8 +442,8 @@ usersAPI.getInviteGroups = async (caller, { uid }) => {
 
 usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
 	const isSelf = parseInt(caller.uid, 10) === parseInt(uid, 10);
-	const canEdit = await privileges.users.canEdit(caller.uid, uid);
-	if (skipConfirmation && canEdit && !isSelf) {
+	const canManage = await privileges.admin.can('admin:users', caller.uid);
+	if (skipConfirmation && canManage && !isSelf) {
 		if (!email.length) {
 			await user.email.remove(uid);
 		} else {
