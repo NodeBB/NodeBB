@@ -488,20 +488,6 @@ inbox.announce = async (req) => {
 			return;
 		}
 
-		/**
-		 * Activities must be made by:
-		 *   - an actor of the same origin as announcer (mod deletion, update etc.), OR
-		 *   - an actor of the same origin as the object id (use case: self-deletion/update), OR
-		 *   - (TBD) an actor in the announcer's moderators list
-		 */
-		const announcerHostname = new URL(actor).hostname;
-		const actorHostname = new URL(object.actor).hostname;
-		const objectHostname = new URL(id).hostname;
-		const pass = (announcerHostname === actorHostname) || (actorHostname === objectHostname);
-		if (!pass) {
-			throw new Error('[[error:activitypub.origin-mismatch]]');
-		}
-
 		// Category actors can only publish activities concerning objects in said category
 		const _cid = await posts.getCidByPid(id);
 		if (_cid !== cid) {
@@ -541,6 +527,20 @@ inbox.announce = async (req) => {
 			let id = object.object.id || object.object; // expecting object reference
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			id = localId || id;
+
+			/**
+			 * Deletions must be made by:
+			 *   - an actor of the same origin as announcer (mod deletion), OR
+			 *   - an actor of the same origin as the object id (use case: self-deletion), OR
+			 *   - (TBD) an actor in the announcer's moderators list
+			 */
+			const announcerHostname = new URL(actor).hostname;
+			const actorHostname = new URL(object.actor).hostname;
+			const objectHostname = new URL(id).hostname;
+			const pass = (announcerHostname === actorHostname) || (actorHostname === objectHostname);
+			if (!pass) {
+				throw new Error('[[error:activitypub.origin-mismatch]]');
+			}
 
 			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
 			if (!allowed) {
