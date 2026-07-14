@@ -228,9 +228,15 @@ inbox.update = async (req) => {
 			switch (true) {
 				case isNote: {
 					const cid = await posts.getCidByPid(object.id);
-					const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
+					const [allowed, isDeleted] = await Promise.all([
+						privileges.categories.can('posts:edit', cid, activitypub._constants.uid),
+						posts.getPostField(object.id, 'deleted'),
+					]);
 					if (!allowed) {
 						throw new Error('[[error:no-privileges]]');
+					}
+					if (isDeleted) { // fediverse users can't edit deleted posts
+						await api.posts.restore({ uid: actor }, { pid: object.id });
 					}
 
 					const postData = await activitypub.mocks.post(object);
@@ -242,10 +248,6 @@ inbox.update = async (req) => {
 						const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
 						await topics.setTopicField(tid, 'title', newTitle);
 						await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
-					}
-					const isDeleted = await posts.getPostField(object.id, 'deleted');
-					if (isDeleted) {
-						await api.posts.restore({ uid: actor }, { pid: object.id });
 					}
 					break;
 				}
