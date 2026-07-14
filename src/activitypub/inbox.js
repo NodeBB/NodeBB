@@ -548,7 +548,7 @@ inbox.announce = async (req) => {
 	// Protections for non-Creates
 	const createish = object.type === 'Create' || activitypub._constants.acceptedPostTypes.includes(object.type);
 	if (!createish) {
-		let id = object.object.id || object.object; // expecting object reference
+		let id = object?.object?.id || object.object; // expecting object reference
 		const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 		id = localId || id;
 
