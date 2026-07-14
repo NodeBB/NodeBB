@@ -10,6 +10,6 @@
 	"cookie-domain": "Session cookie 域名",
 	"max-user-sessions": "每个用户的最大活跃会话数",
 	"blank-default": "留空以保持默认",
-	"revoke-all-sessions": "Revoke All Sessions",
-	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
+	"revoke-all-sessions": "撤销所有会话",
+	"revoke-all-sessions-desc": "这将删除所有会话，您将被登出并需要重新登录！"
 }

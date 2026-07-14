@@ -35,9 +35,9 @@
 	"rules.filter.help": "如果勾选此选项，匹配的内容将在分类前先被发送到发帖队列进行审核。",
 	"rules.filter-warning": "您已设置了用于将文章加入队列的分类规则，但发帖队列目前处于禁用状态。符合这些规则的文章将立即发布。",
 	"rules.cid": "版块",
-	"rules.cutoff.title": "Age Cutoff",
-	"rules.cutoff.label": "Categorization age cutoff (days)",
-	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
+	"rules.cutoff.title": "截止寿命",
+	"rules.cutoff.label": "分类寿命分界线（天数）",
+	"rules.cutoff.help": "超过此天数的内容将不会通过规则进行分类。设置为 0 则禁用截止时间。(默认值：0）",
 
 	"relays": "中继服务",
 	"relays.intro": "中继服务能提升您 NodeBB 论坛内容的发现效率。订阅中继服务意味着：中继服务接收的内容将转发至此处，而本论坛发布的内容则由中继服务向外同步传播。",
