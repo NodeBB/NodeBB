@@ -6,7 +6,6 @@ const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
 const messaging = require('../messaging');
-const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -210,9 +209,7 @@ chatsAPI.mark = async (caller, data) => {
 	} else {
 		await messaging.markRead(caller.uid, roomId);
 		socketHelpers.emitToUids('event:chats.markedAsRead', { roomId: roomId }, [caller.uid]);
-		const nids = await user.notifications.getUnreadByField(caller.uid, 'roomId', [roomId]);
-		await notifications.markReadMultiple(nids, caller.uid);
-		user.notifications.pushCount(caller.uid);
+		await messaging.markRoomNotificationsRead(caller.uid, roomId);
 	}
 
 	socketHelpers.emitToUids('event:chats.mark', { roomId, state }, [caller.uid]);
