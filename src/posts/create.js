@@ -82,6 +82,11 @@ module.exports = function (Posts) {
 		if (!postData.toPid) {
 			return;
 		}
+		const exists = await Posts.exists(postData.toPid);
+		if (!exists) {
+			return;
+		}
+
 		await Promise.all([
 			db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
 			db.incrObjectField(`post:${postData.toPid}`, 'replies'),
