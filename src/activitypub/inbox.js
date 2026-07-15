@@ -563,7 +563,7 @@ inbox.announce = async (req) => {
 		// Category actors can only publish activities concerning objects in said category
 		const _cid = await posts.getCidByPid(id);
 		if (_cid !== cid) {
-			throw new Error('[[error:invalid-cid]]');
+			return;
 		}
 	}
 
