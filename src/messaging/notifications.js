@@ -1,7 +1,6 @@
 'use strict';
 
 const winston = require('winston');
-const _ = require('lodash');
 
 const batch = require('../batch');
 const db = require('../database');
@@ -31,16 +30,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markRoomNotificationsRead = async (uid, roomId) => {
-		const [scannedNids, fieldNids] = await Promise.all([
-			db.getSortedSetScan({
-				key: `uid:${uid}:notifications:unread`,
-				match: `chat_${roomId}_*`,
-			}),
-			// covers notifications that reference the room but use a different
-			// nid format (e.g. those created by plugins)
-			user.notifications.getUnreadByField(uid, 'roomId', [roomId]),
-		]);
-		const chatNids = _.uniq(scannedNids.concat(fieldNids));
+		const chatNids = await user.notifications.getUnreadByField(uid, 'roomId', [roomId]);
 		if (chatNids.length) {
 			await notifications.markReadMultiple(chatNids, uid);
 			await user.notifications.pushCount(uid);
