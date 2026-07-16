@@ -111,7 +111,7 @@
 							</div>
 							<div class="text-sm lh-1">
 								{{{ if posts.user.userslug}}}
-								<a class="text-decoration-none d-flex align-items-center gap-1" href="{config.relative_path}/uid/{posts.user.uid}">{{buildAvatar(posts.user, "24px", true, "not-responsive")}} {posts.user.username}</a>
+								<a class="text-decoration-none d-flex align-items-center gap-1" href="{config.relative_path}/uid/{encodeURIComponent(posts.user.uid)}">{{buildAvatar(posts.user, "24px", true, "not-responsive")}} {posts.user.username}</a>
 								{{{ else }}}
 								{posts.user.username}
 								{{{ end }}}
