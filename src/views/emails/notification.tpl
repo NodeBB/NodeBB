@@ -38,7 +38,7 @@
 										<span style="color:#ffffff;" class="button-link">
 											{{{ if notification.cta-type }}}
 											{{tx(concat("email:notif.cta-", notification.cta-type))}}
-											{{ else }}
+											{{{ else }}}
 											{{tx("email:notif.cta")}}
 											{{{ end }}}
 											&rarr;
