@@ -83,14 +83,6 @@
 	"create.password": "Passord",
 	"create.password-confirm": "Bekreft passord",
 
-	"temp-ban.length": "Lengde",
-	"temp-ban.reason": "Årsak <span class=\"text-muted\">(Valgfritt)</span>",
-	"temp-ban.select-reason": "Velg en begrunnelse",
-	"temp-ban.hours": "Timer",
-	"temp-ban.days": "Dager",
-	"temp-ban.explanation": "Angi varigheten for utestengningen. Merk at en varighet på 0 vil bli betraktet som en permanent utestengning.",
-	"temp-mute.explanation": "Skriv inn hvor lenge dempingen skal vare. Merk at en varighet på 0 blir regnet som permanent demping.",
-
 	"alerts.confirm-ban": "Vil du virkelig utestenge denne brukeren <strong>permanent</strong>?",
 	"alerts.confirm-ban-multi": "Vil du virkelig utestenge disse brukerne <strong>permanent</strong>?",
 	"alerts.ban-success": "Bruker(e) utestengt!",
