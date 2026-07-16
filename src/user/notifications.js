@@ -134,10 +134,8 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	await deleteUserNids(deletedNids, uid);
 	notificationData = await notifications.merge(notificationData);
 	await Promise.all(notificationData.map(async (n) => {
-		if (n) {
-			if (n.bodyShort) {
-				n.bodyShort = await tx.translateKey(n.bodyShort, [], userSettings.userLang);
-			}
+		if (n?.bodyShort) {
+			n.bodyShort = await tx.translate(n.bodyShort, userSettings.userLang);
 		}
 	}));
 
