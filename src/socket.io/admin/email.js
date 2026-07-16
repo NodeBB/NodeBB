@@ -59,7 +59,7 @@ Email.test = async function (socket, data) {
 					path: notification.path,
 					subject: utils.stripHTMLTags(notification.subject || '[[notifications:new-notification]]'),
 					intro: utils.stripHTMLTags(notification.bodyShort),
-					body: tx.translate(notification.bodyLong || ''),
+					body: await tx.translate(notification.bodyLong || ''),
 					notification,
 					showUnsubscribe: true,
 				});
