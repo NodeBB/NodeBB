@@ -775,7 +775,7 @@ describe('Notes', () => {
 			// Create a local target category
 			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
 			// Add a hashtag-type auto-categorization rule with filter (queue) enabled
-			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, true);
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, 1);
 			meta.config.postQueue = 1;
 		});
 
@@ -834,7 +834,7 @@ describe('Notes', () => {
 			// Create a local target category
 			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
 			// Add a hashtag-type auto-categorization rule with filter (queue=true)
-			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, true);
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, 1);
 			meta.config.postQueue = 1;
 		});
 
