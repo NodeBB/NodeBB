@@ -21,7 +21,7 @@ tx.translateKeys([
 export async function dialog(opts) {
 	const [title, message, buttons] = await Promise.all([
 		tx.translate(opts.title || ''),
-		tx.translate(opts.message || ''),
+		normalizeMessage(opts) || '',
 		translateButtons(opts.buttons),
 	]);
 
@@ -37,7 +37,7 @@ export async function dialog(opts) {
 export async function alert(opts, callback) {
 	const [title, message] = await Promise.all([
 		opts && opts.title ? tx.translate(opts.title) : null,
-		tx.translate(typeof opts === 'string' ? opts : opts.message),
+		normalizeMessage(opts),
 	]);
 	callback = typeof callback === 'function' ? callback : opts.callback;
 
@@ -47,7 +47,7 @@ export async function alert(opts, callback) {
 export async function confirm(opts, callback) {
 	const [title, message] = await Promise.all([
 		opts && opts.title ? tx.translate(opts.title) : null,
-		tx.translate(typeof opts === 'string' ? opts : opts.message),
+		normalizeMessage(opts),
 	]);
 	callback = typeof callback === 'function' ? callback : opts.callback;
 
@@ -57,11 +57,20 @@ export async function confirm(opts, callback) {
 export async function prompt(opts, callback) {
 	const [title, message] = await Promise.all([
 		tx.translate(typeof opts === 'string' ? opts : opts.title),
-		opts && opts.message ? tx.translate(opts.message) : null,
+		opts && opts.message ? normalizeMessage(opts) : null,
 	]);
 	callback = typeof callback === 'function' ? callback : opts.callback;
 
 	return bootbox.prompt({ ...opts, title, message, callback });
+}
+
+function normalizeMessage(opts) {
+	const msg = opts && opts.message ? opts.message : opts;
+	if (msg instanceof jQuery) {
+		// should be translated already via benchpress.render or translator.translate
+		return msg;
+	}
+	return tx.translate(msg || '');
 }
 
 async function translateButtons(buttons) {
