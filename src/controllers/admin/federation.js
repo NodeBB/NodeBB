@@ -22,13 +22,13 @@ federationController.content = function (req, res) {
 federationController.rules = async function (req, res) {
 	const rules = await activitypub.rules.list();
 	const postQueueEnabled = !!(await meta.configs.get('postQueue'));
-	const hasFilterRules = rules.some(rule => rule.filter === 'true');
+	const hasFilterOrRejectRules = rules.some(rule => rule.action >= 1);
 
 	res.render(`admin/federation/rules`, {
 		title: '[[admin/menu:federation/rules]]',
 		rules,
 		postQueueEnabled,
-		hasFilterRules,
+		hasFilterOrRejectRules,
 	});
 };
 

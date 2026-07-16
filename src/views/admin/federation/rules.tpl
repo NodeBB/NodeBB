@@ -6,7 +6,7 @@
 			<div id="rules" class="mb-4">
 				<p class="lead">{{tx("admin/settings/activitypub:rules-intro")}}</p>
 
-				{{{ if (hasFilterRules && !postQueueEnabled) }}}
+				{{{ if (hasFilterOrRejectRules && !postQueueEnabled) }}}
 				<div class="alert alert-warning">{{tx("admin/settings/activitypub:rules.filter-warning")}}</div>
 				{{{ end }}}
 
@@ -29,7 +29,7 @@
 							<th></th>
 							<th>{{tx("admin/settings/activitypub:rules.type")}}</th>
 							<th>{{tx("admin/settings/activitypub:rules.value")}}</th>
-							<th>{{tx("admin/settings/activitypub:rules.filter")}}</th>
+							<th>{{tx("admin/settings/activitypub:rules.action")}}</th>
 							<th>{{tx("admin/settings/activitypub:rules.cid")}}</th>
 							<th></th>
 						</thead>
@@ -41,7 +41,13 @@
 								</td>
 								<td>{./type}</td>
 								<td>{./value}</td>
-								<td>{{{ if ./filter }}}✓{{{ else }}}✗{{{ end }}}</td>
+								<td>
+									{{{ if (./action == "2") }}}[[admin/settings/activitypub:rules.reject]]{{{ else }}}
+										{{{ if (./action == "1") }}}[[admin/settings/activitypub:rules.filter]]{{{ else }}}
+										[[admin/settings/activitypub:rules.categorize]]
+										{{{ end }}}
+									{{{ end }}}
+								</td>
 								<td>{./cid}</td>
 								<td><a href="#" data-action="rules.delete"><i class="fa fa-trash link-danger"></i></a></td>
 							</tr>

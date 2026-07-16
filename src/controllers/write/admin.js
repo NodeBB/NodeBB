@@ -89,7 +89,7 @@ Admin.listGroups = async (req, res) => {
 Admin.activitypub = {};
 
 Admin.activitypub.addRule = async (req, res) => {
-	let { type, value, cid, filter } = req.body;
+	let { type, value, cid, action } = req.body;
 
 	let exists = true;
 	const parsedCid = parseInt(cid, 10);
@@ -104,7 +104,7 @@ Admin.activitypub.addRule = async (req, res) => {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await activitypub.rules.upsert(type, value, cid, filter === 'true');
+	await activitypub.rules.upsert(type, value, cid, action);
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 

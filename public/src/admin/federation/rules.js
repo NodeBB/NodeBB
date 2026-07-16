@@ -74,6 +74,7 @@ function throwModal() {
 			}
 
 			const payload = Object.fromEntries(new FormData(formEl));
+			payload.action = parseInt(payload.action, 10);
 			post('/admin/activitypub/rules', payload).then(async (data) => {
 				const html = await render('admin/federation/rules', { rules: data }, 'rules');
 				const tbodyEl = document.querySelector('#rules tbody');
@@ -101,6 +102,19 @@ function throwModal() {
 			modal.find('#value').focus();
 		});
 
+		// live update action label
+		const actionEl = modal.get(0).querySelector('#action');
+		const labelsEl = modal.get(0).querySelector('#action-labels');
+		if (actionEl && labelsEl) {
+			const labels = labelsEl.querySelectorAll('span');
+			const updateActionLabel = () => {
+				labels.forEach((l, i) => {
+					l.style.fontWeight = i === parseInt(actionEl.value, 10) ? 'bold' : 'normal';
+				});
+			};
+			updateActionLabel();
+			actionEl.addEventListener('input', updateActionLabel);
+		}
 
 		// help text
 		const updateHelp = async (key, el) => {

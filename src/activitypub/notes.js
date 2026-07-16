@@ -193,14 +193,18 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			}
 
 			// Auto-categorization (takes place only if all other categorization efforts fail)
-			const { cid, filter: ruleFilter } = await assignCategory(mainPost);
-			options.queue = ruleFilter;
+			const { cid, action: ruleAction } = await assignCategory(mainPost);
+			if (ruleAction === 2) {
+				activitypub.helpers.log(`[activitypub/notes.assert] Rule rejected post (${mainPid})`);
+				return null;
+			}
+			options.queue = ruleAction === 1;
 			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
 				crosspostCid = false;
 			}
-			// filter is used below to decide whether to queue or add the crosspost
+			// action is used below to decide whether to queue or add the crosspost
 
 			// mainPid ok to leave as-is
 			if (!title) {
@@ -588,28 +592,28 @@ async function assignCategory(post) {
 	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
 	tags = tags.map(tag => tag.toLowerCase());
 
-	const matched = rules.reduce((matched, { type, value, cid: target, filter: ruleFilter }) => {
+	const matched = rules.reduce((matched, { type, value, cid: target, action: ruleAction }) => {
 		if (!matched.cid) {
 			switch (type) {
 				case 'hashtag': {
 					if (tags.includes(value.toLowerCase())) {
-						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}`);
-						return { cid: target, filter: ruleFilter };
+						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}, action: ${ruleAction}`);
+						return { cid: target, action: ruleAction };
 					}
 					break;
 				}
 
 				case 'user': {
 					if (post.uid === value) {
-						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}`);
-						return { cid: target, filter: ruleFilter };
+						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}, action: ${ruleAction}`);
+						return { cid: target, action: ruleAction };
 					}
 				}
 			}
 		}
 
 		return matched;
-	}, { cid: undefined, filter: false });
+	}, { cid: undefined, action: 0 });
 
 	return matched;
 }
