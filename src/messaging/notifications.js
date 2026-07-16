@@ -30,10 +30,7 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.markRoomNotificationsRead = async (uid, roomId) => {
-		const chatNids = await db.getSortedSetScan({
-			key: `uid:${uid}:notifications:unread`,
-			match: `chat_${roomId}_*`,
-		});
+		const chatNids = await user.notifications.getUnreadByField(uid, 'roomId', [roomId]);
 		if (chatNids.length) {
 			await notifications.markReadMultiple(chatNids, uid);
 			await user.notifications.pushCount(uid);
