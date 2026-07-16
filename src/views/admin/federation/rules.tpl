@@ -11,13 +11,13 @@
 				{{{ end }}}
 
 				<div id="cutoff" class="mb-4">
-					<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/activitypub:rules.cutoff.title]]</h5>
+					<h5 class="fw-bold tracking-tight settings-header">{{tx("admin/settings/activitypub:rules.cutoff.title")}}</h5>
 					<form>
 						<div class="mb-3">
-							<label class="form-label" for="activitypubRulesCutoffDays">[[admin/settings/activitypub:rules.cutoff.label]]</label>
+							<label class="form-label" for="activitypubRulesCutoffDays">{{tx("admin/settings/activitypub:rules.cutoff.label")}}</label>
 							<input type="number" id="activitypubRulesCutoffDays" name="activitypubRulesCutoffDays" data-field="activitypubRulesCutoffDays" title="[[admin/settings/activitypub:rules.cutoff.label]]" class="form-control" value="{activitypubRulesCutoffDays}" min="0" />
 							<div class="form-text">
-								[[admin/settings/activitypub:rules.cutoff.help]]
+								{{tx("admin/settings/activitypub:rules.cutoff.help")}}
 							</div>
 						</div>
 					</form>
@@ -42,9 +42,9 @@
 								<td>{./type}</td>
 								<td>{./value}</td>
 								<td>
-									{{{ if (./action == "2") }}}[[admin/settings/activitypub:rules.reject]]{{{ else }}}
-										{{{ if (./action == "1") }}}[[admin/settings/activitypub:rules.filter]]{{{ else }}}
-										[[admin/settings/activitypub:rules.categorize]]
+									{{{ if (./action == "2") }}}{{tx("admin/settings/activitypub:rules.reject")}}{{{ else }}}
+										{{{ if (./action == "1") }}}{{tx("admin/settings/activitypub:rules.filter")}}{{{ else }}}
+										{{tx("admin/settings/activitypub:rules.categorize")}}
 										{{{ end }}}
 									{{{ end }}}
 								</td>
