@@ -83,14 +83,6 @@
 	"create.password": "Mật khẩu",
 	"create.password-confirm": "Xác Nhận Mật Khẩu",
 
-	"temp-ban.length": "Dài",
-	"temp-ban.reason": "Lý do <span class=\"text-muted\">(Không bắt buộc)</span>",
-	"temp-ban.select-reason": "Chọn lý do",
-	"temp-ban.hours": "Giờ",
-	"temp-ban.days": "Ngày",
-	"temp-ban.explanation": "Nhập khoảng thời gian cho lệnh cấm. Lưu ý rằng thời gian bằng 0 sẽ là một lệnh cấm vĩnh viễn.",
-	"temp-mute.explanation": "Nhập khoảng thời gian tắt tiếng. Lưu ý rằng thời gian 0 sẽ được coi là tắt tiếng vĩnh viễn.",
-
 	"alerts.confirm-ban": "Bạn có chắc muốn cấm người dùng này <strong>mãi mãi</strong>?",
 	"alerts.confirm-ban-multi": "Bạn có chắc muốn cấm những người dùng này <strong>mãi mãi</strong>?",
 	"alerts.ban-success": "Đã cấm người dùng!",

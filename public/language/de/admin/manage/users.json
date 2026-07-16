@@ -83,14 +83,6 @@
 	"create.password": "Passwort",
 	"create.password-confirm": "Passwort bestätigen",
 
-	"temp-ban.length": "Länge",
-	"temp-ban.reason": "Grund <span class=\"text-muted\">(optional)</span>",
-	"temp-ban.select-reason": "Wähle einen Grund aus",
-	"temp-ban.hours": "Stunden",
-	"temp-ban.days": "Tage",
-	"temp-ban.explanation": "Geben die dauer des Bans an. Beachte, dass eine Zeit von 0 als permanent interpretiert wird.",
-	"temp-mute.explanation": "Gebe die Dauer der Stummschaltung ein. Beachte, dass eine Zeit von 0 als permanente Stummschaltung angesehen wird.",
-
 	"alerts.confirm-ban": "Möchtest Du diesen Nutzer wirklich <strong>permanent</strong> bannen?",
 	"alerts.confirm-ban-multi": "Möchtest Du diese Nutzer wirklich <strong>permanent</strong> bannen?",
 	"alerts.ban-success": "Benutzer gebannt!",

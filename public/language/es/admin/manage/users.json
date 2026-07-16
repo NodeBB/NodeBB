@@ -83,14 +83,6 @@
 	"create.password": "Contraseña",
 	"create.password-confirm": "Confirmar Contraseña",
 
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Razón <span class=\"text-muted\">(Opcional)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Horas",
-	"temp-ban.days": "Días",
-	"temp-ban.explanation": "Introduzca la duración de esta expulsión. Ten en cuenta que 0 se considera una expulsión permanente.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
-
 	"alerts.confirm-ban": "¿Quiere realmente expulsar a este usuario <strong>permanentemente</strong>?",
 	"alerts.confirm-ban-multi": "¿Quiere realmente expulsar a estos usuarios <strong>permanentemente</strong>?",
 	"alerts.ban-success": "¡Usuario(s) expulsado(s)!",

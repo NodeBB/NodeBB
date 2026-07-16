@@ -83,14 +83,6 @@
 	"create.password": "စကားဝှက်",
 	"create.password-confirm": "စကားဝှက် အတည်ပြုရန်",
 
-	"temp-ban.length": "ပိတ်ပင်ကာလ",
-	"temp-ban.reason": "အကြောင်းပြချက်",
-	"temp-ban.select-reason": "အကြောင်းပြချက် ရွေးပါ",
-	"temp-ban.hours": "နာရီ",
-	"temp-ban.days": "ရက်",
-	"temp-ban.explanation": "ရှင်းလင်းချက်",
-	"temp-mute.explanation": "အသံပိတ် ရှင်းလင်းချက်",
-
 	"alerts.confirm-ban": "ဤသုံးစွဲသူကို ပိတ်ပင်ရန် သေချာပါသလား။",
 	"alerts.confirm-ban-multi": "ရွေးချယ်ထားသော သုံးစွဲသူများကို ပိတ်ပင်ရန် သေချာပါသလား။",
 	"alerts.ban-success": "သုံးစွဲသူကို ပိတ်ပင်လိုက်ပါပြီ။",

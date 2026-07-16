@@ -83,14 +83,6 @@
 	"create.password": "Passord",
 	"create.password-confirm": "Stadfest passord",
 
-	"temp-ban.length": "Lengd på utestenging",
-	"temp-ban.reason": "Årsak til utestenging",
-	"temp-ban.select-reason": "Vel ei grunngiving",
-	"temp-ban.hours": "Timar",
-	"temp-ban.days": "Dagar",
-	"temp-ban.explanation": "Forklaring på utestenging",
-	"temp-mute.explanation": "Skriv inn kor lenge dempinga skal vare. Merk at ei varigheit på 0 blir rekna som permanent demping.",
-
 	"alerts.confirm-ban": "Er du sikker på at du vil utestenge denne brukaren?",
 	"alerts.confirm-ban-multi": "Er du sikker på at du vil utestenge dei valde brukarane?",
 	"alerts.ban-success": "Brukaren vart utestengd med suksess",
