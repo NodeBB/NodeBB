@@ -10,6 +10,7 @@ const notifications = require('../../notifications');
 const emailer = require('../../emailer');
 const utils = require('../../utils');
 const user = require('../../user');
+const tx = require('../../translator');
 
 const Email = module.exports;
 
@@ -58,7 +59,7 @@ Email.test = async function (socket, data) {
 					path: notification.path,
 					subject: utils.stripHTMLTags(notification.subject || '[[notifications:new-notification]]'),
 					intro: utils.stripHTMLTags(notification.bodyShort),
-					body: notification.bodyLong || '',
+					body: tx.translate(notification.bodyLong || ''),
 					notification,
 					showUnsubscribe: true,
 				});

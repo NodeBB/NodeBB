@@ -23,7 +23,7 @@
 							{{{ if (notification.type == "post-queue") }}}
 							<!-- IMPORT emails/partials/post-queue-body.tpl -->
 							{{{ else }}}
-							{{txEscape(body)}}
+							{{body}}
 							{{{ end }}}
 						</p>
 					</td>
