@@ -24,9 +24,14 @@
 		</div>
 		<input type="hidden" name="cid" />
 	</div>
-	<div class="mb-3 form-check">
-		<input type="checkbox" class="form-check-input" name="filter" id="filter" value="true" />
-		<label class="form-check-label" for="filter">{{tx("admin/settings/activitypub:rules.filter")}}</label>
-		<p class="form-text">{{tx("admin/settings/activitypub:rules.filter.help")}}</p>
+	<div class="mb-3">
+		<label class="form-label" for="action">{{tx("admin/settings/activitypub:rules.action")}}</label>
+		<input type="range" class="form-range" name="action" id="action" min="0" max="2" value="0" />
+		<div class="d-flex justify-content-between form-text" id="action-labels">
+			<span>{{tx("admin/settings/activitypub:rules.categorize")}}</span>
+			<span>{{tx("admin/settings/activitypub:rules.filter")}}</span>
+			<span>{{tx("admin/settings/activitypub:rules.reject")}}</span>
+		</div>
+		<p class="form-text">{{tx("admin/settings/activitypub:rules.action.help")}}</p>
 	</div>
 </form>
