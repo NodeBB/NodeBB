@@ -35,9 +35,9 @@
 	"rules.filter.help": "Nếu được chọn, nội dung phù hợp sẽ được chuyển đến hàng đợi bài đăng để xem xét trước khi được phân loại.",
 	"rules.filter-warning": "Bạn đã thiết lập các quy tắc phân loại để xếp hàng bài viết, nhưng hàng đợi bài viết hiện đang bị vô hiệu hóa. Các bài viết phù hợp với các quy tắc này sẽ được xuất bản ngay lập tức.",
 	"rules.cid": "Danh mục",
-	"rules.cutoff.title": "Age Cutoff",
-	"rules.cutoff.label": "Categorization age cutoff (days)",
-	"rules.cutoff.help": "Content older than this number of days will not be categorized via rules. Set to 0 to disable the cutoff. (Default: 0)",
+	"rules.cutoff.title": "Giới Hạn Độ Tuổi",
+	"rules.cutoff.label": "Giới hạn độ tuổi phân loại (ngày)",
+	"rules.cutoff.help": "Nội dung cũ hơn số ngày này sẽ không được phân loại theo quy tắc. Đặt thành 0 để tắt giới hạn này. (Mặc định: 0)",
 
 	"relays": "Chuyển tiếp",
 	"relays.intro": "Một chuyển tiếp cải thiện khám phá nội dung đến và từ nodeBB của bạn. Đăng ký một chuyển tiếp có nghĩa là nội dung nhận được bởi chuyển tiếp được chuyển tiếp ở đây và nội dung được đăng ở đây được cung cấp bên ngoài bởi chuyển tiếp.",
