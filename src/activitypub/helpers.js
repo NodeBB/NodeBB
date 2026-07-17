@@ -19,7 +19,8 @@ const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
 
-const webfingerRegex = /^(@|acct:)?[\w-.]+@.+$/;
+// \w only matches ASCII, so match unicode letters/numbers/marks explicitly to support non-ASCII handles
+const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
 const webfingerCache = ttl({
 	name: 'ap-webfinger-cache',
 	max: 5000,
