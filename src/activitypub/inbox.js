@@ -548,7 +548,9 @@ inbox.announce = async (req) => {
 	const fromRelay = await activitypub.relays.is(actor);
 
 	// Protections for non-Creates from category actors
-	const createish = object.type === 'Create' || activitypub._constants.acceptedPostTypes.includes(object.type);
+	const createish =
+		!object.type || object.type === 'Create' ||
+		activitypub._constants.acceptedPostTypes.includes(object.type);
 	if (!createish && cid) {
 		let id = object?.object?.id || object.object; // expecting object reference
 		const { id: localId } = await activitypub.helpers.resolveLocalId(id);
