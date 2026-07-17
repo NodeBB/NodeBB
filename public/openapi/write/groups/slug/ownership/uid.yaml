@@ -10,14 +10,14 @@ put:
         type: string
       required: true
       description: slug of the group you would like to grant ownership
-      example: test-group
+      example: ownership-only
     - in: path
       name: uid
       schema:
         type: number
       required: true
       description: uid of the user to grant ownership
-      example: 2
+      example: 11
   responses:
     '200':
       description: ownership successfully granted
@@ -43,14 +43,14 @@ delete:
         type: string
       required: true
       description: slug of the group you would like to rescind ownership
-      example: test-group
+      example: ownership-only
     - in: path
       name: uid
       schema:
         type: number
       required: true
       description: uid of the user to rescind ownership from
-      example: 2
+      example: 11
   responses:
     '200':
       description: ownership successfully rescinded
