@@ -217,6 +217,11 @@ async function setupData() {
 	await groups.create({
 		name: 'Test Group',
 	});
+	await Promise.all([
+		groups.join('Test Group', unprivUid),
+		groups.join('Test Group', emailConfirmationUid),
+	]);
+	await groups.ownership.grant(emailConfirmationUid, 'Test Group');
 
 	// Create private groups for pending/invitations
 	const [pending1, pending2, inviteUid] = await Promise.all([

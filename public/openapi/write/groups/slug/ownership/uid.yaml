@@ -17,7 +17,7 @@ put:
         type: number
       required: true
       description: uid of the user to grant ownership
-      example: 1
+      example: 2
   responses:
     '200':
       description: ownership successfully granted
