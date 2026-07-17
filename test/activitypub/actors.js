@@ -783,6 +783,20 @@ describe('Pruning', () => {
 			assert.strictEqual(result.counts.preserved, this.current.counts.preserved + 1);
 			assert.strictEqual(result.counts.missing, 0);
 		});
+
+		it('should not purge a banned user even if they have no content', async () => {
+			const { id: uid } = helpers.mocks.person();
+			await activitypub.actors.assert([uid]);
+			await user.bans.ban(uid);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert(result.preserved.has(uid));
+
+			await user.bans.unban(uid);
+			await user.deleteAccount(uid);
+		});
 	});
 
 	describe('Categories', () => {

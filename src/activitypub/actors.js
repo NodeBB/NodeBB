@@ -645,17 +645,18 @@ Actors.prune = async () => {
 		cids = Array.from(cids);
 
 		// Remote users
-		const [postCounts, roomCounts, followCounts] = await Promise.all([
+		const [postCounts, roomCounts, followCounts, isBanned] = await Promise.all([
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
 			Actors.getLocalFollowCounts(uids),
+			user.bans.isBanned(uids),
 		]);
 
 		await Promise.all(uids.map(async (uid, idx) => {
 			const { followers, following } = followCounts[idx];
 			const postCount = postCounts[idx];
 			const roomCount = roomCounts[idx];
-			if ([postCount, roomCount, followers, following].every(metric => metric < 1)) {
+			if (!isBanned[idx] && [postCount, roomCount, followers, following].every(metric => metric < 1)) {
 				try {
 					await user.deleteAccount(uid);
 					deletionCount += 1;
