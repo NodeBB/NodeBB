@@ -275,6 +275,9 @@ function configureBodyParser(app) {
 			'application/activity+json',
 		],
 		limit: '1mb',
+		verify: (req, res, buf) => {
+			req.rawBody = buf;
+		},
 		...nconf.get('bodyParser:json'),
 	};
 	app.use(bodyParser.json(jsonOpts));

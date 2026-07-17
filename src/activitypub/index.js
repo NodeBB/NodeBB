@@ -343,7 +343,7 @@ ActivityPub.verify = async (req) => {
 		// Verify Digest header matches request body
 		if (headers.includes('digest')) {
 			const receivedDigest = req.headers.digest;
-			const bodyData = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 			const bodyDigest = `SHA-256=${createHash('sha256').update(bodyData).digest('base64')}`;
 			if (receivedDigest !== bodyDigest) {
 				ActivityPub.helpers.log('[activitypub/verify]   Failed, digest mismatch.');
