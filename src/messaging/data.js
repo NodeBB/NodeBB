@@ -7,6 +7,7 @@ const user = require('../user');
 const posts = require('../posts');
 const utils = require('../utils');
 const plugins = require('../plugins');
+const tx = require('../translator');
 
 const intFields = ['mid', 'timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
@@ -135,8 +136,11 @@ module.exports = function (Messaging) {
 		const canView = await Messaging.canViewMessage(parentMids, roomId, uid);
 		parentMids = parentMids.filter((mid, idx) => canView[idx]);
 
-		const parentMessages = await Messaging.getMessagesFields(parentMids, [
-			'mid', 'fromuid', 'content', 'timestamp', 'deleted',
+		const [parentMessages, { userLang }] = await Promise.all([
+			Messaging.getMessagesFields(parentMids, [
+				'mid', 'fromuid', 'content', 'timestamp', 'deleted',
+			]),
+			user.getSettings(uid),
 		]);
 		const parentUids = _.uniq(parentMessages.map(msg => msg && msg.fromuid));
 		const usersMap = _.zipObject(
@@ -155,7 +159,7 @@ module.exports = function (Messaging) {
 				parentMsg.content = foundMsg.content;
 				return;
 			}
-			parentMsg.content = await parseMessage(parentMsg, uid, roomId, false);
+			parentMsg.content = await parseMessage(parentMsg, uid, roomId, false, userLang);
 		}));
 
 		const parents = {};
@@ -175,18 +179,19 @@ module.exports = function (Messaging) {
 	}
 
 	async function parseMessages(messages, uid, roomId, isNew) {
+		const { userLang } = await user.getSettings(uid);
 		await Promise.all(messages.map(async (msg) => {
 			if (msg.deleted && !msg.isOwner) {
 				msg.content = `[[modules:chat.message-deleted]]`;
 				msg.txContent = true;
 				return;
 			}
-			msg.content = await parseMessage(msg, uid, roomId, isNew);
+			msg.content = await parseMessage(msg, uid, roomId, isNew, userLang);
 		}));
 	}
-	async function parseMessage(message, uid, roomId, isNew) {
+	async function parseMessage(message, uid, roomId, isNew, userLang) {
 		if (message.system) {
-			return message.content;
+			return await tx.translate(message.content, userLang);
 		} else if (!utils.isNumber(message.mid)) {
 			return posts.sanitize(message.content);
 		}
