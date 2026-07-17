@@ -219,13 +219,11 @@ async function setupData() {
 	});
 
 	// Create users for pending/invitations/ownership
-	const [pending1, pending2, inviteUid, owner1Uid, owner2Uid] = await Promise.all([
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-	]);
+	const pending1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const pending2 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const inviteUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const owner1Uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const owner2Uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
 	mocks.put['/groups/{slug}/pending/{uid}'][1].example = pending1;
 	mocks.delete['/groups/{slug}/pending/{uid}'][1].example = pending2;
 	mocks.delete['/groups/{slug}/invites/{uid}'][1].example = inviteUid;
