@@ -23,11 +23,11 @@
     "categories": "Categorie",
     "tags": "Tag",
     "no-users-found": "Nessun utente trovato!",
-    "temp-ban.length": "Length",
-    "temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-    "temp-ban.select-reason": "Select a reason",
-    "temp-ban.hours": "Hours",
-    "temp-ban.days": "Days",
-    "temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
-    "temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute."
+    "temp-ban.length": "Durata",
+    "temp-ban.reason": "Motivo <span class=\"text-muted\">(Opzionale)</span>",
+    "temp-ban.select-reason": "Seleziona un motivo",
+    "temp-ban.hours": "Ore",
+    "temp-ban.days": "Giorni",
+    "temp-ban.explanation": "Inserisci la durata del ban. Tieni presente che un valore pari a 0 sarà considerato come un ban permanente.",
+    "temp-mute.explanation": "Inserisci la durata del silenziamento. Tieni presente che un valore pari a 0 sarà considerato come un silenziamento permanente."
 }

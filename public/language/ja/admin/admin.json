@@ -1,15 +1,15 @@
 {
 	"alert.confirm-rebuild-and-restart": "NodeBBを再構築して再起動してもよろしいですか？",
 	"alert.confirm-restart": "NodeBBを本当に再起動しますか？",
-	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
-	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
-	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
-	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.title": "再構築中... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBBはフロントエンドのアセット（CSS、JavaScriptなど）を再構築しています。",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> 成功",
+	"rebuilding.success.message": "NodeBBの再構築と再起動が正常に完了しました。",
+	"build.complete": "ビルド完了！... <i class=\"fa fa-spin fa-refresh\"></i>",
 
-	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"restarting.message": "NodeBB is restarting.",
-	"restarting.success.message": "NodeBB has restarted successfully.",
+	"restarting.title": "再起動中... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBBを再起動しています。",
+	"restarting.success.message": "NodeBBの再起動が正常に完了しました。",
 
 
 	"acp-title": "%1| NodeBB管理画面",
