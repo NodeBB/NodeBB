@@ -115,7 +115,6 @@ define('forum/topic/diffs', [
 		}
 
 		return await Benchpress.render('modals/post-history', ...params);
-
 	}
 
 	return Diffs;
