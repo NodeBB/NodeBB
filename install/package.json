@@ -29,7 +29,7 @@
     },
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
-        "@fontsource-utils/scss": "0.2.2",
+        "@fontsource-utils/scss": "0.2.3",
         "@fontsource/inter": "5.2.8",
         "@fontsource/poppins": "5.2.7",
         "@fortawesome/fontawesome-free": "7.3.1",
