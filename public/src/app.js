@@ -327,18 +327,13 @@ if (document.readyState === 'loading') {
 			blockName = undefined;
 		}
 
-		return new Promise((resolve, reject) => {
-			require(['benchpress'], function (Benchpress) {
-				Benchpress.render(template, data, blockName)
-					.then(resolve, reject);
-			});
-		}).then((html) => {
+		return Benchpress.render(template, data, blockName).then((html) => {
 			try {
 				html = $(html);
 			} catch (err) {
 				// handle cases where the template parsed has multiple elements at the root level
 				// this breaks the jquery selector so we wrap it in a div
-				if (err.startsWith('Syntax error, unrecognized expression')) {
+				if (err.message.startsWith('Syntax error, unrecognized expression')) {
 					html = $(`<div>${html}</div>`);
 				} else {
 					throw err;

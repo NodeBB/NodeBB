@@ -16,8 +16,10 @@
 	<div class="tab-content">
 		<div class="tab-pane fade show active" role="tabpanel" id="skins-tab">
 			<div class="skins px-2">
-				<div class="directory row text-center" id="bootstrap_themes">
-					<i class="fa fa-refresh fa-spin"></i> {{tx("admin/appearance/skins:loading")}}
+				<div class="directory row" id="bootstrap_themes">
+					<div class="col-12 text-center p-3">
+						<i class="fa fa-refresh fa-spin"></i> {{tx("admin/appearance/skins:loading")}}
+					</div>
 				</div>
 			</div>
 		</div>
