@@ -86,7 +86,7 @@ jobs:
       - run: cp install/package.json package.json
 
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
 
