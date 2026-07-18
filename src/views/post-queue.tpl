@@ -173,11 +173,11 @@
 								{{{ end }}}
 							</div>
 
-							<div class="topic-category">
+							<div class="topic-category" data-cid="{posts.category.cid}">
 								<a href="{config.relative_path}/category/{posts.category.slug}">
 									<div class="category-item d-inline-block">
 										{{buildCategoryIcon(./category, "24px", "rounded-circle")}}
-										<span class="text-sm">{posts.category.name}</span>
+										<span class="text-sm category-text">{posts.category.name}</span>
 									</div>
 								</a>
 							</div>
@@ -192,11 +192,11 @@
 								<button data-action="editCategory" class="btn btn-ghost btn-sm ff-secondary border text-xs">{{tx("post-queue:edit")}}</button>
 							</div>
 
-							<div class="topic-category">
+							<div class="topic-category" data-cid="{posts.crosspostCategory.cid}">
 								<a href="{config.relative_path}/category/{posts.crosspostCategory.slug}">
 									<div class="category-item d-inline-block">
 										{{buildCategoryIcon(./crosspostCategory, "24px", "rounded-circle")}}
-										<span class="text-sm">{posts.crosspostCategory.name}</span>
+										<span class="text-sm category-text">{posts.crosspostCategory.name}</span>
 									</div>
 								</a>
 							</div>
