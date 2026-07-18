@@ -260,7 +260,6 @@ UserNotifications.sendNameChangeNotification = async function (uid, username) {
 		bodyShort: tx.compile('user:username-taken-workaround', tx.escape(username)),
 		image: 'brand:logo',
 		nid: `username_taken:${uid}`,
-		datetime: Date.now(),
 	});
 
 	await notifications.push(notifObj, [uid]);
