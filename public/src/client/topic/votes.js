@@ -69,7 +69,7 @@ define('forum/topic/votes', [
 
 	async function createTooltip(el, data) {
 		function doCreateTooltip(title) {
-			el.attr('title', utils.escapeHTML(title));
+			el.attr('title', title);
 			(new bootstrap.Tooltip(el, {
 				container: '#content',
 				html: true,
@@ -85,7 +85,7 @@ define('forum/topic/votes', [
 			const translated = await translator.translateKey('topic:users-and-others', [usersList, data.otherCount]);
 			doCreateTooltip(translated);
 		} else {
-			doCreateTooltip(usersList);
+			doCreateTooltip(utils.escapeHTML(usersList));
 		}
 	}
 
