@@ -29,9 +29,9 @@
     },
     "dependencies": {
         "@adactive/bootstrap-tagsinput": "0.8.2",
-        "@fontsource-utils/scss": "0.2.3",
-        "@fontsource/inter": "5.2.8",
-        "@fontsource/poppins": "5.2.7",
+        "@fontsource-utils/scss": "0.2.4",
+        "@fontsource/inter": "5.3.0",
+        "@fontsource/poppins": "5.3.0",
         "@fortawesome/fontawesome-free": "7.3.1",
         "@isaacs/ttlcache": "2.1.5",
         "@json2csv/node": "7.0.7",
