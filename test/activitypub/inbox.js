@@ -1135,12 +1135,13 @@ describe('Inbox', () => {
 
 				await activitypub.inbox.follow({ body: activity });
 
-				const isFollower = await db.isSortedSetMember('relays:followers', relayActor);
-				assert.strictEqual(isFollower, true);
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, -1);
 			});
 
 			it('should remove a follower when a Follow activity is undone', async () => {
-				await activitypub.relays.addFollower(relayActor);
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
 
 				const followActivity = {
 					id: `${nconf.get('url')}/actor#activity/follow/${relayActor}`,
@@ -1155,12 +1156,13 @@ describe('Inbox', () => {
 
 				await activitypub.inbox.undo({ body: undoActivity });
 
-				const isFollower = await db.isSortedSetMember('relays:followers', relayActor);
-				assert.strictEqual(isFollower, false);
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, null);
 			});
 
 			it('should broadcast a public activity received via announce to relay followers', async () => {
-				await activitypub.relays.addFollower(relayActor);
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
 				await activitypub.relays.add(relayActor);
 
 				const { note, id } = helpers.mocks.note();
@@ -1224,7 +1226,8 @@ describe('Inbox', () => {
 				posts.getPostField = originalGetPostField;
 				topics.getTopicField = originalGetTopicField;
 				activitypub.relays.list = originalRelaysList;
-				await db.sortedSetRemove('relays:followers', relayActor);
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
 			});
 		});
 	});

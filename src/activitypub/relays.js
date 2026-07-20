@@ -16,6 +16,16 @@ Relays.list = async () => {
 	relays = relays.reduce((memo, { value, score }) => {
 		let label = '[[admin/settings/activitypub:relays.state-0]]';
 		switch(score) {
+			case -2: {
+				label = '[[admin/settings/activitypub:relays.state--2]]';
+				break;
+			}
+
+			case -1: {
+				label = '[[admin/settings/activitypub:relays.state--1]]';
+				break;
+			}
+
 			case 1: {
 				label = '[[admin/settings/activitypub:relays.state-1]]';
 				break;
@@ -108,35 +118,22 @@ Relays.handshake = async (body) => {
 		throw new Error('[[error:api.400]]');
 	}
 
-	// Check if NodeBB is the target of the follow
 	const target = typeof followActivity === 'object' ? followActivity.id : followActivity;
-	if (target === `${nconf.get('url')}/actor`) {
-		await Relays.addFollower(actor);
-
-		if (type === 'Follow') {
-			await activitypub.send('uid', 0, actor, {
-				'@context': [
-					'https://www.w3.org/ns/activitystreams',
-					'https://pleroma.example/schemas/litepub-0.1.jsonld',
-				],
-				id: `${nconf.get('url')}/actor#activity/accept/${encodeURIComponent(actor)}/${now.getTime()}`,
-				type: 'Accept',
-				to: [actor],
-				published: now.toISOString(),
-				object: followActivity,
-			});
-		}
-		return;
-	}
-
-	// Confirm relay was added (NodeBB is the follower)
-	const exists = await db.isSortedSetMember('relays:createtime', actor);
-	if (!exists) {
-		throw new Error('[[error:api.400]]');
-	}
+	const isUnsolicited = target === `${nconf.get('url')}/actor`;
 
 	if (type === 'Follow') {
-		await db.sortedSetIncrBy('relays:state', 1, actor);
+		if (isUnsolicited) {
+			await db.sortedSetAdd('relays:state', -1, actor);
+			await db.sortedSetAdd('relays:createtime', now.getTime(), actor);
+		} else {
+			// Confirm relay was added (NodeBB is the follower)
+			const exists = await db.isSortedSetMember('relays:createtime', actor);
+			if (!exists) {
+				throw new Error('[[error:api.400]]');
+			}
+			await db.sortedSetIncrBy('relays:state', 1, actor);
+		}
+
 		await activitypub.send('uid', 0, actor, {
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
@@ -146,25 +143,27 @@ Relays.handshake = async (body) => {
 			type: 'Accept',
 			to: [actor],
 			published: now.toISOString(),
-			object: body,
+			object: isUnsolicited ? followActivity : body,
 		});
 	} else if (type === 'Accept') {
+		if (isUnsolicited) {
+			// Unsolicited Accept — should not happen, but handle gracefully
+			return;
+		}
 		await db.sortedSetIncrBy('relays:state', 1, actor);
 	} else {
 		throw new Error('[[error:api.400]]');
 	}
 };
 
-Relays.addFollower = async (actor) => {
-	await db.sortedSetAdd('relays:followers', Date.now(), actor);
-};
-
 Relays.removeFollower = async (actor) => {
-	await db.sortedSetRemove('relays:followers', actor);
+	await db.sortedSetRemove('relays:state', actor);
+	await db.sortedSetRemove('relays:createtime', actor);
 };
 
 Relays.getFollowers = async () => {
-	return db.getSortedSetMembers('relays:followers');
+	const relays = await db.getSortedSetMembersWithScores('relays:state');
+	return relays.filter(({ score }) => score < 0).map(({ value }) => value);
 };
 
 Relays.broadcast = async (payload) => {
