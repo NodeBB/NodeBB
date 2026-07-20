@@ -2,11 +2,8 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const { createHash, getHashes, sign, verify } = require('crypto');
+const { createHash } = require('crypto');
 const { cpus } = require('os');
-const { promisify } = require('util');
-const signAsync = promisify(sign);
-const verifyAsync = promisify(verify);
 
 const request = require('../request');
 const db = require('../database');
@@ -19,8 +16,6 @@ const utils = require('../utils');
 const ttl = require('../cache/ttl');
 const lru = require('../cache/lru');
 const batch = require('../batch');
-const crypto = require('crypto');
-
 const requestCache = ttl({
 	name: 'ap-request-cache',
 	max: 5000,
@@ -70,6 +65,8 @@ ActivityPub._constants = Object.freeze({
 });
 ActivityPub._cache = requestCache;
 ActivityPub._sent = new Map(); // used only in local tests
+
+const signatures = require('./signatures');
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
@@ -292,101 +289,22 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 };
 
 ActivityPub.sign = async ({ key, keyId }, url, digest) => {
-	// Returns string for use in 'Signature' header
-	const { host, pathname } = new URL(url);
-	const date = new Date().toUTCString();
-
-	let headers = '(request-target) host date';
-	let signed_string = `(request-target): ${digest ? 'post' : 'get'} ${pathname}\nhost: ${host}\ndate: ${date}`;
-
-	// Calculate payload hash if payload present
-	if (digest) {
-		headers += ' digest';
-		signed_string += `\ndigest: ${digest}`;
-	}
-
-	// Sign string using private key
-	let signature = await signAsync('sha256', Buffer.from(signed_string), key);
-	signature = signature.toString('base64');
-
-	// Construct signature header
-	return {
-		date,
-		...(digest && { digest }),
-		signature: `keyId="${keyId}",headers="${headers}",signature="${signature}",algorithm="hs2019"`,
-	};
+	// Determines HTTP method based on digest presence
+	const method = digest ? 'POST' : 'GET';
+	return await signatures.sign({ key, keyId }, url, method, digest);
 };
 
 ActivityPub.verify = async (req) => {
 	ActivityPub.helpers.log('[activitypub/verify] Starting signature verification...');
-	if (!req.headers.hasOwnProperty('signature')) {
-		ActivityPub.helpers.log('[activitypub/verify]   Failed, no signature header.');
-		return false;
+
+	const isValid = await signatures.verify(req, ActivityPub.fetchPublicKey);
+	if (!isValid) {
+		ActivityPub.helpers.log('[activitypub/verify] Signature verification failed.');
+	} else {
+		ActivityPub.helpers.log('[activitypub/verify] Signature verification succeeded.');
 	}
 
-	// Verify the signature string via public key
-	try {
-		// Break the signature apart
-		let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
-			const split = cur.split('="');
-			const key = split.shift();
-			const value = split.join('="');
-			memo[key] = value.slice(0, -1);
-			return memo;
-		}, {});
-
-		const acceptableHashes = getHashes();
-		if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
-			algorithm = 'sha256';
-		}
-
-		// Verify Digest header matches request body
-		if (headers.includes('digest')) {
-			const receivedDigest = req.headers.digest;
-			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
-			const bodyDigest = `SHA-256=${createHash('sha256').update(bodyData).digest('base64')}`;
-			if (receivedDigest !== bodyDigest) {
-				ActivityPub.helpers.log('[activitypub/verify]   Failed, digest mismatch.');
-				return false;
-			}
-		}
-
-		// Re-construct signature string
-		const signed_string = headers.split(' ').reduce((memo, cur) => {
-			switch (cur) {
-				case '(request-target)': {
-					memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
-					break;
-				}
-
-				case '(created)': {
-					memo.push(`${cur}: ${created}`);
-					break;
-				}
-
-				case '(expires)': {
-					memo.push(`${cur}: ${expires}`);
-					break;
-				}
-
-				default: {
-					memo.push(`${cur}: ${req.headers[cur]}`);
-					break;
-				}
-			}
-
-			return memo;
-		}, []).join('\n');
-
-		// Retrieve public key from remote instance
-		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
-		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId, req.ip);
-
-		return await verifyAsync('sha256', Buffer.from(signed_string), publicKeyPem, Buffer.from(signature, 'base64'));
-	} catch (e) {
-		ActivityPub.helpers.log('[activitypub/verify]   Failed, key retrieval or verification failure.');
-		return false;
-	}
+	return isValid;
 };
 
 ActivityPub.get = async (type, id, uri, options) => {
@@ -540,7 +458,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 			await Promise.all(inboxBatch.map(async (uri) => {
 				const ok = await ActivityPub._sendMessage(uri, keyData, payload, digest);
 				if (!ok) {
-					const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
+					const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
 					const nextTryOn = Date.now() + oneMinute;
 					retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
 					retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
