@@ -66,7 +66,6 @@ ActivityPub._constants = Object.freeze({
 ActivityPub._cache = requestCache;
 ActivityPub._sent = new Map(); // used only in local tests
 
-const signatures = require('./signatures');
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
@@ -82,6 +81,7 @@ ActivityPub.relays = require('./relays');
 ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
 ActivityPub.analytics = require('./analytics');
+ActivityPub. signatures = require('./signatures');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
@@ -291,13 +291,13 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 ActivityPub.sign = async ({ key, keyId }, url, digest) => {
 	// Determines HTTP method based on digest presence
 	const method = digest ? 'POST' : 'GET';
-	return await signatures.sign({ key, keyId }, url, method, digest);
+	return await ActivityPub.signatures.sign({ key, keyId }, url, method, digest);
 };
 
 ActivityPub.verify = async (req) => {
 	ActivityPub.helpers.log('[activitypub/verify] Starting signature verification...');
 
-	const isValid = await signatures.verify(req, ActivityPub.fetchPublicKey);
+	const isValid = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
 	if (!isValid) {
 		ActivityPub.helpers.log('[activitypub/verify] Signature verification failed.');
 	} else {

@@ -17,16 +17,6 @@ const {
 
 const Signatures = module.exports;
 
-Signatures.calculateDigest = (body) => {
-	if (!body) return null;
-	const bodyData = typeof body === 'string' || Buffer.isBuffer(body) ?
-		body :
-		JSON.stringify(body);
-
-	const hash = createHash('sha256').update(bodyData).digest('base64');
-	return `SHA-256=${hash}`;
-};
-
 Signatures.sign = async ({ key, keyId }, url, method = 'GET', digest = null) => {
 	const parsedUrl = new URL(url);
 	const date = new Date().toUTCString();
@@ -100,7 +90,7 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 			if (!bodyData) return false;
 
-			const computedDigest = Signatures.calculateDigest(bodyData);
+			const computedDigest = calculateDigest(bodyData);
 			if (headers.digest !== computedDigest) {
 				winston.warn('[activitypub/signatures] Digest mismatch during request verification');
 				return false;
@@ -125,6 +115,16 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 		winston.warn(`[activitypub/signatures] Verification failed: ${err.message}`);
 		return false;
 	}
+};
+
+function calculateDigest(body) {
+	if (!body) return null;
+	const bodyData = typeof body === 'string' || Buffer.isBuffer(body) ?
+		body :
+		JSON.stringify(body);
+
+	const hash = createHash('sha256').update(bodyData).digest('base64');
+	return `SHA-256=${hash}`;
 };
 
 async function tryVerifyDraft(req, fetchPublicKeyFn) {
