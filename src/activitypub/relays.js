@@ -95,11 +95,41 @@ Relays.remove = async (url) => {
 	]);
 };
 
-Relays.handshake = async (object) => {
+Relays.handshake = async (body) => {
 	const now = new Date();
-	const { type, actor } = object;
+	const { type, actor } = body;
 
-	// Confirm relay was added
+	// Resolve the original Follow activity
+	// If type is 'Follow', the activity is in body.object
+	// If type is 'Accept', the activity is in body.object.object
+	const followActivity = type === 'Follow' ? body.object : body.object?.object;
+
+	if (!followActivity) {
+		throw new Error('[[error:api.400]]');
+	}
+
+	// Check if NodeBB is the target of the follow
+	const target = typeof followActivity === 'object' ? followActivity.id : followActivity;
+	if (target === `${nconf.get('url')}/actor`) {
+		await Relays.addFollower(actor);
+
+		if (type === 'Follow') {
+			await activitypub.send('uid', 0, actor, {
+				'@context': [
+					'https://www.w3.org/ns/activitystreams',
+					'https://pleroma.example/schemas/litepub-0.1.jsonld',
+				],
+				id: `${nconf.get('url')}/actor#activity/accept/${encodeURIComponent(actor)}/${now.getTime()}`,
+				type: 'Accept',
+				to: [actor],
+				published: now.toISOString(),
+				object: followActivity,
+			});
+		}
+		return;
+	}
+
+	// Confirm relay was added (NodeBB is the follower)
 	const exists = await db.isSortedSetMember('relays:createtime', actor);
 	if (!exists) {
 		throw new Error('[[error:api.400]]');
@@ -116,11 +146,30 @@ Relays.handshake = async (object) => {
 			type: 'Accept',
 			to: [actor],
 			published: now.toISOString(),
-			object,
+			object: body,
 		});
 	} else if (type === 'Accept') {
 		await db.sortedSetIncrBy('relays:state', 1, actor);
 	} else {
 		throw new Error('[[error:api.400]]');
 	}
+};
+
+Relays.addFollower = async (actor) => {
+	await db.sortedSetAdd('relays:followers', Date.now(), actor);
+};
+
+Relays.removeFollower = async (actor) => {
+	await db.sortedSetRemove('relays:followers', actor);
+};
+
+Relays.getFollowers = async () => {
+	return db.getSortedSetMembers('relays:followers');
+};
+
+Relays.broadcast = async (payload) => {
+	const followers = await Relays.getFollowers();
+	if (followers.length === 0) return;
+
+	await activitypub.send('uid', 0, followers, payload);
 };

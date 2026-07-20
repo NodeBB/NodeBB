@@ -242,6 +242,7 @@ inbox.update = async (req) => {
 					const postData = await activitypub.mocks.post(object);
 					postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 					await posts.edit(postData);
+					await activitypub.feps.announce(object.id, req.body);
 					const tid = await posts.getPostField(object.id, 'tid');
 					const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
 					if (generatedTitle && (!postData.title || !postData.title.trim())) {
@@ -699,6 +700,11 @@ inbox.announce = async (req) => {
 			}
 		}
 	}
+
+	// Broadcast to relay followers if we have a pid
+	if (pid) {
+		await activitypub.feps.announce(pid, object);
+	}
 };
 
 inbox.follow = async (req) => {
@@ -851,11 +857,24 @@ inbox.undo = async (req) => {
 
 	let { type: localType, id } = await helpers.resolveLocalId(object.object);
 
+	// If object is a Follow activity, check if the target is the instance actor (relay follow)
+	if (!localType && object?.type === 'Follow') {
+		const followTarget = typeof object.object === 'object' ? object.object.id : object.object;
+		if (followTarget === `${nconf.get('url')}/actor`) {
+			localType = 'application';
+		}
+	}
+
 	activitypub.helpers.log(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
 			switch (localType) {
+				case 'application': {
+					await activitypub.relays.removeFollower(actor);
+					break;
+				}
+
 				case 'user': {
 					const exists = await user.exists(id);
 					if (!exists) {

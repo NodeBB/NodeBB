@@ -81,4 +81,7 @@ Feps.announce = async function announce(id, activity) {
 	relays.forEach((relay) => {
 		activitypub.analytics.relays.out(relay);
 	});
+
+	// Broadcast raw activity to relay followers
+	await activitypub.relays.broadcast(activity);
 };
