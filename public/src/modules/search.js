@@ -26,7 +26,7 @@ define('search', [
 
 		const quickSearchContainer = searchFields.find('#quick-search-container');
 		const toggleVisibility = searchFields.hasClass('hidden');
-		const webfingerRegex = /^(@|acct:)?[\w-]+@.+$/; // should match src/activitypub/helpers.js
+		const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
 
 		if (toggleVisibility) {
 			searchFields.off('focusout').on('focusout', function dismissSearch() {
