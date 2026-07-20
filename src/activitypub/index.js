@@ -81,7 +81,7 @@ ActivityPub.relays = require('./relays');
 ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
 ActivityPub.analytics = require('./analytics');
-ActivityPub. signatures = require('./signatures');
+ActivityPub.signatures = require('./signatures');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {

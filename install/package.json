@@ -35,6 +35,7 @@
         "@fortawesome/fontawesome-free": "7.3.1",
         "@isaacs/ttlcache": "2.1.5",
         "@json2csv/node": "7.0.7",
+		"@misskey-dev/node-http-message-signatures": "^0.0.10",
         "@nodebb/spider-detector": "2.0.3",
         "@popperjs/core": "2.11.8",
         "@textcomplete/contenteditable": "0.1.13",
