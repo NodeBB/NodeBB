@@ -228,7 +228,6 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 		set = `analytics:${set}`;
 	}
 
-	const terms = {};
 	const hoursArr = [];
 
 	hour = new Date(hour);
@@ -237,24 +236,10 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	for (let i = 0, ii = numHours; i < ii; i += 1) {
 		const d = new Date(hour);
 		d.setHours(d.getHours() - i);
-		d.setMinutes(0, 0, 0);
 		hoursArr.push(d.getTime());
 	}
-
 	const counts = await db.sortedSetScores(set, hoursArr);
-
-	hoursArr.forEach((term, index) => {
-		terms[term] = parseInt(counts[index], 10) || 0;
-	});
-
-	const termsArr = [];
-
-	hoursArr.reverse();
-	hoursArr.forEach((hour) => {
-		termsArr.push(terms[hour]);
-	});
-
-	return termsArr;
+	return counts.map(count => parseInt(count, 10) || 0).reverse();
 };
 
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
@@ -264,27 +249,49 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 	}
 
 	day = new Date(day);
-	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
-	day.setDate(day.getDate() + 1);
-	day.setHours(0, 0, 0, 0);
+	day.setHours(day.getHours(), 0, 0, 0);
 
-	async function getHourlyStats(hour) {
-		const dayData = await Analytics.getHourlyStatsForSet(
-			set,
-			hour,
-			24
-		);
-		return dayData.reduce((cur, next) => cur + next);
-	}
 	const hours = [];
-	while (numDays > 0) {
+	const numHours = numDays * 24;
+	for (let i = numHours - 1; i >= 0; i -= 1) {
 		const d = new Date(day);
-		d.setDate(d.getDate() - (numDays - 1));
+		d.setHours(d.getHours() - i);
 		hours.push(d.getTime());
-		numDays -= 1;
 	}
 
-	return await Promise.all(hours.map(getHourlyStats));
+	const dayData = await Analytics.getHourlyStatsForSet(
+		set,
+		day,
+		numHours,
+	);
+
+	const dailyBuckets = [];
+	let bucketDay = null;
+	let bucketSum = 0;
+
+	for (let i = 0; i < hours.length; i += 1) {
+		const date = new Date(hours[i]);
+		date.setHours(0, 0, 0, 0);
+		const dayTimestamp = date.getTime();
+
+		if (bucketDay === null) {
+			bucketDay = dayTimestamp;
+		}
+
+		if (dayTimestamp !== bucketDay) {
+			dailyBuckets.push(bucketSum);
+			bucketDay = dayTimestamp;
+			bucketSum = 0;
+		}
+
+		bucketSum += dayData[i] || 0;
+	}
+
+	if (bucketDay !== null) {
+		dailyBuckets.push(bucketSum);
+	}
+
+	return dailyBuckets.slice(-numDays);
 };
 
 Analytics.getUnwrittenPageviews = function () {
@@ -307,25 +314,28 @@ Analytics.getSummary = async function () {
 };
 
 Analytics.getCategoryAnalytics = async function (cid) {
+	const now = Date.now();
 	return await utils.promiseParallel({
-		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 24),
-		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 30),
-		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, Date.now(), 7),
-		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, Date.now(), 7),
+		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, now, 24),
+		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, now, 30),
+		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, now, 7),
+		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, now, 7),
 	});
 };
 
 Analytics.getErrorAnalytics = async function () {
+	const now = Date.now();
 	return await utils.promiseParallel({
-		'not-found': Analytics.getDailyStatsForSet('analytics:errors:404', Date.now(), 7),
-		toobusy: Analytics.getDailyStatsForSet('analytics:errors:503', Date.now(), 7),
+		'not-found': Analytics.getDailyStatsForSet('analytics:errors:404', now, 7),
+		toobusy: Analytics.getDailyStatsForSet('analytics:errors:503', now, 7),
 	});
 };
 
 Analytics.getBlacklistAnalytics = async function () {
+	const now = Date.now();
 	return await utils.promiseParallel({
-		daily: Analytics.getDailyStatsForSet('analytics:blacklist', Date.now(), 7),
-		hourly: Analytics.getHourlyStatsForSet('analytics:blacklist', Date.now(), 24),
+		daily: Analytics.getDailyStatsForSet('analytics:blacklist', now, 7),
+		hourly: Analytics.getHourlyStatsForSet('analytics:blacklist', now, 24),
 	});
 };
 
