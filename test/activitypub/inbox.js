@@ -1124,5 +1124,108 @@ describe('Inbox', () => {
 				assert(score > 0);
 			});
 		});
+		describe('Relay', () => {
+			const relayActor = 'https://relay.example.com/actor';
+
+			it('should add a follower when the instance actor is followed', async () => {
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+
+				await activitypub.inbox.follow({ body: activity });
+
+				const isFollower = await db.isSortedSetMember('relays:followers', relayActor);
+				assert.strictEqual(isFollower, true);
+			});
+
+			it('should remove a follower when a Follow activity is undone', async () => {
+				await activitypub.relays.addFollower(relayActor);
+
+				const followActivity = {
+					id: `${nconf.get('url')}/actor#activity/follow/${relayActor}`,
+					type: 'Follow',
+					actor: relayActor,
+					object: `${nconf.get('url')}/actor`,
+				};
+				const { activity: undoActivity } = helpers.mocks.undo({
+					actor: relayActor,
+					object: followActivity,
+				});
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const isFollower = await db.isSortedSetMember('relays:followers', relayActor);
+				assert.strictEqual(isFollower, false);
+			});
+
+			it('should broadcast a public activity received via announce to relay followers', async () => {
+				await activitypub.relays.addFollower(relayActor);
+				await activitypub.relays.add(relayActor);
+
+				const { note, id } = helpers.mocks.note();
+				const { activity: createActivity } = helpers.mocks.create(note);
+				const { activity: announceActivity } = helpers.mocks.announce({
+					actor: relayActor,
+					object: createActivity,
+				});
+
+				// Mock activitypub.send to verify broadcast
+				const originalSend = activitypub.send;
+				const sentTo = [];
+				activitypub.send = async (type, id, targets, payload) => {
+					sentTo.push({ targets, payload });
+					return true;
+				};
+
+				// Mock resolveId so remote note IDs resolve to a local pid
+				const originalResolveId = activitypub.resolveId;
+				activitypub.resolveId = async () => 1;
+
+				// Mock notes.assert to return a valid assertion
+				const originalNotesAssert = activitypub.notes.assert;
+				activitypub.notes.assert = async () => ({ tid: 1 });
+
+				// Mock Notes.announce.add to avoid post/topic lookup errors
+				const originalAnnounceAdd = activitypub.notes.announce.add;
+				activitypub.notes.announce.add = async () => {};
+
+				// Mock posts.getPostField so Feps.announce can resolve tid/cid
+				const originalGetPostField = posts.getPostField;
+				posts.getPostField = async (id, field) => {
+					if (field === 'tid') return 1;
+					if (field === 'cid') return 1;
+					return originalGetPostField(id, field);
+				};
+
+				// Mock topics.getTopicField so Feps.announce can resolve cid
+				const originalGetTopicField = topics.getTopicField;
+				topics.getTopicField = async (id, field) => {
+					if (field === 'cid') return 1;
+					return originalGetTopicField(id, field);
+				};
+
+				// Mock relays.list so Feps.announce has relay targets
+				const originalRelaysList = activitypub.relays.list;
+				activitypub.relays.list = async () => [{ state: 2, url: relayActor }];
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				// We expect a broadcast to relay followers
+				// Feps.announce will call activitypub.send
+				assert(sentTo.length > 0);
+				const broadcast = sentTo.find(s => s.targets.includes(relayActor));
+				assert(broadcast, 'Should have broadcast to relay follower');
+
+				activitypub.send = originalSend;
+				activitypub.resolveId = originalResolveId;
+				activitypub.notes.assert = originalNotesAssert;
+				activitypub.notes.announce.add = originalAnnounceAdd;
+				posts.getPostField = originalGetPostField;
+				topics.getTopicField = originalGetTopicField;
+				activitypub.relays.list = originalRelaysList;
+				await db.sortedSetRemove('relays:followers', relayActor);
+			});
+		});
 	});
 });
