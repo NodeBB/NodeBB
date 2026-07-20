@@ -8,27 +8,32 @@ describe('ActivityPub Relays', () => {
 	const actor = 'https://example.com/actor';
 
 	afterEach(async () => {
-		await db.sortedSetRemove('relays:followers', actor);
+		await db.sortedSetRemove('relays:state', actor);
+		await db.sortedSetRemove('relays:createtime', actor);
 	});
 
 	it('should add a relay follower', async () => {
-		await activitypub.relays.addFollower(actor);
-		const exists = await db.isSortedSetMember('relays:followers', actor);
-		assert.strictEqual(exists, true);
+		await db.sortedSetAdd('relays:state', -1, actor);
+		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
+		const score = await db.sortedSetScore('relays:state', actor);
+		assert.strictEqual(score, -1);
 	});
 
 	it('should remove a relay follower', async () => {
-		await activitypub.relays.addFollower(actor);
+		await db.sortedSetAdd('relays:state', -1, actor);
+		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
 		await activitypub.relays.removeFollower(actor);
-		const exists = await db.isSortedSetMember('relays:followers', actor);
-		assert.strictEqual(exists, false);
+		const score = await db.sortedSetScore('relays:state', actor);
+		assert.strictEqual(score, null);
 	});
 
 	it('should get relay followers', async () => {
 		const actor2 = 'https://example2.com/actor';
 		await Promise.all([
-			activitypub.relays.addFollower(actor),
-			activitypub.relays.addFollower(actor2),
+			db.sortedSetAdd('relays:state', -1, actor),
+			db.sortedSetAdd('relays:createtime', Date.now(), actor),
+			db.sortedSetAdd('relays:state', -1, actor2),
+			db.sortedSetAdd('relays:createtime', Date.now(), actor2),
 		]);
 
 		const followers = await activitypub.relays.getFollowers();
@@ -36,7 +41,8 @@ describe('ActivityPub Relays', () => {
 		assert.ok(followers.includes(actor));
 		assert.ok(followers.includes(actor2));
 
-		await db.sortedSetRemove('relays:followers', actor2);
+		await db.sortedSetRemove('relays:state', actor2);
+		await db.sortedSetRemove('relays:createtime', actor2);
 	});
 
 	it('should broadcast to relay followers', async () => {
@@ -51,7 +57,10 @@ describe('ActivityPub Relays', () => {
 			return true;
 		};
 
-		await Promise.all(followers.map(f => activitypub.relays.addFollower(f)));
+		await Promise.all(followers.map(f => Promise.all([
+			db.sortedSetAdd('relays:state', -1, f),
+			db.sortedSetAdd('relays:createtime', Date.now(), f),
+		])));
 
 		await activitypub.relays.broadcast(payload);
 
@@ -61,7 +70,9 @@ describe('ActivityPub Relays', () => {
 
 		// Cleanup
 		activitypub.send = originalSend;
-		await db.sortedSetRemove('relays:followers', followers[0]);
-		await db.sortedSetRemove('relays:followers', followers[1]);
+		await db.sortedSetRemove('relays:state', followers[0]);
+		await db.sortedSetRemove('relays:createtime', followers[0]);
+		await db.sortedSetRemove('relays:state', followers[1]);
+		await db.sortedSetRemove('relays:createtime', followers[1]);
 	});
 });
