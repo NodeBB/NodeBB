@@ -416,11 +416,15 @@ Mocks.actors.user = async (uid) => {
 	if (picture) {
 		picture = utils.decodeHTMLEntities(picture);
 		const imagePath = await user.getLocalAvatarPath(uid);
+		// Absolute (remote/SSO) avatars are used as-is; relative paths get the forum url prefixed
+		// (string concat, so subfolder installs keep their relative_path). new URL validates the
+		// result and unsets the field on malformed values.
+		const url = /^https?:\/\//i.test(picture) ? picture : `${nconf.get('url')}${picture}`;
 		try {
 			picture = {
 				type: 'Image',
 				mediaType: mime.getType(imagePath),
-				url: new URL(picture, nconf.get('url')).href,
+				url: new URL(url).href,
 			};
 		} catch {
 			picture = undefined;
@@ -430,11 +434,12 @@ Mocks.actors.user = async (uid) => {
 	if (cover) {
 		cover = utils.decodeHTMLEntities(cover);
 		const imagePath = await user.getLocalCoverPath(uid);
+		const url = /^https?:\/\//i.test(cover) ? cover : `${nconf.get('url')}${cover}`;
 		try {
 			cover = {
 				type: 'Image',
 				mediaType: mime.getType(imagePath),
-				url: new URL(cover, nconf.get('url')).href,
+				url: new URL(url).href,
 			};
 		} catch {
 			cover = undefined;
