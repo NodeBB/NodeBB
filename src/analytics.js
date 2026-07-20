@@ -235,7 +235,10 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
 	for (let i = 0, ii = numHours; i < ii; i += 1) {
-		hoursArr.push(hour.getTime() - (i * 3600 * 1000));
+		const d = new Date(hour);
+		d.setHours(d.getHours() - i);
+		d.setMinutes(0, 0, 0);
+		hoursArr.push(d.getTime());
 	}
 
 	const counts = await db.sortedSetScores(set, hoursArr);
@@ -275,7 +278,9 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 	}
 	const hours = [];
 	while (numDays > 0) {
-		hours.push(day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)));
+		const d = new Date(day);
+		d.setDate(d.getDate() - (numDays - 1));
+		hours.push(d.getTime());
 		numDays -= 1;
 	}
 
