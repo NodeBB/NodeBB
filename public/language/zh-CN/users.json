@@ -23,11 +23,11 @@
     "categories": "版块",
     "tags": "标签",
     "no-users-found": "未找到匹配的用户！",
-    "temp-ban.length": "Length",
-    "temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-    "temp-ban.select-reason": "Select a reason",
-    "temp-ban.hours": "Hours",
-    "temp-ban.days": "Days",
-    "temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
-    "temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute."
+    "temp-ban.length": "时长",
+    "temp-ban.reason": "原因 <span class=\"text-muted\">(可选)</span>",
+    "temp-ban.select-reason": "请选择一个原因",
+    "temp-ban.hours": "时",
+    "temp-ban.days": "天",
+    "temp-ban.explanation": "请输入封禁时长。请注意，设置为 0 时将被视为永久封禁。",
+    "temp-mute.explanation": "请输入禁言时长。请注意，设置为 0 时将被视为永久禁言。"
 }
