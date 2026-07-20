@@ -40,7 +40,7 @@
 			tabindex="0"
 		>
 			{{{ if users.length }}}
-			<div class="text-end">
+			<div class="text-end mb-2">
 				<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-all")}}</button>
 			</div>
 			{{{ end }}}
