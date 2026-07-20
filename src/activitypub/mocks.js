@@ -416,21 +416,29 @@ Mocks.actors.user = async (uid) => {
 	if (picture) {
 		picture = utils.decodeHTMLEntities(picture);
 		const imagePath = await user.getLocalAvatarPath(uid);
-		picture = {
-			type: 'Image',
-			mediaType: mime.getType(imagePath),
-			url: picture.startsWith('http') ? picture : `${nconf.get('url')}${picture}`,
-		};
+		try {
+			picture = {
+				type: 'Image',
+				mediaType: mime.getType(imagePath),
+				url: new URL(picture, nconf.get('url')).href,
+			};
+		} catch {
+			picture = undefined;
+		}
 	}
 
 	if (cover) {
 		cover = utils.decodeHTMLEntities(cover);
 		const imagePath = await user.getLocalCoverPath(uid);
-		cover = {
-			type: 'Image',
-			mediaType: mime.getType(imagePath),
-			url: cover.startsWith('http') ? cover : `${nconf.get('url')}${cover}`,
-		};
+		try {
+			cover = {
+				type: 'Image',
+				mediaType: mime.getType(imagePath),
+				url: new URL(cover, nconf.get('url')).href,
+			};
+		} catch {
+			cover = undefined;
+		}
 	}
 
 	const attachment = [];

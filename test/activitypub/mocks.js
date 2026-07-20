@@ -336,6 +336,15 @@ describe('Mocking', () => {
 
 					assert.strictEqual(actor.icon.url, `${nconf.get('url')}${relativeAvatar}`);
 				});
+
+				it('should unset the avatar when the stored value is a malformed url', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+					await user.setUserField(uid, 'picture', 'https://');
+
+					const actor = await activitypub.mocks.actors.user(uid);
+
+					assert.strictEqual(actor.icon, undefined);
+				});
 			});
 		});
 	});
