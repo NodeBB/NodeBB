@@ -17,6 +17,17 @@ const {
 
 const Signatures = module.exports;
 
+// Calculates RFC 9530 Digest header string for request payloads.
+Signatures.calculateDigest = (body) => {
+	if (!body) return null;
+	const bodyData = typeof body === 'string' || Buffer.isBuffer(body) ?
+		body :
+		JSON.stringify(body);
+
+	const hash = createHash('sha256').update(bodyData).digest('base64');
+	return `SHA-256=${hash}`;
+};
+
 Signatures.sign = async ({ key, keyId }, url, method = 'GET', digest = null) => {
 	const parsedUrl = new URL(url);
 	const date = new Date().toUTCString();
@@ -90,7 +101,7 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 			if (!bodyData) return false;
 
-			const computedDigest = calculateDigest(bodyData);
+			const computedDigest = Signatures.calculateDigest(bodyData);
 			if (headers.digest !== computedDigest) {
 				winston.warn('[activitypub/signatures] Digest mismatch during request verification');
 				return false;
@@ -112,16 +123,6 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 		winston.warn(`[activitypub/signatures] Verification failed: ${err.message}`);
 		return false;
 	}
-};
-
-function calculateDigest(body) {
-	if (!body) return null;
-	const bodyData = typeof body === 'string' || Buffer.isBuffer(body) ?
-		body :
-		JSON.stringify(body);
-
-	const hash = createHash('sha256').update(bodyData).digest('base64');
-	return `SHA-256=${hash}`;
 };
 
 async function tryVerifyDraft(req, fetchPublicKeyFn) {
@@ -150,11 +151,12 @@ async function tryVerifyDraft(req, fetchPublicKeyFn) {
 			throw new Error(`Public key not found for keyId: ${parsed.value.keyId}`);
 		}
 
-		// Import public key into CryptoKey format required by library
-		const publicKey = await parseAndImportPublicKey(publicKeyPem);
-
-		// Verify signature using imported public key object
-		const result = await verifyDraftSignature(parsed.value, publicKey);
+		// Pass parsed.value, the public key, and winston as the errorLogger
+		const result = await verifyDraftSignature(
+			parsed.value,
+			publicKeyPem,
+			msg => winston.warn(`[activitypub/signatures] verifyDraftSignature error: ${msg}`)
+		);
 
 		return !!result;
 	} catch (err) {
@@ -179,21 +181,23 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 
 		// Parse RFC 9421 request signature
 		const parsed = parseRFC9421Request(requestObj);
-		if (!parsed || !parsed.value || !parsed.value.keyId) {
+		const keyId = parsed?.value?.keyId || parsed?.keyId;
+
+		if (!parsed || !keyId) {
 			return false;
 		}
 
 		// Fetch public key PEM
-		const publicKeyPem = await fetchPublicKeyFn(parsed.value.keyId, req.ip);
+		const publicKeyPem = await fetchPublicKeyFn(keyId, req.ip);
 		if (!publicKeyPem) {
-			throw new Error(`Public key not found for keyId: ${parsed.value.keyId}`);
+			throw new Error(`Public key not found for keyId: ${keyId}`);
 		}
 
 		// Import public key into CryptoKey format required by library
 		const publicKey = await parseAndImportPublicKey(publicKeyPem);
 
-		// Verify RFC 9421 signature using imported public key object
-		const result = await verifyRFC9421Signature(parsed.value, publicKey);
+		// Pass the top-level `parsed` object to verifyRFC9421Signature
+		const result = await verifyRFC9421Signature(parsed, publicKey);
 
 		return !!result;
 	} catch (err) {
