@@ -199,6 +199,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
+		inRoom: Messaging.isUserInRoom(uid, roomIds),
 		users: getUsers(roomIds, uid),
 		teasers: Messaging.getTeasers(uid, roomIds),
 		settings: user.getSettings(uid),
@@ -225,6 +226,7 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
+		inRoom: Messaging.isUserInRoom(uid, roomIds),
 		users: getUsers(roomIds, uid),
 		teasers: Messaging.getTeasers(uid, roomIds),
 		settings: user.getSettings(uid),
@@ -259,6 +261,13 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 
 async function modifyChatRooms(uid, results) {
 	await Promise.all(results.roomData.map(async (room, index) => {
+		// Hide rooms the viewer cannot actually open, mirroring Messaging.loadRoom's
+		// visibility check. A private room the viewer is no longer a member of would
+		// otherwise show up as an empty/unenterable entry in the chat list.
+		if (room && !room.public && results.inRoom && !results.inRoom[index]) {
+			results.roomData[index] = null;
+			return;
+		}
 		if (room) {
 			room.users = results.users[index];
 			room.groupChat = room.users.length > 2;
