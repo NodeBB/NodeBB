@@ -79,13 +79,13 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 	try {
 		const { headers } = req;
 
-		// 1. Check if signature header exists (either RFC 9421 or draft format)
+		// Check if signature header exists (either RFC 9421 or draft format)
 		const hasSignature = headers.hasOwnProperty('signature') || headers.hasOwnProperty('signature-input');
 		if (!hasSignature) {
 			return false;
 		}
 
-		// 2. Digest check for requests with body (POST/PUT)
+		// Digest check for requests with body (POST/PUT)
 		if (headers.digest) {
 			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 			if (!bodyData) return false;
@@ -97,19 +97,16 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 			}
 		}
 
-		// 3. Try draft signature verification first (legacy Cavage/hs2019)
-		const draftVerified = await tryVerifyDraft(req, fetchPublicKeyFn);
-		if (draftVerified) {
-			return true;
-		}
-
-		// 4. Try RFC 9421 signature verification
 		const rfcVerified = await tryVerifyRFC9421(req, fetchPublicKeyFn);
 		if (rfcVerified) {
 			return true;
 		}
 
-		// Neither verification method succeeded
+		const draftVerified = await tryVerifyDraft(req, fetchPublicKeyFn);
+		if (draftVerified) {
+			return true;
+		}
+
 		return false;
 	} catch (err) {
 		winston.warn(`[activitypub/signatures] Verification failed: ${err.message}`);
