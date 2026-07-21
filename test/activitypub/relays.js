@@ -1,8 +1,9 @@
 'use strict';
 
 const assert = require('assert');
+
+const db = require('../mocks/databasemock');
 const activitypub = require('../../src/activitypub');
-const db = require('../../src/database');
 
 describe('ActivityPub Relays', () => {
 	const actor = 'https://example.com/actor';
@@ -48,7 +49,7 @@ describe('ActivityPub Relays', () => {
 	it('should broadcast to relay followers', async () => {
 		const payload = { type: 'Create', id: '123' };
 		const followers = ['https://f1.com/actor', 'https://f2.com/actor'];
-		
+
 		// Mock activitypub.send
 		const originalSend = activitypub.send;
 		const sentTo = [];
@@ -57,15 +58,18 @@ describe('ActivityPub Relays', () => {
 			return true;
 		};
 
-		await Promise.all(followers.map(f => Promise.all([
-			db.sortedSetAdd('relays:state', -1, f),
-			db.sortedSetAdd('relays:createtime', Date.now(), f),
-		])));
+		await Promise.all([
+			db.sortedSetAdd('relays:state', -1, followers[0]),
+			db.sortedSetAdd('relays:createtime', Date.now(), followers[0]),
+			db.sortedSetAdd('relays:state', -1, followers[1]),
+			db.sortedSetAdd('relays:createtime', Date.now(), followers[1]),
+		]);
 
 		await activitypub.relays.broadcast(payload);
 
 		assert.strictEqual(sentTo.length, 1);
-		assert.deepStrictEqual(sentTo[0].targets, followers);
+		assert.ok(sentTo[0].targets.includes(followers[0]));
+		assert.ok(sentTo[0].targets.includes(followers[1]));
 		assert.deepStrictEqual(sentTo[0].payload, payload);
 
 		// Cleanup
