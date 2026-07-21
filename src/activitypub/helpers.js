@@ -114,7 +114,9 @@ Helpers.query = async (id) => {
 		return cached;
 	}
 
-	const query = new URLSearchParams({ resource: uri });
+	// Build the resource from the raw id; URL serialization percent-encodes non-ASCII
+	// characters, which URLSearchParams would then encode a second time
+	const query = new URLSearchParams({ resource: isUri ? uri.href : `acct:${username}@${hostname}` });
 
 	// Make a webfinger query to retrieve routing information
 	let response;
