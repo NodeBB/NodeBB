@@ -2,7 +2,6 @@
 
 const path = require('path');
 const { fileTypeFromFile } = require('file-type');
-const mime = require('mime').default;
 const nconf = require('nconf');
 
 const user = require('../user');
@@ -42,8 +41,8 @@ uploadsController.upload = async function (req, res, filesIterator) {
 
 uploadsController.uploadPost = async function (req, res) {
 	await uploadsController.upload(req, res, async (uploadedFile) => {
-		await validateUploadedFileMime(uploadedFile);
-		const isImage = uploadedFile.type.match(/image./);
+		const detected = await fileTypeFromFile(uploadedFile.path);
+		const isImage = detected && detected.mime.startsWith('image/');
 		if (isImage) {
 			return await uploadAsImage(req, uploadedFile);
 		}
@@ -129,10 +128,12 @@ uploadsController.uploadThumb = async function (req, res) {
 		if (!canUpload) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		if (!uploadedFile.type.match(/image./)) {
+		const detected = await fileTypeFromFile(uploadedFile.path);
+		const isImage = detected && detected.mime.startsWith('image/');
+		if (!isImage) {
 			throw new Error('[[error:invalid-file]]');
 		}
-		await validateUploadedFileMime(uploadedFile);
+
 		await image.isFileTypeAllowed(uploadedFile.path);
 		const dimensions = await image.checkDimensions(uploadedFile.path);
 
@@ -176,16 +177,7 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 		throw new Error(`[[error:file-too-big, ${meta.config.maximumFileSize}]]`);
 	}
 
-	const allowed = file.allowedExtensions();
-	const blocked = file.blockedExtensions();
-
-	const extension = path.extname(uploadedFile.name).toLowerCase();
-	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
-		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
-	}
-	if (blocked.length > 0 && (!extension || extension === '.' || blocked.includes(extension))) {
-		throw new Error(`[[error:blocked-file-type, ${extension || 'unknown'}]]`);
-	}
+	await validateFileExtension(uploadedFile);
 
 	return await saveFileToLocal(uid, 'files', uploadedFile);
 };
@@ -212,28 +204,18 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	return data.storedFile;
 }
 
-const mimeAliases = new Map([
-	['application/x-zip-compressed', 'application/zip'],
-	['audio/x-wav', 'audio/wav'],
-	['video/x-msvideo', 'video/avi'],
-	['image/vnd.microsoft.icon', 'image/x-icon'],
-	['application/vnd.rar', 'application/x-rar-compressed'],
-]);
-
-function normalizeMimeType(mimeType) {
-	return mimeAliases.get(mimeType) || mimeType;
-}
-
-async function validateUploadedFileMime(uploadedFile) {
+async function validateFileExtension(uploadedFile) {
 	const detected = await fileTypeFromFile(uploadedFile.path);
-	const detectedMimeType = detected ? detected.mime : mime.getType(uploadedFile.name);
-	if (
-		detectedMimeType &&
-		uploadedFile.type &&
-		uploadedFile.type !== 'application/octet-stream' &&
-		normalizeMimeType(detectedMimeType) !== normalizeMimeType(uploadedFile.type)
-	) {
-		throw new Error('[[error:invalid-mime-type]]');
+	const allowed = file.allowedExtensions();
+	const blocked = file.blockedExtensions();
+
+	// if we cant detect with magic bytes fall back to file extension
+	const extension = detected ? `.${detected.ext}` : path.extname(uploadedFile.name).toLowerCase();
+	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
+		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
+	}
+	if (blocked.length > 0 && (!extension || extension === '.' || blocked.includes(extension))) {
+		throw new Error(`[[error:blocked-file-type, ${extension || 'unknown'}]]`);
 	}
 }
 
