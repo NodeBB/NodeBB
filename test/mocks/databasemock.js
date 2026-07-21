@@ -183,6 +183,11 @@ before(async function () {
 			await setupMockDefaults();
 		});
 	});
+	// Attach a global afterAll that waits for pending minifier requests
+	// (e.g., from harmony theme's buildSkins scheduled via setTimeout)
+	this.test.parent.afterAll(async () => {
+		await require('../../src/meta/minifier').killAll();
+	});
 });
 
 async function setupMockDefaults() {
