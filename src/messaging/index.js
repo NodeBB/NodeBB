@@ -260,11 +260,13 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 };
 
 async function modifyChatRooms(uid, results) {
+	const danglingRoomIds = [];
 	await Promise.all(results.roomData.map(async (room, index) => {
 		// Hide rooms the viewer cannot actually open, mirroring Messaging.loadRoom's
 		// visibility check. A private room the viewer is no longer a member of would
 		// otherwise show up as an empty/unenterable entry in the chat list.
 		if (room && !room.public && results.inRoom && !results.inRoom[index]) {
+			danglingRoomIds.push(room.roomId);
 			results.roomData[index] = null;
 			return;
 		}
@@ -285,6 +287,15 @@ async function modifyChatRooms(uid, results) {
 			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
 		}
 	}));
+
+	// Self-heal: drop dangling room references from the user's list so they don't
+	// keep showing up. These arise when the room set and membership set drift apart.
+	if (danglingRoomIds.length) {
+		await db.sortedSetRemove([
+			`uid:${uid}:chat:rooms`,
+			`uid:${uid}:chat:rooms:unread`,
+		], danglingRoomIds);
+	}
 
 	return results.roomData.filter(Boolean);
 }
