@@ -1013,13 +1013,14 @@ Mocks.activities.dislike = async (pid, uid) => {
 	};
 };
 
-Mocks.activities.announce = async (tid, uid) => {
+Mocks.activities.announce = async (tid, uid, overrideCid) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+	const announceCid = overrideCid || cid;
 	const authorUid = await posts.getPostField(pid, 'uid'); // author
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		id: pid,
 		to: [activitypub._constants.publicAddress],
-	}, uid ? { uid } : { cid });
+	}, uid ? { uid } : { cid: announceCid });
 	if (!utils.isNumber(authorUid)) {
 		cc.push(authorUid);
 		targets.add(authorUid);
@@ -1030,9 +1031,9 @@ Mocks.activities.announce = async (tid, uid) => {
 		type: 'Announce',
 		actor: `${nconf.get('url')}/uid/${uid}`,
 	} : {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${announceCid}`,
 		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
+		actor: `${nconf.get('url')}/category/${announceCid}`,
 	};
 
 	return {
