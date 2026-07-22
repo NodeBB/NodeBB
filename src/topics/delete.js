@@ -232,12 +232,12 @@ module.exports = function (Topics) {
 			uniqCids.add(String(topic.cid));
 		}
 		await db.sortedSetRemoveBulk(bulkRemove);
-
+		const uniqTagsArray = Array.from(uniqTags);
 		await Topics.updateCategoryTagsCount(
 			Array.from(uniqCids),
-			Array.from(uniqTags)
+			uniqTagsArray
 		);
-		await Topics.updateTagCount(uniqTags);
+		await Topics.updateTagCount(uniqTagsArray);
 	}
 
 	async function reduceCounters(topicsData) {

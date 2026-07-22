@@ -1,6 +1,7 @@
 'use strict';
 
 const util = require('util');
+const winston = require('winston');
 
 const db = require('../database');
 const plugins = require('../plugins');
@@ -8,34 +9,41 @@ const plugins = require('../plugins');
 const rewards = module.exports;
 
 rewards.checkConditionAndRewardUser = async function (params) {
-	const { uid, condition, method } = params;
-	const isActive = await isConditionActive(condition);
-	if (!isActive) {
-		return;
-	}
-	const ids = await getIDsByCondition(condition);
-	let rewardData = await getRewardDataByIDs(ids);
-	// filter disabled
-	rewardData = rewardData.filter(r => r && !(r.disabled === 'true' || r.disabled === true));
-
-	for (const reward of rewardData) {
-		const lockValue = `reward:lock:${uid}:${reward.id}`;
-		/* eslint-disable no-await-in-loop */
-		const count = await db.incrObjectField('locks', lockValue);
-		if (count > 1) {
-			throw new Error('[[error:reward-locked]]');
+	try {
+		const { uid, condition, method } = params;
+		const isActive = await isConditionActive(condition);
+		if (!isActive) {
+			return;
 		}
-		try {
-			const canClaim = await isClaimable(uid, reward);
-			if (canClaim) {
-				const isEligible = await checkCondition(reward, method);
-				if (isEligible) {
-					await giveRewards(uid, [reward]);
+		const ids = await getIDsByCondition(condition);
+		let rewardData = await getRewardDataByIDs(ids);
+		// filter disabled
+		rewardData = rewardData.filter(r => r && !(r.disabled === 'true' || r.disabled === true));
+
+		for (const reward of rewardData) {
+			const lockValue = `reward:lock:${uid}:${reward.id}`;
+			/* eslint-disable no-await-in-loop */
+			const count = await db.incrObjectField('locks', lockValue);
+			if (count > 1) {
+				winston.warn(`Reward lock already exists for uid ${uid} and reward ${reward.id}, skipping`);
+			} else {
+				try {
+					const canClaim = await isClaimable(uid, reward);
+					if (canClaim) {
+						const isEligible = await checkCondition(reward, method);
+						if (isEligible) {
+							await giveRewards(uid, [reward]);
+						}
+					}
+				} catch (err) {
+					winston.error(err.stack);
+				} finally {
+					await db.deleteObjectFields('locks', [lockValue]);
 				}
 			}
-		} finally {
-			await db.deleteObjectFields('locks', [lockValue]);
 		}
+	} catch (err) {
+		winston.error(err.stack);
 	}
 };
 

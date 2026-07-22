@@ -97,9 +97,7 @@ privsAdmin.socketMap = {
 	'admin.user.removeAdmins': 'admin:admins-mods',
 
 	'admin.user.loadGroups': 'admin:users',
-	'admin.user.addCustomField': 'admin:users',
-	'admin.user.editCustomField': 'admin:users',
-	'admin.user.deleteCustomField': 'admin:users',
+	'admin.user.saveCustomFields': 'admin:users',
 	'admin.groups.join': 'admin:users',
 	'admin.groups.leave': 'admin:users',
 	'admin.user.resetLockouts': 'admin:users',

@@ -19,7 +19,8 @@ const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
 
-const webfingerRegex = /^(@|acct:)?[\w-.]+@.+$/;
+// \w only matches ASCII, so match unicode letters/numbers/marks explicitly to support non-ASCII handles
+const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
 const webfingerCache = ttl({
 	name: 'ap-webfinger-cache',
 	max: 5000,
@@ -114,7 +115,9 @@ Helpers.query = async (id) => {
 		return cached;
 	}
 
-	const query = new URLSearchParams({ resource: uri });
+	// Build the resource from the raw id; URL serialization percent-encodes non-ASCII
+	// characters, which URLSearchParams would then encode a second time
+	const query = new URLSearchParams({ resource: isUri ? uri.href : `acct:${username}@${hostname}` });
 
 	// Make a webfinger query to retrieve routing information
 	let response;

@@ -157,7 +157,7 @@ define('forum/topic', [
 		updateUserBookmark(postIndex);
 		if (navigator.shouldScrollToPost(postIndex)) {
 			return navigator.scrollToPostIndex(postIndex - 1, true, 0);
-		} else if (bookmark && (
+		} else if (bookmark && parseInt(bookmark, 10) > postIndex && (
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
 		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
@@ -524,6 +524,7 @@ define('forum/topic', [
 
 		if (
 			ajaxify.data.postcount > ajaxify.data.bookmarkThreshold &&
+			index > ajaxify.data.bookmarkThreshold &&
 			(
 				!currentBookmark ||
 				parseInt(index, 10) > parseInt(currentBookmark, 10) ||

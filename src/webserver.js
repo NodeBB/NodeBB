@@ -274,6 +274,9 @@ function configureBodyParser(app) {
 			'application/ld+json',
 			'application/activity+json',
 		],
+		verify: (req, res, buf) => {
+			req.rawBody = buf;
+		},
 		...nconf.get('bodyParser:json'),
 	};
 	app.use(bodyParser.json(jsonOpts));
