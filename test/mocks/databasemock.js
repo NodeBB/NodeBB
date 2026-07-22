@@ -200,10 +200,8 @@ async function setupMockDefaults() {
 	meta.config.activitypubProbeTimeout = 30000;
 	meta.config.postQueue = 0;
 
-	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').getOrCreate().reset();
-	require('../../src/cache').reset();
-	require('../../src/middleware/uploads').clearCache();
+	require('../../src/cache/tracker').resetAll();
+	require('../../src/middleware/uploads').clearCache(); // lazily created; explicit clear still req'd.
 	// privileges must be given after cache reset
 	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();
