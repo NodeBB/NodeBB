@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
 const activitypub = require('../../src/activitypub');
@@ -72,10 +73,10 @@ describe('ActivityPub Relays', () => {
 		assert.ok(sentTo[0].targets.includes(followers[1]));
 		const sentPayload = sentTo[0].payload;
 		assert.strictEqual(sentPayload.type, 'Announce');
-		assert.strictEqual(sentPayload.actor, 'https://localhost/actor');
+		assert.strictEqual(sentPayload.actor, `${nconf.get('url')}/actor`);
 		assert.deepStrictEqual(sentPayload.object, payload);
 		assert.deepStrictEqual(sentPayload.to, ['https://www.w3.org/ns/activitystreams#Public']);
-		assert.ok(sentPayload.id.startsWith('https://localhost/post/123#activity/announce/relay/'));
+		assert.ok(sentPayload.id.startsWith(`${nconf.get('url')}/post/123#activity/announce/relay/`));
 
 		// Cleanup
 		activitypub.send = originalSend;
