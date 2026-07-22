@@ -143,7 +143,7 @@ Relays.handshake = async (body) => {
 			type: 'Accept',
 			to: [actor],
 			published: now.toISOString(),
-			object: isUnsolicited ? followActivity : body,
+			object: body,
 		});
 	} else if (type === 'Accept') {
 		if (isUnsolicited) {
