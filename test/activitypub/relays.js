@@ -70,7 +70,12 @@ describe('ActivityPub Relays', () => {
 		assert.strictEqual(sentTo.length, 1);
 		assert.ok(sentTo[0].targets.includes(followers[0]));
 		assert.ok(sentTo[0].targets.includes(followers[1]));
-		assert.deepStrictEqual(sentTo[0].payload, payload);
+		const sentPayload = sentTo[0].payload;
+		assert.strictEqual(sentPayload.type, 'Announce');
+		assert.strictEqual(sentPayload.actor, 'https://localhost/actor');
+		assert.deepStrictEqual(sentPayload.object, payload);
+		assert.deepStrictEqual(sentPayload.to, ['https://www.w3.org/ns/activitystreams#Public']);
+		assert.ok(sentPayload.id.startsWith('https://localhost/post/123#activity/announce/relay/'));
 
 		// Cleanup
 		activitypub.send = originalSend;
