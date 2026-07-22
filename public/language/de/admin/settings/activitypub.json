@@ -49,6 +49,7 @@
 	"relays.add": "Neues Relay hinzufügen",
 	"relays.relay": "Relay",
 	"relays.state": "Status",
+	"relays.state--1": "Follower",
 	"relays.state-0": "Ausstehend",
 	"relays.state-1": "Nur Empfang",
 	"relays.state-2": "Aktiv",

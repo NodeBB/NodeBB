@@ -49,6 +49,7 @@
 	"relays.add": "新しいリレーを追加",
 	"relays.relay": "リレー",
 	"relays.state": "状態",
+	"relays.state--1": "Follower",
 	"relays.state-0": "保留中",
 	"relays.state-1": "受信のみ",
 	"relays.state-2": "アクティブ",

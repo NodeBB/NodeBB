@@ -49,6 +49,7 @@
 	"relays.add": "Aggiungi nuovo relè",
 	"relays.relay": "Relè",
 	"relays.state": "Stato",
+	"relays.state--1": "Follower",
 	"relays.state-0": "In sospeso",
 	"relays.state-1": "Solo ricezione",
 	"relays.state-2": "Attivo",

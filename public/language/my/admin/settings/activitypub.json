@@ -49,6 +49,7 @@
 	"relays.add": "Relay ထည့်ရန်",
 	"relays.relay": "Relay",
 	"relays.state": "အခြေအနေ",
+	"relays.state--1": "Follower",
 	"relays.state-0": "အခြေအနေ 0",
 	"relays.state-1": "အခြေအနေ 1",
 	"relays.state-2": "အခြေအနေ 2",

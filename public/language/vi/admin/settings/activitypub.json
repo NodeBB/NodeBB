@@ -49,6 +49,7 @@
 	"relays.add": "Thêm Chuyển Tiếp Mới",
 	"relays.relay": "Chuyển tiếp",
 	"relays.state": "Trạng thái",
+	"relays.state--1": "Follower",
 	"relays.state-0": "Đang đợi",
 	"relays.state-1": "Chỉ nhận",
 	"relays.state-2": "Kích hoạt",

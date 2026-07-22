@@ -49,6 +49,7 @@
 	"relays.add": "Add New Relay",
 	"relays.relay": "Relay",
 	"relays.state": "Durum",
+	"relays.state--1": "Follower",
 	"relays.state-0": "Beklemede",
 	"relays.state-1": "Sadece al",
 	"relays.state-2": "Etkin",

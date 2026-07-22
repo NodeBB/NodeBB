@@ -49,6 +49,7 @@
 	"relays.add": "Добавяне на нов препредавател",
 	"relays.relay": "Препредавател",
 	"relays.state": "Състояние",
+	"relays.state--1": "Follower",
 	"relays.state-0": "В изчакване",
 	"relays.state-1": "Само приемане",
 	"relays.state-2": "Активен",

@@ -49,6 +49,7 @@
 	"relays.add": "Dodaj nowy przekaźnik",
 	"relays.relay": "Przekaźnik",
 	"relays.state": "Stan",
+	"relays.state--1": "Follower",
 	"relays.state-0": "Oczekujący",
 	"relays.state-1": "Tylko odbiór",
 	"relays.state-2": "Aktywny",

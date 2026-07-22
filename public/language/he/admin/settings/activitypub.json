@@ -49,6 +49,7 @@
 	"relays.add": "הוסף ממסר חדש",
 	"relays.relay": "ממסרים",
 	"relays.state": "מצב",
+	"relays.state--1": "Follower",
 	"relays.state-0": "ממתין",
 	"relays.state-1": "קבלה בלבד",
 	"relays.state-2": "פעיל",

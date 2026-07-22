@@ -49,6 +49,7 @@
 	"relays.add": "Přidat nový přeposílač",
 	"relays.relay": "Přeposílač",
 	"relays.state": "Stav",
+	"relays.state--1": "Follower",
 	"relays.state-0": "Čeká na schválení",
 	"relays.state-1": "Pouze příjem",
 	"relays.state-2": "Aktivní",

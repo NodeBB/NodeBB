@@ -49,6 +49,7 @@
 	"relays.add": "Adaugă Retransmițător Nou",
 	"relays.relay": "Retransmițător",
 	"relays.state": "Stare",
+	"relays.state--1": "Follower",
 	"relays.state-0": "În Așteptare",
 	"relays.state-1": "Doar Primește",
 	"relays.state-2": "Activ",

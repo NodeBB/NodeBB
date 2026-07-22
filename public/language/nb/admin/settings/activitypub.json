@@ -49,6 +49,7 @@
 	"relays.add": "Legg til ny videresendingstjeneste",
 	"relays.relay": "Relay/videresendingstjeneste",
 	"relays.state": "Status",
+	"relays.state--1": "Follower",
 	"relays.state-0": "Avventer",
 	"relays.state-1": "Kun mottak",
 	"relays.state-2": "Aktiv",

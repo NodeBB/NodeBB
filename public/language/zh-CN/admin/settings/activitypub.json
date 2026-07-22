@@ -49,6 +49,7 @@
 	"relays.add": "添加新中继服务",
 	"relays.relay": "中继服务",
 	"relays.state": "状态",
+	"relays.state--1": "Follower",
 	"relays.state-0": "待处理",
 	"relays.state-1": "仅接收",
 	"relays.state-2": "已启用",

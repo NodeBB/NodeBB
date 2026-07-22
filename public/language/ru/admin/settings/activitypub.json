@@ -49,6 +49,7 @@
 	"relays.add": "Add New Relay",
 	"relays.relay": "Relay",
 	"relays.state": "Статус",
+	"relays.state--1": "Follower",
 	"relays.state-0": "На рассмотрении",
 	"relays.state-1": "Receiving only",
 	"relays.state-2": "Активный",
