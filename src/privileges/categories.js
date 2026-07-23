@@ -91,6 +91,28 @@ privsCategories.list = async function (cid) {
 	return payload;
 };
 
+// Aggregated view across every category. Privileges granted in only some categories are
+// reported with the state 'mixed' so the admin UI can show an indeterminate checkbox.
+privsCategories.listAll = async function () {
+	const cids = await categories.getAllCidsFromSet('categories:cid');
+	const keys = await utils.promiseParallel({
+		users: privsCategories.getUserPrivilegeList(),
+		groups: privsCategories.getGroupPrivilegeList(),
+	});
+
+	const payload = await utils.promiseParallel({
+		labelData: Array.from(_privilegeMap.values()),
+		users: helpers.getUserPrivilegesAll(cids, keys.users),
+		groups: helpers.getGroupPrivilegesAll(cids, keys.groups),
+	});
+	payload.keys = keys;
+
+	payload.columnCountUserOther = payload.labelData.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labelData.length - privsCategories._coreSize;
+
+	return payload;
+};
+
 privsCategories.get = async function (cid, uid) {
 	const privs = [
 		'topics:create', 'topics:read', 'topics:schedule',

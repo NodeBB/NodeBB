@@ -18,15 +18,32 @@ define('admin/manage/privileges', [
 
 	let cid;
 
+	// Resolves the selector's raw cid value into the form used throughout this module:
+	// the string 'all' (every category), the string 'admin', or a numeric category id
+	// (0 = global). Anything non-numeric that isn't 'all' falls back to 'admin'.
+	function normalizeCid(rawCid) {
+		if (rawCid === 'all') {
+			return 'all';
+		}
+		const parsed = parseInt(rawCid, 10);
+		return isNaN(parsed) ? 'admin' : parsed;
+	}
+
+	// 'category' template applies when viewing a single real category OR the "all
+	// categories" aggregate; 'global' covers cid 0 (global) and the admin pseudo-cid.
+	function getPrivilegeTablePartial() {
+		const isCategoryView = cid === 'all' || parseInt(cid, 10);
+		return `admin/partials/privileges/${isCategoryView ? 'category' : 'global'}`;
+	}
+
 	Privileges.init = function () {
-		cid = isNaN(parseInt(ajaxify.data.selectedCategory.cid, 10)) ? 'admin' : ajaxify.data.selectedCategory.cid;
+		cid = normalizeCid(ajaxify.data.selectedCategory.cid);
 
 		checkboxRowSelector.init('.privilege-table-container');
 
 		categorySelector.init($('[component="category-selector"]'), {
 			onSelect: function (category) {
-				cid = parseInt(category.cid, 10);
-				cid = isNaN(cid) ? 'admin' : cid;
+				cid = normalizeCid(category.cid);
 				Privileges.refreshPrivilegeTable();
 				ajaxify.updateHistory('admin/manage/privileges/' + (cid || ''));
 			},
@@ -56,7 +73,14 @@ define('admin/manage/privileges', [
 			const isGroup = $rowEl.attr('data-group-name') !== undefined;
 			const isBanned = (isGroup && $rowEl.attr('data-group-name') === 'banned-users') || $rowEl.attr('data-banned') !== undefined;
 			const sourceGroupName = isBanned ? 'banned-users' : 'registered-users';
-			const delta = $checkboxEl.prop('checked') === ($wrapperEl.attr('data-value') === 'true') ? null : state;
+			const dataValue = $wrapperEl.attr('data-value');
+			// When viewing all categories at once a privilege may be granted in only some of
+			// them (data-value="mixed"); any deliberate click there is always a real change,
+			// applied to every category. Otherwise a click that returns to the original state
+			// is a no-op (delta = null).
+			const delta = dataValue === 'mixed' ?
+				state :
+				(state === (dataValue === 'true') ? null : state);
 
 			if (member) {
 				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
@@ -90,9 +114,20 @@ define('admin/manage/privileges', [
 			}
 		});
 
+		// Mixed states must be applied before assumed privileges, so that the inheritance
+		// pass (which reads the parent row) can treat an indeterminate parent as granted.
+		Privileges.exposeMixedPrivileges();
 		Privileges.exposeAssumedPrivileges();
 		checkboxRowSelector.updateAll();
 		Privileges.addEvents(); // events with confirmation modals
+	};
+
+	// In the "all categories" view, privileges granted in some but not all categories are
+	// rendered with data-value="mixed". Show them as indeterminate checkboxes.
+	Privileges.exposeMixedPrivileges = function () {
+		$('.privilege-table td[data-value="mixed"] input[type="checkbox"]').each(function () {
+			this.indeterminate = true;
+		});
 	};
 
 	Privileges.applyDeltaState = (checkboxEl, delta) => {
@@ -199,12 +234,13 @@ define('admin/manage/privileges', [
 	Privileges.refreshPrivilegeTable = function (groupToHighlight) {
 		api.get(`/categories/${cid}/privileges`, {}).then((privileges) => {
 			ajaxify.data.privileges = { ...ajaxify.data.privileges, ...privileges };
-			const tpl = parseInt(cid, 10) ? 'admin/partials/privileges/category' : 'admin/partials/privileges/global';
+			const tpl = getPrivilegeTablePartial();
 			const isAdminPriv = ajaxify.currentPage.endsWith('admin/manage/privileges/admin');
 			app.parseAndTranslate(tpl, { cid, privileges, isAdminPriv }).then((html) => {
 				// Get currently selected filters
 				const btnIndices = $('.privilege-filters button.btn-warning').map((idx, el) => $(el).index()).get();
 				$('.privilege-table-container').html(html);
+				Privileges.exposeMixedPrivileges();
 				Privileges.exposeAssumedPrivileges();
 				document.querySelectorAll('.privilege-filters').forEach((con, i) => {
 					const idx = btnIndices[i] === undefined ? 0 : btnIndices[i];
@@ -248,7 +284,10 @@ define('admin/manage/privileges', [
 		applyPrivilegesToColumn(inputSelectorFn, sourceChecked);
 	};
 
-	Privileges.setPrivilege = (member, privilege, state) => api[state ? 'put' : 'del'](`/categories/${isNaN(cid) ? 0 : cid}/privileges/${encodeURIComponent(privilege)}`, { member });
+	Privileges.setPrivilege = (member, privilege, state) => {
+		const targetCid = cid === 'all' ? 'all' : (isNaN(cid) ? 0 : cid);
+		return api[state ? 'put' : 'del'](`/categories/${targetCid}/privileges/${encodeURIComponent(privilege)}`, { member });
+	};
 
 	Privileges.addUserToPrivilegeTable = async function () {
 		const modal = await modals.dialog({
@@ -295,6 +334,9 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToChildren = function (cid, group) {
+		if (cid === 'all') {
+			return alerts.error('[[admin/manage/privileges:alert.copy-disabled-all]]');
+		}
 		const filter = getGroupPrivilegeFilter();
 		socket.emit('admin.categories.copyPrivilegesToChildren', { cid, group, filter }, function (err) {
 			if (err) {
@@ -305,6 +347,9 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesFromCategory = function (cid, group) {
+		if (cid === 'all') {
+			return alerts.error('[[admin/manage/privileges:alert.copy-disabled-all]]');
+		}
 		const privilegeSubset = getPrivilegeSubset();
 		const message = '<br>' +
 			(group ? `[[admin/manage/privileges:alert.copyPrivilegesFromGroup-warning, ${privilegeSubset}]]` :
@@ -332,6 +377,9 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToAllCategories = function (cid, group) {
+		if (cid === 'all') {
+			return alerts.error('[[admin/manage/privileges:alert.copy-disabled-all]]');
+		}
 		const filter = getGroupPrivilegeFilter();
 		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid, group, filter }, function (err) {
 			if (err) {
@@ -346,7 +394,10 @@ define('admin/manage/privileges', [
 		$(`.privilege-table tr[data-group-name="${sourceGroupName}"] td input[type="checkbox"]:not(.checkbox-helper)`)
 			.parents('[data-privilege]')
 			.each(function (idx, el) {
-				if ($(el).find('input').prop('checked')) {
+				// `indeterminate` covers the "all categories" mixed state: a source group that
+				// holds the privilege in only some categories still confers it to inheritors.
+				const input = $(el).find('input').get(0);
+				if (input && (input.checked || input.indeterminate)) {
 					privs.push(el.getAttribute('data-privilege'));
 				}
 			});
@@ -421,7 +472,7 @@ define('admin/manage/privileges', [
 			return memo;
 		}, {});
 
-		app.parseAndTranslate('admin/partials/privileges/' + ((isNaN(cid) || cid === 0) ? 'global' : 'category'), 'privileges.groups', {
+		app.parseAndTranslate(getPrivilegeTablePartial(), 'privileges.groups', {
 			privileges: {
 				groups: [
 					{
@@ -459,7 +510,7 @@ define('admin/manage/privileges', [
 			return memo;
 		}, {});
 
-		const html = await app.parseAndTranslate('admin/partials/privileges/' + (isNaN(cid) ? 'global' : 'category'), 'privileges.users', {
+		const html = await app.parseAndTranslate(getPrivilegeTablePartial(), 'privileges.users', {
 			privileges: {
 				users: [
 					{
