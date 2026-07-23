@@ -2,7 +2,6 @@
 
 const path = require('path');
 const { fileTypeFromFile } = require('file-type');
-const mime = require('mime').default;
 const nconf = require('nconf');
 
 const user = require('../user');
@@ -210,10 +209,10 @@ async function validateFileExtension(uploadedFile) {
 	const blocked = file.blockedExtensions();
 	function validateExtension(extension) {
 		if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
-			throw new Error(`[[error:invalid-file-type, ${mime.getType(extension)}, ${allowed.join('&#44; ')}]]`);
+			throw new Error(`[[error:invalid-file-type, ${extension}, ${allowed.join('&#44; ')}]]`);
 		}
 		if (blocked.length > 0 && (!extension || extension === '.' || blocked.includes(extension))) {
-			throw new Error(`[[error:blocked-file-type, ${mime.getType(extension) || 'unknown'}]]`);
+			throw new Error(`[[error:blocked-file-type, ${extension || 'unknown'}]]`);
 		}
 	}
 	const extension = path.extname(uploadedFile.name).toLowerCase();
