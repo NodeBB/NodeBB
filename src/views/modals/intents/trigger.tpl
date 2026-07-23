@@ -1,6 +1,6 @@
 <div class="modal-intents-trigger">
 	<button type="button" class="btn btn-primary text-capitalize w-100" data-action="go-login">
-		<i class="fa fa-sign-in-alt"></i> [[globals:login]]
+		<i class="fa fa-sign-in-alt"></i> [[global:login]]
 	</button>
 
 	<hr />

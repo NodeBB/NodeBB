@@ -274,7 +274,7 @@ async function upload(name, req, res, next) {
 async function validateUpload(uploadedFile, allowedTypes) {
 	if (!allowedTypes.includes(uploadedFile.type)) {
 		file.delete(uploadedFile.path);
-		throw new Error(`[[error:invalid-image-type, ${allowedTypes.join('&#44; ')}]]`);
+		throw new Error(`[[error:invalid-image-type, ${uploadedFile.type}, ${allowedTypes.join('&#44; ')}]]`);
 	}
 }
 

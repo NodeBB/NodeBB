@@ -314,5 +314,38 @@ describe('Mocking', () => {
 				});
 			});
 		});
+
+		describe('Actors', () => {
+			describe('.user()', () => {
+				it('should not double-prefix an absolute (remote/SSO) avatar url', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+					const externalAvatar = 'https://example.org/avatar/abc123.png';
+					await user.setUserField(uid, 'picture', externalAvatar);
+
+					const actor = await activitypub.mocks.actors.user(uid);
+
+					assert.strictEqual(actor.icon.url, externalAvatar);
+				});
+
+				it('should prefix a relative avatar path with the forum url', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+					const relativeAvatar = '/assets/uploads/profile/test.png';
+					await user.setUserField(uid, 'picture', relativeAvatar);
+
+					const actor = await activitypub.mocks.actors.user(uid);
+
+					assert.strictEqual(actor.icon.url, `${nconf.get('url')}${relativeAvatar}`);
+				});
+
+				it('should unset the avatar when the stored value is a malformed url', async () => {
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+					await user.setUserField(uid, 'picture', 'https://');
+
+					const actor = await activitypub.mocks.actors.user(uid);
+
+					assert.strictEqual(actor.icon, undefined);
+				});
+			});
+		});
 	});
 });

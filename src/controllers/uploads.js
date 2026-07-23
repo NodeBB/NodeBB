@@ -205,17 +205,23 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 }
 
 async function validateFileExtension(uploadedFile) {
-	const detected = await fileTypeFromFile(uploadedFile.path);
 	const allowed = file.allowedExtensions();
 	const blocked = file.blockedExtensions();
-
-	// if we cant detect with magic bytes fall back to file extension
-	const extension = detected ? `.${detected.ext}` : path.extname(uploadedFile.name).toLowerCase();
-	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
-		throw new Error(`[[error:invalid-file-type, ${allowed.join('&#44; ')}]]`);
+	function validateExtension(extension) {
+		if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
+			throw new Error(`[[error:invalid-file-type, ${extension}, ${allowed.join('&#44; ')}]]`);
+		}
+		if (blocked.length > 0 && (!extension || extension === '.' || blocked.includes(extension))) {
+			throw new Error(`[[error:blocked-file-type, ${extension || 'unknown'}]]`);
+		}
 	}
-	if (blocked.length > 0 && (!extension || extension === '.' || blocked.includes(extension))) {
-		throw new Error(`[[error:blocked-file-type, ${extension || 'unknown'}]]`);
+	const extension = path.extname(uploadedFile.name).toLowerCase();
+	validateExtension(extension);
+
+	const detected = await fileTypeFromFile(uploadedFile.path);
+	const detectedExtension = detected ? `.${detected.ext}` : '';
+	if (detectedExtension && detectedExtension !== extension) {
+		validateExtension(detectedExtension);
 	}
 }
 
