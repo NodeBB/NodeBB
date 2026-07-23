@@ -61,5 +61,8 @@
 	"auto-detect": "זיהוי הגדרת שפה אוטומטית לאורחים",
 	"default-language-help": "שפת ברירת מחדל מתייחס להגדרות שפה לכל המשתמשים המבקרים בפורום. <br />עדיין המשתמשים יכולים לשנות את שפת ברירת המחדל בדף הגדרות המשתמש.",
 	"post-sharing": "שיתוף פוסטים",
-	"info-plugins-additional": "תוספים יכולים להוסיף כאן רשתות נוספות לשיתוף פוסטים."
+	"info-plugins-additional": "תוספים יכולים להוסיף כאן רשתות נוספות לשיתוף פוסטים.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

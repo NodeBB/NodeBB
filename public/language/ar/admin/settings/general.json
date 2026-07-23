@@ -61,5 +61,8 @@
 	"auto-detect": "الكشف عن إعدادات اللغة للزوار بشكل آلي",
 	"default-language-help": "تُحدد اللغة الافتراضية إعدادات اللغة لجميع المستخدمين الذين يزورون المنتدى. <br />يمكن للأعضاء تجاوز اللغة الافتراضية من خلال صفحة إعدادات الحساب الخاصة بهم.",
 	"post-sharing": "Post Sharing",
-	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

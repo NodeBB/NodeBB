@@ -61,5 +61,8 @@
 	"auto-detect": "Détection automatique de la langue pour les invités",
 	"default-language-help": "La langue par défaut détermine les réglages pour tous les utilisateurs qui visitent votre forum. <br />Chaque utilisateur peut ensuite modifier la langue par défaut sur sa page de paramètres.",
 	"post-sharing": "Partage de message",
-	"info-plugins-additional": "Les plugins peuvent ajouter de nouveaux réseaux pour partager des messages."
+	"info-plugins-additional": "Les plugins peuvent ajouter de nouveaux réseaux pour partager des messages.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

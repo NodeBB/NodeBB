@@ -61,5 +61,8 @@
 	"auto-detect": "Oppdag automatisk språkinnstilling for gjester",
 	"default-language-help": "Standardspråket avgjør språkinnstillingene for alle brukere som besøker forumet ditt. <br />Individuelle brukere kan overstyre standardspråket i kontoinnstillingene sine.",
 	"post-sharing": "Deling av innlegg",
-	"info-plugins-additional": "Plugins kan legge til flere nettverk for deling av innlegg."
+	"info-plugins-additional": "Plugins kan legge til flere nettverk for deling av innlegg.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

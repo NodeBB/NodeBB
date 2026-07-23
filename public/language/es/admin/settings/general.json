@@ -61,5 +61,8 @@
 	"auto-detect": "Auto Detectar Configuración de Idioma para Visitantes",
 	"default-language-help": "El idioma por defecto determina la configuración del idioma usado para todos los usuarios que visiten el foro. <br />Los usuarios, a nivel individual, pueden sobreescribir el idioma por defecto en la página de configuración de su cuenta.",
 	"post-sharing": "Compartir entradas",
-	"info-plugins-additional": "Los plugins pueden añadir redes adicionales para compartir entradas/respuestas."
+	"info-plugins-additional": "Los plugins pueden añadir redes adicionales para compartir entradas/respuestas.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

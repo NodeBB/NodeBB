@@ -61,5 +61,8 @@
 	"auto-detect": "Tự Phát Hiện Cài Đặt Ngôn Ngữ Cho Khách",
 	"default-language-help": "Ngôn ngữ mặc định là cài đặt ngôn ngữ cho tất cả người dùng diễn đàn của bạn. <br />Người dùng cá nhân có thể thay đổi ngôn ngữ họ thích trong cài đặt tài khoản",
 	"post-sharing": "Chia Sẻ Bài Đăng",
-	"info-plugins-additional": "Plugin có thể thêm các mạng bổ sung để chia sẻ bài đăng."
+	"info-plugins-additional": "Plugin có thể thêm các mạng bổ sung để chia sẻ bài đăng.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

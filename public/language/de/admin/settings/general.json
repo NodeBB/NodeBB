@@ -61,5 +61,8 @@
 	"auto-detect": "Sprach-Einstellung bei Gästen automatisch ermitteln",
 	"default-language-help": "Die Standardsprache bestimmt die Spracheinstellungen für alle Benutzer, die das Forum besuchen. <br />Einzelne Benutzer können die Standardsprache auf ihrer Kontoeinstellungsseite überschreiben.",
 	"post-sharing": "Beitragsfreigabe",
-	"info-plugins-additional": "Plugins können zusätzliche Netzwerke zum Teilen von Beiträgen hinzufügen."
+	"info-plugins-additional": "Plugins können zusätzliche Netzwerke zum Teilen von Beiträgen hinzufügen.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

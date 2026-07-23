@@ -61,5 +61,8 @@
 	"auto-detect": "Nyelvi beállítás automatikus észlelése vendégeknek",
 	"default-language-help": "Az alapértelmezett nyelv meghatározza a nyelvi beállításokat minden fórumot látogató számára. <br />Ezt az egyes felhasználók felülírhatják fiókjuk beállításaiban.",
 	"post-sharing": "Hozzászólások megosztása",
-	"info-plugins-additional": "Beépülőkkel további hálózatok adhatók hozzá hozzászólások megosztásához."
+	"info-plugins-additional": "Beépülőkkel további hálózatok adhatók hozzá hozzászólások megosztásához.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

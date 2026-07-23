@@ -61,5 +61,8 @@
 	"auto-detect": "Qonaqlar üçün avtomatik təsbit dil parametri",
 	"default-language-help": "Defolt dil forumunuzu ziyarət edən bütün istifadəçilər üçün dil parametrlərini müəyyən edir. <br />Fərdi istifadəçilər öz hesab parametrləri səhifəsində defolt dili ləğv edə bilərlər.",
 	"post-sharing": "Yazı paylaşımı",
-	"info-plugins-additional": "Pluginlər yazıların paylaşılması üçün əlavə şəbəkələr əlavə edə bilər."
+	"info-plugins-additional": "Pluginlər yazıların paylaşılması üçün əlavə şəbəkələr əlavə edə bilər.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

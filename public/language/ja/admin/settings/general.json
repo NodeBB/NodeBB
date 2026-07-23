@@ -61,5 +61,8 @@
 	"auto-detect": "ゲストの言語を自動検出する",
 	"default-language-help": "デフォルト言語は、フォーラムにアクセスするすべてのユーザーの言語設定を決定します。<br />個々のユーザーは、アカウント設定ページでデフォルト言語を上書きできます。",
 	"post-sharing": "投稿共有",
-	"info-plugins-additional": "プラグインは投稿共有用の追加ネットワークを追加できます。"
+	"info-plugins-additional": "プラグインは投稿共有用の追加ネットワークを追加できます。",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

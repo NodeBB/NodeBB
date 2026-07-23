@@ -61,5 +61,8 @@
 	"auto-detect": "Auto Detect Language Setting for Guests",
 	"default-language-help": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
 	"post-sharing": "การแชร์กระทู้",
-	"info-plugins-additional": "ส่วนเสริมสามารถเพิ่มการเชือมต่อโซเชียลมิเดียเพื่อแชร์กระทู้"
+	"info-plugins-additional": "ส่วนเสริมสามารถเพิ่มการเชือมต่อโซเชียลมิเดียเพื่อแชร์กระทู้",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

@@ -61,5 +61,8 @@
 	"auto-detect": "自动检测游客的语言设置",
 	"default-language-help": "默认语言决定了所有访问您论坛的用户的语言设置。<br />用户可以在其账号设置页面中覆盖默认语言。",
 	"post-sharing": "帖子分享",
-	"info-plugins-additional": "插件可以添加额外的社交网络，用于分享帖子。"
+	"info-plugins-additional": "插件可以添加额外的社交网络，用于分享帖子。",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

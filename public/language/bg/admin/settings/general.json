@@ -61,5 +61,8 @@
 	"auto-detect": "Автоматично разпознаване на езика за гостите",
 	"default-language-help": "Езикът по подразбиране определя езиковите настройки за всички потребители, които посещават Вашия форум. <br />Отделните потребители могат да сменят езика си от страницата с настройки на профила си.",
 	"post-sharing": "Споделяне на публикации",
-	"info-plugins-additional": "Добавките могат да добавят допълнителни мрежи за споделяне на публикации."
+	"info-plugins-additional": "Добавките могат да добавят допълнителни мрежи за споделяне на публикации.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }
