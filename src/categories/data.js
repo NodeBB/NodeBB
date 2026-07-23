@@ -152,7 +152,7 @@ async function modifyCategories(categories, fields) {
 		}
 
 		if (hasField('description') && category.cid !== -1) {
-			category.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', category.description);
+			category.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', category.description || '');
 		}
 	}));
 }
