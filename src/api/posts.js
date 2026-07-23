@@ -146,7 +146,7 @@ postsAPI.edit = async function (caller, data) {
 	const returnData = { ...postObj[0], ...editResult.post };
 	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
 
-	if (!editResult.post.deleted) {
+	if (!editResult.post.deleted && editResult.post.changed) {
 		const topicScheduled = await topics.getTopicField(editResult.topic.tid, 'scheduled');
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
 		if (!topicScheduled) {
