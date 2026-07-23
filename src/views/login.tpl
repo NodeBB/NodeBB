@@ -50,7 +50,7 @@
 
 						<div class="alert alert-danger {{{ if !error }}} hidden{{{ end }}}" id="login-error-notify" role="alert" aria-atomic="true">
 							<strong>{{tx("login:failed-login-attempt")}}</strong>
-							<p class="mb-0">{error}</p>
+							<p class="mb-0">{{tx(error)}}</p>
 						</div>
 
 						<hr/>
