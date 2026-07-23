@@ -242,11 +242,9 @@ Emailer.send = async (template, uid, params) => {
 
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
 
-	if (!meta.config.sendEmailToBanned && template !== 'banned') {
-		if (userData.banned) {
-			winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
-			return;
-		}
+	if (userData.banned && !meta.config.sendEmailToBanned && template !== 'banned') {
+		winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
+		return;
 	}
 
 	if (!userData || !userData.email) {

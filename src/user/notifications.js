@@ -137,6 +137,9 @@ UserNotifications.getNotifications = async function (nids, uid) {
 		if (n?.bodyShort) {
 			n.bodyShort = await tx.translate(n.bodyShort, userSettings.userLang);
 		}
+		if (n?.bodyLong && n?.txBodyLong) {
+			n.bodyLong = await tx.translate(n.bodyLong, userSettings.userLang);
+		}
 	}));
 
 	const result = await plugins.hooks.fire('filter:user.notifications.getNotifications', {

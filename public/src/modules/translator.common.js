@@ -487,6 +487,10 @@ module.exports = function (utils, load, warn) {
 			return this.rtlLanguages.includes(lang) ? 'rtl' : 'ltr';
 		},
 
+		isTranslationKey: function (str) {
+			return typeof str === 'string' && /\[\[([a-zA-Z0-9_.-]+:[^[\]]+)\]\]/.test(str);
+		},
+
 		flush: function () {
 			Object.keys(Translator.cache).forEach(function (code) {
 				Translator.cache[code].translations = {};
