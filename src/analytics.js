@@ -8,6 +8,7 @@ const _ = require('lodash');
 const sleep = util.promisify(setTimeout);
 
 const db = require('./database');
+const meta = require('./meta');
 const utils = require('./utils');
 const plugins = require('./plugins');
 const pubsub = require('./pubsub');
@@ -124,7 +125,7 @@ Analytics.apPageView = async function ({ ip }) {
 };
 
 async function incrementUniqueVisitors(ip) {
-	if (ip) {
+	if (ip && meta.config.logIPs !== 0) {
 		const score = await db.sortedSetScore('ip:recent', ip);
 		let record = !score;
 		if (score) {

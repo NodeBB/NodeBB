@@ -26,6 +26,7 @@ settingsController.general = async (req, res) => {
 		postSharing,
 		languages: languageData,
 		autoDetectLang: meta.config.autoDetectLang,
+		logIPs: meta.config.logIPs,
 	});
 };
 

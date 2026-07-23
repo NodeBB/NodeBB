@@ -304,6 +304,18 @@
 
 			<hr/>
 
+			<div id="privacy" class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">{{tx("admin/settings/general:privacy")}}</h5>
+
+				<div class="form-check form-switch mb-3">
+					<input type="checkbox" class="form-check-input" id="logIPs" data-field="logIPs" name="logIPs" {{{ if logIPs }}}checked{{{ end }}} />
+					<label for="logIPs" class="form-check-label">{{tx("admin/settings/general:log-ips")}}</label>
+				</div>
+				<p class="form-text">{{tx("admin/settings/general:log-ips-help")}}</p>
+			</div>
+
+			<hr/>
+
 			<div id="post-sharing" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">{{tx("admin/settings/general:post-sharing")}}</h5>
 				<div class="mb-3">
