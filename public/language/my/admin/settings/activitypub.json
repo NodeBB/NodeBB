@@ -25,7 +25,7 @@
 	"rules": "စည်းမျဉ်းများ",
 	"rules-intro": "စည်းမျဉ်းများ နိဒါန်း",
 	"rules.modal.title": "စည်းမျဉ်း",
-	"rules.modal.instructions": "ညွှန်ကြားချက်များ",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "စည်းမျဉ်း ထည့်ရန်",
 	"rules.help-hashtag": "Hashtag အကူအညီ",
 	"rules.help-user": "အသုံးပြုသူ အကူအညီ",

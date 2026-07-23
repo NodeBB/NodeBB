@@ -25,7 +25,7 @@
 	"rules": "Catégorisation",
 	"rules-intro": "Le contenu découvert via ActivityPub peut être automatiquement classé selon certaines règles (par exemple, hashtag).",
 	"rules.modal.title": "Comment ça fonctionne",
-	"rules.modal.instructions": "Tout contenu entrant est vérifié selon ces règles de catégorisation, et le contenu correspondant est automatiquement déplacé dans la catégorie choisie.<br /><br /><strong>Remarque :</strong> Le contenu déjà catégorisé (c’est-à-dire dans une catégorie distante) n’est pas traité par ces règles.",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "Ajouter une nouvelle règle",
 	"rules.help-hashtag": "Les sujets contenant ce hashtag, quelle que soit la casse, seront inclus. Ne saisissez pas le symbole <code>#</code>.",
 	"rules.help-user": "Les sujets créés par l’utilisateur spécifié seront pris en compte. Entrez un identifiant ou un ID complet (par ex. <code>bob@exemple.org</code> ou <code>https://exemple.org/users/bob</code>).",

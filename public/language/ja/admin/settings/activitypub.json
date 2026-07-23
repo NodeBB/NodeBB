@@ -25,7 +25,7 @@
 	"rules": "カテゴリ分け",
 	"rules-intro": "ActivityPubで発見されたコンテンツは、特定のルール（ハッシュタグなど）に基づいて自動的にカテゴリ分けできます",
 	"rules.modal.title": "仕組み",
-	"rules.modal.instructions": "受信するすべてのコンテンツはこれらのカテゴリ分けルールと照合され、一致するコンテンツは選択したカテゴリに自動的に移動されます。<br /><br /><strong>注意</strong> 既にカテゴリ分けされているコンテンツ（リモートカテゴリ内）はこれらのルールを通過しません。",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "新しいルールを追加",
 	"rules.help-hashtag": "この大文字小文字を区別しないハッシュタグを含むスレッドが一致します。<code>#</code>記号は入力しないでください",
 	"rules.help-user": "入力したユーザーが作成したスレッドが一致します。ハンドルまたは完全なIDを入力（例: <code>bob@example.org</code>または<code>https://example.org/users/bob</code>）。",

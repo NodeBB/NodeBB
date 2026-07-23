@@ -25,7 +25,7 @@
 	"rules": "Kategorisering",
 	"rules-intro": "Innhald oppdaga via ActivityPub kan automatisk kategoriserast basert på bestemte reglar (t.d. emneknagg)",
 	"rules.modal.title": "Slik fungerer det",
-	"rules.modal.instructions": "Alt innkomande innhald blir sjekka mot desse kategoriseringsreglane, og samsvarande innhald blir automatisk flytta til vald kategori.<br /><br /><strong>N.B.</strong> Innhald som allereie er kategorisert (t.d. i ein ekstern kategori), vil ikkje gå gjennom desse reglane.",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "Legg til ny regel",
 	"rules.help-hashtag": "Innlegg som inneheld denne emneknaggen (skil mellom store og små bokstavar), vil samsvare. Ikkje skriv inn <code>#</code> symbolet",
 	"rules.help-user": "Innlegg oppretta av den angitte brukaren vil samsvare. Skriv inn ei brukaradresse eller full ID (t.d. <code>bob@example.org</code> eller <code>https://example.org/users/bob</code>.",

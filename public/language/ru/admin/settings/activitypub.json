@@ -25,7 +25,7 @@
 	"rules": "Categorization",
 	"rules-intro": "Content discovered via ActivityPub can be automatically categorized based on certain rules (e.g. hashtag)",
 	"rules.modal.title": "Как это работает",
-	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically moved into the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will not pass through these rules.",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "Add New Rule",
 	"rules.help-hashtag": "Будут совпадать темы, содержащие этот хэштег без учета регистра. Не вводите символ #",
 	"rules.help-user": "Будут совпадать темы, созданные указанным пользователем. Введите дескриптор или полный ID (напр. bob@example.com или https://example.com/users/bob)",

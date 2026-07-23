@@ -25,7 +25,7 @@
 	"rules": "Przyszeregowanie",
 	"rules-intro": "Zawartość odkrywana via ActivePub może być automatycznie przyszeregowana w oparciu m.in o hashtag",
 	"rules.modal.title": "Jak to działa",
-	"rules.modal.instructions": "Wszelka zawartość z zewnątrz jest sprawdzana pod kątem zasad przyszeregowania a zatem z automatu umieszczana we własciwych kategoriach.<br /><br /><strong>N.B.</strong> Zawartość już przyszeregowana (np. zdalna kategoria) nie podlega przetworzeniu przez reguły.",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "Dodaj nową regułę",
 	"rules.help-hashtag": "Wątki zawierające hashtag gdzie wielkość liter nie ma znaczenia będą dopasowane. Pomiń symbol <code>#</code> przy wprowadzaniu",
 	"rules.help-user": "Wątki utworzone przez wybranego użytkownika będą dopasowane. Wprowadź zawołanie lub pełne ID (np. <code>bob@example.org</code> lub <code>https://example.org/users/bob</code>.",

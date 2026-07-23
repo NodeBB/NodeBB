@@ -25,7 +25,7 @@
 	"rules": "סיווג",
 	"rules-intro": "ניתן לסווג תוכן שהתגלה דרך ActivityPub באופן אוטומטי בהתבסס על כללים מסוימים (למשל hashtag)",
 	"rules.modal.title": "איך זה עובד",
-	"rules.modal.instructions": "כל תוכן שנכנס נבדק מול כללי סיווג אלה, תוכן תואם מועבר אוטומטית לקטגוריה הרצויה.<br /><br /><strong>נ.ב.</strong> תוכן שכבר מסווג (כלומר בקטגוריה מרוחקת) לא יעבור בכללים אלה.",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "הוספת כלל חדש",
 	"rules.help-hashtag": "נושאים המכילים האשטג הזה ללא רגישות רישיות יתאימו. אל תכינסו את התו <code>#</code>",
 	"rules.help-user": "נושאים שנוצרו על ידי המשתמש שהזין יתאימו. הזן ידית אחיזה או מזהה מלא (למשל. <code>bob@example.org</code> או<code>https://example.org/users/bob</code>.",

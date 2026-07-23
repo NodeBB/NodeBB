@@ -25,7 +25,7 @@
 	"rules": "Kategorizace",
 	"rules-intro": "Obsah získaný prostřednictvím ActivityPub může být automaticky kategorizován podle určitých pravidel (např. hashtagů).",
 	"rules.modal.title": "Jak to funguje",
-	"rules.modal.instructions": "Jakýkoli příchozí obsah je kontrolován podle těchto pravidel kategorizace a obsah, který pravidlům odpovídá, je automaticky přesunut do vybrané kategorie. <br /><br /><strong>N.B.</strong>Obsah, který je již kategorizován (např. ve vzdálené kategorii), těmito pravidly neprochází.",
+	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
 	"rules.add": "Přidat nové pravidlo",
 	"rules.help-hashtag": "Témata obsahující tento hashtag bez ohledu na velikost písmen budou odpovídat. Nepište symbol <code>#</code>.",
 	"rules.help-user": "Témata vytvořená zadaným uživatelem budou odpovídat. Zadejte identifikátor nebo celé ID (např. <code>bob@example.org</code> nebo <code>https://example.org/users/bob</code>).",
