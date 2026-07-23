@@ -298,7 +298,7 @@ describe('Upload Controllers', () => {
 				const body = await response.json();
 
 				assert.strictEqual(response.status, 500);
-				assert.strictEqual(body?.status?.message, 'Invalid file type text/html. Allowed types are: .png, .jpg, .bmp, .jpeg');
+				assert.strictEqual(body?.status?.message, 'Invalid file type .html. Allowed types are: .png, .jpg, .bmp, .jpeg');
 			} finally {
 				meta.config.allowedFileExtensions = oldValue;
 			}
