@@ -12,7 +12,6 @@ const {
 	parseDraftRequest,
 	parseRFC9421Request,
 	verifyRFC9421Signature,
-	parseAndImportPublicKey,
 } = require('@misskey-dev/node-http-message-signatures');
 
 const Signatures = module.exports;
@@ -125,14 +124,25 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 	}
 };
 
+function getRequestUrl(req) {
+	const relativePath = nconf.get('relative_path') || '';
+	let requestPath = req.originalUrl || req.url || req.path || '/';
+
+	if (relativePath && !requestPath.startsWith(relativePath)) {
+		requestPath = `${relativePath}${requestPath.startsWith('/') ? '' : '/'}${requestPath}`;
+	}
+
+	const origin = nconf.get('url_parsed') ? nconf.get('url_parsed').origin : nconf.get('url');
+	return new URL(requestPath, origin).href;
+}
+
 async function tryVerifyDraft(req, fetchPublicKeyFn) {
 	try {
 		if (!req.headers.signature) {
 			return false;
 		}
 
-		// Build absolute URL required by the library parser
-		const fullUrl = new URL(req.originalUrl || req.url, nconf.get('url')).href;
+		const fullUrl = getRequestUrl(req);
 		const requestObj = {
 			method: req.method,
 			url: fullUrl,
@@ -151,7 +161,6 @@ async function tryVerifyDraft(req, fetchPublicKeyFn) {
 			throw new Error(`Public key not found for keyId: ${parsed.value.keyId}`);
 		}
 
-		// Pass parsed.value, the public key, and winston as the errorLogger
 		const result = await verifyDraftSignature(
 			parsed.value,
 			publicKeyPem,
@@ -171,8 +180,7 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 			return false;
 		}
 
-		// Build absolute URL required by the library parser
-		const fullUrl = new URL(req.originalUrl || req.url, nconf.get('url')).href;
+		const fullUrl = getRequestUrl(req);
 		const requestObj = {
 			method: req.method,
 			url: fullUrl,
@@ -193,11 +201,11 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 			throw new Error(`Public key not found for keyId: ${keyId}`);
 		}
 
-		// Import public key into CryptoKey format required by library
-		const publicKey = await parseAndImportPublicKey(publicKeyPem);
-
-		// Pass the top-level `parsed` object to verifyRFC9421Signature
-		const result = await verifyRFC9421Signature(parsed, publicKey);
+		const result = await verifyRFC9421Signature(
+			parsed,
+			publicKeyPem,
+			msg => winston.warn(`[activitypub/signatures] verifyRFC9421Signature error: ${msg}`)
+		);
 
 		return !!result;
 	} catch (err) {
