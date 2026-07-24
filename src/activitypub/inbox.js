@@ -701,8 +701,8 @@ inbox.announce = async (req) => {
 		}
 	}
 
-	// Broadcast to relay followers if we have a pid
-	if (pid) {
+	// Broadcast to relay followers if we have a pid (skip if relayed — relay already distributes)
+	if (pid && !fromRelay) {
 		await activitypub.feps.announce(pid, object);
 	}
 };
