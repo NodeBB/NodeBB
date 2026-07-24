@@ -2,7 +2,7 @@
 	<!-- IMPORT admin/partials/settings/header.tpl -->
 
 	<div class="row settings m-0">
-		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
+		<div id="spy-container" class="col-12 px-0 mb-4" tabindex="0">
 			<div class="mb-4">
 				<p class="lead">{{tx("admin/settings/activitypub:analytics.intro")}}</p>
 				<p>{{tx("admin/settings/activitypub:analytics.details")}}</p>
