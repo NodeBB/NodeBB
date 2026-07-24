@@ -412,6 +412,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 		return { tid, count, queued };
 	} catch (e) {
+		console.log(e.stack);
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
 	} finally {
@@ -827,6 +828,11 @@ Notes.announce.list = async ({ pid, tid }) => {
 };
 
 Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
+	const exists = await posts.exists(pid);
+	if (!exists) {
+		return;
+	}
+
 	const [tid] = await Promise.all([
 		posts.getPostField(pid, 'tid'),
 		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
@@ -839,6 +845,11 @@ Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 };
 
 Notes.announce.remove = async (pid, actor) => {
+	const exists = await posts.exists(pid);
+	if (!exists) {
+		return;
+	}
+
 	await db.sortedSetRemove(`pid:${pid}:announces`, actor);
 	Notes.announce._cache.del(`pid:${pid}:announces`);
 
