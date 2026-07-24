@@ -62,7 +62,7 @@
 	"default-language-help": "Езикът по подразбиране определя езиковите настройки за всички потребители, които посещават Вашия форум. <br />Отделните потребители могат да сменят езика си от страницата с настройки на профила си.",
 	"post-sharing": "Споделяне на публикации",
 	"info-plugins-additional": "Добавките могат да добавят допълнителни мрежи за споделяне на публикации.",
-	"privacy": "Privacy",
-	"log-ips": "Log IP Addresses",
-	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
+	"privacy": "Поверителност",
+	"log-ips": "Записване на IP адреси в журнала",
+	"log-ips-help": "Когато това е включено, IP адресите на всички посетители ще се съхраняват в сортирана колекция за аналитични цели. Това се използва за изчисляване на броя на уникалните посетители."
 }
