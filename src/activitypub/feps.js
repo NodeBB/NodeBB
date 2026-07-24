@@ -42,7 +42,7 @@ Feps.announce = async function announce(id, activity) {
 		return;
 	}
 
-	const { actor } = activity;
+	const actor = activity.actor || activity.attributedTo;
 	if (localCid && actor && !actor.startsWith(nconf.get('url'))) {
 		targets.unshift(actor);
 	}
