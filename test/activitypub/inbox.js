@@ -1163,7 +1163,6 @@ describe('Inbox', () => {
 			it('should broadcast a public activity received via announce to relay followers', async () => {
 				await db.sortedSetAdd('relays:state', -1, relayActor);
 				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
-				await activitypub.relays.add(relayActor);
 
 				const { note, id } = helpers.mocks.note();
 				const { activity: createActivity } = helpers.mocks.create(note);

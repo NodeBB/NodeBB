@@ -9,7 +9,9 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Feps = module.exports;
 
-Feps.announce = async function announce(id, activity) {
+Feps.announce = async function announce(id, activity, options = {}) {
+	const { fromRelay } = options;
+
 	let localId;
 	if (String(id).startsWith(nconf.get('url'))) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
@@ -31,13 +33,17 @@ Feps.announce = async function announce(id, activity) {
 
 	let relays = await activitypub.relays.list();
 	relays = relays.reduce((memo, { state, url }) => {
-		if (state === 2) {
+		if (state === 2 && !fromRelay) {
 			memo.push(url);
 		}
 		return memo;
 	}, []);
 	const followers = localCid ? await activitypub.notes.getCategoryFollowers(cid) : (cid ? [cid] : []);
 	const targets = relays.concat(followers);
+
+	// Broadcast raw activity to relay followers (always, even when fromRelay — relay followers still need it)
+	await activitypub.relays.broadcast(activity);
+
 	if (!targets.length) {
 		return;
 	}
@@ -81,7 +87,4 @@ Feps.announce = async function announce(id, activity) {
 	relays.forEach((relay) => {
 		activitypub.analytics.relays.out(relay);
 	});
-
-	// Broadcast raw activity to relay followers
-	await activitypub.relays.broadcast(activity);
 };
