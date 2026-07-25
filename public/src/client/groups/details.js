@@ -1,6 +1,7 @@
 'use strict';
 
 define('forum/groups/details', [
+	'bootstrap',
 	'forum/groups/memberlist',
 	'iconSelect',
 	'components',
@@ -14,6 +15,7 @@ define('forum/groups/details', [
 	'helpers',
 	'translator',
 ], function (
+	bootstrap,
 	memberList,
 	iconSelect,
 	components,
@@ -34,6 +36,8 @@ define('forum/groups/details', [
 		const detailsPage = components.get('groups/container');
 
 		groupName = ajaxify.data.group.name;
+
+		handleTabNavigation(detailsPage);
 
 		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
@@ -187,6 +191,31 @@ define('forum/groups/details', [
 			}
 		});
 	};
+
+	function handleTabNavigation(detailsPage) {
+		if (window.location.hash) {
+			const tabId = window.location.hash.slice(1);
+			const tabToggle = document.querySelector(
+				`[data-bs-toggle="tab"][data-bs-target="#groups-${tabId}"]`
+			);
+			if (tabToggle) {
+				bootstrap.Tab.getOrCreateInstance(tabToggle).show();
+			}
+		}
+
+		detailsPage.find('[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+			const tabTarget = event.target.getAttribute('data-bs-target');
+			if (!tabTarget || !tabTarget.startsWith('#')) {
+				return;
+			}
+
+			const paneId = tabTarget.slice(1);
+			const hash = paneId.startsWith('groups-') ? `#${paneId.slice('groups-'.length)}` : tabTarget;
+			if (window.location.hash !== hash) {
+				history.replaceState(null, '', hash);
+			}
+		});
+	}
 
 	Details.prepareSettings = function () {
 		const settingsFormEl = components.get('groups/settings');
