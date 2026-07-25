@@ -33,7 +33,7 @@ module.exports = function (Posts) {
 		if (data.toPid) {
 			postData.toPid = data.toPid;
 		}
-		if (data.ip && meta.config.trackIpPerPost) {
+		if (data.ip && meta.config.logIPs && meta.config.trackIpPerPost) {
 			postData.ip = data.ip;
 		}
 		if (data.handle && !parseInt(uid, 10)) {

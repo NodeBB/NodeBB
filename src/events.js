@@ -8,6 +8,7 @@ const batch = require('./batch');
 const user = require('./user');
 const utils = require('./utils');
 const plugins = require('./plugins');
+const meta = require('./meta');
 
 const events = module.exports;
 
@@ -94,6 +95,10 @@ events.log = async function (data) {
 	if (data.hasOwnProperty('uid') && data.uid) {
 		setKeys.push(`events:time:uid:${data.uid}`);
 	}
+	if (!meta.config.logIPs) {
+		delete data.ip;
+	}
+
 	await Promise.all([
 		db.sortedSetsAdd(setKeys, data.timestamp, eid),
 		db.setObject(`event:${eid}`, data),

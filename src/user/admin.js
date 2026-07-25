@@ -8,12 +8,13 @@ const { AsyncParser } = require('@json2csv/node');
 
 const { baseDir } = require('../constants').paths;
 const db = require('../database');
+const meta = require('../meta');
 const plugins = require('../plugins');
 const batch = require('../batch');
 
 module.exports = function (User) {
 	User.logIP = async function (uid, ip) {
-		if (!(parseInt(uid, 10) > 0)) {
+		if (!(parseInt(uid, 10) > 0) || !meta.config.logIPs) {
 			return;
 		}
 		const now = Date.now();
