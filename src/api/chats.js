@@ -414,9 +414,16 @@ chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
 };
 
 chatsAPI.getIpAddress = async (caller, { mid }) => {
-	const allowed = await privileges.global.can('view:users:info', caller.uid);
+	const [allowed, roomId] = await Promise.all([
+		privileges.global.can('view:users:info', caller.uid),
+		messaging.getMessageField(mid, 'roomId'),
+	]);
 	if (!allowed) {
 		throw new Error('[[error:no-privileges]]');
+	}
+	const inRoom = await messaging.isUserInRoom(caller.uid, roomId);
+	if (!inRoom) {
+		throw new Error('[[error:not-allowed]]');
 	}
 	const ip = await messaging.getMessageField(mid, 'ip');
 	return { ip };
