@@ -25,7 +25,7 @@
 	"rules": "Categorizzazione",
 	"rules-intro": "I contenuti scoperti tramite ActivityPub possono essere categorizzati automaticamente in base a determinate regole (ad es. hashtag)",
 	"rules.modal.title": "Come funziona",
-	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
+	"rules.modal.instructions": "Ogni contenuto in arrivo viene verificato in base a queste regole di categorizzazione e quelli corrispondenti vengono automaticamente pubblicati anche nella categoria prescelta.<br /><br /><strong>N.B.</strong> I contenuti già categorizzati (ovvero inseriti in una categoria remota) saranno comunque sottoposti a queste regole e potranno essere pubblicati anche in altre categorie.",
 	"rules.add": "Aggiungi nuova regola",
 	"rules.help-hashtag": "Le discussioni contenenti questo hashtag senza distinzione tra maiuscole e minuscole corrisponderanno. Non inserire il simbolo <code>#</code>",
 	"rules.help-user": "Le discussioni create dall'utente inserito corrisponderanno. Inserisci un nome utente o un ID completo (ad es. <code>bob@example.org</code> or <code>https://example.org/users/bob</code>.",

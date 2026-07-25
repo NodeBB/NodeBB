@@ -63,6 +63,6 @@
 	"post-sharing": "Condivisione post",
 	"info-plugins-additional": "I plugin possono aggiungere reti aggiuntive per la condivisione dei post.",
 	"privacy": "Privacy",
-	"log-ips": "Log IP Addresses",
-	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
+	"log-ips": "Registra gli indirizzi IP",
+	"log-ips-help": "Quando abilitata, gli indirizzi IP di tutti i visitatori sono memorizzati in un insieme ordinato a fini di analisi. Ciò serve a calcolare il numero di visitatori unici."
 }
