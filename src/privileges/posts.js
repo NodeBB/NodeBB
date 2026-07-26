@@ -22,15 +22,19 @@ privsPosts.get = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
 		return [];
 	}
-	const cids = await posts.getCidsByPids(pids);
-	const uniqueCids = _.uniq(cids);
+	const postData = await posts.getPostsFields(pids, ['tid']);
+	const uniqTids = _.uniq(postData.map(p => p && p.tid).filter(Boolean));
+	const topicData = await topics.getTopicsFields(uniqTids, ['cid', 'uid', 'deleted', 'scheduled']);
+	const tidToTopic = _.zipObject(uniqTids, topicData);
+	const uniqueCids = _.uniq(topicData.map(t => t && t.cid).filter(Boolean));
 
 	const results = await utils.promiseParallel({
 		isAdmin: user.isAdministrator(uid),
 		isModerator: user.isModerator(uid, uniqueCids),
 		isOwner: posts.isOwner(pids, uid),
-		'topics:read': helpers.isAllowedTo('topics:read', uid, uniqueCids),
 		read: helpers.isAllowedTo('read', uid, uniqueCids),
+		'topics:read': helpers.isAllowedTo('topics:read', uid, uniqueCids),
+		'topics:schedule': helpers.isAllowedTo('topics:schedule', uid, uniqueCids),
 		'posts:edit': helpers.isAllowedTo('posts:edit', uid, uniqueCids),
 		'posts:history': helpers.isAllowedTo('posts:history', uid, uniqueCids),
 		'posts:view_deleted': helpers.isAllowedTo('posts:view_deleted', uid, uniqueCids),
@@ -39,24 +43,33 @@ privsPosts.get = async function (pids, uid) {
 
 	const isModerator = _.zipObject(uniqueCids, results.isModerator);
 	const privData = {};
-	privData['topics:read'] = _.zipObject(uniqueCids, results['topics:read']);
 	privData.read = _.zipObject(uniqueCids, results.read);
+	privData['topics:read'] = _.zipObject(uniqueCids, results['topics:read']);
+	privData['topics:schedule'] = _.zipObject(uniqueCids, results['topics:schedule']);
 	privData['posts:edit'] = _.zipObject(uniqueCids, results['posts:edit']);
 	privData['posts:history'] = _.zipObject(uniqueCids, results['posts:history']);
 	privData['posts:view_deleted'] = _.zipObject(uniqueCids, results['posts:view_deleted']);
 	privData.disabled = _.zipObject(uniqueCids, results.categoryData.map(c => c && c.disabled));
 
-	const privileges = cids.map((cid, i) => {
+	const privileges = postData.map((post, i) => {
+		const topic = tidToTopic[post.tid] || {};
+		const { cid } = topic;
+		const isTopicOwner = String(topic.uid) === String(uid);
 		const isAdminOrMod = results.isAdmin || isModerator[cid];
 		const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator[i])) || results.isAdmin;
 		const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
 		const viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
 
+		const canViewDeletedScheduled = privsTopics.canViewDeletedScheduled(topic, {
+			view_deleted: results.isAdmin || isTopicOwner || privData['posts:view_deleted'][cid],
+			view_scheduled: results.isAdmin || privData['topics:schedule'][cid],
+		});
+
 		return {
 			editable: editable,
 			move: isAdminOrMod,
 			isAdminOrMod: isAdminOrMod,
-			'topics:read': privData['topics:read'][cid] || results.isAdmin,
+			'topics:read': results.isAdmin || (privData['topics:read'][cid] && canViewDeletedScheduled),
 			read: privData.read[cid] || results.isAdmin,
 			'posts:history': viewHistory,
 			'posts:view_deleted': viewDeletedPosts,
@@ -131,7 +144,9 @@ privsPosts.canEdit = async function (pid, uid) {
 		postData: posts.getPostFields(pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
 		userData: user.getUserFields(uid, ['reputation']),
 	});
-
+	if (!results.postData.tid) {
+		return { flag: false, message: '[[error:no-post]]' };
+	}
 	results.isMod = results.isMod[0];
 	if (results.isAdmin) {
 		return { flag: true };

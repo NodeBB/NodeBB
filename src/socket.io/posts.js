@@ -48,8 +48,8 @@ SocketPosts.getPostTimestampByIndex = async function (socket, data) {
 		pid = await db.getSortedSetRange(`tid:${data.tid}:posts`, data.index - 1, data.index - 1);
 	}
 	pid = Array.isArray(pid) ? pid[0] : pid;
-	const topicPrivileges = await privileges.topics.get(data.tid, socket.uid);
-	if (!topicPrivileges['topics:read']) {
+	const [postPrivileges] = await privileges.posts.get([pid], socket.uid);
+	if (!postPrivileges.read || !postPrivileges['topics:read'] || postPrivileges.disabled) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -61,10 +61,6 @@ SocketPosts.getPostSummaryByPid = async function (socket, data) {
 
 	const { pid } = data;
 	return await api.posts.getSummary(socket, { pid });
-};
-
-SocketPosts.getCategory = async function (socket, pid) {
-	return await posts.getCidByPid(pid);
 };
 
 SocketPosts.getPidIndex = async function (socket, data) {

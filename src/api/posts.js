@@ -45,9 +45,11 @@ postsAPI.get = async function (caller, data) {
 };
 
 postsAPI.getIndex = async (caller, { pid, sort }) => {
-	const tid = await posts.getPostField(pid, 'tid');
-	const topicPrivileges = await privileges.topics.get(tid, caller.uid);
-	if (!topicPrivileges.read || !topicPrivileges['topics:read']) {
+	const [[userPrivilege], tid] = await Promise.all([
+		privileges.posts.get([pid], caller.uid),
+		posts.getPostField(pid, 'tid'),
+	]);
+	if (!userPrivilege.read || !userPrivilege['topics:read'] || userPrivilege.disabled) {
 		return null;
 	}
 
@@ -55,14 +57,13 @@ postsAPI.getIndex = async (caller, { pid, sort }) => {
 };
 
 postsAPI.getSummary = async (caller, { pid }) => {
-	const tid = await posts.getPostField(pid, 'tid');
-	const topicPrivileges = await privileges.topics.get(tid, caller.uid);
-	if (!topicPrivileges.read || !topicPrivileges['topics:read']) {
+	const [userPrivilege] = await privileges.posts.get([pid], caller.uid);
+	if (!userPrivilege.read || !userPrivilege['topics:read'] || userPrivilege.disabled) {
 		return null;
 	}
 
 	const postsData = await posts.getPostSummaryByPids([pid], caller.uid, { stripTags: false });
-	posts.modifyPostByPrivilege(postsData[0], topicPrivileges);
+	posts.modifyPostByPrivilege(postsData[0], userPrivilege);
 	return postsData[0];
 };
 
