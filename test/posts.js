@@ -797,7 +797,7 @@ describe('Post\'s', () => {
 		});
 	});
 
-	describe('socket methods', () => {
+	describe('socket/api methods', () => {
 		let pid;
 		before((done) => {
 			topics.reply({
@@ -891,13 +891,8 @@ describe('Post\'s', () => {
 			assert(summary);
 		});
 
-		it('should get post category', async () => {
-			const postCid = await socketPosts.getCategory({ uid: voterUid }, pid);
-			assert.equal(cid, postCid);
-		});
-
 		it('should get pid index', async () => {
-			const index = await socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest_to_newest' });
+			const index = await socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, topicPostSort: 'oldest_to_newest' });
 			assert.equal(index, 4);
 		});
 
@@ -916,6 +911,43 @@ describe('Post\'s', () => {
 			const index = await apiPosts.getIndex({ uid: voterUid }, { pid: postData.pid, sort: 'newest_to_oldest' });
 			assert.equal(index, 1);
 		});
+
+		describe('deleted topic posts', () => {
+			let tid;
+			let pidInDeletedTopic;
+			before(async () => {
+				const { topicData } = await topics.post({
+					uid: globalModUid,
+					cid,
+					title: 'just a topic for deleted tests',
+					content: `post content in deleted topic`,
+					deleted: 1,
+				});
+				tid = topicData.tid;
+				pidInDeletedTopic = topicData.mainPid;
+			});
+
+			it('should not get post if the topic is deleted', async () => {
+				const results = await Promise.all([
+					apiPosts.get({ uid: voterUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getIndex({ uid: voterUid }, { pid: pidInDeletedTopic, sort: 'oldest_to_newest' }),
+					apiPosts.getRaw({ uid: voterUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getSummary({ uid: voterUid }, { pid: pidInDeletedTopic }),
+				]);
+				assert.deepStrictEqual(results, [null, null, null, null]);
+			});
+
+			it('should get post if called by globalMod', async () => {
+				const results = await Promise.all([
+					apiPosts.get({ uid: globalModUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getIndex({ uid: globalModUid }, { pid: pidInDeletedTopic, sort: 'oldest_to_newest' }),
+					apiPosts.getRaw({ uid: globalModUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getSummary({ uid: globalModUid }, { pid: pidInDeletedTopic }),
+				]);
+				assert(results.every(result => result !== null));
+			});
+		});
+
 	});
 
 	describe('filterPidsByCid', () => {

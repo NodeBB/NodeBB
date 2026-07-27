@@ -733,9 +733,9 @@ describe('Controllers', () => {
 
 	it('should error if guests do not have search privilege', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`);
-		assert.equal(response.statusCode, 500);
+		assert.equal(response.statusCode, 403);
 		assert(body);
-		assert.equal(body.error, '[[error:no-privileges]]');
+		assert.equal(body.status.code, 'forbidden');
 	});
 
 	it('should load users search page', async () => {
@@ -1896,15 +1896,15 @@ describe('Controllers', () => {
 
 			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'guests');
 			let { response, body } = await request.get(`${nconf.get('url')}/api/compose?tid=${result.topicData.tid}`);
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 403);
 			assert(!body.title);
 
 			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`));
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 403);
 			assert(!body.title);
 
 			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?pid=${result.postData.pid}`));
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 403);
 			assert(!body.title);
 
 			await privileges.categories.give(['groups:topics:read'], category.cid, 'guests');

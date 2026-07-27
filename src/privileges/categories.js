@@ -97,10 +97,11 @@ privsCategories.get = async function (cid, uid) {
 		'topics:tag', 'read', 'posts:view_deleted',
 	];
 
-	let [userPrivileges, isAdministrator, isModerator] = await Promise.all([
+	let [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, cid),
+		categories.getCategoryField(cid, 'disabled'),
 	]);
 
 	if (utils.isNumber(cid)) {
@@ -115,7 +116,9 @@ privsCategories.get = async function (cid, uid) {
 		uid: uid,
 		editable: isAdminOrMod,
 		view_deleted: isAdminOrMod || privData['posts:view_deleted'],
+		view_scheduled : isAdministrator || privData['topics:schedule'],
 		isAdminOrMod: isAdminOrMod,
+		disabled,
 	});
 };
 
