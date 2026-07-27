@@ -90,17 +90,21 @@ define('forum/topic/votes', [
 	}
 
 
-	Votes.toggleVote = function (button, className, delta) {
+	Votes.toggleVote = async function (button, className, delta, iconSelector) {
 		const post = button.closest('[data-pid]');
-		const currentState = post.find(className).length;
 
+		// Determine current state from the button element itself (works for both
+		// topic page with component="post/upvote" and world feed with data-action="upvote")
+		const classToCheck = className.replace(/^\./, '');
+		const currentState = button.hasClass(classToCheck);
 		const method = currentState ? 'del' : 'put';
+		const voteDelta = currentState ? -delta : delta;
 		const pid = post.attr('data-pid');
 
 		if (!app.user.uid) {
 			if (!config.activitypub.enabled) {
 				ajaxify.go('login');
-				return;
+				return false;
 			}
 
 			let objectId;
@@ -115,17 +119,51 @@ define('forum/topic/votes', [
 			return false;
 		}
 
-		api[method](`/posts/${encodeURIComponent(pid)}/vote`, {
-			delta: delta,
-		}, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-			hooks.fire('action:post.toggleVote', {
-				pid: pid,
-				delta: delta,
-				unvote: method === 'del',
+		// Optimistic UI update — instant feedback
+		button.toggleClass(classToCheck);
+
+		// Toggle icon state (optional — callers pass a selector for the icon element)
+		if (iconSelector) {
+			const icon = button.find(iconSelector);
+			icon.toggleClass('fa text-danger', !currentState)
+				.toggleClass('fa-regular text-muted', currentState);
+		}
+
+		// Topic page uses [component="post/vote-count"], world feed uses [component="upvote-count"]
+		const voteCountEl = post.find('[component="post/vote-count"], [component="upvote-count"]');
+		if (voteCountEl.length) {
+			const currentVotes = parseInt(voteCountEl.attr('data-votes') || voteCountEl.text(), 10) || 0;
+			voteCountEl.text(currentVotes + voteDelta).attr('data-votes', currentVotes + voteDelta);
+		}
+
+		// API call in background
+		try {
+			await api[method](`/posts/${encodeURIComponent(pid)}/vote`, {
+				delta: voteDelta,
 			});
+		} catch (e) {
+			// Rollback on failure — revert button + counter + icon
+			button.toggleClass(classToCheck);
+
+			if (iconSelector) {
+				const icon = button.find(iconSelector);
+				icon.toggleClass('fa text-danger', !currentState)
+					.toggleClass('fa-regular text-muted', currentState);
+			}
+
+			if (voteCountEl.length) {
+				const rollbackVotes = parseInt(voteCountEl.attr('data-votes') || voteCountEl.text(), 10) || 0;
+				voteCountEl.text(rollbackVotes - voteDelta).attr('data-votes', rollbackVotes - voteDelta);
+			}
+
+			alerts.error(e.message);
+			return false;
+		}
+
+		hooks.fire('action:post.toggleVote', {
+			pid: pid,
+			delta: voteDelta,
+			unvote: method === 'del',
 		});
 
 		return false;

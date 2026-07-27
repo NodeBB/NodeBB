@@ -170,17 +170,8 @@ define('forum/world', [
 
 		feedEl.on('click', '[data-action="upvote"]', function (e) {
 			e.preventDefault();
-			votes.toggleVote($(this), '.upvoted', 1);
+			votes.toggleVote($(this), 'upvoted', 1, 'i');
 			return false;
-		});
-
-		// Handle UI updates for upvotes in the world feed
-		hooks.onPage('action:post.toggleVote', function (data) {
-			if (data.unvote) {
-				$(`[data-pid="${data.pid}"][data-action="upvote"]`).removeClass('upvoted');
-			} else {
-				$(`[data-pid="${data.pid}"][data-action="upvote"]`).addClass('upvoted');
-			}
 		});
 
 		feedEl.on('click', '[data-action="reply"]', function () {
