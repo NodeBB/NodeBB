@@ -45,12 +45,17 @@ middleware.verify = async function (req, res, next) {
 		return next();
 	}
 
-	// Verifies the HTTP Signature if present (required for POST)
+	// Verifies the HTTP Signature if present (required for POST, optional for GET)
 	if (req.headers.hasOwnProperty('signature')) {
 		const verified = await activitypub.verify(req);
 		if (!verified) {
 			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
-			return res.sendStatus(400);
+			if (req.method === 'POST') {
+				return res.sendStatus(400);
+			}
+			// Signed GET with invalid signature: treat as anonymous and proceed
+			activitypub.helpers.log('[middleware/activitypub] Treating signed GET as anonymous.');
+			return next();
 		}
 
 		// Set calling user
