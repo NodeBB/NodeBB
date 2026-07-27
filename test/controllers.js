@@ -225,6 +225,7 @@ describe('Controllers', () => {
 			{ it: 'should load sitemap/categories.xml', url: `/sitemap/categories.xml` },
 			{ it: 'should load sitemap/topics.1.xml', url: `/sitemap/topics.1.xml` },
 			{ it: 'should load theme screenshot', url: `/css/previews/nodebb-theme-harmony` },
+			{ it: 'should error loading theme screenshot', url: `/css/previews/..%2Fnode_modules%2Fnodebb-theme-persona`, status: 500 },
 			{ it: 'should load users page', url: `/users` },
 			{ it: 'should load users page section', url: `/users?section=online` },
 			{ it: 'should load groups page', url: `/groups` },
