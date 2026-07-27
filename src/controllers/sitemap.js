@@ -15,16 +15,16 @@ sitemapController.render = async function (req, res, next) {
 	res.send(xml);
 };
 
-sitemapController.getPages = function (req, res, next) {
-	sendSitemap(sitemap.getPages, res, next);
+sitemapController.getPages = async function (req, res, next) {
+	await sendSitemap(sitemap.getPages, res, next);
 };
 
-sitemapController.getCategories = function (req, res, next) {
-	sendSitemap(sitemap.getCategories, res, next);
+sitemapController.getCategories = async function (req, res, next) {
+	await sendSitemap(sitemap.getCategories, res, next);
 };
 
-sitemapController.getTopicPage = function (req, res, next) {
-	sendSitemap(async () => await sitemap.getTopicPage(parseInt(req.params[0], 10)), res, next);
+sitemapController.getTopicPage = async function (req, res, next) {
+	await sendSitemap(async () => await sitemap.getTopicPage(parseInt(req.params[0], 10)), res, next);
 };
 
 async function sendSitemap(method, res, callback) {
