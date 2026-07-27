@@ -102,7 +102,7 @@ Assert.path = helpers.try(async (req, res, next) => {
 	res.locals.cleanedPath = pathToFile;
 
 	// Guard against path traversal
-	if (!pathToFile.startsWith(nconf.get('upload_path'))) {
+	if (!file.isPathInside(nconf.get('upload_path'), pathToFile)) {
 		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:invalid-path]]'));
 	}
 

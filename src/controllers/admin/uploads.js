@@ -20,7 +20,7 @@ const uploadsController = module.exports;
 
 uploadsController.get = async function (req, res, next) {
 	const currentFolder = path.join(nconf.get('upload_path'), req.query.dir || '');
-	if (!currentFolder.startsWith(nconf.get('upload_path'))) {
+	if (!file.isPathInside(nconf.get('upload_path'), currentFolder)) {
 		return next(new Error('[[error:invalid-path]]'));
 	}
 	const itemsPerPage = 20;
