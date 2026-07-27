@@ -404,6 +404,17 @@ module.exports = function (Posts) {
 		}
 		await removeFromQueue(id);
 		plugins.hooks.fire('action:post-queue:submitFromQueue', { data: data });
+
+		// Opportunistic backfill: remote topics may have new posts since they were queued
+		if (meta.config.activitypubEnabled && data.tid) {
+			const mainPid = await topics.getTopicField(data.tid, 'mainPid');
+			if (mainPid && !utils.isNumber(mainPid)) {
+				setImmediate(() => {
+					activitypub.notes.backfill(mainPid);
+				});
+			}
+		}
+
 		return data;
 	};
 
