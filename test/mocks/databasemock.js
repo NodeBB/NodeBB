@@ -37,10 +37,11 @@ try {
 }
 
 nconf.file({ file: path.join(__dirname, '../../config.json') });
+const base_dir = path.join(__dirname, '../../');
 nconf.defaults({
-	base_dir: path.join(__dirname, '../..'),
+	base_dir: base_dir,
 	themes_path: path.join(__dirname, '../../node_modules'),
-	upload_path: 'test/uploads',
+	upload_path: path.resolve(base_dir, 'test/uploads'),
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
 });
@@ -49,7 +50,6 @@ const urlObject = new URL(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
 nconf.set('asset_base_url', `${relativePath}/assets`);
-nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
 nconf.set('upload_url', '/assets/uploads');
 nconf.set('url_parsed', {
 	href: urlObject.href,
