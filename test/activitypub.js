@@ -152,6 +152,20 @@ describe('ActivityPub integration', () => {
 				const result = await activitypub.helpers.query('user@trusted.com');
 				assert(result);
 			});
+
+			it('should allow rel=self href to point to a different domain when subject hostname matches', async () => {
+				request.get = async () => ({
+					response: { statusCode: 200 },
+					body: {
+						subject: 'acct:user@trusted.com',
+						links: [{ rel: 'self', type: 'application/activity+json', href: 'https://otherdomain.com/actor' }],
+					},
+				});
+
+				const result = await activitypub.helpers.query('user@trusted.com');
+				assert(result);
+				assert.strictEqual(result.actorUri, 'https://otherdomain.com/actor');
+			});
 		});
 
 		describe('.generateKeys()', () => {
