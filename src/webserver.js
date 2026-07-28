@@ -253,7 +253,7 @@ function setupHelmet(app) {
 function setupFavicon(app) {
 	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
-	if (!faviconPath.startsWith(nconf.get('upload_path'))) {
+	if (!file.isPathInside(nconf.get('upload_path'), faviconPath)) {
 		faviconPath = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
 	}
 	if (file.existsSync(faviconPath)) {

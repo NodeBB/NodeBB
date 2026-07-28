@@ -8,6 +8,7 @@ const mime = require('mime').default;
 const plugins = require('../plugins');
 const posts = require('../posts');
 const meta = require('../meta');
+const file = require('../file');
 
 const topics = module.parent.exports;
 const Thumbs = module.exports;
@@ -176,7 +177,7 @@ Thumbs.filterThumbs = function (thumbs) {
 		}
 		// ensure it is in upload path
 		const fullPath = path.join(upload_path, thumb);
-		return fullPath.startsWith(upload_path);
+		return file.isPathInside(upload_path, fullPath);
 	});
 	return thumbs;
 };
