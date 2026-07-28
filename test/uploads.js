@@ -72,10 +72,10 @@ describe('Upload Controllers', () => {
 				// eslint-disable-next-line no-await-in-loop
 				const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token);
 				if (i + 1 >= times) {
-					assert.strictEqual(response.statusCode, 500);
+					assert.strictEqual(response.statusCode, 500, JSON.stringify(body));
 					assert.strictEqual(body.error, '[[error:upload-ratelimit-reached]]');
 				} else {
-					assert.strictEqual(response.statusCode, 200);
+					assert.strictEqual(response.statusCode, 200, JSON.stringify(body));
 					assert(body && body.status && body.response && body.response.images);
 					assert(Array.isArray(body.response.images));
 					assert(body.response.images[0].url);
