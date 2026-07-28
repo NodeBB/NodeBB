@@ -16,6 +16,7 @@ const privileges = require('../privileges');
 const cacheCreate = require('../cache/lru');
 const helpers = require('./helpers');
 const api = require('../api');
+const file = require('../file');
 
 const controllers = {
 	api: require('../controllers/api'),
@@ -154,7 +155,7 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	if (brandTouchIcon) {
 		const uploadPath = nconf.get('upload_path');
 		iconPath = path.join(uploadPath, brandTouchIcon.replace(/assets\/uploads/, ''));
-		if (!iconPath.startsWith(uploadPath)) {
+		if (!file.isPathInside(uploadPath, iconPath)) {
 			return res.status(404).send('Not found');
 		}
 	} else {

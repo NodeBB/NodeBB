@@ -23,7 +23,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 	filename = filename.split('.').map(name => slugify(name)).join('.');
 
 	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
-	if (!uploadPath.startsWith(nconf.get('upload_path'))) {
+	if (!file.isPathInside(nconf.get('upload_path'), uploadPath)) {
 		throw new Error('[[error:invalid-path]]');
 	}
 
@@ -41,6 +41,12 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 		url: `/assets/uploads/${folder ? `${folder}/` : ''}${filename}`,
 		path: uploadPath,
 	};
+};
+
+file.isPathInside = function (base, targetPath) {
+	const resolvedBase = path.resolve(base);
+	const resolvedTarget = path.resolve(base, targetPath);
+	return resolvedTarget === resolvedBase || resolvedTarget.startsWith(resolvedBase + path.sep);
 };
 
 file.base64ToLocal = async function (imageData, uploadPath) {
