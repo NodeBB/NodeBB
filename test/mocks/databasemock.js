@@ -150,6 +150,7 @@ before(async function () {
 	nconf.set('runJobs', false);
 	nconf.set('jobsDisabled', false);
 	nconf.set('acpPluginInstallDisabled', false);
+	nconf.set('trust_proxy', true);
 
 
 	await db.init();
