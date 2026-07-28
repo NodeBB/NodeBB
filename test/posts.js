@@ -300,6 +300,14 @@ describe('Post\'s', () => {
 				done();
 			});
 		});
+
+		it('should not allow guests to load post tools without topics:read privilege', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
+			await assert.rejects(socketPosts.loadPostTools({ uid: 0 }, { pid: postData.pid }), {
+				message: '[[error:no-privileges]]',
+			});
+			await privileges.categories.give(['groups:topics:read'], cid, 'guests');
+		});
 	});
 
 	describe('delete/restore/purge', () => {
