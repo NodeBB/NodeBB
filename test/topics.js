@@ -2613,6 +2613,33 @@ describe('Topic\'s', () => {
 			assert(!score);
 		});
 
+		it('should sanitize HTML in scheduled topic notification bodyLong', async () => {
+			const followerUid = await User.create({ username: 'xss_follower' });
+			await User.follow(followerUid, adminUid);
+			const maliciousContent = '<script>alert("xss")</script><img onerror=alert(1) src=x><b>Bold</b>';
+			const maliciousTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Malicious Scheduled Topic',
+				content: maliciousContent,
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+			const result = await topics.post(maliciousTopic);
+
+			// Publish the scheduled topic
+			mockdate.set(result.topicData.timestamp);
+			await topics.scheduled.handleExpired();
+			mockdate.reset();
+
+			// Check that the notification bodyLong is sanitized
+			const notifKey = `notifications:tid:${result.topicData.tid}:uid:${adminUid}`;
+			const notif = await db.getObject(notifKey);
+			assert(notif, 'Notification should exist');
+			assert(!notif.bodyLong.includes('<script>'), 'bodyLong should not contain script tags');
+			assert(!notif.bodyLong.includes('onerror'), 'bodyLong should not contain onerror attributes');
+			assert(notif.bodyLong.includes('Bold'), 'bodyLong should still contain allowed tags like <b>');
+		});
+
 		it('should properly update timestamp in cid:<cid>:pids after editing and posting immediately', async () => {
 			const scheduleTimestamp = Date.now() + (86400000 * 365);
 			const result = await topics.post({
