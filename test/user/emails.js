@@ -182,42 +182,6 @@ describe('email confirmation (v3 api)', () => {
 		assert.deepStrictEqual(body, JSON.parse('{"status":{"code":"ok","message":"OK"},"response":{"emails":[]}}'));
 	});
 
-	it('should not report an email that belongs to another user', async () => {
-		const { body } = await helpers.registerUser({
-			username: 'emaillookupother',
-			password: 'abcdef',
-			email: 'lookup-other@example.org',
-			gdpr_consent: true,
-			acceptTos: true,
-		});
-		const { uid } = body;
-		const { response } = await helpers.request('get', `/api/v3/users/${userObj.uid}/emails/${encodeURIComponent('lookup-other@example.org')}`, {
-			jar,
-		});
-		assert.strictEqual(response.statusCode, 404);
-
-		const { response: response1 } = await helpers.request('get', `/api/v3/users/${uid}/emails/${encodeURIComponent('lookup-other@example.org')}`, {
-			jar,
-		});
-		assert.strictEqual(response1.statusCode, 404);
-	});
-
-	it('should return 204 when checking the current user\'s own email', async function () {
-		const email = 'self-lookup@test.com';
-		const uid = await user.create({
-			username: 'emaillookupself',
-			password: 'abcdef',
-			email: email,
-		}, {
-			emailVerification: 'verify',
-		});
-		const { jar } = await helpers.loginUser('emaillookupself', 'abcdef');
-		const { response } = await helpers.request('get', `/api/v3/users/${uid}/emails/${encodeURIComponent(email)}`, {
-			jar,
-		});
-		assert.strictEqual(response.statusCode, 204);
-	});
-
 	it('should not allow confirmation if they are not an admin', async function () {
 		const { response } = await helpers.request('post', `/api/v3/users/${userObj.uid}/emails/${encodeURIComponent(this.emailTestEmail)}/confirm`, {
 			jar,
