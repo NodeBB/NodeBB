@@ -50,7 +50,9 @@ module.exports = function (User) {
 					} else {
 						const assertion = await activitypub.actors.assert([handle || data.query]);
 						if (assertion === true) {
-							uids = [handle ? await User.getUidByUserslug(handle) : query];
+							// Actor already exists; resolve UID from webfinger cache
+							const cached = handle ? activitypub.helpers._webfingerCache.get(handle) : null;
+							uids = cached ? [cached.actorUri] : [handle ? await User.getUidByUserslug(handle) : query];
 						} else if (Array.isArray(assertion) && assertion.length) {
 							uids = assertion.map(u => u.id);
 						}
@@ -58,8 +60,21 @@ module.exports = function (User) {
 				}
 			}
 
+			// For partial queries, search both local and remote users in parallel
 			if (!uids.length) {
-				uids = await (data.findUids || findUids)(query, searchBy, data.hardCap);
+				const searchMethod = data.findUids || findUids;
+				const promises = [
+					searchMethod(query, searchBy, data.hardCap),
+				];
+
+				const mapping = {
+					username: 'ap.preferredUsername',
+					fullname: 'ap.name',
+				};
+				if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
+					promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
+				}
+				uids = (await Promise.all(promises)).flat();
 			}
 		}
 
@@ -68,23 +83,6 @@ module.exports = function (User) {
 			query, searchBy, uids, uid, hardCap: data.hardCap,
 		});
 		uids = hookResult.uids;
-
-		// Only run fallback if still empty
-		if (!uids.length) {
-			const searchMethod = data.findUids || findUids;
-			const promises = [
-				searchMethod(query, searchBy, data.hardCap),
-			];
-
-			const mapping = {
-				username: 'ap.preferredUsername',
-				fullname: 'ap.name',
-			};
-			if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
-				promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
-			}
-			uids = (await Promise.all(promises)).flat();
-		}
 
 		uids = await filterAndSortUids(uids, data);
 		if (data.hardCap > 0) {
