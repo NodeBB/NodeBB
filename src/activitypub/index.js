@@ -7,6 +7,7 @@ const { cpus } = require('os');
 
 const request = require('../request');
 const db = require('../database');
+const pubsub = require('../pubsub');
 const meta = require('../meta');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -20,6 +21,11 @@ const requestCache = ttl({
 	name: 'ap-request-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 5, // 5 minutes
+});
+const serveCache = ttl({
+	name: 'ap-serve-cache',
+	max: 5000,
+	ttl: 1000 * 60, // 1 minute
 });
 const probeCache = ttl({
 	name: 'ap-probe-cache',
@@ -64,7 +70,13 @@ ActivityPub._constants = Object.freeze({
 	},
 });
 ActivityPub._cache = requestCache;
+ActivityPub.serveCache = serveCache;
 ActivityPub._sent = new Map(); // used only in local tests
+
+// Invalidate serve cache on post lifecycle events
+pubsub.on('post:edit', pid => ActivityPub.serveCache.del(`/post/${pid}`));
+pubsub.on('post:delete', pid => ActivityPub.serveCache.del(`/post/${pid}`));
+pubsub.on('post:purge', pid => ActivityPub.serveCache.del(`/post/${pid}`));
 
 
 ActivityPub.helpers = require('./helpers');

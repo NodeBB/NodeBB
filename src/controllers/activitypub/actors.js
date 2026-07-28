@@ -67,7 +67,8 @@ Actors.userBySlug = async function (req, res) {
 Actors.note = async function (req, res, next) {
 	// technically a note isn't an actor, but it is here purely for organizational purposes.
 	// but also, wouldn't it be wild if you could follow a note? lol.
-	const allowed = await privileges.posts.can('topics:read', req.params.pid, activitypub._constants.uid);
+	const uid = req.uid || activitypub._constants.uid;
+	const allowed = await privileges.posts.can('topics:read', req.params.pid, uid);
 	if (!allowed) {
 		return next();
 	}
@@ -77,7 +78,13 @@ Actors.note = async function (req, res, next) {
 		return res.set('Location', req.params.pid).sendStatus(308);
 	}
 
-	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, {
+	const cacheKey = `/post/${req.params.pid}`;
+	const cached = activitypub.serveCache.get(cacheKey);
+	if (cached) {
+		return res.status(200).json(cached);
+	}
+
+	const post = (await posts.getPostSummaryByPids([req.params.pid], uid, {
 		parse: false,
 		extraFields: ['edited'],
 	})).pop();
@@ -90,6 +97,7 @@ Actors.note = async function (req, res, next) {
 	payload.to = to;
 	payload.cc = cc;
 
+	activitypub.serveCache.set(cacheKey, payload);
 	res.status(200).json(payload);
 };
 
@@ -101,6 +109,12 @@ Actors.replies = async function (req, res, next) {
 	}
 
 	const page = parseInt(req.query.page, 10);
+	const cacheKey = `/post/${req.params.pid}/replies${page ? `?page=${page}` : ''}`;
+	const cached = activitypub.serveCache.get(cacheKey);
+	if (cached) {
+		return res.status(200).json(cached);
+	}
+
 	let replies;
 	try {
 		replies = await activitypub.helpers.generateCollection({
@@ -125,6 +139,7 @@ Actors.replies = async function (req, res, next) {
 		...replies,
 	};
 
+	activitypub.serveCache.set(cacheKey, object);
 	res.status(200).json(object);
 };
 
