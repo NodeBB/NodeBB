@@ -313,7 +313,7 @@ async function createAdmin() {
 	const Groups = require('./groups');
 	let password;
 
-	winston.warn('No administrators have been detected, running initial user setup\n');
+	winston.warn('No administrator account found — creating one now\n');
 
 	let questions = [{
 		name: 'username',
