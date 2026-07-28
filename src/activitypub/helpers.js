@@ -147,10 +147,42 @@ Helpers.query = async (id) => {
 	let { subject, publicKey } = body;
 	// Fix missing scheme
 	if (!subject.startsWith('acct:') && !subject.startsWith('did:')) {
-		subject = `acct:${subject}`;
+		try {
+			new URL(subject);
+		} catch (e) {
+			subject = `acct:${subject}`;
+		}
 	}
+
+	// Validate that the subject's hostname matches the queried hostname.
+	let subjectUrl;
+	try {
+		subjectUrl = new URL(subject);
+	} catch (e) {
+		// Invalid URL — reject the response
+		return false;
+	}
+
+	// Extract hostname from the subject.
+	let subjectHostname;
+	if (subjectUrl.protocol === 'acct:') {
+		// Parse acct:user@hostname from the opaque part
+		const opaque = subjectUrl.pathname;
+		const atIndex = opaque.lastIndexOf('@');
+		if (atIndex === -1) {
+			// No @ in acct: subject — malformed
+			return false;
+		}
+		subjectHostname = opaque.slice(atIndex + 1);
+	} else {
+		subjectHostname = subjectUrl.hostname;
+	}
+	if (subjectHostname !== hostname) {
+		return false;
+	}
+
 	const payload = { subject, username, hostname, actorUri, publicKey, _raw: body };
-	const claimedId = new URL(subject).pathname;
+	const claimedId = subjectUrl.pathname;
 	webfingerCache.set(claimedId, payload);
 	if (claimedId !== id) {
 		webfingerCache.set(id, payload);
