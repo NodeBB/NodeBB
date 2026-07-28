@@ -147,7 +147,7 @@
         "socket.io-client": "4.8.3",
         "@socket.io/redis-adapter": "8.3.0",
         "sortablejs": "1.15.7",
-        "spdx-license-list": "6.11.0",
+        "spdx-license-list": "6.12.0",
         "textcomplete": "0.18.2",
         "textcomplete.contenteditable": "0.1.1",
         "timeago": "1.6.7",
