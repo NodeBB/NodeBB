@@ -119,10 +119,10 @@ Relays.handshake = async (body) => {
 	}
 
 	const target = typeof followActivity === 'object' ? followActivity.id : followActivity;
-	const isUnsolicited = target === `${nconf.get('url')}/actor`;
 
 	if (type === 'Follow') {
-		if (isUnsolicited) {
+		// Check if NodeBB is the target of the follow (unsolicited relay subscription)
+		if (target === `${nconf.get('url')}/actor`) {
 			await db.sortedSetAdd('relays:state', -1, actor);
 			await db.sortedSetAdd('relays:createtime', now.getTime(), actor);
 		} else {
@@ -146,7 +146,8 @@ Relays.handshake = async (body) => {
 			object: body,
 		});
 	} else if (type === 'Accept') {
-		if (isUnsolicited) {
+		const isSolicited = await db.isSortedSetMember('relays:createtime', actor);
+		if (!isSolicited) {
 			// Unsolicited Accept — should not happen, but handle gracefully
 			return;
 		}
