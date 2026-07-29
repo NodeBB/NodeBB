@@ -8,8 +8,6 @@ module.exports = {
 	name: 'Backfill trust_proxy for upgraded installs',
 	timestamp: Date.UTC(2026, 6, 28),
 	method: async function () {
-		// Read/write the same config file NodeBB was started with (`--config`/CONFIG),
-		// it is not necessarily <app>/config.json (e.g. Docker mounts it at /opt/config)
 		const pathToConfig = path.resolve(__dirname, '../../../', nconf.get('config') || 'config.json');
 
 		let configJSON;
