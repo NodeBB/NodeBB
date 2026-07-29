@@ -725,10 +725,7 @@ describe('socket.io', () => {
 		});
 
 		it('should not generate code if rate limited', async () => {
-			await assert.rejects(
-				socketUser.reset.send({ uid: 0 }, 'regular@test.com'),
-				{ message: '[[error:reset-rate-limited]]' },
-			);
+			await socketUser.reset.send({ uid: 0 }, 'regular@test.com');
 			const [count, eventsData] = await Promise.all([
 				db.sortedSetCount('reset:issueDate', 0, Date.now()),
 				events.getEvents({ filter: '', start: 0, stop: 0 }),

@@ -120,6 +120,25 @@ async function checkPlugins() {
 	return upgradable;
 }
 
+async function getUpgradeConfirmation(unattended) {
+	if (unattended) {
+		return true;
+	}
+	if (!process.stdin.isTTY) {
+		return false;
+	}
+	prompt.message = '';
+	prompt.delimiter = '';
+
+	prompt.start();
+	const result = await prompt.get({
+		name: 'upgrade',
+		description: '\nProceed with upgrade (y|n)?',
+		type: 'string',
+	});
+	return ['y', 'Y', 'yes', 'YES'].includes(result.upgrade);
+}
+
 async function upgradePlugins(unattended = false) {
 	try {
 		const found = await checkPlugins();
@@ -132,20 +151,8 @@ async function upgradePlugins(unattended = false) {
 			console.log(chalk.green('\nAll packages up-to-date!'));
 			return;
 		}
-		let result = { upgrade: 'y' };
-		if (!unattended) {
-			prompt.message = '';
-			prompt.delimiter = '';
 
-			prompt.start();
-			result = await prompt.get({
-				name: 'upgrade',
-				description: '\nProceed with upgrade (y|n)?',
-				type: 'string',
-			});
-		}
-
-		if (['y', 'Y', 'yes', 'YES'].includes(result.upgrade)) {
+		if (await getUpgradeConfirmation(unattended)) {
 			console.log('\nUpgrading packages...');
 			const args = packageManagerInstallArgs.concat(found.map(suggestObj => `${suggestObj.name}@${suggestObj.suggested}`));
 			const options = { stdio: 'ignore' };
@@ -162,4 +169,5 @@ async function upgradePlugins(unattended = false) {
 	}
 }
 
+exports.getUpgradeConfirmation = getUpgradeConfirmation;
 exports.upgradePlugins = upgradePlugins;

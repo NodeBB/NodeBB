@@ -50,7 +50,7 @@ SocketUser.reset.send = async function (socket, email) {
 	} catch (err) {
 		await logEvent(err.message);
 		await sleep(2500 + (utils.secureRandom(0, 500) - 250));
-		const internalErrors = ['[[error:invalid-email]]'];
+		const internalErrors = ['[[error:invalid-email]]', '[[error:reset-rate-limited]]'];
 		if (!internalErrors.includes(err.message)) {
 			throw err;
 		}
