@@ -75,7 +75,7 @@ privsTopics.get = async function (tid, uid) {
 		editable: editable,
 		deletable: deletable,
 		canMoveOwnTopic: canMoveOwnTopic,
-		view_deleted: isAdminOrMod || isOwner || privData['posts:view_deleted'],
+		view_deleted: isAdministrator || isOwner || privData['posts:view_deleted'],
 		view_scheduled: privData['topics:schedule'] || isAdministrator,
 		isAdminOrMod: isAdminOrMod,
 		disabled: disabled,

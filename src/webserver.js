@@ -253,7 +253,7 @@ function setupHelmet(app) {
 function setupFavicon(app) {
 	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
-	if (!faviconPath.startsWith(nconf.get('upload_path'))) {
+	if (!file.isPathInside(nconf.get('upload_path'), faviconPath)) {
 		faviconPath = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
 	}
 	if (file.existsSync(faviconPath)) {
@@ -312,11 +312,13 @@ async function listen() {
 	port = parseInt(port, 10);
 
 	let trust_proxy = nconf.get('trust_proxy');
-	if (trust_proxy == null && ![80, 443].includes(port)) {
-		trust_proxy = true;
+	if (trust_proxy == null) {
+		trust_proxy = false;
+		winston.warn("[startup] 'trust_proxy' is not configured, so Express proxy trust is disabled by default. Set 'trust_proxy' in config.json only when NodeBB is behind a reverse proxy that strips or overwrites X-Forwarded-For from untrusted clients.");
 	}
-	if (trust_proxy) {
-		winston.info(`🤝 Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
+	if (trust_proxy != null) {
+		const trustProxyPrefix = trust_proxy === true ? '🤝' : '❌';
+		winston.info(`${trustProxyPrefix} Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
 		app.set('trust proxy', trust_proxy);
 	}
 

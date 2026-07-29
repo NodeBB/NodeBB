@@ -118,9 +118,9 @@ describe('locks', () => {
 	let uid;
 	let email;
 	beforeEach(async () => {
-		const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
+		const username = utils.generateUUID().slice(0, 10);
 		email = `${username}@nodebb.org`;
-		uid = await user.create({ username, password, email }, {
+		uid = await user.create({ username, email }, {
 			emailVerification: 'verify',
 		});
 	});
@@ -141,13 +141,26 @@ describe('locks', () => {
 		});
 	});
 
-	it('should not allow multiple socket calls to the reset method either', async () => {
-		await assert.rejects(Promise.all([
+	it('socket method should shallow rate limit error', async () => {
+		const results = await Promise.all([
 			socketUser.reset.send({ uid: 0 }, email),
 			socketUser.reset.send({ uid: 0 }, email),
-		]), {
-			message: '[[error:reset-rate-limited]]',
-		});
+		]);
+		assert.deepStrictEqual(results, [undefined, undefined]);
+	});
+
+	it('socket method should swallow errors when called within the rate limit', async () => {
+		let result = await socketUser.reset.send({ uid: 0 }, email);
+		assert.strictEqual(result, undefined);
+		result = await socketUser.reset.send({ uid: 0 }, email);
+		assert.strictEqual(result, undefined);
+	});
+
+	it('socket method should swallow errors with unknown email', async () => {
+		let result = await socketUser.reset.send({ uid: 0 }, 'unknown@test.com');
+		assert.strictEqual(result, undefined);
+		result = await socketUser.reset.send({ uid: 0 }, 'unknown@test.com');
+		assert.strictEqual(result, undefined);
 	});
 
 	it('should properly unlock user reset', async () => {

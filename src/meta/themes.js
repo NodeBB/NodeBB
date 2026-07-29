@@ -94,8 +94,9 @@ Themes.set = async (data) => {
 			await db.sortedSetAdd('plugins:active', score || 0, data.id);
 
 			if (current !== data.id) {
-				const pathToThemeJson = path.join(nconf.get('themes_path'), data.id, 'theme.json');
-				if (!pathToThemeJson.startsWith(nconf.get('themes_path'))) {
+				const themesPath = nconf.get('themes_path');
+				const pathToThemeJson = path.join(themesPath, data.id, 'theme.json');
+				if (!file.isPathInside(themesPath, pathToThemeJson)) {
 					throw new Error('[[error:invalid-theme-id]]');
 				}
 

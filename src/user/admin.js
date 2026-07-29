@@ -85,6 +85,11 @@ module.exports = function (User) {
 			if (Array.isArray(userIps[index])) {
 				user.ip = userIps[index].join(',');
 			}
+			fields.forEach((field) => {
+				if (user[field] !== undefined && user[field] !== null) {
+					user[field] = neutralizeCsvFormula(user[field]);
+				}
+			});
 			fieldsToWrapInQuotes.forEach((field) => {
 				if (user[field]) {
 					user[field] = `"${String(user[field])}"`;
@@ -95,5 +100,11 @@ module.exports = function (User) {
 		const opts = { fields, header: false };
 		const json2csvAsync = new AsyncParser(opts);
 		return await json2csvAsync.parse(usersData).promise();
+	}
+
+	function neutralizeCsvFormula(value) {
+		const str = String(value);
+		// Checks for formula triggers (=, +, -, @), even if preceded by spaces or tabs
+		return (/^[\t\r ]*[=+\-@]/).test(str) ? `'${str}` : str;
 	}
 };

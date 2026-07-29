@@ -43,15 +43,23 @@ if (process.platform === 'win32') {
 
 module.exports = function (Plugins) {
 	if (nconf.get('isPrimary')) {
-		pubsub.on('plugins:toggleInstall', (data) => {
+		pubsub.on('plugins:toggleInstall', async (data) => {
 			if (data.hostname !== os.hostname()) {
-				toggleInstall(data.id, data.version);
+				try {
+					await toggleInstall(data.id, data.version);
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			}
 		});
 
-		pubsub.on('plugins:upgrade', (data) => {
+		pubsub.on('plugins:upgrade', async (data) => {
 			if (data.hostname !== os.hostname()) {
-				upgrade(data.id, data.version);
+				try {
+					await upgrade(data.id, data.version);
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			}
 		});
 	}
@@ -99,6 +107,9 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.toggleInstall = async function (id, version) {
+		if (!pluginNamePattern.test(id)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
 		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
 		return await toggleInstall(id, version);
 	};
@@ -121,6 +132,9 @@ module.exports = function (Plugins) {
 	}
 
 	function runPackageManagerCommand(command, pkgName, version, callback) {
+		if (!pluginNamePattern.test(pkgName)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
 		const args = [
 			packageManagerCommands[packageManager][command],
 			pkgName + (command === 'install' && version ? `@${version}` : ''),
@@ -163,6 +177,9 @@ module.exports = function (Plugins) {
 
 
 	Plugins.upgrade = async function (id, version) {
+		if (!pluginNamePattern.test(id)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
 		pubsub.publish('plugins:upgrade', { hostname: os.hostname(), id: id, version: version });
 		return await upgrade(id, version);
 	};

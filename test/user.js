@@ -21,6 +21,7 @@ const file = require('../src/file');
 const socketUser = require('../src/socket.io/user');
 const apiUser = require('../src/api/users');
 const utils = require('../src/utils');
+const commonUtils = require('../public/src/utils.common');
 const privileges = require('../src/privileges');
 const request = require('../src/request');
 
@@ -2832,6 +2833,27 @@ describe('User', () => {
 		await helpers.loginUser('weakpwd', '123456');
 		meta.config.minimumPasswordStrength = oldValue;
 	});
+
+	describe('getUsersCSV', () => {
+		it('should export user csv and sanitize csv formulas', async () => {
+			const suffix = Date.now();
+			const usernames = [
+				`+1+1-${suffix}`,
+				`-2+3-${suffix}`,
+			];
+
+			for (const username of usernames) {
+				// eslint-disable-next-line no-await-in-loop
+				await User.create({ username });
+			}
+
+			const csv = await User.getUsersCSV();
+			usernames.forEach((username) => {
+				assert(csv.includes(`'${username}`), `Expected exported CSV username to be neutralized: ${username}`);
+			});
+		});
+	});
+
 
 	describe('User\'s', async () => {
 		let files;
