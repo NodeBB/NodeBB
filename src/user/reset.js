@@ -47,7 +47,7 @@ UserReset.send = async function (email) {
 	if (!uid) {
 		throw new Error('[[error:invalid-email]]');
 	}
-	await lockReset(uid, '[[error:reset-rate-limited]]');
+	await lockReset(uid);
 	try {
 		await canGenerate(uid);
 		await db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid);
@@ -65,13 +65,12 @@ UserReset.send = async function (email) {
 	}
 };
 
-async function lockReset(uid, error) {
+async function lockReset(uid) {
 	const value = `reset${uid}`;
 	const count = await db.incrObjectField('locks', value);
 	if (count > 1) {
-		throw new Error(error);
+		throw new Error('[[error:reset-rate-limited]]');
 	}
-	return value;
 }
 
 async function canGenerate(uid) {
