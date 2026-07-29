@@ -5,8 +5,8 @@ const path = require('path');
 const nconf = require('nconf');
 
 module.exports = {
-	name: 'Backfill trust_proxy for upgraded installs',
-	timestamp: Date.UTC(2026, 6, 28),
+	name: 'Backfill trust_proxy into the config file specified via --config',
+	timestamp: Date.UTC(2026, 6, 29),
 	method: async function () {
 		const pathToConfig = path.resolve(__dirname, '../../../', nconf.get('config') || 'config.json');
 
