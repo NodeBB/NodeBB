@@ -343,12 +343,8 @@ ActivityPub.get = async (type, id, uri, options) => {
 		return cached;
 	}
 
-	let headers = {};
-	if (parseInt(id, 10) > 0) {
-		const keyData = await ActivityPub.getPrivateKey(type, id);
-		headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
-	}
-
+	const keyData = await ActivityPub.getPrivateKey(type, id);
+	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
 	ActivityPub.helpers.log(`[activitypub/get] ${uri}`);
 	try {
 		const { response, body } = await request.get(uri, {
