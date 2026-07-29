@@ -83,7 +83,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			const { tid } = context;
 			return { tid, count: 0 };
 		} else if (context.context) {
-			const { type, id: tid } = await activitypub.helpers.resolveLocalId(context.context);
+			const { type } = await activitypub.helpers.resolveLocalId(context.context);
+			// Remote contexts only, if context is local, prefer parent chain traversal instead (to catch out-of-band replies)
 			if (type !== 'topic') {
 				chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 				if (chain && chain.length) {
@@ -97,18 +98,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 					// Context resolves, use in later topic creation
 					context = context.context;
-				}
-			} else {
-				// Local context, get local posts
-				const mainPid = await topics.getTopicField(tid, 'mainPid');
-				const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
-				pids.unshift(mainPid);
-				chain = await posts.getPostsData(pids);
-
-				// Add received object to chain if not present already
-				if (!pids.includes(input.id)) {
-					const mocked = await activitypub.mocks.post(input);
-					chain.push(mocked);
 				}
 			}
 		} else {
