@@ -81,7 +81,7 @@ define('forum/groups/details', [
 
 			switch (action) {
 				case 'toggleOwnership':
-					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
+					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${encodeURIComponent(uid)}`, {}).then(() => {
 						ownerFlagEl.toggleClass('invisible');
 						userRow.attr('data-isowner', isOwner ? '0' : '1');
 					}).catch(alerts.error);
@@ -93,7 +93,7 @@ define('forum/groups/details', [
 							return;
 						}
 
-						api.del(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, undefined).then(
+						api.del(`/groups/${ajaxify.data.group.slug}/membership/${encodeURIComponent(uid)}`, undefined).then(
 							() => {
 								userRow.remove();
 								$('[component="group/member/count"]').text(
@@ -113,19 +113,19 @@ define('forum/groups/details', [
 					break;
 
 				case 'join':
-					api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(
+					api.put(`/groups/${ajaxify.data.group.slug}/membership/${encodeURIComponent(uid || app.user.uid)}`, undefined).then(
 						() => ajaxify.refresh()
 					).catch(alerts.error);
 					break;
 
 				case 'leave':
-					api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + (uid || app.user.uid), undefined).then(
+					api.del(`/groups/${ajaxify.data.group.slug}/membership/${encodeURIComponent(uid || app.user.uid)}`, undefined).then(
 						() => ajaxify.refresh()
 					).catch(alerts.error);
 					break;
 
 				case 'accept':
-					api.put(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(
+					api.put(`/groups/${ajaxify.data.group.slug}/pending/${encodeURIComponent(uid)}`).then(
 						() => {
 							userRow.remove();
 							memberList.refresh();
@@ -135,7 +135,7 @@ define('forum/groups/details', [
 					break;
 
 				case 'reject':
-					api.del(`/groups/${ajaxify.data.group.slug}/pending/${uid}`).then(
+					api.del(`/groups/${ajaxify.data.group.slug}/pending/${encodeURIComponent(uid)}`).then(
 						() => {
 							userRow.remove();
 							memberList.refresh();
@@ -145,7 +145,7 @@ define('forum/groups/details', [
 					break;
 
 				case 'acceptInvite':
-					api.put(`/groups/${ajaxify.data.group.slug}/invites/${app.user.uid}`).then(() => {
+					api.put(`/groups/${ajaxify.data.group.slug}/invites/${encodeURIComponent(app.user.uid)}`).then(() => {
 						if (uid) {
 							userRow.remove();
 							memberList.refresh();
@@ -157,7 +157,7 @@ define('forum/groups/details', [
 
 				case 'rescindInvite': // falls through
 				case 'rejectInvite':
-					api.del(`/groups/${ajaxify.data.group.slug}/invites/${uid || app.user.uid}`).then(() => {
+					api.del(`/groups/${ajaxify.data.group.slug}/invites/${encodeURIComponent(uid || app.user.uid)}`).then(() => {
 						if (uid) {
 							userRow.remove();
 							updateInviteAlertVisibility();
@@ -179,7 +179,7 @@ define('forum/groups/details', [
 					let uids = Array.prototype.map.call(listEl.querySelectorAll('[data-uid]'), el => parseInt(el.getAttribute('data-uid'), 10));
 					uids = uids.filter((uid, idx) => uids.indexOf(uid) === idx);
 
-					Promise.all(uids.map(async uid => api[method](`/groups/${ajaxify.data.group.slug}/pending/${uid}`))).then(() => {
+					Promise.all(uids.map(async uid => api[method](`/groups/${ajaxify.data.group.slug}/pending/${encodeURIComponent(uid)}`))).then(() => {
 						ajaxify.refresh();
 					}).catch(alerts.error);
 					break;
