@@ -258,9 +258,9 @@ module.exports = function (Groups) {
 		const admin = require('../widgets/admin');
 		const widgets = require('../widgets');
 
-		const data = await admin.get();
+		const areas = await admin.getAreas();
 
-		data.areas.forEach((area) => {
+		areas.forEach((area) => {
 			area.widgets = area.data;
 			area.widgets.forEach((widget) => {
 				if (widget && widget.data && Array.isArray(widget.data.groups) && widget.data.groups.includes(oldName)) {
@@ -268,7 +268,7 @@ module.exports = function (Groups) {
 				}
 			});
 		});
-		for (const area of data.areas) {
+		for (const area of areas) {
 			if (area.data.length) {
 				await widgets.setArea(area);
 			}

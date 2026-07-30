@@ -214,7 +214,7 @@ groupsAPI.leave = async function (caller, data) {
 	if (caller.uid <= 0) {
 		throw new Error('[[error:invalid-uid]]');
 	}
-	const isSelf = parseInt(caller.uid, 10) === parseInt(data.uid, 10);
+	const isSelf = String(caller.uid) === String(data.uid);
 	const groupName = await groups.getGroupNameByGroupSlug(data.slug);
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');
