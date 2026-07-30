@@ -17,14 +17,29 @@
 <div component="groups/members" data-nextstart="{group.membersNextStart}" class="mb-5" style="max-height: 500px; overflow: auto;">
 	<table class="table table-hover">
 		<tbody>
-			{{{each group.members}}}
+			{{{ each group.members }}}
 			<tr class="w-100" data-uid="{group.members.uid}" data-isowner="{{{ if group.members.isOwner }}}1{{{ else }}}0{{{ end }}}">
 				<td class="member-name p-2 w-100 ">
-					<div class="d-flex align-items-center justify-content-between">
-						<div class="d-flex align-items-center gap-2">
-							<a class="text-decoration-none" href="{config.relative_path}/user/{group.members.userslug}">{{buildAvatar(group.members, "24px", true)}}</a>
-							<a class="align-text-top" href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a>
-							<i component="groups/owner/icon" title="{{tx("groups:owner")}}" class="user-owner-icon fa fa-star align-text-top text-warning {{{ if !group.members.isOwner }}}invisible{{{ end }}}"></i>
+					<div class="d-flex align-items-center justify-content-between gap-3">
+						<div class="d-flex align-items-center justify-content-between gap-2 flex-1">
+							<div>
+								<a class="text-decoration-none" href="{config.relative_path}/user/{group.members.userslug}">{{buildAvatar(group.members, "24px", true)}}</a>
+								<a class="align-text-top" href="{config.relative_path}/user/{group.members.userslug}">{group.members.username}</a>
+								<span component="groups/owner/icon" class="badge text-body border border-gray-300 text-xs {{{ if !group.members.isOwner }}}d-none{{{ end }}}">
+									<span class="fw-bold">{{tx("groups:owner")}}</span>
+								</span>
+							</div>
+							<div>
+								<span class="badge text-body border border-gray-300 text-xs fw-normal">
+									<span>{formattedNumber(./postcount)}</span>
+									<span class="text-lowercase fw-normal">{{tx("global:posts")}}</span>
+								</span>
+
+								<span class="badge text-body border border-gray-300 text-xs fw-normal">
+									<span>{formattedNumber(./reputation)}</span>
+									<span class="text-lowercase">{{tx("global:reputation")}}</span>
+								</span>
+							</div>
 						</div>
 
 						{{{ if group.isOwner }}}
