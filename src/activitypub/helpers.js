@@ -138,7 +138,7 @@ Helpers.query = async (id) => {
 	}
 
 	// Parse links to find actor endpoint
-	let actorUri = body.links.filter(link => activitypub._constants.acceptableTypes.includes(link.type) && link.rel === 'self');
+	let actorUri = body.links.filter(link => Helpers.assertAccept(link.type) && link.rel === 'self');
 	if (actorUri.length) {
 		actorUri = actorUri.pop();
 		({ href: actorUri } = actorUri);
