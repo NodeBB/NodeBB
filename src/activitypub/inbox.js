@@ -162,7 +162,7 @@ inbox.move = async (req) => {
 	// Ensure that cid is same-origin as the actor
 	const tid = await posts.getPostField(mainPid, 'tid');
 	const cid = await topics.getTopicField(tid, 'cid');
-	if (utils.isNumber(cid)) {
+	if (utils.isNumber(cid) || cid !== fromCid) {
 		// remote removal of topic in local cid, or resolved cid does not match
 		return;
 	}
