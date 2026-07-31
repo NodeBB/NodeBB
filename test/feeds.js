@@ -135,7 +135,6 @@ describe('feeds', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}&token=${rssToken}`);
 			assert.equal(response.statusCode, 200);
 			assert(body.includes('Login to your account'));
-			assert(false);
 		});
 
 		it('should not allow access if token is correct but has no privilege(topics:read)', async () => {
