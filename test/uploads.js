@@ -262,6 +262,41 @@ describe('Upload Controllers', () => {
 			}
 		});
 
+		it('should block path traversal and double slashes for unauthenticated users', async () => {
+			const oldPrivateUploads = meta.config.privateUploads;
+			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
+			const uploadPath = nconf.get('upload_path');
+			const filename = `private-ext-${Date.now()}.pdf`;
+			const filePath = path.join(uploadPath, 'files', filename);
+
+			meta.config.privateUploads = 1;
+			meta.config.privateUploadsExtensions = 'pdf';
+
+			try {
+				await fs.writeFile(filePath, 'PDFSECRET', 'utf8');
+
+				const requestPathsToCheck = [
+					`/assets/uploads//files/${filename}`,
+					`/assets/uploads///files/${filename}`,
+					`/assets/uploads/../uploads/files/${filename}`,
+					`/assets/uploads/./files/${filename}`,
+					`/assets/x/../uploads/files/${filename}`,
+					`/assets/uploads/%2e%2e/uploads/files/${filename}`,
+					`/assets/uploads/%2e/files/${filename}`,
+				];
+				for (const p of requestPathsToCheck) {
+					// eslint-disable-next-line no-await-in-loop
+					const { response: encodedResponse } = await request.get(`${nconf.get('url')}${p}`);
+					assert.strictEqual(encodedResponse.statusCode, 403, `Failed for path: ${p}`);
+				}
+			} finally {
+				await file.delete(filePath);
+				meta.config.privateUploads = oldPrivateUploads;
+				meta.config.privateUploadsExtensions = oldPrivateUploadsExtensions;
+			}
+		});
+
+
 		it('should fail to upload image to post if image dimensions are too big', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/toobig.png'), {}, jar, csrf_token);
 			assert.strictEqual(response.statusCode, 500);
@@ -542,9 +577,23 @@ describe('Upload Controllers', () => {
 			}, jar, csrf_token);
 
 			assert.equal(body[0].url, '/assets/uploads/xss-dirty.xml');
-			const { response: fileResponse, body: uploadedBody } = await request.get(`${nconf.get('url')}${body[0].url}`);
-			assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
-			assert.equal(fileResponse.statusCode, 200);
+			const urlsToTest = [
+				body[0].url,
+				`/assets/../assets/uploads//xss-dirty.xml`,
+				`/assets/uploads///xss-dirty.xml`,
+				`/assets/uploads/../uploads/xss-dirty.xml`,
+				`/assets/uploads/./xss-dirty.xml`,
+				`/assets/x/../uploads/xss-dirty.xml`,
+				`/assets/uploads/%2e%2e/uploads/xss-dirty.xml`,
+				`/assets/uploads/%2e/xss-dirty.xml`,
+			];
+
+			for (const url of urlsToTest) {
+				// eslint-disable-next-line no-await-in-loop
+				const { response: fileResponse } = await request.get(`${nconf.get('url')}${url}`);
+				assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
+				assert.equal(fileResponse.statusCode, 200);
+			}
 		});
 
 		it('should keep valid xml file unchanged', async () => {
