@@ -320,7 +320,7 @@ authenticationController.doLogin = async function (req, uid) {
 		return;
 	}
 	const loginAsync = util.promisify(req.login).bind(req);
-	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && uid === req.uid;
+	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && !(req.loggedIn && uid !== req.uid);
 	await loginAsync({ uid: uid }, { keepSessionInfo });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
