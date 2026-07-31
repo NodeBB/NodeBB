@@ -1983,6 +1983,20 @@ describe('Controllers', () => {
 		});
 	});
 
+	describe('controllers helpers' , () => {
+		const controllerHelpers = require('../src/controllers/helpers');
+		it('should filter cids with no find privilege', async () => {
+			const category1 = await categories.create({ name: 'category1' });
+			const category2 = await categories.create({ name: 'category2' });
+			await privileges.categories.rescind(['groups:find'], category1.cid, 'registered-users');
+			const { selectedCids, selectedCategory } = await controllerHelpers.getSelectedCategory([
+				category1.cid, category2.cid,
+			], fooUid);
+			assert.deepStrictEqual(selectedCids, [category2.cid]);
+			assert.strictEqual(selectedCategory.cid, category2.cid);
+		});
+	});
+
 	after((done) => {
 		const analytics = require('../src/analytics');
 		analytics.writeData(done);

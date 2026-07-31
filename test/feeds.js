@@ -66,7 +66,7 @@ describe('feeds', () => {
 		assert.equal(response.statusCode, 404);
 	});
 
-	it('should redirect if we do not have read privilege', async () => {
+	it('should redirect if we do not have topics:read privilege', async () => {
 		await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
 		const { response, body } = await request.get(`${nconf.get('url')}/topic/${tid}.rss`);
 		assert.equal(response.statusCode, 200);
@@ -130,9 +130,18 @@ describe('feeds', () => {
 			assert(body2.startsWith('<?xml version="1.0"'));
 		});
 
-		it('should not allow access if token is correct but has no privilege', async () => {
+		it('should not allow access if token is correct but has no privilege(read)', async () => {
 			await privileges.categories.rescind(['groups:read'], cid, 'registered-users');
 			const { response, body } = await request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}&token=${rssToken}`);
+			assert.equal(response.statusCode, 200);
+			assert(body.includes('Login to your account'));
+		});
+
+		it('should not allow access if token is correct but has no privilege(topics:read)', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
+
+			const { response, body } = await request.get(`${nconf.get('url')}/topic/${tid}.rss?uid=${fooUid}&token=${rssToken}`);
 			assert.equal(response.statusCode, 200);
 			assert(body.includes('Login to your account'));
 		});
