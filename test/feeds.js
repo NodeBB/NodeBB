@@ -144,7 +144,6 @@ describe('feeds', () => {
 
 			const { response, body } = await request.get(`${nconf.get('url')}/topic/${tid}.rss?uid=${fooUid}&token=${rssToken}`);
 			assert.equal(response.statusCode, 200);
-			// console.log(body);
 			assert(body.includes('Login to your account'));
 		});
 	});
