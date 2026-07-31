@@ -244,11 +244,14 @@ inbox.update = async (req) => {
 					await posts.edit(postData);
 					await activitypub.feps.announce(object.id, req.body);
 					const tid = await posts.getPostField(object.id, 'tid');
-					const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
-					if (generatedTitle && (!postData.title || !postData.title.trim())) {
-						const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
-						await topics.setTopicField(tid, 'title', newTitle);
-						await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+					const isMain = await posts.isMain(object.id);
+					if (isMain) {
+						const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
+						if (generatedTitle && (!postData.title || !postData.title.trim())) {
+							const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
+							await topics.setTopicField(tid, 'title', newTitle);
+							await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+						}
 					}
 					break;
 				}
