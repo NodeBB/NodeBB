@@ -274,7 +274,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		helpers.getVisibleCategories({
 			cids, uid, states, privilege, showLinks: false,
 		}),
-		helpers.getSelectedCategory(selectedCid),
+		helpers.getSelectedCategory(selectedCid, uid),
 	]);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
@@ -345,11 +345,26 @@ helpers.getVisibleCategories = async function (params) {
 	});
 };
 
-helpers.getSelectedCategory = async function (cids) {
+helpers.getSelectedCategory = async function (cids, uid) {
 	if (cids && !Array.isArray(cids)) {
 		cids = [cids];
 	}
+	if (uid === undefined) {
+		const als = require('../als');
+		const store = als.getStore();
+		const e = new Error('').stack.split('\n')[3].trim();
+		if (store) {
+			winston.warn(`helpers.getSelectedCategory called without uid, getting it from async local storage. This is not recommended and may break in future versions. Pass in a uid explicitly. Called ${e}`);
+		} else {
+			winston.warn(`helpers.getSelectedCategory called without uid and no async local storage found, falling back to uid:0. Pass in a uid explicitly. Called ${e}`);
+		}
+		uid = store && store.uid ? store.uid : 0;
+	}
+
 	cids = cids && cids.map(cid => parseInt(cid, 10));
+	if (cids && cids.length) {
+		cids = await privileges.categories.filterCids('find', cids, uid);
+	}
 	const selectedCategories = await categories.getCategoriesData(cids);
 	let selectedCategory = null;
 	const selectedCids = selectedCategories.map(c => c && c.cid).filter(Boolean);

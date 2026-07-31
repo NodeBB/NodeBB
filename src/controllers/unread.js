@@ -19,7 +19,7 @@ unreadController.get = async function (req, res) {
 	const filter = req.query.filter || '';
 
 	const [categoryData, tagData, userSettings, canPost, isPrivileged] = await Promise.all([
-		helpers.getSelectedCategory(cid),
+		helpers.getSelectedCategory(cid, req.uid),
 		helpers.getSelectedTag(tag),
 		user.getSettings(req.uid),
 		privileges.categories.canPostTopic(req.uid),

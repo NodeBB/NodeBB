@@ -377,48 +377,50 @@ describe('User', () => {
 		});
 
 		it('should error for guest', async () => {
-			try {
-				await apiUser.search({ uid: 0 }, { query: 'john' });
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-			}
+			await assert.rejects(
+				apiUser.search({ uid: 0 }, { query: 'john' }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
 		it('should error with invalid data', async () => {
-			try {
-				await apiUser.search({ uid: testUid }, null);
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:invalid-data]]');
-			}
+			await assert.rejects(
+				apiUser.search({ uid: testUid }, null),
+				{ message: '[[error:invalid-data]]' }
+			);
 		});
 
 		it('should error for unprivileged user', async () => {
-			try {
-				await apiUser.search({ uid: testUid }, { searchBy: 'ip', query: '123' });
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-			}
+			await assert.rejects(
+				apiUser.search({ uid: testUid }, { searchBy: 'ip', query: '123' }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
 		it('should error for unprivileged user', async () => {
-			try {
-				await apiUser.search({ uid: testUid }, { filters: ['banned'], query: '123' });
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-			}
+			await assert.rejects(
+				apiUser.search({ uid: testUid }, { searchBy: ['email'], query: 'john' }),
+				{ message: '[[error:no-privileges]]' },
+			);
+
+			await assert.rejects(
+				apiUser.search({ uid: testUid }, { searchBy: ['ip'], query: 'john' }),
+				{ message: '[[error:no-privileges]]' },
+			);
 		});
 
 		it('should error for unprivileged user', async () => {
-			try {
-				await apiUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' });
-				assert(false);
-			} catch (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-			}
+			await assert.rejects(
+				apiUser.search({ uid: testUid }, { filters: ['banned'], query: '123' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
+		it('should error for unprivileged user', async () => {
+			await assert.rejects(
+				apiUser.search({ uid: testUid }, { filters: ['flagged'], query: '123' }),
+				{ message: '[[error:no-privileges]]' }
+			);
 		});
 
 		it('should search users by ip', async () => {

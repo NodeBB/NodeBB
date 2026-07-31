@@ -32,13 +32,12 @@ module.exports = function (app, middleware) {
 	app.get('/tags/:tag.rss', middleware.maintenanceMode, routeHelpers.tryRoute(generateForTag));
 };
 
-async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
-	const uid = parseInt(req.query.uid, 10) || 0;
-	const { token } = req.query;
-
+async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res, privilege) {
 	if (!requiresLogin) {
 		return true;
 	}
+	const uid = parseInt(req.query.uid, 10) || 0;
+	const { token } = req.query;
 
 	if (uid <= 0 || !token) {
 		return controllerHelpers.notAllowed(req, res);
@@ -60,7 +59,7 @@ async function validateTokenIfRequiresLogin(requiresLogin, cid, req, res) {
 	}
 	await db.delete(rateLimitKey);
 	const userPrivileges = await privileges.categories.get(cid, uid);
-	if (!userPrivileges.read) {
+	if (!userPrivileges[privilege]) {
 		return controllerHelpers.notAllowed(req, res);
 	}
 	return true;
@@ -87,7 +86,7 @@ async function generateForTopic(req, res, next) {
 		return next();
 	}
 
-	if (await validateTokenIfRequiresLogin(!userPrivileges['topics:read'], topic.cid, req, res)) {
+	if (await validateTokenIfRequiresLogin(!userPrivileges['topics:read'], topic.cid, req, res, 'topics:read')) {
 		const topicData = await topics.getTopicWithPosts(topic, `tid:${tid}:posts`, req.uid || req.query.uid || 0, 0, 24, true);
 
 		const mainPost = topicData.posts[0];
@@ -153,7 +152,7 @@ async function generateForCategory(req, res, next) {
 		return next();
 	}
 
-	if (await validateTokenIfRequiresLogin(!userPrivileges.read, cid, req, res)) {
+	if (await validateTokenIfRequiresLogin(!userPrivileges.read, cid, req, res, 'read')) {
 		let topicsData = await topics.getTopicsByTids(tids, uid);
 		topicsData = await user.blocks.filter(uid, topicsData);
 		const feed = await generateTopicsFeed({
@@ -353,7 +352,7 @@ async function generateForCategoryRecentPosts(req, res) {
 		return controllers404.handle404(req, res);
 	}
 
-	if (await validateTokenIfRequiresLogin(!userPrivileges.read, cid, req, res)) {
+	if (await validateTokenIfRequiresLogin(!userPrivileges.read, cid, req, res, 'read')) {
 		const feed = generateForPostsFeed({
 			title: `${category.name} Recent Posts`,
 			description: `A list of recent posts from ${category.name}`,

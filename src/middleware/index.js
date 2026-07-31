@@ -213,12 +213,12 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`;
 	let requestPath = req.path;
 	try {
-		requestPath = decodeURIComponent(requestPath);
+		requestPath = path.posix.normalize(decodeURIComponent(requestPath));
 	} catch (err) {
 		return res.status(403).json('not-allowed');
 	}
 
-	if (requestPath.startsWith(uploadPrefix)) {
+	if (requestPath === uploadPrefix || requestPath.startsWith(`${uploadPrefix}/`)) {
 		const extensions = (meta.config.privateUploadsExtensions || '')
 			.split(',')
 			.map(ext => ext.trim().toLowerCase())
@@ -282,10 +282,11 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	res.status(200).type('text/css').send(req.originalUrl.includes('-rtl') ? rtl : ltr);
 });
 
-middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
+middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next) {
 	// Trim uploaded files' timestamps when downloading + force download if unsafe
-	let basename = path.basename(req.path);
-	const extname = path.extname(req.path).toLowerCase();
+	const p = path.posix.normalize(decodeURIComponent(req.path));
+	let basename = path.basename(p);
+	const extname = path.extname(p).toLowerCase();
 	const unsafeExtensions = [
 		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
 		'.svg', '.svgz',
@@ -296,7 +297,7 @@ middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
 	];
 	const isInlineSafe = !unsafeExtensions.includes(extname);
 	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
-	if (req.path.startsWith('/uploads/')) {
+	if (p.startsWith('/uploads/')) {
 		if (middleware.regexes.timestampedUpload.test(basename)) {
 			basename = basename.slice(14);
 		}
@@ -305,7 +306,7 @@ middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
 	}
 
 	next();
-};
+});
 
 middleware.validateAuth = helpers.try(async (req, res, next) => {
 	try {

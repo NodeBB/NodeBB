@@ -462,7 +462,7 @@ usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
 
 usersAPI.listEmails = async (caller, { uid }) => {
 	const [isPrivileged, { showemail }] = await Promise.all([
-		user.isPrivileged(caller.uid),
+		user.isAdminOrGlobalMod(caller.uid),
 		user.getSettings(uid),
 	]);
 	const isSelf = caller.uid === parseInt(uid, 10);
@@ -476,7 +476,7 @@ usersAPI.listEmails = async (caller, { uid }) => {
 
 usersAPI.getEmail = async (caller, { uid, email }) => {
 	const [isPrivileged, { showemail }, emailUid] = await Promise.all([
-		user.isPrivileged(caller.uid),
+		user.isAdminOrGlobalMod(caller.uid),
 		user.getSettings(uid),
 		db.sortedSetScore('email:uid', String(email).toLowerCase()),
 	]);
@@ -604,10 +604,11 @@ usersAPI.search = async function (caller, data) {
 	]);
 	let filters = data.filters || [];
 	filters = Array.isArray(filters) ? filters : [filters];
+	const searchBy = String(data.searchBy || 'username').toLowerCase();
 	if (!allowed ||
 		((
-			data.searchBy === 'ip' ||
-			data.searchBy === 'email' ||
+			searchBy === 'ip' ||
+			searchBy === 'email' ||
 			filters.includes('banned') ||
 			filters.includes('muted') ||
 			filters.includes('flagged')
@@ -618,7 +619,7 @@ usersAPI.search = async function (caller, data) {
 	return await user.search({
 		uid: caller.uid,
 		query: data.query,
-		searchBy: data.searchBy || 'username',
+		searchBy: searchBy,
 		page: data.page || 1,
 		sortBy: data.sortBy || 'lastonline',
 		filters: filters,

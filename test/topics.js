@@ -2476,6 +2476,18 @@ describe('Topic\'s', () => {
 			assert(body);
 		});
 
+		it('should prevent user from joining topic socket.io room if it is scheduled', async () => {
+			const socketMeta = require('../src/socket.io/meta');
+			await assert.rejects(
+				socketMeta.rooms.enter({ uid: fooUid }, { enter: `topic_${topicData.tid}` }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// admin can still join
+			await socketMeta.rooms.enter({ uid: adminUid, join: () => {} }, { enter: `topic_${topicData.tid}` });
+			await socketMeta.rooms.leaveCurrent({ uid: adminUid, leave: () => {} });
+		});
+
 		it('should load topic for a privileged user', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, { jar: adminJar });
 			assert.strictEqual(response.statusCode, 200);
