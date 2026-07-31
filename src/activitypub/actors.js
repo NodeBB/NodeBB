@@ -139,6 +139,17 @@ Actors.assert = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			if (typeof id === 'string') {
+				const queriedHost = new URL(id).hostname;
+				const actorHost = new URL(actor.id).hostname;
+				if (queriedHost !== actorHost) {
+					activitypub.helpers.log(`[activitypub/actors] Actor id hostname mismatch: queried ${queriedHost}, got ${actorHost}`);
+					return null;
+				}
+			}
+
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
 			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
@@ -320,6 +331,16 @@ Actors.assertGroup = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing group ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			if (typeof id === 'string') {
+				const queriedHost = new URL(id).hostname;
+				const actorHost = new URL(actor.id).hostname;
+				if (queriedHost !== actorHost) {
+					activitypub.helpers.log(`[activitypub/actors] Group id hostname mismatch: queried ${queriedHost}, got ${actorHost}`);
+					return null;
+				}
+			}
 
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);

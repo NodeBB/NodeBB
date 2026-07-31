@@ -79,6 +79,68 @@ describe('as:Person (Actor asserton)', () => {
 	});
 
 	describe('less happy paths', () => {
+		describe('actor.id hostname mismatch (spoofed id)', () => {
+			it('should reject an actor whose id hostname does not match the queried URL', async () => {
+				const queriedId = `https://example.org/user/${utils.generateUUID()}`;
+				const spoofedId = `https://malicious.org/user/${utils.generateUUID()}`;
+
+				// Cache a spoofed actor: queried from example.org but id points to malicious.org
+				activitypub._cache.set(`0;${queriedId}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: spoofedId,
+					url: spoofedId,
+					type: 'Person',
+					name: 'spoofed',
+					preferredUsername: 'spoofed',
+					inbox: `${spoofedId}/inbox`,
+					outbox: `${spoofedId}/outbox`,
+					publicKey: {
+						id: `${spoofedId}#key`,
+						owner: spoofedId,
+						publicKeyPem: 'somekey',
+					},
+				});
+
+				const result = await activitypub.actors.assert([queriedId]);
+				assert.deepStrictEqual(result, []);
+
+				// Ensure no user data was created for either the queried or spoofed id
+				const queriedExists = await db.exists(`userRemote:${queriedId}`);
+				const spoofedExists = await db.exists(`userRemote:${spoofedId}`);
+				assert.strictEqual(queriedExists, false);
+				assert.strictEqual(spoofedExists, false);
+			});
+
+			it('should reject a group whose id hostname does not match the queried URL', async () => {
+				const queriedId = `https://example.org/group/${utils.generateUUID()}`;
+				const spoofedId = `https://malicious.org/group/${utils.generateUUID()}`;
+
+				activitypub._cache.set(`0;${queriedId}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: spoofedId,
+					url: spoofedId,
+					type: 'Group',
+					name: 'spoofed group',
+					preferredUsername: 'spoofed-group',
+					inbox: `${spoofedId}/inbox`,
+					outbox: `${spoofedId}/outbox`,
+					publicKey: {
+						id: `${spoofedId}#key`,
+						owner: spoofedId,
+						publicKeyPem: 'somekey',
+					},
+				});
+
+				const result = await activitypub.actors.assertGroup([queriedId]);
+				assert.deepStrictEqual(result, []);
+
+				const queriedExists = await db.exists(`categoryRemote:${queriedId}`);
+				const spoofedExists = await db.exists(`categoryRemote:${spoofedId}`);
+				assert.strictEqual(queriedExists, false);
+				assert.strictEqual(spoofedExists, false);
+			});
+		});
+
 		describe('actor with `preferredUsername` that is not all lowercase', () => {
 			it('should save a handle-to-uid association', async () => {
 				const preferredUsername = 'nameWITHCAPS';
