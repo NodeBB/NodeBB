@@ -183,11 +183,14 @@ inbox.update = async (req) => {
 					postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 					await posts.edit(postData);
 					const tid = await posts.getPostField(object.id, 'tid');
-					const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
-					if (generatedTitle && (!postData.title || !postData.title.trim())) {
-						const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
-						await topics.setTopicField(tid, 'title', newTitle);
-						await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+					const isMain = await posts.isMain(object.id);
+					if (isMain) {
+						const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
+						if (generatedTitle && (!postData.title || !postData.title.trim())) {
+							const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
+							await topics.setTopicField(tid, 'title', newTitle);
+							await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+						}
 					}
 					const isDeleted = await posts.getPostField(object.id, 'deleted');
 					if (isDeleted) {
