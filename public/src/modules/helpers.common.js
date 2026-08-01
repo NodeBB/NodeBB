@@ -13,6 +13,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		tx: _tx,
 		buildMetaTag,
 		buildLinkTag,
+		breadCrumbsToJSONLD,
 		stringify,
 		displayMenuItem,
 		stripTags,
@@ -105,6 +106,30 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		);
 
 		return '<link ' + link + rel + as + type + sizes + title + href + hreflang + crossorigin + '/>\n\t';
+	}
+
+	function breadCrumbsToJSONLD(breadcrumbs) {
+		const self = this;
+		const breadcrumbsJSONLD = {
+			'@context': 'https://schema.org',
+			'@type': 'BreadcrumbList',
+			'itemListElement': breadcrumbs.filter(Boolean).map((crumb, index) => {
+				const item = {
+					'@type': 'ListItem',
+					position: index + 1,
+					name: _tx.call(self, crumb.text),
+				};
+				if (index !== breadcrumbs.length - 1) {
+					item.item = crumb.url;
+				}
+				return item;
+			}),
+		};
+
+		return JSON.stringify(breadcrumbsJSONLD)
+			.replace(/</g, '\\u003C')
+			.replace(/>/g, '\\u003E')
+			.replace(/&/g, '\\u0026');
 	}
 
 	function stringify(obj) {
