@@ -210,10 +210,10 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 		return next();
 	}
 
-	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`;
+	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`.toLowerCase();
 	let requestPath = req.path;
 	try {
-		requestPath = path.posix.normalize(decodeURIComponent(requestPath));
+		requestPath = path.posix.normalize(decodeURIComponent(requestPath)).toLowerCase();
 	} catch (err) {
 		return res.status(403).json('not-allowed');
 	}
@@ -284,7 +284,7 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 
 middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next) {
 	// Trim uploaded files' timestamps when downloading + force download if unsafe
-	const p = path.posix.normalize(decodeURIComponent(req.path));
+	const p = path.posix.normalize(decodeURIComponent(req.path)).toLowerCase();
 	let basename = path.basename(p);
 	const extname = path.extname(p).toLowerCase();
 	const unsafeExtensions = [
