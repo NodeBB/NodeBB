@@ -122,6 +122,42 @@ describe('Translator shim', () => {
 		});
 	});
 
+	describe('isTranslationKey/hasTranslationKey', () => {
+		it('should detect valid translation keys', (done) => {
+			assert.strictEqual(shim.isTranslationKey('[[global:home]]'), true);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, arg1, arg2]]'), true);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, [[nested:key]]]]'), true);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, [[nested:key]], arg2]]'), true);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, [[nested:key]], [[nested:key2]]]]'), true);
+			done();
+		});
+
+		it('should detect invalid translation keys', (done) => {
+			assert.strictEqual(shim.isTranslationKey('[[global:home'), false);
+			assert.strictEqual(shim.isTranslationKey('global:home]]'), false);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, [[nested:key]]'), false);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, [[nested:key]], arg2'), false);
+			assert.strictEqual(shim.isTranslationKey('[[global:home, [[nested:key]], [[nested:key2]]'), false);
+			done();
+		});
+
+		it('should return true if text has translation keys', (done) => {
+			assert.strictEqual(shim.hasTranslationKey('[[global:home]]'), true);
+			assert.strictEqual(shim.hasTranslationKey('[[global:home, arg1, arg2]]'), true);
+			assert.strictEqual(shim.hasTranslationKey('testing [[global:home, arg1, arg2]] text'), true);
+			assert.strictEqual(shim.hasTranslationKey(']] some text here [[namespace1:key1, arg1, arg2]] other text [[invalid]] test [[namespace2:key2]] [[invalid'), true);
+			done();
+		});
+
+		it('should return false if text does not have translation keys', (done) => {
+			assert.strictEqual(shim.hasTranslationKey('global:home'), false);
+			assert.strictEqual(shim.hasTranslationKey('[[global:home, arg1, arg2'), false);
+			assert.strictEqual(shim.hasTranslationKey('testing global:home, arg1, arg2]] text'), false);
+			assert.strictEqual(shim.hasTranslationKey(']] some text here namespace1:key1, arg1, arg2]] other text invalid]] test [[invalid'), false);
+			done();
+		});
+	});
+
 	describe('.normalizeToken', () => {
 		it('should normalize a token into its key and arguments', (done) => {
 			assert.deepStrictEqual(
@@ -733,6 +769,30 @@ describe('Translator static methods', () => {
 				Translator.compile('amazing:cool', '100% awesome!', 'one, two, and three'),
 				'[[amazing:cool, 100&#37; awesome!, one&#44; two&#44; and three]]'
 			);
+			done();
+		});
+
+		it('should escape `]]` and `[[` in arguments if they are invalid translation tokens', (done) => {
+			assert.strictEqual(
+				Translator.compile('amazing:cool', '[[nested:valid]]', 'plainstr', 'invalid]]<img src=x onerror=alert(document.domain)>'),
+				'[[amazing:cool, [[nested:valid]], plainstr, invalid&rsqb;&rsqb;<img src=x onerror=alert(document.domain)>]]'
+			);
+
+			assert.strictEqual(
+				Translator.compile('amazing:cool', '[[nested:valid]]', 'plainstr', 'invalid[[<img src=x onerror=alert(document.domain)>'),
+				'[[amazing:cool, [[nested:valid]], plainstr, invalid&lsqb;&lsqb;<img src=x onerror=alert(document.domain)>]]'
+			);
+
+			assert.strictEqual(
+				Translator.compile('amazing:cool', '[[nested:valid]]', 'plainstr', 'invalid[[<img src=x onerror=alert(document.domain)>]]'),
+				'[[amazing:cool, [[nested:valid]], plainstr, invalid&lsqb;&lsqb;<img src=x onerror=alert(document.domain)>&rsqb;&rsqb;]]'
+			);
+
+			assert.strictEqual(
+				Translator.compile('amazing:cool', '[[nested:invalid]]]]', ']][[invalid:foo, <img src=x onerror=alert(document.domain)>'),
+				'[[amazing:cool, &lsqb;&lsqb;nested:invalid&rsqb;&rsqb;&rsqb;&rsqb;, &rsqb;&rsqb;&lsqb;&lsqb;invalid:foo&#44; <img src=x onerror=alert(document.domain)>]]'
+			);
+
 			done();
 		});
 	});

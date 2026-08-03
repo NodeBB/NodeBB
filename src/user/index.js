@@ -184,7 +184,7 @@ User.getNotificationDisplayname = async function (uid) {
 		await categories.getCategoryFields(uid, ['name']) :
 		await User.getUserFields(uid, ['uid', 'username']);
 	if (fromCategory) {
-		return userData.name;
+		return translator.escape(userData.name);
 	}
 
 	if (userData.uid === 0) {
