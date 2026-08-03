@@ -139,10 +139,10 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			n.bodyShort = posts.sanitize(await tx.translate(n.bodyShort, userSettings.userLang));
 		}
 		if (n?.bodyLong) {
+			if (n.txBodyLong) {
+				n.bodyLong = await tx.translate(n.bodyLong, userSettings.userLang);
+			}
 			n.bodyLong = posts.sanitize(n.bodyLong);
-		}
-		if (n?.bodyLong && n?.txBodyLong) {
-			n.bodyLong = await tx.translate(n.bodyLong, userSettings.userLang);
 		}
 	}));
 
