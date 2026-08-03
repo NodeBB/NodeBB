@@ -17,6 +17,15 @@ module.exports = function (utils, load, warn) {
 			.replace(/&amp;rsqb;/g, '&rsqb;');
 	}
 
+	function isTranslationKey(str) {
+		const tokens = parseTranslationString(str);
+		return tokens.length === 1 && tokens[0].tx;
+	}
+
+	function hasTranslationKey(str) {
+		return parseTranslationString(str).some(token => token.tx);
+	}
+
 	// takes token '[[topic:moved-from, arg1, arg2]]' and
 	// normalizes it to ['topic:moved-from', ['arg1', 'arg2']]
 	function normalizeToken(token, ignoreArgs = false) {
@@ -458,7 +467,8 @@ module.exports = function (utils, load, warn) {
 		};
 
 		Translator.escapeArg = function (arg) {
-			return String(arg).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+			arg = String(arg).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+			return isTranslationKey(arg) ? arg : Translator.escape(arg);
 		};
 
 		return Translator;
@@ -486,6 +496,8 @@ module.exports = function (utils, load, warn) {
 		languageDirection: function (lang) {
 			return this.rtlLanguages.includes(lang) ? 'rtl' : 'ltr';
 		},
+		isTranslationKey: isTranslationKey,
+		hasTranslationKey: hasTranslationKey,
 
 		flush: function () {
 			Object.keys(Translator.cache).forEach(function (code) {

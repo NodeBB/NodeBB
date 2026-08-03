@@ -11,6 +11,7 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const tx = require('../translator');
 const topics = require('../topics');
+const posts = require('../posts');
 const user = require('./index');
 
 const UserNotifications = module.exports;
@@ -135,7 +136,10 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	notificationData = await notifications.merge(notificationData);
 	await Promise.all(notificationData.map(async (n) => {
 		if (n?.bodyShort) {
-			n.bodyShort = await tx.translate(n.bodyShort, userSettings.userLang);
+			n.bodyShort = posts.sanitize(await tx.translate(n.bodyShort, userSettings.userLang));
+		}
+		if (n?.bodyLong) {
+			n.bodyLong = posts.sanitize(n.bodyLong);
 		}
 	}));
 
