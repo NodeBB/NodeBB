@@ -347,4 +347,30 @@ describe('helpers', () => {
 		assert(str.includes('col-3'));
 		done();
 	});
+
+	describe.only('buildAvatar', () => {
+		it('should build avatar with picture', () => {
+			const user = {
+				uid: 1,
+				displayname: 'john',
+				picture: '/uploads/1.png',
+				'icon:text': 'J',
+				'icon:bgColor': '#ff0000',
+			};
+			const html = helpers.buildAvatar(user, 32, true);
+			assert.strictEqual(html, `<img title="john" data-uid="1" class="avatar  avatar-rounded" alt="john" loading="lazy" component="avatar/picture" src="/uploads/1.png" style="--avatar-size: 32;" onError="this.remove()" itemprop="image" /><span title="john" data-uid="1" class="avatar  avatar-rounded" component="avatar/icon" style="--avatar-size: 32; background-color: #ff0000">J</span>`);
+		});
+
+		it('should escape all attributes', () => {
+			const user = {
+				uid: '"remoteuid',
+				displayname: '"remoteusername',
+				picture: '"/uploads/1.png',
+				'icon:text': '"icon',
+				'icon:bgColor': '"#ff0000',
+			};
+			const html = helpers.buildAvatar(user, 32, true, '"custom-class', '"component');
+			assert.strictEqual(html, `<img title="&quot;remoteusername" data-uid="&quot;remoteuid" class="avatar &quot;custom-class avatar-rounded" alt="&quot;remoteusername" loading="lazy" component="&quot;component" src="&quot;/uploads/1.png" style="--avatar-size: 32;" onError="this.remove()" itemprop="image" /><span title="&quot;remoteusername" data-uid="&quot;remoteuid" class="avatar &quot;custom-class avatar-rounded" component="&quot;component" style="--avatar-size: 32; background-color: &quot;#ff0000">&quot;icon</span>`);
+		});
+	});
 });
