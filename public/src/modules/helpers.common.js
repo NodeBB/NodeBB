@@ -389,7 +389,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		const iconText = escape(String(userObj['icon:text'] || ''));
 		const attributes = new Map([
 			['title', displayname],
-			['data-uid', userObj.uid],
+			['data-uid', escape(String(userObj.uid || ''))],
 			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
 		const style = escape(`--avatar-size: ${size};`);

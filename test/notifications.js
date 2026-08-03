@@ -14,6 +14,7 @@ const notifications = require('../src/notifications');
 const socketNotifications = require('../src/socket.io/notifications');
 const api = require('../src/api');
 const utils = require('../src/utils');
+const tx = require('../src/translator');
 
 const sleep = util.promisify(setTimeout);
 
@@ -309,11 +310,61 @@ describe('Notifications', () => {
 			uid: uid,
 			cid: cid,
 			title: 'Test Topic Title',
-			content: 'The content of test topic',
+			content: 'The content of test topic <script>alert(document.domain)</script>',
 		});
 		await sleep(1100);
 		const data = await user.notifications.getAll(followerUid, '');
-		assert(data);
+		assert(Array.isArray(data));
+		const notifs = await user.notifications.get(followerUid);
+		assert.strictEqual(notifs.unread[0].bodyLong, 'The content of test topic ');
+	});
+
+	it('should sanitize html in notification args', async () => {
+		const bodyShort = tx.compile(
+			'notifications:user-posted-topic-in-category',
+			'displayName]]<img src=x onerror=alert(document.domain)>',
+			'topicTitle]]<img src=x onerror=alert(document.domain)>',
+			'Lounge]]<img src=x onerror=alert(document.domain)>' // categoy name
+		);
+
+		const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+		const notification = await notifications.create({
+			type: 'new-topic-in-category',
+			nid: 'new_topic:tid:1:uid:1',
+			bodyShort: bodyShort,
+			pid: 1,
+			path: '/post/1',
+			tid: 1,
+			from: 1,
+		});
+
+		notifications.push(notification, [uid]);
+		await sleep(2000);
+
+		const notifData = await user.notifications.get(uid);
+		assert.strictEqual(notifData.unread[0].bodyShort, '<strong>displayName]]&lt;img src=x onerror=alert(document.domain)&gt;</strong> posted <strong>topicTitle]]&lt;img src=x onerror=alert(document.domain)&gt;</strong> in <strong>Lounge]]&lt;img src=x onerror=alert(document.domain)&gt;</strong>');
+	});
+
+	it('should sanitize html in notification args', async () => {
+		const uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+
+		const notification = await notifications.create({
+			type: 'new-topic-in-category',
+			nid: 'new_topic:tid:1:uid:1',
+			bodyShort: '<img src=x onerror=alert(document.domain)>',
+			bodyLong: 'bodylong <script>alert(document.domain)</script>',
+			pid: 1,
+			path: '/post/1',
+			tid: 1,
+			from: 1,
+		});
+
+		notifications.push(notification, [uid]);
+		await sleep(2000);
+
+		const notifData = await user.notifications.get(uid);
+		assert.strictEqual(notifData.unread[0].bodyShort, '<img src="x" />');
+		assert.strictEqual(notifData.unread[0].bodyLong, 'bodylong ');
 	});
 
 	it('should send welcome notification', async () => {
