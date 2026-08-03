@@ -348,7 +348,7 @@ describe('helpers', () => {
 		done();
 	});
 
-	describe.only('buildAvatar', () => {
+	describe('buildAvatar', () => {
 		it('should build avatar with picture', () => {
 			const user = {
 				uid: 1,
