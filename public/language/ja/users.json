@@ -23,11 +23,11 @@
     "categories": "カテゴリ",
     "tags": "タグ",
     "no-users-found": "ユーザーが見つかりません!",
-    "temp-ban.length": "Length",
-    "temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-    "temp-ban.select-reason": "Select a reason",
-    "temp-ban.hours": "Hours",
-    "temp-ban.days": "Days",
-    "temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
-    "temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute."
+    "temp-ban.length": "期間",
+    "temp-ban.reason": "理由 <span class=\"text-muted\">(任意)</span>",
+    "temp-ban.select-reason": "理由を選択してください",
+    "temp-ban.hours": "時間",
+    "temp-ban.days": "日",
+    "temp-ban.explanation": "停止期間の長さを入力してください。0を指定すると永久停止と見なされますのでご注意ください。",
+    "temp-mute.explanation": "ミュート期間の長さを入力してください。0を指定すると永久ミュートと見なされますのでご注意ください。"
 }
