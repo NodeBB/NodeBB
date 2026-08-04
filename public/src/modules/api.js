@@ -1,7 +1,8 @@
 'use strict';
 
 import { fire as fireHook } from 'hooks';
-import { confirm } from 'bootbox';
+import { confirm } from 'modals';
+import * as translator from 'translator';
 
 const baseUrl = config.relative_path + '/api/v3';
 
@@ -19,13 +20,14 @@ async function call(options, callback) {
 		const result = await xhr(options);
 		return result;
 	} catch (err) {
-		if (err.message === 'A valid login session was not found. Please log in and try again.') {
+		if (err.message === await translator.translate('[[error:api.401]]', config.userLang)) {
 			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
-			return confirm('[[error:api.reauth-required]]', (ok) => {
+			await confirm('[[error:api.reauth-required]]', (ok) => {
 				if (ok) {
 					ajaxify.go(url);
 				}
 			});
+			return;
 		}
 		throw err;
 	}
