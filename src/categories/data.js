@@ -151,6 +151,10 @@ async function modifyCategories(categories, fields) {
 			category.name = category.nickname || category.name;
 		}
 
+		if (hasField('url')) {
+			category.url = utils.isSafeHref(category.url) ? category.url : '';
+		}
+
 		if (hasField('description') && category.cid !== -1) {
 			category.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', category.description || '');
 		}
