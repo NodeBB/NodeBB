@@ -342,3 +342,57 @@ middleware.checkRequired = function (fields, req, res, next) {
 		new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`)
 	);
 };
+
+middleware.requireAPIReAuth = function ({ maxAgeInMinutes }) {
+	return helpers.try(async (req, res, next) => {
+		if (!res.locals.isAPI) return next();
+		if (!req.loggedIn) {
+			return await controllers.helpers.formatApiResponse(401, res);
+		}
+
+		const reauthAt = req.session.meta?.reauthAt || 0;
+		const maxAgeMs = maxAgeInMinutes * 60 * 1000;
+		if (reauthAt && (Date.now() - reauthAt) <= maxAgeMs) {
+			return next();
+		}
+
+		req.session.returnTo = normalizeReturnToPath(req, req?.headers['x-return-to']) || '/';
+		req.session.forceLogin = 1;
+
+		await plugins.hooks.fire('response:auth.relogin', { req, res });
+		if (res.headersSent) {
+			return;
+		}
+
+		await controllers.helpers.formatApiResponse(401, res);
+	});
+};
+
+function normalizeReturnToPath(req, pathCandidate) {
+	if (typeof pathCandidate !== 'string') {
+		return '';
+	}
+
+	let p;
+	try {
+		p = decodeURIComponent(pathCandidate.trim());
+	} catch {
+		return '';
+	}
+
+	if (!p.startsWith('/') || p.startsWith('//')) {
+		return '';
+	}
+	p = path.posix.normalize(p);
+
+	if (relative_path && p.startsWith(relative_path)) {
+		p = p.slice(relative_path.length) || '/';
+	}
+
+	// Never redirect to API routes after a browser login
+	if (/^\/api(?:\/|$)/.test(p)) {
+		return '';
+	}
+
+	return p;
+}

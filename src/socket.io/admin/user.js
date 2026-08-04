@@ -10,33 +10,9 @@ const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
 const utils = require('../../utils');
-const api = require('../../api');
 const sockets = require('..');
 
 const User = module.exports;
-
-User.makeAdmins = async function (socket, uids) {
-	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	for (const uid of uids) {
-		// eslint-disable-next-line no-await-in-loop
-		await api.groups.join({ uid: socket.uid }, { uid: uid, slug: 'administrators' });
-	}
-};
-
-User.removeAdmins = async function (socket, uids) {
-	sockets.warnDeprecated(socket, 'DEL /api/v3/groups/:slug/membership/:uid');
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	for (const uid of uids) {
-		// eslint-disable-next-line no-await-in-loop
-		await api.groups.leave({ uid: socket.uid }, { uid: uid, slug: 'administrators' });
-	}
-};
 
 User.resetLockouts = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
@@ -51,10 +27,13 @@ User.validateEmail = async function (socket, uids) {
 	}
 
 	for (const uid of uids) {
+		// eslint-disable-next-line no-await-in-loop
 		const email = await user.email.getEmailForValidation(uid);
 		if (email) {
+			// eslint-disable-next-line no-await-in-loop
 			await user.setUserField(uid, 'email', email);
 		}
+		// eslint-disable-next-line no-await-in-loop
 		await user.email.confirmByUid(uid, socket.uid);
 	}
 };

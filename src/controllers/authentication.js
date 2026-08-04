@@ -346,7 +346,12 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		await user.reset.cleanByUid(uid);
 
 		req.session.meta = {};
-
+		const now = Date.now();
+		if (req.session.forceLogin) {
+			req.session.meta.reAuthAt = now;
+		} else {
+			delete req.session.meta.reAuthAt;
+		}
 		delete req.session.forceLogin;
 		// Associate IP used during login with user account
 		req.session.meta.ip = req.ip;
@@ -354,7 +359,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		// Associate metadata retrieved via user-agent
 		req.session.meta = _.extend(req.session.meta, {
 			uuid: uuid,
-			datetime: Date.now(),
+			datetime: now,
 			platform: req.useragent.platform,
 			browser: req.useragent.browser,
 			version: req.useragent.version,
@@ -365,7 +370,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 			}),
 			trackSession ? user.auth.addSession(uid, req.sessionID) : undefined,
 			user.updateLastOnlineTime(uid),
-			user.onUserOnline(uid, Date.now()),
+			user.onUserOnline(uid, now),
 			analytics.increment('logins'),
 			db.incrObjectFieldBy('global', 'loginCount', 1),
 		]);

@@ -11,6 +11,11 @@ async function call(options, callback) {
 		config.relative_path + options.url :
 		baseUrl + options.url;
 
+	options.headers = options.headers || {};
+	if (!options.headers['x-return-to']) {
+		options.headers['x-return-to'] = `${window.location.pathname}${window.location.search}`;
+	}
+
 	if (typeof callback === 'function') {
 		xhr(options).then(result => callback(null, result), err => callback(err));
 		return;
@@ -22,12 +27,15 @@ async function call(options, callback) {
 	} catch (err) {
 		if (err.message === await translator.translate('[[error:api.401]]', config.userLang)) {
 			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
-			await confirm('[[error:api.reauth-required]]', (ok) => {
-				if (ok) {
-					ajaxify.go(url);
-				}
+			return new Promise((resolve, reject) => {
+				confirm('[[error:api.reauth-required]]', (ok) => {
+					if (ok) {
+						ajaxify.go(url);
+					} else {
+						reject(err);
+					}
+				});
 			});
-			return;
 		}
 		throw err;
 	}
