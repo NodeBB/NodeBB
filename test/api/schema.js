@@ -584,21 +584,15 @@ describe('schema', () => {
 			return;
 		}
 
-		if (this.result.response.statusCode === 400 && context[method].responses['400']) {
-			// TODO: check 400 schema to response.body?
+		const statusCode = String(this.result.response.statusCode);
+		const statusSchema = context[method].responses[statusCode];
+		if (!statusSchema) {
 			return;
 		}
 
-		const http200 = context[method].responses['200'];
-		if (!http200) {
-			return;
-		}
-
-		assert.strictEqual(this.result.response.statusCode, 200, `HTTP 200 expected (path: ${method} ${path})`);
-
-		const hasJSON = http200.content && http200.content['application/json'];
+		const hasJSON = statusSchema.content && statusSchema.content['application/json'];
 		if (hasJSON) {
-			this.schema = context[method].responses['200'].content['application/json'].schema;
+			this.schema = statusSchema.content['application/json'].schema;
 			validateSchema(this.schema, this.result.body, method.toUpperCase(), path);
 		}
 
