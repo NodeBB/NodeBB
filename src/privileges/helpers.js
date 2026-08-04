@@ -9,7 +9,6 @@ const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const utils = require('../utils');
-const activitypub = require('../activitypub');
 
 const helpers = module.exports;
 
@@ -76,11 +75,6 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 
 	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
 
-	// Remote ActivityPub actors (URIs) are treated as the fediverse pseudo-user
-	if (activitypub.helpers.isUri(uidOrGroupName)) {
-		return await isSystemGroupAllowedToCids(privilege, -2, cids);
-	}
-
 	// Group handling
 	if (!utils.isNumber(uidOrGroupName) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
@@ -97,11 +91,6 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 
 async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
 	const groupKeys = privileges.map(privilege => `cid:${cid}:privileges:groups:${privilege}`);
-	// Remote ActivityPub actors (URIs) are treated as the fediverse pseudo-user
-	if (activitypub.helpers.isUri(uidOrGroupName)) {
-		return await isSystemGroupAllowedToPrivileges(privileges, -2, cid);
-	}
-
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
