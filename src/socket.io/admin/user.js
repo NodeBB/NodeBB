@@ -10,47 +10,31 @@ const groups = require('../../groups');
 const user = require('../../user');
 const events = require('../../events');
 const utils = require('../../utils');
+const api = require('../../api');
 const sockets = require('..');
 
 const User = module.exports;
 
 User.makeAdmins = async function (socket, uids) {
+	sockets.warnDeprecated(socket, 'PUT /api/v3/groups/:slug/membership/:uid');
 	if (!Array.isArray(uids)) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
-	if (isMembersOfBanned.includes(true)) {
-		throw new Error('[[error:cant-make-banned-users-admin]]');
-	}
 	for (const uid of uids) {
-		/* eslint-disable no-await-in-loop */
-		await groups.join('administrators', uid);
-		await events.log({
-			type: 'user-makeAdmin',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-		});
+		// eslint-disable-next-line no-await-in-loop
+		await api.groups.join({ uid: socket.uid }, { uid: uid, slug: 'administrators' });
 	}
 };
 
 User.removeAdmins = async function (socket, uids) {
+	sockets.warnDeprecated(socket, 'DEL /api/v3/groups/:slug/membership/:uid');
 	if (!Array.isArray(uids)) {
 		throw new Error('[[error:invalid-data]]');
 	}
+
 	for (const uid of uids) {
-		/* eslint-disable no-await-in-loop */
-		const count = await groups.getMemberCount('administrators');
-		if (count === 1) {
-			throw new Error('[[error:cant-remove-last-admin]]');
-		}
-		await groups.leave('administrators', uid);
-		await events.log({
-			type: 'user-removeAdmin',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-		});
+		// eslint-disable-next-line no-await-in-loop
+		await api.groups.leave({ uid: socket.uid }, { uid: uid, slug: 'administrators' });
 	}
 };
 
