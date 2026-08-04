@@ -61,15 +61,8 @@ module.exports = function (utils, load, warn) {
 
 	function validateHrefAttributes(translated) {
 		return translated.replace(/href\s*=\s*(["'])(.*?)\1/gi, (match, quote, href) => {
-			return isSafeHref(href) ? match : 'href=""';
+			return utils.isSafeHref(href) ? match : 'href=""';
 		});
-	}
-
-	function isSafeHref(href) {
-		const normalizedHref = String(href).trim().toLowerCase();
-		const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
-		const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
-		return isHttpUrl || isRelativeUrl;
 	}
 
 	// split a translator string into an array of tokens

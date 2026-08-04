@@ -30,10 +30,10 @@
 			<button type="button" class="btn btn-ghost border" data-action="upload">
 				{{tx("user:upload-new-picture")}}
 			</button>
-			{{{ end }}}
 			<button type="button" class="btn btn-ghost border" data-action="upload-url">
 				{{tx("user:upload-new-picture-from-url")}}
 			</button>
+			{{{ end }}}
 		</div>
 	</div>
 </div>

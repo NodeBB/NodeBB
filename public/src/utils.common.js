@@ -453,6 +453,13 @@ const utils = {
 		});
 	},
 
+	isSafeHref: function (href) {
+		const normalizedHref = String(href).trim().toLowerCase();
+		const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
+		const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
+		return isHttpUrl || isRelativeUrl;
+	},
+
 	// https://github.com/sindresorhus/is-absolute-url
 	isAbsoluteUrlRE: /^[a-zA-Z][a-zA-Z\d+\-.]*:/,
 	isWinPathRE: /^[a-zA-Z]:\\/,
