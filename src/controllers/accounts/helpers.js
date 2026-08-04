@@ -150,6 +150,9 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 					require_valid_protocol: true,
 					require_tld: true,
 				});
+				if (isUrl && !utils.isSafeHref(value)) {
+					value = '';
+				}
 				memo.push({
 					key: slugify(name),
 					name,
@@ -194,6 +197,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			userValue = JSON.parse(userValue || '[]');
 		}
 		if (f.type === 'input-link' && userValue) {
+			userValue = utils.isSafeHref(userValue) ? userValue : '';
 			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
 		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
