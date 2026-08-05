@@ -1318,6 +1318,24 @@ describe('Groups', () => {
 			assert.equal(groupData.disableJoinRequests, true);
 			assert.equal(groupData.private, false);
 		});
+
+		it('should fail to update group if color values are invalid', async () => {
+			await Groups.create({ name: 'colortestgroup' });
+			await assert.rejects(
+				apiGroups.update({ uid: adminUid }, {
+					slug: 'colortestgroup',
+					labelColor: '#invalidcolor',
+				}),
+				{ message: '[[error:invalid-data]]' }
+			);
+			await assert.rejects(
+				apiGroups.update({ uid: adminUid }, {
+					slug: 'colortestgroup',
+					textColor: '#invalidcolor',
+				}),
+				{ message: '[[error:invalid-data]]' }
+			);
+		});
 	});
 
 	describe('groups cover', () => {
