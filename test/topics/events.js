@@ -152,6 +152,6 @@ describe('Topic Events', () => {
 			timestamp: now,
 		});
 		const events = await topics.events.get(topicData.tid, uid);
-		assert.strictEqual(events[0].text, `<span title="barmove" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size:16px;background-color:#33691e">B</span> <a href="/user/barmove">barmove</a> moved this topic from <a component="topic/category" href="/category/${oldCategory.cid}/img-onerror-alert-origin" class="badge px-1 text-truncate text-decoration-none " style="color:${oldCategory.color};background-color:${oldCategory.bgColor};border-color:${oldCategory.bgColor} !important;max-width:70vw"> <i class="fa fa-fw hidden"></i> &lt;img onerror=alert(origin)&gt; </a> <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
+		assert.strictEqual(events[0].text, `<span title="barmove" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size:16px;background-color:#33691e">B</span> <a href="${nconf.get('relative_path')}/user/barmove">barmove</a> moved this topic from <a component="topic/category" href="${nconf.get('relative_path')}/category/${oldCategory.cid}/img-onerror-alert-origin" class="badge px-1 text-truncate text-decoration-none " style="color:${oldCategory.color};background-color:${oldCategory.bgColor};border-color:${oldCategory.bgColor} !important;max-width:70vw"> <i class="fa fa-fw hidden"></i> &lt;img onerror=alert(origin)&gt; </a> <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
 	});
 });
