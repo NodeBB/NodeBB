@@ -9,6 +9,9 @@ const { setupApiRoute } = routeHelpers;
 
 module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn];
+	const groupsReAuth = middleware.requireAPIReAuth({
+		maxAgeInMinutes: 5,
+	});
 
 	setupApiRoute(router, 'get', '/', [], controllers.write.groups.list);
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['name'])], controllers.write.groups.create);
@@ -18,11 +21,11 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/:slug/members', [...middlewares, middleware.assert.group], controllers.write.groups.listMembers);
 
-	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.join);
-	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.leave);
+	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.join);
+	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.leave);
 
-	setupApiRoute(router, 'put', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.grant);
-	setupApiRoute(router, 'delete', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.rescind);
+	setupApiRoute(router, 'put', '/:slug/ownership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.grant);
+	setupApiRoute(router, 'delete', '/:slug/ownership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.rescind);
 
 	setupApiRoute(router, 'get', '/:slug/pending', [...middlewares, middleware.assert.group], controllers.write.groups.getPending);
 	setupApiRoute(router, 'put', '/:slug/pending/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.accept);

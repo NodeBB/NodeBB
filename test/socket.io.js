@@ -104,28 +104,6 @@ describe('socket.io', () => {
 		assert(!isBanned);
 	});
 
-	it('should make user admin', (done) => {
-		socketAdmin.user.makeAdmins({ uid: adminUid }, [regularUid], (err) => {
-			assert.ifError(err);
-			groups.isMember(regularUid, 'administrators', (err, isMember) => {
-				assert.ifError(err);
-				assert(isMember);
-				done();
-			});
-		});
-	});
-
-	it('should make user non-admin', (done) => {
-		socketAdmin.user.removeAdmins({ uid: adminUid }, [regularUid], (err) => {
-			assert.ifError(err);
-			groups.isMember(regularUid, 'administrators', (err, isMember) => {
-				assert.ifError(err);
-				assert(!isMember);
-				done();
-			});
-		});
-	});
-
 	describe('user create/delete', () => {
 		let uid;
 		const apiUsers = require('../src/api/users');

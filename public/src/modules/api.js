@@ -1,7 +1,8 @@
 'use strict';
 
 import { fire as fireHook } from 'hooks';
-import { confirm } from 'bootbox';
+import { confirm } from 'modals';
+import * as translator from 'translator';
 
 const baseUrl = config.relative_path + '/api/v3';
 
@@ -9,6 +10,11 @@ async function call(options, callback) {
 	options.url = options.url.startsWith('/api') ?
 		config.relative_path + options.url :
 		baseUrl + options.url;
+
+	options.headers = options.headers || {};
+	if (!options.headers['x-return-to']) {
+		options.headers['x-return-to'] = `${window.location.pathname}${window.location.search}`;
+	}
 
 	if (typeof callback === 'function') {
 		xhr(options).then(result => callback(null, result), err => callback(err));
@@ -19,12 +25,16 @@ async function call(options, callback) {
 		const result = await xhr(options);
 		return result;
 	} catch (err) {
-		if (err.message === 'A valid login session was not found. Please log in and try again.') {
+		if (err.message === await translator.translate('[[error:api.401]]', config.userLang)) {
 			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
-			return confirm('[[error:api.reauth-required]]', (ok) => {
-				if (ok) {
-					ajaxify.go(url);
-				}
+			return new Promise((resolve, reject) => {
+				confirm('[[error:api.reauth-required]]', (ok) => {
+					if (ok) {
+						ajaxify.go(url);
+					} else {
+						reject(err);
+					}
+				});
 			});
 		}
 		throw err;

@@ -127,8 +127,31 @@ describe('Topic Events', () => {
 
 		const events = await topics.events.get(topicData.tid, uid);
 
-		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size: 16px; background-color: #827717">B</span> <a href="${nconf.get('relative_path')}/user/bar">&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &lsqb;&lsqb;global:posts&rsqb;&rsqb;</a> <a href="${nconf.get('relative_path')}/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
+		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; [[global:posts]]" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size:16px;background-color:#827717">B</span> <a href="${nconf.get('relative_path')}/user/bar">"&gt;&lt;script&gt;alert("xss")&lt;/script&gt; [[global:posts]]</a> <a href="${nconf.get('relative_path')}/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
 
 		meta.config.showFullnameAsDisplayName = oldVlaueShowFullnameAsDisplayName;
+	});
+
+	it('should properly escape topic event with plain text in their arguments', async () => {
+		const oldCategory = await categories.create({
+			name: '<img onerror=alert(origin)>',
+		});
+		const { topicData } = await topics.post({
+			title: 'topic events testing',
+			content: 'foobar one two three',
+			uid: fooUid,
+			cid: oldCategory.cid,
+		});
+
+		const uid = await user.create({ username: 'barmove' });
+		const now = Date.now();
+		await topics.events.log(topicData.tid, {
+			uid: uid,
+			type: 'move',
+			fromCid: oldCategory.cid,
+			timestamp: now,
+		});
+		const events = await topics.events.get(topicData.tid, uid);
+		assert.strictEqual(events[0].text, `<span title="barmove" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size:16px;background-color:#33691e">B</span> <a href="${nconf.get('relative_path')}/user/barmove">barmove</a> moved this topic from <a component="topic/category" href="${nconf.get('relative_path')}/category/${oldCategory.cid}/img-onerror-alert-origin" class="badge px-1 text-truncate text-decoration-none " style="color:${oldCategory.color};background-color:${oldCategory.bgColor};border-color:${oldCategory.bgColor} !important;max-width:70vw"> <i class="fa fa-fw hidden"></i> &lt;img onerror=alert(origin)&gt; </a> <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
 	});
 });

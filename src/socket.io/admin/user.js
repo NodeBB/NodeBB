@@ -14,46 +14,6 @@ const sockets = require('..');
 
 const User = module.exports;
 
-User.makeAdmins = async function (socket, uids) {
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
-	if (isMembersOfBanned.includes(true)) {
-		throw new Error('[[error:cant-make-banned-users-admin]]');
-	}
-	for (const uid of uids) {
-		/* eslint-disable no-await-in-loop */
-		await groups.join('administrators', uid);
-		await events.log({
-			type: 'user-makeAdmin',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-		});
-	}
-};
-
-User.removeAdmins = async function (socket, uids) {
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	for (const uid of uids) {
-		/* eslint-disable no-await-in-loop */
-		const count = await groups.getMemberCount('administrators');
-		if (count === 1) {
-			throw new Error('[[error:cant-remove-last-admin]]');
-		}
-		await groups.leave('administrators', uid);
-		await events.log({
-			type: 'user-removeAdmin',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-		});
-	}
-};
-
 User.resetLockouts = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
 		throw new Error('[[error:invalid-data]]');
@@ -67,10 +27,13 @@ User.validateEmail = async function (socket, uids) {
 	}
 
 	for (const uid of uids) {
+		// eslint-disable-next-line no-await-in-loop
 		const email = await user.email.getEmailForValidation(uid);
 		if (email) {
+			// eslint-disable-next-line no-await-in-loop
 			await user.setUserField(uid, 'email', email);
 		}
+		// eslint-disable-next-line no-await-in-loop
 		await user.email.confirmByUid(uid, socket.uid);
 	}
 };

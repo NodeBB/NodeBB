@@ -494,6 +494,34 @@ describe('Utility Methods', () => {
 		});
 	});
 
+	describe('isSafeHref', () => {
+		it('should return true for http/https url', (done) => {
+			assert(utils.isSafeHref('http://nodebb.org'));
+			assert(utils.isSafeHref('https://nodebb.org'));
+			done();
+		});
+
+		it('should return true for /topic/123', (done) => {
+			assert(utils.isSafeHref('/topic/123'));
+			assert(utils.isSafeHref(' /topic/123'));
+			done();
+		});
+
+		it('should return false for //foo', (done) => {
+			assert(!utils.isSafeHref('//foo'));
+			assert(!utils.isSafeHref(' //foo'));
+			done();
+		});
+
+		it('should return false for javascript/data', (done) => {
+			assert(!utils.isSafeHref('javascript:alert(1)'));
+			assert(!utils.isSafeHref('   javascript:alert(1)'));
+			assert(!utils.isSafeHref('data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=='));
+			assert(!utils.isSafeHref('  data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=='));
+			done();
+		});
+	});
+
 	it('escape html', (done) => {
 		const escaped = utils.escapeHTML('&<>');
 		assert.equal(escaped, '&amp;&lt;&gt;');

@@ -277,7 +277,8 @@ module.exports = function (User) {
 
 			// works around renderOverride supplying `url` to templates
 			if (user.url) {
-				user.remoteUrl = String(user.url);
+				user.url = utils.isSafeHref(user.url) ? user.url : '';
+				user.remoteUrl = user.url;
 			} else {
 				delete user.url;
 			}

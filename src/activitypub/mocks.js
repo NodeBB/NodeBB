@@ -239,7 +239,7 @@ Mocks.profile = async (actors) => {
 			followerCount,
 			followingCount,
 
-			url,
+			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
@@ -306,7 +306,7 @@ Mocks.category = async (actors) => {
 			// followerCount,
 			// followingCount,
 
-			url,
+			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,

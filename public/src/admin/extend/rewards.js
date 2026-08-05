@@ -18,10 +18,6 @@ define('admin/extend/rewards', [
 		conditions = ajaxify.data.conditions;
 		conditionals = ajaxify.data.conditionals;
 
-		$('[data-selected]').each(function () {
-			select($(this));
-		});
-
 		$('#active')
 			.on('change', '[data-selected]', function () {
 				update($(this));
@@ -57,15 +53,18 @@ define('admin/extend/rewards', [
 		$('#new').on('click', newReward);
 		$('#save').on('click', saveRewards);
 
-		populateInputs();
+		Promise.all(
+			$('[data-selected]').toArray().map(el => select($(el)))
+		).then(populateInputs);
 	};
 
 	function select(el) {
 		el.val(el.attr('data-selected'));
 		switch (el.attr('name')) {
 			case 'rid':
-				selectReward(el);
-				break;
+				return selectReward(el);
+			default:
+				return Promise.resolve();
 		}
 	}
 
@@ -73,8 +72,9 @@ define('admin/extend/rewards', [
 		el.attr('data-selected', el.val());
 		switch (el.attr('name')) {
 			case 'rid':
-				selectReward(el);
-				break;
+				return selectReward(el);
+			default:
+				return Promise.resolve();
 		}
 	}
 
