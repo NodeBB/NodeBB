@@ -644,7 +644,7 @@ describe('Messaging Library', () => {
 			});
 			assert.strictEqual(
 				result.body.chatWithMessage,
-				`[[modules:chat.chat-with-usernames-1, /uid/${uid}, &lt;svg/onload&#x3D;alert(document.location);]]`
+				`[[modules:chat.chat-with-usernames-1, ${nconf.get('relative_path')}/uid/${uid}, &lt;svg/onload&#x3D;alert(document.location);]]`
 			);
 
 			meta.config.showFullnameAsDisplayName = oldValue;
