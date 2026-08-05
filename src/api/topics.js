@@ -50,7 +50,7 @@ topicsAPI.get = async function (caller, data) {
 };
 
 topicsAPI.create = async function (caller, data) {
-	if (!data) {
+	if (!data || (!Number.isInteger(data.cid) && typeof data.cid !== 'string')) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
