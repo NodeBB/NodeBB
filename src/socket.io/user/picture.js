@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const db = require('../../database');
 const user = require('../../user');
 const plugins = require('../../plugins');
+const privileges = require('../../privileges');
 
 module.exports = function (SocketUser) {
 	SocketUser.removeUploadedPicture = async function (socket, data) {
@@ -24,6 +25,10 @@ module.exports = function (SocketUser) {
 	SocketUser.getProfilePictures = async function (socket, data) {
 		if (!data || !data.uid) {
 			throw new Error('[[error:invalid-data]]');
+		}
+
+		if (!socket.uid || !await privileges.users.canEdit(socket.uid, data.uid)) {
+			throw new Error('[[error:no-privileges]]');
 		}
 
 		const [list, userObj, userPictures] = await Promise.all([
