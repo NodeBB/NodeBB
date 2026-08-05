@@ -233,19 +233,23 @@ define('chat', [
 		const modal = Chat.getModal(data.roomId);
 		const titleEl = modal.find('[component="chat/room/name"]');
 		const icon = titleEl.attr('data-icon');
-		if (titleEl.length) {
-			titleEl.html(
-				data.newName ?
-					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
-					data.chatWithMessage
-			);
-		}
+		Chat.updateRoomName(titleEl, icon, data.newName, data.chatWithMessage);
 		taskbar.update('chat', modal.attr('data-uuid'), {
 			title: helpers.escape(data.newName),
 		});
 		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));
+	};
+
+	Chat.updateRoomName = function (titleEl, icon, newName, chatWithMessage) {
+		if (titleEl.length) {
+			titleEl.translateHtml(
+				newName ?
+					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(newName)}` :
+					chatWithMessage
+			);
+		}
 	};
 
 	Chat.onUserTyping = function (data) {

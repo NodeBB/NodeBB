@@ -639,6 +639,14 @@ describe('Messaging Library', () => {
 
 			assert(body.includes(`Chat with <a href="${nconf.get('relative_path')}/uid/${uid}">&lt;svg/onload&#x3D;alert(document.location);</a>`));
 
+			const result = await request.get(`${nconf.get('url')}/api/user/foo/chats/${rooms[0].roomId}`, {
+				jar: mocks.users.foo.jar,
+			});
+			assert.strictEqual(
+				result.body.chatWithMessage,
+				`[[modules:chat.chat-with-usernames-1, /uid/${uid}, &lt;svg/onload&#x3D;alert(document.location);]]`
+			);
+
 			meta.config.showFullnameAsDisplayName = oldValue;
 		});
 
