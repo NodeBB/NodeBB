@@ -7,11 +7,7 @@ define('admin/manage/admins-mods', [
 
 	AdminsMods.init = function () {
 		autocomplete.user($('#admin-search'), function (ev, ui) {
-			socket.emit('admin.user.makeAdmins', [ui.item.user.uid], function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-
+			api.put(`/groups/administrators/membership/${ui.item.user.uid}`).then(() => {
 				$('#admin-search').val('');
 
 				if ($('.administrator-area [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -21,7 +17,7 @@ define('admin/manage/admins-mods', [
 				app.parseAndTranslate('admin/manage/admins-mods', 'admins.members', { admins: { members: [ui.item.user] } }, function (html) {
 					$('.administrator-area').prepend(html);
 				});
-			});
+			}).catch(alerts.error);
 		});
 
 		$('.administrator-area').on('click', '.remove-user-icon', function () {
@@ -32,12 +28,9 @@ define('admin/manage/admins-mods', [
 			}
 			modals.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.removeAdmins', [uid], function (err) {
-						if (err) {
-							return alerts.error(err.message);
-						}
+					api.del(`/groups/administrators/membership/${uid}`).then(() => {
 						userCard.remove();
-					});
+					}).catch(alerts.error);
 				}
 			});
 		});

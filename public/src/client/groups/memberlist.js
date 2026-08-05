@@ -86,10 +86,10 @@ define('forum/groups/memberlist', [
 
 	async function addUsersToGroup(users) {
 		const uids = users.map(u => u.uid);
-		if (ajaxify.data.group.name === 'administrators') {
-			await socket.emit('admin.user.makeAdmins', uids).catch(alerts.error);
-		} else {
-			await Promise.all(uids.map(uid => api.put('/groups/' + ajaxify.data.group.slug + '/membership/' + uid))).catch(alerts.error);
+		for (const uid of uids) {
+			// eslint-disable-next-line no-await-in-loop
+			await api.put(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, {})
+				.catch(alerts.error);
 		}
 
 		users = users.filter(user => !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length);

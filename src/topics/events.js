@@ -54,7 +54,7 @@ Events._types = {
 	},
 	move: {
 		icon: 'fa-arrow-circle-right',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), renderCategory(event.fromCategory), renderTimeago(event)),
 	},
 	share: {
 		icon: 'fa-share-alt',
@@ -89,7 +89,7 @@ async function translateEventArgs(event, language, prefix, ...args) {
 	const txArgs = args.map(arg => utils.escapeHTML(arg));
 	const compiled = tx.compile.apply(null, [key, ...txArgs]);
 	const translated = await tx.translateKey(compiled, [], language);
-	return utils.decodeHTMLEntities(translated);
+	return posts.sanitize(utils.decodeHTMLEntities(translated));
 }
 
 async function translateSimple(event, language, prefix) {

@@ -50,7 +50,7 @@ groupsAPI.create = async function (caller, data) {
 	data.ownerUid = caller.uid;
 	data.system = false;
 	const groupData = await groups.create(data);
-	logGroupEvent(caller, 'group-create', {
+	await logGroupEvent(caller, 'group-create', {
 		groupName: data.name,
 	});
 
@@ -81,7 +81,7 @@ groupsAPI.delete = async function (caller, data) {
 	}
 
 	await groups.destroy(groupName);
-	logGroupEvent(caller, 'group-delete', {
+	await logGroupEvent(caller, 'group-delete', {
 		groupName: groupName,
 	});
 };
@@ -143,6 +143,13 @@ groupsAPI.join = async function (caller, data) {
 	if (!groupName) {
 		throw new Error('[[error:no-group]]');
 	}
+	const isJoiningAdmin = groupName === 'administrators';
+	if (isJoiningAdmin) {
+		const isMemberOfBanned = await groups.isMember(data.uid, groups.BANNED_USERS);
+		if (isMemberOfBanned) {
+			throw new Error('[[error:cant-make-banned-users-admin]]');
+		}
+	}
 
 	const isCallerAdmin = await privileges.admin.can('admin:groups', caller.uid);
 	if (!isCallerAdmin && (
@@ -167,7 +174,7 @@ groupsAPI.join = async function (caller, data) {
 	if (!meta.config.allowPrivateGroups && isSelf) {
 		// all groups are public!
 		await groups.join(groupName, data.uid);
-		logGroupEvent(caller, 'group-join', {
+		await logGroupEvent(caller, 'group-join', {
 			groupName: groupName,
 			targetUid: data.uid,
 		});
@@ -180,10 +187,15 @@ groupsAPI.join = async function (caller, data) {
 
 	if ((!groupData.private && isSelf) || isCallerAdmin) {
 		await groups.join(groupName, data.uid);
-		logGroupEvent(caller, `group-${isSelf ? 'join' : 'add-member'}`, {
+		await logGroupEvent(caller, `group-${isSelf ? 'join' : 'add-member'}`, {
 			groupName: groupName,
 			targetUid: data.uid,
 		});
+		if (isJoiningAdmin) {
+			await logGroupEvent(caller, 'user-makeAdmin', {
+				targetUid: data.uid,
+			});
+		}
 	} else if (isSelf) {
 		// users who can approve membership requests for this group (owners,
 		// global moderators) would only have to approve themselves, so let
@@ -191,13 +203,13 @@ groupsAPI.join = async function (caller, data) {
 		const canApprove = await isOwner(caller, groupName, false);
 		if (canApprove) {
 			await groups.join(groupName, data.uid);
-			logGroupEvent(caller, 'group-join', {
+			await logGroupEvent(caller, 'group-join', {
 				groupName: groupName,
 				targetUid: data.uid,
 			});
 		} else {
 			await groups.requestMembership(groupName, caller.uid);
-			logGroupEvent(caller, 'group-request-membership', {
+			await logGroupEvent(caller, 'group-request-membership', {
 				groupName: groupName,
 				targetUid: data.uid,
 			});
@@ -223,9 +235,16 @@ groupsAPI.leave = async function (caller, data) {
 	if (typeof groupName !== 'string') {
 		throw new Error('[[error:invalid-group-name]]');
 	}
+	const isLeavingAdmin = groupName === 'administrators';
 
-	if (groupName === 'administrators' && isSelf) {
-		throw new Error('[[error:cant-remove-self-as-admin]]');
+	if (isLeavingAdmin) {
+		if (isSelf) {
+			throw new Error('[[error:cant-remove-self-as-admin]]');
+		}
+		const count = await groups.getMemberCount('administrators');
+		if (count === 1) {
+			throw new Error('[[error:cant-remove-last-admin]]');
+		}
 	}
 
 	if (!isSelf) {
@@ -269,10 +288,15 @@ groupsAPI.leave = async function (caller, data) {
 	const uids = await groups.getOwners(groupName);
 	await notifications.push(notification, uids);
 
-	logGroupEvent(caller, `group-${isSelf ? 'leave' : 'kick'}`, {
+	await logGroupEvent(caller, `group-${isSelf ? 'leave' : 'kick'}`, {
 		groupName: groupName,
 		targetUid: data.uid,
 	});
+	if (isLeavingAdmin) {
+		await logGroupEvent(caller, 'user-removeAdmin', {
+			targetUid: data.uid,
+		});
+	}
 };
 
 groupsAPI.grant = async (caller, data) => {
@@ -285,7 +309,7 @@ groupsAPI.grant = async (caller, data) => {
 	}
 
 	await groups.ownership.grant(data.uid, groupName);
-	logGroupEvent(caller, 'group-owner-grant', {
+	await logGroupEvent(caller, 'group-owner-grant', {
 		groupName: groupName,
 		targetUid: data.uid,
 	});
@@ -301,7 +325,7 @@ groupsAPI.rescind = async (caller, data) => {
 	}
 
 	await groups.ownership.rescind(data.uid, groupName);
-	logGroupEvent(caller, 'group-owner-rescind', {
+	await logGroupEvent(caller, 'group-owner-rescind', {
 		groupName,
 		targetUid: data.uid,
 	});
@@ -324,7 +348,7 @@ groupsAPI.accept = async (caller, { slug, uid }) => {
 	}
 
 	await groups.acceptMembership(groupName, uid);
-	logGroupEvent(caller, 'group-accept-membership', {
+	await logGroupEvent(caller, 'group-accept-membership', {
 		groupName,
 		targetUid: uid,
 	});
@@ -358,7 +382,7 @@ groupsAPI.issueInvite = async (caller, { slug, uid }) => {
 	await isOwner(caller, groupName);
 
 	await groups.invite(groupName, uid);
-	logGroupEvent(caller, 'group-invite', {
+	await logGroupEvent(caller, 'group-invite', {
 		groupName,
 		targetUid: uid,
 	});
@@ -377,7 +401,7 @@ groupsAPI.acceptInvite = async (caller, { slug, uid }) => {
 	}
 
 	await groups.acceptMembership(groupName, uid);
-	logGroupEvent(caller, 'group-invite-accept', { groupName });
+	await logGroupEvent(caller, 'group-invite-accept', { groupName });
 };
 
 groupsAPI.rejectInvite = async (caller, { slug, uid }) => {
@@ -396,7 +420,7 @@ groupsAPI.rejectInvite = async (caller, { slug, uid }) => {
 
 	await groups.rejectMembership(groupName, uid);
 	if (!owner) {
-		logGroupEvent(caller, 'group-invite-reject', { groupName });
+		await logGroupEvent(caller, 'group-invite-reject', { groupName });
 	}
 };
 
@@ -419,8 +443,8 @@ async function isOwner(caller, groupName, throwOnFalse = true) {
 	return check;
 }
 
-function logGroupEvent(caller, event, additional) {
-	events.log({
+async function logGroupEvent(caller, event, additional) {
+	await events.log({
 		type: event,
 		uid: caller.uid,
 		ip: caller.ip,
