@@ -136,7 +136,7 @@ module.exports = function (Messaging) {
 		parentMids = parentMids.filter((mid, idx) => canView[idx]);
 
 		const parentMessages = await Messaging.getMessagesFields(parentMids, [
-			'mid', 'fromuid', 'content', 'timestamp', 'deleted',
+			'mid', 'fromuid', 'content', 'timestamp', 'deleted', 'system',
 		]);
 		const parentUids = _.uniq(parentMessages.map(msg => msg && msg.fromuid));
 		const usersMap = _.zipObject(
@@ -185,9 +185,7 @@ module.exports = function (Messaging) {
 		}));
 	}
 	async function parseMessage(message, uid, roomId, isNew) {
-		if (message.system) {
-			return message.content;
-		} else if (!utils.isNumber(message.mid)) {
+		if (message.system || !utils.isNumber(message.mid)) {
 			return posts.sanitize(message.content);
 		}
 

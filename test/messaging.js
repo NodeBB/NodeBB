@@ -16,6 +16,7 @@ const api = require('../src/api');
 const helpers = require('./helpers');
 const request = require('../src/request');
 const translator = require('../src/translator');
+const utils = require('../src/utils');
 
 describe('Messaging Library', () => {
 	const mocks = {
@@ -223,6 +224,35 @@ describe('Messaging Library', () => {
 			}, 'foo');
 			assert.strictEqual(response.statusCode, 400);
 			assert.equal(body2.status.message, await translator.translate('[[error:cant-edit-chat-message]]'));
+		});
+
+		it('should sanitize system messages', async () => {
+			const oldValue = meta.config.showFullnameAsDisplayName;
+			meta.config.showFullnameAsDisplayName = true;
+			const uid1 = await User.create({
+				username: utils.generateUUID().slice(0, 8),
+				fullname: '<script>alert("xss")</script>',
+			});
+			await User.setSetting(uid1, 'showfullname', 1);
+			const uid2 = await User.create({
+				username: utils.generateUUID().slice(0, 8),
+				fullname: '<img src=x onerror="alert(origin)">',
+			});
+			await User.setSetting(uid2, 'showfullname', 1);
+
+			const sessMock = {};
+			const roomData = await api.chats.create({ uid: uid1, session: sessMock }, {
+				joinLeaveMessages: 1,
+				uids: [uid2],
+			});
+
+			const data = await api.chats.get({ uid: uid1, session: sessMock }, {
+				roomId: roomData.roomId,
+			});
+
+			assert.strictEqual(data.messages[0].content, `[[modules:chat.system.user-join, <img src="x" />, ${data.messages[0].timestampISO}]]`);
+			assert.strictEqual(data.messages[1].content, `[[modules:chat.system.user-join, , ${data.messages[1].timestampISO}]]`);
+			meta.config.showFullnameAsDisplayName = oldValue;
 		});
 
 		it('should fail to add user to room with invalid data', async () => {

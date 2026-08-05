@@ -7,6 +7,6 @@
 			</div>
 			<span class="chat-timestamp text-muted timeago text-nowrap hidden" title="{messages.parent.timestampISO}"></span>
 		</div>
-		<div component="chat/message/parent/content" class="text-muted line-clamp-1 text-break w-100">{{{ if messages.parent.txContent }}}{{tx(messages.parent.content)}}{{{ else }}}{{txEscape(messages.parent.content)}}{{{ end }}}</div>
+		<div component="chat/message/parent/content" class="text-muted line-clamp-1 text-break w-100">{{{ if (messages.parent.txContent || messages.parent.system) }}}{{tx(messages.parent.content)}}{{{ else }}}{{txEscape(messages.parent.content)}}{{{ end }}}</div>
 	</div>
 </div>

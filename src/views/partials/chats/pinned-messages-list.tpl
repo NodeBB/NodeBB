@@ -14,7 +14,7 @@
 	</div>
 	<div class="message-body-wrapper">
 		<div component="chat/message/body" class="message-body ps-0 py-0 overflow-auto text-break">
-			{{txEscape(messages.content)}}
+			{{{ if (messages.txContent || messages.system) }}}{{tx(messages.content)}}{{{ else }}}{{txEscape(messages.content)}}{{{ end }}}
 		</div>
 		<div component="chat/message/controls" class="position-relative">
 			<div class="btn-group border shadow-sm controls position-absolute bg-body end-0" style="bottom:1rem;">
