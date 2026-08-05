@@ -430,15 +430,11 @@ topicsController.pagination = async function (req, res, next) {
 	if (!topic) {
 		return next();
 	}
-	const [userPrivileges, settings] = await Promise.all([
-		privileges.topics.get(tid, req.uid),
-		user.getSettings(req.uid),
-	]);
-
-	if (!userPrivileges.read || !privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
+	if (!await privileges.topics.canRead(tid, req.uid)) {
 		return helpers.notAllowed(req, res);
 	}
 
+	const settings = await user.getSettings(req.uid);
 	const postCount = topic.postcount;
 	const pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 
