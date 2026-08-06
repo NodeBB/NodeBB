@@ -50,6 +50,10 @@ module.exports = function (Messaging) {
 			if (!await Messaging.canViewMessage(data.toMid, roomId, uid)) {
 				throw new Error('[[error:no-privileges]]');
 			}
+			const system = await Messaging.getMessageField(data.toMid, 'system');
+			if (system) {
+				throw new Error('[[error:invalid-mid]]');
+			}
 		}
 		const mid = data.mid || await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();

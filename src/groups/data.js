@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const plugins = require('../plugins');
@@ -101,11 +102,13 @@ module.exports = function (Groups) {
 				}
 
 				if (hasField('labelColor')) {
-					group.labelColor = String(group.labelColor || '#000000');
+					group.labelColor = validator.isHexColor(String(group.labelColor), { requireHash: true }) ?
+						group.labelColor : '#000000';
 				}
 
 				if (hasField('textColor')) {
-					group.textColor = String(group.textColor || '#ffffff');
+					group.textColor = validator.isHexColor(String(group.textColor), { requireHash: true }) ?
+						group.textColor : '#ffffff';
 				}
 
 				if (hasField('icon')) {

@@ -18,7 +18,7 @@ module.exports = function (SocketTopics) {
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
 		}
-		if (!userPrivileges['topics:read'] || !userPrivileges.view_thread_tools) {
+		if (!userPrivileges.view_thread_tools || !await privileges.topics.canRead(data.tid, socket.uid)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		topicData.privileges = userPrivileges;

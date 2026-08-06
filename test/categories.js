@@ -491,9 +491,20 @@ describe('Categories', () => {
 			assert.deepStrictEqual(privilegesArray, [true, false]);
 		});
 
+		it('should return false cid is an array', async () => {
+			assert.deepStrictEqual(
+				await privileges.categories.can(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
+				[false, false]
+			);
+			assert.strictEqual(
+				await privileges.categories.can('topics:create', [categoryObj.cid], posterUid),
+				false
+			);
+		});
+
 		it('should error if both cid and privilege are arrays', async () => {
 			await assert.rejects(
-				privileges.categories.can(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
+				privileges.categories.isUserAllowedTo(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
 				{ message: '[[error:invalid-data]]' },
 			);
 		});

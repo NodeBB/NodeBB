@@ -35,6 +35,7 @@ describe('feeds', () => {
 	});
 
 	it('should 404', async () => {
+		meta.config['feeds:disableRSS'] = 1;
 		const feedUrls = [
 			`${nconf.get('url')}/topic/${tid}.rss`,
 			`${nconf.get('url')}/category/${cid}.rss`,
@@ -51,7 +52,7 @@ describe('feeds', () => {
 		for (const url of feedUrls) {
 			// eslint-disable-next-line no-await-in-loop
 			const { response } = await request.get(url);
-			assert.equal(response.statusCode, 404);
+			assert.equal(response.statusCode, 404, `Expected 404 for ${url}`);
 		}
 		meta.config['feeds:disableRSS'] = 0;
 	});
@@ -133,8 +134,7 @@ describe('feeds', () => {
 		it('should not allow access if token is correct but has no privilege(read)', async () => {
 			await privileges.categories.rescind(['groups:read'], cid, 'registered-users');
 			const { response, body } = await request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}&token=${rssToken}`);
-			assert.equal(response.statusCode, 200);
-			assert(body.includes('Login to your account'));
+			assert.equal(response.statusCode, 403);
 		});
 
 		it('should not allow access if token is correct but has no privilege(topics:read)', async () => {
@@ -142,8 +142,23 @@ describe('feeds', () => {
 			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
 
 			const { response, body } = await request.get(`${nconf.get('url')}/topic/${tid}.rss?uid=${fooUid}&token=${rssToken}`);
-			assert.equal(response.statusCode, 200);
-			assert(body.includes('Login to your account'));
+			assert.equal(response.statusCode, 403);
+		});
+
+		it('should not allow access if token is correct but has no privilege(topics:read)', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
+
+			const { response, body } = await request.get(`${nconf.get('url')}/category/${cid}/recentposts.rss?uid=${fooUid}&token=${rssToken}`);
+
+			assert.equal(response.statusCode, 403);
+
+			await privileges.categories.give(['groups:topics:read'], cid, 'registered-users');
+			await privileges.categories.give(['groups:topics:read'], cid, 'guests');
+
+			const { response: response1, body: body1 } = await request.get(`${nconf.get('url')}/category/${cid}/recentposts.rss?uid=${fooUid}&token=${rssToken}`);
+			assert.equal(response1.statusCode, 200);
+			assert(!body1.includes('Login to your account'), 'Should not redirect to login page');
 		});
 	});
 });

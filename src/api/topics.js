@@ -33,24 +33,15 @@ topicsAPI._checkThumbPrivileges = async function ({ tid, uid }) {
 };
 
 topicsAPI.get = async function (caller, data) {
-	const [userPrivileges, topic] = await Promise.all([
-		privileges.topics.get(data.tid, caller.uid),
-		topics.getTopicData(data.tid),
-	]);
-	if (
-		!topic ||
-		!userPrivileges['topics:read'] ||
-		userPrivileges.disabled ||
-		!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)
-	) {
+	const canReadTopic = await privileges.topics.canRead(data.tid, caller.uid);
+	if (!canReadTopic) {
 		return null;
 	}
-
-	return topic;
+	return await topics.getTopicData(data.tid);
 };
 
 topicsAPI.create = async function (caller, data) {
-	if (!data) {
+	if (!data || (!Number.isInteger(data.cid) && typeof data.cid !== 'string')) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -253,7 +244,8 @@ topicsAPI.reorderThumbs = async (caller, { tid, path, order }) => {
 };
 
 topicsAPI.getEvents = async (caller, { tid }) => {
-	if (!await privileges.topics.can('topics:read', tid, caller.uid)) {
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
+	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -261,7 +253,8 @@ topicsAPI.getEvents = async (caller, { tid }) => {
 };
 
 topicsAPI.deleteEvent = async (caller, { tid, eventId }) => {
-	if (!await privileges.topics.isAdminOrMod(tid, caller.uid)) {
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
+	if (!canRead || !await privileges.topics.isAdminOrMod(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 

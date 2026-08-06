@@ -163,6 +163,43 @@ describe('Topic\'s', () => {
 			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
 		});
 
+		it('should fail to post a topic as guest with invalid cid', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			const jar = request.jar();
+			const result1 = await helpers.request('post', '/api/v3/topics', {
+				body: {
+					title: 'just a title',
+					cid: [categoryObj.cid],
+					content: 'content for the main post',
+				},
+				jar: jar,
+			});
+			assert.strictEqual(result1.body.status.message, 'Invalid Data');
+
+			const result2 = await helpers.request('post', '/api/v3/topics', {
+				body: {
+					title: 'just a title',
+					cid: { cid: categoryObj.cid },
+					content: 'content for the main post',
+				},
+				jar: jar,
+			});
+			assert.strictEqual(result2.body.status.message, 'Invalid Data');
+
+			const result3 = await helpers.request('post', '/api/v3/topics', {
+				body: {
+					title: 'just a title',
+					cid: 0,
+					content: 'content for the main post',
+				},
+				jar: jar,
+			});
+			assert.strictEqual(result3.body.status.message, 'Category does not exist');
+		});
+
 		it('should post a topic as guest if guest group has privileges', async () => {
 			const categoryObj = await categories.create({
 				name: 'Test Category',

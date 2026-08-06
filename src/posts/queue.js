@@ -33,6 +33,10 @@ module.exports = function (Posts) {
 				if (data) {
 					data.data = JSON.parse(data.data);
 					data.data.timestampISO = utils.toISOString(data.data.timestamp);
+					if (data?.data) {
+						delete data.data.req;
+						delete data.data.ip;
+					}
 				}
 			});
 			const uids = postData.map(data => data && data.uid);
@@ -238,6 +242,9 @@ module.exports = function (Posts) {
 		};
 		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
 
+		if (payload?.data?.req) {
+			delete payload.data.req; // dont save req into post queue
+		}
 		await db.sortedSetAdd('post:queue', now, id);
 		await db.setObject(`post:queue:${id}`, {
 			...payload,

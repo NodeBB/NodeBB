@@ -138,7 +138,7 @@ module.exports = function (Messaging) {
 
 		const [parentMessages, { userLang }] = await Promise.all([
 			Messaging.getMessagesFields(parentMids, [
-				'mid', 'fromuid', 'content', 'timestamp', 'deleted',
+				'mid', 'fromuid', 'content', 'timestamp', 'deleted', 'system',
 			]),
 			user.getSettings(uid),
 		]);
@@ -189,9 +189,10 @@ module.exports = function (Messaging) {
 			msg.content = await parseMessage(msg, uid, roomId, isNew, userLang);
 		}));
 	}
+
 	async function parseMessage(message, uid, roomId, isNew, userLang) {
 		if (message.system) {
-			return await tx.translate(message.content, userLang);
+			return await tx.translate(posts.sanitize(message.content), userLang);
 		} else if (!utils.isNumber(message.mid)) {
 			return posts.sanitize(message.content);
 		}

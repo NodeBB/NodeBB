@@ -143,6 +143,20 @@ privsTopics.filterUids = async function (privilege, tid, uids) {
 			((allowedTo[index] && (topicData.scheduled || !topicData.deleted)) || isAdmins[index]));
 };
 
+privsTopics.canRead = async function (tid, uid) {
+	tid = String(tid);
+	const [userPrivileges, topic] = await Promise.all([
+		privsTopics.get(tid, uid),
+		topics.getTopicData(tid),
+	]);
+	return (
+		topic &&
+		userPrivileges['topics:read'] &&
+		!userPrivileges.disabled &&
+		privsTopics.canViewDeletedScheduled(topic, userPrivileges)
+	);
+};
+
 privsTopics.canPurge = async function (tid, uid) {
 	const cid = await topics.getTopicField(tid, 'cid');
 	let [purge, owner, isAdmin, isModerator] = await Promise.all([

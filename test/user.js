@@ -1195,6 +1195,19 @@ describe('User', () => {
 				});
 			});
 
+			it('should fail to get profile pictures of another user without privileges', async () => {
+				const anotherUid = await User.create({ username: 'anotheruser', password: '123456' });
+				await assert.rejects(
+					socketUser.getProfilePictures({ uid: uid }, { uid: anotherUid }),
+					{ message: '[[error:no-privileges]]' }
+				);
+
+				await assert.rejects(
+					socketUser.getProfilePictures({ uid: 0 }, { uid: anotherUid }),
+					{ message: '[[error:no-privileges]]' }
+				);
+			});
+
 			it('should get default profile avatar', (done) => {
 				assert.strictEqual(User.getDefaultAvatar(), '');
 				meta.config.defaultAvatar = 'https://path/to/default/avatar';
