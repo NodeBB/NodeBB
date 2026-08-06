@@ -11,9 +11,10 @@ const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');
 
-exports.setDefaultPostData = function (reqOrSocket, data) {
-	data.uid = reqOrSocket.uid;
-	data.req = exports.buildReqObject(reqOrSocket, { ...data });
+exports.setDefaultPostData = function (req, data) {
+	data.uid = req.uid;
+	data.req = exports.buildReqObject(req, { ...data });
+	data.ip = req.ip;
 	data.timestamp = Date.now();
 	data.fromQueue = false;
 };

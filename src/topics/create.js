@@ -146,7 +146,6 @@ module.exports = function (Topics) {
 
 		let postData = data;
 		postData.tid = tid;
-		postData.ip = data.req ? data.req.ip : null;
 		postData.isMain = true;
 		postData = await posts.create(postData);
 		postData = await onNewPost(postData, data);
@@ -228,7 +227,6 @@ module.exports = function (Topics) {
 			data.timestamp = topicData.lastposttime + 1;
 		}
 
-		data.ip = data.req ? data.req.ip : null;
 		let postData = await posts.create(data);
 		postData = await onNewPost(postData, data);
 

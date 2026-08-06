@@ -31,10 +31,11 @@ module.exports = function (Posts) {
 			postData.forEach((data) => {
 				if (data) {
 					data.data = JSON.parse(data.data);
-					if (data?.data?.req) {
-						delete data.data.req;
-					}
 					data.data.timestampISO = utils.toISOString(data.data.timestamp);
+					if (data?.data) {
+						delete data.data.req;
+						delete data.data.ip;
+					}
 				}
 			});
 			const uids = postData.map(data => data && data.uid);
