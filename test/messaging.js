@@ -250,8 +250,10 @@ describe('Messaging Library', () => {
 				roomId: roomData.roomId,
 			});
 
-			assert.strictEqual(data.messages[0].content, `[[modules:chat.system.user-join, <img src="x" />, ${data.messages[0].timestampISO}]]`);
-			assert.strictEqual(data.messages[1].content, `[[modules:chat.system.user-join, , ${data.messages[1].timestampISO}]]`);
+			assert.strictEqual(data.messages[0].content, `&lt;img src&#x3D;&quot;x&quot; /&gt; has joined the room <span class="timeago" title="${data.messages[0].timestampISO}"></span>`);
+
+
+			assert.strictEqual(data.messages[1].content, ` has joined the room <span class="timeago" title="${data.messages[1].timestampISO}"></span>`);
 			meta.config.showFullnameAsDisplayName = oldValue;
 		});
 
