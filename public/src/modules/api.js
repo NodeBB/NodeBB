@@ -13,7 +13,7 @@ async function call(options, callback) {
 
 	options.headers = options.headers || {};
 	if (!options.headers['x-return-to']) {
-		options.headers['x-return-to'] = `${window.location.pathname}${window.location.search}`;
+		options.headers['x-return-to'] = `${window.location.pathname.slice(config.relative_path.length)}${window.location.search}`;
 	}
 
 	if (typeof callback === 'function') {
