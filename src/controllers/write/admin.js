@@ -7,6 +7,7 @@ const messaging = require('../../messaging');
 const events = require('../../events');
 const activitypub = require('../../activitypub');
 const utils = require('../../utils');
+const user = require('../../user');
 
 const Admin = module.exports;
 
@@ -35,7 +36,19 @@ Admin.getAnalyticsData = async (req, res) => {
 };
 
 Admin.generateToken = async (req, res) => {
-	const { uid, description } = req.body;
+	const uid = String(req.body.uid).trim();
+	if (uid === '0') {
+		const { password } = req.body;
+		if (!password) {
+			throw new Error('[[error:invalid-password]]');
+		}
+
+		const validPassword = await user.isPasswordCorrect(req.uid, password, req.ip);
+		if (!validPassword) {
+			throw new Error('[[error:invalid-password]]');
+		}
+	}
+	const { description } = req.body;
 	const token = await api.utils.tokens.generate({ uid, description });
 	await events.log({
 		type: 'token-add',

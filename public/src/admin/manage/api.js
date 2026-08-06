@@ -57,9 +57,25 @@ define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'ap
 				const formData = new FormData(formEl);
 				const uid = formData.get('uid');
 				const description = formData.get('description');
+				const isMasterToken = parseInt(uid, 10) === 0;
 
 				try {
-					const tokenObj = await api.post('/admin/tokens', { uid, description });
+					let password;
+					if (isMasterToken) {
+						password = await modals.promptPassword({
+							title: '[[user:current-password]]',
+							message: '[[user:emailUpdate.password-challenge]]',
+						});
+						if (!password) {
+							return false;
+						}
+					}
+
+					const tokenObj = await api.post('/admin/tokens', {
+						uid,
+						description,
+						...(isMasterToken ? { password } : {}),
+					});
 					if (!tokensTableBody) {
 						modal.modal('hide');
 						return ajaxify.refresh();
