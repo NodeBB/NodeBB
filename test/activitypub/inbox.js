@@ -724,6 +724,9 @@ describe('Inbox', () => {
 					this.remoteId = remote.id;
 					const result = await activitypub.actors.assert([remote.id]);
 
+					// Grant fediverse group global chat privileges for remote actor message deletion
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
+
 					// Create a private chat room between the users
 					const { note } = helpers.mocks.note({
 						attributedTo: remote.id,
