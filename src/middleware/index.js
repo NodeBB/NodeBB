@@ -343,30 +343,72 @@ middleware.checkRequired = function (fields, req, res, next) {
 	);
 };
 
-middleware.requireAPIReAuth = function ({ maxAgeInMinutes }) {
+// handles both cold load(/foo/baz) and ajaxify(/api/foo/baz) for regular routes
+// cold load /foo/baz => returnTo /foo/baz
+// ajaxify /api/foo/baz => returnTo /foo/baz
+middleware.requirePageReAuth = function ({ maxAgeInMinutes = 5 } = {}) {
+	async function redirect(req, res) {
+		if (res.locals.isAPI) {
+			req.session.returnTo = req.url.replace(/^\/api/, '');
+			await controllers.helpers.formatApiResponse(401, res);
+		} else {
+			req.session.returnTo = req.url;
+			const isAdminPath = req.path === '/admin' || req.path.startsWith('/admin/');
+			res.redirect(`${relative_path}/login${isAdminPath ? '?local=1' : ''}`);
+		}
+	}
+	return helpers.try(async (req, res, next) => {
+		if (!req.loggedIn) {
+			return await redirect(req, res);
+		}
+
+		if (isReAuthValid(req, maxAgeInMinutes)) {
+			return next();
+		}
+
+		if (await triggerReLoginHook(req, res)) {
+			return;
+		}
+
+		await redirect(req, res);
+	});
+};
+
+// handles /api/v3 routes only
+// POST /api/v3/admin/tokens => returnTo whatever page the user was on via x-return-to
+// DIRECT GET /api/v3/admin/groups => returnTo undefined
+middleware.requireAPIReAuth = function ({ maxAgeInMinutes = 5 } = {}) {
 	return helpers.try(async (req, res, next) => {
 		if (!res.locals.isAPI) return next();
 		if (!req.loggedIn) {
 			return await controllers.helpers.formatApiResponse(401, res);
 		}
 
-		const reAuthAt = req.session.meta?.reAuthAt || 0;
-		const maxAgeMs = maxAgeInMinutes * 60 * 1000;
-		if (reAuthAt && (Date.now() - reAuthAt) <= maxAgeMs) {
+		if (isReAuthValid(req, maxAgeInMinutes)) {
 			return next();
 		}
 
-		req.session.returnTo = normalizeReturnToPath(req, req?.headers['x-return-to']) || '/';
-		req.session.forceLogin = 1;
+		req.session.returnTo = normalizeReturnToPath(req, req.headers['x-return-to']) || '/';
 
-		await plugins.hooks.fire('response:auth.relogin', { req, res });
-		if (res.headersSent) {
+		if (await triggerReLoginHook(req, res)) {
 			return;
 		}
 
 		await controllers.helpers.formatApiResponse(401, res);
 	});
 };
+
+function isReAuthValid(req, maxAgeInMinutes) {
+	const reAuthAt = req.session.meta?.reAuthAt || 0;
+	const maxAgeMs = maxAgeInMinutes * 60 * 1000;
+	return reAuthAt && (Date.now() - reAuthAt) <= maxAgeMs;
+}
+
+async function triggerReLoginHook(req, res) {
+	req.session.forceLogin = 1;
+	await plugins.hooks.fire('response:auth.relogin', { req, res });
+	return res.headersSent;
+}
 
 function normalizeReturnToPath(req, pathCandidate) {
 	if (typeof pathCandidate !== 'string') {

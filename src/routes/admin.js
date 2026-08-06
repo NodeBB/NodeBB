@@ -32,7 +32,7 @@ module.exports = function (app, name, middleware, controllers) {
 
 	helpers.setupAdminPageRoute(app, `/${name}/manage/uploads`, middlewares, controllers.admin.uploads.get);
 	helpers.setupAdminPageRoute(app, `/${name}/manage/digest`, middlewares, controllers.admin.digest.get);
-	helpers.setupAdminPageRoute(app, `/${name}/manage/api`, middlewares, controllers.admin.api.get);
+	helpers.setupAdminPageRoute(app, `/${name}/manage/api`, [...middlewares, middleware.requirePageReAuth()], controllers.admin.api.get);
 
 	helpers.setupAdminPageRoute(app, `/${name}/settings/general`, middlewares, controllers.admin.settings.general);
 	helpers.setupAdminPageRoute(app, `/${name}/settings/navigation`, middlewares, controllers.admin.settings.navigation);

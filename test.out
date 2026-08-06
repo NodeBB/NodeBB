@@ -1,0 +1,2338 @@
+
+> nodebb@4.14.8 test
+> nyc --reporter=html --reporter=text-summary mocha
+
+info: configJSON
+info: {
+    "url": "http://127.0.0.1:4567/forum",
+    "port": 4567,
+    "secret": "99f6d4f7-ff3b-4f46-857c-f83d09d2c286",
+    "database": "mongo",
+    "languages": [
+        "en-GB",
+        "en-US",
+        "he",
+        "de"
+    ],
+    "dep-check": false,
+    "highlighter": {
+        "api": "https://www.holidaycheck.de/svc/the-forum-highlighter/highlight"
+    },
+    "seoboxes": {
+        "api_hotel": "https://www.holidaycheck.de/svc/api-hotel/v3/hotel"
+    },
+    "_redis": {
+        "host": "127.0.0.1",
+        "port": "6379",
+        "database": "1",
+        "username": "",
+        "password": "",
+        "_sentinels": [
+            {
+                "host": "127.0.0.1",
+                "port": 26379
+            },
+            {
+                "host": "127.0.0.1",
+                "port": 26380
+            }
+        ],
+        "_options": {
+            "name": "mymaster",
+            "database": "1"
+        }
+    },
+    "mongo": {
+        "host": "127.0.0.1",
+        "port": "27017",
+        "password": "",
+        "database": "baris_dev"
+    },
+    "mongo_atlas": {
+        "host": "127.0.0.1",
+        "port": 27017,
+        "username": "",
+        "password": "",
+        "database": "nodebb",
+        "uri": "mongodb+srv://test-user:dUwSOfV7OSSZCVIy@cluster0.myqqq.mongodb.net/test_nodebb?retryWrites=true&w=majority"
+    },
+    "postgres_p": {
+        "host": "127.0.0.1",
+        "port": "5433",
+        "username": "postgres",
+        "password": "sentenced35",
+        "database": "postgres",
+        "ssl_f": {
+            "rejectUnauthorized": false,
+            "ca": "./certs/ca.crt",
+            "key": "./certs/client.key",
+            "cert": "./certs/client.crt"
+        }
+    },
+    "test_database": {
+        "host": "127.0.0.1",
+        "port": "27017",
+        "password": "",
+        "database": "test_db"
+    },
+    "test_database_p": {
+        "host": "127.0.0.1",
+        "port": "5433",
+        "username": "postgres",
+        "password": "sentenced35",
+        "database": "test_db"
+    },
+    "test_database_r": {
+        "host": "127.0.0.1",
+        "port": "6379",
+        "database": "3"
+    },
+    "trust_proxy": true
+}
+info: database config mongo {"database":"test_db","host":"127.0.0.1","password":"","port":"27017"}
+info: environment production
+
+warn: You have no mongo username/password setup!
+info: [database] Checking database indices.
+info: [database] Checking database indices done!
+info: test_database flushed
+info: Populating database with default configs, if not already set...
+
+info: Giving default global privileges...
+
+info: Enabling default plugins
+
+info: [install/enableDefaultPlugins] activating default plugins {"0":"nodebb-plugin-dbsearch","1":"nodebb-widget-essentials","2":"nodebb-plugin-composer-default","3":"nodebb-rewards-essentials"}
+warn: You have no mongo username/password setup!
+info: [socket.io] Restricting access to origin: *:*
+info: [api] Adding 0 route(s) to `api/v3/plugins`
+info: [router] Routes added
+info: 🎉 NodeBB Ready
+info: 🤝 Setting 'trust proxy' to true
+info: 📡 NodeBB is now listening on: 0.0.0.0:4567
+info: 🔗 Canonical URL: http://127.0.0.1:4567/forum
+
+  .......................................,................
+  .............................................  started
+.  started
+.  started
+.  started
+.  started
+.  started
+.  started
+.  started
+....
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  .................................................2026-08-06T16:40:31.231Z [4567/26004] - [33mwarn[39m: You have no mongo username/password setup!
+2026-08-06T16:40:31.249Z [4567/20676] - [33mwarn[39m: You have no mongo username/password setup!
+2026-08-06T16:40:31.307Z [4567/3184] - [33mwarn[39m: You have no mongo username/password setup!
+2026-08-06T16:40:32.870Z [4567/26004] - [33mwarn[39m: You have no mongo username/password setup!
+2026-08-06T16:40:32.937Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551886531900-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:40:32.937Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551886716902-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:40:32.937Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551889821921-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:40:32.937Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551890310343-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:40:32.945Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1568312692781-1-profileimg.jpg
+2026-08-06T16:40:32.945Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1602380749996-nice.jpg
+2026-08-06T16:40:32.945Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1602387262605-1-profileimg.jpg
+2026-08-06T16:40:32.945Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1606768807137-1-profileimg.jpg
+2026-08-06T16:40:32.946Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607743979796-1607702902man-with-pipe.svg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744255023-1607702902man-with-pipe.svg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744479852-1607702902man-with-pipe.svg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744494530-1607702902man-with-pipe.svg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744888430-1607702902man-with-pipe.svg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1608000673919-1dsx4xo.jpg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1608000687633-happy-halloween-background-png-4.png
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744896079-1607702902man-with-pipe.svg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609116458698-1dsx4xo.jpg
+2026-08-06T16:40:32.947Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609116596010-1dsx4xo.jpg
+2026-08-06T16:40:32.949Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609118180110-snake_river_-5mb.jpg
+2026-08-06T16:40:32.949Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609116622532-1dsx4xo.jpg
+2026-08-06T16:40:32.949Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609118565281-snake_river_-5mb.jpg
+2026-08-06T16:40:32.949Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609119497915-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609120183645-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609120312948-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121082620-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121031996-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121128950-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121300183-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121322383-snake_river_-5mb.jpg
+2026-08-06T16:40:32.950Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121400867-snake_river_-5mb.jpg
+2026-08-06T16:40:32.951Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121482856-snake_river_-5mb.jpg
+2026-08-06T16:40:32.951Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121916802-snake_river_-5mb.jpg
+2026-08-06T16:40:32.951Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121606806-snake_river_-5mb.jpg
+2026-08-06T16:40:32.951Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1613504192443-1-profileimg.jpg
+2026-08-06T16:40:32.954Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1613504200874-1dsx4xo.jpg
+2026-08-06T16:40:32.954Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1613504208075-ldswr3gjnj751.jpg
+2026-08-06T16:40:32.954Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744152467-1-profileimg.jpg
+2026-08-06T16:40:32.954Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617743960671-1-profileimg.jpg
+2026-08-06T16:40:32.955Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744386146-ldswr3gjnj751.jpg
+2026-08-06T16:40:32.956Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744531817-1-profileimg.jpg
+2026-08-06T16:40:32.956Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744845423-1-profileimg.jpg
+2026-08-06T16:40:32.956Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744999990-1-profileimg.jpg
+2026-08-06T16:40:32.957Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589077926-owl.jpg
+2026-08-06T16:40:32.958Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589086486-owl.jpg
+2026-08-06T16:40:32.958Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589106886-owl.jpg
+2026-08-06T16:40:32.958Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589107252-snake_river_-5mb.jpg
+2026-08-06T16:40:32.958Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630113924799-test.jpg
+2026-08-06T16:40:32.959Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630113970724-test.jpg
+2026-08-06T16:40:32.959Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630114013820-test.jpg
+2026-08-06T16:40:32.959Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630113992401-test.jpg
+2026-08-06T16:40:32.959Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630114039451-test.jpg
+2026-08-06T16:40:32.959Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630114781239-snake_river_-5mb.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1633635674482-1dsx4xo.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637540003777-1-profileimg.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637540158933-1-profileimg.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637541617680-1-profileimg.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637541634475-1-profileimg.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643755130107-1-profileimg.jpg
+2026-08-06T16:40:32.960Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637541871233-1-profileimg.jpg
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643755899026-baa95626-d586-400f-944b-a7f9da0690c7-image.png
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758115854-1-profileimg.jpg
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758742841-1-profileimg.jpg
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758187947-1-profileimg.jpg
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758903105-test.zip
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758952997-c7aace9c-7905-40cb-816e-26e8408c05bd-image.png
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758995941-2fe3c77b-60ae-42bc-bc33-a7947af520e4-image.png
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643759953749-d9d694b0-ab40-45e2-bedf-9562ea74c1f1-image.png
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643759963220-7c2cc79a-8597-468a-8593-5ca3fd5181ba-image.png
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643760783058-041a7d23-f351-40f8-be7b-dd47df6692bf-image.png
+2026-08-06T16:40:32.961Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643761137181-1-profileimg.jpg
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643761902683-1-profileimg.jpg
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643761922677-ca98d1f7-3127-4814-afe7-94e3d2ee4b08-image.png
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643762734368-snake_river_-5mb.jpg
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643762772082-test.jpg
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763018850-test.jpg
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763517721-7b1805c4-160e-431c-ae09-8a55660a0958-image.png
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763525874-a59ffd84-ec24-4cbc-8e8e-1d9746430486-image.png
+2026-08-06T16:40:32.962Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763543306-8afc8e4f-afd3-476b-828f-184f4254940a-image.png
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763575045-db13a8af-11ce-4350-a8ec-03843fba55ed-image.png
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763617912-5696708a-e0fb-40e6-86a7-1d8e59d0e8ab-image.png
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1644870090229-1dsx4xo.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763707594-bfdff02a-cd19-4970-80ba-323f7d958682-image.png
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646695913946-ayyjeji.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646695946993-1dsx4xo.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646696110648-1-profileimg.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646696104866-1dsx4xo.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1648764801914-img_20210422_230225.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1652312128011-dcp_baris.jpg
+2026-08-06T16:40:32.963Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1652312319352-dcp_baris.jpg
+2026-08-06T16:40:32.964Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1664066569513-1-profileimg.jpg
+2026-08-06T16:40:32.964Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1666280641848-1-profileimg.jpg
+2026-08-06T16:40:32.964Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673935423434-1-profileimg.jpg
+2026-08-06T16:40:32.964Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673935550644-1-profileimg.jpg
+2026-08-06T16:40:32.964Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673935517901-1-profileimg.jpg
+2026-08-06T16:40:32.964Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673968641743-gorilla.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674696250177-1-profileimg.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674696287219-1-profileimg.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674696923170-dcp_baris.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674697122856-test.zip
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675033964997-dcp_baris.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034024451-dcp_baris.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034037848-dcp_baris.jpg
+2026-08-06T16:40:32.965Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034073436-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034182862-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034251090-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034236478-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034291679-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034320929-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034398275-dcp_baris.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675266647079-snake_river_-5mb.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675266990350-snake_river_-5mb.jpg
+2026-08-06T16:40:32.966Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204577554-cutting-1.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204711467-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204680942-cutting-1.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204753178-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204860033-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204905107-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204932734-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205137926-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205145786-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205166805-electricstuffermotor.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205193777-electricstufferwide1a.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205208201-grinder-1.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205878299-cutting-1.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205892814-electricstufferwide1a.jpg
+2026-08-06T16:40:32.967Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205885635-electricstuffermotor.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205904833-grinder-1.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678207115284-grinder-2.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678209764343-grinding-3.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678209749750-grinder-plate.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678209780380-hanging-1.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817104072-14szwrogk2ly.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817043376-14szwrogk2ly.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817535554-14szwrogk2ly.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817725837-14szwrogk2ly.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817841909-14szwrogk2ly.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817951607-14szwrogk2ly.jpg
+2026-08-06T16:40:32.968Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818052294-14szwrogk2ly.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818112334-14szwrogk2ly.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818339176-14szwrogk2ly.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818382763-14szwrogk2ly.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678820638515-14szwrogk2ly.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680102211599-1-profileimg.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680271311609-julian-head.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680102220509-1dsx4xo.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680271322357-nice.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680271330241-dcp_baris.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272625358-1-profileimg.jpg
+2026-08-06T16:40:32.969Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272675877-1-profileimg.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272701950-1-profileimg.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680273336536-1-profileimg.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680273398217-1-profileimg.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272783906-1-profileimg.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680296645619-1-profileimg.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680296657524-14szwrogk2ly.jpg
+2026-08-06T16:40:32.970Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297027684-14szwrogk2ly.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297022574-1-profileimg.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297088417-1-profileimg.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297093549-14szwrogk2ly.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297111818-ldswr3gjnj751.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297183300-1-profileimg.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297251658-1-profileimg.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297256509-14szwrogk2ly.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297310676-ldswr3gjnj751.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995652-1-profileimg.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995674-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995667-14szwrogk2ly.jpg
+2026-08-06T16:40:32.971Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995707-ayyjeji.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052713-1-profileimg.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052726-14szwrogk2ly.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052768-ayyjeji.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052731-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395118213-1-profileimg.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052783-dcp_baris.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395118226-14szwrogk2ly.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395118231-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395149915-14szwrogk2ly.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395149900-1-profileimg.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395149921-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395459108-1-profileimg.jpg
+2026-08-06T16:40:32.972Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395459121-14szwrogk2ly.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395459126-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395614338-1-profileimg.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395614353-14szwrogk2ly.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395614360-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395717208-1-profileimg.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395717220-14szwrogk2ly.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395717226-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395933508-1-profileimg.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395933523-14szwrogk2ly.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395933528-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396090746-1-profileimg.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396090759-14szwrogk2ly.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396090764-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396131370-1-profileimg.jpg
+2026-08-06T16:40:32.973Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396131384-14szwrogk2ly.jpg
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396131391-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396230641-1-profileimg.jpg
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396230659-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396230654-14szwrogk2ly.jpg
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396809053-1-profileimg.jpg
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396809067-14szwrogk2ly.jpg
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396809074-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396884124-14szwrogk2ly.jpg
+2026-08-06T16:40:32.974Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396884109-1-profileimg.jpg
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396884130-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396908635-1-profileimg.jpg
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396908656-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396908649-14szwrogk2ly.jpg
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396951256-1-profileimg.jpg
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396951270-14szwrogk2ly.jpg
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396951276-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680397038933-1-profileimg.jpg
+2026-08-06T16:40:32.975Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680397038948-14szwrogk2ly.jpg
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684441735321-screenshot.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680397038954-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684441764453-screenshot.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684442159634-screenshot.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684442598355-screenshot.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684442638409-screenshot.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684445290875-screenshot.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687020941268-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687021442029-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687021985534-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:40:32.976Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687022214592-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:40:32.977Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687039848900-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:40:32.977Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687040035178-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:40:32.977Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687040965225-1-profileimg.jpg
+2026-08-06T16:40:32.977Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687041106059-1-profileimg.jpg
+2026-08-06T16:40:32.977Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687041731504-ayyjeji.jpg
+2026-08-06T16:40:32.977Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687042860285-ayyjeji.jpg
+2026-08-06T16:40:32.978Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1708033905032-1-profileimg.jpg
+2026-08-06T16:40:32.978Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979692317-14szwrogk2ly.jpg
+2026-08-06T16:40:32.978Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979739098-14szwrogk2ly.jpg
+2026-08-06T16:40:32.978Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979927613-14szwrogk2ly.jpg
+2026-08-06T16:40:32.978Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715980028087-14szwrogk2ly.jpg
+2026-08-06T16:40:32.978Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979976238-14szwrogk2ly.jpg
+2026-08-06T16:40:32.979Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715980115705-14szwrogk2ly.jpg
+2026-08-06T16:40:32.979Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1724247254103-skylar-grey-coming-home.mp3
+2026-08-06T16:40:32.980Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1726160746385-1681228350350-ii1byys.png
+2026-08-06T16:40:32.980Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1726160741238-1681228345216-hwnexgu.png
+2026-08-06T16:40:32.981Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1743720287554-baris.png
+2026-08-06T16:40:32.981Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1743720526646-1-profileimg.jpg
+2026-08-06T16:40:32.981Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1743720742000-1-profileimg.jpg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557457456-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557575572-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557617148-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557744089-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557981344-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763558407108-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763558318102-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763559609398-site-logo.svg
+2026-08-06T16:40:32.983Z [4567/3184] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763559806838-site-logo.svg
+.......
+  ........................................................
+  ....................................................Error: e11000
+    at module.setAdd (D:\github\NodeBB\src\database\mongo\sets.js:2:1213)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 1)
+    at async Context.<anonymous> (D:\github\NodeBB\test\database\sets.js:35:4) parallelset [ '2' ]
+Error: e11000
+    at module.setAdd (D:\github\NodeBB\src\database\mongo\sets.js:2:1213)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 2)
+    at async Context.<anonymous> (D:\github\NodeBB\test\database\sets.js:35:4) parallelset [ '3' ]
+....
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ..............................................cs 5163c17d0951002bf826865f1b123263de69e06d46af85e954a2204c613bb8583f35710e872a1734ec82ada5979b52ceee522288963f84a213b19a942ab5eb98
+..........
+  ........................................................
+  ........................................................
+  ........................................................
+  ..................................................
+
+  Build targets:
+
+     Target                        |  Aliases
+     ------------------------------------------------------
+     "plugin static dirs"          |  staticdirs
+     "requirejs modules"           |  rjs, modules
+     "client js bundle"            |  clientjs, clientscript, clientscripts
+     "admin js bundle"             |  adminjs, adminscript, adminscripts
+     "javascript"                  |  js
+     "client side styles"          |  clientcss, clientscss, clientstyles, clientstyle
+     "admin control panel styles"  |  admincss, adminscss, adminstyles, adminstyle, acpcss, acpscss, acpstyles, acpstyle
+     "styles"                      |  css, scss, style
+     "templates"                   |  tpl
+     "languages"                   |  lang, i18n
+
+......
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ......................Error: [[error:plugin-not-installed]]
+    at Plugins.upgrade (D:\github\NodeBB\src\socket.io\admin\plugins.js:2:4159)
+..................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  .......................................
+Parsing upgrade scripts... 
+OK | 173 script(s) found
+  → [2015/12/15] Upgrading chats... OK (0.00 seconds)
+  → [2015/12/23] Chat room hashes... OK (0.00 seconds)
+  → [2015/12/23] Adding theme to active plugins sorted set... OK (0.00 seconds)
+  → [2016/1/14] Creating user best post sorted sets... OK (0.00 seconds)
+  → [2016/1/20] Creating users:notvalidated... OK (0.00 seconds)
+  → [2016/1/23] Creating Global moderators group... OK (0.00 seconds)
+  → [2016/2/25] Social: Post Sharing... OK (0.00 seconds)
+  → [2016/4/14] Group title from settings to user profile... OK (0.00 seconds)
+  → [2016/4/19] Users post count per tid... OK (0.00 seconds)
+  → [2016/4/29] Dismiss flags from deleted topics... OK (0.00 seconds)
+  → [2016/5/28] Giving topics:read privs to any group/user that was previously allowed to Find & Access Category... OK (0.00 seconds)
+  → [2016/6/13] Store upvotes/downvotes separately... OK (0.00 seconds)
+  → [2016/7/12] Giving upload privileges... OK (0.00 seconds)
+  → [2016/8/5] Removing best posts with negative scores... OK (0.00 seconds)
+  → [2016/8/7] Granting edit/delete/delete topic on existing categories... OK (0.00 seconds)
+  → [2016/9/22] Category recent tids... OK (0.00 seconds)
+  → [2016/10/8] Favourites to Bookmarks... OK (0.00 seconds)
+  → [2016/10/14] Sorted sets for post replies... OK (0.00 seconds)
+  → [2016/11/22] Update global and user language keys... OK (0.00 seconds)
+  → [2016/11/25] Sorted set for pinned topics... OK (0.00 seconds)
+  → [2017/2/25] Update global and user sound settings... OK (0.00 seconds)
+  → [2017/2/28] Upgrading config urls to use assets route... OK (0.00 seconds)
+  → [2017/4/16] Delete accidentally long-lived sessions... OK (0.00 seconds)
+  → [2016/12/7] Migrating flags to new schema... OK (0.00 seconds)
+  → [2017/2/27] New sorted set posts:votes... OK (0.00 seconds)
+  → [2017/3/22] Update moderation notes to zset... OK (0.00 seconds)
+  → [2017/4/14] Set default allowed file extensions... OK (0.00 seconds)
+  → [2017/4/26] Remove relative_path from uploaded profile cover urls... OK (0.00 seconds)
+  → [2017/5/26] rename user mod privileges group... OK (0.00 seconds)
+  → [2017/6/16] Give tag privilege to registered-users on all categories... OK (0.00 seconds)
+  → [2017/7/5] Wipe all existing RSS tokens... OK (0.00 seconds)
+  → [2017/7/10] Fix incorrect robots.txt schema... OK (0.00 seconds)
+  → [2017/7/17] Generate email logo for use in email header... OK (0.00 seconds)
+  → [2017/9/6] Clearing stale digest templates that were accidentally saved as custom... OK (0.00 seconds)
+  → [2017/9/7] Changing ip blacklist storage to object... OK (0.00 seconds)
+  → [2017/10/30] New sorted set cid:<cid>:tids:lastposttime... OK (0.00 seconds)
+  → [2017/10/12] Generate customHTML block from old customJS setting... OK (0.00 seconds)
+  → [2017/11/15] Convert old notification digest settings... OK (0.00 seconds)
+  → [2017/12/8] Add votes to topics... OK (0.00 seconds)
+  → [2017/12/18] Change the schema of simple keys so they don't use value field (mongodb only)...
+[1G    [              ] (1/??) 0  OK (0.01 seconds)
+  → [2017/12/18] Give chat privilege to registered-users... OK (0.00 seconds)
+  → [2018/1/3] Give upload privilege to registered-users globally if it is given on a category... OK (0.00 seconds)
+  → [2018/1/8] Fix sort by votes for moved topics... OK (0.00 seconds)
+  → [2018/1/9] Give vote privilege to registered-users on all categories... OK (0.00 seconds)
+  → [2018/1/12] Rename privileges:downvote and privileges:flag to min:rep:downvote, min:rep:flag respectively... OK (0.00 seconds)
+  → [2018/1/22] Fix topics in categories per user if they were moved... OK (0.00 seconds)
+  → [2018/2/14] Add default settings for notification delivery types... OK (0.00 seconds)
+  → [2018/2/17] Flatten navigation data... OK (0.00 seconds)
+  → [2018/2/21] Revising minimum password strength to 1 (from 0)... OK (0.00 seconds)
+  → [2018/1/31] Give category access privileges to spiders system group... OK (0.00 seconds)
+  → [2018/2/28] Give registered users signature privilege... OK (0.00 seconds)
+  → [2018/3/15] Reformatting post diffs to be stored in lists and hash instead of single zset... OK (0.00 seconds)
+  → [2018/4/16] Refresh post-upload associations... OK (0.00 seconds)
+  → [2018/5/28] Give global search privileges... OK (0.00 seconds)
+  → [2018/6/7] Give post history viewing privilege to registered-users on all categories... OK (0.00 seconds)
+  → [2018/6/8] Give deleted post viewing privilege to moderators on all categories... OK (0.00 seconds)
+  → [2018/6/22] Hash all IP addresses stored in Recent IPs zset... OK (0.00 seconds)
+  → [2018/8/28] Record first entry in username/email history... OK (0.00 seconds)
+  → [2018/9/24] Upgrade bans to hashes... OK (0.00 seconds)
+  → [2018/9/28] Give global local login privileges... OK (0.00 seconds)
+  → [2018/10/1] Optimize PostgreSQL sessions... OK (0.00 seconds)
+  → [2018/10/4] add filters to events...
+[1G    [##############] (1/1) 100%  OK (0.00 seconds)
+  → [2018/10/10] Fix category post zsets... OK (0.00 seconds)
+  → [2018/10/11] Fix category topic zsets... OK (0.00 seconds)
+  → [2018/10/24] Rename maximumImageWidth to resizeImageWidth... OK (0.00 seconds)
+  → [2018/11/10] Navigation item visibility groups... OK (0.00 seconds)
+  → [2018/11/10] Widget visibility groups... OK (0.01 seconds)
+  → [2018/12/11] Remove uid:<uid>:ignored:cids... OK (0.00 seconds)
+  → [2018/12/13] Update category watch data... OK (0.00 seconds)
+  → [2019/1/4] Group create global privilege... OK (0.00 seconds)
+  → [2019/1/5] Global view privileges... OK (0.01 seconds)
+  → [2019/3/16] Calculate image sizes of all uploaded images... OK (0.00 seconds)
+  → [2019/3/25] Delete username email history for deleted users... OK (0.00 seconds)
+  → [2019/4/5] Update moderation notes to hashes... OK (0.00 seconds)
+  → [2019/5/21] Disable plugin metrics for existing installs... OK (0.00 seconds)
+  → [2019/5/28] Give mods explicit privileges... OK (0.01 seconds)
+  → [2019/6/4] Update registration type... OK (0.00 seconds)
+  → [2019/6/23] Create zsets for user posts per category... OK (0.00 seconds)
+  → [2019/10/8] give mod info privilege... OK (0.00 seconds)
+  → [2019/9/24] Clean flag byCid zsets... OK (0.00 seconds)
+  → [2019/10/7] Clean up old notifications and hash data... OK (0.00 seconds)
+  → [2019/10/7] Clean up post hash data... OK (0.00 seconds)
+  → [2020/5/2] Fix user sorted sets... OK (0.00 seconds)
+  → [2020/5/21] Removing file upload privilege if file uploads were disabled (`allowFileUploads`)... OK (0.00 seconds)
+  → [2020/6/9] Remove duplicate image field for categories... OK (0.00 seconds)
+  → [2020/6/26] Unescape navigation titles... OK (0.00 seconds)
+  → [2018/10/11] Re-add deleted topics to topics:recent... OK (0.00 seconds)
+  → [2020/7/15] New sorted set for tracking flags by target... OK (0.00 seconds)
+  → [2020/7/16] Consolidate multiple flags reports, going forward... OK (0.00 seconds)
+  → [2020/7/31] Remove flag reporters sorted set... OK (0.00 seconds)
+  → [2020/8/22] Add target uid to flag objects... OK (0.00 seconds)
+  → [2020/9/6] Disable nodebb-plugin-soundpack-default... OK (0.00 seconds)
+  → [2020/9/6] Remove allow from uri setting... OK (0.00 seconds)
+  → [2020/9/11] Create fullname search set... OK (0.00 seconds)
+  → [2020/10/11] Fix category colors that are 3 digit hex colors... OK (0.00 seconds)
+  → [2020/10/13] Create verified/unverified user groups... OK (0.01 seconds)
+  → [2020/10/24] Store poster count in topic hash... OK (0.00 seconds)
+  → [2020/11/26] Clear purged replies and toPid... OK (0.00 seconds)
+  → [2020/11/23] Create category tags sorted sets... OK (0.00 seconds)
+  → [2020/12/11] Migrate existing topic thumbnails to new format... OK (0.00 seconds)
+  → [2020/12/13] Move banned users to banned-users group... OK (0.01 seconds)
+  → [2021/1/27] Create category name sorted set... OK (0.00 seconds)
+  → [2021/1/31] Create subCategoriesPerPage property for categories... OK (0.00 seconds)
+  → [2021/2/7] Store number of thumbs a topic has in the topic object... OK (0.00 seconds)
+  → [2021/3/9] Store default favicon if it does not exist... OK (0.00 seconds)
+  → [2021/3/11] Add "schedule" to default privileges of admins and gmods for existing categories... OK (0.00 seconds)
+  → [2021/6/18] Enable setting to include unverified emails for all mailings... OK (0.00 seconds)
+  → [2021/9/9] Store tags in topic hash... OK (0.00 seconds)
+  → [2021/9/28] Category topics sorted sets by views... OK (0.00 seconds)
+  → [2021/11/23] Re-enable username login... OK (0.00 seconds)
+  → [2021/12/13] Upgrade navigation items to hashes... OK (0.00 seconds)
+  → [2022/2/4] Store downvoted posts in user votes sorted set... OK (0.00 seconds)
+  → [2022/2/7] Clean up leftover topic thumb sorted sets and files for since-purged topics... OK (0.00 seconds)
+  → [2022/2/10] Fix paths in user uploads sorted sets... OK (0.00 seconds)
+  → [2022/2/10] Rename object and sorted sets used in post uploads... OK (0.00 seconds)
+  → [2023/2/4] Fix user email sorted sets... OK (0.00 seconds)
+  → [2023/4/24] Reset bootswatch skin... OK (0.00 seconds)
+  → [2023/5/1] Reset old bootswatch skin for all users... OK (0.00 seconds)
+  → [2023/5/2] Migrate tokens away from sorted-list implementation... OK (0.00 seconds)
+  → [2023/5/23] Migrate post sharing values to config... OK (0.00 seconds)
+  → [2023/6/5] Fix username zsets... OK (0.00 seconds)
+  → [2023/7/2] Update chat messages to add roomId field... OK (0.00 seconds)
+  → [2023/7/3] Store list of chat rooms... OK (0.00 seconds)
+  → [2023/7/14] Create chat:room:<room_id>uids:online zset... OK (0.00 seconds)
+  → [2023/7/17] Create chat:room:<room_id>:owners zset... OK (0.00 seconds)
+  → [2023/7/27] Set mid on message objects and create messages:mid... OK (0.00 seconds)
+  → [2023/10/5] Update translation keys in notification bodyShort... OK (0.00 seconds)
+  → [2023/7/27] Set messageCount on chat rooms... OK (0.00 seconds)
+  → [2023/11/3] Add tracking category state... OK (0.00 seconds)
+  → [2023/11/7] Rename newbiePostDelayThreshold to newbieReputationThreshold... OK (0.00 seconds)
+  → [2023/11/10] Convert rewards:list to a sorted set... OK (0.00 seconds)
+  → [2024/1/29] Remove cid:<cid>:read_by_uid sets... OK (0.00 seconds)
+  → [2024/3/4] New sorted set cid:<cid>:tids:create... OK (0.00 seconds)
+  → [2024/3/4] Change category sort settings... OK (0.00 seconds)
+  → [2024/3/28] Create user upload folders... OK (0.00 seconds)
+  → [2024/4/1] Add user filter to acp events...
+[1G    [##############] (1/1) 100%  OK (0.00 seconds)
+  → [2024/4/8] Remove privilege groups from groupslug:groupname object... OK (0.00 seconds)
+  → [2024/5/24] Add vote visibility config field... OK (0.00 seconds)
+  → [2024/6/24] Add id field to all topic events... OK (0.00 seconds)
+  → [2024/6/26] Remove uid:<uid>:sessionUUID:sessionId object... OK (0.00 seconds)
+  → [2024/7/17] Add downvote visibility config field... OK (0.00 seconds)
+  → [2024/11/25] Add website and location as custom profile fields... OK (0.00 seconds)
+  → [2024/12/2] Add setting for keeping original image after resize... OK (0.00 seconds)
+  → [2024/2/22] Setting up default configs/privileges re: ActivityPub... OK (0.04 seconds)
+  → [2024/11/28] Regenerate user slugs for users whose usernames contained periods... OK (0.00 seconds)
+  → [2025/4/4] Normalize topic thumbnails, post & user uploads to same format... OK (0.00 seconds)
+  → [2025/4/15] Set "followercount" on each topic object... OK (0.00 seconds)
+  → [2025/4/25] Set user chat allow list to the users following if they turned on restrict chat... OK (0.00 seconds)
+  → [2025/4/29] Fix duplicate accounts sharing identical handles... OK (0.00 seconds)
+  → [2025/5/8] Fix null values in category synchronization list... OK (0.00 seconds)
+  → [2025/7/5] Move post:<pid>:uploads to post hash... OK (0.00 seconds)
+  → [2025/7/5] Move topic:<tid>:thumbs to topic hash... OK (0.00 seconds)
+  → [2025/12/11] Remove extraneous upvote and tids_read data for remote users... OK (0.00 seconds)
+  → [2026/1/25] Remove AP tids from topics:recent, topics:views, topics:posts, topics:votes zsets... OK (0.00 seconds)
+  → [2026/2/12] Give topic:crosspost privilege to registered-users on all categories... OK (0.00 seconds)
+  → [2026/2/24] Move ap pids from posts:pid to postsRemote:pid... OK (0.00 seconds)
+  → [2026/2/24] Move ap tids from topics:tid to topicsRemote:tid... OK (0.00 seconds)
+  → [2026/3/5] Delete pruned tids from user inboxes and delete tid:<tid>:recipients sorted sets... OK (0.00 seconds)
+  → [2026/3/11] Add a partial index on set members... OK (0.00 seconds)
+  → [2026/3/13] Add uid:<uid>:profile:pictures zset... OK (0.00 seconds)
+  → [2026/3/20] Backfill user posted categories... OK (0.00 seconds)
+  → [2026/3/23] Subscribe to IFTAS DNI and AUD denylists... OK (0.00 seconds)
+  → [2026/4/3] Change expireAt index to partial index... OK (0.02 seconds)
+  → [2026/5/8] Add users:muted zset... OK (0.00 seconds)
+  → [2026/5/20] Clear ap:retry:queue entries without digest... OK (0.00 seconds)
+  → [2026/6/1] Migrate activitypubFilterList config to core blocklist... OK (0.00 seconds)
+  → [2026/6/14] Fix system chat messages so they have tx string and a type field... OK (0.00 seconds)
+  → [2026/7/28] Backfill trust_proxy for upgraded installs... OK (0.00 seconds)
+  → [2026/7/29] Backfill trust_proxy into the config file specified via --config... OK (0.00 seconds)
+  → [2018/11/26] Changing dbsearch mongodb search schema to use _id... OK (0.00 seconds)
+  → [2025/1/27] Changing integer search indices to string...
+[1G    [##############] (31/31) 100%  OK (0.00 seconds)
+  → [2025/2/18] Add timestamp field to searchtopic searchpost collections... OK (0.00 seconds)
+  → [2025/7/8] Changing integer cid index to text for psql... OK (0.00 seconds)
+Schema update complete!
+
+.
+Parsing upgrade scripts... 
+OK | 0 script(s) found
+Schema update complete!
+
+................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ............................................it took took 508.656 milliseconds
+............
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  ..........................................2026-08-06T16:42:59.041Z [4567/18740] - [33mwarn[39m: You have no mongo username/password setup!
+2026-08-06T16:42:59.049Z [4567/13452] - [33mwarn[39m: You have no mongo username/password setup!
+2026-08-06T16:42:59.125Z [4567/25392] - [33mwarn[39m: You have no mongo username/password setup!
+..............
+  ........................................................
+  ........................................................
+  ........................................................
+  ........................................................
+  .....2026-08-06T16:43:00.780Z [4567/18740] - [33mwarn[39m: You have no mongo username/password setup!
+.....................2026-08-06T16:43:00.853Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551886531900-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:43:00.853Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551886716902-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:43:00.853Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551889821921-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+2026-08-06T16:43:00.853Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1551890310343-e883a0bd-d801-4976-a4a7-b5af0b38e835.jpg
+.....2026-08-06T16:43:00.861Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1568312692781-1-profileimg.jpg
+2026-08-06T16:43:00.861Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1602380749996-nice.jpg
+2026-08-06T16:43:00.862Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1606768807137-1-profileimg.jpg
+2026-08-06T16:43:00.862Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1602387262605-1-profileimg.jpg
+2026-08-06T16:43:00.863Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607743979796-1607702902man-with-pipe.svg
+2026-08-06T16:43:00.863Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744255023-1607702902man-with-pipe.svg
+2026-08-06T16:43:00.863Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744479852-1607702902man-with-pipe.svg
+2026-08-06T16:43:00.863Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744494530-1607702902man-with-pipe.svg
+2026-08-06T16:43:00.864Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744888430-1607702902man-with-pipe.svg
+2026-08-06T16:43:00.864Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1607744896079-1607702902man-with-pipe.svg
+2026-08-06T16:43:00.864Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1608000673919-1dsx4xo.jpg
+2026-08-06T16:43:00.864Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1608000687633-happy-halloween-background-png-4.png
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609116458698-1dsx4xo.jpg
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609116622532-1dsx4xo.jpg
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609116596010-1dsx4xo.jpg
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609118180110-snake_river_-5mb.jpg
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609118565281-snake_river_-5mb.jpg
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609119497915-snake_river_-5mb.jpg
+2026-08-06T16:43:00.865Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609120312948-snake_river_-5mb.jpg
+2026-08-06T16:43:00.866Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609120183645-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121031996-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121082620-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121128950-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121300183-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121322383-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121400867-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121482856-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121606806-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1609121916802-snake_river_-5mb.jpg
+2026-08-06T16:43:00.867Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1613504192443-1-profileimg.jpg
+2026-08-06T16:43:00.868Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1613504200874-1dsx4xo.jpg
+2026-08-06T16:43:00.868Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617743960671-1-profileimg.jpg
+2026-08-06T16:43:00.868Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1613504208075-ldswr3gjnj751.jpg
+2026-08-06T16:43:00.868Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744152467-1-profileimg.jpg
+2026-08-06T16:43:00.871Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744386146-ldswr3gjnj751.jpg
+2026-08-06T16:43:00.871Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744531817-1-profileimg.jpg
+2026-08-06T16:43:00.871Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744845423-1-profileimg.jpg
+2026-08-06T16:43:00.871Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1617744999990-1-profileimg.jpg
+2026-08-06T16:43:00.872Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589077926-owl.jpg
+2026-08-06T16:43:00.873Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589086486-owl.jpg
+2026-08-06T16:43:00.873Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589106886-owl.jpg
+2026-08-06T16:43:00.873Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1622589107252-snake_river_-5mb.jpg
+2026-08-06T16:43:00.874Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630113924799-test.jpg
+2026-08-06T16:43:00.875Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630113970724-test.jpg
+2026-08-06T16:43:00.875Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630113992401-test.jpg
+2026-08-06T16:43:00.875Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630114013820-test.jpg
+2026-08-06T16:43:00.875Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630114039451-test.jpg
+2026-08-06T16:43:00.876Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1633635674482-1dsx4xo.jpg
+2026-08-06T16:43:00.876Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1630114781239-snake_river_-5mb.jpg
+2026-08-06T16:43:00.876Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637540003777-1-profileimg.jpg
+2026-08-06T16:43:00.876Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637540158933-1-profileimg.jpg
+2026-08-06T16:43:00.876Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637541617680-1-profileimg.jpg
+2026-08-06T16:43:00.877Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637541634475-1-profileimg.jpg
+2026-08-06T16:43:00.877Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1637541871233-1-profileimg.jpg
+2026-08-06T16:43:00.877Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643755130107-1-profileimg.jpg
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643755899026-baa95626-d586-400f-944b-a7f9da0690c7-image.png
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758115854-1-profileimg.jpg
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758187947-1-profileimg.jpg
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758742841-1-profileimg.jpg
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758903105-test.zip
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758952997-c7aace9c-7905-40cb-816e-26e8408c05bd-image.png
+left 1786034580879 maxAgeMs 300000
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643758995941-2fe3c77b-60ae-42bc-bc33-a7947af520e4-image.png
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643759953749-d9d694b0-ab40-45e2-bedf-9562ea74c1f1-image.png
+2026-08-06T16:43:00.878Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643759963220-7c2cc79a-8597-468a-8593-5ca3fd5181ba-image.png
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643760783058-041a7d23-f351-40f8-be7b-dd47df6692bf-image.png
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643761902683-1-profileimg.jpg
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643761137181-1-profileimg.jpg
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643761922677-ca98d1f7-3127-4814-afe7-94e3d2ee4b08-image.png
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643762734368-snake_river_-5mb.jpg
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643762772082-test.jpg
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763018850-test.jpg
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763517721-7b1805c4-160e-431c-ae09-8a55660a0958-image.png
+2026-08-06T16:43:00.879Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763525874-a59ffd84-ec24-4cbc-8e8e-1d9746430486-image.png
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763543306-8afc8e4f-afd3-476b-828f-184f4254940a-image.png
+.2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763575045-db13a8af-11ce-4350-a8ec-03843fba55ed-image.png
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763617912-5696708a-e0fb-40e6-86a7-1d8e59d0e8ab-image.png
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1643763707594-bfdff02a-cd19-4970-80ba-323f7d958682-image.png
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1644870090229-1dsx4xo.jpg
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646695913946-ayyjeji.jpg
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646695946993-1dsx4xo.jpg
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646696104866-1dsx4xo.jpg
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1646696110648-1-profileimg.jpg
+2026-08-06T16:43:00.880Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1648764801914-img_20210422_230225.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1652312128011-dcp_baris.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1664066569513-1-profileimg.jpg
+!2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1652312319352-dcp_baris.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1666280641848-1-profileimg.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673935423434-1-profileimg.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673935517901-1-profileimg.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673935550644-1-profileimg.jpg
+2026-08-06T16:43:00.881Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1673968641743-gorilla.jpg
+2026-08-06T16:43:00.882Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674696250177-1-profileimg.jpg
+2026-08-06T16:43:00.882Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674696287219-1-profileimg.jpg
+2026-08-06T16:43:00.882Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674696923170-dcp_baris.jpg
+2026-08-06T16:43:00.882Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1674697122856-test.zip
+2026-08-06T16:43:00.882Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675033964997-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034024451-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034073436-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034037848-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034182862-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034236478-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034251090-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034291679-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034320929-dcp_baris.jpg
+2026-08-06T16:43:00.883Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675034398275-dcp_baris.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675266647079-snake_river_-5mb.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1675266990350-snake_river_-5mb.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204577554-cutting-1.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204680942-cutting-1.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204711467-electricstuffermotor.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204753178-electricstuffermotor.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204860033-electricstuffermotor.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204905107-electricstuffermotor.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678204932734-electricstuffermotor.jpg
+2026-08-06T16:43:00.884Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205137926-electricstuffermotor.jpg
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205145786-electricstuffermotor.jpg
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205166805-electricstuffermotor.jpg
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205208201-grinder-1.jpg
+
+
+
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205193777-electricstufferwide1a.jpg
+warn [activitypub/resolveId] id resolution domain mismatch: https://example.com/topic/foobar != https://example.org/tid/1234
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205878299-cutting-1.jpg
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205885635-electricstuffermotor.jpg
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205892814-electricstufferwide1a.jpg
+info [install/enableDefaultPlugins] activating default plugins
+error Error: [[error:invalid-email]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at wrapperCallback (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2231)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678205904833-grinder-1.jpg
+error Error: [[error:username-too-short]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:username-too-short]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:username-too-short]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:username-too-short]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678207115284-grinder-2.jpg
+2026-08-06T16:43:00.885Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678209749750-grinder-plate.jpg
+error POST /forum/login
+Error: [[error:invalid-ip]]
+    at Blacklist.test (D:\github\NodeBB\src\meta\blacklist.js:2:3054)
+    at Object.wrapperCallback [as test] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3054)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at csrfSynchronisedProtection (D:\github\NodeBB\node_modules\csrf-sync\lib\index.cjs:79:7)
+    at middleware.applyCSRF (D:\github\NodeBB\src\middleware\index.js:2:1763)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\github\NodeBB\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:284:15
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at rewrite (D:\github\NodeBB\src\controllers\home.js:2:1431)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at router.handle (D:\github\NodeBB\node_modules\express\lib\router\index.js:175:3)
+    at router (D:\github\NodeBB\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at stripLeadingSlashes (D:\github\NodeBB\src\middleware\index.js:2:3284)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at Logger.expressLogger (D:\github\NodeBB\src\logger.js:20:194)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at D:\github\NodeBB\src\webserver.js:4:2601
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\src\routes\authentication.js:2:1225
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at strategy.pass (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:355:9)
+    at SessionStrategy.authenticate (D:\github\NodeBB\node_modules\passport\lib\strategies\session.js:126:10)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at initialize (D:\github\NodeBB\node_modules\passport\lib\middleware\initialize.js:98:5)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at processRender (D:\github\NodeBB\src\middleware\render.js:3:4216)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\src\middleware\headers.js:2:4599
+    at D:\github\NodeBB\src\middleware\helpers.js:2:989
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:531:6)
+    at xXssProtectionMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:311:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xPoweredByMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:304:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xPermittedCrossDomainPoliciesMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:297:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xFrameOptionsMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:281:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xDownloadOptionsMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:261:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xDnsPrefetchControlMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:254:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xContentTypeOptionsMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:246:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at strictTransportSecurityMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:239:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at referrerPolicyMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:207:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at originAgentClusterMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:182:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at crossOriginResourcePolicyMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:175:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at crossOriginOpenerPolicyMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:159:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at helmetMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:533:6)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\node_modules\express-session\index.js:521:7
+    at D:\github\NodeBB\node_modules\connect-mongo\dist\index.cjs:322:5
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:invalid-username-or-password]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3818
+    at allFailed (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:110:18)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:183:28)
+    at strategy.fail (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:314:9)
+    at Strategy.authenticate (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:75:17)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at continueLogin (D:\github\NodeBB\src\controllers\authentication.js:17:2192)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:invalid-login-credentials]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2304)
+error Error: [[error:invalid-username-or-password]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3818
+    at allFailed (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:110:18)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:183:28)
+    at strategy.fail (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:314:9)
+    at Strategy.authenticate (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:75:17)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at continueLogin (D:\github\NodeBB\src\controllers\authentication.js:17:2192)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:invalid-username-or-password]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3818
+    at allFailed (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:110:18)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:183:28)
+    at strategy.fail (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:314:9)
+    at Strategy.authenticate (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:75:17)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at continueLogin (D:\github\NodeBB\src\controllers\authentication.js:17:2192)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:invalid-username-or-password]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3818
+    at allFailed (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:110:18)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:183:28)
+    at strategy.fail (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:314:9)
+    at Strategy.authenticate (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:75:17)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at continueLogin (D:\github\NodeBB\src\controllers\authentication.js:17:2192)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:invalid-login-credentials]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2304)
+error Error: [[error:password-too-long]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:1278)
+    at Strategy.authenticate (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:88:12)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at continueLogin (D:\github\NodeBB\src\controllers\authentication.js:17:2192)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:local-login-disabled]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:25:282)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[register:invite.error-invite-only]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:username-too-short]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:username-too-short]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:username-too-long]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at applyBlacklist (D:\github\NodeBB\src\middleware\index.js:4:3093)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:wrong-login-type-username]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at wrapperCallback (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.login (D:\github\NodeBB\src\controllers\authentication.js:16:2582)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:invalid-login-credentials]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2304)
+error Error: [[error:invalid-login-credentials]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2304)
+error Error: [[error:invalid-login-credentials]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2304)
+error Error: [[error:account-locked]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:25:732)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:account-locked]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:25:732)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: {"uid":13,"timestamp":1786034388987,"banned_until":0,"expiry":0,"banned_until_readable":"","expiry_readable":"","reason":"spammer"}
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1581)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2499)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: {"uid":13,"timestamp":1786034389042,"banned_until":1786034399042,"expiry":1786034399042,"banned_until_readable":"2026-08-06T16:39:59.042Z","expiry_readable":"2026-08-06T16:39:59.042Z","reason":"[[user:info.banned-no-reason]]"}
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1581)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2499)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error GET /forum/api/self
+Error: [[error:api.master-token-no-uid]]
+    at authenticate (D:\github\NodeBB\src\middleware\user.js:4:581)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\github\NodeBB\src\middleware\user.js:7:457
+    at async D:\github\NodeBB\src\middleware\helpers.js:2:748
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678209764343-grinding-3.jpg
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678209780380-hanging-1.jpg
+warn [meta/blacklist] 1 invalid blacklist rule(s) were ignored.
+warn [meta/blacklist] 1 invalid blacklist rule(s) were ignored.
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] plugin static dirs  build started
+info [build] plugin static dirs  build completed in 0.002sec
+info [build] Asset compilation successful. Completed in 0.003sec.
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817043376-14szwrogk2ly.jpg
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] requirejs modules  build started
+info [build] requirejs modules  build completed in 0.09sec
+info [build] Asset compilation successful. Completed in 0.09sec.
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] client js bundle  build started
+info [build] client js bundle  build completed in 0.869sec
+info [build] Asset compilation successful. Completed in 0.87sec.
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817104072-14szwrogk2ly.jpg
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] admin js bundle  build started
+info [build] admin js bundle  build completed in 0.001sec
+info [build] Asset compilation successful. Completed in 0.001sec.
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] client side styles  build started
+info [build] client side styles  build completed in 1.355sec
+info [build] Asset compilation successful. Completed in 1.355sec.
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] admin control panel styles  build started
+info [build] admin control panel styles  build completed in 1.041sec
+info [build] Asset compilation successful. Completed in 1.041sec.
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] templates  build started
+info [build] templates  build completed in 0.372sec
+info [build] Asset compilation successful. Completed in 0.372sec.
+warn You have no mongo username/password setup!
+info [build] Building in parallel mode
+info [build] languages  build started
+info [build] languages  build completed in 1.536sec
+info [build] Asset compilation successful. Completed in 1.536sec.
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn [deprecated]
+    at SocketCategories.getRecentReplies (D:\github\NodeBB\src\socket.io\categories.js:4:661)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getRecentReplies] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use GET /api/v3/categories/:cid/posts
+warn [deprecated]
+    at SocketCategories.get (D:\github\NodeBB\src\socket.io\categories.js:4:923)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as get] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use GET /api/v3/categories
+warn [deprecated]
+    at SocketCategories.getWatchedCategories (D:\github\NodeBB\src\socket.io\categories.js:4:1238)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getWatchedCategories] (D:\github\NodeBB\src\promisify.js:2:2583)
+      there is no replacement for this call.
+warn [deprecated]
+    at SocketCategories.loadMore (D:\github\NodeBB\src\socket.io\categories.js:4:1826)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as loadMore] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use GET /api/v3/categories/:cid/topics
+warn [deprecated]
+    at SocketCategories.loadMore (D:\github\NodeBB\src\socket.io\categories.js:4:1826)
+    at Object.wrapperCallback [as loadMore] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\categories.js:252:40)
+      use GET /api/v3/categories/:cid/topics
+warn [deprecated]
+    at SocketCategories.getTopicCount (D:\github\NodeBB\src\socket.io\categories.js:5:255)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getTopicCount] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use GET /api/v3/categories/:cid
+warn [deprecated]
+    at SocketCategories.getCategoriesByPrivilege (D:\github\NodeBB\src\socket.io\categories.js:5:594)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getCategoriesByPrivilege] (D:\github\NodeBB\src\promisify.js:2:2583)
+      there is no replacement for this call.
+warn [deprecated]
+    at SocketCategories.getMoveCategories (D:\github\NodeBB\src\socket.io\categories.js:5:877)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getMoveCategories] (D:\github\NodeBB\src\promisify.js:2:2583)
+      there is no replacement for this call.
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817725837-14szwrogk2ly.jpg
+warn [deprecated]
+    at SocketCategories.getSelectCategories (D:\github\NodeBB\src\socket.io\categories.js:5:1132)
+    at Object.wrapperCallback [as getSelectCategories] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at SocketCategories.getMoveCategories (D:\github\NodeBB\src\socket.io\categories.js:5:955)
+      there is no replacement for this call.
+warn [deprecated]
+    at SocketCategories.ignore (D:\github\NodeBB\src\socket.io\categories.js:5:2675)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as ignore] (D:\github\NodeBB\src\promisify.js:2:2583)
+      there is no replacement for this call.
+warn [deprecated]
+    at SocketCategories.watch (D:\github\NodeBB\src\socket.io\categories.js:5:2431)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as watch] (D:\github\NodeBB\src\promisify.js:2:2583)
+      there is no replacement for this call.
+warn [deprecated]
+    at SocketCategories.setWatchState (D:\github\NodeBB\src\socket.io\categories.js:5:1770)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as setWatchState] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use PUT/DELETE /api/v3/categories/:cid/watch
+warn [deprecated]
+    at SocketCategories.isModerator (D:\github\NodeBB\src\socket.io\categories.js:6:721)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as isModerator] (D:\github\NodeBB\src\promisify.js:2:2583)
+      there is no replacement for this call.
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817535554-14szwrogk2ly.jpg
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error GET /forum/css/previews/..%2Fnode_modules%2Fnodebb-theme-persona
+Error: [[error:invalid-data]]
+    at themesController.get (D:\github\NodeBB\src\controllers\admin\themes.js:2:725)
+    at D:\github\NodeBB\src\routes\helpers.js:6:338
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (D:\github\NodeBB\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:284:15
+    at param (D:\github\NodeBB\node_modules\express\lib\router\index.js:365:14)
+    at param (D:\github\NodeBB\node_modules\express\lib\router\index.js:376:14)
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:421:3)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at rewrite (D:\github\NodeBB\src\controllers\home.js:2:1431)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at router.handle (D:\github\NodeBB\node_modules\express\lib\router\index.js:175:3)
+    at router (D:\github\NodeBB\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at stripLeadingSlashes (D:\github\NodeBB\src\middleware\index.js:2:3284)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at Logger.expressLogger (D:\github\NodeBB\src\logger.js:20:194)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at AsyncLocalStorage.run (node:internal/async_local_storage/async_context_frame:63:14)
+    at D:\github\NodeBB\src\webserver.js:4:2601
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\src\routes\authentication.js:2:1225
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at strategy.pass (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:355:9)
+    at SessionStrategy.authenticate (D:\github\NodeBB\node_modules\passport\lib\strategies\session.js:126:10)
+    at attempt (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:378:16)
+    at authenticate (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:379:7)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at initialize (D:\github\NodeBB\node_modules\passport\lib\middleware\initialize.js:98:5)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at processRender (D:\github\NodeBB\src\middleware\render.js:3:4216)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\src\middleware\headers.js:2:4599
+    at D:\github\NodeBB\src\middleware\helpers.js:2:989
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:531:6)
+    at xXssProtectionMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:311:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xPoweredByMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:304:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xPermittedCrossDomainPoliciesMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:297:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xFrameOptionsMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:281:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xDownloadOptionsMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:261:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xDnsPrefetchControlMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:254:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at xContentTypeOptionsMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:246:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at strictTransportSecurityMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:239:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at referrerPolicyMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:207:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at originAgentClusterMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:182:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at crossOriginResourcePolicyMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:175:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at crossOriginOpenerPolicyMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:159:3)
+    at internalNext (D:\github\NodeBB\node_modules\helmet\index.cjs:529:6)
+    at helmetMiddleware (D:\github\NodeBB\node_modules\helmet\index.cjs:533:6)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at session (D:\github\NodeBB\node_modules\express-session\index.js:494:7)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\node_modules\@nodebb\spider-detector\index.js:47:7
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\node_modules\express-useragent\dist\index.cjs:1282:5
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at cookieParser (D:\github\NodeBB\node_modules\cookie-parser\index.js:57:14)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at read (D:\github\NodeBB\node_modules\body-parser\lib\read.js:53:5)
+    at jsonParser (D:\github\NodeBB\node_modules\body-parser\lib\types\json.js:60:5)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at read (D:\github\NodeBB\node_modules\body-parser\lib\read.js:53:5)
+    at urlencodedParser (D:\github\NodeBB\node_modules\body-parser\lib\types\urlencoded.js:51:5)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at favicon (D:\github\NodeBB\node_modules\serve-favicon\index.js:68:7)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\src\webserver.js:4:1233
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at D:\github\NodeBB\node_modules\connect-flash\lib\flash.js:21:5
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at expressInit (D:\github\NodeBB\node_modules\express\lib\middleware\init.js:40:5)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at query (D:\github\NodeBB\node_modules\express\lib\middleware\query.js:45:5)
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\github\NodeBB\node_modules\express\lib\router\index.js:328:13)
+    at D:\github\NodeBB\node_modules\express\lib\router\index.js:286:9
+    at router.process_params (D:\github\NodeBB\node_modules\express\lib\router\index.js:346:12)
+    at next (D:\github\NodeBB\node_modules\express\lib\router\index.js:280:10)
+    at router.handle (D:\github\NodeBB\node_modules\express\lib\router\index.js:175:3)
+    at app.handle (D:\github\NodeBB\node_modules\express\lib\application.js:181:10)
+    at Server.app (D:\github\NodeBB\node_modules\express\lib\express.js:39:9)
+    at Server.<anonymous> (D:\github\NodeBB\node_modules\engine.io\build\server.js:648:34)
+    at Server.<anonymous> (D:\github\NodeBB\node_modules\socket.io\dist\index.js:330:28)
+    at Server.emit (node:events:508:28)
+    at parserOnIncoming (node:_http_server:1210:12)
+    at HTTPParser.parserOnHeadersComplete (node:_http_common:123:17)
+warn [controller] Bad request: /forum/user/a%AFc
+error Error decoding URI: a%AFc
+error URIError: URI malformed
+    at decodeURIComponent (<anonymous>)
+    at D:\github\NodeBB\src\middleware\helpers.js:2:1489
+    at Array.forEach (<anonymous>)
+    at helpers.buildBodyClass (D:\github\NodeBB\src\middleware\helpers.js:2:1384)
+    at renderMethod (D:\github\NodeBB\src\middleware\render.js:3:1048)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async ServerResponse.renderOverride [as render] (D:\github\NodeBB\src\middleware\render.js:3:4103)
+warn [controller] Bad request: /forum/api/user/a%AFc
+error GET /forum/users
+csrf-error
+error GET /forum/users
+Error: regular error
+    at Object.method (D:\github\NodeBB\test\controllers.js:1558:18)
+    at Object.fireResponseHook [as response] (D:\github\NodeBB\src\plugins\hooks.js:23:40)
+    at Hooks.fire (D:\github\NodeBB\src\plugins\hooks.js:15:2225)
+    at Object.wrapperCallback [as fire] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\middleware\index.js:2:3957
+    at D:\github\NodeBB\src\middleware\helpers.js:2:754
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at Immediate.next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at process.processImmediate (node:internal/timers:504:21)
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn You have no mongo username/password setup!
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error [emailer.send] AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(false)
+
+    at Object.method (D:\github\NodeBB\test\emailer.js:158:5)
+    at fireMethod (D:\github\NodeBB\src\plugins\hooks.js:20:574)
+    at Object.fireStaticHook [as static] (D:\github\NodeBB\src\plugins\hooks.js:21:7)
+    at Hooks.fire (D:\github\NodeBB\src\plugins\hooks.js:15:2225)
+    at Object.wrapperCallback [as fire] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Emailer.sendToEmail (D:\github\NodeBB\src\emailer.js:17:2276)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Emailer.send (D:\github\NodeBB\src\emailer.js:16:202)
+    at async User.bans.ban (D:\github\NodeBB\src\user\bans.js:6:284)
+    at async Context.<anonymous> (D:\github\NodeBB\test\emailer.js:165:4)
+warn [emailer/send] User recipient (uid: 1) is banned; not sending email due to system config.
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error [user.create] Validation email failed to send
+[emailer.send] Error: [[error:sendmail-not-found]]
+    at Emailer.sendToEmail (D:\github\NodeBB\src\emailer.js:17:2657)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Emailer.send (D:\github\NodeBB\src\emailer.js:16:202)
+    at async UserEmail.sendValidationEmail (D:\github\NodeBB\src\user\email.js:10:2289)
+    at async handleEmailVerification (D:\github\NodeBB\src\user\create.js:2:6145)
+    at async create (D:\github\NodeBB\src\user\create.js:2:4699)
+    at async User.create (D:\github\NodeBB\src\user\create.js:2:1608)
+    at async Context.<anonymous> (D:\github\NodeBB\test\feeds.js:26:12)
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error PUT /forum/api/v3/flags/12
+invalid csrf token
+error POST /forum/api/v3/flags/12/notes
+invalid csrf token
+error DELETE /forum/api/v3/flags/12/notes/1786034381370
+invalid csrf token
+error DELETE /forum/api/v3/flags/12
+invalid csrf token
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817951607-14szwrogk2ly.jpg
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+2026-08-06T16:43:00.886Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678817841909-14szwrogk2ly.jpg
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn [meta/dependencies] Bundled plugin nodebb-plugin-somePlugin not found, skipping dependency check.
+2026-08-06T16:43:00.887Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818052294-14szwrogk2ly.jpg
+warn [meta/dependencies] Bundled plugin nodebb-theme-someTheme not found, skipping dependency check.
+warn [missing] nodebb-plugin-test is a required dependency but could not be found
+
+warn [outdated] nodebb-plugin-test installed v0.9.0, package.json requires 1.0.0
+
+error [middleware.addHeaders] Invalid RegExp For access-control-allow-origin [match\.this\..+\.domain.com
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+2026-08-06T16:43:00.887Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818112334-14szwrogk2ly.jpg
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn [deprecated]
+    at SocketNotifs.markRead (D:\github\NodeBB\src\socket.io\notifications.js:3:1465)
+    at Object.wrapperCallback [as markRead] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:134:29)
+      use PUT /api/v3/notifications/:nid/read
+warn [deprecated]
+    at SocketNotifs.markRead (D:\github\NodeBB\src\socket.io\notifications.js:3:1465)
+    at Object.wrapperCallback [as markRead] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:135:29)
+      use PUT /api/v3/notifications/:nid/read
+warn [deprecated]
+    at SocketNotifs.markRead (D:\github\NodeBB\src\socket.io\notifications.js:3:1465)
+    at Object.wrapperCallback [as markRead] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:139:29)
+      use PUT /api/v3/notifications/:nid/read
+warn [deprecated]
+    at SocketNotifs.markUnread (D:\github\NodeBB\src\socket.io\notifications.js:3:1733)
+    at Object.wrapperCallback [as markUnread] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:148:29)
+      use DELETE /api/v3/notifications/:nid/read
+warn [deprecated]
+    at SocketNotifs.markUnread (D:\github\NodeBB\src\socket.io\notifications.js:3:1733)
+    at Object.wrapperCallback [as markUnread] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:149:29)
+      use DELETE /api/v3/notifications/:nid/read
+warn [deprecated]
+    at SocketNotifs.markUnread (D:\github\NodeBB\src\socket.io\notifications.js:3:1733)
+    at Object.wrapperCallback [as markUnread] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:153:29)
+      use DELETE /api/v3/notifications/:nid/read
+warn [deprecated]
+    at SocketNotifs.getCount (D:\github\NodeBB\src\socket.io\notifications.js:3:815)
+    at Object.wrapperCallback [as getCount] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:159:43)
+      use GET /api/v3/notifications/count
+warn [deprecated]
+    at SocketNotifs.get (D:\github\NodeBB\src\socket.io\notifications.js:2:514)
+    at Object.wrapperCallback [as get] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:211:48)
+      use GET /api/v3/notifications/(:nid)
+warn [deprecated]
+    at SocketNotifs.get (D:\github\NodeBB\src\socket.io\notifications.js:2:514)
+    at Object.wrapperCallback [as get] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:238:42)
+      use GET /api/v3/notifications/(:nid)
+warn [deprecated]
+    at SocketNotifs.get (D:\github\NodeBB\src\socket.io\notifications.js:2:514)
+    at Object.wrapperCallback [as get] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\notifications.js:252:42)
+      use GET /api/v3/notifications/(:nid)
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn [plugins] filter:test.hook3 already resolved in plugin test-plugin
+error Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead
+error Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn [deprecated]
+    at SocketPosts.changeOwner (D:\github\NodeBB\src\socket.io\posts\tools.js:3:3218)
+    at Object.wrapperCallback [as changeOwner] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\posts.js:90:21)
+      use PUT /api/v3/posts/owner
+warn [deprecated]
+    at SocketPosts.getVoters (D:\github\NodeBB\src\socket.io\posts\votes.js:2:639)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getVoters] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use GET /api/v3/posts/:pid/voters
+warn [deprecated]
+    at SocketPosts.getUpvoters (D:\github\NodeBB\src\socket.io\posts\votes.js:2:1078)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as getUpvoters] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use GET /api/v3/posts/:pid/upvoters
+warn [deprecated]
+    at SocketPosts.getUpvoters (D:\github\NodeBB\src\socket.io\posts\votes.js:2:1078)
+    at Object.wrapperCallback [as getUpvoters] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\posts.js:196:37)
+      use GET /api/v3/posts/:pid/upvoters
+error [activitypub/api] Error
+Error: [[error:invalid-data]]
+    at D:\github\NodeBB\src\activitypub\out.js:30:5208
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.announce (D:\github\NodeBB\src\activitypub\out.js:8:1125)
+warn [deprecated]
+    at SocketPosts.getRawPost (D:\github\NodeBB\src\socket.io\posts.js:2:816)
+    at Object.wrapperCallback [as getRawPost] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\posts.js:867:42)
+      use GET /api/v3/posts/:pid/raw
+warn [deprecated]
+    at SocketPosts.getPostSummaryByPid (D:\github\NodeBB\src\socket.io\posts.js:2:3110)
+    at Object.wrapperCallback [as getPostSummaryByPid] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\posts.js:888:38)
+      use GET /api/v3/posts/:pid/summary
+warn [deprecated]
+    at SocketPosts.getPidIndex (D:\github\NodeBB\src\socket.io\posts.js:2:3418)
+    at Object.wrapperCallback [as getPidIndex] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\posts.js:895:36)
+      use GET /api/v3/posts/:pid/index
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+warn [deprecated]
+    at SocketCategories.categorySearch (D:\github\NodeBB\src\socket.io\categories\search.js:4:424)
+    at Object.wrapperCallback [as categorySearch] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\search.js:133:37)
+      use GET /api/v3/search/categories
+warn [deprecated]
+    at SocketCategories.categorySearch (D:\github\NodeBB\src\socket.io\categories\search.js:4:424)
+    at Object.wrapperCallback [as categorySearch] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at Context.<anonymous> (D:\github\NodeBB\test\search.js:136:33)
+      use GET /api/v3/search/categories
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error [emailer.send] Error: [[error:sendmail-not-found]]
+    at Emailer.sendToEmail (D:\github\NodeBB\src\emailer.js:17:2657)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Emailer.send (D:\github\NodeBB\src\emailer.js:16:202)
+    at async User.bans.ban (D:\github\NodeBB\src\user\bans.js:6:284)
+    at async usersAPI.ban (D:\github\NodeBB\src\api\users.js:3:2709)
+    at async Context.<anonymous> (D:\github\NodeBB\test\socket.io.js:83:3)
+warn [socket.io] Call to admin method ( someMethod ) blocked (accessed by uid 10)
+info [user/jobs] Digest (month) scheduling completed (1 subscribers). Sending emails; this may take some time...
+info [user/jobs] Digest (month) sending completed. 0 emails sent. 0 failures.
+2026-08-06T16:43:00.887Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818339176-14szwrogk2ly.jpg
+info [user/jobs] Digest (month) complete.
+warn [user/email] No email found for uid 1
+info [user/jobs] Digest (day) scheduling completed (1 subscribers). Sending emails; this may take some time...
+info [user/jobs] Digest (day) sending completed. 0 emails sent. 0 failures.
+info [user/jobs] Digest (day) complete.
+error [emailer.send] Error: [[error:sendmail-not-found]]
+    at Emailer.sendToEmail (D:\github\NodeBB\src\emailer.js:17:2657)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Emailer.send (D:\github\NodeBB\src\emailer.js:16:202)
+    at async UserReset.send (D:\github\NodeBB\src\user\reset.js:3:837)
+    at async D:\github\NodeBB\src\socket.io\admin\user.js:5:2080
+    at async Promise.all (index 0)
+    at async User.sendPasswordResetEmail (D:\github\NodeBB\src\socket.io\admin\user.js:5:1701)
+    at async Context.<anonymous> (D:\github\NodeBB\test\socket.io.js:670:4)
+error [emailer.send] Error: [[error:sendmail-not-found]]
+    at Emailer.sendToEmail (D:\github\NodeBB\src\emailer.js:17:2657)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Emailer.send (D:\github\NodeBB\src\emailer.js:16:202)
+    at async UserReset.send (D:\github\NodeBB\src\user\reset.js:3:837)
+    at async SocketUser.reset.send (D:\github\NodeBB\src\socket.io\user.js:2:2001)
+    at async Context.<anonymous> (D:\github\NodeBB\test\socket.io.js:691:4)
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+2026-08-06T16:43:00.887Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678818382763-14szwrogk2ly.jpg
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error POST /forum/api/v3/topics
+invalid csrf token
+2026-08-06T16:43:00.887Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680102211599-1-profileimg.jpg
+warn [deprecated]
+    at SocketTopics.move (D:\github\NodeBB\src\socket.io\topics\move.js:2:738)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as move] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use PUT /api/v3/topics/:tid/move
+error [activitypub/api] Error
+Error: [[error:invalid-data]]
+    at D:\github\NodeBB\src\activitypub\out.js:30:5208
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.announce (D:\github\NodeBB\src\activitypub\out.js:8:1125)
+error [activitypub/api] Error
+Error: [[error:invalid-data]]
+    at D:\github\NodeBB\src\activitypub\out.js:30:5208
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.announce (D:\github\NodeBB\src\activitypub\out.js:8:1125)
+warn [deprecated]
+    at SocketTopics.markAsRead (D:\github\NodeBB\src\socket.io\topics\unread.js:2:555)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as markAsRead] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use PUT /api/v3/topics/:tid/read
+2026-08-06T16:43:00.887Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1678820638515-14szwrogk2ly.jpg
+warn [deprecated]
+    at SocketTopics.markAsRead (D:\github\NodeBB\src\socket.io\topics\unread.js:2:555)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as markAsRead] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use PUT /api/v3/topics/:tid/read
+warn [deprecated]
+    at SocketTopics.markUnread (D:\github\NodeBB\src\socket.io\topics\unread.js:2:2507)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as markUnread] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use DELETE /api/v3/topics/:tid/read
+warn [deprecated]
+    at SocketTopics.markUnread (D:\github\NodeBB\src\socket.io\topics\unread.js:2:2507)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as markUnread] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use DELETE /api/v3/topics/:tid/read
+warn [deprecated]
+    at SocketTopics.markAsRead (D:\github\NodeBB\src\socket.io\topics\unread.js:2:555)
+    at Object.wrapperCallback [as markAsRead] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at SocketTopics.markCategoryTopicsRead (D:\github\NodeBB\src\socket.io\topics\unread.js:2:2348)
+      use PUT /api/v3/topics/:tid/read
+warn [deprecated]
+    at SocketTopics.markAsRead (D:\github\NodeBB\src\socket.io\topics\unread.js:2:555)
+    at Callbackified (node:util:288:5)
+    at Object.wrapperCallback [as markAsRead] (D:\github\NodeBB\src\promisify.js:2:2583)
+      use PUT /api/v3/topics/:tid/read
+error POST /forum/api/v3/topics/71
+invalid csrf token
+error [activitypub/api] Error
+Error: [[error:invalid-data]]
+    at D:\github\NodeBB\src\activitypub\out.js:30:5208
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.announce (D:\github\NodeBB\src\activitypub\out.js:8:1125)
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680102220509-1dsx4xo.jpg
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680271311609-julian-head.jpg
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error MongoServerError: can't find index with key: { id: 1 }
+    at Connection.sendCommand (D:\github\NodeBB\node_modules\mongodb\lib\cmap\connection.js:320:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Connection.command (D:\github\NodeBB\node_modules\mongodb\lib\cmap\connection.js:347:26)
+    at async Server.command (D:\github\NodeBB\node_modules\mongodb\lib\sdam\server.js:208:29)
+    at async executeOperationWithRetries (D:\github\NodeBB\node_modules\mongodb\lib\operations\execute_operation.js:193:32)
+    at async executeOperation (D:\github\NodeBB\node_modules\mongodb\lib\operations\execute_operation.js:83:16)
+    at async Collection.dropIndex (D:\github\NodeBB\node_modules\mongodb\lib\collection.js:417:16)
+    at async Object.method (D:\github\NodeBB\node_modules\nodebb-plugin-dbsearch\upgrades\dbsearch_change_mongodb_schema.js:21:4)
+    at async Upgrade.process (D:\github\NodeBB\src\upgrade.js:16:112)
+    at async Upgrade.run (D:\github\NodeBB\src\upgrade.js:13:1195)
+    at async Context.<anonymous> (D:\github\NodeBB\test\upgrade.js:27:3)
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error POST /forum/api/post/upload
+Error: [[error:upload-ratelimit-reached]]
+    at D:\github\NodeBB\src\middleware\uploads.js:2:1516
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async D:\github\NodeBB\src\middleware\helpers.js:2:748
+error Error: vipspng: libpng read error
+vips2png: unable to write to target C:\Users\Baris\AppData\Local\Temp\889c08fc95a0ddcc6f0c43b04f8fc915
+    at Sharp.toFile (D:\github\NodeBB\node_modules\sharp\dist\output.cjs:90:19)
+    at image.stripEXIF (D:\github\NodeBB\src\image.js:5:3097)
+    at async uploadAsImage (D:\github\NodeBB\src\controllers\uploads.js:2:2724)
+    at async D:\github\NodeBB\src\controllers\uploads.js:2:2141
+    at async uploadsController.upload (D:\github\NodeBB\src\controllers\uploads.js:2:1324)
+    at async uploadsController.uploadPost (D:\github\NodeBB\src\controllers\uploads.js:2:1733)
+    at async D:\github\NodeBB\src\routes\helpers.js:6:332
+error POST /forum/api/admin/category/uploadpicture
+Error: [[error:invalid-image-type, text/html, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]
+    at validateUpload (D:\github\NodeBB\src\controllers\admin\uploads.js:6:3949)
+    at uploadsController.uploadCategoryPicture (D:\github\NodeBB\src\controllers\admin\uploads.js:5:3537)
+    at D:\github\NodeBB\src\routes\helpers.js:6:338
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at Immediate.next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at process.processImmediate (node:internal/timers:504:21)
+error POST /forum/api/admin/category/uploadpicture
+Error: [[error:invalid-json]]
+    at uploadsController.uploadCategoryPicture (D:\github\NodeBB\src\controllers\admin\uploads.js:5:3468)
+    at D:\github\NodeBB\src\routes\helpers.js:6:338
+    at Layer.handle [as handle_request] (D:\github\NodeBB\node_modules\express\lib\router\layer.js:95:5)
+    at Immediate.next (D:\github\NodeBB\node_modules\express\lib\router\route.js:149:13)
+    at process.processImmediate (node:internal/timers:504:21)
+error POST /forum/api/admin/upload/file
+Error: [[error:invalid-path]]
+    at uploadsController.uploadFile (D:\github\NodeBB\src\controllers\admin\uploads.js:6:2370)
+    at async D:\github\NodeBB\src\routes\helpers.js:6:332
+error POST /forum/api/admin/upload/file
+Error: [[error:invalid-path]]
+    at uploadsController.uploadFile (D:\github\NodeBB\src\controllers\admin\uploads.js:6:2370)
+    at async D:\github\NodeBB\src\routes\helpers.js:6:332
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error Error: [[error:invalid-login-credentials]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2304)
+error Error: {"uid":53,"timestamp":1786034557398,"banned_until":0,"expiry":0,"banned_until_readable":"","expiry_readable":"","reason":"testing bans"}
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1581)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at D:\github\NodeBB\src\controllers\authentication.js:16:3116
+    at strategy.error (D:\github\NodeBB\node_modules\passport\lib\middleware\authenticate.js:370:18)
+    at verified (D:\github\NodeBB\node_modules\passport-local\lib\strategy.js:81:28)
+    at authenticationController.localLogin [as _verify] (D:\github\NodeBB\src\controllers\authentication.js:24:2499)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+info [user/jobs] Digest (day) scheduling completed (1 subscribers). Sending emails; this may take some time...
+info [user/jobs] Digest (day) sending completed. 1 emails sent. 0 failures.
+info [user/jobs] Digest (day) complete.
+error Error: [[error:username-taken]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+error Error: [[error:email-taken]]
+    at helpers.noScriptErrors (D:\github\NodeBB\src\controllers\helpers.js:2:1412)
+    at Object.wrapperCallback [as noScriptErrors] (D:\github\NodeBB\src\promisify.js:2:2669)
+    at authenticationController.register (D:\github\NodeBB\src\controllers\authentication.js:7:631)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+info [user/jobs] Digest (day) scheduling completed (1 subscribers). Sending emails; this may take some time...
+info [user/jobs] Digest (day) sending completed. 0 emails sent. 0 failures.
+info [user/jobs] Digest (day) complete.
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+info [actors/prune] Cleaned up 1 remote users that were not found in the database.
+info test_database flushed
+info Populating database with default configs, if not already set...
+
+info Giving default global privileges...
+
+info Enabling default plugins
+
+info [install/enableDefaultPlugins] activating default plugins
+error [user.create] Validation email failed to send
+[emailer.send] Error: [[error:sendmail-not-found]]
+    at Emailer.sendToEmail (D:\github\NodeBB\src\emailer.js:17:2657)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Emailer.send (D:\github\NodeBB\src\emailer.js:16:202)
+    at async UserEmail.sendValidationEmail (D:\github\NodeBB\src\user\email.js:10:2289)
+    at async handleEmailVerification (D:\github\NodeBB\src\user\create.js:2:6145)
+    at async create (D:\github\NodeBB\src\user\create.js:2:4699)
+    at async User.create (D:\github\NodeBB\src\user\create.js:2:1608)
+    at async setupData (D:\github\NodeBB\test\api\schema.js:197:31)
+    at async Context.<anonymous> (D:\github\NodeBB\test\api\schema.js:389:3)
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680271322357-nice.jpg
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680271330241-dcp_baris.jpg
+
+
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272625358-1-profileimg.jpg
+  2719 passing (3m)
+  1 pending
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272675877-1-profileimg.jpg
+  1 failing
+
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272783906-1-profileimg.jpg
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680272701950-1-profileimg.jpg
+2026-08-06T16:43:00.888Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680273336536-1-profileimg.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680273398217-1-profileimg.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680296645619-1-profileimg.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680296657524-14szwrogk2ly.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297022574-1-profileimg.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297027684-14szwrogk2ly.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297088417-1-profileimg.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297093549-14szwrogk2ly.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297111818-ldswr3gjnj751.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297183300-1-profileimg.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297251658-1-profileimg.jpg
+  1) schema
+       response status code should match one of the schema defined responses:
+
+      AssertionError [ERR_ASSERTION]: GET /api/admin/manage/api sent back unexpected HTTP status code: 401, body: {"status":{"code":"not-authorised","message":"A valid login session was not found. Please log in and try again."},"response":{}} status: Unauthorized
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.checkResponseStatusCode (test\api\schema.js:562:3)
+      at Context.<anonymous> (test\api\schema.js:446:30)
+      at process.processImmediate (node:internal/timers:504:21)
+
+
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297256509-14szwrogk2ly.jpg
+
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680297310676-ldswr3gjnj751.jpg
+2026-08-06T16:43:00.889Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995652-1-profileimg.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995667-14szwrogk2ly.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995674-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680394995707-ayyjeji.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052713-1-profileimg.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052726-14szwrogk2ly.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052768-ayyjeji.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052731-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395052783-dcp_baris.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395118213-1-profileimg.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395118226-14szwrogk2ly.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395118231-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395149900-1-profileimg.jpg
+2026-08-06T16:43:00.890Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395149915-14szwrogk2ly.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395149921-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395459108-1-profileimg.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395459121-14szwrogk2ly.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395459126-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395614353-14szwrogk2ly.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395614338-1-profileimg.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395717208-1-profileimg.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395614360-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395717226-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395717220-14szwrogk2ly.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395933523-14szwrogk2ly.jpg
+2026-08-06T16:43:00.891Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395933508-1-profileimg.jpg
+2026-08-06T16:43:00.892Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680395933528-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.892Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396090746-1-profileimg.jpg
+2026-08-06T16:43:00.892Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396090764-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.892Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396090759-14szwrogk2ly.jpg
+2026-08-06T16:43:00.892Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396131370-1-profileimg.jpg
+2026-08-06T16:43:00.892Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396131384-14szwrogk2ly.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396230641-1-profileimg.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396131391-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396230654-14szwrogk2ly.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396230659-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396809067-14szwrogk2ly.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396809053-1-profileimg.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396809074-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396884109-1-profileimg.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396884130-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396884124-14szwrogk2ly.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396908635-1-profileimg.jpg
+2026-08-06T16:43:00.893Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396908649-14szwrogk2ly.jpg
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396908656-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396951256-1-profileimg.jpg
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396951276-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680396951270-14szwrogk2ly.jpg
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680397038933-1-profileimg.jpg
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680397038948-14szwrogk2ly.jpg
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1680397038954-5018f121-094c-4646-81b7-77f95ecc88c9-voodoo.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684441735321-screenshot.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684441764453-screenshot.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684442159634-screenshot.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684442598355-screenshot.png
+2026-08-06T16:43:00.894Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684442638409-screenshot.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1684445290875-screenshot.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687020941268-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687021442029-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687021985534-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687022214592-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687039848900-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687040035178-1687013363139-screenshot-2023-06-17-в-17.47.28.png
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687040965225-1-profileimg.jpg
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687041106059-1-profileimg.jpg
+2026-08-06T16:43:00.895Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687041731504-ayyjeji.jpg
+2026-08-06T16:43:00.896Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1687042860285-ayyjeji.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1708033905032-1-profileimg.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979692317-14szwrogk2ly.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979739098-14szwrogk2ly.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979927613-14szwrogk2ly.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715979976238-14szwrogk2ly.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715980028087-14szwrogk2ly.jpg
+2026-08-06T16:43:00.897Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1715980115705-14szwrogk2ly.jpg
+2026-08-06T16:43:00.898Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1724247254103-skylar-grey-coming-home.mp3
+2026-08-06T16:43:00.898Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1726160741238-1681228345216-hwnexgu.png
+2026-08-06T16:43:00.898Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1726160746385-1681228350350-ii1byys.png
+2026-08-06T16:43:00.900Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1743720287554-baris.png
+2026-08-06T16:43:00.900Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1743720526646-1-profileimg.jpg
+2026-08-06T16:43:00.900Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1743720742000-1-profileimg.jpg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557457456-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557575572-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557617148-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557744089-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763557981344-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763558318102-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763558407108-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763559609398-site-logo.svg
+2026-08-06T16:43:00.902Z [4567/25392] - [33mwarn[39m: [user/export/uploads] File not found: D:\github\NodeBB\public\uploads\files\1763559806838-site-logo.svg
+
+=============================== Coverage summary ===============================
+Statements   : 80.65% ( 27650/34280 )
+Branches     : 68.67% ( 12724/18527 )
+Functions    : 80.73% ( 4824/5975 )
+Lines        : 80.79% ( 26646/32978 )
+================================================================================
