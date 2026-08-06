@@ -37,6 +37,13 @@ Admin.getAnalyticsData = async (req, res) => {
 Admin.generateToken = async (req, res) => {
 	const { uid, description } = req.body;
 	const token = await api.utils.tokens.generate({ uid, description });
+	await events.log({
+		type: 'token-add',
+		uid: req.uid,
+		ip: req.ip,
+		_tokenUid: uid,
+		description,
+	});
 	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
 };
 
@@ -60,7 +67,13 @@ Admin.rollToken = async (req, res) => {
 
 Admin.deleteToken = async (req, res) => {
 	const { token } = req.params;
-	helpers.formatApiResponse(200, res, await api.utils.tokens.delete(token));
+	await api.utils.tokens.delete(token);
+	await events.log({
+		type: 'token-delete',
+		uid: req.uid,
+		ip: req.ip,
+	});
+	helpers.formatApiResponse(200, res);
 };
 
 Admin.chats = {};
