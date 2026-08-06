@@ -1033,6 +1033,7 @@ describe('Post\'s', () => {
 			assert.equal(posts[0].data.content, 'queued topic content');
 			assert.equal(posts[1].type, 'reply');
 			assert.equal(posts[1].data.content, 'this is a queued reply');
+			assert(!Object.hasOwn(posts[0].data, 'req'));
 		});
 
 		it('should error if data is invalid', async () => {

@@ -31,6 +31,9 @@ module.exports = function (Posts) {
 			postData.forEach((data) => {
 				if (data) {
 					data.data = JSON.parse(data.data);
+					if (data?.data?.req) {
+						delete data.data.req;
+					}
 					data.data.timestampISO = utils.toISOString(data.data.timestamp);
 				}
 			});
@@ -237,6 +240,9 @@ module.exports = function (Posts) {
 		};
 		payload = await plugins.hooks.fire('filter:post-queue.save', payload);
 
+		if (payload?.data?.req) {
+			delete payload.data.req; // dont save req into post queue
+		}
 		await db.sortedSetAdd('post:queue', now, id);
 		await db.setObject(`post:queue:${id}`, {
 			...payload,
