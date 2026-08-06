@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const validator = require('validator');
 
 const categories = require('../categories');
 const plugins = require('../plugins');
@@ -35,9 +36,15 @@ module.exports = function (Groups) {
 		const payload = {
 			description: values.description || '',
 			icon: values.icon || '',
-			labelColor: values.labelColor || '#000000',
-			textColor: values.textColor || '#ffffff',
 		};
+
+		if (values.hasOwnProperty('labelColor')) {
+			payload.labelColor = validateColor(values.labelColor, '#000000');
+		}
+
+		if (values.hasOwnProperty('textColor')) {
+			payload.textColor = validateColor(values.textColor, '#ffffff');
+		}
 
 		if (values.hasOwnProperty('userTitle')) {
 			payload.userTitle = values.userTitle || '';
@@ -88,6 +95,14 @@ module.exports = function (Groups) {
 			name: groupName,
 			values: values,
 		});
+	};
+
+	function validateColor(color, fallback) {
+		color = String(color || fallback);
+		if (!validator.isHexColor(color, { requireHash: true })) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		return color;
 	};
 
 	async function updateVisibility(groupName, hidden) {

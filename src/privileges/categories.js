@@ -152,8 +152,8 @@ privsCategories.isUserAllowedTo = async function (privilege, cid, uid) {
 };
 
 privsCategories.can = async function (privilege, cid, uid) {
-	if (!cid) {
-		return false;
+	if (!Number.isInteger(cid) && typeof cid !== 'string') {
+		return Array.isArray(privilege) ? privilege.map(() => false) : false;
 	}
 
 	const [disabled, isAdmin, isAllowed] = await Promise.all([

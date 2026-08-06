@@ -12,7 +12,6 @@ const utils = require('../../utils');
 const privileges = require('../../privileges');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
-const posts = require('../../posts');
 const activitypub = require('../../activitypub');
 const flags = require('../../flags');
 const slugify = require('../../slugify');
@@ -353,10 +352,6 @@ async function parseAboutMe(userData) {
 	if (!userData.aboutme) {
 		userData.aboutme = '';
 		userData.aboutmeParsed = '';
-		return;
-	} else if (activitypub.helpers.isUri(userData.uid)) {
-		userData.aboutme = posts.sanitize(String(userData.aboutme));
-		userData.aboutmeParsed = userData.aboutme;
 		return;
 	}
 	userData.aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));

@@ -350,9 +350,9 @@ middleware.requireAPIReAuth = function ({ maxAgeInMinutes }) {
 			return await controllers.helpers.formatApiResponse(401, res);
 		}
 
-		const reauthAt = req.session.meta?.reauthAt || 0;
+		const reAuthAt = req.session.meta?.reAuthAt || 0;
 		const maxAgeMs = maxAgeInMinutes * 60 * 1000;
-		if (reauthAt && (Date.now() - reauthAt) <= maxAgeMs) {
+		if (reAuthAt && (Date.now() - reAuthAt) <= maxAgeMs) {
 			return next();
 		}
 

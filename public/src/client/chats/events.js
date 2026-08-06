@@ -5,8 +5,7 @@ define('forum/chats/events', [
 	'forum/chats/messages',
 	'chat',
 	'components',
-	'helpers',
-], function (messages, chatModule, components, helpers) {
+], function (messages, chatModule, components) {
 	const Events = {};
 
 	const events = {
@@ -99,13 +98,7 @@ define('forum/chats/events', [
 		}
 
 		const titleEl = $(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"] [component="chat/header/title"]`);
-		if (titleEl.length) {
-			titleEl.translateHtml(
-				data.newName ?
-					`<i class="fa ${helpers.escape(ajaxify.data.icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
-					data.chatWithMessage
-			);
-		}
+		chatModule.updateRoomName(titleEl, ajaxify.data.icon, data.newName, data.chatWithMessage);
 	}
 
 	function markChatState({ roomId, state }) {

@@ -35,6 +35,25 @@ describe('Utility Methods', () => {
 		done();
 	});
 
+	it('isNumber should return true for numbers false for everything else', (done) => {
+		assert.strictEqual(utils.isNumber(1), true);
+		assert.strictEqual(utils.isNumber(0), true);
+		assert.strictEqual(utils.isNumber('1'), true);
+		assert.strictEqual(utils.isNumber('1.1'), true);
+		assert.strictEqual(utils.isNumber('0'), true);
+
+		assert.strictEqual(utils.isNumber('1asd'), false);
+		assert.strictEqual(utils.isNumber('asd1'), false);
+		assert.strictEqual(utils.isNumber('asd'), false);
+		assert.strictEqual(utils.isNumber([]), false);
+		assert.strictEqual(utils.isNumber([3]), false);
+		assert.strictEqual(utils.isNumber(false), false);
+		assert.strictEqual(utils.isNumber(null), false);
+		assert.strictEqual(utils.isNumber(undefined), false);
+		assert.strictEqual(utils.isNumber(''), false);
+		done();
+	});
+
 	it('should strip HTML tags', (done) => {
 		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>'), 'just some text');
 		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>', ['p']), 'just <b>some</b> text');

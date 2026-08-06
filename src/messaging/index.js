@@ -302,7 +302,7 @@ Messaging.generateUsernames = function (room, excludeUid) {
 	if (users.length > 3) {
 		return tx.compile(
 			'modules:chat.usernames-and-x-others',
-			usernames.slice(0, 2).map(tx.escape).join(', '),
+			usernames.slice(0, 2).map(name => tx.escape(utils.escapeHTML(name))).join(', '),
 			room.userCount - 2
 		);
 	}
@@ -330,7 +330,7 @@ Messaging.generateChatWithMessage = async function (room, callerUid) {
 	let compiled;
 	const txArgs = [];
 	userData.forEach((userData) =>{
-		txArgs.push(userData.href, tx.escape(userData.displayname));
+		txArgs.push(userData.href, tx.escape(utils.escapeHTML(userData.displayname)));
 	});
 	if (moreThan3) {
 		txArgs.push(room.userCount - 2);

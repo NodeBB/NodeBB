@@ -354,6 +354,10 @@ const utils = {
 	},
 
 	isNumber: function (n) {
+		const typeOf = typeof n;
+		if (typeOf !== 'number' && typeOf !== 'string') {
+			return false;
+		}
 		// `isFinite('') === true` so isNan parseFloat check is necessary
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	},
