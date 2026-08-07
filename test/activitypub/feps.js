@@ -123,7 +123,7 @@ describe('FEPs', () => {
 
 				it('should federate out Announce(Like) on local vote', async () => {
 					activitypub._sent.clear();
-					await api.posts.upvote({ uid: adminUid }, { pid: topicData.mainPid, room_id: `topic_${topicData.tid}` });
+					await api.posts.upvote({ uid: adminUid }, { pid: topicData.mainPid });
 					await wait(50);
 					const activities = Array.from(activitypub._sent);
 

@@ -138,13 +138,13 @@ describe('Post\'s', () => {
 			await privileges.categories.rescind(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users');
 			let err;
 			try {
-				await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+				await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid });
 			} catch (_err) {
 				err = _err;
 			}
 			assert.equal(err.message, '[[error:no-privileges]]');
 			try {
-				await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid });
 			} catch (_err) {
 				err = _err;
 			}
@@ -153,7 +153,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should upvote a post', async () => {
-			const result = await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			const result = await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(result.post.upvotes, 1);
 			assert.equal(result.post.downvotes, 0);
 			assert.equal(result.post.votes, 1);
@@ -200,7 +200,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should unvote a post', async () => {
-			const result = await apiPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			const result = await apiPosts.unvote({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(result.post.upvotes, 0);
 			assert.equal(result.post.downvotes, 0);
 			assert.equal(result.post.votes, 0);
@@ -211,7 +211,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should downvote a post', async () => {
-			const result = await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			const result = await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(result.post.upvotes, 0);
 			assert.equal(result.post.downvotes, 1);
 			assert.equal(result.post.votes, -1);
@@ -239,7 +239,7 @@ describe('Post\'s', () => {
 				content: 'raw content',
 			});
 			try {
-				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid });
 			} catch (_err) {
 				err = _err;
 			}
@@ -257,7 +257,7 @@ describe('Post\'s', () => {
 				content: 'raw content',
 			});
 			try {
-				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid });
 			} catch (_err) {
 				err = _err;
 			}
@@ -268,17 +268,42 @@ describe('Post\'s', () => {
 
 	describe('bookmarking', () => {
 		it('should bookmark a post', async () => {
-			const data = await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` });
+			const data = await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(data.isBookmarked, true);
 			const hasBookmarked = await posts.hasBookmarked(postData.pid, voterUid);
 			assert.equal(hasBookmarked, true);
 		});
 
 		it('should unbookmark a post', async () => {
-			const data = await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` });
+			const data = await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(data.isBookmarked, false);
 			const hasBookmarked = await posts.hasBookmarked([postData.pid], voterUid);
 			assert.equal(hasBookmarked[0], false);
+		});
+
+		it('should fail to bookmark/unbookmark a post the user can not read', async () => {
+			const { cid } = await categories.create({ name: 'Test Category'});
+			const { postData } = await topics.post({
+				uid: voteeUid,
+				cid: cid,
+				title: 'topic to bookmark',
+				content: 'A post to bookmark',
+			});
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
+			await assert.rejects(
+				apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			await assert.rejects(
+				apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// should work after giving topics:read
+			await privileges.categories.give(['groups:topics:read'], cid, 'registered-users');
+			await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid });
+			await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid });
 		});
 	});
 
