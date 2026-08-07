@@ -26,5 +26,10 @@
 	"roll": "Roll",
 
 	"delete-confirm": "Bu tokeni silmək istədiyinizə əminsiniz? Onu bərpa etmək mümkün olmayacaq.",
-	"roll-confirm": "Bu tokeni bərpa etmək istədiyinizə əminsiniz? Köhnə token dərhal ləğv ediləcək və onu bərpa etmək mümkün olmayacaq."
+	"roll-confirm": "Bu tokeni bərpa etmək istədiyinizə əminsiniz? Köhnə token dərhal ləğv ediləcək və onu bərpa etmək mümkün olmayacaq.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

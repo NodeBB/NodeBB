@@ -26,5 +26,10 @@
 	"roll": "လှိမ့်ရန်",
 
 	"delete-confirm": "ဖျက်ရန်အတည်ပြုပါ",
-	"roll-confirm": "လှိမ့်ရန်အတည်ပြုပါ"
+	"roll-confirm": "လှိမ့်ရန်အတည်ပြုပါ",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

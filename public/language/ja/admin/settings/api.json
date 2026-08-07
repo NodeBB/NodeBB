@@ -26,5 +26,10 @@
 	"roll": "ロール",
 
 	"delete-confirm": "このトークンを削除してもよろしいですか？復元できません。",
-	"roll-confirm": "このトークンを再生成してもよろしいですか？古いトークンは即座に無効化され、復元できません。"
+	"roll-confirm": "このトークンを再生成してもよろしいですか？古いトークンは即座に無効化され、復元できません。",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }
