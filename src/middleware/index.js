@@ -209,7 +209,7 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 	if (req.loggedIn || !meta.config.privateUploads) {
 		return next();
 	}
-
+	console.log({ path: req.path, url: req.url });
 	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`.toLowerCase();
 	let requestPath = req.path;
 	try {
