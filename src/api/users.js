@@ -612,7 +612,7 @@ usersAPI.search = async function (caller, data) {
 	}
 	const [allowed, isPrivileged] = await Promise.all([
 		privileges.global.can('search:users', caller.uid),
-		user.isPrivileged(caller.uid),
+		user.isAdminOrGlobalMod(caller.uid),
 	]);
 	let filters = data.filters || [];
 	filters = Array.isArray(filters) ? filters : [filters];
