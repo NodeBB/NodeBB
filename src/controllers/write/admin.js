@@ -10,6 +10,25 @@ const utils = require('../../utils');
 
 const Admin = module.exports;
 
+function formatTokenForAdmin(tokenObj, { includeSecret = false } = {}) {
+	if (!tokenObj) {
+		return null;
+	}
+
+	const { token, ...rest } = tokenObj;
+	const payload = {
+		...rest,
+		tokenId: api.utils.tokens.fingerprint(token),
+		tokenMasked: utils.maskToken(token),
+	};
+
+	if (includeSecret) {
+		payload.secret = token;
+	}
+
+	return payload;
+}
+
 Admin.updateSetting = async (req, res) => {
 	await api.admin.updateSetting(req, {
 		setting: req.params.setting,
@@ -38,6 +57,7 @@ Admin.generateToken = async (req, res) => {
 	const uid = String(req.body.uid).trim();
 	const { description } = req.body;
 	const token = await api.utils.tokens.generate({ uid, description });
+	const tokenObj = await api.utils.tokens.get(token);
 	await events.log({
 		type: 'token-add',
 		uid: req.uid,
@@ -45,29 +65,34 @@ Admin.generateToken = async (req, res) => {
 		_tokenUid: uid,
 		description,
 	});
-	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
+	helpers.formatApiResponse(200, res, formatTokenForAdmin(tokenObj, { includeSecret: true }));
 };
 
 Admin.getToken = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.utils.tokens.get(req.params.token));
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
+	const tokenObj = await api.utils.tokens.get(token);
+	helpers.formatApiResponse(200, res, tokenObj ? {
+		uid: tokenObj.uid,
+		description: tokenObj.description,
+	} : null);
 };
 
 Admin.updateToken = async (req, res) => {
 	const { uid, description } = req.body;
-	const { token } = req.params;
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
 
-	helpers.formatApiResponse(200, res, await api.utils.tokens.update(token, { uid, description }));
+	helpers.formatApiResponse(200, res, formatTokenForAdmin(await api.utils.tokens.update(token, { uid, description })));
 };
 
 Admin.rollToken = async (req, res) => {
-	let { token } = req.params;
-
-	token = await api.utils.tokens.roll(token);
-	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
+	const newToken = await api.utils.tokens.roll(token);
+	const tokenObj = await api.utils.tokens.get(newToken);
+	helpers.formatApiResponse(200, res, formatTokenForAdmin(tokenObj, { includeSecret: true }));
 };
 
 Admin.deleteToken = async (req, res) => {
-	const { token } = req.params;
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
 	await api.utils.tokens.delete(token);
 	await events.log({
 		type: 'token-delete',

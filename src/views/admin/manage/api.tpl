@@ -51,11 +51,9 @@
 				</thead>
 				<tbody>
 					{{{ each tokens }}}
-					<tr data-token="{./token}" class="">
-						<td class="text-nowrap">
-							<button type="button" class="btn btn-link" data-action="copy" data-clipboard-text="{./token}"><i class="fa fa-fw fa-clipboard" aria-hidden="true"></i></button>
-							<div class="vr me-3" aria-hidden="true"></div>
-							<span class="user-select-all">{./token}</span>
+					<tr data-token="{./tokenId}" class="">
+						<td class="text-nowrap align-middle">
+							{./tokenMasked}
 						</td>
 						<td class="align-middle">
 							{{{ if ./description }}}
