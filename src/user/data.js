@@ -3,6 +3,7 @@
 const validator = require('validator');
 const nconf = require('nconf');
 const _ = require('lodash');
+const path = require('path');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -406,15 +407,16 @@ module.exports = function (User) {
 			require_tld: false,
 		});
 
-		if (isHttpUrl || trimmedValue.startsWith(upload_url)) {
+		if (isHttpUrl) {
 			return true;
 		}
 
-		if (relative_path && trimmedValue.startsWith(relative_path)) {
-			return trimmedValue.slice(relative_path.length).startsWith(upload_url);
+		let relativeCandidate = trimmedValue;
+		if (relative_path && relativeCandidate.startsWith(relative_path)) {
+			relativeCandidate = relativeCandidate.slice(relative_path.length);
 		}
-
-		return false;
+		const normalizedPath = path.posix.normalize(relativeCandidate);
+		return normalizedPath === upload_url || normalizedPath.startsWith(`${upload_url}/`);
 	};
 
 	function parseDisplayName(user, uidToSettings) {

@@ -348,6 +348,13 @@ usersAPI.generateToken = async (caller, { uid, description }) => {
 	}
 
 	const tokenObj = await api.utils.tokens.generate({ uid, description });
+	await events.log({
+		type: 'token-add',
+		uid: caller.uid,
+		ip: caller.ip,
+		_tokenUid: uid,
+		description,
+	});
 	return tokenObj.token;
 };
 
@@ -359,6 +366,11 @@ usersAPI.deleteToken = async (caller, { uid, token }) => {
 	}
 
 	await api.utils.tokens.delete(token);
+	await events.log({
+		type: 'token-delete',
+		uid: caller.uid,
+		ip: caller.ip,
+	});
 	return true;
 };
 

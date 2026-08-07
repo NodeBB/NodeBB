@@ -26,10 +26,11 @@ define('forum/topic/images', [], function () {
 			const srcExt = src.split('.').slice(1).pop();
 			const altFilename = alt.split('/').pop();
 			const altExt = altFilename.split('.').slice(1).pop();
-
-			imageEl.wrap('<a href="' + src + '" ' +
-				(!srcExt && altExt ? ' download="' + utils.escapeHTML(altFilename) + '" ' : '') +
-				' target="_blank" rel="noopener">');
+			const wrapperLink = $(`<a target="_blank" rel="noopener"></a>`).attr('href', src);
+			if (!srcExt && altExt) {
+				wrapperLink.attr('download', altFilename);
+			}
+			imageEl.wrap(wrapperLink);
 		}
 	};
 

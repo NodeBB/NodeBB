@@ -723,6 +723,15 @@ const utils = {
 		return str.replace(/\s+$/g, '');
 	},
 
+	maskToken: function (token) {
+		token = String(token || '');
+		if (!token) {
+			return '';
+		}
+
+		return `${token.slice(0, 4)}...${token.slice(-4)}`;
+	},
+
 	debounce: function (func, wait, immediate) {
 		// modified from https://davidwalsh.name/javascript-debounce-function
 		let timeout;

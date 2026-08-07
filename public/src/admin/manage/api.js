@@ -1,6 +1,8 @@
 'use strict';
 
-define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'api', 'alerts'], function (settings, clipboard, modals, Benchpress, api, alerts) {
+define('admin/manage/api', [
+	'settings', 'clipboard', 'modals', 'benchpress', 'api', 'alerts', 'utils', 'helpers',
+], function (settings, clipboard, modals, Benchpress, api, alerts, utils, helpers) {
 	const ACP = {};
 
 	ACP.init = function () {
@@ -9,14 +11,53 @@ define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'ap
 			settings.save('core.api', $('.core-api-settings'));
 		});
 
-		// Click to copy
-		const copyEls = document.querySelectorAll('[data-component="acp/tokens"] [data-action="copy"]');
-		new clipboard(copyEls);
-
 		$('[data-action="create"]').on('click', handleTokenCreation);
 
 		handleActions();
 	};
+
+	function normalizeTokenForTable(tokenObj) {
+		const tokenValue = tokenObj.secret || tokenObj.token || '';
+		return {
+			...tokenObj,
+			tokenId: tokenObj.tokenId || tokenObj.token,
+			tokenMasked: tokenObj.tokenMasked || utils.maskToken(tokenValue),
+		};
+	}
+
+	async function revealTokenOnce(token) {
+		if (!token) {
+			return;
+		}
+
+		const modal = await modals.dialog({
+			title: '[[admin/settings/api:token-once-title]]',
+			message: `
+				<p class="text-danger fw-semibold mb-2">[[admin/settings/api:token-once-warning]]</p>
+				<div class="input-group">
+					<input type="text" class="form-control user-select-all" readonly data-component="token-secret" value="${helpers.escape(token)}" />
+					<button type="button" class="btn btn-ghost border" data-action="copy" data-clipboard-text="${helpers.escape(token)}">[[admin/settings/api:copy-token]]</button>
+				</div>
+			`,
+			buttons: {
+				ok: {
+					label: '[[modules:bootbox.ok]]',
+					className: 'btn-primary',
+				},
+			},
+		});
+		modal.on('shown.bs.modal', () => {
+			const clip = new clipboard(modal.find('[data-action="copy"]').get(0), {
+				container: modal.get(0),
+			});
+			clip.on('success', () => {
+				alerts.success('[[admin/settings/api:token-copied]]');
+			});
+			clip.on('error', () => {
+				alerts.error('[[admin/settings/api:token-copy-failed]]');
+			});
+		});
+	}
 
 	function handleActions() {
 		const formEl = document.querySelector('#content form');
@@ -57,22 +98,44 @@ define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'ap
 				const formData = new FormData(formEl);
 				const uid = formData.get('uid');
 				const description = formData.get('description');
+				const isMasterToken = parseInt(uid, 10) === 0;
 
 				try {
-					const tokenObj = await api.post('/admin/tokens', { uid, description });
+					let password;
+					if (isMasterToken) {
+						password = await modals.promptPassword({
+							title: '[[user:current-password]]',
+							message: '[[user:emailUpdate.password-challenge]]',
+						});
+						if (!password) {
+							return false;
+						}
+					}
+
+					const tokenObj = await api.post('/admin/tokens', {
+						uid,
+						description,
+						...(isMasterToken ? { password } : {}),
+					});
+					const secret = tokenObj.secret;
+					const tableObj = normalizeTokenForTable(tokenObj);
+					delete tableObj.token;
+					delete tableObj.secret;
 					if (!tokensTableBody) {
 						modal.modal('hide');
+						await revealTokenOnce(secret);
 						return ajaxify.refresh();
 					}
 
-					ajaxify.data.tokens.push(tokenObj);
+					ajaxify.data.tokens.push(tableObj);
 					const rowEl = (await app.parseAndTranslate(ajaxify.data.template.name, 'tokens', {
-						tokens: [tokenObj],
+						tokens: [tableObj],
 					})).get(0);
 
 					tokensTableBody.append(rowEl);
 					$(rowEl).find('.timeago').timeago();
 					modal.modal('hide');
+					await revealTokenOnce(secret);
 				} catch (e) {
 					alerts.error(e);
 				}
@@ -109,8 +172,11 @@ define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'ap
 
 				try {
 					const tokenObj = await api.put(`/admin/tokens/${token}`, { uid, description });
+					const tableObj = normalizeTokenForTable(tokenObj);
+					delete tableObj.token;
+					delete tableObj.secret;
 					const newEl = (await app.parseAndTranslate(ajaxify.data.template.name, 'tokens', {
-						tokens: [tokenObj],
+						tokens: [tableObj],
 					})).get(0);
 
 					rowEl.replaceWith(newEl);
@@ -163,12 +229,17 @@ define('admin/manage/api', ['settings', 'clipboard', 'modals', 'benchpress', 'ap
 			if (ok) {
 				try {
 					const tokenObj = await api.post(`/admin/tokens/${token}/roll`);
+					const secret = tokenObj.secret;
+					const tableObj = normalizeTokenForTable(tokenObj);
+					delete tableObj.token;
+					delete tableObj.secret;
 					const newEl = (await app.parseAndTranslate(ajaxify.data.template.name, 'tokens', {
-						tokens: [tokenObj],
+						tokens: [tableObj],
 					})).get(0);
 
 					rowEl.replaceWith(newEl);
 					$(newEl).find('.timeago').timeago();
+					await revealTokenOnce(secret);
 				} catch (e) {
 					alerts.error(e);
 				}

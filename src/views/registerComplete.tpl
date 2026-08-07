@@ -11,7 +11,7 @@
 			</p>
 			<ul>
 				{{{each errors}}}
-				<li>{@value}</li>
+				<li>{{tx(@value)}}</li>
 				{{{end}}}
 			</ul>
 		</div>

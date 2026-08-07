@@ -24,7 +24,7 @@
 			<div class="d-flex gap-3 post-info">
 				<div class="post-author d-flex gap-1">
 					<a class="lh-1 text-decoration-none" href="{config.relative_path}/user/{./user.userslug}">{{buildAvatar(./user, "16px", true, "not-responsive")}}</a>
-					<a class="fw-semibold text-sm" href="{config.relative_path}/user/{./user.userslug}">{./user.displayname}</a>
+					<a class="fw-semibold text-sm" href="{config.relative_path}/user/{./user.userslug}">{{txDisplayname(./user)}}</a>
 				</div>
 				<span class="timeago text-sm text-muted" title="{./timestampISO}"></span>
 			</div>
