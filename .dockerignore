@@ -8,3 +8,4 @@ renovate.json
 *.yml
 *.md
 Dockerfile
+.docker
