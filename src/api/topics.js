@@ -175,7 +175,7 @@ topicsAPI.unfollow = async function (caller, data) {
 };
 
 topicsAPI.updateTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -186,7 +186,7 @@ topicsAPI.updateTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.addTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -199,7 +199,7 @@ topicsAPI.addTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.deleteTags = async (caller, { tid }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
