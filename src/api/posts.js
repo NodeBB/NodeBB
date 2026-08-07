@@ -354,10 +354,9 @@ postsAPI.getVoters = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { pid } = data;
-	const cid = await posts.getCidByPid(pid);
 	const [canSeeUpvotes, canSeeDownvotes] = await Promise.all([
-		canSeeVotes(caller.uid, cid, 'upvoteVisibility'),
-		canSeeVotes(caller.uid, cid, 'downvoteVisibility'),
+		canSeeVotes(caller.uid, pid, 'upvoteVisibility'),
+		canSeeVotes(caller.uid, pid, 'downvoteVisibility'),
 	]);
 
 	if (!canSeeUpvotes && !canSeeDownvotes) {
@@ -391,8 +390,7 @@ postsAPI.getUpvoters = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { pid } = data;
-	const cid = await posts.getCidByPid(pid);
-	if (!await canSeeVotes(caller.uid, cid, 'upvoteVisibility')) {
+	if (!await canSeeVotes(caller.uid, pid, 'upvoteVisibility')) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -431,8 +429,8 @@ postsAPI.getAnnouncers = async (caller, data) => {
 		return [];
 	}
 	const { pid } = data;
-	const cid = await posts.getCidByPid(pid);
-	if (!await privileges.categories.isUserAllowedTo('topics:read', cid, caller.uid)) {
+	const canRead = await privileges.posts.canRead(pid, caller.uid);
+	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	const notes = require('../activitypub/notes');
@@ -447,31 +445,23 @@ postsAPI.getAnnouncers = async (caller, data) => {
 	};
 };
 
-async function canSeeVotes(uid, cids, type) {
-	const isArray = Array.isArray(cids);
-	if (!isArray) {
-		cids = [cids];
-	}
-	const uniqCids = _.uniq(cids);
+async function canSeeVotes(uid, pid, type) {
+	const tid = await posts.getPostField(pid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
 	const [canRead, isAdmin, isMod] = await Promise.all([
-		privileges.categories.isUserAllowedTo(
-			'topics:read', uniqCids, uid
-		),
+		privileges.topics.canRead(tid, uid),
 		privileges.users.isAdministrator(uid),
-		privileges.users.isModerator(uid, cids),
+		privileges.users.isModerator(uid, cid),
 	]);
-	const cidToAllowed = _.zipObject(uniqCids, canRead);
-	const checks = cids.map(
-		(cid, index) => isAdmin || isMod[index] ||
-		(
-			cidToAllowed[cid] &&
-			(
+
+	return (
+		isAdmin || isMod || (
+			canRead && (
 				meta.config[type] === 'all' ||
 				(meta.config[type] === 'loggedin' && parseInt(uid, 10) > 0)
 			)
 		)
 	);
-	return isArray ? checks : checks[0];
 }
 
 postsAPI.bookmark = async function (caller, data) {
