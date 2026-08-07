@@ -30,7 +30,7 @@
 					<div class="text-sm">
 						<div class="post-author d-flex align-items-center gap-1">
 							<a class="d-inline d-lg-none lh-1 text-decoration-none" href="{config.relative_path}/user/{./user.userslug}">{{buildAvatar(./user, "16px", true, "not-responsive")}}</a>
-							<a class="lh-normal fw-semibold text-nowrap" href="{config.relative_path}/user/{./user.userslug}">{./user.displayname}</a>
+							<a class="lh-normal fw-semibold text-nowrap" href="{config.relative_path}/user/{./user.userslug}">{{txDisplayname(./user)}}</a>
 						</div>
 						<span class="timeago text-muted lh-normal" title="{./timestampISO}"></span>
 					</div>
@@ -76,7 +76,7 @@
 				{{{ end }}}
 				<div class="d-inline-flex flex-column px-3 py-2 rounded gap-2 bg-body-tertiary align-self-start">
 					<div class="d-flex align-items-top gap-2">
-						<a class="text-decoration-none avatar-tooltip" title="{./topic.teaser.user.displayname}" href="{config.relative_path}/user/{./topic.teaser.user.userslug}">{{buildAvatar(./topic.teaser.user, "18px", true)}} {./topic.teaser.user.displayname}</a>
+						<a class="text-decoration-none avatar-tooltip" title="{{txDisplayname(./topic.teaser.user)}}" href="{config.relative_path}/user/{./topic.teaser.user.userslug}">{{buildAvatar(./topic.teaser.user, "18px", true)}} {{txDisplayname(./topic.teaser.user)}}</a>
 						<a class="permalink text-muted timeago text-xs" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./index }}}/{./index}{{{ end }}}" title="{./topic.teaser.timestampISO}" aria-label="[[global:lastpost]]"></a>
 					</div>
 					<div class="post-content text-xs text-break line-clamp-sm-2 lh-sm position-relative flex-fill">
