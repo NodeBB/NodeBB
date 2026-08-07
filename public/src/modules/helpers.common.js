@@ -391,7 +391,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		classNames = escape(classNames || '');
 		component = escape(component || '');
-		const displayname = escape(txDisplayname.call(this, userObj));
+		const displayname = txDisplayname.call(this, userObj);
 		const picture = escape(String(userObj.picture || ''));
 		const iconBgColor = escape(String(userObj['icon:bgColor'] || ''));
 		const iconText = escape(String(userObj['icon:text'] || ''));
