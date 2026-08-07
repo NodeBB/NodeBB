@@ -22,8 +22,9 @@ module.exports = function (User) {
 			...await db.getSortedSetRange('user-custom-fields', 0, -1),
 		];
 		if (Array.isArray(extraFields)) {
-			fields = _.uniq(fields.concat(extraFields));
+			fields = fields.concat(extraFields);
 		}
+		fields = _.uniq(fields).filter(field => !User.protectedFields.includes(field));
 		if (!data.uid) {
 			throw new Error('[[error:invalid-update-uid]]');
 		}

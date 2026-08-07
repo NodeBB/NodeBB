@@ -35,6 +35,11 @@ module.exports = function (User) {
 		'cover:position', 'groupTitle', 'muted', 'mutedUntil', 'mutedReason',
 	];
 
+	User.protectedFields = [
+		'_id', '_key', 'password', 'password:shaWrapped', 'passwordExpiry',
+		'lastqueuetime', 'rss_token', 'blocksCount', 'gdpr_consent',
+	];
+
 	let customFieldWhiteList = null;
 
 	const urlFieldList = [
