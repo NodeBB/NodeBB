@@ -63,6 +63,6 @@
 	"post-sharing": "שיתוף פוסטים",
 	"info-plugins-additional": "תוספים יכולים להוסיף כאן רשתות נוספות לשיתוף פוסטים.",
 	"privacy": "פרטיות",
-	"log-ips": "Log IP Addresses",
-	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
+	"log-ips": "רישום כתובות IP",
+	"log-ips-help": "זהכאשר האפשרות מופעלת, כתובות ה-IP של כל המבקרים נשמרות בקבוצה ממוינת לצורכי ניתוח נתונים. הדבר משמש לחישוב מספר המבקרים הייחודיים."
 }
