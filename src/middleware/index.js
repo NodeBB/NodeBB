@@ -343,10 +343,26 @@ middleware.checkRequired = function (fields, req, res, next) {
 	);
 };
 
+middleware.requirePasswordAuth = helpers.try(async function (req, res, next) {
+	const { password } = req.body;
+	if (!password) {
+		throw new Error('[[error:invalid-password]]');
+	}
+
+	const validPassword = await user.isPasswordCorrect(req.uid, password, req.ip);
+	if (!validPassword) {
+		throw new Error('[[error:invalid-password]]');
+	}
+	if (req.session?.meta) {
+		req.session.meta.reAuthAt = Date.now();
+	}
+	next();
+});
+
 // handles both cold load(/foo/baz) and ajaxify(/api/foo/baz) for regular routes
 // cold load /foo/baz => returnTo /foo/baz
 // ajaxify /api/foo/baz => returnTo /foo/baz
-middleware.requirePageReAuth = function ({ maxAgeInMinutes = 5 } = {}) {
+middleware.requirePageReAuth = function ({ maxAgeInMinutes = 2 } = {}) {
 	async function redirect(req, res) {
 		if (res.locals.isAPI) {
 			req.session.returnTo = req.url.replace(/^\/api/, '');

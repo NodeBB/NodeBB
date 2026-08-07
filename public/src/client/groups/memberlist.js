@@ -85,15 +85,33 @@ define('forum/groups/memberlist', [
 	}
 
 	async function addUsersToGroup(users) {
-		const uids = users.map(u => u.uid);
-		for (const uid of uids) {
-			// eslint-disable-next-line no-await-in-loop
-			await api.put(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, {})
-				.catch(alerts.error);
+		let password;
+		const isAdminGroup = ajaxify.data.group.slug === 'administrators';
+		if (isAdminGroup) {
+			password = await modals.promptPassword({
+				title: '[[user:current-password]]',
+				message: '[[user:emailUpdate.password-challenge]]',
+			});
+			if (!password) {
+				return;
+			}
 		}
 
-		users = users.filter(user => !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length);
-		const html = await parseAndTranslate(users);
+		let addedUsers = [];
+		for (const user of users) {
+			try {
+				// eslint-disable-next-line no-await-in-loop
+				await api.put(`/groups/${ajaxify.data.group.slug}/membership/${user.uid}`, {
+					...(isAdminGroup ? { password } : {}),
+				});
+				addedUsers.push(user);
+			} catch (err) {
+				alerts.error(err);
+			}
+		}
+		const membersEl = $('[component="groups/members"]');
+		addedUsers = addedUsers.filter(user => !membersEl.find(`[data-uid="${user.uid}"]`).length);
+		const html = await parseAndTranslate(addedUsers);
 		$('[component="groups/members"] tbody').prepend(html);
 	}
 

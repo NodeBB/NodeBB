@@ -13,6 +13,14 @@ module.exports = function () {
 		maxAgeInMinutes: 5,
 	});
 
+	async function groupReAuthMiddleware(req, res, next) {
+		if (req.params.slug === 'administrators') {
+			await middleware.requirePasswordAuth(req, res, next);
+		} else {
+			await groupsReAuth(req, res, next);
+		}
+	}
+
 	setupApiRoute(router, 'get', '/', [], controllers.write.groups.list);
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['name'])], controllers.write.groups.create);
 	setupApiRoute(router, 'head', '/:slug', [middleware.assert.group], controllers.write.groups.exists);
@@ -21,11 +29,11 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/:slug/members', [...middlewares, middleware.assert.group], controllers.write.groups.listMembers);
 
-	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.join);
-	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.leave);
+	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.join);
+	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.leave);
 
-	setupApiRoute(router, 'put', '/:slug/ownership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.grant);
-	setupApiRoute(router, 'delete', '/:slug/ownership/:uid', [...middlewares, groupsReAuth, middleware.assert.group], controllers.write.groups.rescind);
+	setupApiRoute(router, 'put', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.grant);
+	setupApiRoute(router, 'delete', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.rescind);
 
 	setupApiRoute(router, 'get', '/:slug/pending', [...middlewares, middleware.assert.group], controllers.write.groups.getPending);
 	setupApiRoute(router, 'put', '/:slug/pending/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.accept);

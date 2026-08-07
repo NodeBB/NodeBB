@@ -14,8 +14,18 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/analytics', [...middlewares], controllers.write.admin.getAnalyticsKeys);
 	setupApiRoute(router, 'get', '/analytics/:set', [...middlewares], controllers.write.admin.getAnalyticsData);
+	const requireAPIReAuth = middleware.requireAPIReAuth();
+	async function tokenCreateMiddleware(req, res, next) {
+		const uid = String(req.body.uid).trim();
+		if (uid === '0') {
+			// creating master token requires password
+			await middleware.requirePasswordAuth(req, res, next);
+		} else {
+			await requireAPIReAuth(req, res, next);
+		}
+	}
 
-	setupApiRoute(router, 'post', '/tokens', [...middlewares, middleware.requireAPIReAuth()], controllers.write.admin.generateToken);
+	setupApiRoute(router, 'post', '/tokens', [...middlewares, tokenCreateMiddleware], controllers.write.admin.generateToken);
 	setupApiRoute(router, 'get', '/tokens/:token', [...middlewares], controllers.write.admin.getToken);
 	setupApiRoute(router, 'put', '/tokens/:token', [...middlewares], controllers.write.admin.updateToken);
 	setupApiRoute(router, 'delete', '/tokens/:token', [...middlewares], controllers.write.admin.deleteToken);

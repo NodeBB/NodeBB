@@ -18,12 +18,11 @@
 		<p class="lead">[[admin/settings/api:lead-text]]</p>
 		<p>[[admin/settings/api:intro]]</p>
 		<p class="text-danger">[[admin/settings/api:warning]]</p>
-		<p class="d-flex flex-column gap-2">
+		<p class="d-flex flex-column gap-2 mb-4">
 			<a href="https://docs.nodebb.org/api">
 				<i class="fa fa-external-link"></i>
 				[[admin/settings/api:docs]]
 			</a>
-			<br />
 			<a href="https://docs.nodebb.org/api/write">
 				<i class="fa fa-external-link"></i>
 				[[admin/settings/api:docs.write]]
