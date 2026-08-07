@@ -26,5 +26,10 @@
 	"roll": "Cuộn",
 
 	"delete-confirm": "Bạn có chắc muốn xóa token này không? Nó không thể phục hồi.",
-	"roll-confirm": "Bạn có chắc muốn tạo lại token này không? Token cũ sẽ bị thu hồi ngay và không thể phục hồi được."
+	"roll-confirm": "Bạn có chắc muốn tạo lại token này không? Token cũ sẽ bị thu hồi ngay và không thể phục hồi được.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }
