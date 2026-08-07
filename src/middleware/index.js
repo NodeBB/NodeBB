@@ -209,11 +209,11 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 	if (req.loggedIn || !meta.config.privateUploads) {
 		return next();
 	}
-	console.log({ path: req.path, url: req.url });
+
 	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`.toLowerCase();
 	let requestPath = req.path;
 	try {
-		requestPath = path.posix.normalize(decodeURIComponent(requestPath)).toLowerCase();
+		requestPath = normalizeUploadRequestPath(requestPath);
 	} catch (err) {
 		return res.status(403).json('not-allowed');
 	}
@@ -231,6 +231,38 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 	}
 	next();
 };
+
+middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next) {
+	// Trim uploaded files' timestamps when downloading + force download if unsafe
+	const p = normalizeUploadRequestPath(req.path);
+	let basename = path.basename(p);
+	const extname = path.extname(p).toLowerCase();
+	const unsafeExtensions = [
+		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
+		'.svg', '.svgz',
+		'.xml', '.xsl', '.xslt',
+		'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
+		'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
+		'.xsd', '.mathml', '.xht',
+	];
+	const isInlineSafe = !unsafeExtensions.includes(extname);
+	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
+	if (p.startsWith('/uploads/')) {
+		if (middleware.regexes.timestampedUpload.test(basename)) {
+			basename = basename.slice(14);
+		}
+		res.setHeader('X-Content-Type-Options', 'nosniff');
+		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
+	}
+
+	next();
+});
+
+function normalizeUploadRequestPath(requestPath) {
+	return path.posix.normalize(
+		decodeURIComponent(requestPath).replace(/\\/g, '/')
+	).toLowerCase();
+}
 
 middleware.busyCheck = function busyCheck(req, res, next) {
 	if (process.env.NODE_ENV === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
@@ -282,31 +314,7 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	res.status(200).type('text/css').send(req.originalUrl.includes('-rtl') ? rtl : ltr);
 });
 
-middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next) {
-	// Trim uploaded files' timestamps when downloading + force download if unsafe
-	const p = path.posix.normalize(decodeURIComponent(req.path)).toLowerCase();
-	let basename = path.basename(p);
-	const extname = path.extname(p).toLowerCase();
-	const unsafeExtensions = [
-		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
-		'.svg', '.svgz',
-		'.xml', '.xsl', '.xslt',
-		'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
-		'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
-		'.xsd', '.mathml', '.xht',
-	];
-	const isInlineSafe = !unsafeExtensions.includes(extname);
-	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
-	if (p.startsWith('/uploads/')) {
-		if (middleware.regexes.timestampedUpload.test(basename)) {
-			basename = basename.slice(14);
-		}
-		res.setHeader('X-Content-Type-Options', 'nosniff');
-		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
-	}
 
-	next();
-});
 
 middleware.validateAuth = helpers.try(async (req, res, next) => {
 	try {

@@ -283,6 +283,7 @@ describe('Upload Controllers', () => {
 					`/assets/x/../uploads/files/${filename}`,
 					`/assets/uploads/%2e%2e/uploads/files/${filename}`,
 					`/assets/uploads/%2e/files/${filename}`,
+					`/assets/uploads%5cfiles%5c${filename}`,
 				];
 				for (const p of requestPathsToCheck) {
 					// eslint-disable-next-line no-await-in-loop
@@ -586,6 +587,7 @@ describe('Upload Controllers', () => {
 				`/assets/x/../uploads/xss-dirty.xml`,
 				`/assets/uploads/%2e%2e/uploads/xss-dirty.xml`,
 				`/assets/uploads/%2e/xss-dirty.xml`,
+				`/assets/uploads%5cxss-dirty.xml`,
 			];
 
 			for (const url of urlsToTest) {
