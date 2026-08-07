@@ -76,7 +76,7 @@
 				{{{ end }}}
 				<div class="d-inline-flex flex-column px-3 py-2 rounded gap-2 bg-body-tertiary align-self-start">
 					<div class="d-flex align-items-top gap-2">
-						<a class="text-decoration-none avatar-tooltip" title="{{txDisplayname(./topic.teaser.user)}}" href="{config.relative_path}/user/{./topic.teaser.user.userslug}">{{buildAvatar(./topic.teaser.user, "18px", true)}} {{txDisplayname(./topic.teaser)}}</a>
+						<a class="text-decoration-none avatar-tooltip" title="{{txDisplayname(./topic.teaser.user)}}" href="{config.relative_path}/user/{./topic.teaser.user.userslug}">{{buildAvatar(./topic.teaser.user, "18px", true)}} {{txDisplayname(./topic.teaser.user)}}</a>
 						<a class="permalink text-muted timeago text-xs" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./index }}}/{./index}{{{ end }}}" title="{./topic.teaser.timestampISO}" aria-label="{{tx("global:lastpost")}}"></a>
 					</div>
 					<div class="post-content text-xs text-break line-clamp-sm-2 lh-sm position-relative flex-fill">
