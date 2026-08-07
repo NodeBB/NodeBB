@@ -2580,6 +2580,26 @@ describe('User', () => {
 			assert.strictEqual(userData[1].email, '');
 		});
 
+		it('should respect admin setting in api.user.listEmails', async () => {
+			assert.strictEqual(
+				await apiUser.listEmails({ uid: regularUser.uid }, { uid: hidingUser.uid }),
+				null,
+			);
+		});
+
+		it('should respect admin setting in api.user.getEmail', async () => {
+			assert.strictEqual(
+				await apiUser.getEmail({ uid: regularUser.uid }, { uid: hidingUser.uid }),
+				false,
+			);
+		});
+
+		it('should respect admin setting in userController.getUserDataByField', async () => {
+			const userController = require('../src/controllers/user');
+			const userData = await userController.getUserDataByField({ uid: regularUser.uid }, 'email', hidingUser.email);
+			assert.strictEqual(userData, null);
+		});
+
 		it('should hide fullname in topic list and topic', async () => {
 			await Topics.post({
 				uid: hidingUser.uid,

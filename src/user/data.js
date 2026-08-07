@@ -237,10 +237,10 @@ module.exports = function (User) {
 			const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
 			const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
 
-			if (!privilegedOrSelf && (!userSettings[idx].showemail || meta.config.hideEmail)) {
+			if (!privilegedOrSelf && !userSettings[idx].showemail) {
 				_userData.email = '';
 			}
-			if (!privilegedOrSelf && (!userSettings[idx].showfullname || meta.config.hideFullname)) {
+			if (!privilegedOrSelf && !userSettings[idx].showfullname) {
 				_userData.fullname = '';
 			}
 			return _userData;
