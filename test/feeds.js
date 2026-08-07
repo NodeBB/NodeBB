@@ -106,11 +106,8 @@ describe('feeds', () => {
 
 		it('should not allow access if uid or token is missing', async () => {
 			await privileges.categories.rescind(['groups:read'], cid, 'guests');
-			const [test1, test2] = await Promise.all([
-				request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}`, { }),
-				request.get(`${nconf.get('url')}/category/${cid}.rss?token=sometoken`, { }),
-			]);
-
+			const test1 = await request.get(`${nconf.get('url')}/category/${cid}.rss?uid=${fooUid}`, { });
+			const test2 = await request.get(`${nconf.get('url')}/category/${cid}.rss?token=sometoken`, { });
 			assert.equal(test1.response.statusCode, 200);
 			assert.equal(test2.response.statusCode, 200);
 			assert(test1.body.includes('Login to your account'));

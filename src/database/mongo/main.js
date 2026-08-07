@@ -117,16 +117,24 @@ module.exports = function (module) {
 		if (!key) {
 			return;
 		}
-		const result = await module.client.collection('objects').findOneAndUpdate({
-			_key: key,
-		}, {
-			$inc: { data: 1 },
-		}, {
-			returnDocument: 'after',
-			includeResultMetadata: true,
-			upsert: true,
-		});
-		return result && result.value ? result.value.data : null;
+		try {
+			const result = await module.client.collection('objects').findOneAndUpdate({
+				_key: key,
+			}, {
+				$inc: { data: 1 },
+			}, {
+				returnDocument: 'after',
+				includeResultMetadata: true,
+				upsert: true,
+			});
+			return result && result.value ? result.value.data : null;
+		} catch (err) {
+			if (err && err.message.includes('E11000 duplicate key error')) {
+				console.log(new Error('e11000').stack, key);
+				return await module.increment(key);
+			}
+			throw err;
+		}
 	};
 
 	module.rename = async function (oldKey, newKey) {
