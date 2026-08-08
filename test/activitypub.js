@@ -97,6 +97,59 @@ describe('ActivityPub integration', () => {
 		});
 	});
 
+	describe('ActivityPub.get', () => {
+		let originalGet;
+		let uid;
+
+		before(async () => {
+			originalGet = request.get;
+			uid = await user.create({ username: utils.generateUUID() });
+		});
+
+		afterEach(() => {
+			request.get = originalGet;
+		});
+
+		async function getWithContext(id) {
+			const uri = `https://${utils.generateUUID()}.example.org/object`;
+			const body = { id: uri, type: 'Note' };
+			let headers;
+			request.get = async (url, options) => {
+				assert.strictEqual(url, uri);
+				({ headers } = options);
+				return { response: { statusCode: 200 }, body };
+			};
+
+			const result = await activitypub.get('uid', id, uri, { cache: false });
+			assert.strictEqual(result, body);
+			assert.strictEqual(headers.Accept, 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
+			return headers;
+		}
+
+		it('should sign requests using the application actor', async () => {
+			const headers = await getWithContext(0);
+
+			assert(headers.date);
+			assert(headers.signature);
+			assert(headers.signature.startsWith(`keyId="${nconf.get('url')}/actor#key"`));
+		});
+
+		it('should continue signing requests using the user actor', async () => {
+			const headers = await getWithContext(uid);
+
+			assert(headers.date);
+			assert(headers.signature);
+			assert(headers.signature.startsWith(`keyId="${nconf.get('url')}/uid/${uid}#key"`));
+		});
+
+		it('should leave requests from negative contexts unsigned', async () => {
+			const headers = await getWithContext(-1);
+
+			assert.strictEqual(headers.date, undefined);
+			assert.strictEqual(headers.signature, undefined);
+		});
+	});
+
 	describe('Helpers', () => {
 		describe('.query()', () => {
 
