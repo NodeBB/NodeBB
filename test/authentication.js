@@ -369,6 +369,95 @@ describe('authentication', () => {
 		assert.equal(body, '[[register:invite.error-invite-only]]');
 	});
 
+	describe('pending registrations', () => {
+		let previousConfig;
+
+		before(() => {
+			previousConfig = {
+				registrationType: meta.config.registrationType,
+				registrationApprovalType: meta.config.registrationApprovalType,
+				gdpr_enabled: meta.config.gdpr_enabled,
+				sendValidationEmail: meta.config.sendValidationEmail,
+			};
+		});
+
+		beforeEach(() => {
+			meta.config.registrationType = 'normal';
+			meta.config.registrationApprovalType = 'normal';
+			meta.config.gdpr_enabled = 1;
+			meta.config.sendValidationEmail = 0;
+		});
+
+		after(() => {
+			Object.assign(meta.config, previousConfig);
+		});
+
+		function registrationBody(username) {
+			return {
+				username,
+				email: `${username}@example.org`,
+				password: 'pending-registration-password',
+				'password-confirm': 'pending-registration-password',
+			};
+		}
+
+		async function parkRegistration(username) {
+			const jar = request.jar();
+			const { response, body } = await helpers.request('post', '/register', {
+				jar,
+				body: registrationBody(username),
+			});
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
+			assert.strictEqual(await user.getUidByUsername(username), null);
+			return jar;
+		}
+
+		async function completeRegistration(jar) {
+			return await helpers.request('post', '/register/complete', {
+				jar,
+				body: {
+					gdpr_agree_data: 'on',
+					gdpr_agree_email: 'on',
+				},
+				redirect: 'manual',
+			});
+		}
+
+		it('should complete if the registration policy still allows it', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 302);
+			assert(await user.getUidByUsername(username));
+		});
+
+		it('should reject a pending registration after registrations are disabled', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			meta.config.registrationType = 'disabled';
+
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
+
+		it('should reject an uninvited pending registration after invite-only mode is enabled', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			meta.config.registrationType = 'invite-only';
+
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 302);
+			const redirect = new URL(response.headers.location, nconf.get('url'));
+			assert.strictEqual(redirect.searchParams.get('register'), '[[register:invite.error-invite-only]]');
+			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
+	});
+
 	it('should fail to register if username is falsy or too short', async () => {
 		const userData = [
 			{ username: '', password: 'somepassword' },
