@@ -113,7 +113,7 @@ Auth.reloadRoutes = async function (params) {
 				return next();
 			}
 
-			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
+			next((!req.session.ssoState || req.query.state !== req.session.ssoState) ? new Error('[[error:csrf-invalid]]') : null);
 		}, (req, res, next) => {
 			// Trigger registration interstitial checks
 			req.session.registration = req.session.registration || {};
