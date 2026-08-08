@@ -239,6 +239,60 @@ describe('socket.io', () => {
 		});
 	});
 
+	it('should ignore forwarded IP when trust_proxy is false', async () => {
+		const blacklist = require('../src/meta/blacklist');
+		const oldTrustProxy = nconf.get('trust_proxy');
+		const oldRules = await blacklist.get();
+		let tempSocket;
+
+		try {
+			nconf.set('trust_proxy', false);
+			await blacklist.save('203.0.113.1');
+
+			const { response, csrf_token } = await helpers.loginUser('admin', 'adminpwd');
+			tempSocket = await helpers.connectSocketIO(response, csrf_token, {
+				'x-forwarded-for': '203.0.113.1',
+			});
+
+			const err = await new Promise((resolve) => {
+				tempSocket.emit('meta.rooms.enter', null, resolve);
+			});
+
+			assert.strictEqual(err.message, '[[error:invalid-data]]');
+		} finally {
+			tempSocket?.close();
+			nconf.set('trust_proxy', oldTrustProxy);
+			await blacklist.save(oldRules || '');
+		}
+	});
+
+	it('should trust forwarded IP when trust_proxy is true', async () => {
+		const blacklist = require('../src/meta/blacklist');
+		const oldTrustProxy = nconf.get('trust_proxy');
+		const oldRules = await blacklist.get();
+		let tempSocket;
+
+		try {
+			nconf.set('trust_proxy', true);
+			await blacklist.save('203.0.113.1');
+
+			const { response, csrf_token } = await helpers.loginUser('admin', 'adminpwd');
+			tempSocket = await helpers.connectSocketIO(response, csrf_token, {
+				'x-forwarded-for': '203.0.113.1',
+			});
+
+			const err = await new Promise((resolve) => {
+				tempSocket.emit('meta.rooms.enter', null, resolve);
+			});
+
+			assert.strictEqual(err.message, '[[error:blacklisted-ip]]');
+		} finally {
+			tempSocket?.close();
+			nconf.set('trust_proxy', oldTrustProxy);
+			await blacklist.save(oldRules || '');
+		}
+	});
+
 	it('should return if uid is 0', (done) => {
 		const socketMeta = require('../src/socket.io/meta');
 		socketMeta.rooms.enter({ uid: 0 }, null, (err) => {
