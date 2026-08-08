@@ -27,9 +27,9 @@
 
 	"delete-confirm": "Sei sicuro di voler eliminare questo token? Non sarà recuperabile.",
 	"roll-confirm": "Sei sicuro di voler rigenerare questo token? Il vecchio token sarà immediatamente revocato e non sarà recuperabile.",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "Copia il token adesso",
+	"token-once-warning": "Questo token sarà visualizzato una sola volta. Conservalo in un luogo sicuro prima di chiudere questa finestra di dialogo.",
+	"copy-token": "Copia",
+	"token-copied": "Il token è stato copiato negli appunti.",
+	"token-copy-failed": "Impossibile copiare il token. Copialo manualmente."
 }

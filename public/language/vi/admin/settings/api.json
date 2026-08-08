@@ -27,9 +27,9 @@
 
 	"delete-confirm": "Bạn có chắc muốn xóa token này không? Nó không thể phục hồi.",
 	"roll-confirm": "Bạn có chắc muốn tạo lại token này không? Token cũ sẽ bị thu hồi ngay và không thể phục hồi được.",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "Sao Chép Token Ngay",
+	"token-once-warning": "Token này chỉ hiển thị một lần. Hãy lưu trữ mã này một cách an toàn trước khi đóng hộp thoại này.",
+	"copy-token": "Sao chép",
+	"token-copied": "Đã sao chép token vào bảng nhớ tạm",
+	"token-copy-failed": "Không thể sao chép token. Hãy sao chép thủ công."
 }

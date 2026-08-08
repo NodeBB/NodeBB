@@ -27,9 +27,9 @@
 
 	"delete-confirm": "Bist Du Dir sicher, dass Du diesen Token löschen willst? Dieser kann nicht wiederhergestellt werden.",
 	"roll-confirm": "Bist Du Dir sicher, dass Du diesen Token neu generieren willst? Der alte Token verliert sofort seine Gültigkeit und kann nicht wiederhergestellt werden.",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "Token jetzt kopieren",
+	"token-once-warning": "Dieses Token wird nur einmal angezeigt. Speichere es sicher, bevor du diesen Dialog schließt.",
+	"copy-token": "Kopieren",
+	"token-copied": "Token wurde in die Zwischenablage kopiert.",
+	"token-copy-failed": "Das Token konnte nicht kopiert werden. Bitte kopiere es manuell."
 }
