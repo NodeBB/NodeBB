@@ -72,18 +72,23 @@ async function registerAndLoginUser(req, res, userData) {
 	return complete;
 }
 
+async function validateRegistrationPolicy(userData) {
+	const registrationType = meta.config.registrationType || 'normal';
+	if (registrationType === 'disabled') {
+		return false;
+	}
+	if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+		await user.verifyInvitation(userData);
+	}
+	return true;
+}
+
 // POST /register
 authenticationController.register = async function (req, res) {
-	const registrationType = meta.config.registrationType || 'normal';
-
-	if (registrationType === 'disabled') {
-		return res.sendStatus(403);
-	}
-
 	const userData = req.body;
 	try {
-		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-			await user.verifyInvitation(userData);
+		if (!await validateRegistrationPolicy(userData)) {
+			return res.sendStatus(403);
 		}
 
 		user.checkUsernameLength(userData.username);
@@ -114,6 +119,14 @@ authenticationController.register = async function (req, res) {
 // POST /register/complete
 authenticationController.registerComplete = async function (req, res) {
 	try {
+		if (
+			req.session.registration?.register === true &&
+			!await validateRegistrationPolicy(req.session.registration)
+		) {
+			delete req.session.registration;
+			return res.sendStatus(403);
+		}
+
 		// For the interstitials that respond, execute the callback with the form body
 		const data = await user.interstitials.get(req, req.session.registration);
 		const callbacks = data.interstitials.reduce((memo, cur) => {
