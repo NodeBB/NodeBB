@@ -319,8 +319,9 @@ authenticationController.doLogin = async function (req, uid) {
 	if (!uid) {
 		return;
 	}
+	const isSelf = parseInt(req.uid, 10) === parseInt(uid, 10);
 	const loginAsync = util.promisify(req.login).bind(req);
-	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && !(req.loggedIn && uid !== req.uid);
+	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && (!req.loggedIn || isSelf);
 	await loginAsync({ uid: uid }, { keepSessionInfo });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
@@ -330,8 +331,10 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 	 * Older code required that this method be called from within the SSO plugin.
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
 	 * called in NodeBB core. However, if already called, return prematurely
+	 * only if the user is logging in as themselves and not forcing a reauth.
 	 */
-	if (req.loggedIn && !req.session.forceLogin) {
+	const isSelfRelogin = req.loggedIn && parseInt(req.uid, 10) === parseInt(uid, 10);
+	if (isSelfRelogin && !req.session.forceLogin) {
 		return true;
 	}
 
