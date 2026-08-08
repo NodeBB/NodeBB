@@ -246,6 +246,45 @@ describe('upload methods', () => {
 			await posts.purge(secondPost.pid, uid);
 			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
 		});
+
+		it('should fail to delete from sibling uploads folder', async () => {
+			const siblingFolderPath = path.resolve(nconf.get('upload_path'), '../uploads-sibling');
+			const siblingFilePath = path.join(siblingFolderPath, 'dummy.txt');
+			let createdPost;
+
+			try {
+				await fs.promises.mkdir(siblingFolderPath, { recursive: true });
+				await fs.promises.writeFile(siblingFilePath, 'dummy');
+
+				createdPost = await topics.post({
+					uid,
+					cid,
+					title: 'Traversal to sibling upload folder',
+					content: '/assets/uploads/files/../../uploads-sibling/dummy.txt',
+				});
+
+				const mainPid = createdPost.postData.pid;
+				const uploads = await posts.uploads.list(mainPid);
+
+				assert.deepStrictEqual(uploads, []);
+
+				await posts.edit({
+					pid: mainPid,
+					uid,
+					content: 'post removed',
+				});
+
+				assert.strictEqual(await file.exists(siblingFilePath), true);
+			} finally {
+				if (await file.exists(siblingFilePath)) {
+					await file.delete(siblingFilePath);
+				}
+
+				if (await file.exists(siblingFolderPath)) {
+					await fs.promises.rm(siblingFolderPath, { recursive: true, force: true });
+				}
+			}
+		});
 	});
 
 	describe('.deleteFromDisk()', () => {
