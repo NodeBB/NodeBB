@@ -400,7 +400,7 @@ define('forum/post-queue', [
 			};
 		});
 
-		const reasons = await socket.emit('user.getCustomReasons', { type: 'post-queue' });
+		const reasons = ajaxify.data.customReasons || [];
 		const html = await Benchpress.render('partials/custom-reason', { reasons });
 		const modal = await modals.dialog({
 			title: title,
