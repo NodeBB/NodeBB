@@ -81,27 +81,19 @@ define('forum/groups/details', [
 
 			switch (action) {
 				case 'toggleOwnership':
-					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${encodeURIComponent(uid)}`, {}).then(() => {
+					memberList.toggleOwnership(ajaxify.data.group.slug, uid, isOwner).then(() => {
 						ownerFlagEl.toggleClass('invisible');
 						userRow.attr('data-isowner', isOwner ? '0' : '1');
 					}).catch(alerts.error);
 					break;
 
 				case 'kick':
-					modals.confirm('[[groups:details.kick-confirm]]', function (confirm) {
-						if (!confirm) {
-							return;
-						}
-
-						api.del(`/groups/${ajaxify.data.group.slug}/membership/${encodeURIComponent(uid)}`, undefined).then(
-							() => {
-								userRow.remove();
-								$('[component="group/member/count"]').text(
-									helpers.humanReadableNumber(ajaxify.data.group.memberCount - 1)
-								);
-							}
-						).catch(alerts.error);
-					});
+					memberList.kickMember(ajaxify.data.group.slug, uid).then(() => {
+						userRow.remove();
+						$('[component="group/member/count"]').text(
+							helpers.humanReadableNumber(ajaxify.data.group.memberCount - 1)
+						);
+					}).catch(alerts.error);
 					break;
 
 				case 'update':
@@ -325,25 +317,40 @@ define('forum/groups/details', [
 		}
 		const searchInput = $('[component="groups/members/invite"]');
 		require(['autocomplete'], function (autocomplete) {
-			autocomplete.user(searchInput, function (event, selected) {
-				api.post(`/groups/${ajaxify.data.group.slug}/invites/${selected.item.user.uid}`).then(() => updateList()).catch(alerts.error);
+			autocomplete.user(searchInput, async function (event, selected) {
+				const isAdminGroup = ajaxify.data.group.slug === 'administrators';
+				const password = isAdminGroup && await modals.promptPassword();
+				if (isAdminGroup && !password) {
+					return;
+				}
+				api.post(`/groups/${ajaxify.data.group.slug}/invites/${selected.item.user.uid}`, { password })
+					.then(() => updateList()).catch(alerts.error);
 			});
 		});
 
 		$('[component="groups/members/bulk-invite-button"]').on('click', async () => {
-			let usernames = $('[component="groups/members/bulk-invite"]').val();
+			const usernames = $('[component="groups/members/bulk-invite"]').val();
 			if (!usernames) {
 				return false;
 			}
-
+			const isAdminGroup = ajaxify.data.group.slug === 'administrators';
+			const password = isAdminGroup && await modals.promptPassword();
+			if (isAdminGroup && !password) {
+				return;
+			}
 			// Filter out bad usernames
-			usernames = usernames.split(',').map(username => slugify(username));
-			usernames = await Promise.all(usernames.map(slug => api.head(`/users/bySlug/${slug}`).then(() => slug).catch(() => false)));
-			usernames = usernames.filter(Boolean);
+			const userslugs = usernames.split(',').map(slugify);
+			const validSlugs = (await Promise.all(
+				userslugs.map(slug => api.head(`/users/bySlug/${slug}`).then(() => slug).catch(() => false))
+			)).filter(Boolean);
 
-			const uids = await Promise.all(usernames.map(slug => api.get(`/users/bySlug/${slug}`).then(({ uid }) => uid)));
+			const uids = await Promise.all(validSlugs.map(slug => api.get(`/users/bySlug/${slug}`).then(({ uid }) => uid)));
 
-			await Promise.all(uids.map(async uid => api.post(`/groups/${ajaxify.data.group.slug}/invites/${uid}`))).then(() => {
+			await Promise.all(
+				uids.map(async uid => api.post(`/groups/${ajaxify.data.group.slug}/invites/${uid}`, {
+					...(password ? { password } : {}),
+				}))
+			).then(() => {
 				updateList();
 			}).catch(alerts.error);
 		});

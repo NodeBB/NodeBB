@@ -103,10 +103,7 @@ define('admin/manage/api', [
 				try {
 					let password;
 					if (isMasterToken) {
-						password = await modals.promptPassword({
-							title: '[[user:current-password]]',
-							message: '[[user:emailUpdate.password-challenge]]',
-						});
+						password = await modals.promptPassword();
 						if (!password) {
 							return false;
 						}

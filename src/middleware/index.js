@@ -352,7 +352,7 @@ middleware.checkRequired = function (fields, req, res, next) {
 };
 
 middleware.requirePasswordAuth = helpers.try(async function (req, res, next) {
-	const { password } = req.body;
+	const password = req.body?.password ?? req.headers['x-password-confirmation'];
 	if (!password) {
 		throw new Error('[[error:invalid-password]]');
 	}

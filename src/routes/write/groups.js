@@ -40,7 +40,7 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:slug/pending/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.reject);
 
 	setupApiRoute(router, 'get', '/:slug/invites', [...middlewares, middleware.assert.group], controllers.write.groups.getInvites);
-	setupApiRoute(router, 'post', '/:slug/invites/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.issueInvite);
+	setupApiRoute(router, 'post', '/:slug/invites/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.issueInvite);
 	setupApiRoute(router, 'put', '/:slug/invites/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.acceptInvite);
 	setupApiRoute(router, 'delete', '/:slug/invites/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.rejectInvite);
 

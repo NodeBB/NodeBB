@@ -85,16 +85,10 @@ define('forum/groups/memberlist', [
 	}
 
 	async function addUsersToGroup(users) {
-		let password;
 		const isAdminGroup = ajaxify.data.group.slug === 'administrators';
-		if (isAdminGroup) {
-			password = await modals.promptPassword({
-				title: '[[user:current-password]]',
-				message: '[[user:emailUpdate.password-challenge]]',
-			});
-			if (!password) {
-				return;
-			}
+		const password = isAdminGroup && await modals.promptPassword();
+		if (isAdminGroup && !password) {
+			return;
 		}
 
 		let addedUsers = [];
@@ -174,6 +168,28 @@ define('forum/groups/memberlist', [
 			},
 		});
 	}
+
+	MemberList.toggleOwnership = async function (groupslug, uid, isOwner) {
+		const isAdminGroup = groupslug === 'administrators';
+		const password = isAdminGroup && await modals.promptPassword();
+		if (isAdminGroup && !password) {
+			return;
+		}
+		return await api[isOwner ? 'del' : 'put'](`/groups/${groupslug}/ownership/${encodeURIComponent(uid)}`, {
+			...(password ? { password } : {}),
+		});
+	};
+
+	MemberList.kickMember = async function (groupslug, uid) {
+		const isAdminGroup = groupslug === 'administrators';
+		const password = isAdminGroup && await modals.promptPassword();
+		if (isAdminGroup && !password) {
+			return;
+		}
+		return await api.del(`/groups/${groupslug}/membership/${encodeURIComponent(uid)}`, {}, {
+			'x-password-confirmation': password,
+		});
+	};
 
 	return MemberList;
 });
