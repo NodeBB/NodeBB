@@ -364,7 +364,7 @@ module.exports = function (User) {
 		data.uid = String(data.uid);
 		User.isPasswordValid(data.newPassword);
 		const [isAdmin, isTargetAdmin, hasPassword] = await Promise.all([
-			User.isAdministrator(uid, data.uid),
+			User.isAdministrator(uid),
 			User.isAdministrator(data.uid),
 			User.hasPassword(uid),
 		]);
