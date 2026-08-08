@@ -7,6 +7,9 @@ const hooks = require('./modules/hooks');
 const { render } = require('./widgets');
 
 window.ajaxify = window.ajaxify || {};
+ajaxify.data = window._ajaxifyData || {};
+delete window._ajaxifyData;
+$('script#ajaxify-data').remove();
 ajaxify.widgets = { render: render };
 (function () {
 	let apiXHR = null;
@@ -365,20 +368,6 @@ ajaxify.widgets = { render: render };
 		hooks.fire('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
 		app.processPage();
-	};
-
-	ajaxify.parseData = () => {
-		const dataEl = document.getElementById('ajaxify-data');
-		if (dataEl) {
-			try {
-				ajaxify.data = JSON.parse(dataEl.textContent);
-			} catch (e) {
-				console.error(e);
-				ajaxify.data = {};
-			} finally {
-				dataEl.remove();
-			}
-		}
 	};
 
 	ajaxify.removeRelativePath = function (url) {

@@ -104,9 +104,7 @@ module.exports = function (middleware) {
 				const str = `${header +
 					(res.locals.postHeader || '') +
 					content
-				}<script id="ajaxify-data" type="application/json">${
-					optionsString
-				}</script>${
+				}<script id="ajaxify-data">window._ajaxifyData=${optionsString}</script>${
 					res.locals.preFooter || ''
 				}${footer}`;
 

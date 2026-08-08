@@ -360,9 +360,12 @@ module.exports = function (User) {
 		if (uid <= 0 || !data || !data.uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
+		uid = String(uid);
+		data.uid = String(data.uid);
 		User.isPasswordValid(data.newPassword);
-		const [isAdmin, hasPassword] = await Promise.all([
-			User.isAdministrator(uid),
+		const [isAdmin, isTargetAdmin, hasPassword] = await Promise.all([
+			User.isAdministrator(uid, data.uid),
+			User.isAdministrator(data.uid),
 			User.hasPassword(uid),
 		]);
 
@@ -370,9 +373,9 @@ module.exports = function (User) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
-		if (!isAdmin && !isSelf) {
+		const isSelf = uid === data.uid;
+		const allowedToChange = isSelf || (isAdmin && !isTargetAdmin);
+		if (!allowedToChange) {
 			throw new Error('[[user:change-password-error-privileges]]');
 		}
 
