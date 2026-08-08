@@ -534,8 +534,10 @@ describe('Inbox', () => {
 			describe('(Like)', () => {
 				it('should upvote a local post', async () => {
 					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: actor, actor: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(actor);
 					const { postData } = await topics.post({
-						cid,
+						cid: actor,
 						uid,
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
@@ -545,6 +547,7 @@ describe('Inbox', () => {
 						object: `${nconf.get('url')}/post/${postData.pid}`,
 					});
 					const { activity } = helpers.mocks.announce({
+						actor,
 						object: like,
 					});
 
@@ -557,12 +560,17 @@ describe('Inbox', () => {
 				});
 
 				it('should upvote an asserted remote post', async () => {
-					const { id } = helpers.mocks.note();
-					await activitypub.notes.assert(0, id, { skipChecks: true });
+					const { id: actor, actor: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(actor);
+					const { id, note } = helpers.mocks.note({
+						audience: actor,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
 					const { activity: like } = helpers.mocks.like({
 						object: id,
 					});
 					const { activity } = helpers.mocks.announce({
+						actor,
 						object: like,
 					});
 
@@ -579,11 +587,19 @@ describe('Inbox', () => {
 			describe('(Update)', () => {
 				it('should update a note\'s content', async () => {
 					const { id: actor } = helpers.mocks.person();
-					const { id, note } = helpers.mocks.note({ attributedTo: actor });
+					const { id: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(actor);
+					const { id, note } = helpers.mocks.note({
+						attributedTo: actor,
+						audience: groupActor,
+					});
 					await activitypub.notes.assert(0, id, { skipChecks: true });
 					note.content = utils.generateUUID();
 					const { activity: update } = helpers.mocks.update({ object: note });
-					const { activity } = helpers.mocks.announce({ object: update });
+					const { activity } = helpers.mocks.announce({
+						actor: groupActor,
+						object: update,
+					});
 
 					await activitypub.inbox.announce({ body: activity });
 

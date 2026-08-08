@@ -534,7 +534,7 @@ inbox.announce = async (req) => {
 
 	switch(true) {
 		case object.type === 'Like': {
-			if (!cid) {
+			if (!cid && !fromRelay) {
 				return;
 			}
 
@@ -559,7 +559,7 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Update': {
-			if (!cid) {
+			if (!cid && !fromRelay) {
 				return;
 			}
 
@@ -569,7 +569,7 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Delete': {
-			if (!cid) {
+			if (!cid && !fromRelay) {
 				return;
 			}
 
@@ -628,7 +628,7 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Create': {
-			if (!cid) {
+			if (!cid && !fromRelay) {
 				return;
 			}
 
