@@ -142,17 +142,17 @@ postsAPI.edit = async function (caller, data) {
 			newTitle: editResult.topic.title,
 		});
 	}
-	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
+	const [postObj] = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
 	postObj.content = editResult.post.content; // re-use already parsed html
-	const returnData = { ...postObj[0], ...editResult.post };
-	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
+	const returnData = { ...postObj, ...editResult.post };
+	returnData.topic = { ...postObj.topic, ...editResult.post.topic };
 
 	if (!postObj.deleted) {
 		const topicScheduled = await topics.getTopicField(editResult.topic.tid, 'scheduled');
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
 		if (!topicScheduled) {
 			setImmediate(() => {
-				activitypub.out.update.note(caller.uid, postObj[0]);
+				activitypub.out.update.note(caller.uid, postObj);
 			});
 		}
 

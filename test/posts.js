@@ -19,6 +19,7 @@ const groups = require('../src/groups');
 const socketPosts = require('../src/socket.io/posts');
 const apiPosts = require('../src/api/posts');
 const apiTopics = require('../src/api/topics');
+const websockets = require('../src/socket.io');
 const meta = require('../src/meta');
 const file = require('../src/file');
 const helpers = require('./helpers');
@@ -1365,6 +1366,63 @@ describe('Post\'s', () => {
 				assert.strictEqual(events.length, 0);
 			});
 		});
+	});
+});
+
+describe('Post edit broadcasts', () => {
+	let ownerUid;
+	let moderatorUid;
+	let cid;
+
+	before(async () => {
+		ownerUid = await user.create({ username: `edit-owner-${utils.generateUUID()}` });
+		moderatorUid = await user.create({ username: `edit-moderator-${utils.generateUUID()}` });
+		({ cid } = await categories.create({ name: `edit-race-${utils.generateUUID()}` }));
+		await groups.join('Global Moderators', moderatorUid);
+	});
+
+	it('should not broadcast an edit to the topic room after a concurrent deletion', async () => {
+		const { postData } = await topics.post({
+			uid: ownerUid,
+			cid,
+			title: 'Concurrent edit and delete',
+			content: 'Original post content',
+		});
+		const emitted = [];
+		const originalIn = websockets.in;
+		const originalGetPostData = posts.getPostData;
+		let intercept = true;
+
+		websockets.in = room => ({
+			emit: (event) => {
+				emitted.push({ room: String(room), event });
+			},
+		});
+		posts.getPostData = async (pid) => {
+			const data = await originalGetPostData(pid);
+			if (intercept && String(pid) === String(postData.pid)) {
+				intercept = false;
+				const staleData = { ...data, deleted: 0 };
+				await posts.delete(postData.pid, moderatorUid);
+				return staleData;
+			}
+			return data;
+		};
+
+		try {
+			await apiPosts.edit({ uid: ownerUid }, {
+				pid: postData.pid,
+				title: 'Edited after concurrent deletion',
+				content: 'This must stay out of the topic room',
+			});
+		} finally {
+			posts.getPostData = originalGetPostData;
+			websockets.in = originalIn;
+		}
+
+		assert.strictEqual(parseInt(await posts.getPostField(postData.pid, 'deleted'), 10), 1);
+		assert.strictEqual(emitted.some(item => item.room === `topic_${postData.tid}`), false);
+		assert.strictEqual(emitted.some(item => item.room.startsWith('uid_')), true);
 	});
 });
 
