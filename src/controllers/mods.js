@@ -217,15 +217,18 @@ modsController.postQueue = async function (req, res, next) {
 	const postsPerPage = 20;
 
 	let postData = await posts.getQueuedPosts({ id: id });
-	let [isAdmin, isGlobalMod, moderatedCids, categoriesData, _privileges, customReasons] = await Promise.all([
+	let [isAdmin, isGlobalMod, moderatedCids, categoriesData, _privileges] = await Promise.all([
 		user.isAdministrator(req.uid),
 		user.isGlobalModerator(req.uid),
 		user.getModeratedCids(req.uid),
 		helpers.getSelectedCategory(cid, req.uid),
 		Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
-		user.bans.getCustomReasons({ type: 'post-queue' }),
 	]);
 	_privileges = { ..._privileges[0], ..._privileges[1] };
+	let customReasons = [];
+	if (isAdmin || isGlobalMod || moderatedCids.length) {
+		customReasons = await user.bans.getCustomReasons({ type: 'post-queue' });
+	}
 
 	postData = postData
 		.filter(p => p &&

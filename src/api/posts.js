@@ -675,7 +675,7 @@ async function sendQueueNotification(type, targetUid, path, notificationText) {
 		tx.compile(`notifications:${type}`);
 	const notifData = {
 		type: type,
-		nid: `${type}-${targetUid}-${path}`,
+		nid: `${type}-${targetUid}-${Date.now()}`,
 		bodyShort: bodyShort,
 		path: path,
 	};
