@@ -1131,6 +1131,34 @@ describe('Groups', () => {
 			assert(!exists);
 		});
 
+		it('should delete group members set from the cache after group deletion', async () => {
+			const group = await Groups.create({ name: 'cachedgroup' });
+			const memberGroup = await Groups.create({ name: 'membergroup' });
+			const cache = require('../src/cache');
+
+			assert.strictEqual(cache.get(`group:cachedgroup:members`), undefined);
+			assert.deepStrictEqual(
+				await db.getSortedSetMembers(`group:cachedgroup:members`),
+				[]
+			);
+
+			await Groups.join('cachedgroup', 'membergroup');
+			assert.deepStrictEqual(
+				await db.getSortedSetMembers(`group:cachedgroup:members`),
+				['membergroup']
+			);
+			assert.deepStrictEqual(
+				// this caches "group:cachedgroup:members"
+				await Groups.isMemberOfGroupsList(testUid, ['cachedgroup']),
+				[false]
+			);
+			// confirm it's cached
+			assert.deepStrictEqual(cache.get(`group:cachedgroup:members`), ['membergroup']);
+			await Groups.destroy('cachedgroup');
+			// confirm it's removed from cache after destroy
+			assert.strictEqual(cache.get(`group:cachedgroup:members`), undefined);
+		});
+
 		it('should fail to delete group if name is special', async () => {
 			const specialGroups = [
 				'administrators', 'registered-users', 'verified-users',
