@@ -129,7 +129,7 @@ define('forum/post-queue', [
 		});
 	}
 
-	function confirmReject(msg) {
+	function confirmModal(msg) {
 		return new Promise((resolve) => {
 			modals.confirm(msg, resolve);
 		});
@@ -353,12 +353,13 @@ define('forum/post-queue', [
 	async function handleReject(btn) {
 		const parent = $(btn).parents('[data-id]');
 		const id = parent.attr('data-id');
-		const translationString = ajaxify.data.canAccept ?
-			'[[post-queue:confirm-reject]]' :
-			'[[post-queue:confirm-remove]]';
-
-		const message = await getMessage(translationString);
-		if (message === false) {
+		let message;
+		if (ajaxify.data.canAccept) {
+			message = await getMessage('[[post-queue:confirm-reject]]');
+			if (message === false) {
+				return;
+			}
+		} else if (!await confirmModal('[[post-queue:confirm-remove]]')) {
 			return;
 		}
 		doAction('reject', id, message).then(() => removePostQueueElement(parent)).catch(alerts.error);
@@ -400,7 +401,7 @@ define('forum/post-queue', [
 			};
 		});
 
-		const reasons = await socket.emit('user.getCustomReasons', { type: 'post-queue' });
+		const reasons = ajaxify.data.customReasons || [];
 		const html = await Benchpress.render('partials/custom-reason', { reasons });
 		const modal = await modals.dialog({
 			title: title,
@@ -463,7 +464,7 @@ define('forum/post-queue', [
 			const translationString = ajaxify.data.canAccept ?
 				`${bulkAction}-confirm` :
 				`${bulkAction.replace(/^reject/, 'remove')}-confirm`;
-			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${translationString}, ${ids.length}]]`)))) {
+			if (!ids.length || (showConfirm && !(await confirmModal(`[[post-queue:${translationString}, ${ids.length}]]`)))) {
 				return;
 			}
 			const action = bulkAction.split('-')[0];

@@ -225,6 +225,10 @@ modsController.postQueue = async function (req, res, next) {
 		Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	]);
 	_privileges = { ..._privileges[0], ..._privileges[1] };
+	let customReasons = [];
+	if (isAdmin || isGlobalMod || moderatedCids.length) {
+		customReasons = await user.bans.getCustomReasons({ type: 'post-queue' });
+	}
 
 	postData = postData
 		.filter(p => p &&
@@ -263,5 +267,6 @@ modsController.postQueue = async function (req, res, next) {
 		enabled: meta.config.postQueue,
 		singlePost: !!id,
 		privileges: _privileges,
+		customReasons,
 	});
 };
