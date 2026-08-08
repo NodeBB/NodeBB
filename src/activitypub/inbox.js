@@ -577,6 +577,10 @@ inbox.announce = async (req) => {
 
 	switch(true) {
 		case object.type === 'Like': {
+			if (!cid) {
+				return;
+			}
+
 			const assertion = await activitypub.actors.assert(object.actor);
 			if (!assertion) {
 				throw new Error('[[error:activitypub.invalid-id]]');
@@ -598,12 +602,20 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Update': {
+			if (!cid) {
+				return;
+			}
+
 			req.body = object;
 			await inbox.update(req);
 			break;
 		}
 
 		case object.type === 'Delete': {
+			if (!cid) {
+				return;
+			}
+
 			let id = object.object.id || object.object; // expecting object reference
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			id = localId || id;
@@ -648,6 +660,10 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Create': {
+			if (!cid) {
+				return;
+			}
+
 			object = object.object;
 			// falls through
 		}
