@@ -364,6 +364,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		req.session.meta = {};
 		const now = Date.now();
 		if (req.session.forceLogin) {
+			console.log('forced login', { returnTo: req.session.returnTo });
 			req.session.meta.reAuthAt = now;
 		} else {
 			delete req.session.meta.reAuthAt;

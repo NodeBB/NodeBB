@@ -86,15 +86,17 @@ editController.password = async function (req, res, next) {
 };
 
 editController.username = async function (req, res, next) {
+	console.log('username controller');
 	await renderRoute('username', req, res, next);
 };
 
 editController.email = async function (req, res, next) {
+	console.log('editController.email', { req: req.path, uid: req.uid, slug: req.params.slug });
 	const targetUid = await user.getUidByUserslug(req.params.userslug);
 	if (!targetUid || req.uid !== parseInt(targetUid, 10)) {
 		return next();
 	}
-
+	console.log('MADE IT');
 	req.session.returnTo = `/uid/${targetUid}`;
 	req.session.registration = req.session.registration || {};
 	req.session.registration.updateEmail = true;

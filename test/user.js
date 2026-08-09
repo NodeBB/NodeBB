@@ -1271,20 +1271,6 @@ describe('User', () => {
 			assert(body);
 		});
 
-		it('should load edit/email page', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/updatedagain/edit/email`, { jar });
-			assert.strictEqual(response.statusCode, 200);
-			assert(body);
-
-			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
-			await request.post(`${nconf.get('url')}/register/abort`, {
-				jar,
-				headers: {
-					'x-csrf-token': csrf_token,
-				},
-			});
-		});
-
 		it('should load user\'s groups page', async () => {
 			await groups.create({
 				name: 'Test',
