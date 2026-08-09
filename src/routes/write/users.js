@@ -15,12 +15,21 @@ function guestRoutes() {
 function authenticatedRoutes() {
 	const middlewares = [middleware.ensureLoggedIn];
 
+	const requirePasswordForEmailChange = async function (req, res, next) {
+		const isChangingSomeonesEmail = req?.body?.email && String(req.uid) !== String(req.params.uid);
+		if (isChangingSomeonesEmail) {
+			await middleware.requirePasswordAuth(req, res, next);
+		} else {
+			next();
+		}
+	};
+
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['username'])], controllers.write.users.create);
 	setupApiRoute(router, 'delete', '/', [...middlewares, middleware.checkRequired.bind(null, ['uids'])], controllers.write.users.deleteMany);
 
 	setupApiRoute(router, 'head', '/:uid', [middleware.assert.user], controllers.write.users.exists);
 	setupApiRoute(router, 'get', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.get);
-	setupApiRoute(router, 'put', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.update);
+	setupApiRoute(router, 'put', '/:uid', [...middlewares, middleware.assert.user, requirePasswordForEmailChange], controllers.write.users.update);
 	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.delete);
 	setupApiRoute(router, 'put', '/:uid/picture', [...middlewares, middleware.assert.user], controllers.write.users.changePicture);
 	setupApiRoute(router, 'delete', '/:uid/content', [...middlewares, middleware.assert.user], controllers.write.users.deleteContent);
@@ -53,7 +62,7 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'get', '/:uid/invites/groups', [...middlewares, middleware.assert.user], controllers.write.users.getInviteGroups);
 
 	setupApiRoute(router, 'get', '/:uid/emails', [...middlewares, middleware.assert.user], controllers.write.users.listEmails);
-	setupApiRoute(router, 'post', '/:uid/emails', [...middlewares, middleware.assert.user], controllers.write.users.addEmail);
+	setupApiRoute(router, 'post', '/:uid/emails', [...middlewares, middleware.assert.user, requirePasswordForEmailChange], controllers.write.users.addEmail);
 	setupApiRoute(router, 'get', '/:uid/emails/:email', [...middlewares, middleware.assert.user], controllers.write.users.getEmail);
 	setupApiRoute(router, 'post', '/:uid/emails/:email/confirm', [...middlewares, middleware.assert.user], controllers.write.users.confirmEmail);
 
