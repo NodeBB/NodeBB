@@ -372,13 +372,11 @@ middleware.requirePasswordAuth = helpers.try(async function (req, res, next) {
 // ajaxify /api/foo/baz => returnTo /foo/baz
 middleware.requirePageReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
 	async function redirect(req, res) {
-		console.log('REDIRECT TO LOGIN', { req: req.path, uid: req.uid, slug: req.params.slug, returnTo: req.session.returnTo });
 		if (res.locals.isAPI) {
 			req.session.returnTo = req.url.replace(/^\/api/, '');
 			await controllers.helpers.formatApiResponse(401, res);
 		} else {
 			req.session.returnTo = req.url;
-			console.log({ returnTo: req.session.returnTo });
 			const isAdminPath = req.path === '/admin' || req.path.startsWith('/admin/');
 			res.redirect(`${relative_path}/login${isAdminPath ? '?local=1' : ''}`);
 		}
@@ -432,7 +430,6 @@ function isReAuthValid(req, reauthWindowMinutes) {
 
 async function triggerReLoginHook(req, res) {
 	req.session.forceLogin = 1;
-	console.log({ req: req.path, headers: req.headers, forceLogin: req.session.forceLogin });
 	await plugins.hooks.fire('response:auth.relogin', { req, res });
 	return res.headersSent;
 }
