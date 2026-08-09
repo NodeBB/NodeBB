@@ -44,15 +44,14 @@ inbox.create = async (req) => {
 
 	// attributedTo must be same-origin
 	if (actor && object.attributedTo) {
-		// Normalize `attributedTo`
+		// Normalize `attributedTo` — only handle single values (string or object with id)
 		let { attributedTo } = object;
-		if (typeof attributedTo === 'object' && !Array.isArray(attributedTo)) {
+		if (Array.isArray(attributedTo)) {
+			activitypub.helpers.log('[activitypub/inbox.create] attributedTo is an array, rejecting.');
+			return null;
+		}
+		if (typeof attributedTo === 'object' && attributedTo.id) {
 			attributedTo = attributedTo.id;
-		} else if (Array.isArray(attributedTo)) {
-			attributedTo = attributedTo.find(a => typeof a === 'string' || (typeof a === 'object' && a.id)) || attributedTo.shift();
-			if (typeof attributedTo === 'object') {
-				attributedTo = attributedTo.id;
-			}
 		}
 
 		if (typeof attributedTo === 'string') {
@@ -193,15 +192,14 @@ inbox.update = async (req) => {
 
 	// attributedTo must be same-origin
 	if (actor && object.attributedTo) {
-		// Normalize `attributedTo`
+		// Normalize `attributedTo` — only handle single values (string or object with id)
 		let { attributedTo } = object;
-		if (typeof attributedTo === 'object' && !Array.isArray(attributedTo)) {
+		if (Array.isArray(attributedTo)) {
+			activitypub.helpers.log('[activitypub/inbox.update] attributedTo is an array, rejecting.');
+			return null;
+		}
+		if (typeof attributedTo === 'object' && attributedTo.id) {
 			attributedTo = attributedTo.id;
-		} else if (Array.isArray(attributedTo)) {
-			attributedTo = attributedTo.find(a => typeof a === 'string' || (typeof a === 'object' && a.id)) || attributedTo.shift();
-			if (typeof attributedTo === 'object') {
-				attributedTo = attributedTo.id;
-			}
 		}
 
 		if (typeof attributedTo === 'string') {
