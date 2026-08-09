@@ -511,6 +511,22 @@ Notes.assertPrivate = async (object) => {
 		return null;
 	}
 
+	// Local recipients who cannot be messaged should be removed
+	const recipientUids = Array.from(recipients).filter(uid => utils.isNumber(uid));
+	const results = await Promise.all(recipientUids.map(async (uid) => {
+		try {
+			await messaging.canMessageUser(payload.uid, uid);
+			return { uid, valid: true };
+		} catch (e) {
+			return { uid, valid: false };
+		}
+	}));
+	const validUids = results.filter(r => r.valid).map(r => r.uid);
+	if (validUids.length === 0) {
+		return null;
+	}
+	results.filter(r => !r.valid).forEach(r => recipients.delete(r.uid));
+
 	if (!roomId) {
 		roomId = await messaging.newRoom(payload.uid, { uids: [...recipients] });
 	}
