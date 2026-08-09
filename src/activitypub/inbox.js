@@ -180,7 +180,21 @@ inbox.move = async (req) => {
 };
 
 inbox.update = async (req) => {
-	const { actor, object } = req.body;
+	let { actor, object } = req.body;
+
+	// Refetch object by id if Update was announce-wrapped
+	if (req.res.locals.apAnnounced) {
+		try {
+			const refetched = await activitypub.get('uid', 0, object.id);
+			if (refetched) {
+				object = refetched;
+			}
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/inbox.update] Failed to refetch object ${object.id}: ${e.message}`);
+			return null;
+		}
+	}
+
 	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 
 	// Origin checking
@@ -605,6 +619,7 @@ inbox.announce = async (req) => {
 			}
 
 			req.body = object;
+			req.res.locals.apAnnounced = true;
 			await inbox.update(req);
 			break;
 		}
