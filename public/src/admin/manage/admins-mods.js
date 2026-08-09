@@ -7,12 +7,7 @@ define('admin/manage/admins-mods', [
 
 	AdminsMods.init = function () {
 		autocomplete.user($('#admin-search'), async function (ev, ui) {
-			const password = await modals.promptPassword();
-			if (!password) {
-				return;
-			}
-
-			api.put(`/groups/administrators/membership/${ui.item.user.uid}`, { password }).then(() => {
+			api.put(`/groups/administrators/membership/${ui.item.user.uid}`).then(() => {
 				$('#admin-search').val('');
 
 				if ($('.administrator-area [data-uid="' + ui.item.user.uid + '"]').length) {
@@ -31,11 +26,7 @@ define('admin/manage/admins-mods', [
 			if (parseInt(uid, 10) === parseInt(app.user.uid, 10)) {
 				return alerts.error('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			}
-			const password = await modals.promptPassword();
-			if (!password) {
-				return;
-			}
-			api.del(`/groups/administrators/membership/${uid}`, {}, { 'x-password-confirmation': password }).then(() => {
+			api.del(`/groups/administrators/membership/${uid}`).then(() => {
 				userCard.remove();
 			}).catch(alerts.error);
 		});

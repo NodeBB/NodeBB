@@ -370,7 +370,7 @@ middleware.requirePasswordAuth = helpers.try(async function (req, res, next) {
 // handles both cold load(/foo/baz) and ajaxify(/api/foo/baz) for regular routes
 // cold load /foo/baz => returnTo /foo/baz
 // ajaxify /api/foo/baz => returnTo /foo/baz
-middleware.requirePageReAuth = function ({ maxAgeInMinutes = 2 } = {}) {
+middleware.requirePageReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
 	async function redirect(req, res) {
 		if (res.locals.isAPI) {
 			req.session.returnTo = req.url.replace(/^\/api/, '');
@@ -386,7 +386,7 @@ middleware.requirePageReAuth = function ({ maxAgeInMinutes = 2 } = {}) {
 			return await redirect(req, res);
 		}
 
-		if (isReAuthValid(req, maxAgeInMinutes)) {
+		if (isReAuthValid(req, reauthWindowMinutes)) {
 			return next();
 		}
 
@@ -401,14 +401,14 @@ middleware.requirePageReAuth = function ({ maxAgeInMinutes = 2 } = {}) {
 // handles /api/v3 routes only
 // POST /api/v3/admin/tokens => returnTo whatever page the user was on via x-return-to
 // DIRECT GET /api/v3/admin/groups => returnTo undefined
-middleware.requireAPIReAuth = function ({ maxAgeInMinutes = 5 } = {}) {
+middleware.requireAPIReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
 	return helpers.try(async (req, res, next) => {
 		if (!res.locals.isAPI) return next();
 		if (!req.loggedIn) {
 			return await controllers.helpers.formatApiResponse(401, res);
 		}
 
-		if (isReAuthValid(req, maxAgeInMinutes)) {
+		if (isReAuthValid(req, reauthWindowMinutes)) {
 			return next();
 		}
 
@@ -422,10 +422,10 @@ middleware.requireAPIReAuth = function ({ maxAgeInMinutes = 5 } = {}) {
 	});
 };
 
-function isReAuthValid(req, maxAgeInMinutes) {
+function isReAuthValid(req, reauthWindowMinutes) {
 	const reAuthAt = req.session.meta?.reAuthAt || 0;
-	const maxAgeMs = maxAgeInMinutes * 60 * 1000;
-	return reAuthAt && (Date.now() - reAuthAt) <= maxAgeMs;
+	const reauthWindowMs = reauthWindowMinutes * 60 * 1000;
+	return reAuthAt && (Date.now() - reAuthAt) <= reauthWindowMs;
 }
 
 async function triggerReLoginHook(req, res) {

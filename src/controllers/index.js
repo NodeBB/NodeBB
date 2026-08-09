@@ -142,7 +142,7 @@ Controllers.login = async function (req, res) {
 	if (req.loggedIn) {
 		const userData = await user.getUserFields(req.uid, ['username']);
 		data.username = userData.username;
-		data.alternate_logins = false;
+		data.reauthNotice = !!req.session.forceLogin;
 	}
 	res.render('login', data);
 };

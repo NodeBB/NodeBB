@@ -22,12 +22,10 @@ define('admin/modules/change-email', [
 					label: '[[admin/manage/users:alerts.button-change]]',
 					className: 'btn-primary',
 					callback: async function () {
-						const password = await modals.promptPassword();
 						const newEmail = modal.find('#newEmail').val();
 						api.post(`/users/${params.uid}/emails`, {
 							skipConfirmation: true,
 							email: newEmail,
-							password,
 						}).then(() => {
 							modal.modal('hide');
 							params.onSuccess(newEmail);

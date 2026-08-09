@@ -14,8 +14,8 @@ define('forum/groups/memberlist', [
 		handleMemberInfiniteScroll();
 	};
 
-	MemberList.refresh = async function () {
-		const { group } = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
+	MemberList.refresh = async function (data) {
+		const { group } = data || await api.get(`/api/groups/${ajaxify.data.group.slug}`);
 		const html = await parseAndTranslate(group.members);
 		$('[component="groups/members"] tbody').html(html);
 		$('[component="group/member/count"]').text(
@@ -34,7 +34,11 @@ define('forum/groups/memberlist', [
 	};
 
 	function handleMemberAdd() {
-		$('[component="groups/members/add"]').on('click', function () {
+		$('[component="groups/members/add"]').on('click', async function () {
+			const isAdminGroup = ajaxify.data.group.slug === 'administrators';
+			if (isAdminGroup) {
+				await api.post('/users/reauth/verify');
+			}
 			Benchpress.render('admin/partials/groups/add-members', {}).then(async function (html) {
 				const foundUsers = [];
 				const modal = await modals.dialog({
@@ -85,19 +89,11 @@ define('forum/groups/memberlist', [
 	}
 
 	async function addUsersToGroup(users) {
-		const isAdminGroup = ajaxify.data.group.slug === 'administrators';
-		const password = isAdminGroup && await modals.promptPassword();
-		if (isAdminGroup && !password) {
-			return;
-		}
-
 		let addedUsers = [];
 		for (const user of users) {
 			try {
 				// eslint-disable-next-line no-await-in-loop
-				await api.put(`/groups/${ajaxify.data.group.slug}/membership/${user.uid}`, {
-					...(isAdminGroup ? { password } : {}),
-				});
+				await api.put(`/groups/${ajaxify.data.group.slug}/membership/${user.uid}`);
 				addedUsers.push(user);
 			} catch (err) {
 				alerts.error(err);
@@ -170,25 +166,11 @@ define('forum/groups/memberlist', [
 	}
 
 	MemberList.toggleOwnership = async function (groupslug, uid, isOwner) {
-		const isAdminGroup = groupslug === 'administrators';
-		const password = isAdminGroup && await modals.promptPassword();
-		if (isAdminGroup && !password) {
-			return;
-		}
-		return await api[isOwner ? 'del' : 'put'](`/groups/${groupslug}/ownership/${encodeURIComponent(uid)}`, {
-			...(password ? { password } : {}),
-		});
+		return await api[isOwner ? 'del' : 'put'](`/groups/${groupslug}/ownership/${encodeURIComponent(uid)}`);
 	};
 
 	MemberList.kickMember = async function (groupslug, uid) {
-		const isAdminGroup = groupslug === 'administrators';
-		const password = isAdminGroup && await modals.promptPassword();
-		if (isAdminGroup && !password) {
-			return;
-		}
-		return await api.del(`/groups/${groupslug}/membership/${encodeURIComponent(uid)}`, {}, {
-			'x-password-confirmation': password,
-		});
+		return await api.del(`/groups/${groupslug}/membership/${encodeURIComponent(uid)}`);
 	};
 
 	return MemberList;
