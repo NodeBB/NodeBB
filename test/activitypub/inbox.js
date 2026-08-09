@@ -251,7 +251,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should not create a message when attributedTo is array of non-URI values', async () => {
+				it('should not create a message when attributedTo is an array of non-URI values', async () => {
 					const { note } = helpers.mocks.note({
 						attributedTo: [1, 'not-a-uri'],
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
