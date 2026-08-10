@@ -392,18 +392,21 @@ module.exports = function (User) {
 		}
 
 		const hashedPassword = await User.hashPassword(data.newPassword);
-		await Promise.all([
-			User.setUserFields(data.uid, {
-				password: hashedPassword,
-				'password:shaWrapped': 1,
-				rss_token: utils.generateUUID(),
-			}),
-			User.reset.cleanByUid(data.uid),
-			User.reset.updateExpiry(data.uid),
-			User.auth.revokeAllSessions(data.uid),
-			User.email.expireValidation(data.uid),
-		]);
+		await User.setUserFields(data.uid, {
+			password: hashedPassword,
+			'password:shaWrapped': 1,
+			rss_token: utils.generateUUID(),
+		}),
+		await User.onPasswordChange(uid, data.uid);
+	};
 
-		plugins.hooks.fire('action:password.change', { uid: uid, targetUid: data.uid });
+	User.onPasswordChange = async function (uid, targetUid) {
+		await Promise.all([
+			User.reset.cleanByUid(targetUid),
+			User.reset.updateExpiry(targetUid),
+			User.auth.revokeAllSessions(targetUid),
+			User.email.expireValidation(targetUid),
+		]);
+		plugins.hooks.fire('action:password.change', { uid, targetUid });
 	};
 };
