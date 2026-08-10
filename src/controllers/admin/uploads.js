@@ -154,7 +154,6 @@ uploadsController.uploadCategoryPicture = async function (req, res, next) {
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		file.delete(uploadedFile.path);
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
@@ -193,8 +192,6 @@ uploadsController.uploadTouchIcon = async function (req, res, next) {
 		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
 	} catch (err) {
 		next(err);
-	} finally {
-		file.delete(uploadedFile.path);
 	}
 };
 
@@ -208,8 +205,6 @@ uploadsController.uploadMaskableIcon = async function (req, res, next) {
 		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
 	} catch (err) {
 		next(err);
-	} finally {
-		file.delete(uploadedFile.path);
 	}
 };
 
@@ -223,8 +218,6 @@ uploadsController.uploadScreenshot = async function (req, res, next) {
 		res.json([{ name: uploadedFile.name, url: imageObj.url }]);
 	} catch (err) {
 		next(err);
-	} finally {
-		file.delete(uploadedFile.path);
 	}
 };
 
@@ -234,7 +227,6 @@ uploadsController.uploadFile = async function (req, res, next) {
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		file.delete(uploadedFile.path);
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
@@ -246,8 +238,6 @@ uploadsController.uploadFile = async function (req, res, next) {
 		res.json([{ url: data.url }]);
 	} catch (err) {
 		next(err);
-	} finally {
-		file.delete(uploadedFile.path);
 	}
 };
 
@@ -273,7 +263,6 @@ async function upload(name, req, res, next) {
 
 async function validateUpload(uploadedFile, allowedTypes) {
 	if (!allowedTypes.includes(uploadedFile.type)) {
-		file.delete(uploadedFile.path);
 		throw new Error(`[[error:invalid-image-type, ${uploadedFile.type}, ${allowedTypes.join('&#44; ')}]]`);
 	}
 }
@@ -321,7 +310,5 @@ async function uploadImage(filename, folder, uploadedFile, req, res, next) {
 		]);
 	} catch (err) {
 		next(err);
-	} finally {
-		file.delete(uploadedFile.path);
 	}
 }

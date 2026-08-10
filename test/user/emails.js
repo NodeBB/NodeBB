@@ -106,6 +106,21 @@ describe('email confirmation (library methods)', () => {
 		});
 	});
 
+	describe('remove', () => {
+		it('should invalidate outstanding password reset codes', async () => {
+			const resetUid = await user.create({
+				username: utils.generateUUID().slice(0, 10),
+				password: utils.generateUUID(),
+				email: `${utils.generateUUID()}@example.org`,
+			}, { emailVerification: 'verify' });
+			const code = await user.reset.generate(resetUid);
+
+			assert.strictEqual(await user.reset.validate(code), true);
+			await user.email.remove(resetUid);
+			assert.strictEqual(await user.reset.validate(code), false);
+		});
+	});
+
 	describe('canSendValidation', () => {
 		it('should return true if no validation is pending', async () => {
 			const ok = await user.email.canSendValidation(uid, 'test@example.com');

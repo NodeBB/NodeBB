@@ -97,10 +97,10 @@ function apiRoutes(router, name, middleware, controllers) {
 	const upload = require('../middleware/multer');
 
 	const middlewares = [
-		upload.array('files[]', 20),
-		middleware.validateFiles,
 		middleware.applyCSRF,
 		middleware.ensureLoggedIn,
+		upload.array('files[]', 20),
+		middleware.validateFiles,
 	];
 
 	router.post(`/api/${name}/category/uploadpicture`, middlewares, helpers.tryRoute(controllers.admin.uploads.uploadCategoryPicture));

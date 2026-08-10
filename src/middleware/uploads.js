@@ -15,7 +15,7 @@ exports.clearCache = function () {
 
 exports.ratelimit = helpers.try(async (req, res, next) => {
 	const { uid } = req;
-	if (!meta.config.uploadRateLimitThreshold || (uid && await user.isAdminOrGlobalMod(uid))) {
+	if (!meta.config.uploadRateLimitThreshold || (uid > 0 && await user.isAdminOrGlobalMod(uid))) {
 		return next();
 	}
 	if (!cache) {
