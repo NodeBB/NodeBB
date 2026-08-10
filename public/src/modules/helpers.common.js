@@ -100,7 +100,10 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${escape(tag.content).replace(/\n/g, ' ')}" ` : '';
+		const tagContent = tag.content ?
+			tag.translate ? _tx.call(this, tag.content) : escape(tag.content).replace(/\n/g, ' ') :
+			'';
+		const content = tagContent ? `content="${tagContent}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
