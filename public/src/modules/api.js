@@ -27,14 +27,11 @@ async function call(options, callback) {
 	} catch (err) {
 		if (err.message === await translator.translate('[[error:api.401]]', config.userLang)) {
 			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
-			return new Promise((resolve, reject) => {
-				confirm('[[error:api.reauth-required]]', (ok) => {
-					if (ok) {
-						ajaxify.go(url);
-					} else {
-						reject(err);
-					}
-				});
+			const message = await translator.translate('[[error:api.reauth-required]]', config.userLang);
+			confirm(message, (ok) => {
+				if (ok) {
+					ajaxify.go(url);
+				}
 			});
 		}
 		throw err;
