@@ -487,13 +487,13 @@ usersAPI.listEmails = async (caller, { uid }) => {
 };
 
 usersAPI.getEmail = async (caller, { uid, email }) => {
-	const [isPrivileged, { showemail }, ownerUid] = await Promise.all([
+	const [isPrivileged, { showemail }, emailUid] = await Promise.all([
 		user.isAdminOrGlobalMod(caller.uid),
 		user.getSettings(uid),
-		db.sortedSetScore('email:uid', email.toLowerCase()),
+		db.sortedSetScore('email:uid', String(email).toLowerCase()),
 	]);
 	const isSelf = caller.uid === parseInt(uid, 10);
-	const exists = ownerUid && parseInt(ownerUid, 10) === parseInt(uid, 10);
+	const exists = parseInt(emailUid, 10) === parseInt(uid, 10);
 
 	return exists && (isSelf || isPrivileged || showemail);
 };
