@@ -182,7 +182,7 @@ define('chat', [
 	};
 
 	Chat.onChatMessageReceived = function (data) {
-		if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
+		if (Chat.isFromBlockedUser(data.fromUid)) {
 			return;
 		}
 		if (Chat.modalExists(data.roomId)) {
@@ -386,9 +386,9 @@ define('chat', [
 				});
 
 				function gotoChats() {
-					const text = components.get('chat/input').val();
+					const text = chatModal.find('[component="chat/input"]').val();
 					$(window).one('action:ajaxify.end', function () {
-						components.get('chat/input').val(text);
+						components.get('chat/main-wrapper').find('[component="chat/input"]').val(text);
 					});
 
 					ajaxify.go(`user/${app.user.userslug}/chats/${roomId}`);
@@ -517,15 +517,25 @@ define('chat', [
 		if (chatModal.attr('data-mobile')) {
 			Chat.disableMobileBehaviour(chatModal);
 		}
-		const roomId = chatModal.attr('data-roomid');
+
 		require(['forum/chats'], function (chats) {
-			chats.destroyAutoComplete(roomId);
+			chats.destroyAutoComplete(chatModal.find('[component="chat/input"]'));
 		});
-		socket.emit('modules.chats.leave', roomId);
+
+		Chat.leaveSocketRoom(chatModal.attr('data-roomid'));
 		hooks.fire('action:chat.closed', {
 			uuid: uuid,
 			modal: chatModal,
 		});
+	};
+
+	Chat.leaveSocketRoom = function (roomId) {
+		if (!roomId) return;
+		const isLookingAtRoom = ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10);
+		const isModalOpen = Chat.modalExists(roomId);
+		if (isLookingAtRoom !== isModalOpen) {
+			socket.emit('modules.chats.leave', roomId);
+		}
 	};
 
 	Chat.position = function (chatModal) {
