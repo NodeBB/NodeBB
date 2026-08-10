@@ -6,7 +6,6 @@ const helpers = require('../helpers');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
-const file = require('../../file');
 const accountHelpers = require('./helpers');
 
 const editController = module.exports;
@@ -160,7 +159,5 @@ editController.uploadPicture = async function (req, res, next) {
 		}]);
 	} catch (err) {
 		next(err);
-	} finally {
-		await file.delete(userPhoto.path);
 	}
 };

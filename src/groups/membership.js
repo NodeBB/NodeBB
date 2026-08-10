@@ -169,7 +169,9 @@ module.exports = function (Groups) {
 		if (!nonCachedKeys.length) {
 			return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 		}
-		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
+		const groupMembers = await db.getSortedSetsMembers(
+			nonCachedKeys.map(name => `group:${name}:members`)
+		);
 
 		nonCachedKeys.forEach((groupName, index) => {
 			cachedData[groupName] = groupMembers[index];

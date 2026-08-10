@@ -157,9 +157,12 @@ User.exportUsersCSV = async function (socket, data) {
 };
 
 User.saveCustomFields = async function (socket, fields) {
-	const userFields = await user.getUserFieldWhitelist();
+	const protectedFields = [
+		...await user.getUserFieldWhitelist(),
+		...user.protectedFields,
+	];
 	for (const field of fields) {
-		if (userFields.includes(field.key) || userFields.includes(field.key.toLowerCase())) {
+		if (protectedFields.includes(field.key) || protectedFields.includes(field.key.toLowerCase())) {
 			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
 		}
 	}

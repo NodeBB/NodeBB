@@ -133,6 +133,11 @@ privsPosts.filter = async function (privilege, pids, uid) {
 	return data ? data.pids : null;
 };
 
+privsPosts.canRead = async function (pid, uid) {
+	const tid = await posts.getPostField(pid, 'tid');
+	return await privsTopics.canRead(tid, uid);
+};
+
 privsPosts.canEdit = async function (pid, uid) {
 	const isRemote = activitypub.helpers.isUri(pid);
 	const results = await utils.promiseParallel({

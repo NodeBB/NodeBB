@@ -33,6 +33,7 @@ module.exports = function (Groups) {
 			.filter(groupName => !Groups.isPrivilegeGroup(groupName))
 			.map(groupName => slugify(groupName));
 
+		await removeGroupsFromPrivilegeGroups(groupNames);
 		await Promise.all([
 			db.deleteAll(keys),
 			db.sortedSetRemove([
@@ -42,18 +43,21 @@ module.exports = function (Groups) {
 			], groupNames),
 			db.sortedSetRemove('groups:visible:name', sets),
 			db.deleteObjectFields('groupslug:groupname', groupSlugs),
-			removeGroupsFromPrivilegeGroups(groupNames),
 		]);
 		Groups.cache.reset();
-		cache.del(`zset:groups:createtime`);
+		cache.del([
+			`zset:groups:createtime`,
+			...groupNames.map(groupName => `group:${groupName}:members`),
+		]);
 		plugins.hooks.fire('action:groups.destroy', { groups: groupsData });
 	};
 
 	async function removeGroupsFromPrivilegeGroups(groupNames) {
 		await batch.processSortedSet('groups:createtime', async (otherGroups) => {
-			const privilegeGroups = otherGroups.filter(group => Groups.isPrivilegeGroup(group));
+			const privilegeGroups = otherGroups.filter(Groups.isPrivilegeGroup);
 			const keys = privilegeGroups.map(group => `group:${group}:members`);
 			await db.sortedSetRemove(keys, groupNames);
+			cache.del(keys);
 		}, {
 			batch: 500,
 		});

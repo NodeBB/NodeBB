@@ -34,8 +34,6 @@ uploadsController.upload = async function (req, res, filesIterator) {
 		return images;
 	} catch (err) {
 		return helpers.formatApiResponse(500, res, err);
-	} finally {
-		deleteTempFiles(files);
 	}
 };
 
@@ -119,7 +117,6 @@ async function resizeImage(fileObj) {
 
 uploadsController.uploadThumb = async function (req, res) {
 	if (!meta.config.allowTopicsThumbnail) {
-		deleteTempFiles(req.files);
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
@@ -222,12 +219,6 @@ async function validateFileExtension(uploadedFile) {
 	const detectedExtension = detected ? `.${detected.ext}` : '';
 	if (detectedExtension && detectedExtension !== extension) {
 		validateExtension(detectedExtension);
-	}
-}
-
-function deleteTempFiles(files) {
-	if (Array.isArray(files)) {
-		files.forEach(fileObj => file.delete(fileObj.path));
 	}
 }
 

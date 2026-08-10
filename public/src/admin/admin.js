@@ -12,6 +12,10 @@ app.onDomReady();
 
 (function () {
 	require(['hooks', 'admin/settings', 'admin/modules/relogin-timer'], (hooks, Settings, reloginTimer) => {
+		socket.on('event:admin.reloginRequired', () => {
+			reloginTimer.show();
+		});
+
 		hooks.on('action:ajaxify.end', (data) => {
 			updatePageTitle(data.url);
 			setupRestartLinks();

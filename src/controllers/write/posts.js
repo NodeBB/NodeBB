@@ -4,7 +4,6 @@ const nconf = require('nconf');
 
 const db = require('../../database');
 const topics = require('../../topics');
-const posts = require('../../posts');
 const api = require('../../api');
 const helpers = require('../helpers');
 
@@ -107,13 +106,8 @@ Posts.move = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
-async function mock(req) {
-	const tid = await posts.getPostField(req.params.pid, 'tid');
-	return { pid: req.params.pid, room_id: `topic_${tid}` };
-}
-
 Posts.vote = async (req, res) => {
-	const data = await mock(req);
+	const data = { pid: req.params.pid };
 	if (req.body.delta > 0) {
 		await api.posts.upvote(req, data);
 	} else if (req.body.delta < 0) {
@@ -126,8 +120,7 @@ Posts.vote = async (req, res) => {
 };
 
 Posts.unvote = async (req, res) => {
-	const data = await mock(req);
-	await api.posts.unvote(req, data);
+	await api.posts.unvote(req, { pid: req.params.pid });
 	helpers.formatApiResponse(200, res);
 };
 
@@ -152,14 +145,12 @@ Posts.getAnnouncersTooltip = async (req, res) => {
 };
 
 Posts.bookmark = async (req, res) => {
-	const data = await mock(req);
-	await api.posts.bookmark(req, data);
+	await api.posts.bookmark(req, { pid: req.params.pid });
 	helpers.formatApiResponse(200, res);
 };
 
 Posts.unbookmark = async (req, res) => {
-	const data = await mock(req);
-	await api.posts.unbookmark(req, data);
+	await api.posts.unbookmark(req, { pid: req.params.pid });
 	helpers.formatApiResponse(200, res);
 };
 

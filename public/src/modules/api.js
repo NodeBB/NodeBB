@@ -13,7 +13,7 @@ async function call(options, callback) {
 
 	options.headers = options.headers || {};
 	if (!options.headers['x-return-to']) {
-		options.headers['x-return-to'] = `${window.location.pathname}${window.location.search}`;
+		options.headers['x-return-to'] = `${window.location.pathname.slice(config.relative_path.length)}${window.location.search}`;
 	}
 
 	if (typeof callback === 'function') {
@@ -116,46 +116,31 @@ export function head(route, data, onSuccess) {
 	}, onSuccess);
 }
 
-export function post(route, data, onSuccess) {
-	return call({
-		url: route,
-		method: 'POST',
-		data,
-		headers: {
-			'x-csrf-token': config.csrf_token,
-		},
-	}, onSuccess);
+export function post(route, data, headers, onSuccess) {
+	return callWithHeaders('POST', route, data, headers, onSuccess);
 }
 
-export function patch(route, data, onSuccess) {
-	return call({
-		url: route,
-		method: 'PATCH',
-		data,
-		headers: {
-			'x-csrf-token': config.csrf_token,
-		},
-	}, onSuccess);
+export function patch(route, data, headers, onSuccess) {
+	return callWithHeaders('PATCH', route, data, headers, onSuccess);
 }
 
-export function put(route, data, onSuccess) {
-	return call({
-		url: route,
-		method: 'PUT',
-		data,
-		headers: {
-			'x-csrf-token': config.csrf_token,
-		},
-	}, onSuccess);
+export function put(route, data, headers, onSuccess) {
+	return callWithHeaders('PUT', route, data, headers, onSuccess);
 }
 
-export function del(route, data, onSuccess) {
+export function del(route, data, headers, onSuccess) {
+	return callWithHeaders('DELETE', route, data, headers, onSuccess);
+}
+
+function callWithHeaders(method, route, data, headers, onSuccess) {
+	typeof headers === 'function' && (onSuccess = headers, headers = {});
 	return call({
 		url: route,
-		method: 'DELETE',
+		method,
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
+			...headers,
 		},
 	}, onSuccess);
 }

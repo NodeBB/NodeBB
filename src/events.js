@@ -76,6 +76,8 @@ events.types = [
 	'getUsersCSV',
 	'getGroupCSV',
 	'chat-room-deleted',
+	'token-add',
+	'token-delete',
 	// To add new types from plugins, just Array.push() to this array
 ];
 

@@ -44,15 +44,14 @@ inbox.create = async (req) => {
 
 	// attributedTo must be same-origin
 	if (actor && object.attributedTo) {
-		// Normalize `attributedTo`
+		// Normalize `attributedTo` — only handle single values (string or object with id)
 		let { attributedTo } = object;
-		if (typeof attributedTo === 'object' && !Array.isArray(attributedTo)) {
+		if (Array.isArray(attributedTo)) {
+			activitypub.helpers.log('[activitypub/inbox.create] attributedTo is an array, rejecting.');
+			return null;
+		}
+		if (typeof attributedTo === 'object' && attributedTo.id) {
 			attributedTo = attributedTo.id;
-		} else if (Array.isArray(attributedTo)) {
-			attributedTo = attributedTo.find(a => typeof a === 'string' || (typeof a === 'object' && a.id)) || attributedTo.shift();
-			if (typeof attributedTo === 'object') {
-				attributedTo = attributedTo.id;
-			}
 		}
 
 		if (typeof attributedTo === 'string') {
@@ -193,15 +192,14 @@ inbox.update = async (req) => {
 
 	// attributedTo must be same-origin
 	if (actor && object.attributedTo) {
-		// Normalize `attributedTo`
+		// Normalize `attributedTo` — only handle single values (string or object with id)
 		let { attributedTo } = object;
-		if (typeof attributedTo === 'object' && !Array.isArray(attributedTo)) {
+		if (Array.isArray(attributedTo)) {
+			activitypub.helpers.log('[activitypub/inbox.update] attributedTo is an array, rejecting.');
+			return null;
+		}
+		if (typeof attributedTo === 'object' && attributedTo.id) {
 			attributedTo = attributedTo.id;
-		} else if (Array.isArray(attributedTo)) {
-			attributedTo = attributedTo.find(a => typeof a === 'string' || (typeof a === 'object' && a.id)) || attributedTo.shift();
-			if (typeof attributedTo === 'object') {
-				attributedTo = attributedTo.id;
-			}
 		}
 
 		if (typeof attributedTo === 'string') {
@@ -534,6 +532,10 @@ inbox.announce = async (req) => {
 
 	switch(true) {
 		case object.type === 'Like': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			const assertion = await activitypub.actors.assert(object.actor);
 			if (!assertion) {
 				throw new Error('[[error:activitypub.invalid-id]]');
@@ -555,12 +557,20 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Update': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			req.body = object;
 			await inbox.update(req);
 			break;
 		}
 
 		case object.type === 'Delete': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			let id = object.object.id || object.object; // expecting object reference
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			id = localId || id;
@@ -616,6 +626,10 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Create': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			object = object.object;
 			// falls through
 		}

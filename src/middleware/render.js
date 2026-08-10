@@ -73,7 +73,7 @@ module.exports = function (middleware) {
 				options._header = {
 					tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
 				};
-				res.locals._i18n = languages.getFull(getLang(req, res));
+				res.locals._i18n = languages.getFull(await getLang(req, res));
 				options.widgets = await widgets.render(req.uid, {
 					template: `${template}.tpl`,
 					url: options.url,
@@ -104,9 +104,7 @@ module.exports = function (middleware) {
 				const str = `${header +
 					(res.locals.postHeader || '') +
 					content
-				}<script id="ajaxify-data" type="application/json">${
-					optionsString
-				}</script>${
+				}<script id="ajaxify-data">window._ajaxifyData=${optionsString}</script>${
 					res.locals.preFooter || ''
 				}${footer}`;
 
@@ -282,13 +280,17 @@ module.exports = function (middleware) {
 
 		const version = nconf.get('version');
 
-		res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
 		const langDirection = translator.languageDirection(res.locals.config.acpLang);
 		res.locals.config.isRTL = langDirection === 'rtl';
+		const config = {
+			...res.locals.config,
+			// override so the config.userLang client side is the acpLang for the admin panel
+			userLang: res.locals.config.acpLang || res.locals.config.userLang,
+		};
 		const templateValues = {
-			config: res.locals.config,
-			configJSON: jsesc(translator.escape(JSON.stringify(res.locals.config)), { isScriptContext: true }),
-			relative_path: res.locals.config.relative_path,
+			config: config,
+			configJSON: jsesc(translator.escape(JSON.stringify(config)), { isScriptContext: true }),
+			relative_path: config.relative_path,
 			adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 			metaTags: results.tags.meta,
 			linkTags: results.tags.link,
@@ -319,7 +321,7 @@ module.exports = function (middleware) {
 		return new Promise((resolve, reject) => {
 			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
-				else resolve(await translate(str, getLang(req, res)));
+				else resolve(await translate(str, await getLang(req, res)));
 			});
 		});
 	}
@@ -398,12 +400,10 @@ module.exports = function (middleware) {
 		return str;
 	}
 
-	function getLang(req, res) {
-		let language = (res.locals.config && res.locals.config.userLang) || 'en-GB';
-		if (res.locals.renderHeaderType === 'admin') {
-			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
-		}
-		return req.query.lang ? req.query.lang : language;
+	async function getLang(req, res) {
+		if (req.query.lang) return req.query.lang;
+		const config = res.locals.config ?? await user.getSettings(req.uid);
+		return res.locals.isAdminPage ? config.acpLang : config.userLang;
 	}
 
 	async function translate(str, language) {

@@ -14,6 +14,7 @@ const ratelimit = require('../middleware/ratelimit');
 const blacklist = require('../meta/blacklist');
 const als = require('../als');
 const apiHelpers = require('../api/helpers');
+const socketIp = require('./utils/ip');
 
 const Namespaces = Object.create(null);
 
@@ -85,10 +86,7 @@ Sockets.init = async function (server) {
 function onConnection(socket) {
 	socket.uid = socket.request.uid;
 	socket.data.uid = String(socket.uid); // socket.data is shared between nodes via fetchSockets
-	socket.ip = (
-		socket.request.headers['x-forwarded-for'] ||
-		socket.request.connection.remoteAddress || ''
-	).split(',')[0];
+	socket.ip = socketIp.getClientIp(socket.request);
 	socket.request.ip = socket.ip;
 	logger.io_one(socket, socket.uid);
 

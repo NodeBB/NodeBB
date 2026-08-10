@@ -6,7 +6,7 @@ define('admin/manage/admins-mods', [
 	const AdminsMods = {};
 
 	AdminsMods.init = function () {
-		autocomplete.user($('#admin-search'), function (ev, ui) {
+		autocomplete.user($('#admin-search'), async function (ev, ui) {
 			api.put(`/groups/administrators/membership/${ui.item.user.uid}`).then(() => {
 				$('#admin-search').val('');
 
@@ -20,19 +20,15 @@ define('admin/manage/admins-mods', [
 			}).catch(alerts.error);
 		});
 
-		$('.administrator-area').on('click', '.remove-user-icon', function () {
+		$('.administrator-area').on('click', '.remove-user-icon', async function () {
 			const userCard = $(this).parents('[data-uid]');
 			const uid = userCard.attr('data-uid');
 			if (parseInt(uid, 10) === parseInt(app.user.uid, 10)) {
 				return alerts.error('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			}
-			modals.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
-				if (confirm) {
-					api.del(`/groups/administrators/membership/${uid}`).then(() => {
-						userCard.remove();
-					}).catch(alerts.error);
-				}
-			});
+			api.del(`/groups/administrators/membership/${uid}`).then(() => {
+				userCard.remove();
+			}).catch(alerts.error);
 		});
 
 		autocomplete.user($('#global-mod-search'), function (ev, ui) {

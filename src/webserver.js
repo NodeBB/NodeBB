@@ -317,7 +317,7 @@ async function listen() {
 		winston.warn("[startup] 'trust_proxy' is not configured, so Express proxy trust is disabled by default. Set 'trust_proxy' in config.json only when NodeBB is behind a reverse proxy that strips or overwrites X-Forwarded-For from untrusted clients.");
 	}
 	if (trust_proxy != null) {
-		const trustProxyPrefix = trust_proxy === true ? '🤝' : '❌';
+		const trustProxyPrefix = trust_proxy ? '🤝' : '❌';
 		winston.info(`${trustProxyPrefix} Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
 		app.set('trust proxy', trust_proxy);
 	}

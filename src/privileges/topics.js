@@ -199,6 +199,15 @@ privsTopics.canDelete = async function (tid, uid) {
 	return allowedTo[0] && ((isOwner && (deleterUid === 0 || deleterUid === topicData.uid)) || isModerator);
 };
 
+privsTopics.canTag = async function (tid, uid) {
+	const [isOwner, canTag, isAdminOrMod] = await Promise.all([
+		topics.isOwner(tid, uid),
+		privsTopics.can('topics:tag', tid, uid),
+		privsTopics.isAdminOrMod(tid, uid),
+	]);
+	return (isOwner && canTag) || isAdminOrMod;
+};
+
 privsTopics.canEdit = async function (tid, uid) {
 	return await privsTopics.isOwnerOrAdminOrMod(tid, uid);
 };

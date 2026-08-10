@@ -283,6 +283,7 @@ describe('Upload Controllers', () => {
 					`/assets/x/../uploads/files/${filename}`,
 					`/assets/uploads/%2e%2e/uploads/files/${filename}`,
 					`/assets/uploads/%2e/files/${filename}`,
+					`/assets/uploads%5cfiles%5c${filename}`,
 				];
 				for (const p of requestPathsToCheck) {
 					// eslint-disable-next-line no-await-in-loop
@@ -592,7 +593,7 @@ describe('Upload Controllers', () => {
 				// eslint-disable-next-line no-await-in-loop
 				const { response: fileResponse } = await request.get(`${nconf.get('url')}${url}`);
 				assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
-				assert.equal(fileResponse.statusCode, 200);
+				assert.equal(fileResponse.statusCode, 200, `Failed for url: ${url}`);
 			}
 		});
 

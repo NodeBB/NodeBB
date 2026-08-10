@@ -73,6 +73,7 @@ package-lock.json
 *.mongodb
 link-plugins.sh
 test.sh
+test.out
 
 .docker/**
 !**/.gitkeep

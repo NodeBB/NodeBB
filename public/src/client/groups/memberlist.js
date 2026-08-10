@@ -14,8 +14,8 @@ define('forum/groups/memberlist', [
 		handleMemberInfiniteScroll();
 	};
 
-	MemberList.refresh = async function () {
-		const { group } = await api.get(`/api/groups/${ajaxify.data.group.slug}`);
+	MemberList.refresh = async function (data) {
+		const { group } = data || await api.get(`/api/groups/${ajaxify.data.group.slug}`);
 		const html = await parseAndTranslate(group.members);
 		$('[component="groups/members"] tbody').html(html);
 		$('[component="group/member/count"]').text(
@@ -34,7 +34,11 @@ define('forum/groups/memberlist', [
 	};
 
 	function handleMemberAdd() {
-		$('[component="groups/members/add"]').on('click', function () {
+		$('[component="groups/members/add"]').on('click', async function () {
+			const isAdminGroup = ajaxify.data.group.slug === 'administrators';
+			if (isAdminGroup) {
+				await api.post('/users/reauth/verify');
+			}
 			Benchpress.render('admin/partials/groups/add-members', {}).then(async function (html) {
 				const foundUsers = [];
 				const modal = await modals.dialog({
@@ -85,15 +89,19 @@ define('forum/groups/memberlist', [
 	}
 
 	async function addUsersToGroup(users) {
-		const uids = users.map(u => u.uid);
-		for (const uid of uids) {
-			// eslint-disable-next-line no-await-in-loop
-			await api.put(`/groups/${ajaxify.data.group.slug}/membership/${uid}`, {})
-				.catch(alerts.error);
+		let addedUsers = [];
+		for (const user of users) {
+			try {
+				// eslint-disable-next-line no-await-in-loop
+				await api.put(`/groups/${ajaxify.data.group.slug}/membership/${user.uid}`);
+				addedUsers.push(user);
+			} catch (err) {
+				alerts.error(err);
+			}
 		}
-
-		users = users.filter(user => !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length);
-		const html = await parseAndTranslate(users);
+		const membersEl = $('[component="groups/members"]');
+		addedUsers = addedUsers.filter(user => !membersEl.find(`[data-uid="${user.uid}"]`).length);
+		const html = await parseAndTranslate(addedUsers);
 		$('[component="groups/members"] tbody').prepend(html);
 	}
 
@@ -156,6 +164,14 @@ define('forum/groups/memberlist', [
 			},
 		});
 	}
+
+	MemberList.toggleOwnership = async function (groupslug, uid, isOwner) {
+		return await api[isOwner ? 'del' : 'put'](`/groups/${groupslug}/ownership/${encodeURIComponent(uid)}`);
+	};
+
+	MemberList.kickMember = async function (groupslug, uid) {
+		return await api.del(`/groups/${groupslug}/membership/${encodeURIComponent(uid)}`);
+	};
 
 	return MemberList;
 });

@@ -29,7 +29,7 @@
 			</ul>
 			<script>
 				(function () {
-					const el = document.querySelector('[component="chat/message/content"]');
+					const el = document.querySelector('[component="chat/main-wrapper"] [component="chat/message/content"]');
 					if (el) {
 						requestAnimationFrame(() => {
 							el.scrollTop = el.scrollHeight;

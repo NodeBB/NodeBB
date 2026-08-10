@@ -113,7 +113,7 @@ Auth.reloadRoutes = async function (params) {
 				return next();
 			}
 
-			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
+			next((!req.session.ssoState || req.query.state !== req.session.ssoState) ? new Error('[[error:csrf-invalid]]') : null);
 		}, (req, res, next) => {
 			// Trigger registration interstitial checks
 			req.session.registration = req.session.registration || {};
@@ -159,9 +159,9 @@ Auth.reloadRoutes = async function (params) {
 
 	const upload = require('../middleware/multer');
 	const middlewares = [
-		upload.any(),
 		Auth.middleware.applyCSRF,
 		Auth.middleware.applyBlacklist,
+		upload.any(),
 	];
 
 	router.post('/register', middlewares, controllers.authentication.register);

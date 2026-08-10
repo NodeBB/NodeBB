@@ -1271,20 +1271,6 @@ describe('User', () => {
 			assert(body);
 		});
 
-		it('should load edit/email page', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/updatedagain/edit/email`, { jar });
-			assert.strictEqual(response.statusCode, 200);
-			assert(body);
-
-			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
-			await request.post(`${nconf.get('url')}/register/abort`, {
-				jar,
-				headers: {
-					'x-csrf-token': csrf_token,
-				},
-			});
-		});
-
 		it('should load user\'s groups page', async () => {
 			await groups.create({
 				name: 'Test',
@@ -2578,6 +2564,26 @@ describe('User', () => {
 			assert.strictEqual(userData[0].email, hidingUser.email);
 			assert.strictEqual(userData[1].fullname, '');
 			assert.strictEqual(userData[1].email, '');
+		});
+
+		it('should respect admin setting in api.user.listEmails', async () => {
+			assert.strictEqual(
+				await apiUser.listEmails({ uid: regularUser.uid }, { uid: hidingUser.uid }),
+				null,
+			);
+		});
+
+		it('should respect admin setting in api.user.getEmail', async () => {
+			assert.strictEqual(
+				await apiUser.getEmail({ uid: regularUser.uid }, { uid: hidingUser.uid }),
+				false,
+			);
+		});
+
+		it('should respect admin setting in userController.getUserDataByField', async () => {
+			const userController = require('../src/controllers/user');
+			const userData = await userController.getUserDataByField({ uid: regularUser.uid }, 'email', hidingUser.email);
+			assert.strictEqual(userData, null);
 		});
 
 		it('should hide fullname in topic list and topic', async () => {

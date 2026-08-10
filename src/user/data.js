@@ -3,6 +3,7 @@
 const validator = require('validator');
 const nconf = require('nconf');
 const _ = require('lodash');
+const path = require('path');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -32,6 +33,11 @@ module.exports = function (User) {
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
 		'cover:position', 'groupTitle', 'muted', 'mutedUntil', 'mutedReason',
+	];
+
+	User.protectedFields = [
+		'_id', '_key', 'password', 'password:shaWrapped', 'passwordExpiry',
+		'lastqueuetime', 'rss_token', 'blocksCount', 'gdpr_consent',
 	];
 
 	let customFieldWhiteList = null;
@@ -236,10 +242,10 @@ module.exports = function (User) {
 			const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
 			const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
 
-			if (!privilegedOrSelf && (!userSettings[idx].showemail || meta.config.hideEmail)) {
+			if (!privilegedOrSelf && !userSettings[idx].showemail) {
 				_userData.email = '';
 			}
-			if (!privilegedOrSelf && (!userSettings[idx].showfullname || meta.config.hideFullname)) {
+			if (!privilegedOrSelf && !userSettings[idx].showfullname) {
 				_userData.fullname = '';
 			}
 			return _userData;
@@ -249,14 +255,10 @@ module.exports = function (User) {
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
-		let uidToSettings = {};
-		if (meta.config.showFullnameAsDisplayName) {
-			const uids = users.map(user => user.uid);
-			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
-				uids.map(uid => `user:${uid}:settings`),
-				['showfullname']
-			));
+		if (!requestedFields.length || requestedFields.includes('fullname')) {
+			await parseDisplayNames(users);
 		}
+
 		if (!iconBackgrounds) {
 			iconBackgrounds = await User.getIconBackgrounds();
 		}
@@ -271,7 +273,6 @@ module.exports = function (User) {
 			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
-				parseDisplayName(user, uidToSettings);
 				user.username = String(user.username || '');
 			}
 
@@ -406,36 +407,50 @@ module.exports = function (User) {
 			require_tld: false,
 		});
 
-		if (isHttpUrl || trimmedValue.startsWith(upload_url)) {
+		if (isHttpUrl) {
 			return true;
 		}
 
-		if (relative_path && trimmedValue.startsWith(relative_path)) {
-			return trimmedValue.slice(relative_path.length).startsWith(upload_url);
+		let relativeCandidate = trimmedValue;
+		if (relative_path && relativeCandidate.startsWith(relative_path)) {
+			relativeCandidate = relativeCandidate.slice(relative_path.length);
 		}
-
-		return false;
+		const normalizedPath = path.posix.normalize(relativeCandidate);
+		return normalizedPath === upload_url || normalizedPath.startsWith(`${upload_url}/`);
 	};
 
-	function parseDisplayName(user, uidToSettings) {
-		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
-		if (uidToSettings[user.uid]) {
-			const userSetting = parseInt(uidToSettings[user.uid].showfullname, 10);
-			if (userSetting === 0 || userSetting === 1) {
-				showfullname = userSetting === 1;
-			}
+
+	async function parseDisplayNames(users) {
+		if (meta.config.hideFullname || !meta.config.showFullnameAsDisplayName) {
+			users.forEach((user) => {
+				if (user) {
+					user.displayname = String(user.username || '');
+				}
+			});
+			return;
 		}
 
-		// Always show full name for remote users
-		if (!utils.isNumber(user.uid)) {
-			showfullname = true;
-		}
-
-		user.displayname = String(
-			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
-				utils.stripBidiControls(user.fullname) :
-				user.username
+		// otherwise check user setting showfullname and set displayname accordingly
+		const userAcpDefault = parseInt(meta.config.showfullname, 10) === 1;
+		const userSettings = await db.getObjectsFields(
+			users.map(u => `user:${u.uid}:settings`),
+			['showfullname']
 		);
+
+		users.forEach((user, index) => {
+			if (user) {
+				const userSetting = parseInt(userSettings[index].showfullname, 10);
+				const showfullname = utils.isNumber(user.uid) ?
+					(userSetting === 0 || userSetting === 1 ? userSetting : userAcpDefault) :
+					1; // Always show full name for remote users
+
+				user.displayname = String(
+					showfullname && user.fullname ?
+						utils.stripBidiControls(user.fullname) :
+						user.username || ''
+				);
+			}
+		});
 	}
 
 	function parseGroupTitle(user) {

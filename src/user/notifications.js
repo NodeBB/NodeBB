@@ -221,7 +221,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 			db.getSortedSetRange(`followers:${uid}`, 0, -1),
 			topics.getNotificationTitle(topicData.tid, 'title'),
 		]);
-		const followers = await privileges.categories.filterUids('read', topicData.cid, allFollowers);
+		const followers = await privileges.categories.filterUids('topics:read', topicData.cid, allFollowers);
 		if (!followers.length) {
 			return;
 		}

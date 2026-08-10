@@ -35,12 +35,6 @@ app.onDomReady = function () {
 	});
 };
 
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', ajaxify.parseData);
-} else {
-	ajaxify.parseData();
-}
-
 (function () {
 	let appLoaded = false;
 	const isTouchDevice = utils.isTouchDevice();

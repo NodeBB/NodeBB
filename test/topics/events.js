@@ -106,8 +106,10 @@ describe('Topic Events', () => {
 	});
 
 	it('should properly escape topic events with HTML and tx tokens in their arguments', async () => {
-		const oldVlaueShowFullnameAsDisplayName = meta.config.showFullnameAsDisplayName;
+		const oldValueShowFullnameAsDisplayName = meta.config.showFullnameAsDisplayName;
+		const oldValueHideFullname = meta.config.hideFullname;
 		meta.config.showFullnameAsDisplayName = 1;
+		meta.config.hideFullname = 0;
 		const { topicData } = await topics.post({
 			title: 'topic events testing',
 			content: 'foobar one two three',
@@ -129,7 +131,8 @@ describe('Topic Events', () => {
 
 		assert.deepStrictEqual(events[0].text, `<span title="&quot;&gt;&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; [[global:posts]]" data-uid="${uid}" class="avatar avatar-rounded" component="avatar/icon" style="--avatar-size:16px;background-color:#827717">B</span> <a href="${nconf.get('relative_path')}/user/bar">"&gt;&lt;script&gt;alert("xss")&lt;/script&gt; [[global:posts]]</a> <a href="${nconf.get('relative_path')}/topic/${topicData.tid}">forked</a> this topic <span class="timeago timeline-text" title="${new Date(now).toISOString()}"></span>`);
 
-		meta.config.showFullnameAsDisplayName = oldVlaueShowFullnameAsDisplayName;
+		meta.config.showFullnameAsDisplayName = oldValueShowFullnameAsDisplayName;
+		meta.config.hideFullname = oldValueHideFullname;
 	});
 
 	it('should properly escape topic event with plain text in their arguments', async () => {

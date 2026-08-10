@@ -56,6 +56,8 @@ paths:
     $ref: 'write/login.yaml'
   /users/:
     $ref: 'write/users.yaml'
+  /users/reauth/verify:
+    $ref: 'write/users/reauth/verify.yaml'
   /users/{uid}:
     $ref: 'write/users/uid.yaml'
   /users/{uid}/picture:

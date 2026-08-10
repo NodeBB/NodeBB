@@ -12,6 +12,14 @@
 		</div>
 	</div>
 	{{{ end }}}
+
+	<script defer src="{relative_path}/assets/language/{config.userLang}/full.min.js?{config.cache-buster}"></script>
+	<script defer src="{relative_path}/assets/admin.min.js?{cache-buster}"></script>
+
+	{{{ each scripts }}}
+	<script defer type="text/javascript" src="{./src}"></script>
+	{{{ end }}}
+
 	<script>
 		if (document.readyState === 'loading') {
 			document.addEventListener('DOMContentLoaded', prepareFooter);

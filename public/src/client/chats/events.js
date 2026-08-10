@@ -17,12 +17,14 @@ define('forum/chats/events', [
 		'event:chats.typing': onChatTyping,
 	};
 	let chatNavWrapper = null;
+	let chatMainWrapper = null;
 
 	let Chats = null;
 
 	Events.init = async function () {
 		Chats = await app.require('forum/chats');
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
+		chatMainWrapper = $('[component="chat/main-wrapper"]');
 		Events.removeListeners();
 		for (const [eventName, handler] of Object.entries(events)) {
 			socket.on(eventName, handler);
@@ -50,7 +52,10 @@ define('forum/chats/events', [
 				Chats.newMessage = data.self === 0;
 			}
 
-			messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
+			messages.appendChatMessage(
+				chatMainWrapper.find('[component="chat/message/content"]'),
+				data.message
+			);
 		}
 
 		if (!data.message.system) {

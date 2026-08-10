@@ -37,6 +37,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		clamp,
 		quote,
 		concat,
+		txDisplayname,
+		txUsername,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -98,7 +100,10 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${escape(tag.content).replace(/\n/g, ' ')}" ` : '';
+		const tagContent = tag.content ?
+			tag.translate ? _tx.call(this, tag.content) : tag.content.replace(/\n/g, ' ') :
+			'';
+		const content = tagContent ? `content="${escape(tagContent)}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -389,7 +394,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		classNames = escape(classNames || '');
 		component = escape(component || '');
-		const displayname = escape(String(userObj.displayname || ''));
+		const displayname = txDisplayname.call(this, userObj);
 		const picture = escape(String(userObj.picture || ''));
 		const iconBgColor = escape(String(userObj['icon:bgColor'] || ''));
 		const iconText = escape(String(userObj['icon:text'] || ''));
@@ -443,6 +448,20 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 	function concat(...args) {
 		return args.join('');
+	}
+
+	function txDisplayname(user) {
+		return txUsernameOrDisplayname.call(this, user, 'displayname');
+	}
+
+	function txUsername(user) {
+		return txUsernameOrDisplayname.call(this, user, 'username');
+	}
+
+	function txUsernameOrDisplayname(user, field) {
+		const name = String(user[field] || '');
+		const shouldTranslate = user?.uid === 0 && (name === '[[global:former-user]]' || name === '[[global:guest]]');
+		return shouldTranslate ? _tx.call(this, name) : escape(name);
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {

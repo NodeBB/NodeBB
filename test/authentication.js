@@ -200,6 +200,29 @@ describe('authentication', () => {
 			assert(Object.keys(sessions).length > 0);
 		});
 
+		it('should track the new session when a logged-in user signs in as another user', async () => {
+			const firstUsername = utils.generateUUID().slice(0, 10);
+			const firstPassword = utils.generateUUID();
+			await user.create({ username: firstUsername, password: firstPassword });
+			const { jar, response: firstLoginResponse } = await helpers.loginUser(firstUsername, firstPassword);
+			assert.strictEqual(firstLoginResponse.statusCode, 200);
+			assert.strictEqual(await db.sortedSetCard(`uid:${uid}:sessions`), 0);
+
+			try {
+				const { response } = await helpers.request('post', '/login', {
+					jar,
+					body: { username, password },
+				});
+				assert.strictEqual(response.statusCode, 200);
+
+				const { body: self } = await request.get(`${nconf.get('url')}/api/self`, { jar });
+				assert.strictEqual(self.uid, uid);
+				assert.strictEqual((await user.auth.getSessions(uid)).length, 1);
+			} finally {
+				await helpers.logoutUser(jar);
+			}
+		});
+
 		it('should set a cookie that only lasts for the life of the browser session', async () => {
 			const { response } = await helpers.loginUser(username, password);
 
@@ -367,6 +390,95 @@ describe('authentication', () => {
 		meta.config.registrationType = 'normal';
 		assert.equal(response.statusCode, 400);
 		assert.equal(body, '[[register:invite.error-invite-only]]');
+	});
+
+	describe('pending registrations', () => {
+		let previousConfig;
+
+		before(() => {
+			previousConfig = {
+				registrationType: meta.config.registrationType,
+				registrationApprovalType: meta.config.registrationApprovalType,
+				gdpr_enabled: meta.config.gdpr_enabled,
+				sendValidationEmail: meta.config.sendValidationEmail,
+			};
+		});
+
+		beforeEach(() => {
+			meta.config.registrationType = 'normal';
+			meta.config.registrationApprovalType = 'normal';
+			meta.config.gdpr_enabled = 1;
+			meta.config.sendValidationEmail = 0;
+		});
+
+		after(() => {
+			Object.assign(meta.config, previousConfig);
+		});
+
+		function registrationBody(username) {
+			return {
+				username,
+				email: `${username}@example.org`,
+				password: 'pending-registration-password',
+				'password-confirm': 'pending-registration-password',
+			};
+		}
+
+		async function parkRegistration(username) {
+			const jar = request.jar();
+			const { response, body } = await helpers.request('post', '/register', {
+				jar,
+				body: registrationBody(username),
+			});
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
+			assert.strictEqual(await user.getUidByUsername(username), null);
+			return jar;
+		}
+
+		async function completeRegistration(jar) {
+			return await helpers.request('post', '/register/complete', {
+				jar,
+				body: {
+					gdpr_agree_data: 'on',
+					gdpr_agree_email: 'on',
+				},
+				redirect: 'manual',
+			});
+		}
+
+		it('should complete if the registration policy still allows it', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 302);
+			assert(await user.getUidByUsername(username));
+		});
+
+		it('should reject a pending registration after registrations are disabled', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			meta.config.registrationType = 'disabled';
+
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
+
+		it('should reject an uninvited pending registration after invite-only mode is enabled', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			meta.config.registrationType = 'invite-only';
+
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 302);
+			const redirect = new URL(response.headers.location, nconf.get('url'));
+			assert.strictEqual(redirect.searchParams.get('register'), '[[register:invite.error-invite-only]]');
+			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
 	});
 
 	it('should fail to register if username is falsy or too short', async () => {
