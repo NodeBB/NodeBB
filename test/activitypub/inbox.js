@@ -763,7 +763,7 @@ describe('Inbox', () => {
 						actor: this.remoteId,
 						object: this.mid,
 					});
-
+					await privileges.global.give(['groups:chat'], 'fediverse');
 					// Process the delete directly
 					await activitypub.inbox.delete({ body: deleteActivity });
 
