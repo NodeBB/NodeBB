@@ -633,7 +633,7 @@ define('forum/chats', [
 		}).catch(alerts.error);
 	};
 
-	Chats.switchChat = function (roomId) {
+	Chats.switchChat = async function (roomId) {
 		// Allow empty arg for return to chat list/close chat
 		if (!roomId) {
 			roomId = '';
@@ -641,47 +641,37 @@ define('forum/chats', [
 		Chats.destroyAutoComplete(chatMainWrapper.find('[component="chat/input"]'));
 		chatModule.leaveSocketRoom(ajaxify.data.roomId);
 
-		const url = 'user/' + ajaxify.data.userslug + '/chats/' + roomId + window.location.search;
-		if (!self.fetch) {
-			return ajaxify.go(url);
-		}
 		const params = new URL(document.location).searchParams;
 		params.set('switch', 1);
-		const dataUrl = `${config.relative_path}/api/user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
-		fetch(dataUrl, { credentials: 'include' })
-			.then(async function (response) {
-				if (!response.ok) {
-					return console.warn('[search] Received ' + response.status);
-				}
-				const payload = await response.json();
-				const html = await app.parseAndTranslate('partials/chats/message-window', payload);
+		const url = `/user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
+		const dataUrl = `/api/${url}`;
+		const payload = await api.get(dataUrl).catch(alerts.error);
+		const html = await app.parseAndTranslate('partials/chats/message-window', payload);
 
-				chatMainWrapper.html(html);
-				chatMainWrapper.attr('data-roomid', roomId);
-				chatNavWrapper = $('[component="chat/nav-wrapper"]');
-				html.find('.timeago').timeago();
-				ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
-				ajaxify.updateTitle(ajaxify.data.title);
-				$('body').toggleClass('chat-loaded', !!roomId);
-				if (!utils.isMobile()) {
-					chatMainWrapper.find('[data-bs-toggle="tooltip"]').tooltip({
-						trigger: 'hover',
-						container: '#content',
-					});
-				}
-				Chats.setActive(roomId);
-				Chats.addEventListeners();
-				hooks.fire('action:chat.loaded', $('.chats-full'));
-				messages.scrollToBottomAfterImageLoad(chatMainWrapper.find('[component="chat/message/content"]'));
-				if (history.pushState) {
-					history.pushState({
-						url: url,
-					}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + url);
-				}
-			})
-			.catch(function (error) {
-				console.warn('[search] ' + error.message);
+		chatMainWrapper.html(html);
+		chatMainWrapper.attr('data-roomid', roomId);
+		chatNavWrapper = $('[component="chat/nav-wrapper"]');
+		html.find('.timeago').timeago();
+		ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
+		ajaxify.updateTitle(ajaxify.data.title);
+		$('body').toggleClass('chat-loaded', !!roomId);
+		if (!utils.isMobile()) {
+			chatMainWrapper.find('[data-bs-toggle="tooltip"]').tooltip({
+				trigger: 'hover',
+				container: '#content',
 			});
+		}
+		Chats.setActive(roomId);
+		Chats.addEventListeners();
+		hooks.fire('action:chat.loaded', $('.chats-full'));
+		messages.scrollToBottomAfterImageLoad(
+			chatMainWrapper.find('[component="chat/message/content"]')
+		);
+		if (history.pushState) {
+			history.pushState({
+				url: url,
+			}, null, `${window.location.protocol}//${window.location.host}${config.relative_path}/${url}`);
+		}
 	};
 
 	Chats.addGlobalEventListeners = function () {
