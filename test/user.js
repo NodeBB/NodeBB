@@ -2575,7 +2575,7 @@ describe('User', () => {
 
 		it('should respect admin setting in api.user.getEmail', async () => {
 			assert.strictEqual(
-				await apiUser.getEmail({ uid: regularUser.uid }, { uid: hidingUser.uid }),
+				await apiUser.getEmail({ uid: regularUser.uid }, { uid: hidingUser.uid, email: hidingUser.email }),
 				false,
 			);
 		});
