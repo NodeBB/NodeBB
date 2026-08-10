@@ -40,7 +40,7 @@
 				aria-labelledby="invite-member-tab"
 				tabindex="0"
 			>
-				<label class="form-label text-sm">[[groups:invited.search]]</label>
+				<label class="form-label text-sm">{{tx("groups:invited.search")}}</label>
 				<div class="input-group mb-3">
 					<input class="form-control" type="text" component="groups/members/invite"/>
 					<span class="input-group-text search-button"><i class="fa fa-search"></i></span>
@@ -66,7 +66,7 @@
 				tabindex="0"
 			>
 				<div class="">
-					<label class="form-label text-sm">[[groups:bulk-invite-instructions]]</label>
+					<label class="form-label text-sm">{{tx("groups:bulk-invite-instructions")}}</label>
 					<textarea class="form-control" component="groups/members/bulk-invite"></textarea>
 				</div>
 			</div>
