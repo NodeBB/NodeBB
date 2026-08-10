@@ -200,6 +200,29 @@ describe('authentication', () => {
 			assert(Object.keys(sessions).length > 0);
 		});
 
+		it('should track the new session when a logged-in user signs in as another user', async () => {
+			const firstUsername = utils.generateUUID().slice(0, 10);
+			const firstPassword = utils.generateUUID();
+			await user.create({ username: firstUsername, password: firstPassword });
+			const { jar, response: firstLoginResponse } = await helpers.loginUser(firstUsername, firstPassword);
+			assert.strictEqual(firstLoginResponse.statusCode, 200);
+			assert.strictEqual(await db.sortedSetCard(`uid:${uid}:sessions`), 0);
+
+			try {
+				const { response } = await helpers.request('post', '/login', {
+					jar,
+					body: { username, password },
+				});
+				assert.strictEqual(response.statusCode, 200);
+
+				const { body: self } = await request.get(`${nconf.get('url')}/api/self`, { jar });
+				assert.strictEqual(self.uid, uid);
+				assert.strictEqual((await user.auth.getSessions(uid)).length, 1);
+			} finally {
+				await helpers.logoutUser(jar);
+			}
+		});
+
 		it('should set a cookie that only lasts for the life of the browser session', async () => {
 			const { response } = await helpers.loginUser(username, password);
 
