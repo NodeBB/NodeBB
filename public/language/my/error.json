@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "စီမံအုပ်ချုပ်သူမှာ သင်တစ်ယောက်တည်း ဖြစ်ပါသည်။ သင့်ကိုယ်သင် စီမံထိန်းချုပ်သူအဖြစ်မှ ပယ်ဖျက်ခြင်းမပြုမှီ အသုံးပြုသူအခြားတစ်ယောက်ကို စီမံခန့်ခွဲသူအဖြစ် ပေါင်းထည့်ပါ။",
     "account-deletion-disabled": "အကောင့်ဖျက်ခြင်းကို ပိတ်ထားပါသည်",
     "cant-delete-admin": "ဤအကောင့်ကို မဖျက်မီ ၎င်းထံမှ စီမံခန့်ခွဲသူ အခွင့်အရေးများကို ဖယ်ရှားပါ။",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "ဖျက်နေပါပြီ",
     "invalid-image": "မှားယွင်းသော ပုံ",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

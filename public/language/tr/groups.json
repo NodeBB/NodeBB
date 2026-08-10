@@ -64,6 +64,7 @@
     "membership.reject": "Reddet",
     "new-group.group-name": "Grup İsmi:",
     "upload-group-cover": "Grup kapağı yükle",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Bu gruba davet etmek için virgülle ayrılmış adlarının bir listesini girin",
     "bulk-invite": "Toplu Davet",
     "remove-group-cover-confirm": "Kapak görselini silmek istediğinden emin misin?"

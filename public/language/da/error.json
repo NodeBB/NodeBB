@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Du er den eneste administrator. Tilføj en anden bruger som administrator før du fjerner dig selv som administrator",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

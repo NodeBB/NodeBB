@@ -64,6 +64,7 @@
     "membership.reject": "拒否",
     "new-group.group-name": "グループ名:",
     "upload-group-cover": "グループのカバーをアップロード",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "このグループに招待するユーザー名をカンマ区切りで入力してください",
     "bulk-invite": "一括招待",
     "remove-group-cover-confirm": "カバー写真を削除してもよろしいですか？"

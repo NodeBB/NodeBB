@@ -64,6 +64,7 @@
     "membership.reject": "Refuzo",
     "new-group.group-name": "Emri i grupit:",
     "upload-group-cover": "Ngarko foton e coverit për grupin",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Futni një listë të emrave të përdoruesve të ndarë me presje për t'i ftuar në këtë grup",
     "bulk-invite": "Ftesë me shumicë",
     "remove-group-cover-confirm": "Jeni i sigurt që dëshironi ta hiqni foton e coverit?"

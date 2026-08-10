@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Tu esi vienīgais administrators. Pievieno vēl vienu lietotāju kā administratoru, pirms noņemi sevi kā administratoru",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Noņemi administratora tiesības no šī konta, pirms mēģināt to izdzēst.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Nederīgs attēls",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

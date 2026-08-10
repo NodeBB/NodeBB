@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Du bist der einzige Administrator. Füge zuerst einen anderen Administrator hinzu, bevor du dich selbst als Administrator entfernst",
     "account-deletion-disabled": "Kontolöschung ist deaktiviert",
     "cant-delete-admin": "Bevor du versuchst dieses Konto zu löschen, entferne die zugehörigen Administratorrechte.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Bereits gelöscht",
     "invalid-image": "Ungültiges Bild",
     "invalid-image-type": "Ungültiger Bildtyp: %1. Zulässige Typen sind: %2",

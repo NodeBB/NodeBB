@@ -64,6 +64,7 @@
     "membership.reject": "Rifiuta",
     "new-group.group-name": "Nome Gruppo:",
     "upload-group-cover": "Carica copertina gruppo",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Inserisci una lista di nomi utente da invitare in questo gruppo separati da virgole",
     "bulk-invite": "Invito Collettivo",
     "remove-group-cover-confirm": "Sei sicuro di voler rimuovere l'immagine copertina?"

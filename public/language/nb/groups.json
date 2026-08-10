@@ -64,6 +64,7 @@
     "membership.reject": "Avslå",
     "new-group.group-name": "Gruppenavn:",
     "upload-group-cover": "Last opp et omslagsbilde for gruppen",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Skriv inn en liste over kommaseparerte brukernavn for å invitere til denne gruppen",
     "bulk-invite": "Inviter i bulk",
     "remove-group-cover-confirm": "Er du sikker på at du vil fjerne omslagsbildet?"

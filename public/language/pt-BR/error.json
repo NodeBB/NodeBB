@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Você é o único administrador. Adicione outro usuário como administrador antes de remover a si mesmo como admin",
     "account-deletion-disabled": "A exclusão de conta está desabilitada",
     "cant-delete-admin": "Remova os privilégios de administrador dessa conta antes de tentar excluí-la.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Já excluindo",
     "invalid-image": "Imagem Inválida",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

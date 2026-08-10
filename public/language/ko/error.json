@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "내가 유일한 관리자입니다. 관리자 자격을 제거하기 전에 다른 사용자를 관리자로 추가하세요.",
     "account-deletion-disabled": "계정 삭제가 비활성화되었습니다",
     "cant-delete-admin": "이 계정에서 관리자 권한을 제거한 후에 삭제를 시도하세요.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "이미 삭제 중입니다",
     "invalid-image": "잘못된 이미지",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

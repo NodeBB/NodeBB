@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Je bent de enige beheerder. Stel eerst een andere gebruiker als beheerder in voordat je jezelf geen beheerder meer maakt.",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Verwijder administratieve rechten van dit account voordat je probeert deze te verwijderen",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Ongeldige afbeelding",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

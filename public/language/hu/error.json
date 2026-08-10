@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Te vagy az egyedüli adminisztrátor. Adj hozzá egy másik felhasználót az adminisztrátori szerepkörhöz, hogy levehesd magadról az adminisztrátori rangot",
     "account-deletion-disabled": "Fiók törlése ki van kapcsolva",
     "cant-delete-admin": "Vedd el az adminisztrátori jogokat ettől a fióktól mielőtt törölni szeretnéd.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Már törölve",
     "invalid-image": "Érvénytelen kép",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

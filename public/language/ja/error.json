@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "あなたが唯一の管理者です。自分の管理者権限を外す前に、別のユーザーを管理者に追加してください。",
     "account-deletion-disabled": "アカウント削除は無効になっています",
     "cant-delete-admin": "削除する前に、このアカウントから管理者権限を削除してください。",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "削除処理中です",
     "invalid-image": "無効な画像",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

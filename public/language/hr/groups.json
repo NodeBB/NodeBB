@@ -64,6 +64,7 @@
     "membership.reject": "Odbij",
     "new-group.group-name": "Ime grupe:",
     "upload-group-cover": "Promjeni naslovnicu grupe",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Unesi popis korisnika sa zarezima između korisničkih imena za poziv u ovu grupu",
     "bulk-invite": "Masovni poziv",
     "remove-group-cover-confirm": "Jeste li sigurni da želite obrisati sliku naslovnice?"

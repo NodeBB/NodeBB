@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Vi ste jedini administrator. Dodajte korisnika kao administratora prije nego sebe odjavite kao administratora.",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Ukloni administratorske privilegije sa ovog računa prije brisanja.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Invalid image",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

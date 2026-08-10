@@ -64,6 +64,7 @@
     "membership.reject": "Neka",
     "new-group.group-name": "Gruppnamn:",
     "upload-group-cover": "Ladda upp omslagsbild för grupp",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Ange en lista med kommaseparerade användarnamn som du vill bjuda in till denna grupp",
     "bulk-invite": "Massinbjudning",
     "remove-group-cover-confirm": "Vill du verkligen ta bort omslagsbilden?"

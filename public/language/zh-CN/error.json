@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "您是唯一的管理员。在删除您的管理员权限前，请添加另一个管理员。",
     "account-deletion-disabled": "账号删除功能已禁用",
     "cant-delete-admin": "在删除此账号之前，请先移除其管理权限。",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "已在删除中",
     "invalid-image": "无效的图片",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

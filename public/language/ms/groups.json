@@ -64,6 +64,7 @@
     "membership.reject": "Tolak",
     "new-group.group-name": "Nama Kumpulan:",
     "upload-group-cover": "Upload group cover",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Bulk Invite",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"

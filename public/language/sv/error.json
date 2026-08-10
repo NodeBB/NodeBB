@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Du är den enda administratören. Lägg till en annan användare som administratör innan du tar bort dig själv.",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Ta bort administratörsbehörighet från detta konto innan du försöker ta bort den.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Ogiltig bild",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

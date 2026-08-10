@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "آپ واحد ایڈمنسٹریٹر ہیں۔ اپنے آپ کو ایڈمنسٹریٹر سے ہٹانے سے پہلے دوسرے صارف کو ایڈمنسٹریٹر بنائیں",
     "account-deletion-disabled": "اکاؤنٹ حذف کرنا ممنوع ہے",
     "cant-delete-admin": "اس اکاؤنٹ سے ایڈمنسٹریٹر کے حقوق ہٹائیں اسے حذف کرنے سے پہلے۔",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "پہلے سے حذف ہو رہا ہے",
     "invalid-image": "غلط تصویر",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

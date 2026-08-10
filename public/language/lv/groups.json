@@ -64,6 +64,7 @@
     "membership.reject": "Noraidīt",
     "new-group.group-name": "Grupas nosaukums",
     "upload-group-cover": "Augšupielādēt grupas galvenes bildi",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Ievadi sarakstu ar lietotājvārdiem, atdalītajiem ar komatu, kurus uzaicināt uz šo grupu",
     "bulk-invite": "Lielapjoma uzaicinājums",
     "remove-group-cover-confirm": "Vai tiešām vēlies noņemt galvenes bildi?"

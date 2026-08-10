@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Jūs esate vienintelis administratorius. Pridėkite kitą vartotoja kaip administratorių prieš pašalindamas save",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Pašalinkite administratoriaus teises šiai paskyrai prieš bandydami ją ištrinti.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Blogas paveikslėlis",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

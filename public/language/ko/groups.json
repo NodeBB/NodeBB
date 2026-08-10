@@ -64,6 +64,7 @@
     "membership.reject": "거부",
     "new-group.group-name": "그룹 이름:",
     "upload-group-cover": "그룹 커버 업로드",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "초대할 사용자의 쉼표로 구분된 사용자 이름 목록을 입력하세요",
     "bulk-invite": "대량 초대",
     "remove-group-cover-confirm": "커버 이미지를 제거하시겠습니까?"

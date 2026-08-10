@@ -64,6 +64,7 @@
     "membership.reject": "Rechazar",
     "new-group.group-name": "Nombre de Grupo:",
     "upload-group-cover": "Cargar foto para el grupo",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Escribe una lista de nombres de usuario separados por comas a invitar a este grupo",
     "bulk-invite": "Invitación multiple",
     "remove-group-cover-confirm": "¿ Estás seguro de que quieres eliminar la imagen de portada?"

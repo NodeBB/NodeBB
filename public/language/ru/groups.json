@@ -64,6 +64,7 @@
     "membership.reject": "Отклонить",
     "new-group.group-name": "Название группы:",
     "upload-group-cover": "Загрузить обложку группы",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Введите через запятую имена пользователей, которых хотите пригласить в эту группу",
     "bulk-invite": "Массовое приглашение",
     "remove-group-cover-confirm": "Вы уверены, что хотите удалить изображение обложки?"

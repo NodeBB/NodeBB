@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Вы единственный администратор. Чтобы отказаться от своих полномочий, пожалуйста, назначьте администратором другого участника.",
     "account-deletion-disabled": "Удаление аккаунта отключено",
     "cant-delete-admin": "Чтобы удалить эту учётную запись, сначала надо снять с неё полномочия администратора.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "В процессе удаления",
     "invalid-image": "Некорректное изображение",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

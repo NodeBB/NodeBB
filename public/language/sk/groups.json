@@ -64,6 +64,7 @@
     "membership.reject": "Odmietnuť",
     "new-group.group-name": "Názov skupiny:",
     "upload-group-cover": "Nahrať obrázok skupiny",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Zadajte zoznam užívateľských mien oddelených čiarkou, k pozvaniu do tejto skupiny",
     "bulk-invite": "Hromadné pozvanie",
     "remove-group-cover-confirm": "Ste si naozaj istý, že chcete odstrániť titulný obrázok?"

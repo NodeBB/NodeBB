@@ -64,6 +64,7 @@
     "membership.reject": "Elutasítás",
     "new-group.group-name": "Csoport neve:",
     "upload-group-cover": "Csoport fedőkép feltöltése",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Add meg vesszővel elválasztva a csoportba meghívandó felhasználóneveket",
     "bulk-invite": "Tömeges meghívás",
     "remove-group-cover-confirm": "Biztos el akarod távolítani a fedőképet?"

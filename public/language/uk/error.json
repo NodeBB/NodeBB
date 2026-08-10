@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Ви єдиний адміністратор. Додайте іншого користувача в якості адміністратора перш ніж  знімати з себе ці обов'язки.",
     "account-deletion-disabled": "Account deletion is disabled",
     "cant-delete-admin": "Зніміть обов'язки адміністратора з цього акаунту перш ніж видаляти його.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Already deleting",
     "invalid-image": "Невірне зображення",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

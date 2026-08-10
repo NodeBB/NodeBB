@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Դուք միակ ադմինն եք: Ավելացրեք մեկ այլ օգտատեր որպես ադմինիստրատոր՝ նախքան ձեզ որպես ադմինիստրատոր հեռացնելը",
     "account-deletion-disabled": "Հաշվի ջնջումն անջատված է",
     "cant-delete-admin": "Հեռացրեք ադմինիստրատորի իրավունքները այս հաշվից՝ նախքան այն ջնջելը:",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Արդեն ջնջվում է",
     "invalid-image": "Անվավեր նկար",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

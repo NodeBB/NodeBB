@@ -64,6 +64,7 @@
     "membership.reject": "Refuser",
     "new-group.group-name": "Nom du groupe :",
     "upload-group-cover": "Envoyer une image de groupe",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Entrer une liste de nom d'utilisateurs séparés par des virgules pour les inviter à rejoindre ce groupe.",
     "bulk-invite": "Invitation multiple",
     "remove-group-cover-confirm": "Êtes-vous sûr de vouloir supprimer l'image de couverture ?"

@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "คุณเป็นแอดมินเพียงคนเดียว กรุณาเพิ่มผู้ใช้คนอื่นเป็นแอดมิน ก่อนการลบตัวเองออกจากแอดมิน",
     "account-deletion-disabled": "ไม่เปิดให้สามารถลบบัญชี",
     "cant-delete-admin": "ลบสิทธิพิเศษของแอดมินจากบัญชีผู้ใช้นี้ ก่อนทำการลบ",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "กำลังลบอยู่แล้ว",
     "invalid-image": "ภาพไม่ถูกต้อง",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

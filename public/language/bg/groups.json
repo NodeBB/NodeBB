@@ -64,6 +64,7 @@
     "membership.reject": "Отхвърляне",
     "new-group.group-name": "Име на групата:",
     "upload-group-cover": "Качване на снимка за показване на групата",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Въведете списък от потребителски имена, разделени със запетаи",
     "bulk-invite": "Масова покана",
     "remove-group-cover-confirm": "Наистина ли искате да премахнете снимката на корицата?"

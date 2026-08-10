@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Ju jeni i vetmi administrator. Shtoni një përdorues tjetër si administrator përpara se të hiqni veten si administrator",
     "account-deletion-disabled": "Fshirja e llogarisë është çaktivizuar",
     "cant-delete-admin": "Hiqni aksesin e administratorit nga kjo llogari përpara se të përpiqeni ta fshini atë.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Tashmë po fshihet",
     "invalid-image": "Imazh jo i duhur.",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

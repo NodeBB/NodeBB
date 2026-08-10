@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Siz yeganə administratorsunuz. Özünüzü administrator kimi silməzdən əvvəl başqa bir istifadəçini administrator kimi əlavə edin",
     "account-deletion-disabled": "Hesabın silinməsi deaktiv edilib",
     "cant-delete-admin": "Onu silməyə cəhd etməzdən əvvəl bu hesabdan administrator imtiyazlarını silin.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Artıq silinir",
     "invalid-image": "Yanlış şəkil",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

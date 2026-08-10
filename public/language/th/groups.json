@@ -64,6 +64,7 @@
     "membership.reject": "ปฏิเสธ",
     "new-group.group-name": "ชื่อกลุ่ม:",
     "upload-group-cover": "อัพโหลดหน้าปกกลุ่ม",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "กรอกรายชื่อผู้ใช้ที่ต้องการเชิญเข้ากลุ่ม ถ้ามีจำนวนมากกว่า 1 ให้ใช้เครื่องหมาย คอมม่า , ในการแบ่ง",
     "bulk-invite": "เชิญจำนวนมาก",
     "remove-group-cover-confirm": "คุณแน่ใจแล้วใช่ไหมว่าต้องการจะลบภาพหน้าปกนี้?"

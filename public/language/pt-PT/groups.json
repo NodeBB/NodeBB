@@ -64,6 +64,7 @@
     "membership.reject": "Rejeitar",
     "new-group.group-name": "Nome do grupo:",
     "upload-group-cover": "Carregar capa do grupo",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Introduz uma lista de nomes de utilizadores separados por vírgulas para convidar para este grupo",
     "bulk-invite": "Convidar em grupo",
     "remove-group-cover-confirm": "Tens a certeza que queres remover a foto de capa?"

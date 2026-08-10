@@ -127,6 +127,7 @@
     "cant-remove-last-admin": "Du er den eneste administratoren. Legg til en annen bruker som administrator før du fjerner deg selv.",
     "account-deletion-disabled": "Kontosletting er deaktivert",
     "cant-delete-admin": "Fjern administratorrettigheter fra denne kontoen før du prøver å slette den.",
+    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
     "already-deleting": "Sletting pågår allerede",
     "invalid-image": "Ugyldig bilde",
     "invalid-image-type": "Invalid image type: %1. Allowed types are: %2",

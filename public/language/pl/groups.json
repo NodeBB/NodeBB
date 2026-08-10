@@ -64,6 +64,7 @@
     "membership.reject": "Odrzuć",
     "new-group.group-name": "Nazwa grupy:",
     "upload-group-cover": "Prześlij zdjęcie tła grupy",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Wprowadź listę oddzielonych przecinkami nazw użytkowników, których chcesz zaprosić do tej grupy",
     "bulk-invite": "Masowe zaproszenie",
     "remove-group-cover-confirm": "Czy na pewno chcesz usunąć zdjęcie w tle?"

@@ -64,6 +64,7 @@
     "membership.reject": "Lükka tagasi",
     "new-group.group-name": "Grupi nimi:",
     "upload-group-cover": "Lae gruppi pilt üles",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Bulk Invite",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"

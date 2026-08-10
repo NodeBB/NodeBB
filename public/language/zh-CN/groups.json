@@ -64,6 +64,7 @@
     "membership.reject": "拒绝",
     "new-group.group-name": "群组名：",
     "upload-group-cover": "上传群组封面",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "输入您要邀请加入此群组的用户名，多个用户以逗号分隔",
     "bulk-invite": "批量邀请",
     "remove-group-cover-confirm": "确定要移除封面图片吗？"
