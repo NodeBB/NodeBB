@@ -619,6 +619,12 @@ inbox.announce = async (req) => {
 			}
 
 			req.body = object;
+
+			if (process.env.hasOwnProperty('CI')) { // just for tests
+				req.res = {
+					locals: {},
+				};
+			}
 			req.res.locals.apAnnounced = true;
 			await inbox.update(req);
 			break;

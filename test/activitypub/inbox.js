@@ -180,6 +180,7 @@ describe('Inbox', () => {
 		describe('attributedTo validation', () => {
 			describe('private messages (non-public)', () => {
 				before(async function () {
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
 					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 				});
 
@@ -268,7 +269,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should accept a Create(Note) with valid URI attributedTo', async () => {
+				it('should accept a Create(Note) with valid URI attributedTo', async function () {
 					const { id: actor } = helpers.mocks.person();
 					const { note } = helpers.mocks.note({
 						attributedTo: actor,
