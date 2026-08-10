@@ -95,7 +95,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
 		const tagContent = tag.content ?
-			tag.translate ? _tx.call(this, tag.content) : escape(tag.content).replace(/\n/g, ' ') :
+			tag.translate ? escape(_tx.call(this, tag.content)).replace(/\n/g, ' ') : escape(tag.content).replace(/\n/g, ' ') :
 			'';
 		const content = tagContent ? `content="${tagContent}" ` : '';
 
