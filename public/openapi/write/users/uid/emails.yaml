@@ -84,3 +84,5 @@ post:
                       description: An email address
     '400':
       description: error occured (aka email taken)
+    "401":
+      $ref: ../../../components/responses/401.yaml#/401
