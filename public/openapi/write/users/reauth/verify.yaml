@@ -10,7 +10,7 @@ post:
           schema:
             type: object
             properties:
-              reauth:
+              verified:
                 type: boolean
                 example: true
     '401':

@@ -28,7 +28,7 @@ function authenticatedRoutes() {
 	};
 
 	setupApiRoute(router, 'post', '/reauth/verify', [reauthMiddleware], function (req, res) {
-		res.json({ reauth: true });
+		res.json({ verified: true });
 	});
 
 	setupApiRoute(router, 'post', '/', [...middlewares, middleware.checkRequired.bind(null, ['username'])], controllers.write.users.create);
