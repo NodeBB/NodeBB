@@ -254,6 +254,8 @@ async function checkHostname(hostname) {
 /*
 const { body, response } = await request.get('someurl?foo=1&baz=2')
 */
+exports.check = check;
+
 exports.get = async (url, config) => call(url, 'GET', config);
 
 exports.head = async (url, config) => call(url, 'HEAD', config);
