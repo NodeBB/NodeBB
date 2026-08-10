@@ -61,7 +61,7 @@ middleware.verify = async function (req, res, next) {
 		// Set calling user
 		const keyId = req.headers.signature.split(',').filter(line => line.startsWith('keyId="'));
 		if (keyId.length) {
-			req.uid = keyId.shift().slice(7, -1).replace(/#.*$/, '');
+			req.uid = keyId.at(-1).slice(7, -1).replace(/#.*$/, '');
 		}
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
