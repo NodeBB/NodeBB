@@ -257,9 +257,10 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 
 	try {
 		// Use request.get with built-in SSRF protections
-		// Set reasonable timeout
+		// Set reasonable timeout and response size limit
 		const { body } = await request.get(uri, {
 			timeout: 5000, // 5 seconds
+			sizeLimit: 1024 * 1024, // 1MB — public keys are typically <10KB
 			headers: {
 				'accept': ActivityPub._constants.acceptableTypes.at(1),
 			},
