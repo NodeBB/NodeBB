@@ -135,20 +135,16 @@ define('admin/manage/group', [
 
 			switch (action) {
 				case 'toggleOwnership':
-					api[isOwner ? 'del' : 'put'](`/groups/${ajaxify.data.group.slug}/ownership/${uid}`, {}).then(() => {
+					memberList.toggleOwnership(ajaxify.data.group.slug, uid, isOwner).then(() => {
 						ownerFlagEl.toggleClass('invisible');
+						userRow.attr('data-isowner', isOwner ? '0' : '1');
 					}).catch(alerts.error);
 					break;
 
 				case 'kick':
-					modals.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
-						if (!confirm) {
-							return;
-						}
-						api.del('/groups/' + ajaxify.data.group.slug + '/membership/' + uid).then(() => {
-							userRow.slideUp().remove();
-						}).catch(alerts.error);
-					});
+					memberList.kickMember(ajaxify.data.group.slug, uid).then(() => {
+						userRow.remove();
+					}).catch(alerts.error);
 					break;
 				default:
 					break;

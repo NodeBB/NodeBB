@@ -21,14 +21,17 @@ module.exports = function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-	const pathPrefix = path.join(nconf.get('upload_path'));
+	const upload_path = nconf.get('upload_path');
 	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
 
-	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
-	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
-		const fullPath = _getFullPath(filePath);
-		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
-	}))).filter(Boolean);
+	const _getFullPath = relativePath => path.join(upload_path, relativePath);
+	const _filterValidPaths = async function (filePaths) {
+		return (await Promise.all(filePaths.map(async (filePath) => {
+			const fullPath = _getFullPath(filePath);
+			const valid = file.isPathInside(upload_path, fullPath) && await file.exists(fullPath);
+			return valid ? filePath : false;
+		}))).filter(Boolean);
+	};
 
 	Posts.uploads.startJobs = async function () {
 		const runJobs = nconf.get('runJobs');

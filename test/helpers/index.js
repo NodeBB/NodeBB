@@ -59,7 +59,7 @@ helpers.logoutUser = async function (jar) {
 	return { response, body };
 };
 
-helpers.connectSocketIO = function (res, csrf_token) {
+helpers.connectSocketIO = function (res, csrf_token, extraHeaders = {}) {
 	const io = require('socket.io-client');
 	const cookie = res.headers['set-cookie'];
 	const socket = io(nconf.get('base_url'), {
@@ -67,6 +67,7 @@ helpers.connectSocketIO = function (res, csrf_token) {
 		extraHeaders: {
 			Origin: nconf.get('url'),
 			Cookie: cookie,
+			...extraHeaders,
 		},
 		query: {
 			_csrf: csrf_token,

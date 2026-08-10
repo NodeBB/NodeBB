@@ -648,12 +648,11 @@ describe('Controllers', () => {
 		describe('abort behaviour', () => {
 			let jar;
 			let token;
+			const username = utils.generateUUID().slice(0, 10);
+			const password = utils.generateUUID();
 
 			beforeEach(async () => {
-				jar = (await helpers.registerUser({
-					username: utils.generateUUID().slice(0, 10),
-					password: utils.generateUUID(),
-				})).jar;
+				jar = (await helpers.registerUser({ username, password })).jar;
 				token = await helpers.getCsrfToken(jar);
 			});
 
@@ -687,7 +686,21 @@ describe('Controllers', () => {
 					},
 				});
 
-				// Start email change flow
+				// this gets blocked by requirePageReAuth
+				await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
+
+				// reautheticate to get past requirePageReAuth
+				await request.post(`${nconf.get('url')}/login`, {
+					jar,
+					headers: {
+						'x-csrf-token': token,
+					},
+					body: {
+						username: username,
+						password: password,
+					},
+				});
+				// Start email change flow, this
 				await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
 
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
@@ -1010,6 +1023,11 @@ describe('Controllers', () => {
 		});
 
 		describe('/me/*', () => {
+			let jar;
+			before(async () => {
+				jar = (await helpers.loginUser('foo', 'barbar')).jar;
+			});
+
 			it('should redirect to user profile', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/me`, { jar });
 				assert.equal(response.statusCode, 200);
@@ -1145,12 +1163,14 @@ describe('Controllers', () => {
 		});
 
 		describe('user data export routes', () => {
+			let jar;
 			before(async () => {
 				const types = ['profile', 'uploads', 'posts'];
 				await Promise.all(types.map(async (type) => {
 					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
 				}));
 				await sleep(10000);
+				jar = (await helpers.loginUser('foo', 'barbar')).jar;
 			});
 
 			it('should export users posts', async () => {
@@ -1358,16 +1378,15 @@ describe('Controllers', () => {
 			await groups.leave('administrators', fooUid);
 		});
 
-		it('should render edit/password', async () => {
+		it('should render edit/password and get 401', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/api/user/foo/edit/password`, { jar });
-			assert.equal(response.statusCode, 200);
+			assert.equal(response.statusCode, 401);
 		});
 
 		it('should render edit/email', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/email`, { jar });
-
-			assert.strictEqual(response.statusCode, 200);
-			assert.strictEqual(body, '/register/complete');
+			assert.strictEqual(response.statusCode, 401);
+			assert.strictEqual(body.status.code, 'not-authorised');
 
 			await request.post(`${nconf.get('url')}/register/abort`, {
 				jar,
@@ -1378,7 +1397,8 @@ describe('Controllers', () => {
 		});
 
 		it('should render edit/username', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/user/foo/edit/username`, { jar });
+			const { jar } = await helpers.loginUser('foo', 'barbar');
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/username`, { jar });
 			assert.equal(response.statusCode, 200);
 		});
 	});

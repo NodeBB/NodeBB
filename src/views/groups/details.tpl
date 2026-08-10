@@ -65,7 +65,11 @@
 				</div>
 
 				<div class="tab-pane fade" id="groups-invited" role="tabpanel">
-					<h3 class="fw-semibold fs-5 mb-3">{{tx("groups:details.invited")}}</h3>
+					<div class="d-flex align-items-center justify-content-between mb-3">
+						<h3 class="fw-semibold fs-5">{{tx("groups:details.invited")}}</h3>
+						<button component="groups/invite-members" class="btn btn-primary btn-sm" type="button">{{tx("groups:invite-members")}}</button>
+					</div>
+
 					<!-- IMPORT partials/groups/invited.tpl -->
 				</div>
 

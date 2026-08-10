@@ -130,7 +130,7 @@ module.exports = function (User) {
 		const sids = await db.getSortedSetsMembers(uids.map(uid => `uid:${uid}:sessions`));
 		const promises = [];
 		uids.forEach((uid, index) => {
-			const ids = sids[index].filter(id => id !== except);
+			const ids = except ? sids[index].filter(id => id !== except) : sids[index];
 			if (ids.length) {
 				promises.push(User.auth.revokeSession(ids, uid));
 			}

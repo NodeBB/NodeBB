@@ -118,12 +118,10 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (!data.room_id) {
-		throw new Error(`[[error:invalid-room-id, ${data.room_id}]]`);
-	}
-	const [exists, deleted] = await Promise.all([
+	const [exists, { deleted, tid }, canRead] = await Promise.all([
 		posts.exists(data.pid),
-		posts.getPostField(data.pid, 'deleted'),
+		posts.getPostFields(data.pid, ['deleted', 'tid']),
+		privileges.posts.canRead(data.pid, caller.uid),
 	]);
 
 	if (!exists) {
@@ -133,6 +131,11 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 	if (deleted) {
 		throw new Error('[[error:post-deleted]]');
 	}
+
+	if (!canRead) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	data.room_id = `topic_${tid}`;
 
 	/*
 	hooks:

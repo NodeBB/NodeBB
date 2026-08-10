@@ -1,18 +1,3 @@
-<label class="text-xs text-muted">{{tx("groups:invited.search")}}</label>
-<div class="input-group mb-2">
-	<input class="form-control" type="text" component="groups/members/invite"/>
-	<span class="input-group-text search-button"><i class="fa fa-search"></i></span>
-</div>
-
-<div class="mb-2">
-	<label class="text-xs text-muted">{{tx("groups:bulk-invite-instructions")}}</label>
-	<textarea class="form-control" component="groups/members/bulk-invite"></textarea>
-</div>
-
-<div class="mb-2 clearfix">
-	<button type="button" class="btn btn-primary btn-sm float-end" component="groups/members/bulk-invite-button">{{tx("groups:bulk-invite")}}</button>
-</div>
-
 <div style="max-height: 500px; overflow: auto;">
 	<div component="groups/invited/alert" class="alert alert-info {{{ if group.invited.length }}}hidden{{{ end }}}">{{tx("groups:invited.none")}}</div>
 	<table component="groups/invited" class="table table-hover">

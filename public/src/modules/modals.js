@@ -68,7 +68,10 @@ export async function promptPassword(opts) {
 	if (typeof opts === 'string') {
 		opts = { title: opts };
 	}
-	opts = opts || {};
+	opts = opts || {
+		title: '[[user:current-password]]',
+		message: '[[user:emailUpdate.password-challenge]]',
+	};
 
 	return await new Promise((resolve) => {
 		prompt({

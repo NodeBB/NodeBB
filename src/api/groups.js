@@ -29,6 +29,14 @@ groupsAPI.list = async (caller, data) => {
 	const groupsPerPage = 15;
 	const start = Math.max(0, page - 1) * groupsPerPage;
 	const stop = start + groupsPerPage - 1;
+
+	if (data.query) {
+		data.options = data.options || {};
+		data.options.filterHidden = data.options.filterHidden || !await user.isAdministrator(caller.uid);
+		const groupData = await groups.search(data.query, data.options);
+		return { groups: groupData.slice(start, stop + 1), nextStart: stop + 1 };
+	}
+
 	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
 
 	return { groups: groupData, nextStart: stop + 1 };

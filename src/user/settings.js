@@ -54,8 +54,8 @@ module.exports = function (User) {
 		const defaultTopicsPerPage = meta.config.topicsPerPage;
 		const defaultPostsPerPage = meta.config.postsPerPage;
 
-		settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1;
-		settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1;
+		settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1 && !meta.config.hideEmail;
+		settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1 && !meta.config.hideFullname;
 		settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
 		settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 		settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;

@@ -10,14 +10,14 @@ const { setupApiRoute } = routeHelpers;
 module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn];
 	const groupsReAuth = middleware.requireAPIReAuth({
-		maxAgeInMinutes: 5,
+		maxAgeInMinutes: 2,
 	});
 
-	async function groupReAuthMiddleware(req, res, next) {
+	async function groupReAuthAdminOnly(req, res, next) {
 		if (req.params.slug === 'administrators') {
-			await middleware.requirePasswordAuth(req, res, next);
-		} else {
 			await groupsReAuth(req, res, next);
+		} else {
+			next();
 		}
 	}
 
@@ -29,18 +29,18 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/:slug/members', [...middlewares, middleware.assert.group], controllers.write.groups.listMembers);
 
-	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.join);
-	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.leave);
+	setupApiRoute(router, 'put', '/:slug/membership/:uid', [...middlewares, middleware.assert.group, groupReAuthAdminOnly], controllers.write.groups.join);
+	setupApiRoute(router, 'delete', '/:slug/membership/:uid', [...middlewares, middleware.assert.group, groupReAuthAdminOnly], controllers.write.groups.leave);
 
-	setupApiRoute(router, 'put', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.grant);
-	setupApiRoute(router, 'delete', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group, groupReAuthMiddleware], controllers.write.groups.rescind);
+	setupApiRoute(router, 'put', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group, groupsReAuth], controllers.write.groups.grant);
+	setupApiRoute(router, 'delete', '/:slug/ownership/:uid', [...middlewares, middleware.assert.group, groupsReAuth], controllers.write.groups.rescind);
 
 	setupApiRoute(router, 'get', '/:slug/pending', [...middlewares, middleware.assert.group], controllers.write.groups.getPending);
 	setupApiRoute(router, 'put', '/:slug/pending/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.accept);
 	setupApiRoute(router, 'delete', '/:slug/pending/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.reject);
 
 	setupApiRoute(router, 'get', '/:slug/invites', [...middlewares, middleware.assert.group], controllers.write.groups.getInvites);
-	setupApiRoute(router, 'post', '/:slug/invites/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.issueInvite);
+	setupApiRoute(router, 'post', '/:slug/invites/:uid', [...middlewares, middleware.assert.group, groupReAuthAdminOnly], controllers.write.groups.issueInvite);
 	setupApiRoute(router, 'put', '/:slug/invites/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.acceptInvite);
 	setupApiRoute(router, 'delete', '/:slug/invites/:uid', [...middlewares, middleware.assert.group], controllers.write.groups.rejectInvite);
 

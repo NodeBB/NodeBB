@@ -72,18 +72,23 @@ async function registerAndLoginUser(req, res, userData) {
 	return complete;
 }
 
+async function validateRegistrationPolicy(userData) {
+	const registrationType = meta.config.registrationType || 'normal';
+	if (registrationType === 'disabled') {
+		return false;
+	}
+	if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+		await user.verifyInvitation(userData);
+	}
+	return true;
+}
+
 // POST /register
 authenticationController.register = async function (req, res) {
-	const registrationType = meta.config.registrationType || 'normal';
-
-	if (registrationType === 'disabled') {
-		return res.sendStatus(403);
-	}
-
 	const userData = req.body;
 	try {
-		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-			await user.verifyInvitation(userData);
+		if (!await validateRegistrationPolicy(userData)) {
+			return res.sendStatus(403);
 		}
 
 		user.checkUsernameLength(userData.username);
@@ -114,6 +119,14 @@ authenticationController.register = async function (req, res) {
 // POST /register/complete
 authenticationController.registerComplete = async function (req, res) {
 	try {
+		if (
+			req.session.registration?.register === true &&
+			!await validateRegistrationPolicy(req.session.registration)
+		) {
+			delete req.session.registration;
+			return res.sendStatus(403);
+		}
+
 		// For the interstitials that respond, execute the callback with the form body
 		const data = await user.interstitials.get(req, req.session.registration);
 		const callbacks = data.interstitials.reduce((memo, cur) => {
@@ -319,8 +332,9 @@ authenticationController.doLogin = async function (req, uid) {
 	if (!uid) {
 		return;
 	}
+	const isSelf = parseInt(req.uid, 10) === parseInt(uid, 10);
 	const loginAsync = util.promisify(req.login).bind(req);
-	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && !(req.loggedIn && uid !== req.uid);
+	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && (!req.loggedIn || isSelf);
 	await loginAsync({ uid: uid }, { keepSessionInfo });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
@@ -330,8 +344,10 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 	 * Older code required that this method be called from within the SSO plugin.
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
 	 * called in NodeBB core. However, if already called, return prematurely
+	 * only if the user is logging in as themselves and not forcing a reauth.
 	 */
-	if (req.loggedIn && !req.session.forceLogin) {
+	const isSelfRelogin = req.loggedIn && parseInt(req.uid, 10) === parseInt(uid, 10);
+	if (isSelfRelogin && !req.session.forceLogin) {
 		return true;
 	}
 

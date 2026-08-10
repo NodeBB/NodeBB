@@ -228,7 +228,8 @@ describe('Messaging Library', () => {
 
 		it('should sanitize system messages', async () => {
 			const oldValue = meta.config.showFullnameAsDisplayName;
-			meta.config.showFullnameAsDisplayName = true;
+			meta.config.showFullnameAsDisplayName = 1;
+			meta.config.hideFullname = 0;
 			const uid1 = await User.create({
 				username: utils.generateUUID().slice(0, 8),
 				fullname: '<script>alert("xss")</script>',

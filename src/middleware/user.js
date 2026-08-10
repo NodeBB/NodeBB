@@ -199,7 +199,8 @@ module.exports = function (middleware) {
 	});
 
 	middleware.redirectToAccountIfLoggedIn = helpers.try(async (req, res, next) => {
-		if ((req.path === '/login' && req.session.forceLogin) || req.uid <= 0) {
+		const isLoginPage = req.path.startsWith('/login') || req.path.startsWith('/api/login');
+		if ((isLoginPage && req.session.forceLogin) || req.uid <= 0) {
 			return next();
 		}
 		const userslug = await user.getUserField(req.uid, 'userslug');

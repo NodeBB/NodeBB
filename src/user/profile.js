@@ -22,8 +22,9 @@ module.exports = function (User) {
 			...await db.getSortedSetRange('user-custom-fields', 0, -1),
 		];
 		if (Array.isArray(extraFields)) {
-			fields = _.uniq(fields.concat(extraFields));
+			fields = fields.concat(extraFields);
 		}
+		fields = _.uniq(fields).filter(field => !User.protectedFields.includes(field));
 		if (!data.uid) {
 			throw new Error('[[error:invalid-update-uid]]');
 		}
@@ -359,9 +360,12 @@ module.exports = function (User) {
 		if (uid <= 0 || !data || !data.uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
+		uid = String(uid);
+		data.uid = String(data.uid);
 		User.isPasswordValid(data.newPassword);
-		const [isAdmin, hasPassword] = await Promise.all([
+		const [isAdmin, isTargetAdmin, hasPassword] = await Promise.all([
 			User.isAdministrator(uid),
+			User.isAdministrator(data.uid),
 			User.hasPassword(uid),
 		]);
 
@@ -369,9 +373,9 @@ module.exports = function (User) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
-		if (!isAdmin && !isSelf) {
+		const isSelf = uid === data.uid;
+		const allowedToChange = isSelf || (isAdmin && !isTargetAdmin);
+		if (!allowedToChange) {
 			throw new Error('[[user:change-password-error-privileges]]');
 		}
 
@@ -388,18 +392,21 @@ module.exports = function (User) {
 		}
 
 		const hashedPassword = await User.hashPassword(data.newPassword);
-		await Promise.all([
-			User.setUserFields(data.uid, {
-				password: hashedPassword,
-				'password:shaWrapped': 1,
-				rss_token: utils.generateUUID(),
-			}),
-			User.reset.cleanByUid(data.uid),
-			User.reset.updateExpiry(data.uid),
-			User.auth.revokeAllSessions(data.uid),
-			User.email.expireValidation(data.uid),
-		]);
+		await User.setUserFields(data.uid, {
+			password: hashedPassword,
+			'password:shaWrapped': 1,
+			rss_token: utils.generateUUID(),
+		}),
+		await User.onPasswordChange(uid, data.uid);
+	};
 
-		plugins.hooks.fire('action:password.change', { uid: uid, targetUid: data.uid });
+	User.onPasswordChange = async function (uid, targetUid) {
+		await Promise.all([
+			User.reset.cleanByUid(targetUid),
+			User.reset.updateExpiry(targetUid),
+			User.auth.revokeAllSessions(targetUid),
+			User.email.expireValidation(targetUid),
+		]);
+		plugins.hooks.fire('action:password.change', { uid, targetUid });
 	};
 };

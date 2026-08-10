@@ -5,6 +5,13 @@
 </div>
 <div class="row login flex-fill">
 	<div class="d-flex flex-column gap-2 {{{ if widgets.sidebar.length }}}col-lg-9 col-sm-12{{{ else }}}col-lg-12{{{ end }}}">
+		{{{ if reauthNotice }}}
+		<div class="d-flex justify-content-center">
+			<div class="alert alert-warning" role="alert">
+				{{tx("error:api.reauth-required")}}
+			</div>
+		</div>
+		{{{ end }}}
 		<h2 class="tracking-tight fw-semibold text-center">{{tx("global:login")}}</h2>
 		<div class="row justify-content-center gap-5">
 			{{{ if allowLocalLogin }}}
