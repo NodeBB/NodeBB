@@ -159,9 +159,9 @@ Auth.reloadRoutes = async function (params) {
 
 	const upload = require('../middleware/multer');
 	const middlewares = [
-		upload.any(),
 		Auth.middleware.applyCSRF,
 		Auth.middleware.applyBlacklist,
+		upload.any(),
 	];
 
 	router.post('/register', middlewares, controllers.authentication.register);
