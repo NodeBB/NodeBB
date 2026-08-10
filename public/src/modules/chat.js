@@ -386,9 +386,9 @@ define('chat', [
 				});
 
 				function gotoChats() {
-					const text = components.get('chat/input').val();
+					const text = chatModal.find('[component="chat/input"]').val();
 					$(window).one('action:ajaxify.end', function () {
-						components.get('chat/input').val(text);
+						components.get('chat/main-wrapper').find('[component="chat/input"]').val(text);
 					});
 
 					ajaxify.go(`user/${app.user.userslug}/chats/${roomId}`);

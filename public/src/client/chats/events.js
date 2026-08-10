@@ -50,7 +50,12 @@ define('forum/chats/events', [
 				Chats.newMessage = data.self === 0;
 			}
 
-			messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
+			const chatContentEl = components.get('chat/main-wrapper')
+				.find('[component="chat/message/content"]');
+			// don't add if already added (via the chat modal handler)
+			if (chatContentEl.length && !chatContentEl.find(`[data-mid="${data.message.messageId}"]`).length) {
+				messages.appendChatMessage(chatContentEl, data.message);
+			}
 		}
 
 		if (!data.message.system) {

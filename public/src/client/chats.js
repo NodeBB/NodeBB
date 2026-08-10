@@ -71,7 +71,7 @@ define('forum/chats', [
 			Chats.addHotkeys();
 		}
 
-		const chatContentEl = $('[component="chat/message/content"]');
+		const chatContentEl = $('[component="chat/main-wrapper"] [component="chat/message/content"]');
 		messages.wrapImagesInLinks(chatContentEl);
 		if (ajaxify.data.scrollToIndex) {
 			messages.toggleScrollUpAlert(chatContentEl);
@@ -95,14 +95,14 @@ define('forum/chats', [
 	Chats.addEventListeners = function () {
 		const { roomId } = ajaxify.data;
 		const mainWrapper = $('[component="chat/main-wrapper"]');
-		const chatMessageContent = $('[component="chat/message/content"]');
-		const chatControls = components.get('chat/controls');
-		const chatInput = $('[component="chat/input"]');
+		const chatMessageContent = mainWrapper.find('[component="chat/message/content"]');
+		const chatControls = mainWrapper.find('[component="chat/controls"]');
+		const chatInput = mainWrapper.find('[component="chat/input"]');
 
-		Chats.addSendHandlers(roomId, chatInput, $('.expanded-chat button[data-action="send"]'));
+		Chats.addSendHandlers(roomId, chatInput, mainWrapper.find('.expanded-chat button[data-action="send"]'));
 		Chats.addMobileResizeHandler(chatMessageContent);
 		Chats.addPopoutHandler();
-		Chats.addActionHandlers(components.get('chat/message/window'), roomId);
+		Chats.addActionHandlers(mainWrapper.find('[component="chat/message/window"]'), roomId);
 		Chats.addManageHandler(roomId, chatControls.find('[data-action="manage"]'));
 		Chats.addRenameHandler(roomId, chatControls.find('[data-action="rename"]'));
 		Chats.addLeaveHandler(roomId, chatControls.find('[data-action="leave"]'));
@@ -119,12 +119,12 @@ define('forum/chats', [
 		Chats.addUploadHandler({
 			dragDropAreaEl: $('.chats-full'),
 			pasteEl: chatInput,
-			uploadFormEl: $('[component="chat/upload"]'),
-			uploadBtnEl: $('[component="chat/upload/button"]'),
+			uploadFormEl: mainWrapper.find('[component="chat/upload"]'),
+			uploadBtnEl: mainWrapper.find('[component="chat/upload/button"]'),
 			inputEl: chatInput,
 		});
 
-		$('[data-action="close"]').on('click', async function () {
+		mainWrapper.find('[data-action="close"]').on('click', async function () {
 			if (ajaxify.data.roomId) {
 				await api.del(`/chats/${ajaxify.data.roomId}/state`, {});
 			}
@@ -286,7 +286,7 @@ define('forum/chats', [
 
 	Chats.addPopoutHandler = function () {
 		$('[data-action="pop-out"]').on('click', function () {
-			const text = components.get('chat/input').val();
+			const text = components.get('chat/main-wrapper').find('[component="chat/input"]').val();
 			const roomId = ajaxify.data.roomId;
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
@@ -298,8 +298,8 @@ define('forum/chats', [
 				chatModule.openChat(roomId, ajaxify.data.uid);
 			}
 
-			$(window).one('action:chat.loaded', function () {
-				components.get('chat/input').val(text);
+			$(window).one('action:chat.loaded', function (ev, chatModal) {
+				$(chatModal).find('[component="chat/input"]').val(text);
 			});
 		});
 	};
@@ -454,10 +454,11 @@ define('forum/chats', [
 			}
 		});
 		mousetrap.bind('up', function (e) {
-			const inputEl = components.get('chat/input');
+			const mainWrapper = components.get('chat/main-wrapper');
+			const inputEl = mainWrapper.find('[component="chat/input"]');
 			if (e.target === inputEl.get(0) && !inputEl.val()) {
 				// Retrieve message id from messages list
-				const message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();
+				const message = mainWrapper.find('[component="chat/messages"] .chat-message[data-self="1"]').last();
 				if (!message.length) {
 					return;
 				}
@@ -768,9 +769,9 @@ define('forum/chats', [
 			}
 
 			if (!utils.isMobile()) {
-				$('.expanded-chat [component="chat/input"]').focus();
+				$('[component="chat/main-wrapper"] [component="chat/input"]').focus();
 			}
-			messages.updateTextAreaHeight($(`[component="chat/messages"][data-roomid="${roomId}"]`));
+			messages.updateTextAreaHeight($(`[component="chat/main-wrapper"] [component="chat/messages"][data-roomid="${roomId}"]`));
 		}
 
 		chatNavWrapper.attr('data-loaded', roomId ? '1' : '0');
