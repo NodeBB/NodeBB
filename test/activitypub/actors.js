@@ -9,6 +9,7 @@ const install = require('../../src/install');
 const categories = require('../../src/categories');
 const user = require('../../src/user');
 const topics = require('../../src/topics');
+const posts = require('../../src/posts');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 const request = require('../../src/request');
@@ -701,6 +702,34 @@ describe('Controllers', () => {
 					content: 'Lorem ipsum dolor sit amet',
 					timestamp: Date.now() + (1000 * 60 * 60), // 1 hour in the future
 				}));
+
+				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				}));
+			});
+
+			it('should respond with a 404 Not Found', async () => {
+				assert(response);
+				assert.strictEqual(response.statusCode, 404);
+			});
+		});
+
+		describe('Soft deleted', () => {
+			let topicData;
+			let response;
+			let body;
+
+			before(async () => {
+				({ topicData } = await topics.post({
+					uid,
+					cid,
+					title: 'Lorem "Lipsum" Ipsum',
+					content: 'Lorem ipsum dolor sit amet',
+				}));
+
+				await topics.delete(topicData.tid, uid);
 
 				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
 					headers: {

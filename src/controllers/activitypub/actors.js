@@ -150,10 +150,14 @@ Actors.topic = async function (req, res, next) {
 
 	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
-	const { cid, title: name, mainPid, slug, timestamp } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp']);
+	const { cid, title: name, mainPid, slug, timestamp, deleted } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp', 'deleted']);
 	try {
 		if (timestamp > Date.now()) { // Scheduled topic, no response
 			return next();
+		}
+
+		if (deleted) { // Soft-deleted topic, no response
+			return res.sendStatus(404);
 		}
 
 		let collection;
