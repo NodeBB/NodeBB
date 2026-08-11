@@ -127,7 +127,7 @@
     "cant-remove-last-admin": "Sei l'unico Amministratore. Aggiungi un altro amministratore prima di rimuovere il tuo ruolo",
     "account-deletion-disabled": "L'eliminazione dell'account è disabilitata",
     "cant-delete-admin": "Togli i privilegi amministrativi da questo account prima di provare ad eliminarlo.",
-    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
+    "cant-remove-self-as-admin": "Non è possibile rimuovere se stessi dal ruolo di amministratore.",
     "already-deleting": "Sto già eliminando",
     "invalid-image": "Immagine non Valida",
     "invalid-image-type": "Tipo di immagine non valido: %1. I tipi consentiti sono: %2",
