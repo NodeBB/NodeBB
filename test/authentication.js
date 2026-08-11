@@ -437,12 +437,12 @@ describe('authentication', () => {
 		}
 
 		async function completeRegistration(jar) {
+			const formData = new FormData();
+			formData.append('gdpr_agree_data', 'on');
+			formData.append('gdpr_agree_email', 'on');
 			return await helpers.request('post', '/register/complete', {
 				jar,
-				body: {
-					gdpr_agree_data: 'on',
-					gdpr_agree_email: 'on',
-				},
+				body: formData,
 				redirect: 'manual',
 			});
 		}
