@@ -27,6 +27,8 @@
     "details.invited": "Pakviesti nariai",
     "details.has-no-posts": "Šios grupės nariai neatliko jokių įrašų.",
     "details.latest-posts": "Vėliausi įrašai",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Asmeniška",
     "details.disableJoinRequests": "Disable join requests",
     "details.disableLeave": "Disallow users from leaving the group",

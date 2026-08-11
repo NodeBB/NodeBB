@@ -27,6 +27,8 @@
     "details.invited": "Davet Edilen Üyeler",
     "details.has-no-posts": "Bu grubun üyeleri henüz bir ileti göndermedi.",
     "details.latest-posts": "En son iletiler",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Özel",
     "details.disableJoinRequests": "Katılma isteklerini devre dışı bırak",
     "details.disableLeave": "Üyelerin gruptan ayrılmasını yasakla",

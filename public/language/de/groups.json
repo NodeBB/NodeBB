@@ -27,6 +27,8 @@
     "details.invited": "Eingeladene Mitglieder",
     "details.has-no-posts": "Die Mitglieder dieser Gruppe haben keine Beiträge verfasst.",
     "details.latest-posts": "Neueste Beiträge",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privat",
     "details.disableJoinRequests": "Deaktiviere Beitrittsanfragen",
     "details.disableLeave": "Benutzer daran hindern die Gruppe zu verlassen",
@@ -64,7 +66,7 @@
     "membership.reject": "Ablehnen",
     "new-group.group-name": "Gruppenname:",
     "upload-group-cover": "Gruppentitelbild hochladen",
-    "invite-members": "Invite Members",
+    "invite-members": "Mitglieder einladen",
     "bulk-invite-instructions": "Gib eine mit Kommata getrennte Liste von Benutzernamen ein, um sie in diese Gruppe aufzunehmen",
     "bulk-invite": "Mehrere einladen",
     "remove-group-cover-confirm": "Bist du sicher, dass du dein Titelbild entfernen möchtest?"

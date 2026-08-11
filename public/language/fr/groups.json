@@ -27,6 +27,8 @@
     "details.invited": "Inviter des Membres",
     "details.has-no-posts": "Les membres de ce groupe n'ont envoyé aucun message.",
     "details.latest-posts": "Derniers messages",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privé",
     "details.disableJoinRequests": "Désactiver les demandes d'adhésion",
     "details.disableLeave": "Interdire aux utilisateurs de quitter le groupe",

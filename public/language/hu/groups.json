@@ -27,6 +27,8 @@
     "details.invited": "Meghívott tagok",
     "details.has-no-posts": "A csoport tagjai nem tettek még közzé hozzászólást.",
     "details.latest-posts": "Legutóbbi hozzászólások",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privát",
     "details.disableJoinRequests": "Csatlakozási kérelem kikapcsolva",
     "details.disableLeave": "Felhasználók nem hagyhatják el ezt a csoportot",

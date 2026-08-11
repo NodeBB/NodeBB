@@ -27,6 +27,8 @@
     "details.invited": "已邀请成员",
     "details.has-no-posts": "此群组的成员尚未发表任何帖子。",
     "details.latest-posts": "最新帖子",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "私有",
     "details.disableJoinRequests": "禁用申请加入群组",
     "details.disableLeave": "禁止用户离开群组",

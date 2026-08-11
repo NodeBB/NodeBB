@@ -27,6 +27,8 @@
     "details.invited": "Inviterede Medlemmer",
     "details.has-no-posts": "Medlemmer af denne gruppe har ikke oprettet indlæg.",
     "details.latest-posts": "seneste indlæg",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privat",
     "details.disableJoinRequests": "Deaktiver Anmodninger",
     "details.disableLeave": "Disallow users from leaving the group",

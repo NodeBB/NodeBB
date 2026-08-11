@@ -27,6 +27,8 @@
     "details.invited": "Uitgenodigde leden",
     "details.has-no-posts": "Deze groepleden hebben nog geen berichten geplaatst",
     "details.latest-posts": "Meest recente berichten",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Prive",
     "details.disableJoinRequests": "Groepsverzoeken uitschakelen",
     "details.disableLeave": "Sta gebruikers niet toe de groep te verlaten",

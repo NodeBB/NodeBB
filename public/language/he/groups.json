@@ -27,6 +27,8 @@
     "details.invited": "חברים מוזמנים",
     "details.has-no-posts": "חברי הקבוצה הזו לא העלו אף פוסט.",
     "details.latest-posts": "פוסטים אחרונים",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "פרטי",
     "details.disableJoinRequests": "השבתת בקשות הצטרפות",
     "details.disableLeave": "משתמשים לא יוכלו לעזוב את הקבוצה",

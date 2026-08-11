@@ -27,6 +27,8 @@
     "details.invited": "Pozvaní členové",
     "details.has-no-posts": "Členové této skupiny dosud neodeslali ani jeden příspěvek.",
     "details.latest-posts": "Nejnovější příspěvky",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Soukromé",
     "details.disableJoinRequests": "Zakázat žádosti o připojení",
     "details.disableLeave": "Nedovolit uživatelům upustit skupinu",

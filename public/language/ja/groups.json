@@ -27,6 +27,8 @@
     "details.invited": "招待メンバー",
     "details.has-no-posts": "これらのメンバーは、まだ投稿を行っていません。",
     "details.latest-posts": "最近の投稿",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "プライベート",
     "details.disableJoinRequests": "参加申請を無効にする",
     "details.disableLeave": "グループからの離脱を禁止する",

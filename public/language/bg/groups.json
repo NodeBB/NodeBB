@@ -27,6 +27,8 @@
     "details.invited": "Поканени членове",
     "details.has-no-posts": "Членовете на тази група не са публикували нищо.",
     "details.latest-posts": "Скорошни публикации",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Частна",
     "details.disableJoinRequests": "Забраняване на заявките за присъединяване",
     "details.disableLeave": "Забраняване на потребители да напускат групата",
@@ -64,7 +66,7 @@
     "membership.reject": "Отхвърляне",
     "new-group.group-name": "Име на групата:",
     "upload-group-cover": "Качване на снимка за показване на групата",
-    "invite-members": "Invite Members",
+    "invite-members": "Канене на членове",
     "bulk-invite-instructions": "Въведете списък от потребителски имена, разделени със запетаи",
     "bulk-invite": "Масова покана",
     "remove-group-cover-confirm": "Наистина ли искате да премахнете снимката на корицата?"
