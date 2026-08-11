@@ -27,6 +27,8 @@
     "details.invited": "Membros convidados",
     "details.has-no-posts": "Non hai publicacións neste grupo",
     "details.latest-posts": "Últimas Publicacións",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privado",
     "details.disableJoinRequests": "Desactivar as peticións de unión",
     "details.disableLeave": "Disallow users from leaving the group",

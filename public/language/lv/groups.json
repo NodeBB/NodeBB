@@ -27,6 +27,8 @@
     "details.invited": "Uzaicinātie biedri",
     "details.has-no-posts": "Šīs grupas biedri nav publicējuši nevienu rakstu.",
     "details.latest-posts": "Pēdējie raksti",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privāta",
     "details.disableJoinRequests": "Atspējot biedra pieprasījumus",
     "details.disableLeave": "Disallow users from leaving the group",

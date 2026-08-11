@@ -27,6 +27,8 @@
     "details.invited": "Abatumiwe",
     "details.has-no-posts": "Uyu munyamuryango ntabwo arashyiraho ikintu na kimwe",
     "details.latest-posts": "Ibiheruka Gushyirwaho",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Yigenga",
     "details.disableJoinRequests": "Guhagarika ubusabe bwo kwinjira",
     "details.disableLeave": "Disallow users from leaving the group",

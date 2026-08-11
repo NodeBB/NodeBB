@@ -27,6 +27,8 @@
     "details.invited": "Invited Members",
     "details.has-no-posts": "এই গ্রুপের সদস্যরা এখনো কোন পোষ্ট করেন নি",
     "details.latest-posts": "সর্বশেষ পোষ্টসমূহ",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Private",
     "details.disableJoinRequests": "Disable join requests",
     "details.disableLeave": "Disallow users from leaving the group",

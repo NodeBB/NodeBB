@@ -27,6 +27,8 @@
     "details.invited": "Kutsutud liikmed",
     "details.has-no-posts": "Selle grupi liikmed ei ole teinud ühtegi postitust.",
     "details.latest-posts": "Viimased postitused",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privaatne",
     "details.disableJoinRequests": "Keela ühinemis taotlused",
     "details.disableLeave": "Disallow users from leaving the group",

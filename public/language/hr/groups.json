@@ -27,6 +27,8 @@
     "details.invited": "Pozvani korisnici",
     "details.has-no-posts": "Članovi ove grupe nisu objavljivali.",
     "details.latest-posts": "Zadnje objave",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privatno",
     "details.disableJoinRequests": "Onemogući zahtjeve za pristup",
     "details.disableLeave": "Disallow users from leaving the group",
