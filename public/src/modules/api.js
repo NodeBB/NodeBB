@@ -87,9 +87,10 @@ async function xhr(options) {
 	if (!res.ok) {
 		if (response) {
 			const jsonError = isJSON && (response.status?.message || response.error || '');
+			const fallbackError = typeof response === 'string' ? response : (res.statusText || `[[error:api.${res.status}]]`);
 			throw new Error(isJSON && jsonError ?
 				jsonError :
-				typeof response === 'string' ? response : res.statusText
+				fallbackError
 			);
 		}
 		throw new Error(res.statusText);
