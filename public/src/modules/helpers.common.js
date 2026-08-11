@@ -74,7 +74,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
-		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
+		const translation = tx.resolveKey(this?._i18n?.[namespace], key);
+		if (!namespace || !key || !translation) {
 			return tx.fixDoubleEscaped(tx.escapeHTML(token));
 		}
 
@@ -87,7 +88,6 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			return escapedArg;
 		});
 
-		const translation = this._i18n[namespace][key];
 		return tx.replaceArguments(translation, escapedArgs);
 	}
 

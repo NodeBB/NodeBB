@@ -26,6 +26,33 @@ module.exports = function (utils, load, warn) {
 		return parseTranslationString(str).some(token => token.tx);
 	}
 
+	// supports nested keys like 'nested-key.nested-1' and returns the value if found, otherwise returns false
+	function resolveKey(x, key) {
+		if (!x || !key) return false;
+		if (typeof x[key] === 'string') return x[key];
+		const keyParts = key.split('.');
+		for (let i = 0; i <= keyParts.length; i++) {
+			if (i === keyParts.length) {
+				// default to trying to find key with the same name as parent or equal to empty string
+				return x[keyParts[i - 1]] !== undefined ? x[keyParts[i - 1]] : x[''];
+			}
+			switch (typeof x[keyParts[i]]) {
+				case 'object':
+					x = x[keyParts[i]];
+					break;
+				case 'string':
+					if (i === keyParts.length - 1) {
+						return x[keyParts[i]];
+					}
+
+					return false;
+
+				default:
+					return false;
+			}
+		}
+	}
+
 	// takes token '[[topic:moved-from, arg1, arg2]]' and
 	// normalizes it to ['topic:moved-from', ['arg1', 'arg2']]
 	function normalizeToken(token, ignoreArgs = false) {
@@ -303,28 +330,7 @@ module.exports = function (utils, load, warn) {
 
 			if (key) {
 				return translation.then(function (x) {
-					if (typeof x[key] === 'string') return x[key];
-					const keyParts = key.split('.');
-					for (let i = 0; i <= keyParts.length; i++) {
-						if (i === keyParts.length) {
-							// default to trying to find key with the same name as parent or equal to empty string
-							return x[keyParts[i - 1]] !== undefined ? x[keyParts[i - 1]] : x[''];
-						}
-						switch (typeof x[keyParts[i]]) {
-							case 'object':
-								x = x[keyParts[i]];
-								break;
-							case 'string':
-								if (i === keyParts.length - 1) {
-									return x[keyParts[i]];
-								}
-
-								return false;
-
-							default:
-								return false;
-						}
-					}
+					return resolveKey(x, key);
 				});
 			}
 			return translation;
@@ -491,6 +497,7 @@ module.exports = function (utils, load, warn) {
 		},
 		isTranslationKey: isTranslationKey,
 		hasTranslationKey: hasTranslationKey,
+		resolveKey: resolveKey,
 
 		flush: function () {
 			Object.keys(Translator.cache).forEach(function (code) {

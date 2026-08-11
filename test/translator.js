@@ -22,6 +22,9 @@ describe('Translator shim', () => {
 			context._i18n = await languages.getFull('en-GB');
 			context._i18n.topic['argument-test'] = 'Test arguments like %1 and %2, in them: %3';
 			context._i18n.topic['no-arguments'] = 'no arguments here';
+			context._i18n.topic['nested-key'] = {
+				'nested-1': 'Nested key %1',
+			};
 		});
 
 		shim.addTranslation('en-GB', 'topic', {
@@ -91,9 +94,16 @@ describe('Translator shim', () => {
 			done();
 		});
 
-		it('should translate nested keys with arguments', async () => {
+		it('should translate nested keys with arguments', (done) => {
 			const translated = helpers.tx.call(context, '[[notifications:new-message-in, [[modules:chat.room-id, 8]]]]');
 			assert.strictEqual(translated, 'New message in <strong>Room 8</strong>');
+			done();
+		});
+
+		it('should work with nested translation context', (done) => {
+			const translated = helpers.tx.call(context, '[[topic:nested-key.nested-1, foo]]');
+			assert.strictEqual(translated, 'Nested key foo');
+			done();
 		});
 
 		it('should html escape arguments but keep it if it\'s coming from tx file', (done) => {
