@@ -486,6 +486,12 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
+		const base = new URL(`${config.asset_base_url}/templates/`, window.location.origin);
+		const url = new URL(`${template}.js`, base);
+		if (!url.pathname.startsWith(base.pathname)) {
+			callback(new Error('[[error:invalid-template-path]]'));
+			return;
+		}
 		$.ajax({
 			url: `${config.asset_base_url}/templates/${template}.js`,
 			cache: false,
