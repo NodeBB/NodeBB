@@ -14,13 +14,16 @@ Digest.resend = async (socket, data) => {
 	if (!interval && meta.config.dailyDigestFreq === 'off') {
 		throw new Error('[[error:digest-not-enabled]]');
 	}
-
+	let intervalToUse = interval || meta.config.dailyDigestFreq;
+	if (intervalToUse === 'off') {
+		intervalToUse = 'month';
+	}
 	if (uid) {
 		await userDigest.execute({
-			interval: interval || meta.config.dailyDigestFreq,
+			interval: intervalToUse,
 			subscribers: [uid],
 		});
 	} else {
-		await userDigest.execute({ interval: interval });
+		await userDigest.execute({ interval: intervalToUse });
 	}
 };

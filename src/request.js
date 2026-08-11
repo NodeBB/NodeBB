@@ -143,6 +143,10 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 			signal: timeout > 0 ? AbortSignal.timeout(timeout) : undefined,
 			dispatcher: manualDispatcher,
 		};
+		if (body instanceof FormData) {
+			// If body is FormData, let fetch handle the content-type header
+			delete opts.headers['content-type'];
+		}
 
 		if (body && ['POST', 'PUT', 'PATCH', 'DEL', 'DELETE'].includes(method)) {
 			if (opts.headers['content-type'] && jsonTest.test(opts.headers['content-type'])) {
