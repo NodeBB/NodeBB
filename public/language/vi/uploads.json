@@ -5,5 +5,7 @@
     "maximum-file-size": "Tối đa %1 kb",
     "no-uploads-found": "Không tìm thấy tải lên",
     "public-uploads-info": "Tải lên là công khai, mọi người đều xem được.",
-    "private-uploads-info": "Tải lên là riêng tư, những ai đã đăng nhập mới có thể xem."
+    "private-uploads-info": "Tải lên là riêng tư, những ai đã đăng nhập mới có thể xem.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

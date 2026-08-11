@@ -5,5 +5,7 @@
     "maximum-file-size": "最大 %1 kb",
     "no-uploads-found": "沒有找到上傳檔案",
     "public-uploads-info": "上傳公開的檔案，所有訪客均可查看。",
-    "private-uploads-info": "上傳私有的檔案，僅登入使用者可見。"
+    "private-uploads-info": "上傳私有的檔案，僅登入使用者可見。",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }
