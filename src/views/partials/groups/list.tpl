@@ -6,9 +6,8 @@
 			<div class="card-body d-flex flex-column gap-2 h-100 pb-2">
 				<div class="d-flex">
 					<div class="flex-grow-1 fs-6 fw-semibold text-capitalize">{generateGroupDisplayName(@value)}</div>
-
 				</div>
-				<div class="text-sm line-clamp-3 mb-last-0">{{./descriptionParsed}}</div>
+				<div class="text-sm line-clamp-3 mb-last-0">{{stripTags(./descriptionParsed)}}</div>
 				<div class="d-flex gap-2 align-items-center mt-auto pt-2">
 					<div class="badge border border-gray-300 fw-normal text-body"><i class="text-secondary fa-solid fa-users"></i> {formattedNumber(./memberCount)}</div>
 					<span class="badge border border-gray-300 fw-normal text-body">

@@ -164,8 +164,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		return true;
 	}
 
-	function stripTags(str) {
-		return utils.stripHTMLTags(str);
+	function stripTags(str, ...args) {
+		return utils.stripHTMLTags(str, [...args]);
 	}
 
 	function buildCategoryIcon(category, size, rounded) {
