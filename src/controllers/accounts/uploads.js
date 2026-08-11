@@ -26,6 +26,7 @@ uploadsController.get = async function (req, res) {
 
 	payload.uploads = uploadNames.map(uploadName => ({
 		name: uploadName,
+		filename: path.basename(uploadName),
 		url: path.posix.join(nconf.get('upload_url'), uploadName),
 		isImage: mime.getType(uploadName)?.startsWith('image/'),
 	}));
