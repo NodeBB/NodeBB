@@ -25,7 +25,9 @@ helpers.request = async function (method, uri, options = {}) {
 	}
 
 	options.headers = options.headers || {};
-	if (csrf_token) {
+	if (csrf_token && options.body instanceof FormData) {
+		options.body.append('csrf_token', csrf_token);
+	} else if (csrf_token) {
 		options.headers['x-csrf-token'] = csrf_token;
 	}
 	return await request[lowercaseMethod](`${nconf.get('url')}${uri}`, options);
