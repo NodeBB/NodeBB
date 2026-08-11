@@ -645,14 +645,18 @@ define('forum/chats', [
 		params.set('switch', 1);
 		const url = `/user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
 		const dataUrl = `/api/${url}`;
-		const payload = await api.get(dataUrl).catch(alerts.error);
-		const html = await app.parseAndTranslate('partials/chats/message-window', payload);
+		try {
+			const payload = await api.get(dataUrl);
+			const html = await app.parseAndTranslate('partials/chats/message-window', payload);
+			chatMainWrapper.html(html);
+			html.find('.timeago').timeago();
+			ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
+		} catch (err) {
+			return alerts.error(err);
+		}
 
-		chatMainWrapper.html(html);
 		chatMainWrapper.attr('data-roomid', roomId);
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
-		html.find('.timeago').timeago();
-		ajaxify.data = { ...ajaxify.data, ...payload, roomId: roomId };
 		ajaxify.updateTitle(ajaxify.data.title);
 		$('body').toggleClass('chat-loaded', !!roomId);
 		if (!utils.isMobile()) {

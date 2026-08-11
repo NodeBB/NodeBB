@@ -89,7 +89,7 @@ async function xhr(options) {
 			const jsonError = isJSON && (response.status?.message || response.error || '');
 			throw new Error(isJSON && jsonError ?
 				jsonError :
-				response
+				typeof response === 'string' ? response : res.statusText
 			);
 		}
 		throw new Error(res.statusText);
