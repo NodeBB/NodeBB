@@ -141,6 +141,7 @@ describe('FEPs', () => {
 				let topicData;
 
 				before(async () => {
+					meta.config.activitypubAllowLoopback = true;
 					topicData = await api.topics.create({ uid }, {
 						cid,
 						title: utils.generateUUID(),

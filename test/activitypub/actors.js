@@ -188,6 +188,7 @@ describe('as:Person (Actor asserton)', () => {
 		const userslug = utils.generateUUID().slice(0, 8);
 		before(async () => {
 			uid = await user.create({ username: userslug });
+			meta.config.activitypubAllowLoopback = true;
 		});
 
 		it('should return true but not actually assert the handle into the database', async () => {

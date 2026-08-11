@@ -66,7 +66,7 @@ Helpers.isUri = (value) => {
 		require_host: true,
 		protocols: activitypub._constants.acceptedProtocols,
 		require_valid_protocol: true,
-		require_tld: false, // temporary — for localhost
+		require_tld: !meta.config.activitypubAllowLoopback,
 	});
 };
 
