@@ -589,6 +589,10 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 		const isImage = !tag.icon?.mediaType || tag.icon.mediaType.startsWith('image/');
 
 		if (isEmoji && (strip || (hasUrl && isImage))) {
+			if (!Helpers.isUri(tag.icon.url)) {
+				return;
+			}
+
 			let { name } = tag;
 			if (parsed.has(name)) {
 				return;
