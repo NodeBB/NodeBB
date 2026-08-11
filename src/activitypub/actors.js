@@ -82,10 +82,8 @@ Actors.qualify = async (ids, options = {}) => {
 		return false;
 	}
 
-	// Filter out loopback uris
-	if (!meta.config.activitypubAllowLoopback) {
-		ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
-	}
+	// Filter out loopback uris — never persist local URIs as remote actors
+	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 
 	// Separate those who need migration from user to category
 	const migrate = new Set();
