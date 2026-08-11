@@ -645,7 +645,7 @@ define('forum/chats', [
 
 		const params = new URL(document.location).searchParams;
 		params.set('switch', 1);
-		const url = `/user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
+		const url = `user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
 		const dataUrl = `/api/${url}`;
 		try {
 			const payload = await api.get(dataUrl);
