@@ -119,7 +119,7 @@
 					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
 					<span class="timeago text-muted" title="{target.timestampISO}"></span>
 				</div>
-				<blockquote>{{txEscape(target.content)}}</blockquote>
+				<blockquote>{{target.content}}</blockquote>
 				{{{ end }}}
 
 				{{{ if type_bool.user }}}

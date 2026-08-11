@@ -34,7 +34,7 @@
 							</td>
 							<td class="text-nowrap">{./title}</td>
 							<td class="text-nowrap">{{{ if ./type }}}{tx(./translatedType)}{{{ else }}}{{tx("admin/manage/custom-reasons:reason-all")}}{{{ end }}}</td>
-							<td class="">{{txEscape(./parsedBody)}}</td>
+							<td class="">{{./parsedBody}}</td>
 							<td class="">
 								<div class="d-flex justify-content-end gap-1">
 									<button data-action="edit" data-key="{./key}" class="btn btn-light btn-sm">{{tx("admin/admin:edit")}}</button>

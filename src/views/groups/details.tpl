@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			<div>
-				{{txEscape(group.descriptionParsed)}}
+				{{group.descriptionParsed}}
 			</div>
 		</div>
 		<div class="d-flex gap-2 align-items-start">
