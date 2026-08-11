@@ -38,7 +38,9 @@ define('forum/chats', [
 	let isAtBottom = true;
 
 	$(window).on('action:ajaxify.start', function () {
-		Chats.destroyAutoComplete(chatMainWrapper.find('[component="chat/input"]'));
+		if (chatMainWrapper) {
+			Chats.destroyAutoComplete(chatMainWrapper.find('[component="chat/input"]'));
+		}
 		if (ajaxify.data.template.chats) {
 			chatModule.leaveSocketRoom(ajaxify.data.roomId);
 			if (ajaxify.data.publicRooms) {
