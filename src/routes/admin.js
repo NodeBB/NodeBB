@@ -97,9 +97,9 @@ function apiRoutes(router, name, middleware, controllers) {
 	const upload = require('../middleware/multer');
 
 	const middlewares = [
+		upload.array('files[]', 20),
 		middleware.applyCSRF,
 		middleware.ensureLoggedIn,
-		upload.array('files[]', 20),
 		middleware.validateFiles,
 	];
 
