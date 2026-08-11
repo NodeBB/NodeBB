@@ -535,7 +535,10 @@ Notes.assertPrivate = async (object) => {
 	const added = Array.from(recipients).filter(uid => !participantUids.includes(uid));
 	const assertion = await activitypub.actors.assert(added);
 	if (assertion) {
-		await messaging.addUsersToRoom(payload.uid, added, roomId);
+		await Promise.all([
+			messaging.addUsersToRoom(payload.uid, added, roomId),
+			...added.map(uid => messaging.addSystemMessage('user-join', uid, roomId)),
+		]);
 	}
 
 	// Add message to room
