@@ -175,7 +175,7 @@
         "@stylistic/eslint-plugin": "5.10.0",
         "ajv": "8.20.0",
         "eslint-config-nodebb": "2.0.3",
-        "globals": "17.9.0",
+        "globals": "17.10.0",
         "grunt": "1.6.3",
         "grunt-contrib-watch": "1.1.0",
         "husky": "8.0.3",
