@@ -441,7 +441,7 @@ async function giveGlobalPrivileges() {
 	]), 'Global Moderators');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
-	await privileges.global.give(['groups:view:users'], 'fediverse');
+	await privileges.global.give(['groups:view:users', 'groups:chat'], 'fediverse');
 }
 
 async function giveWorldPrivileges() {
