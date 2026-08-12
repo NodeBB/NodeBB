@@ -453,7 +453,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	}
 
 	function txUsernameOrDisplayname(user, field) {
-		const name = String(user[field] || '');
+		const name = String(user?.[field] || '');
 		const shouldTranslate = user?.uid === 0 && (name === '[[global:former-user]]' || name === '[[global:guest]]');
 		return shouldTranslate ? _tx.call(this, name) : escape(name);
 	}
