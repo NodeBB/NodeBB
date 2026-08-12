@@ -27,9 +27,9 @@
 
 	"delete-confirm": "您确定您要删除此令牌吗？将无法恢复。",
 	"roll-confirm": "您确定您要重置此令牌吗？旧令牌将立即失效，无法恢复。",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "立即复制令牌",
+	"token-once-warning": "此令牌仅显示一次。请在关闭此对话框前将其妥善保存。",
+	"copy-token": "复制",
+	"token-copied": "令牌已复制到剪贴板。",
+	"token-copy-failed": "无法复制令牌。请手动复制。"
 }
