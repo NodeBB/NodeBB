@@ -111,7 +111,7 @@ const dispatcher = new NodeBBAgent({
 });
 const manualDispatcher = new Dispatcher1Wrapper(dispatcher);
 
-async function call(url, method, { body, timeout, jar, ...config } = {}) {
+async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1024, ...config } = {}) {
 	const originalUrl = url;
 	let currentUrl = url;
 	let redirectCount = 0; // Add redirect counter
@@ -178,7 +178,14 @@ async function call(url, method, { body, timeout, jar, ...config } = {}) {
 		const contentType = headers.get('content-type');
 		const isJSON = contentType && jsonTest.test(contentType);
 		// eslint-disable-next-line no-await-in-loop
-		let respBody = await response.text();
+		const buffer = await response.arrayBuffer();
+
+		// Enforce response size limit to prevent memory exhaustion
+		if (buffer.byteLength > sizeLimit) {
+			throw new Error(`Response size (${buffer.byteLength} bytes) exceeds limit (${sizeLimit} bytes)`);
+		}
+
+		let respBody = new TextDecoder().decode(buffer);
 
 		if (isJSON && respBody) {
 			try {
@@ -251,6 +258,8 @@ async function checkHostname(hostname) {
 /*
 const { body, response } = await request.get('someurl?foo=1&baz=2')
 */
+exports.check = check;
+
 exports.get = async (url, config) => call(url, 'GET', config);
 
 exports.head = async (url, config) => call(url, 'HEAD', config);

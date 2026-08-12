@@ -83,14 +83,6 @@
 	"create.password": "Hasło",
 	"create.password-confirm": "Powtórz hasło",
 
-	"temp-ban.length": "Długość",
-	"temp-ban.reason": "Powód <span class=\"text-muted\">(Opcjonalnie)</span>",
-	"temp-ban.select-reason": "Wybierz powód",
-	"temp-ban.hours": "Godziny",
-	"temp-ban.days": "Dni",
-	"temp-ban.explanation": "Podaj czas trwania bana. Okres równy 0 będzie traktowany jako ban permanentny.",
-	"temp-mute.explanation": "Podaj czas trwania uciszenia. Okres równy 0 będzie traktowany jako trwałe uciszenie.",
-
 	"alerts.confirm-ban": "Czy na pewno chcesz zbanować tego użytkownika <strong>permanentnie</strong>?",
 	"alerts.confirm-ban-multi": "Czy na pewno chcesz zbanować tych użytkowników <strong>permanentnie</strong>?",
 	"alerts.ban-success": "Użytkownik(-cy) zostali zbanowani!",

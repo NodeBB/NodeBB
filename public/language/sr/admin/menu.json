@@ -13,6 +13,7 @@
 	"manage/tags": "Tagovi",
 	"manage/users": "Korisnici",
 	"manage/admins-mods": "Admins & Mods",
+	"manage/api": "API Access",
 	"manage/registration": "Lista Registracija",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Post Queue",

@@ -153,6 +153,31 @@ Helpers.mocks.accept = (actor, object) => {
 	return { activity };
 };
 
+Helpers.mocks.undo = (override = {}) => {
+	let actor = override.actor;
+	let object = override.object;
+	if (!actor) {
+		({ id: actor } = Helpers.mocks.person());
+	}
+	if (!object) {
+		({ id: object } = Helpers.mocks.note());
+	}
+
+	const uuid = utils.generateUUID();
+	const id = `${Helpers.mocks._baseUrl}/undo/${uuid}`;
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id,
+		type: 'Undo',
+		to: ['https://www.w3.org/ns/activitystreams#Public'],
+		actor,
+		object,
+	};
+
+	return { activity };
+};
+
 Helpers.mocks.like = (override = {}) => {
 	let actor = override.actor;
 	let object = override.object;

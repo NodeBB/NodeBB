@@ -180,6 +180,7 @@ describe('Inbox', () => {
 		describe('attributedTo validation', () => {
 			describe('private messages (non-public)', () => {
 				before(async function () {
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
 					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 				});
 
@@ -268,7 +269,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should accept a Create(Note) with valid URI attributedTo', async () => {
+				it('should accept a Create(Note) with valid URI attributedTo', async function () {
 					const { id: actor } = helpers.mocks.person();
 					const { note } = helpers.mocks.note({
 						attributedTo: actor,
@@ -740,6 +741,9 @@ describe('Inbox', () => {
 					this.remoteId = remote.id;
 					const result = await activitypub.actors.assert([remote.id]);
 
+					// Grant fediverse group global chat privileges for remote actor message deletion
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
+
 					// Create a private chat room between the users
 					const { note } = helpers.mocks.note({
 						attributedTo: remote.id,
@@ -1138,6 +1142,111 @@ describe('Inbox', () => {
 			it('should have a positive counter for the cid', async () => {
 				const score = await db.sortedSetScore(`uid:${remoteActor}:cids`, String(cid));
 				assert(score > 0);
+			});
+		});
+		describe('Relay', () => {
+			const relayActor = 'https://relay.example.com/actor';
+
+			it('should add a follower when the instance actor is followed', async () => {
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+
+				await activitypub.inbox.follow({ body: activity });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, -1);
+			});
+
+			it('should remove a follower when a Follow activity is undone', async () => {
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const followActivity = {
+					id: `${nconf.get('url')}/actor#activity/follow/${relayActor}`,
+					type: 'Follow',
+					actor: relayActor,
+					object: `${nconf.get('url')}/actor`,
+				};
+				const { activity: undoActivity } = helpers.mocks.undo({
+					actor: relayActor,
+					object: followActivity,
+				});
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, null);
+			});
+
+			it('should broadcast a public activity received via announce to relay followers', async () => {
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const { note, id } = helpers.mocks.note();
+				const { activity: createActivity } = helpers.mocks.create(note);
+				const { activity: announceActivity } = helpers.mocks.announce({
+					actor: relayActor,
+					object: createActivity,
+				});
+
+				// Mock activitypub.send to verify broadcast
+				const originalSend = activitypub.send;
+				const sentTo = [];
+				activitypub.send = async (type, id, targets, payload) => {
+					sentTo.push({ targets, payload });
+					return true;
+				};
+
+				// Mock resolveId so remote note IDs resolve to a local pid
+				const originalResolveId = activitypub.resolveId;
+				activitypub.resolveId = async () => 1;
+
+				// Mock notes.assert to return a valid assertion
+				const originalNotesAssert = activitypub.notes.assert;
+				activitypub.notes.assert = async () => ({ tid: 1 });
+
+				// Mock Notes.announce.add to avoid post/topic lookup errors
+				const originalAnnounceAdd = activitypub.notes.announce.add;
+				activitypub.notes.announce.add = async () => {};
+
+				// Mock posts.getPostField so Feps.announce can resolve tid/cid
+				const originalGetPostField = posts.getPostField;
+				posts.getPostField = async (id, field) => {
+					if (field === 'tid') return 1;
+					if (field === 'cid') return 1;
+					return originalGetPostField(id, field);
+				};
+
+				// Mock topics.getTopicField so Feps.announce can resolve cid
+				const originalGetTopicField = topics.getTopicField;
+				topics.getTopicField = async (id, field) => {
+					if (field === 'cid') return 1;
+					return originalGetTopicField(id, field);
+				};
+
+				// Mock relays.list so Feps.announce has relay targets
+				const originalRelaysList = activitypub.relays.list;
+				activitypub.relays.list = async () => [{ state: 2, url: relayActor }];
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				// We expect a broadcast to relay followers
+				// Feps.announce will call activitypub.send
+				assert(sentTo.length > 0);
+				const broadcast = sentTo.find(s => s.targets.includes(relayActor));
+				assert(broadcast, 'Should have broadcast to relay follower');
+
+				activitypub.send = originalSend;
+				activitypub.resolveId = originalResolveId;
+				activitypub.notes.assert = originalNotesAssert;
+				activitypub.notes.announce.add = originalAnnounceAdd;
+				posts.getPostField = originalGetPostField;
+				topics.getTopicField = originalGetTopicField;
+				activitypub.relays.list = originalRelaysList;
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
 			});
 		});
 	});

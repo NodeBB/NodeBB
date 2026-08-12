@@ -7,19 +7,19 @@
         </span>
         {{{ else }}}
         <i class="fa fa-fw {{{ if selectCategoryIcon }}}{selectCategoryIcon}{{{ else }}}fa-list{{{ end }}} text-primary"></i>
-        <span class="d-none d-md-inline">{{{ if selectCategoryLabel }}}{{stripTags(tx(selectCategoryLabel))}}{{{ else }}}[[topic:thread-tools.select-category]]{{{ end }}}</span>
+        <span class="d-none d-md-inline">{{{ if selectCategoryLabel }}}{{stripTags(tx(selectCategoryLabel))}}{{{ else }}}{{tx("topic:thread-tools.select-category")}}{{{ end }}}</span>
         {{{ end }}}
     </span>
 </button>
 
 <div class="dropdown-menu p-1">
     <div component="category-selector-search" class="p-1 hidden">
-        <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+        <input type="text" class="form-control form-control-sm" placeholder="{{tx("search:type-to-search")}}" autocomplete="off">
         <hr class="mt-2 mb-0"/>
     </div>
     <ul component="category/list" class="list-unstyled mb-0 text-sm category-dropdown-menu ghost-scrollbar" role="menu">
         <li component="category/no-matches" role="presentation" class="category hidden">
-            <a class="dropdown-item rounded-1" role="menuitem">[[search:no-matches]]</a>
+            <a class="dropdown-item rounded-1" role="menuitem">{{tx("search:no-matches")}}</a>
         </li>
         {{{ each categoryItems }}}
         <li role="presentation" class="category {{{ if ./disabledClass }}}disabled {{{ end }}}" data-cid="{./cid}" data-name="{./name}" data-parent-cid="{./parentCid}">

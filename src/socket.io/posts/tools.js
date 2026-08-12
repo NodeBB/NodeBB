@@ -19,6 +19,9 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		const cid = await posts.getCidByPid(data.pid);
+		if (!await privileges.posts.can('topics:read', data.pid, socket.uid)) {
+			throw new Error('[[error:no-privileges]]');
+		}
 		const results = await utils.promiseParallel({
 			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId', 'url']),
 			isAdmin: user.isAdministrator(socket.uid),

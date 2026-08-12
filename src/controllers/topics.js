@@ -136,7 +136,7 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	const [author, crossposts] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
-		topics.crossposts.get(topicData.tid),
+		topics.crossposts.get(topicData.tid, req.uid),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges, settings.userLang),
 		addTags(topicData, req, res, currentPage, postAtIndex),

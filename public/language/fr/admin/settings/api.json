@@ -26,5 +26,10 @@
 	"roll": "Lancer",
 
 	"delete-confirm": "Voulez-vous vraiment supprimer ce jeton ? Il ne sera pas récupérable.",
-	"roll-confirm": "Voulez-vous vraiment régénérer ce jeton ? L'ancien jeton sera immédiatement révoqué et ne sera pas récupérable."
+	"roll-confirm": "Voulez-vous vraiment régénérer ce jeton ? L'ancien jeton sera immédiatement révoqué et ne sera pas récupérable.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

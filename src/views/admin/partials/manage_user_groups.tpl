@@ -8,6 +8,6 @@
         </div>
         {{{ end }}}
     </div>
-    <input data-uid="{./uid}" class="form-control group-search" placeholder="[[admin/manage/users:add-group]]" />
+    <input data-uid="{./uid}" class="form-control group-search" placeholder="{{tx("admin/manage/users:add-group")}}" />
 </div>
 {{{ end }}}

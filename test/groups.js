@@ -775,6 +775,31 @@ describe('Groups', () => {
 			meta.config.allowPrivateGroups = oldValue;
 		});
 
+		it('should fail to join administrators group with only admin:groups privilege', async () => {
+			const privileges = require('../src/privileges');
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			// Grant only admin:groups (not admin:admins-mods)
+			await privileges.admin.give(['admin:groups'], uid);
+			const hasGroupsPriv = await privileges.admin.can('admin:groups', uid);
+			const hasAdminsModsPriv = await privileges.admin.can('admin:admins-mods', uid);
+			assert.strictEqual(hasGroupsPriv, true, 'user should have admin:groups');
+			assert.strictEqual(hasAdminsModsPriv, false, 'user should NOT have admin:admins-mods');
+
+			// Should fail to join administrators group
+			await assert.rejects(
+				apiGroups.join({ uid: uid }, { slug: 'administrators', uid: uid }),
+				{ message: '[[error:no-privileges]]' }
+			);
+			assert.strictEqual(await Groups.isMember(uid, 'administrators'), false);
+
+			// Should also fail to add another user to administrators group
+			const uid2 = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			await assert.rejects(
+				apiGroups.join({ uid: uid }, { slug: 'administrators', uid: uid2 }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
 		it('should fail to add user to group if calling uid is non-self and non-admin', async () => {
 			const uid1 = await User.create({ username: utils.generateUUID().slice(0, 8) });
 			const uid2 = await User.create({ username: utils.generateUUID().slice(0, 8) });
@@ -1054,6 +1079,25 @@ describe('Groups', () => {
 			await apiGroups.leave({ uid: adminUid }, { slug: 'privatecanjoin', uid: testUid });
 			const isMember = await Groups.isMember(testUid, 'PrivateCanJoin');
 			assert(!isMember);
+		});
+
+		it('should fail to kick user from administrators with only admin:groups privilege', async () => {
+			const privileges = require('../src/privileges');
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			// Grant only admin:groups (not admin:admins-mods)
+			await privileges.admin.give(['admin:groups'], uid);
+			// Add target user to administrators first (via admin)
+			const targetUid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			await Groups.join('administrators', targetUid);
+			assert(await Groups.isMember(targetUid, 'administrators'));
+
+			// Should fail to kick target from administrators
+			await assert.rejects(
+				apiGroups.leave({ uid: uid }, { slug: 'administrators', uid: targetUid }),
+				{ message: '[[error:no-privileges]]' }
+			);
+			// Target should still be in administrators
+			assert(await Groups.isMember(targetUid, 'administrators'));
 		});
 
 		it('should fail to create group with invalid data', async () => {

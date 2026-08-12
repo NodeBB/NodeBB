@@ -100,7 +100,7 @@ define('forum/groups/details', [
 			switch (action) {
 				case 'toggleOwnership':
 					memberList.toggleOwnership(ajaxify.data.group.slug, uid, isOwner).then(() => {
-						ownerFlagEl.toggleClass('invisible');
+						ownerFlagEl.toggleClass('d-none');
 						userRow.attr('data-isowner', isOwner ? '0' : '1');
 					}).catch(alerts.error);
 					break;

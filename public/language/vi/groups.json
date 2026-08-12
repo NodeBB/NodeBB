@@ -27,6 +27,8 @@
     "details.invited": "Thành Viên Đã Mời",
     "details.has-no-posts": "Các thành viên của nhóm này chưa đăng bài nào.",
     "details.latest-posts": "Bài Viết Mới Nhất",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Riêng tư",
     "details.disableJoinRequests": "Tắt yêu cầu tham gia",
     "details.disableLeave": "Không cho phép người dùng rời khỏi nhóm",
@@ -64,6 +66,7 @@
     "membership.reject": "Từ Chối",
     "new-group.group-name": "Tên Nhóm:",
     "upload-group-cover": "Tải lên ảnh bìa nhóm",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Nhập danh sách tên đăng nhập, phân tách bằng dấu phẩy, để mời vào nhóm",
     "bulk-invite": "Mời Nhiều",
     "remove-group-cover-confirm": "Bạn có chắc muốn xoá ảnh bìa không?"

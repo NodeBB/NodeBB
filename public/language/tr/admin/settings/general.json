@@ -61,5 +61,8 @@
 	"auto-detect": "Ziyaretçiler için dili otomatik tespit et",
 	"default-language-help": "Varsayılan dil, forumunuzu ziyaret eden tüm kullanıcılar için dil ayarlarını belirler. <br />Kullanıcılar, bireysel olarak hesap ayarları sayfasında varsayılan dili geçersiz kılabilir.",
 	"post-sharing": "İleti Paylaşımı",
-	"info-plugins-additional": "Eklentiler, paylaşımda bulunmak için ek sosyal ağlar ekleyebilir."
+	"info-plugins-additional": "Eklentiler, paylaşımda bulunmak için ek sosyal ağlar ekleyebilir.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

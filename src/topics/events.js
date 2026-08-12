@@ -202,6 +202,23 @@ async function modifyEvent({ uid, events }) {
 		user.getSettings(uid),
 	]);
 
+	// Remove events whose fromCid/toCid the user cannot find
+	const allCids = _.uniq([
+		...events.map(e => e.fromCid).filter(Boolean),
+		...events.map(e => e.toCid).filter(Boolean),
+	]);
+	const allowedCids = await privileges.categories.filterCids('find', allCids, uid);
+	const allowedCidSet = new Set(allowedCids);
+	events = events.filter((e) => {
+		if (e.fromCid && !allowedCidSet.has(e.fromCid)) {
+			return false;
+		}
+		if (e.toCid && !allowedCidSet.has(e.toCid)) {
+			return false;
+		}
+		return true;
+	});
+
 	// Remove backlink events if backlinks are disabled
 	if (meta.config.topicBacklinks !== 1) {
 		events = events.filter(event => event.type !== 'backlink');

@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const mime = require('mime').default;
 
 const nconf = require('nconf');
 
@@ -15,7 +16,7 @@ uploadsController.get = async function (req, res) {
 	const payload = res.locals.userData;
 	const { username, userslug } = payload;
 	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-	const itemsPerPage = 25;
+	const itemsPerPage = 24;
 	const start = (page - 1) * itemsPerPage;
 	const stop = start + itemsPerPage - 1;
 	const [itemCount, uploadNames] = await Promise.all([
@@ -25,7 +26,9 @@ uploadsController.get = async function (req, res) {
 
 	payload.uploads = uploadNames.map(uploadName => ({
 		name: uploadName,
+		filename: path.basename(uploadName),
 		url: path.posix.join(nconf.get('upload_url'), uploadName),
+		isImage: mime.getType(uploadName)?.startsWith('image/'),
 	}));
 	const pageCount = Math.ceil(itemCount / itemsPerPage);
 	payload.pagination = pagination.create(page, pageCount, req.query);

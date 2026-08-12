@@ -99,7 +99,73 @@ describe('ActivityPub integration', () => {
 
 	describe('Helpers', () => {
 		describe('.query()', () => {
+			let webfingerCache;
+			let originalGet;
 
+			beforeEach(() => {
+				webfingerCache = activitypub.helpers._webfingerCache;
+				webfingerCache.reset();
+				originalGet = request.get;
+			});
+
+			afterEach(() => {
+				webfingerCache.reset();
+				request.get = originalGet;
+			});
+
+			it('should return false when the subject hostname does not match the queried hostname', async () => {
+				request.get = async () => ({
+					response: { statusCode: 200 },
+					body: {
+						subject: 'https://evil.com/actor',
+						links: [{ rel: 'self', type: 'application/activity+json', href: 'https://evil.com/actor' }],
+					},
+				});
+
+				const result = await activitypub.helpers.query('user@trusted.com');
+				assert.strictEqual(result, false);
+			});
+
+			it('should succeed when the subject hostname matches the queried hostname', async () => {
+				request.get = async () => ({
+					response: { statusCode: 200 },
+					body: {
+						subject: 'https://trusted.com/actor',
+						links: [{ rel: 'self', type: 'application/activity+json', href: 'https://trusted.com/actor' }],
+					},
+				});
+
+				const result = await activitypub.helpers.query('user@trusted.com');
+				assert(result);
+				assert.strictEqual(result.actorUri, 'https://trusted.com/actor');
+			});
+
+			it('should succeed for acct: subjects with matching hostname', async () => {
+				request.get = async () => ({
+					response: { statusCode: 200 },
+					body: {
+						subject: 'acct:user@trusted.com',
+						links: [{ rel: 'self', type: 'application/activity+json', href: 'https://trusted.com/actor' }],
+					},
+				});
+
+				const result = await activitypub.helpers.query('user@trusted.com');
+				assert(result);
+			});
+
+			it('should allow rel=self href to point to a different domain when subject hostname matches', async () => {
+				request.get = async () => ({
+					response: { statusCode: 200 },
+					body: {
+						subject: 'acct:user@trusted.com',
+						links: [{ rel: 'self', type: 'application/activity+json', href: 'https://otherdomain.com/actor' }],
+					},
+				});
+
+				const result = await activitypub.helpers.query('user@trusted.com');
+				assert(result);
+				assert.strictEqual(result.actorUri, 'https://otherdomain.com/actor');
+			});
 		});
 
 		describe('.generateKeys()', () => {

@@ -72,7 +72,7 @@ module.exports = function (Messaging) {
 			message.type = data.type;
 		}
 
-		if (data.ip) {
+		if (data.ip && meta.config.logIPs) {
 			message.ip = data.ip;
 		}
 

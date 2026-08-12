@@ -139,6 +139,9 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			n.bodyShort = posts.sanitize(await tx.translate(n.bodyShort, userSettings.userLang));
 		}
 		if (n?.bodyLong) {
+			if (n.txBodyLong) {
+				n.bodyLong = await tx.translate(n.bodyLong, userSettings.userLang);
+			}
 			n.bodyLong = posts.sanitize(n.bodyLong);
 		}
 	}));
@@ -264,7 +267,6 @@ UserNotifications.sendNameChangeNotification = async function (uid, username) {
 		bodyShort: tx.compile('user:username-taken-workaround', tx.escape(username)),
 		image: 'brand:logo',
 		nid: `username_taken:${uid}`,
-		datetime: Date.now(),
 	});
 
 	await notifications.push(notifObj, [uid]);

@@ -83,14 +83,6 @@
 	"create.password": "密码",
 	"create.password-confirm": "确认密码",
 
-	"temp-ban.length": "时长",
-	"temp-ban.reason": "理由<span class=\"text-muted\">（可选）</span> ",
-	"temp-ban.select-reason": "选择一个原因",
-	"temp-ban.hours": "小时",
-	"temp-ban.days": "天",
-	"temp-ban.explanation": "输入封禁时长。提示，时长为0视为永久封禁。",
-	"temp-mute.explanation": "输入禁言时长。请注意，0将被视为永久禁言。",
-
 	"alerts.confirm-ban": "您真的想要<strong>永久</strong>封禁该用户吗？",
 	"alerts.confirm-ban-multi": "您确定要<strong>永久</strong>封禁这些用户吗？",
 	"alerts.ban-success": "用户已封禁！",

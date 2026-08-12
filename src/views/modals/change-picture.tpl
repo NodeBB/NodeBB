@@ -18,7 +18,7 @@
 	</div>
 	<div class="col-12 col-sm-4 col-md-6">
 		<div class="d-flex flex-column gap-2">
-			<h5>[[user:avatar-background-colour]]</h5>
+			<h5>{{tx("user:avatar-background-colour")}}</h5>
 			<div class="d-flex gap-2 flex-wrap">
 				<a href="#" class="lh-1 p-1" data-bg-color="transparent"><i class="fa-solid fa-2x fa-ban text-secondary fa-width-auto"></i></a>
 				{{{ each iconBackgrounds }}}
@@ -28,10 +28,10 @@
 			<hr/>
 			{{{ if allowProfileImageUploads }}}
 			<button type="button" class="btn btn-ghost border" data-action="upload">
-				[[user:upload-new-picture]]
+				{{tx("user:upload-new-picture")}}
 			</button>
 			<button type="button" class="btn btn-ghost border" data-action="upload-url">
-				[[user:upload-new-picture-from-url]]
+				{{tx("user:upload-new-picture-from-url")}}
 			</button>
 			{{{ end }}}
 		</div>

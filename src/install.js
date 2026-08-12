@@ -313,7 +313,7 @@ async function createAdmin() {
 	const Groups = require('./groups');
 	let password;
 
-	winston.warn('No administrators have been detected, running initial user setup\n');
+	winston.warn('No administrator account found — creating one now\n');
 
 	let questions = [{
 		name: 'username',
@@ -441,7 +441,7 @@ async function giveGlobalPrivileges() {
 	]), 'Global Moderators');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
-	await privileges.global.give(['groups:view:users'], 'fediverse');
+	await privileges.global.give(['groups:view:users', 'groups:chat'], 'fediverse');
 }
 
 async function giveWorldPrivileges() {

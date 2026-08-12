@@ -5,5 +5,7 @@
     "maximum-file-size": "最大 %1 kb",
     "no-uploads-found": "没有找到上传文件",
     "public-uploads-info": "上传是公开的，所有访客均可查看。",
-    "private-uploads-info": "上传私有的文件，仅登陆用户可见。"
+    "private-uploads-info": "上传私有的文件，仅登陆用户可见。",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

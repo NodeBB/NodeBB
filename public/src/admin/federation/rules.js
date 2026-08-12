@@ -30,10 +30,10 @@ function setupRules() {
 				case 'rules.delete': {
 					const rid = subselector.closest('tr').getAttribute('data-rid');
 					del(`/admin/activitypub/rules/${rid}`, {}).then(async (data) => {
-						const html = await render('admin/federation/rules', { rules: data }, 'rules');
+						const html = await app.parseAndTranslate('admin/federation/rules', 'rules', { rules: data });
 						const tbodyEl = document.querySelector('#rules tbody');
 						if (tbodyEl) {
-							tbodyEl.innerHTML = html;
+							$(tbodyEl).html(html);
 						}
 					}).catch(error);
 				}
@@ -74,11 +74,12 @@ function throwModal() {
 			}
 
 			const payload = Object.fromEntries(new FormData(formEl));
+			payload.action = parseInt(payload.action, 10);
 			post('/admin/activitypub/rules', payload).then(async (data) => {
-				const html = await render('admin/federation/rules', { rules: data }, 'rules');
+				const html = await app.parseAndTranslate('admin/federation/rules', 'rules', { rules: data });
 				const tbodyEl = document.querySelector('#rules tbody');
 				if (tbodyEl) {
-					tbodyEl.innerHTML = html;
+					$(tbodyEl).html(html);
 				}
 				modal.modal('hide');
 			}).catch(error);
@@ -101,6 +102,19 @@ function throwModal() {
 			modal.find('#value').focus();
 		});
 
+		// live update action label
+		const actionEl = modal.get(0).querySelector('#action');
+		const labelsEl = modal.get(0).querySelector('#action-labels');
+		if (actionEl && labelsEl) {
+			const labels = labelsEl.querySelectorAll('span');
+			const updateActionLabel = () => {
+				labels.forEach((l, i) => {
+					l.style.fontWeight = i === parseInt(actionEl.value, 10) ? 'bold' : 'normal';
+				});
+			};
+			updateActionLabel();
+			actionEl.addEventListener('input', updateActionLabel);
+		}
 
 		// help text
 		const updateHelp = async (key, el) => {

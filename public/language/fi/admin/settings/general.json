@@ -61,5 +61,8 @@
 	"auto-detect": "Tunnista vieraiden kieliasetus automaattisesti",
 	"default-language-help": "Oletuskieli määrittää kaikkien keskustelualueesi kävijöiden oletusarvoiset kieliasetukset. <br />Yksittäiset käyttäjät voivat korvata oletuskielen tiliasetuksistaan.",
 	"post-sharing": "Viestin jakaminen",
-	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

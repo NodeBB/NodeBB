@@ -145,7 +145,7 @@ module.exports = function (Topics) {
 			.filter(t => !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
-		let crosspostCids = await Topics.crossposts.get(tids);
+		let crosspostCids = await Topics.crossposts.get(tids, params.uid);
 		crosspostCids = crosspostCids.map((crossposts) => {
 			return crossposts.map(({ cid }) => cid);
 		});

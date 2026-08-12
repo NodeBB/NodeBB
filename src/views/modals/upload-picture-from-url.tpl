@@ -1,16 +1,16 @@
-<div id="upload-picture-from-url-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="upload-picture-url" aria-label="[[user:upload-picture]]">
+<div id="upload-picture-from-url-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="upload-picture-url" aria-label="{{tx("user:upload-picture")}}">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="upload-picture-url">[[user:upload-picture]]</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
+				<h5 class="modal-title" id="upload-picture-url">{{tx("user:upload-picture")}}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{tx("global:buttons.close")}}"></button>
 			</div>
 			<div class="modal-body">
 				<input id="uploadFromUrl" class="form-control" type="text"/>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">[[global:close]]</button>
-				<button class="btn btn-primary upload-btn">[[user:upload-picture]]</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">{{tx("global:close")}}</button>
+				<button class="btn btn-primary upload-btn">{{tx("user:upload-picture")}}</button>
 			</div>
 		</div>
 	</div>

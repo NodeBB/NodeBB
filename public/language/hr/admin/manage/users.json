@@ -83,14 +83,6 @@
 	"create.password": "Lozinka",
 	"create.password-confirm": "Potvdri lozinku",
 
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Razlog <span class=\"text-muted\">(Opcionalno)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Sati",
-	"temp-ban.days": "Dani",
-	"temp-ban.explanation": "Unesite dužinu trajana blokade. Ukoliko je vrijeme 0 smatra se permanentnom blokadom.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
-
 	"alerts.confirm-ban": "Sigurni ste da želite blokirati ovo korisnika trajno?",
 	"alerts.confirm-ban-multi": "Sigurni ste da želite blokirati korisnika <strong>permanentno</strong>?",
 	"alerts.ban-success": "Korisnik blokiran!",

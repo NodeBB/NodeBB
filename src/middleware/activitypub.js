@@ -45,18 +45,23 @@ middleware.verify = async function (req, res, next) {
 		return next();
 	}
 
-	// Verifies the HTTP Signature if present (required for POST)
+	// Verifies the HTTP Signature if present (required for POST, optional for GET)
 	if (req.headers.hasOwnProperty('signature')) {
 		const verified = await activitypub.verify(req);
 		if (!verified) {
 			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
-			return res.sendStatus(400);
+			if (req.method === 'POST') {
+				return res.sendStatus(400);
+			}
+			// Signed GET with invalid signature: treat as anonymous and proceed
+			activitypub.helpers.log('[middleware/activitypub] Treating signed GET as anonymous.');
+			return next();
 		}
 
 		// Set calling user
 		const keyId = req.headers.signature.split(',').filter(line => line.startsWith('keyId="'));
 		if (keyId.length) {
-			req.uid = keyId.shift().slice(7, -1).replace(/#.*$/, '');
+			req.uid = keyId.at(-1).slice(7, -1).replace(/#.*$/, '');
 		}
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
@@ -126,6 +131,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 			activitypub.helpers.log('[middleware/activitypub] Origin check failed, stripping object down to id.');
 			req.body.object = [object.id];
 		}
+
 		activitypub.helpers.log('[middleware/activitypub] Origin check passed.');
 	}
 

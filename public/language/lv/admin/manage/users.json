@@ -83,14 +83,6 @@
 	"create.password": "Parole",
 	"create.password-confirm": "Atkārtot paroli",
 
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Iemesls <span class=\"text-muted\">(neobligāts)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Stundas",
-	"temp-ban.days": "Dienas",
-	"temp-ban.explanation": "Ievadīt bloķēšanas termiņu, ņemot vērā, ka 0 tiks uzskatīts par pastāvīgu bloķēšanu.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
-
 	"alerts.confirm-ban": "Vai tiešām vēlies <strong>pastāvīgi</strong> bloķēt šo lietotāju?",
 	"alerts.confirm-ban-multi": "Vai tiešām vēlies <strong>pastāvīgi</strong> bloķēt šos lietotājus?",
 	"alerts.ban-success": "Lietotājs(-i) bloķēts(-i)!",

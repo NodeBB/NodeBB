@@ -13,6 +13,7 @@
 	"manage/tags": "Tags",
 	"manage/users": "Usuários",
 	"manage/admins-mods": "Admins & Mods",
+	"manage/api": "API Access",
 	"manage/registration": "Fila de Registro",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Fila de Posts",

@@ -6,12 +6,12 @@
     </span>
     {{{ else }}}
     <i class="fa fa-fw fa-list text-primary"></i>
-    <span class="d-none d-md-inline fw-semibold">[[unread:all-categories]]</span>{{{ end }}}
+    <span class="d-none d-md-inline fw-semibold">{{tx("unread:all-categories")}}</span>{{{ end }}}
 </button>
 
 <div class="dropdown-menu p-1">
     <div component="category-selector-search" class="p-1 hidden">
-        <input type="text" class="form-control form-control-sm" placeholder="[[search:type-to-search]]" autocomplete="off">
+        <input type="text" class="form-control form-control-sm" placeholder="{{tx("search:type-to-search")}}" autocomplete="off">
         <hr class="mt-2 mb-0"/>
     </div>
 
@@ -21,7 +21,7 @@
             <a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="{{{ if allCategoriesUrl }}}{config.relative_path}/{allCategoriesUrl}{{{ else }}}#{{{ end }}}">
                 <div class="flex-grow-1 d-flex gap-1 align-items-center">
                     <span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded" style="width:24px; height: 24px; font-size: 12px;"><i class="fa fa-fw fa-list text-secondary"></i></span>
-                    <span>[[unread:all-categories]]</span>
+                    <span>{{tx("unread:all-categories")}}</span>
                 </div>
                 <i component="category/select/icon" class="flex-shrink-0 fa fa-fw fa-check {{{if selectedCategory}}}invisible{{{end}}}"></i>
             </a>

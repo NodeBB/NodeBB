@@ -96,10 +96,12 @@ module.exports = function (Posts) {
 
 		await Posts.parsePost(returnPostData);
 
-		await topics.notifyFollowers(returnPostData, data.uid, {
-			type: 'post-edit',
-			nid: `edit_post:${data.pid}:uid:${data.uid}`,
-		});
+		if (contentChanged) {
+			await topics.notifyFollowers(returnPostData, data.uid, {
+				type: 'post-edit',
+				nid: `edit_post:${data.pid}:uid:${data.uid}`,
+			});
+		}
 
 		return {
 			topic: topic,

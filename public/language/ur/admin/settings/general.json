@@ -61,5 +61,8 @@
 	"auto-detect": "مہمانوں کے لیے زبان کا خودکار پتہ لگانا",
 	"default-language-help": "طے شدہ زبان آپ کے فورم کو دیکھنے والے تمام صارفین کے لیے زبان کی ترتیبات کا تعین کرتی ہے۔ <br /> انفرادی صارفین اپنے پروفائل کی ترتیبات کے صفحہ سے اپنی زبان تبدیل کر سکتے ہیں۔",
 	"post-sharing": "پوسٹس کا اشتراک",
-	"info-plugins-additional": "پلگ انز پوسٹس کے اشتراک کے لیے اضافی نیٹ ورکس شامل کر سکتے ہیں۔"
+	"info-plugins-additional": "پلگ انز پوسٹس کے اشتراک کے لیے اضافی نیٹ ورکس شامل کر سکتے ہیں۔",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

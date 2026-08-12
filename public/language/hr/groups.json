@@ -27,6 +27,8 @@
     "details.invited": "Pozvani korisnici",
     "details.has-no-posts": "Članovi ove grupe nisu objavljivali.",
     "details.latest-posts": "Zadnje objave",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privatno",
     "details.disableJoinRequests": "Onemogući zahtjeve za pristup",
     "details.disableLeave": "Disallow users from leaving the group",
@@ -64,6 +66,7 @@
     "membership.reject": "Odbij",
     "new-group.group-name": "Ime grupe:",
     "upload-group-cover": "Promjeni naslovnicu grupe",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Unesi popis korisnika sa zarezima između korisničkih imena za poziv u ovu grupu",
     "bulk-invite": "Masovni poziv",
     "remove-group-cover-confirm": "Jeste li sigurni da želite obrisati sliku naslovnice?"

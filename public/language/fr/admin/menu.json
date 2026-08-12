@@ -13,6 +13,7 @@
 	"manage/tags": "Mots-clés",
 	"manage/users": "Utilisateurs",
 	"manage/admins-mods": "Admins & Modos",
+	"manage/api": "API Access",
 	"manage/registration": "File d'inscription",
 	"manage/flagged-content": "Contenu signalé",
 	"manage/post-queue": "File d’attente des messages",

@@ -1,13 +1,13 @@
 <div class="manage-users d-flex flex-column gap-2 px-lg-4 h-100">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/user-custom-fields:title]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/manage/user-custom-fields:title")}}</h4>
 		</div>
 		<div class="d-flex align-items-center gap-1">
 			<button id="new" class="btn btn-light btn-sm text-nowrap" type="button">
-				<i class="fa fa-fw fa-plus"></i> [[admin/manage/user-custom-fields:create-field]]
+				<i class="fa fa-fw fa-plus"></i> {{tx("admin/manage/user-custom-fields:create-field")}}
 			</button>
-			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
+			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">{{tx("admin/admin:save-changes")}}</button>
 		</div>
 	</div>
 
@@ -18,11 +18,11 @@
 					<thead>
 						<tr>
 							<th></th>
-							<th class="text-muted">[[admin/manage/user-custom-fields:key]]</th>
-							<th class="text-muted">[[admin/manage/user-custom-fields:name]]</th>
-							<th class="text-muted">[[admin/manage/user-custom-fields:type]]</th>
-							<th class="text-muted">[[admin/manage/user-custom-fields:visibility]]</th>
-							<th class="text-muted text-end">[[admin/manage/user-custom-fields:min-rep]]</th>
+							<th class="text-muted">{{tx("admin/manage/user-custom-fields:key")}}</th>
+							<th class="text-muted">{{tx("admin/manage/user-custom-fields:name")}}</th>
+							<th class="text-muted">{{tx("admin/manage/user-custom-fields:type")}}</th>
+							<th class="text-muted">{{tx("admin/manage/user-custom-fields:visibility")}}</th>
+							<th class="text-muted text-end">{{tx("admin/manage/user-custom-fields:min-rep")}}</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -50,7 +50,7 @@
 							</td>
 							<td>
 								<div class="d-flex justify-content-end gap-1">
-									<button data-action="edit" data-key="{./key}" class="btn btn-light btn-sm">[[admin/admin:edit]]</button>
+									<button data-action="edit" data-key="{./key}" class="btn btn-light btn-sm">{{tx("admin/admin:edit")}}</button>
 									<button data-action="delete" data-key="{./key}" class="btn btn-light btn-sm"><i class="fa fa-trash text-danger"></i></button>
 								</div>
 							</td>

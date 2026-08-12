@@ -1,4 +1,4 @@
-<p>[[admin/settings/activitypub:blocklists.add-help]]</p>
+<p>{{tx("admin/settings/activitypub:blocklists.add-help")}}</p>
 
 <hr />
 

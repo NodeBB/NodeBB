@@ -1,16 +1,16 @@
 <div class="mb-3">
 	<div class="mb-3">
-		<label class="form-label text-nowrap">[[modules:chat.room-name-optional]]</label>
+		<label class="form-label text-nowrap">{{tx("modules:chat.room-name-optional")}}</label>
 		<input component="chat/room/name" class="form-control" />
 	</div>
 
 	<div class="mb-3">
 		<div class="dropdown">
-			<label class="form-label">[[modules:chat.add-user]]</label>
-			<input component="chat/search" class="form-control" type="text" placeholder="[[global:user-search-prompt]]" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+			<label class="form-label">{{tx("modules:chat.add-user")}}</label>
+			<input component="chat/search" class="form-control" type="text" placeholder="{{tx("global:user-search-prompt")}}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
 			<ul component="chat/search/list" class="dropdown-menu p-1 overflow-auto" style="max-height: 400px;" role="menu">
-				<li component="chat/search/start-typing"><a href="#" class="dropdown-item rounded-1" role="menuitem">[[admin/menu:search.start-typing]]</a></li>
-				<li component="chat/search/no-users" class="hidden"><a href="#" class="dropdown-item rounded-1" role="menuitem">[[users:no-users-found]]</a></li>
+				<li component="chat/search/start-typing"><a href="#" class="dropdown-item rounded-1" role="menuitem">{{tx("admin/menu:search.start-typing")}}</a></li>
+				<li component="chat/search/no-users" class="hidden"><a href="#" class="dropdown-item rounded-1" role="menuitem">{{tx("users:no-users-found")}}</a></li>
 				{{{ each searchUsers }}}
 				<li component="chat/search/user" data-uid="{./uid}"><a href="#" class="dropdown-item rounded-1" role="menuitem">{{buildAvatar(@value, "24px", true)}} {./username}</a></li>
 				{{{ end }}}
@@ -28,8 +28,8 @@
 
 	{{{ if user.isAdmin }}}
 	<select component="chat/room/type" class="form-select mb-3">
-		<option value="private">[[modules:chat.private.option]]</option>
-		<option value="public">[[modules:chat.public.option]]</option>
+		<option value="private">{{tx("modules:chat.private.option")}}</option>
+		<option value="public">{{tx("modules:chat.public.option")}}</option>
 	</select>
 
 	<div component="chat/room/public/options" class="hidden">
@@ -39,7 +39,7 @@
 			{{{ end }}}
 		</select>
 		<p class="form-text">
-			[[modules:chat.public.groups-help]]
+			{{tx("modules:chat.public.groups-help")}}
 		</p>
 	</div>
 	{{{ end }}}

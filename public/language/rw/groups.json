@@ -27,6 +27,8 @@
     "details.invited": "Abatumiwe",
     "details.has-no-posts": "Uyu munyamuryango ntabwo arashyiraho ikintu na kimwe",
     "details.latest-posts": "Ibiheruka Gushyirwaho",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Yigenga",
     "details.disableJoinRequests": "Guhagarika ubusabe bwo kwinjira",
     "details.disableLeave": "Disallow users from leaving the group",
@@ -64,6 +66,7 @@
     "membership.reject": "Hakanira",
     "new-group.group-name": "Izina ry'Itsinda:",
     "upload-group-cover": "Shyiraho ifoto yo hejuru iranga itsinda",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Bulk Invite",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"

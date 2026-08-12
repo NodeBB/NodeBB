@@ -4,38 +4,38 @@
 	<div class="row settings m-0">
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<div id="notifications" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header hidden">[[admin/settings/notifications:notifications]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header hidden">{{tx("admin/settings/notifications:notifications")}}</h5>
 				<div class="mb-3">
-					<label class="form-label">[[admin/settings/notifications:welcome-notification]]</label>
+					<label class="form-label">{{tx("admin/settings/notifications:welcome-notification")}}</label>
 					<textarea class="form-control" data-field="welcomeNotification"></textarea>
 				</div>
 				<div class="mb-3">
-					<label class="form-label">[[admin/settings/notifications:welcome-notification-link]]</label>
+					<label class="form-label">{{tx("admin/settings/notifications:welcome-notification-link")}}</label>
 					<input type="text" class="form-control" data-field="welcomeLink">
 				</div>
 				<div class="mb-3">
-					<label class="form-label">[[admin/settings/notifications:welcome-notification-uid]]</label>
+					<label class="form-label">{{tx("admin/settings/notifications:welcome-notification-uid")}}</label>
 					<input type="text" class="form-control" data-field="welcomeUid">
 				</div>
 				<div class="mb-3">
-					<label class="form-label">[[admin/settings/notifications:post-queue-notification-uid]]</label>
+					<label class="form-label">{{tx("admin/settings/notifications:post-queue-notification-uid")}}</label>
 					<input type="text" class="form-control" data-field="postQueueNotificationUid">
 				</div>
 				<div class="mb-3">
-					<label class="form-label" for="notificationSendDelay">[[admin/settings/notifications:notification-delay]]</label>
+					<label class="form-label" for="notificationSendDelay">{{tx("admin/settings/notifications:notification-delay")}}</label>
 					<input id="notificationSendDelay" type="text" class="form-control" value="60" data-field="notificationSendDelay">
-					<p class="form-text">[[admin/settings/notifications:notification-delay-help]]</p>
+					<p class="form-text">{{tx("admin/settings/notifications:notification-delay-help")}}</p>
 				</div>
 			</div>
 
 			<div id="tinycon-settings" class="mb-4">
-				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/notifications:tinycon.settings]]</h5>
+				<h5 class="fw-bold tracking-tight settings-header">{{tx("admin/settings/notifications:tinycon.settings")}}</h5>
 				<div class="mb-3">
-					<label class="form-label">[[admin/settings/notifications:tinycon.notification-color]]</label>
+					<label class="form-label">{{tx("admin/settings/notifications:tinycon.notification-color")}}</label>
 					<input type="color" class="form-control form-control-color" data-field="tinyconColor" />
 				</div>
 				<div class="mb-3">
-					<label class="form-label">[[admin/settings/notifications:tinycon.notification-background]]</label>
+					<label class="form-label">{{tx("admin/settings/notifications:tinycon.notification-background")}}</label>
 					<input type="color" class="form-control form-control-color" data-field="tinyconBackground" />
 				</div>
 			</div>

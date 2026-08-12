@@ -158,23 +158,22 @@ SocketUser.editModerationNote = async function (socket, data) {
 	if (!socket.uid || !data || !data.uid || !data.note || !data.id) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const existingNote = await db.getObject(`uid:${data.uid}:moderation:note:${data.id}`);
-	if (!existingNote) {
-		throw new Error('[[error:invalid-data]]');
+
+	const [note] = await user.getModerationNotesByIds(data.uid, [data.id]);
+	if (!note) {
+		throw new Error('[[error:no-privileges]]');
 	}
-	const editingSelfNote = String(existingNote.uid) === String(socket.uid);
+	const isAuthor = String(socket.uid) === String(note.uid);
+	const isAdmin = await user.isAdministrator(socket.uid);
+	if (!isAdmin && !isAuthor) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
 	const noteData = {
+		uid: note.uid,
 		note: data.note,
 		timestamp: data.id,
 	};
-	let canEdit = await privileges.users.canEdit(socket.uid, data.uid, false);
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (!canEdit) {
-		canEdit = await user.isModeratorOfAnyCategory(socket.uid);
-	}
-	if (!canEdit || (!editingSelfNote && !isAdmin)) {
-		throw new Error('[[error:no-privileges]]');
-	}
 
 	await user.setModerationNote({ uid: data.uid, noteData });
 	return await user.getModerationNotesByIds(data.uid, [data.id]);

@@ -82,10 +82,8 @@ Actors.qualify = async (ids, options = {}) => {
 		return false;
 	}
 
-	// Filter out loopback uris
-	if (!meta.config.activitypubAllowLoopback) {
-		ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
-	}
+	// Filter out loopback uris — never persist local URIs as remote actors
+	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 
 	// Separate those who need migration from user to category
 	const migrate = new Set();
@@ -139,6 +137,17 @@ Actors.assert = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			if (typeof id === 'string') {
+				const queriedHost = new URL(id).hostname;
+				const actorHost = new URL(actor.id).hostname;
+				if (queriedHost !== actorHost) {
+					activitypub.helpers.log(`[activitypub/actors] Actor id hostname mismatch: queried ${queriedHost}, got ${actorHost}`);
+					return null;
+				}
+			}
+
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
 			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
@@ -320,6 +329,16 @@ Actors.assertGroup = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing group ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			if (typeof id === 'string') {
+				const queriedHost = new URL(id).hostname;
+				const actorHost = new URL(actor.id).hostname;
+				if (queriedHost !== actorHost) {
+					activitypub.helpers.log(`[activitypub/actors] Group id hostname mismatch: queried ${queriedHost}, got ${actorHost}`);
+					return null;
+				}
+			}
 
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
@@ -645,17 +664,18 @@ Actors.prune = async () => {
 		cids = Array.from(cids);
 
 		// Remote users
-		const [postCounts, roomCounts, followCounts] = await Promise.all([
+		const [postCounts, roomCounts, followCounts, isBanned] = await Promise.all([
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
 			Actors.getLocalFollowCounts(uids),
+			user.bans.isBanned(uids),
 		]);
 
 		await Promise.all(uids.map(async (uid, idx) => {
 			const { followers, following } = followCounts[idx];
 			const postCount = postCounts[idx];
 			const roomCount = roomCounts[idx];
-			if ([postCount, roomCount, followers, following].every(metric => metric < 1)) {
+			if (!isBanned[idx] && [postCount, roomCount, followers, following].every(metric => metric < 1)) {
 				try {
 					await user.deleteAccount(uid);
 					deletionCount += 1;

@@ -101,7 +101,7 @@ module.exports = function (Categories) {
 				tids,
 				['tid', 'uid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']
 			),
-			topics.crossposts.get(tids),
+			topics.crossposts.get(tids, uid),
 		]);
 
 		topicData.forEach((topic) => {

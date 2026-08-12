@@ -22,5 +22,12 @@
     "unread-topics": "נושאים שלא נקראו",
     "categories": "קטגוריות",
     "tags": "תגיות",
-    "no-users-found": "לא נמצאו משתמשים!"
+    "no-users-found": "לא נמצאו משתמשים!",
+    "temp-ban.length": "משך",
+    "temp-ban.reason": "סיבה <span class=\"text-muted\">(אופציונאלי)</span>",
+    "temp-ban.select-reason": "בחר סיבה",
+    "temp-ban.hours": "שעות",
+    "temp-ban.days": "ימים",
+    "temp-ban.explanation": "הזינו זמן הרחקה. שימו לב הזנת מספר 0 מהווה הרחקה לצמיתות.",
+    "temp-mute.explanation": "הזן את משך ההשתקה. שים לב שזמן 0 ייחשב כהשתקה לצמיתות."
 }

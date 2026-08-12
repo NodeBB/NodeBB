@@ -26,5 +26,10 @@
 	"roll": "Գլորել",
 
 	"delete-confirm": "Վստահ եք՞, որ ցանկանում եք ջնջել այս նշանը: Վերականգնելի չի լինի։",
-	"roll-confirm": "Վստա՞հ եք, որ ցանկանում եք վերականգնել այս նշանը: Հին նշանն անմիջապես կչեղարկվի և չի վերականգնվի:"
+	"roll-confirm": "Վստա՞հ եք, որ ցանկանում եք վերականգնել այս նշանը: Հին նշանն անմիջապես կչեղարկվի և չի վերականգնվի:",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

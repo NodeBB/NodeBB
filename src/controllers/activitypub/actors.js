@@ -77,7 +77,13 @@ Actors.note = async function (req, res, next) {
 		return res.set('Location', req.params.pid).sendStatus(308);
 	}
 
-	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, {
+	const cacheKey = `/post/${req.params.pid}`;
+	const cached = activitypub.serveCache.get(cacheKey);
+	if (cached) {
+		return res.status(200).json(cached);
+	}
+
+	const post = (await posts.getPostSummaryByPids([req.params.pid], activitypub._constants.uid, {
 		parse: false,
 		extraFields: ['edited'],
 	})).pop();
@@ -90,6 +96,7 @@ Actors.note = async function (req, res, next) {
 	payload.to = to;
 	payload.cc = cc;
 
+	activitypub.serveCache.set(cacheKey, payload);
 	res.status(200).json(payload);
 };
 
@@ -101,6 +108,12 @@ Actors.replies = async function (req, res, next) {
 	}
 
 	const page = parseInt(req.query.page, 10);
+	const cacheKey = `/post/${req.params.pid}/replies${page ? `?page=${page}` : ''}`;
+	const cached = activitypub.serveCache.get(cacheKey);
+	if (cached) {
+		return res.status(200).json(cached);
+	}
+
 	let replies;
 	try {
 		replies = await activitypub.helpers.generateCollection({
@@ -125,6 +138,7 @@ Actors.replies = async function (req, res, next) {
 		...replies,
 	};
 
+	activitypub.serveCache.set(cacheKey, object);
 	res.status(200).json(object);
 };
 
@@ -136,10 +150,14 @@ Actors.topic = async function (req, res, next) {
 
 	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
-	const { cid, title: name, mainPid, slug, timestamp } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp']);
+	const { cid, title: name, mainPid, slug, timestamp, deleted } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp', 'deleted']);
 	try {
 		if (timestamp > Date.now()) { // Scheduled topic, no response
 			return next();
+		}
+
+		if (deleted) { // Soft-deleted topic, no response
+			return res.sendStatus(404);
 		}
 
 		let collection;

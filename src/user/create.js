@@ -70,7 +70,7 @@ module.exports = function (User) {
 			userData.userslug = slugify(renamedUsername);
 		}
 
-		const results = await plugins.hooks.fire('filter:user.create', { user: userData, data: data });
+		const results = await plugins.hooks.fire('filter:user.create', { user: userData, data, opts });
 		userData = results.user;
 
 		const uid = await db.incrObjectField('global', 'nextUid');
@@ -108,7 +108,7 @@ module.exports = function (User) {
 		if (userNameChanged) {
 			await User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 		}
-		plugins.hooks.fire('action:user.create', { user: userData, data: data });
+		plugins.hooks.fire('action:user.create', { user: userData, data, opts });
 		return userData.uid;
 	}
 

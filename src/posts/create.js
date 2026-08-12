@@ -33,7 +33,7 @@ module.exports = function (Posts) {
 		if (data.toPid) {
 			postData.toPid = data.toPid;
 		}
-		if (data.ip && meta.config.trackIpPerPost) {
+		if (data.ip && meta.config.logIPs && meta.config.trackIpPerPost) {
 			postData.ip = data.ip;
 		}
 		if (data.handle && !parseInt(uid, 10)) {
@@ -82,6 +82,11 @@ module.exports = function (Posts) {
 		if (!postData.toPid) {
 			return;
 		}
+		const exists = await Posts.exists(postData.toPid);
+		if (!exists) {
+			return;
+		}
+
 		await Promise.all([
 			db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
 			db.incrObjectField(`post:${postData.toPid}`, 'replies'),

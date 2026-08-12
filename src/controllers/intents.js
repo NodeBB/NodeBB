@@ -5,11 +5,16 @@ const categories = require('../categories');
 const user = require('../user');
 const helpers = require('./helpers');
 const activitypub = require('../activitypub');
+const meta = require('../meta');
 const utils = require('../utils');
 
 const Intents = module.exports;
 
 Intents.create = async (req, res, next) => {
+	if (!meta.config.activitypubEnabled) {
+		return next();
+	}
+
 	if (!req.uid) {
 		req.session.returnTo = req.originalUrl;
 		helpers.redirect(res, '/login');

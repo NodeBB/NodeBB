@@ -61,5 +61,8 @@
 	"auto-detect": "Rilevazione automatica della lingua impostata per gli Ospiti",
 	"default-language-help": "La lingua predefinita determina le impostazioni della lingua per tutti gli utenti che visitano il tuo forum. <br />I singoli utenti possono sovrascrivere la lingua predefinita nella pagina delle impostazioni dell'account.",
 	"post-sharing": "Condivisione post",
-	"info-plugins-additional": "I plugin possono aggiungere reti aggiuntive per la condivisione dei post."
+	"info-plugins-additional": "I plugin possono aggiungere reti aggiuntive per la condivisione dei post.",
+	"privacy": "Privacy",
+	"log-ips": "Registra gli indirizzi IP",
+	"log-ips-help": "Quando abilitata, gli indirizzi IP di tutti i visitatori sono memorizzati in un insieme ordinato a fini di analisi. Ciò serve a calcolare il numero di visitatori unici."
 }

@@ -61,5 +61,8 @@
 	"auto-detect": "Automatycznie wykrywaj język gości",
 	"default-language-help": "Domyślny język określa ustawienia języka dla wszystkich użytkowników, którzy odwiedzają forum. <br /> Użytkownicy mogą zmienić domyślny język w ustawieniach swojego konta.",
 	"post-sharing": "Udostępnianie wpisów",
-	"info-plugins-additional": "Wtyczki mogą dodać dodatkowe platformy do udostępniania wpisów."
+	"info-plugins-additional": "Wtyczki mogą dodać dodatkowe platformy do udostępniania wpisów.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

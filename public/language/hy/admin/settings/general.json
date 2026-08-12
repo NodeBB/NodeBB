@@ -61,5 +61,8 @@
 	"auto-detect": "Լեզվի Ավտոմատ Հայտնաբերման  կարգավորում հյուրերի համար",
 	"default-language-help": "Հիմնական լեզուն որոշում է լեզվի կարգավորումները բոլոր օգտվողների համար, ովքեր այցելում են ձեր ֆորում: Առանձին օգտատերերը կարող են փոխել հիմնական լեզուն իրենց հաշվի կարգավորումների էջում:",
 	"post-sharing": "Կիսվել հրապարակումով",
-	"info-plugins-additional": "Փլագինները կարող են ավելացնել լրացուցիչ ցանցեր՝ հրապարակումների փոխանակման համար:"
+	"info-plugins-additional": "Փլագինները կարող են ավելացնել լրացուցիչ ցանցեր՝ հրապարակումների փոխանակման համար:",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

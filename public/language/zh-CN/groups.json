@@ -27,6 +27,8 @@
     "details.invited": "已邀请成员",
     "details.has-no-posts": "此群组的成员尚未发表任何帖子。",
     "details.latest-posts": "最新帖子",
+    "details.created": "<span class=\"%1\">创建于: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "公开",
     "details.private": "私有",
     "details.disableJoinRequests": "禁用申请加入群组",
     "details.disableLeave": "禁止用户离开群组",
@@ -64,6 +66,7 @@
     "membership.reject": "拒绝",
     "new-group.group-name": "群组名：",
     "upload-group-cover": "上传群组封面",
+    "invite-members": "邀请成员",
     "bulk-invite-instructions": "输入您要邀请加入此群组的用户名，多个用户以逗号分隔",
     "bulk-invite": "批量邀请",
     "remove-group-cover-confirm": "确定要移除封面图片吗？"

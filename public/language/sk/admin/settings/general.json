@@ -61,5 +61,8 @@
 	"auto-detect": "Automaticky rozpoznávať nastavenie jazyka pre hostí",
 	"default-language-help": "Predvolený jazyk určuje nastavenie jazyka pre všetkých používateľov navštevujúcich vaše fórum. <br />Každý používateľ si môže potom nastaviť predvolený jazyk na stránke nastavenia účtu.",
 	"post-sharing": "Zdieľanie príspevku",
-	"info-plugins-additional": "Doplnky môžu pridávať ďalšie siete na zdieľanie príspevkov."
+	"info-plugins-additional": "Doplnky môžu pridávať ďalšie siete na zdieľanie príspevkov.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

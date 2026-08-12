@@ -16,6 +16,7 @@ const utils = require('../utils');
 const cache = require('../cache');
 const socketHelpers = require('../socket.io/helpers');
 const helpers = require('../helpers');
+const activitypub = require('../activitypub');
 
 const upload_url = nconf.get('relative_path') + nconf.get('upload_url');
 
@@ -410,6 +411,17 @@ module.exports = function (Posts) {
 		}
 		await removeFromQueue(id);
 		plugins.hooks.fire('action:post-queue:submitFromQueue', { data: data });
+
+		// Opportunistic backfill: remote topics may have new posts since they were queued
+		if (meta.config.activitypubEnabled && data.tid) {
+			const mainPid = await topics.getTopicField(data.tid, 'mainPid');
+			if (mainPid && !utils.isNumber(mainPid)) {
+				setImmediate(() => {
+					activitypub.notes.backfill(mainPid);
+				});
+			}
+		}
+
 		return data;
 	};
 
@@ -430,11 +442,17 @@ module.exports = function (Posts) {
 	async function createTopic(data) {
 		const result = await topics.post(data);
 		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
+		setImmediate(() => {
+			activitypub.out.create.note(data.uid, result.postData.pid);
+		});
 		return result;
 	}
 
 	async function createCrosspost(data) {
 		await topics.crossposts.add(data.tid, data.crosspostCid, 0);
+		setImmediate(() => {
+			activitypub.out.announce.topic(data.tid, undefined, data.crosspostCid);
+		});
 		return { tid: data.tid };
 	}
 
@@ -446,6 +464,9 @@ module.exports = function (Posts) {
 			'downvote:disabled': !!meta.config['downvote:disabled'],
 		};
 		socketHelpers.notifyNew(data.uid, 'newPost', result);
+		setImmediate(() => {
+			activitypub.out.create.note(data.uid, postData.pid);
+		});
 		return postData;
 	}
 

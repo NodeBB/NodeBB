@@ -83,14 +83,6 @@
 	"create.password": "Heslo",
 	"create.password-confirm": "Potvrdit heslo",
 
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Důvod <span class=\"text-muted\">(volitelné)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Hodiny",
-	"temp-ban.days": "Dny",
-	"temp-ban.explanation": "Zadejte délku trvání pro zákaz. Nezapomeňte, že 0 je považována jako trvalý zákaz.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
-
 	"alerts.confirm-ban": "Opravdu chcete <strong>trvale</strong> zakázat tohoto uživatele?",
 	"alerts.confirm-ban-multi": "Opravdu chcete <strong>trvale</strong> zakázat tyto uživatele?",
 	"alerts.ban-success": "Uživatel byl zakázán.",

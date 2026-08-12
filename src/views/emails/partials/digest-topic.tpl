@@ -12,7 +12,7 @@
 				<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">{./teaser.content}</p>
 				<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px;">
 					<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; line-height: 16px;" href="{url}/topic/{./slug}">
-						<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read-more]]</strong></small>
+						<small><strong><span style="color: #aaaaaa;">&rsaquo;</span> {{tx("global:read-more")}}</strong></small>
 					</a>
 				</p>
 			</td>

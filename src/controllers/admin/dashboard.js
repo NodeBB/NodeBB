@@ -216,10 +216,7 @@ async function getStatsForSet(set, field) {
 }
 
 async function getStatsFromAnalytics(set, field) {
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
-
-	const data = await analytics.getDailyStatsForSet(`analytics:${set}`, today, 60);
+	const data = await analytics.getDailyStatsForSet(`analytics:${set}`, Date.now(), 60);
 	const sum = arr => arr.reduce((memo, cur) => memo + cur, 0);
 	const results = {
 		yesterday: sum(data.slice(-2)),

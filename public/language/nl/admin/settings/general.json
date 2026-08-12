@@ -61,5 +61,8 @@
 	"auto-detect": "Detecteer de taalinstellingen voor Gasten automatisch",
 	"default-language-help": "De standaard taal bepaald de taalinstellingen voor alle gebruikers die uw forum bezoeken. <br />Individuele gebruikers kunnen deze standaard instellingen overschrijven op hun gebruikersinstellingen pagina.",
 	"post-sharing": "Berichten delen",
-	"info-plugins-additional": "Plug-ins kunnen extra netwerken toevoegen om berichten mee te delen."
+	"info-plugins-additional": "Plug-ins kunnen extra netwerken toevoegen om berichten mee te delen.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

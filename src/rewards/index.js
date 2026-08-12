@@ -5,12 +5,16 @@ const winston = require('winston');
 
 const db = require('../database');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
 const rewards = module.exports;
 
 rewards.checkConditionAndRewardUser = async function (params) {
 	try {
 		const { uid, condition, method } = params;
+		if (!utils.isNumber(uid)) {
+			return;
+		}
 		const isActive = await isConditionActive(condition);
 		if (!isActive) {
 			return;

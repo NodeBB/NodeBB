@@ -112,6 +112,7 @@ describe('http signature signing and verification', () => {
 			const req = {
 				...mockReqBase,
 				...{
+					url: path,
 					path,
 					headers: { ...signature, host },
 				},
@@ -135,6 +136,7 @@ describe('http signature signing and verification', () => {
 				...mockReqBase,
 				...{
 					method: 'POST',
+					url: path,
 					path,
 					body: payload,
 					headers: { ...signature, host },

@@ -120,6 +120,7 @@ async function sendNotifications(uids, topicsData) {
 	let postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	topicsData = topicsData.filter((t, i) => t && postsData[i]);
 	postsData = postsData.filter(Boolean);
+	postsData = await Promise.all(postsData.map(p => posts.parsePost(p)));
 	postsData.forEach((postData, idx) => {
 		if (postData) {
 			postData.user = uidToUserData[topicsData[idx].uid];

@@ -41,7 +41,8 @@ app.renderAsync = async (tpl, data) => {
 	if (!Object.hasOwn(data, '_i18n')) {
 		const store = als.getStore();
 		if (!store) {
-			winston.warn(`[app.renderAsync] No ALS store found, unable to determine user language for template rendering, using default language instead.`);
+			const stack = new Error().stack.split('\n')[2];
+			winston.warn(`[app.renderAsync] No ALS store found, unable to determine user language for template rendering, using default language instead. Template: ${tpl}\n${stack}`);
 		}
 		const uid = store?.uid || 0;
 		const { userLang, acpLang } = await user.getSettings(uid);
@@ -274,6 +275,7 @@ function configureBodyParser(app) {
 			'application/ld+json',
 			'application/activity+json',
 		],
+		limit: '1mb',
 		verify: (req, res, buf) => {
 			req.rawBody = buf;
 		},

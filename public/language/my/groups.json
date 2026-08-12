@@ -27,6 +27,8 @@
     "details.invited": "ဖိတ်ကြားထားသည့် အဖွဲ့ဝင်များ",
     "details.has-no-posts": "ဤအဖွဲ့ဝင်များသည် ပို့စ်များ မတင်ရသေးပါ",
     "details.latest-posts": "နောက်ဆုံးပို့စ်များ",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "သီးသန့်",
     "details.disableJoinRequests": "ဝင်ခွင့်တောင်းဆိုမှုများ ပိတ်ပါ",
     "details.disableLeave": "အဖွဲ့မှထွက်ခွင့် ပိတ်ပါ",
@@ -64,6 +66,7 @@
     "membership.reject": "ငြင်း",
     "new-group.group-name": "အဖွဲ့အမည်:",
     "upload-group-cover": "အဖွဲ့မျက်နှာဖုံးတင်ရန်",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "ဤအဖွဲ့သို့ဖိတ်ကြားရန် အသုံးပြုသူအမည်များကို ကော်မာခြားပြီး ထည့်ပါ",
     "bulk-invite": "အစုလိုက်ဖိတ်ကြားရန်",
     "remove-group-cover-confirm": "မျက်နှာဖုံးပုံကို ဖယ်ရှားရန် သေချာပါသလား။"

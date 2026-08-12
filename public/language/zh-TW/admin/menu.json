@@ -13,6 +13,7 @@
 	"manage/tags": "標籤",
 	"manage/users": "使用者",
 	"manage/admins-mods": "權限分配",
+	"manage/api": "API Access",
 	"manage/registration": "註冊申請",
 	"manage/flagged-content": "被標記的內容",
 	"manage/post-queue": "貼文隊列",

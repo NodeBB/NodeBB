@@ -196,6 +196,9 @@ Notifications.create = async function (data) {
 	if (data.bodyShort) {
 		data.bodyShort = utils.stripBidiControls(data.bodyShort);
 	}
+	if (data.bodyLong && tx.isTranslationKey(data.bodyLong)) {
+		data.txBodyLong = 1;
+	}
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
 		db.setObject(`notifications:${data.nid}`, data),

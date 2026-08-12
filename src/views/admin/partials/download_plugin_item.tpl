@@ -6,26 +6,26 @@
 		<p class="text-xs">{./description}</p>
 		{{{ end }}}
 
-		<small>[[admin/extend/plugins:plugin-item.latest]] <strong class="latestVersion">{./latest}</strong></small>
+		<small>{{tx("admin/extend/plugins:plugin-item.latest")}} <strong class="latestVersion">{./latest}</strong></small>
 		<p class="text-xs">
 			{{{ if ./isCompatible }}}
-			<i class="fa fa-check text-success"></i> [[admin/extend/plugins:plugin-item.compatible, {version}]]
+			<i class="fa fa-check text-success"></i> {{tx("admin/extend/plugins:plugin-item.compatible", version)}}
 			{{{ else }}}
-			<i class="fa fa-question text-warning"></i> [[admin/extend/plugins:plugin-item.not-compatible]]
+			<i class="fa fa-question text-warning"></i> {{tx("admin/extend/plugins:plugin-item.not-compatible")}}
 			{{{ end }}}
 		</p>
 
 		{{{ if ./url }}}
-		<p class="text-xs mb-0">[[admin/extend/plugins:plugin-item.more-info]] <a target="_blank" href="{./url}">{./url}</a></p>
+		<p class="text-xs mb-0">{{tx("admin/extend/plugins:plugin-item.more-info")}} <a target="_blank" href="{./url}">{./url}</a></p>
 		{{{ end }}}
 	</div>
 	<div class="d-flex flex-column gap-1">
 		<button data-action="toggleActive" class="btn btn-light btn-sm hidden text-nowrap">
-			<i class="fa fa-power-off text-primary"></i> [[admin/extend/plugins:plugin-item.activate]]
+			<i class="fa fa-power-off text-primary"></i> {{tx("admin/extend/plugins:plugin-item.activate")}}
 		</button>
 
 		<button data-action="toggleInstall" data-installed="0" class="btn btn-light btn-sm text-nowrap">
-			<i class="fa fa-download text-primary"></i> [[admin/extend/plugins:plugin-item.install]]
+			<i class="fa fa-download text-primary"></i> {{tx("admin/extend/plugins:plugin-item.install")}}
 		</button>
 	</div>
 </li>

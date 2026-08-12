@@ -4,8 +4,8 @@
 					<td style="padding: 40px 10px;width: 100%;font-size: 12px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height:18px; text-align: center; color: #888888;">
 						<br><br>
 						{{{ if showUnsubscribe }}}
-						[[email:notif.post.unsub.info]] <a href="{url}/uid/{uid}/settings">[[email:unsub.cta]]</a>.
-						<br />[[email:notif.post.unsub.one-click]] <a href="{unsubUrl}">[[email:unsubscribe]]</a>.
+						{{tx("email:notif.post.unsub.info")}} <a href="{url}/uid/{uid}/settings">{{tx("email:unsub.cta")}}</a>.
+						<br />{{tx("email:notif.post.unsub.one-click")}} <a href="{unsubUrl}">{{tx("email:unsubscribe")}}</a>.
 						{{{ end }}}
 						<br><br>
 					</td>

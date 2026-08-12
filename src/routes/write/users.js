@@ -60,8 +60,8 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'put', '/:uid/mute', [...middlewares, middleware.assert.user], controllers.write.users.mute);
 	setupApiRoute(router, 'delete', '/:uid/mute', [...middlewares, middleware.assert.user], controllers.write.users.unmute);
 
-	setupApiRoute(router, 'post', '/:uid/tokens', [...middlewares, middleware.assert.user], controllers.write.users.generateToken);
-	setupApiRoute(router, 'delete', '/:uid/tokens/:token', [...middlewares, middleware.assert.user], controllers.write.users.deleteToken);
+	setupApiRoute(router, 'post', '/:uid/tokens', [...middlewares, middleware.assert.user, reauthMiddleware], controllers.write.users.generateToken);
+	setupApiRoute(router, 'delete', '/:uid/tokens/:token', [...middlewares, middleware.assert.user, reauthMiddleware], controllers.write.users.deleteToken);
 
 	setupApiRoute(router, 'delete', '/:uid/sessions/:uuid', [...middlewares, middleware.assert.user], controllers.write.users.revokeSession);
 

@@ -83,14 +83,6 @@
 	"create.password": "Mot de passe",
 	"create.password-confirm": "Confirmer le mot de passe",
 
-	"temp-ban.length": "Longueur",
-	"temp-ban.reason": "Raison <span class=\"text-muted\">(Optionel)</span>",
-	"temp-ban.select-reason": "Sélectionner une raison",
-	"temp-ban.hours": "Heures",
-	"temp-ban.days": "Jours",
-	"temp-ban.explanation": "Entrer la durée du bannissement. Notez qu'une durée de 0 sera considérée comme un bannissement définitif.",
-	"temp-mute.explanation": "Entrez la durée de la mise en sourdine. Notez qu'une durée de 0 sera considérée comme une mise en sourdine permanente.",
-
 	"alerts.confirm-ban": "Voulez-vous réellement bannir <strong>définitivement</strong> cet utilisateur ?",
 	"alerts.confirm-ban-multi": "Voulez-vous réellement bannir <strong>définitivement</strong> ces utilisateurs ?",
 	"alerts.ban-success": "Utilisateur(s) banni(s) !",

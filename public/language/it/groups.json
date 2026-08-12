@@ -27,6 +27,8 @@
     "details.invited": "Membri invitati",
     "details.has-no-posts": "I membri di questo gruppo non hanno creato nessun post.",
     "details.latest-posts": "Ultimi post",
+    "details.created": "<span class=\"%1\">Creato: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Pubblico",
     "details.private": "Privato",
     "details.disableJoinRequests": "Disabilita le richieste d'iscrizione",
     "details.disableLeave": "Impedisce agli utenti di lasciare il gruppo",
@@ -64,6 +66,7 @@
     "membership.reject": "Rifiuta",
     "new-group.group-name": "Nome Gruppo:",
     "upload-group-cover": "Carica copertina gruppo",
+    "invite-members": "Invita i membri",
     "bulk-invite-instructions": "Inserisci una lista di nomi utente da invitare in questo gruppo separati da virgole",
     "bulk-invite": "Invito Collettivo",
     "remove-group-cover-confirm": "Sei sicuro di voler rimuovere l'immagine copertina?"

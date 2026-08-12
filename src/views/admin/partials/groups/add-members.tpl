@@ -1,5 +1,5 @@
 
-<input class="form-control" type="text" placeholder="[[global:search]]"/>
+<input class="form-control" type="text" placeholder="{{tx("global:search")}}"/>
 
 <div class="list-group" id="search-result">
     {{{each users}}}

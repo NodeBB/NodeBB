@@ -9,7 +9,7 @@
 	{{{ if !roomId }}}
 	<div class="d-flex flex-column align-items-center gap-3 my-auto">
 		<i class="fa-solid fa-wind fs-2 text-muted"></i>
-		<span class="text-muted text-sm">[[modules:chat.no-active]]</span>
+		<span class="text-muted text-sm">{{tx("modules:chat.no-active")}}</span>
 	</div>
 	{{{ else }}}
 	<div component="chat/header" class="d-flex align-items-center px-lg-3 gap-3">
@@ -41,7 +41,7 @@
 			<ul component="chat/message/search/results" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1 hidden">
 				<div component="chat/message/search/no-results" class="text-center p-4 d-flex flex-column">
 					<div class="p-4"><i class="fa-solid fa-wind fs-2 text-muted"></i></div>
-					<div class="text-xs fw-semibold text-muted">[[search:no-matches]]</div>
+					<div class="text-xs fw-semibold text-muted">{{tx("search:no-matches")}}</div>
 				</div>
 			</ul>
 			<!-- IMPORT partials/chats/composer.tpl -->

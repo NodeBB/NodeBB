@@ -28,7 +28,7 @@ module.exports = function (Groups) {
 				bodyShort: tx.compile('groups:request.notification-title', displayname),
 				bodyLong: tx.compile('groups:request.notification-text', displayname, tx.escape(groupName)),
 				nid: `group:${groupName}:uid:${uid}:request`,
-				path: `/groups/${slugify(groupName)}`,
+				path: `/groups/${slugify(groupName)}#pending`,
 				from: uid,
 			}),
 			Groups.getOwners(groupName),

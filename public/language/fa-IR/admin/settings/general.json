@@ -61,5 +61,8 @@
 	"auto-detect": "تشخیض خودکار تنظیمات زبان برای مهمانان",
 	"default-language-help": "زبان پیشفرض، تنظیمات زبان همه کاربرانی که از انجمن شما بازدید میکنند را مشخص میکند. <br /> کاربران میتونانند زبان پیشفرض را در صفحه تنظیمات شناسه کاربری خود  تغییر دهند.",
 	"post-sharing": "Post Sharing",
-	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

@@ -26,5 +26,10 @@
 	"roll": "Roll",
 
 	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
-	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

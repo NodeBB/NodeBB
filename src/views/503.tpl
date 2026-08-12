@@ -1,5 +1,5 @@
 <div class="flex-fill">
-	<h2 class="fw-semibold tracking-tight text-center">[[pages:maintenance.text, {site_title}]]</h2>
+	<h2 class="fw-semibold tracking-tight text-center">{{tx("pages:maintenance.text", site_title)}}</h2>
 
 	<div class="mx-auto">
 		<div class="d-flex flex-column gap-3 justify-content-center text-center">
@@ -7,7 +7,7 @@
 				<i class="text-secondary fa fa-fw fa-4x fa-wrench"></i>
 			</div>
 			{{{ if message }}}
-			[[pages:maintenance.messageIntro]]
+			{{tx("pages:maintenance.messageIntro")}}
 			<div class="text-sm text-muted">{message}</div>
 			{{{ end }}}
 		</div>

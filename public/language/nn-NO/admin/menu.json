@@ -13,6 +13,7 @@
 	"manage/tags": "Emneord",
 	"manage/users": "Brukarar",
 	"manage/admins-mods": "Administratorar og moderatorar",
+	"manage/api": "API Access",
 	"manage/registration": "Registrering",
 	"manage/flagged-content": "Rapportert innhald",
 	"manage/post-queue": "Innleggskø",

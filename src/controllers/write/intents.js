@@ -5,6 +5,7 @@ const db = require('../../database');
 const Intents = module.exports;
 
 const activitypub = require('../../activitypub');
+const meta = require('../../meta');
 
 const helpers = require('../helpers');
 
@@ -20,7 +21,11 @@ async function checkRateLimit(ip) {
 	await db.pexpire(key, RATE_LIMIT_WINDOW);
 }
 
-Intents.query = async (req, res) => {
+Intents.query = async (req, res, next) => {
+	if (!meta.config.activitypubEnabled) {
+		return next();
+	}
+
 	const ip = req.ip || req.connection.remoteAddress;
 	await checkRateLimit(ip);
 

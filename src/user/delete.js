@@ -137,6 +137,7 @@ module.exports = function (User) {
 			`uid:${uid}:sessions`,
 			`uid:${uid}:shares`,
 			`uid:${uid}:profile:pictures`,
+			`uid:${uid}:keys`,
 			`invitation:uid:${uid}`,
 		];
 

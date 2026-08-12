@@ -2,13 +2,13 @@
 	{{{ if selectedUser }}}
 	<span class="fw-semibold">{{buildAvatar(selectedUser, "20px", true, "not-responsive")}} {selectedUser.username}</span>
 	{{{ else }}}
-	<span class="fw-semibold">[[users:all-users]]</span>
+	<span class="fw-semibold">{{tx("users:all-users")}}</span>
 	{{{ end }}} <span class="caret text-primary opacity-75"></span>
 </button>
 <ul class="dropdown-menu p-1 text-sm" role="menu">
 	<li role="presentation" class="user {{{ if !selectedUser}}}selected{{{end}}}">
 		<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="{config.relative_path}/{allUsersUrl}">
-			<div class="flex-grow-1">[[users:all-users]]</div>
+			<div class="flex-grow-1">{{tx("users:all-users")}}</div>
 			<i class="flex-shrink-0 fa fa-fw {{{ if !selectedUser }}}fa-check{{{ end }}}"></i>
 		</a>
 	</li>

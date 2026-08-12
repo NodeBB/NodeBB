@@ -320,19 +320,18 @@ Out.dislike.note = enabledCheck(async (uid, pid) => {
 
 Out.announce = {};
 
-Out.announce.topic = enabledCheck(async (tid, uid) => {
+Out.announce.topic = enabledCheck(async (tid, uid, overrideCid) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+	const announceCid = overrideCid || cid;
 
 	if (uid) {
 		const exists = await user.exists(uid);
 		if (!exists) {
 			return;
 		}
-	} else {
+	} else if (!utils.isNumber(announceCid) || parseInt(announceCid, 10) < 1) {
 		// Only local categories can announce
-		if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
-			return;
-		}
+		return;
 	}
 
 	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
@@ -341,8 +340,8 @@ Out.announce.topic = enabledCheck(async (tid, uid) => {
 		return;
 	}
 
-	const { activity, targets } = await activitypub.mocks.activities.announce(tid, uid);
-	await activitypub.send(uid ? 'uid' : 'cid', uid || cid, Array.from(targets), activity);
+	const { activity, targets } = await activitypub.mocks.activities.announce(tid, uid, announceCid);
+	await activitypub.send(uid ? 'uid' : 'cid', uid || announceCid, Array.from(targets), activity);
 });
 
 Out.flag = enabledCheck(async (uid, flag) => {

@@ -19,6 +19,7 @@ const pool = [];
 const free = [];
 
 let maxThreads = 0;
+let pendingRequests = 0;
 
 Object.defineProperty(Minifier, 'maxThreads', {
 	get: function () {
@@ -37,13 +38,29 @@ Object.defineProperty(Minifier, 'maxThreads', {
 Minifier.maxThreads = Math.max(1, os.cpus().length - 1);
 
 Minifier.killAll = function () {
+	if (pendingRequests > 0) {
+		return new Promise((resolve) => {
+			const checkInterval = setInterval(() => {
+				if (pendingRequests <= 0) {
+					clearInterval(checkInterval);
+					doKillAll();
+					resolve();
+				}
+			}, 50);
+		});
+	}
+	doKillAll();
+	return Promise.resolve();
+};
+
+function doKillAll() {
 	pool.forEach((child) => {
 		child.kill('SIGTERM');
 	});
 
 	pool.length = 0;
 	free.length = 0;
-};
+}
 
 function getChild() {
 	while (free.length) {
@@ -96,12 +113,16 @@ function forkAction(action) {
 	return new Promise((resolve, reject) => {
 		const proc = getChild();
 
+		pendingRequests += 1;
+
 		if (!proc.connected || proc.killed) {
+			pendingRequests -= 1;
 			return reject(new Error('Child process is not connected or has been killed'));
 		}
 		const onMessage = (message) => {
 			cleanup();
 			freeChild(proc);
+			pendingRequests -= 1;
 
 			if (message.type === 'error') {
 				return reject(new Error(message.message));
@@ -114,6 +135,7 @@ function forkAction(action) {
 		const onError = (err) => {
 			cleanup();
 			freeChild(proc);
+			pendingRequests -= 1;
 			reject(err);
 		};
 

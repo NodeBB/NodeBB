@@ -1,18 +1,18 @@
 <div class="acp-page-container px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/uploads:manage-uploads]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/manage/uploads:manage-uploads")}}</h4>
 		</div>
 		<div class="d-flex gap-1">
 
-			<button id="new-folder" class="btn btn-light btn-sm"><i class="fa fa-folder"></i> [[admin/manage/uploads:new-folder]]</button>
+			<button id="new-folder" class="btn btn-light btn-sm"><i class="fa fa-folder"></i> {{tx("admin/manage/uploads:new-folder")}}</button>
 
-			<button id="upload" class="btn btn-primary btn-sm"><i class="fa fa-upload"></i> [[global:upload]]</button>
+			<button id="upload" class="btn btn-primary btn-sm"><i class="fa fa-upload"></i> {{tx("global:upload")}}</button>
 		</div>
 	</div>
 
 	<div class="alert alert-warning text-sm alert-dismissible fade show mb-0" role="alert">
-		[[admin/manage/uploads:unsafe-file-warning]]
+		{{tx("admin/manage/uploads:unsafe-file-warning")}}
 		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	</div>
 
@@ -24,9 +24,9 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th>[[admin/manage/uploads:filename]]</th>
-					{{{ if showPids }}}<th class="text-end">[[admin/manage/uploads:usage]]</th>{{{ end }}}
-					<th class="text-end">[[admin/manage/uploads:size/filecount]]</th>
+					<th>{{tx("admin/manage/uploads:filename")}}</th>
+					{{{ if showPids }}}<th class="text-end">{{tx("admin/manage/uploads:usage")}}</th>{{{ end }}}
+					<th class="text-end">{{tx("admin/manage/uploads:size/filecount")}}</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -51,12 +51,12 @@
 						<a target="_blank" href="{config.relative_path}/post/{@value}"><span class="label label-default">{@value}</span></a>
 						{{{ end }}}
 						{{{ if !./inPids.length }}}
-						<span class="label label-danger">[[admin/manage/uploads:orphaned]]</span>
+						<span class="label label-danger">{{tx("admin/manage/uploads:orphaned")}}</span>
 						{{{ end }}}
 					</td>
 					{{{ end }}}
 
-					<td class="text-end align-middle">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}[[admin/manage/uploads:filecount, {files.fileCount}]]{{{ end }}}</td>
+					<td class="text-end align-middle">{{{ if files.isFile }}}{files.sizeHumanReadable}{{{ else }}}{{tx("admin/manage/uploads:filecount", files.fileCount)}}{{{ end }}}</td>
 
 					<td role="button" class="align-middle text-end">
 						<button class="delete btn btn-sm btn-light {{{ if !files.isFile }}} hidden{{{ end }}}">

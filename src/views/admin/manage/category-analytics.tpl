@@ -18,7 +18,7 @@
 						<canvas id="pageviews:hourly" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.pageviews-hourly]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.pageviews-hourly")}}</small></div>
 			</div>
 		</div>
 		<div class="col-sm-6 text-center">
@@ -28,7 +28,7 @@
 						<canvas id="pageviews:daily" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.pageviews-daily]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.pageviews-daily")}}</small></div>
 			</div>
 		</div>
 	</div>
@@ -40,7 +40,7 @@
 						<canvas id="topics:daily" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.topics-daily]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.topics-daily")}}</small></div>
 			</div>
 		</div>
 		<div class="col-sm-6 text-center">
@@ -50,7 +50,7 @@
 						<canvas id="posts:daily" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.posts-daily]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.posts-daily")}}</small></div>
 			</div>
 		</div>
 	</div>

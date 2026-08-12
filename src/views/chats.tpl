@@ -4,8 +4,8 @@
 			<div component="chat/nav-wrapper" class="flex-shrink-0 d-flex flex-column h-100 gap-1" data-loaded="{{{ if roomId }}}1{{{ else }}}0{{{ end }}}">
 
 				<div class="d-flex flex-column gap-2">
-					<button component="chat/create" class="btn btn-primary btn-sm w-100">[[modules:chat.create-room]]</button>
-					<input id="search-chats" class="form-control form-control-sm" type="text" placeholder="[[modules:chat.search-chats-placeholder]]" />
+					<button component="chat/create" class="btn btn-primary btn-sm w-100">{{tx("modules:chat.create-room")}}</button>
+					<input id="search-chats" class="form-control form-control-sm" type="text" placeholder="{{tx("modules:chat.search-chats-placeholder")}}" />
 				</div>
 
 				{{{ if publicRooms.length }}}
@@ -15,7 +15,7 @@
 					<div class="d-flex gap-1 align-items-center justify-content-between justify-content-lg-start">
 						<button class="btn btn-ghost btn-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#public-rooms"
 						onclick="$(this).find('i').toggleClass('fa-rotate-180');"><i class="fa fa-fw fa-chevron-up" style="transition: 0.25s ease;"></i></button>
-						<label class="text-sm text-muted lh-1">[[modules:chat.public-rooms, {publicRooms.length}]]</label>
+						<label class="text-sm text-muted lh-1">{{tx("modules:chat.public-rooms", publicRooms.length)}}</label>
 					</div>
 					<div id="public-rooms" component="chat/public" class="collapse show">
 						<div class="d-flex gap-1 flex-column">
@@ -42,7 +42,7 @@
 					<div class="d-flex gap-1 align-items-center justify-content-between justify-content-lg-start">
 						<button class="btn btn-ghost btn-sm p-1 order-1 order-lg-0" data-bs-toggle="collapse" data-bs-target="#private-rooms"
 						onclick="$(this).find('i').toggleClass('fa-rotate-180')"><i class="fa fa-fw fa-chevron-up" style="transition: 0.25s ease;"></i></button>
-						<label class="text-sm text-muted lh-1">[[modules:chat.private-rooms, {privateRoomCount}]]</label>
+						<label class="text-sm text-muted lh-1">{{tx("modules:chat.private-rooms", privateRoomCount)}}</label>
 					</div>
 					{{{ end }}}
 
@@ -56,7 +56,7 @@
 			<div component="chat/main-wrapper" class="flex-grow-1 ms-lg-2 ps-lg-2 border-1 border-start-lg h-100" style="min-width: 0;" data-roomid="{roomId}">
 				<!-- IMPORT partials/chats/message-window.tpl -->
 			</div>
-			<div class="imagedrop"><div>[[topic:composer.drag-and-drop-images]]</div></div>
+			<div class="imagedrop"><div>{{tx("topic:composer.drag-and-drop-images")}}</div></div>
 		</div>
 	</div>
 	<div data-widget-area="sidebar" class="h-100 col-lg-3 col-sm-12 {{{ if !widgets.sidebar.length }}}hidden{{{ end }}}">

@@ -70,9 +70,9 @@ describe('helpers', () => {
 		done();
 	});
 
-	it('should escape html and translation tokens', (done) => {
+	it('should escape html', (done) => {
 		const str = helpers.escape('gdkfhgk < some > and & [[global:posts]] foo');
-		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp; &lsqb;&lsqb;global:posts&rsqb;&rsqb; foo');
+		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp; [[global:posts]] foo');
 		done();
 	});
 

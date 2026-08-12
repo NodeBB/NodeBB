@@ -83,14 +83,6 @@
 	"create.password": "รหัสผ่าน",
 	"create.password-confirm": "ยืนยันรหัสผ่าน",
 
-	"temp-ban.length": "ความยาว",
-	"temp-ban.reason": "เหตุผล <span class=\"text-muted\">(ตัวเลือก)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "ชั่วโมง",
-	"temp-ban.days": "วัน",
-	"temp-ban.explanation": "ระบุระยะเวลาของการแบน ถ้าระยะเวลาเป็น \"0\" คือการแบนถาวร",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
-
 	"alerts.confirm-ban": "คุณต้องการที่จะแบนผู้ใช้คนนี้ <strong>ถาวร </strong>?",
 	"alerts.confirm-ban-multi": "คุณต้องการที่จะแบนผู้ใช้กลุ่มนี้ <strong>ถาวร </strong>?",
 	"alerts.ban-success": "ผู้ใช้โดนแบนแล้ว!",

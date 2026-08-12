@@ -122,13 +122,22 @@ Controller.getOutbox = async (req, res) => {
 	const { uid } = req.params;
 	let { after, before } = req.query;
 
-	let totalItems = await db.sortedSetsCard([`uid:${uid}:posts`, `uid:${uid}:upvote`, `uid:${uid}:downvote`, `uid:${uid}:shares`]);
-	totalItems = totalItems.reduce((sum, count) => {
-		sum += count;
-		return sum;
-	}, 0);
-
 	const perPage = 20;
+	const callerUid = req.uid || 0;
+
+	// Resolve visible categories — posts are drawn only from these
+	let userCids = await db.getSortedSetRange(`uid:${uid}:cids`, 0, -1);
+	userCids = await privileges.categories.filterCids('topics:read', userCids, callerUid);
+	const postSets = userCids.map(cid => `cid:${cid}:uid:${uid}:pids`);
+
+	// Total count: visible posts + all votes/shares (votes/shares filtered later)
+	let totalPostCount = await db.sortedSetsCard(postSets);
+	totalPostCount = totalPostCount.reduce((sum, count) => sum + count, 0);
+	const [totalUpvote, totalDownvote, totalShare] = await db.sortedSetsCard([
+		`uid:${uid}:upvote`, `uid:${uid}:downvote`, `uid:${uid}:shares`,
+	]);
+	const totalItems = totalPostCount + totalUpvote + totalDownvote + totalShare;
+
 	let paginate = true;
 	if (totalItems <= perPage) {
 		before = undefined;
@@ -142,55 +151,78 @@ Controller.getOutbox = async (req, res) => {
 	const first = paginate && !after && !before && `${nconf.get('url')}/uid/${uid}/outbox?after=${Date.now()}`;
 	const last = paginate && !after && !before && `${nconf.get('url')}/uid/${uid}/outbox?before=0`;
 	let activities;
-	let post, upvote, downvote, share;
+	let upvotes, downvotes, shares;
+
+	// Fetch enough from each source so that after merging by score and filtering votes/shares,
+	// we still have perPage items. Posts are pre-filtered via category sets; votes/shares are filtered after.
+	const fetchLimit = (perPage * 4) - 1;
 
 	if (after || before) {
 		const limit = after ? parseInt(after, 10) - 1 : parseInt(before, 10) + 1;
 		const method = after ? 'getSortedSetRevRangeByScoreWithScores' : 'getSortedSetRangeByScoreWithScores';
 
-		[post, upvote, downvote, share] = await Promise.all([
-			db[method](`uid:${uid}:posts`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-			db[method](`uid:${uid}:upvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-			db[method](`uid:${uid}:downvote`, 0, 20, limit, `${after ? '-' : '+'}inf`),
-			db[method](`uid:${uid}:shares`, 0, 20, limit, `${after ? '-' : '+'}inf`),
+		[activities, upvotes, downvotes, shares] = await Promise.all([
+			db[method](postSets, 0, fetchLimit, limit, `${after ? '-' : '+'}inf`),
+			db[method](`uid:${uid}:upvote`, 0, fetchLimit, limit, `${after ? '-' : '+'}inf`),
+			db[method](`uid:${uid}:downvote`, 0, fetchLimit, limit, `${after ? '-' : '+'}inf`),
+			db[method](`uid:${uid}:shares`, 0, fetchLimit, limit, `${after ? '-' : '+'}inf`),
 		]);
 	} else {
-		// Simple range query for first page (no pagination params)
-		[post, upvote, downvote, share] = await Promise.all([
-			db.getSortedSetRangeWithScores(`uid:${uid}:posts`, 0, 19),
-			db.getSortedSetRangeWithScores(`uid:${uid}:upvote`, 0, 19),
-			db.getSortedSetRangeWithScores(`uid:${uid}:downvote`, 0, 19),
-			db.getSortedSetRangeWithScores(`uid:${uid}:shares`, 0, 19),
+		// Reverse range: fetch newest items first (mergeBatch descending)
+		[activities, upvotes, downvotes, shares] = await Promise.all([
+			db.getSortedSetRevRangeWithScores(postSets, 0, fetchLimit),
+			db.getSortedSetRevRangeWithScores(`uid:${uid}:upvote`, 0, fetchLimit),
+			db.getSortedSetRevRangeWithScores(`uid:${uid}:downvote`, 0, fetchLimit),
+			db.getSortedSetRevRangeWithScores(`uid:${uid}:shares`, 0, fetchLimit),
 		]);
 	}
 
-	activities = [
-		post.map(post => ({ ...post, type: 'post' })),
-		upvote.map(upvote => ({ ...upvote, type: 'upvote' })),
-		downvote.map(downvote => ({ ...downvote, type: 'downvote' })),
-		share.map(share => ({ ...share, type: 'share' })),
-	].flat().sort((a, b) => b.score - a.score);
-	if (!paginate || before) {
-		activities = activities.slice(-20);
-	} else {
-		activities = activities.slice(0, 20);
+	let allActivities = [
+		...(activities || []).map(item => ({ ...item, type: 'post' })),
+		...(upvotes || []).map(item => ({ ...item, type: 'upvote' })),
+		...(downvotes || []).map(item => ({ ...item, type: 'downvote' })),
+		...(shares || []).map(item => ({ ...item, type: 'share' })),
+	].sort((a, b) => b.score - a.score);
+
+	// Filter votes/shares to only those targeting visible posts
+	if (allActivities.length) {
+		const voteSharePids = allActivities
+			.filter(({ type }) => type !== 'post')
+			.map(({ value }) => value);
+		if (voteSharePids.length) {
+			const visibleVotePids = await privileges.posts.filter('topics:read', voteSharePids, callerUid);
+			const visibleVoteSet = new Set(visibleVotePids);
+			allActivities = allActivities.filter(({ type, value }) => {
+				if (type === 'post') return true; // already filtered via category sets
+				return visibleVoteSet.has(value);
+			});
+		}
+
+		// Slice to perPage
+		if (!paginate || before) {
+			allActivities = allActivities.slice(-perPage);
+		} else {
+			allActivities = allActivities.slice(0, perPage);
+		}
 	}
 
-	if (activities.length) {
-		prev = `${nconf.get('url')}/uid/${uid}/outbox?before=${activities[0].score}`;
-		next = `${nconf.get('url')}/uid/${uid}/outbox?after=${activities[activities.length - 1].score}`;
+	if (allActivities.length) {
+		prev = `${nconf.get('url')}/uid/${uid}/outbox?before=${allActivities[0].score}`;
+		next = `${nconf.get('url')}/uid/${uid}/outbox?after=${allActivities[allActivities.length - 1].score}`;
 
-		let postsData = activities.filter((({ type }) => type === 'post'));
-		postsData = await posts.getPostSummaryByPids(postsData.map(({ value }) => value), 0, { stripTags: false });
-		postsData = postsData.reduce((map, postData) => {
+		const postItems = allActivities.filter((({ type }) => type === 'post'));
+		const postsData = await posts.getPostSummaryByPids(
+			postItems.map(({ value }) => value), callerUid, { stripTags: false }
+		);
+		const postsMap = postsData.reduce((map, postData) => {
 			map.set(postData.pid, postData);
 			return map;
 		}, new Map());
 
-		activities = await Promise.all(activities.map(async ({ type, value: id }) => {
+		activities = await Promise.all(allActivities.map(async ({ type, value: id }) => {
 			switch (type) {
 				case 'post': {
-					const { activity } = await activitypub.mocks.activities.create(id, 0, postsData.get(id));
+					const { activity } = await activitypub.mocks.activities.create(id, 0, postsMap.get(id));
 					return activity;
 				}
 
@@ -208,6 +240,8 @@ Controller.getOutbox = async (req, res) => {
 				}
 			}
 		}));
+	} else {
+		activities = [];
 	}
 
 	res.status(200).json({

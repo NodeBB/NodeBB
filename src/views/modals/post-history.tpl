@@ -1,8 +1,8 @@
 <p class="number-of-diffs">
 	{{{ if numDiffs }}}
-	[[topic:diffs.description, {numDiffs}]]
+	{{tx("topic:diffs.description", numDiffs)}}
 	{{{ else }}}
-	[[topic:diffs.no-revisions-description, {numDiffs}]]
+	{{tx("topic:diffs.no-revisions-description", numDiffs)}}
 	{{{ end }}}
 </p>
 {{{ if numDiffs }}}
@@ -12,8 +12,8 @@
 		<option value="{../timestamp}">
 			{./pretty}
 			{{{ if ./username }}}[{./username}]{{{ end }}}
-			{{{ if @first }}}([[topic:diffs.current-revision]]){{{ end }}}
-			{{{ if @last }}}([[topic:diffs.original-revision]]){{{ end }}}
+			{{{ if @first }}}{{tx("topic:diffs.current-revision")}}{{{ end }}}
+			{{{ if @last }}}{{tx("topic:diffs.original-revision")}}{{{ end }}}
 		</option>
 		{{{ end }}}
 	</select>
@@ -23,14 +23,13 @@
 	<ul class="posts-list diffs list-unstyled"></ul>
 
 	{{{ if editable }}}
-	<button class="btn btn-primary" data-action="restore">[[topic:diffs.restore]]</button>
+	<button class="btn btn-primary" data-action="restore">{{tx("topic:diffs.restore")}}</button>
 	{{{ end }}}
 	{{{ if deletable }}}
-	<button class="btn btn-danger" data-action="delete">[[topic:diffs.delete]]</button>
+	<button class="btn btn-danger" data-action="delete">{{tx("topic:diffs.delete")}}</button>
 	{{{ end }}}
 	{{{ if editable }}}
-	<p class="form-text">[[topic:diffs.restore-description]]</p>
+	<p class="form-text">{{tx("topic:diffs.restore-description")}}</p>
 	{{{ end }}}
-
 </div>
 {{{ end }}}

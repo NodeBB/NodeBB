@@ -218,19 +218,24 @@ async function setupData() {
 		name: 'Test Group',
 	});
 
-	// Create private groups for pending/invitations
-	const [pending1, pending2, inviteUid] = await Promise.all([
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-		user.create({ username: utils.generateUUID().slice(0, 8) }),
-	]);
+	// Create users for pending/invitations/ownership
+	const pending1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const pending2 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const inviteUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const owner1Uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+	const owner2Uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
 	mocks.put['/groups/{slug}/pending/{uid}'][1].example = pending1;
 	mocks.delete['/groups/{slug}/pending/{uid}'][1].example = pending2;
 	mocks.delete['/groups/{slug}/invites/{uid}'][1].example = inviteUid;
-	await Promise.all(['private-group', 'invitations-only'].map(async (name) => groups.create({ name, private: true })));
+	await Promise.all(['private-group', 'invitations-only', 'ownership-only'].map(async (name) => groups.create({ name, private: true })));
 	await groups.requestMembership('private-group', pending1);
 	await groups.requestMembership('private-group', pending2);
 	await groups.invite('invitations-only', inviteUid);
+	await Promise.all([
+		groups.join('ownership-only', owner1Uid),
+		groups.join('ownership-only', owner2Uid),
+	]);
+	await groups.ownership.grant(owner2Uid, 'ownership-only');
 
 	await meta.settings.set('core.api', {
 		tokens: [{

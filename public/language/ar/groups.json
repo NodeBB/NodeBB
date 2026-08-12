@@ -27,6 +27,8 @@
     "details.invited": "اﻷعضار المدعوون",
     "details.has-no-posts": "أعضاء هذه المجموعة لم يضيفوا أية مشاركة",
     "details.latest-posts": "آخر المشاركات",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "خاص",
     "details.disableJoinRequests": "Disable join requests",
     "details.disableLeave": "Disallow users from leaving the group",
@@ -64,6 +66,7 @@
     "membership.reject": "رفض",
     "new-group.group-name": "اسم المجموعة",
     "upload-group-cover": "Upload group cover",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Bulk Invite",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"
