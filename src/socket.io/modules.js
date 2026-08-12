@@ -151,19 +151,6 @@ SocketModules.chats.sortPublicRooms = async function (socket, data) {
 	await api.chats.sortPublicRooms(socket, data);
 };
 
-SocketModules.chats.searchMembers = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/users?query=');
-
-	if (!data || !utils.isNumber(data.roomId)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	// parameter renamed; backwards compatibility
-	data.query = data.username;
-	delete data.username;
-	return await api.search.roomUsers(socket, data);
-};
-
 SocketModules.chats.toggleOwner = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/owners/:uid');
 
@@ -182,19 +169,6 @@ SocketModules.chats.setNotificationSetting = async (socket, data) => {
 	}
 
 	await api.chats.watch(socket, data);
-};
-
-SocketModules.chats.searchMessages = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/messages');
-
-	if (!data || !utils.isNumber(data.roomId) || !data.content) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	// parameter renamed; backwards compatibility
-	data.query = data.content;
-	delete data.content;
-	return await api.search.roomMessages(socket, data);
 };
 
 SocketModules.chats.loadPinnedMessages = async (socket, data) => {
