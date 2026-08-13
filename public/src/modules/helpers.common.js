@@ -143,22 +143,22 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			.replace(/"/g, '&quot;');
 	}
 
+	const routePrivilegeMap = new Map([
+		['/users', 'view:users'],
+		['/tags', 'view:tags'],
+		['/groups', 'view:groups'],
+	]);
 	function displayMenuItem(data, index) {
 		const item = data.navigation[index];
 		if (!item) {
 			return false;
 		}
-
-		if (item.route.match('/users') && data.user && !data.user.privileges['view:users']) {
-			return false;
-		}
-
-		if (item.route.match('/tags') && data.user && !data.user.privileges['view:tags']) {
-			return false;
-		}
-
-		if (item.route.match('/groups') && data.user && !data.user.privileges['view:groups']) {
-			return false;
+		if (data.user) {
+			for (const [route, privilege] of routePrivilegeMap) {
+				if (item.route.startsWith(route) && !data.user.privileges[privilege]) {
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -174,7 +174,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		const sizeEscaped = escape(size);
 		const fontSize = (parseInt(size, 10) / 2) || 16;
-		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${category.icon ? `<i class="fa fa-fw ${escape(category.icon)}"></i>` : ''}</span>`;
+		const icon = category.icon ? `<i class="fa fa-fw ${escape(category.icon)}" style="line-height: ${sizeEscaped};"></i>` : '';
+		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${icon}</span>`;
 	}
 
 	function buildCategoryLabel(category, tag = 'a', className = '') {
