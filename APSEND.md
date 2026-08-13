@@ -263,20 +263,26 @@ src/activitypub/
 - **DNS `lookup` reuse still missing** — the worker does SSRF check, then `fetch` does its own DNS lookup. The original `request.js` stores the DNS `lookup` array in the cache and reuses it for the actual request to prevent DNS rebinding between check and request. **Future work**: create an undici `Agent` with a custom `lookup` function that returns cached results. For now, `redirect: 'manual'` + SSRF check provides defense-in-depth.
 - **Shutdown doesn't truly abort in-flight fetch** — worker sends `ack` but the 10s `AbortSignal.timeout` is the only abort mechanism. Not "abort immediately" as the plan states. **Future work**: track an `AbortController` per task, call `abort()` on shutdown message, then exit.
 
-### Phase 2: Pool management (`SendPool` in `index.js`)
+### Phase 2: Pool management + integration
 1. Fork workers (pattern from `minifier.js`: `pool[]`, `free[]`), wait for `ready` message before marking available
 2. `busy: Map<worker, taskId>` — track in-flight tasks per worker
-3. On worker `exit`: move in-flight task back to Redis queue (`ap:retry:queue` with score `Date.now()`)
-4. On worker `error`: log, handle via exit path
-5. Drain loop: `draining` flag prevents concurrent loops. Active (tight loop with `setImmediate` yield) while queue has items, idle (10s `setTimeout`) when empty. `getSortedSetRangeByScore('ap:retry:queue', 0, N, '-inf', Date.now())` → dispatch to free workers. Start drain loop after pool init; stop on graceful shutdown.
-6. Result handler: `Map<taskId, { queueId, uri, payloadType }>`, on result → analytics or retry. Per-task 30s stuck detection via `taskTimers`.
-7. Graceful shutdown: stop drain loop, send `{ type: 'shutdown' }` to workers (workers abort in-flight and exit), wait for in-flight tasks (10s timeout via `setTimeout`), then `kill('SIGTERM')` → `SIGKILL`.
+3. `pending: Map<taskId, { queueId, uri, payloadType, ... }>`, `taskTimers: Map<taskId, Timer>` — 30s stuck detection
+4. On worker `exit`: move in-flight task back to Redis queue (`ap:retry:queue` with score `Date.now()`), fork replacement
+5. On worker `error`: log, handle via exit path
+6. Drain loop: `draining` flag prevents concurrent loops. Active (tight loop with `setImmediate` yield) while queue has items, idle (10s `setTimeout`) when empty. `getSortedSetRangeByScore('ap:retry:queue', 0, 50, '-inf', Date.now())` → batch fetch task data + key data → dispatch to free workers. Start drain loop after pool init; stop on graceful shutdown.
+7. Result handler: on result → analytics (success) or re-queue with exponential backoff (failure). Backoff formula: `Math.min(1min * 2^(attempts-1), 1 hour)`.
+8. Graceful shutdown: stop drain loop, send `{ type: 'shutdown' }` to workers (workers abort in-flight and exit), wait 10s, then `kill('SIGTERM')` → `kill('SIGKILL')` after 2s.
+9. `send()` converted to fire-and-forget: push all inboxes to `ap:retry:queue` with score `Date.now()`, start drain loop. `batch.processArray` removed.
 
-### Phase 3: Integration (`send()` in `index.js`)
-1. Replace `batch.processArray` block with Redis queue push + fire-and-forget
-2. Push all inboxes to `ap:retry:queue` with score `Date.now()`
-3. Remove inline retry queue logic (handled by result handler in SendPool)
-4. Keep CI mode early-return
+**Post-implementation findings (Phase 2 review):**
+- ~~**`cpus()` destructuring**~~ — **FIXED**: Changed from `const { cpus } = require('os')` to `const os = require('os')` + `os.cpus()` to avoid prefer-destructuring eslint error.
+- ~~**`fork` destructuring**~~ — **FIXED**: Changed from `require('child_process').fork` to `const { fork } = require('child_process')`.
+- **Await-inside-loop warnings** — `no-await-in-loop` triggers on `await` inside `while (SendPool.draining)` loop. These are false positives (the rule targets `for/forEach/map` loops, not `while` loops). Three warnings remain: `getSortedSetRangeByScore`, `Promise.all` for task data, `Promise.all` for key data. All are in the main drain loop control flow and are intentional.
+- **Key data fetched per-task in drain loop** — `ActivityPub.getPrivateKey()` is called for each task during drain. This is acceptable because it's batched via `Promise.all` and the key data is small/cached by the `db` module. Future optimization: cache key data per `(type, id)` pair.
+- **CI mode preserved** — `send()` still early-returns with `ActivityPub._sent.set()` when `process.env.CI` is set, ensuring tests are unaffected.
+- **Shutdown integrated into start.js** — `ActivityPub.shutdown()` called during NodeBB shutdown flow, after webserver destroy and analytics write, before database close.
+- **SendPool extracted to `send.js`** — `SendPool` logic (371 lines) moved from `index.js` to `send.js` to reduce `index.js` bloat. `send.js` imports `db` and `winston` directly. `ActivityPub` reference resolved via `SendPool._activityPub` parameter passed to `SendPool.init(ActivityPub)` at end of `index.js`.
+- ~~**`send.js` renamed to `sendWorker.js`**~~ — **FIXED**: Worker process file renamed to `sendWorker.js`; `send.js` now holds `SendPool` logic. Worker path in `SendPool.forkWorker()` updated to `path.join(__dirname, 'sendWorker.js')`.
 
 ### Phase 4: Cleanup
 1. Remove `retryFailedMessages()` and its cron registration from `jobs.js`
@@ -294,7 +300,7 @@ src/activitypub/
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Single file | `send.js` only (pool inline in `index.js`) | Pool management is ~50 lines; no need for separate module |
+| File layout | `send.js` (SendPool, 371 lines) + `sendWorker.js` (worker, 308 lines) + `index.js` (ActivityPub, 728 lines) | Pool extracted to `send.js` to reduce `index.js` bloat; worker renamed to `sendWorker.js` |
 | Queue location | Redis (`ap:retry:queue`) | Persistent, restart-safe, reuses existing mechanism |
 | Queue consumer | Main process (not worker) | Workers stay simple; main process has `db` module |
 | Drain mechanism | Active: tight loop with `setImmediate` yield / Idle: 10-second `setTimeout` | Replaces hourly retry cron; runs continuously while queue has items, yields to event loop between batches |
