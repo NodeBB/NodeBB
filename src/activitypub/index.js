@@ -690,3 +690,4 @@ ActivityPub.shutdown = function () {
 
 // Initialize the send pool now that ActivityPub is fully defined
 SendPool.init(ActivityPub);
+ActivityPub.SendPool = SendPool;
