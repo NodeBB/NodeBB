@@ -1,20 +1,15 @@
 'use strict';
 
-const dns = require('dns').promises;
-const { Agent, Dispatcher1Wrapper } = require('undici');
 const nconf = require('nconf');
-const ipaddr = require('ipaddr.js');
 const { CookieJar } = require('tough-cookie');
 const fetchCookie = require('fetch-cookie').default;
 const { version } = require('../package.json');
+const { Agent } = require('undici');
+const { Dispatcher1Wrapper } = require('undici');
 
 const plugins = require('./plugins');
-const ttl = require('./cache/ttl');
-const checkCache = ttl({
-	name: 'request-check',
-	max: 1000,
-	ttl: 1000 * 60 * 60, // 1 hour
-});
+const { checkHostname, lookup } = require('./ssrf');
+
 let allowList = new Set();
 let initialized = false;
 
@@ -35,47 +30,6 @@ async function init() {
 		allowList = allowed;
 	}
 	initialized = true;
-}
-
-/**
- * This method (alongside `check()`) guards against SSRF via DNS rebinding.
- *
- *  - `check()` does a DNS lookup and ensures that all returned IPs do not belong to a reserved IP address space
- *  - `lookup()` provides additional logic that uses the cached DNS result from `check()`
- *     instead of doing another lookup (which is where DNS rebinding comes into play.)
- *  - For whatever reason `undici` needs to be required so that lookup can be overwritten properly.
- */
-async function lookup(hostname, options, callback) {
-	let lookupResult = checkCache.get(hostname);
-	if (!lookupResult) {
-		lookupResult = await checkHostname(hostname);
-	}
-	let { ok, lookup } = lookupResult;
-	lookup = lookup && [...lookup];
-	if (!ok) {
-		throw new Error('lookup-failed');
-	}
-
-	if (!lookup) {
-		// trusted, do regular lookup
-		dns.lookup(hostname, options).then((addresses) => {
-			callback(null, addresses);
-		}).catch((err) => {
-			console.log('lookup error', err);
-			callback(err);
-		});
-		return;
-	}
-
-	// Lookup needs to behave asynchronously — https://github.com/nodejs/node/issues/28664
-	process.nextTick(() => {
-		if (options.all === true) {
-			callback(null, lookup);
-		} else {
-			const { address, family } = lookup.shift();
-			callback(null, address, family);
-		}
-	});
 }
 
 class NodeBBAgent extends Agent {
@@ -211,48 +165,16 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 }
 
 // Checks url to ensure it is not in reserved IP range (private, etc.)
+// Wraps ssrf.checkHostname with the plugin allow-list for extensibility.
 async function check(url) {
 	const { hostname } = new URL(url);
-	return await checkHostname(hostname);
-}
-
-async function checkHostname(hostname) {
 	await init();
-	const cached = checkCache.get(hostname);
-	if (cached !== undefined) {
-		return cached;
-	}
 
 	if (allowList.has(hostname)) {
-		const payload = { ok: true };
-		checkCache.set(hostname, payload);
-		return payload;
+		return { ok: true };
 	}
 
-	const addresses = new Set();
-	let lookup;
-	if (ipaddr.isValid(hostname)) {
-		addresses.add({ address: hostname });
-	} else {
-		lookup = await dns.lookup(hostname, { all: true });
-		lookup.forEach(({ address, family }) => {
-			addresses.add({ address, family });
-		});
-	}
-
-	if (addresses.size < 1) {
-		return { ok: false };
-	}
-
-	// Every IP address that the host resolves to should be a unicast address
-	const ok = Array.from(addresses).every(({ address: ip }) => {
-		const parsed = ipaddr.parse(ip);
-		return parsed.range() === 'unicast';
-	});
-
-	const payload = { ok, lookup };
-	checkCache.set(hostname, payload);
-	return payload;
+	return await checkHostname(hostname);
 }
 
 /*
@@ -273,5 +195,3 @@ const { body, response } = await request.post('someurl', { body: { foo: 1, baz: 
 exports.post = async (url, config) => call(url, 'POST', config);
 exports.put = async (url, config) => call(url, 'PUT', config);
 exports.patch = async (url, config) => call(url, 'PATCH', config);
-
-
