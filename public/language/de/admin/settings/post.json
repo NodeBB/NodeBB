@@ -52,7 +52,7 @@
 	"signature.hide-duplicates": "Doppelte Signaturen in Themen ausblenden",
 	"signature.max-length": "Maximale Signaturlänge",
 	"composer": "Editor Einstellungen",
-	"composer-help": "Die folgenden Einstellungen bestimmen die funktionalität und/oder das Aussehen des Beitragseditors, der Nutzern angezeigt wird, webb sie neue Themen erstellen, oder bereits existierenden Antworten.",
+	"composer-help": "Die folgenden Einstellungen legen die Funktionalität und/oder das Erscheinungsbild des Beitrags-Editors fest, der den Benutzern angezeigt wird, wenn sie neue Themen erstellen oder auf bestehende Themen antworten.",
 	"composer.show-help": "\"Hilfe\"-Tab anzeigen",
 	"composer.enable-plugin-help": "Plugins erlauben Inhalte dem \"Help\"-Tab hinzuzufügen",
 	"composer.custom-help": "Benutzerdefinierter Hilfe-Text",

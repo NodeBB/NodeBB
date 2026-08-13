@@ -149,7 +149,7 @@
 	"export-field-signature": "Signatur",
 	"export-field-aboutme": "Über mich",
 
-	"export-users-started": "Der Export von Benutzern als CSV kann eine Weile dauern. Sie erhalten eine Benachrichtigung, wenn es abgeschlossen ist.",
+	"export-users-started": "Der Export von Benutzern als CSV kann eine Weile dauern. Du erhältst eine Benachrichtigung, wenn es abgeschlossen ist.",
 	"export-users-completed": "Benutzer wurden als CSV exportiert, klicke hier, um sie herunterzuladen.",
 	"email": "E-Mail",
 	"password": "Passwort",

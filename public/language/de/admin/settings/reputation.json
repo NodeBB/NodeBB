@@ -28,7 +28,7 @@
 	"flags": "Meldung-Einstellungen",
 	"flags.limit-per-target": "Maximale Häufigkeit, mit der etwas gemeldet werden kann",
 	"flags.limit-per-target-placeholder": "Standardwert: 0",
-	"flags.limit-per-target-help": "Wenn ein Beitrag oder ein Benutzer mehrfach gemeldet wird, wird jede zusätzliche Meldung als &quot;Report&quot; betrachtet und zur ursprünglichen Meldung hinzugezählt. Setzen Sie diese Option auf eine andere Zahl als Null, um die Anzahl der Meldungen, die ein Report erhalten kann, zu begrenzen.",
+	"flags.limit-per-target-help": "Wenn ein Beitrag oder ein Benutzer mehrfach gemeldet wird, wird jede zusätzliche Meldung als &quot;Report&quot; betrachtet und zur ursprünglichen Meldung hinzugezählt. Setze diese Option auf eine andere Zahl als Null, um die Anzahl der Meldungen, die ein Report erhalten kann, zu begrenzen.",
 	"flags.limit-post-flags-per-day": "Maximale Anzahl an Markierungen, die ein Benutzer pro Tag vornehmen kann",
 	"flags.limit-post-flags-per-day-help": "Auf 0 setzen, um zu deaktivieren (Standard: 10)",
 	"flags.limit-user-flags-per-day": "Maximale Anzahl von Benutzern, die ein Benutzer pro Tag melden kann",

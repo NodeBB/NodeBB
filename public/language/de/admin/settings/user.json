@@ -6,8 +6,8 @@
 	"allow-login-with.username-email": "Benutzername oder E-Mail",
 	"allow-login-with.username": "Nur Benutzername",
 	"account-settings": "Kontoeinstellungen",
-	"gdpr-enabled": "Aktivieren Sie die DSGVO-Zustimmungserfassung",
-	"gdpr-enabled-help": "Wenn diese Option aktiviert ist, müssen alle neuen Registranten ausdrücklich der Datenerhebung und -nutzung gemäß der <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">Datenschutz-Grundverordnung (DSGVO)</a> zustimmen. <strong>Hinweis</strong>: Durch die Aktivierung der DSGVO werden bereits vorhandene Benutzer nicht gezwungen, ihre Zustimmung zu erteilen. Dazu müssen Sie das GDPR-Plugin installieren.",
+	"gdpr-enabled": "Aktiviere die DSGVO-Zustimmungserfassung",
+	"gdpr-enabled-help": "Wenn diese Option aktiviert ist, müssen alle neuen Registranten ausdrücklich der Datenerhebung und -nutzung gemäß der <a href=\"https://ec.europa.eu/info/priorities/justice-and-fundamental-rights/data-protection/2018-reform-eu-data-protection-rules/eu-data-protection-rules_en\">Datenschutz-Grundverordnung (DSGVO)</a> zustimmen. <strong>Hinweis</strong>: Durch die Aktivierung der DSGVO werden bereits vorhandene Benutzer nicht gezwungen, ihre Zustimmung zu erteilen. Dafür darfst du das GDPR-Plugin installieren.",
 	"disable-username-changes": "Deaktiviere Änderungen des Benutzernames",
 	"disable-email-changes": "Deaktiviere Änderungen der E-Mail Adresse",
 	"disable-password-changes": "Deaktiviere Änderungen des Passwortes",
@@ -46,7 +46,7 @@
 	"registration-approval-type.help": "Normal - Benutzer werden sofort registriert.<br/>\nAdmin-Genehmigung – Benutzerregistrierungen werden in eine <a href=\"%1/admin/manage/registration\">Genehmigungswarteschlange</a> für Administratoren gestellt.<br/>\nAdmin-Genehmigung für IPs – Normal für neue Benutzer, Admin-Genehmigung für IP-Adressen, die bereits ein Konto haben.<br/>",
 	"registration-queue-auto-approve-time": "Automatische Genehmigungszeit",
 	"registration-queue-auto-approve-time-help": "Stunden, bevor der Benutzer automatisch genehmigt wird. 0 zum Deaktivieren.",
-	"registration-queue-show-average-time": "Zeigen Sie Benutzern die durchschnittliche Zeit, die es dauert, einen neuen Benutzer zu genehmigen",
+	"registration-queue-show-average-time": "Zeigt die durchschnittliche Zeit, die Benutzer benötigen, um einen neuen Benutzer zu genehmigen",
 	"registration.max-invites": "Maximale Einladungen pro Benutzer",
 	"max-invites": "Maximale Einladungen pro Benutzer",
 	"max-invites-help": "0 für keine Beschränkung. Admins haben keine Beschränkung.<br>Nur angewendet für \"Nur Einladungen\".",
@@ -94,5 +94,5 @@
 	"handles.enabled": "Gastzugänge erlauben",
 	"handles.enabled-help": "Diese Option zeigt ein neues Feld an, in dem Gäste einen Namen auswählen können, der jedem von ihnen erstellten Beitrag zugeordnet werden soll. Wenn sie deaktiviert sind, werden sie einfach „Gast“ genannt.",
 	"topic-views.enabled": "Gästen erlauben, die gezählte Anzahl der Themenaufrufe zu erhöhen",
-	"reply-notifications.enabled": "Erlauben Sie Gästen, Antwortbenachrichtigungen zu erstellen"
+	"reply-notifications.enabled": "Erlaube Gästen, Antwortbenachrichtigungen zu erstellen"
 }
