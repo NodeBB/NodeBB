@@ -174,7 +174,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		const sizeEscaped = escape(size);
 		const fontSize = (parseInt(size, 10) / 2) || 16;
-		const icon = category.icon ? `<i class="fa fa-fw ${escape(category.icon)}" style="line-height: ${sizeEscaped};"></i>` : '';
+		const icon = category.icon ? `<i class="fa fa-fw ${escape(category.icon)}" style="line-height: ${sizeEscaped}px;"></i>` : '';
 		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${icon}</span>`;
 	}
 
