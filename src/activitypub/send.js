@@ -116,7 +116,9 @@ SendPool.handleWorkerExit = function (proc, code) {
 		SendPool.busy.delete(proc);
 		SendPool.pending.delete(taskId);
 		SendPool.clearTaskTimer(taskId);
-		SendPool.inFlight.delete(task.queueId);
+		if (task) {
+			SendPool.inFlight.delete(task.queueId);
+		}
 	}
 
 	// Fork a replacement worker only if not shutting down
