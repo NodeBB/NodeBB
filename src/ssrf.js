@@ -4,6 +4,7 @@ const dns = require('dns').promises;
 const ipaddr = require('ipaddr.js');
 
 const checkCache = new Map();
+const allowList = new Set();
 const CHECK_TTL = 1000 * 60 * 60; // 1 hour
 const CHECK_CLEANUP_INTERVAL = 1000 * 60 * 5; // 5 minutes
 
@@ -19,6 +20,12 @@ cleanupInterval.unref();
 
 async function checkHostname(rawHostname) {
 	const hostname = rawHostname.replace(/^\[|\]$/g, '');
+
+	// Check allow-list first — hostnames here bypass SSRF restrictions
+	if (allowList.has(hostname)) {
+		return { ok: true, _ts: Date.now() };
+	}
+
 	const cached = checkCache.get(hostname);
 	if (cached && (Date.now() - (cached._ts || 0)) < CHECK_TTL) {
 		return cached;
@@ -82,6 +89,7 @@ async function lookup(hostname, options, callback) {
 }
 
 module.exports = {
+	allowList,
 	checkHostname,
 	check,
 	lookup,

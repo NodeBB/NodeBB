@@ -8,9 +8,8 @@ const { Agent } = require('undici');
 const { Dispatcher1Wrapper } = require('undici');
 
 const plugins = require('./plugins');
-const { checkHostname, lookup } = require('./ssrf');
+const { checkHostname, lookup, allowList } = require('./ssrf');
 
-let allowList = new Set();
 let initialized = false;
 
 exports.jar = function () {
@@ -27,8 +26,12 @@ async function init() {
 	allowList.add(nconf.get('url_parsed').hostname);
 	const { allowed } = await plugins.hooks.fire('filter:request.init', { allowed: allowList });
 	if (allowed instanceof Set) {
-		allowList = allowed;
+		// Replace the set reference — ssrf.js uses this same Set
+		allowList.clear();
+		allowed.forEach(h => allowList.add(h));
 	}
+	// Always ensure the configured URL's hostname is in the allow list
+	allowList.add(nconf.get('url_parsed').hostname);
 	initialized = true;
 }
 
