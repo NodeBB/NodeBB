@@ -262,6 +262,40 @@ describe('Upload Controllers', () => {
 			}
 		});
 
+		it('should block NTFS stream ::$DATA', async () => {
+			const oldPrivateUploads = meta.config.privateUploads;
+			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
+			const uploadPath = nconf.get('upload_path');
+			const filename = `private-ext-${Date.now()}.pdf`;
+			const filePath = path.join(uploadPath, 'files', filename);
+
+			meta.config.privateUploads = 1;
+			meta.config.privateUploadsExtensions = 'pdf';
+
+			try {
+				await fs.writeFile(filePath, 'PDFSECRET', 'utf8');
+
+				const relativePath = nconf.get('relative_path') || '';
+				const publicPath = `${relativePath}/assets/uploads/files/${filename}`;
+				const directUrl = new URL(publicPath, nconf.get('base_url')).href;
+				const streamUrl = new URL(publicPath.replace(/\.pdf$/, '.pdf::$DATA'), nconf.get('base_url')).href;
+				const percentEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%3A%3A%24DATA'), nconf.get('base_url')).href;
+
+				const { response: directResponse } = await request.get(directUrl);
+				assert.strictEqual(directResponse.statusCode, 403);
+
+				const { response: streamResponse } = await request.get(streamUrl);
+				assert.strictEqual(streamResponse.statusCode, 403);
+
+				const { response: percentEncodedResponse } = await request.get(percentEncoded);
+				assert.strictEqual(percentEncodedResponse.statusCode, 403);
+			} finally {
+				await file.delete(filePath);
+				meta.config.privateUploads = oldPrivateUploads;
+				meta.config.privateUploadsExtensions = oldPrivateUploadsExtensions;
+			}
+		});
+
 		it('should block path traversal and double slashes for unauthenticated users', async () => {
 			const oldPrivateUploads = meta.config.privateUploads;
 			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
