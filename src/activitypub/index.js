@@ -3,10 +3,10 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash } = require('crypto');
-const { cpus } = require('os');
 
 const request = require('../request');
 const db = require('../database');
+const SendPool = require('./send');
 const pubsub = require('../pubsub');
 const meta = require('../meta');
 const categories = require('../categories');
@@ -452,44 +452,36 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	payloadHash.update(JSON.stringify(payload));
 	const digest = `SHA-256=${payloadHash.digest('base64')}`;
 
-	const oneMinute = 1000 * 60;
-	const numCores = cpus().length;
-	const batchSettings = {
-		batch: Math.max(8, numCores * 8),
-		interval: numCores === 1 ? 500 : 100,
-	};
-	const keyData = await ActivityPub.getPrivateKey(type, id);
+	// Push all inboxes to the Redis retry queue and dispatch to workers
 	setImmediate(() => {
-		batch.processArray(inboxes, async (inboxBatch) => {
-			const retryQueueAdd = [];
-			const retryQueuedSet = [];
+		const retryQueueAdd = [];
+		const retryQueuedSet = [];
 
-			await Promise.all(inboxBatch.map(async (uri) => {
-				const ok = await ActivityPub._sendMessage(uri, keyData, payload, digest);
-				if (!ok) {
-					const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
-					const nextTryOn = Date.now() + oneMinute;
-					retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-					retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-						queueId,
-						uri,
-						id,
-						type,
-						attempts: 1,
-						timestamp: nextTryOn,
-						digest,
-						payload: JSON.stringify(payload),
-					}]);
-				}
-			}));
+		inboxes.forEach((uri) => {
+			const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
+			const nextTryOn = Date.now();
+			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
+			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
+				queueId,
+				uri,
+				id,
+				type,
+				attempts: 1,
+				timestamp: nextTryOn,
+				digest,
+				payload: JSON.stringify(payload),
+			}]);
+		});
 
-			if (retryQueueAdd.length) {
-				await Promise.all([
-					db.sortedSetAddBulk(retryQueueAdd),
-					db.setObjectBulk(retryQueuedSet),
-				]);
-			}
-		}, batchSettings).catch(err => winston.error(err.stack));
+		if (retryQueueAdd.length) {
+			db.sortedSetAddBulk(retryQueueAdd);
+			db.setObjectBulk(retryQueuedSet);
+		}
+
+		// Start the drain loop if not already draining
+		if (SendPool.pool.length > 0) {
+			SendPool.drainLoop();
+		}
 	});
 };
 
@@ -721,3 +713,16 @@ ActivityPub.probe = async ({ uid, url }) => {
 	probeCache.set(url, false);
 	return false;
 };
+
+// ---------------------------------------------------------------------------
+// Shutdown — called during graceful NodeBB shutdown
+// ---------------------------------------------------------------------------
+
+ActivityPub.shutdown = function () {
+	if (SendPool.pool.length > 0) {
+		SendPool.shutdown();
+	}
+};
+
+// Initialize the send pool now that ActivityPub is fully defined
+SendPool.init(ActivityPub);

@@ -1,308 +1,402 @@
 'use strict';
 
-/**
- * ActivityPub outbound send worker (child process).
- *
- * Forked from index.js. Receives send tasks via IPC, signs payloads,
- * POSTs to remote inboxes, and reports results back to the parent.
- *
- * Environment variable: AP_SEND_CHILD=true
- */
-
-const dns = require('dns').promises;
-const { fetch } = require('undici');
-const ipaddr = require('ipaddr.js');
+const os = require('os');
+const path = require('path');
+const { fork } = require('child_process');
+const { createHash } = require('crypto');
 const winston = require('winston');
 
-const {
-	importPrivateKey,
-	genDraftSigningString,
-	genDraftSignature,
-	genDraftSignatureHeader,
-} = require('@misskey-dev/node-http-message-signatures');
+const db = require('../database');
 
 // ---------------------------------------------------------------------------
-// SSRF protection (inlined from request.js — only needs dns, ipaddr, Map)
+// SendPool — worker pool management for outbound federation
 // ---------------------------------------------------------------------------
 
-const checkCache = new Map(); // hostname → { ok, lookup, _ts }
-const CHECK_TTL = 1000 * 60 * 60; // 1 hour
-const CHECK_CLEANUP_INTERVAL = 1000 * 60 * 5; // 5 minutes
+const SendPool = {
+	pool: [],
+	free: [],
+	busy: new Map(),
+	pending: new Map(),
+	taskTimers: new Map(),
+	inFlight: new Set(),
+	draining: false,
+	isShuttingDown: false,
+	maxWorkers: 0,
+};
 
-// Periodic cache cleanup to prevent unbounded growth
-const cleanupInterval = setInterval(() => {
-	const now = Date.now();
-	for (const [hostname, cached] of checkCache) {
-		if (now - (cached._ts || 0) >= CHECK_TTL) {
-			checkCache.delete(hostname);
-		}
+SendPool.maxWorkers = Math.max(1, os.cpus().length - 1);
+
+/**
+ * Initialize the send pool — fork workers and wait for ready signals.
+ */
+SendPool.init = function (activityPub) {
+	if (activityPub) {
+		SendPool._activityPub = activityPub;
 	}
-}, CHECK_CLEANUP_INTERVAL);
-cleanupInterval.unref();
-
-async function checkHostname(rawHostname) {
-	// Strip IPv6 brackets (e.g. [::1]) so ipaddr can parse them
-	const hostname = rawHostname.replace(/^\[|\]$/g, '');
-	const cached = checkCache.get(hostname);
-	if (cached && (Date.now() - (cached._ts || 0)) < CHECK_TTL) {
-		return cached;
+	for (let i = 0; i < SendPool.maxWorkers; i++) {
+		SendPool.forkWorker();
 	}
+};
 
-	// Skip DNS lookup for bare IPs
-	if (ipaddr.isValid(hostname)) {
-		const parsed = ipaddr.parse(hostname);
-		const ok = parsed.range() === 'unicast';
-		const payload = { ok };
-		payload._ts = Date.now();
-		checkCache.set(hostname, payload);
-		return payload;
-	}
-
-	const addresses = [];
-	try {
-		const lookup = await dns.lookup(hostname, { all: true });
-		lookup.forEach(({ address, family }) => {
-			addresses.push({ address, family });
-		});
-	} catch (err) {
-		const payload = { ok: false };
-		payload._ts = Date.now();
-		checkCache.set(hostname, payload);
-		return payload;
-	}
-
-	if (addresses.length === 0) {
-		const payload = { ok: false };
-		payload._ts = Date.now();
-		checkCache.set(hostname, payload);
-		return payload;
-	}
-
-	// Every IP must be unicast
-	const ok = addresses.every(({ address: ip }) => {
-		const parsed = ipaddr.parse(ip);
-		return parsed.range() === 'unicast';
+/**
+ * Fork a new worker process and set up message/exit handlers.
+ */
+SendPool.forkWorker = function () {
+	const workerPath = path.join(__dirname, 'sendWorker.js');
+	const proc = fork(workerPath, [], {
+		silent: true,
+		env: { AP_SEND_CHILD: 'true' },
 	});
 
-	const payload = { ok, lookup: ok ? addresses : undefined };
-	payload._ts = Date.now();
-	checkCache.set(hostname, payload);
-	return payload;
-}
+	proc.once('exit', (code) => {
+		SendPool.handleWorkerExit(proc, code);
+	});
 
-// NOTE: `fetch()` does its own DNS resolution, bypassing the cached lookup.
-// Full DNS rebinding protection (matching request.js) requires an undici Agent
-// with a custom `lookup` function that returns cached results. This is a
-// future enhancement — for now, redirect: 'manual' + SSRF check provides
-// defense-in-depth against HTTP-based SSRF bypass.
-const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB response limit
+	proc.on('message', (message) => {
+		if (!message || typeof message.type !== 'string') {
+			return;
+		}
 
-async function check(url) {
-	const { hostname } = new URL(url);
-	return await checkHostname(hostname);
-}
+		switch (message.type) {
+			case 'ready': {
+				// Worker is ready to accept tasks
+				if (!SendPool.free.includes(proc)) {
+					SendPool.free.push(proc);
+				}
+				break;
+			}
 
-// ---------------------------------------------------------------------------
-// Signing (extracted from signatures.js)
-// ---------------------------------------------------------------------------
+			case 'result': {
+				SendPool.handleResult(message);
+				break;
+			}
 
-function getDraftAlgoString(key) {
-	const { name } = key.algorithm;
-	if (name === 'RSA') {
-		return 'rsa-sha256';
+			case 'ack': {
+				// Shutdown acknowledged — worker will exit
+				break;
+			}
+
+			default:
+				winston.warn(`[activitypub/send] Unknown worker message: ${message.type}`);
+				break;
+		}
+	});
+
+	proc.on('error', (err) => {
+		winston.error(`[activitypub/send] Worker error: ${err.message}`);
+	});
+
+	SendPool.pool.push(proc);
+};
+
+/**
+ * Handle worker exit — re-queue in-flight task if any.
+ */
+SendPool.handleWorkerExit = function (proc, code) {
+	winston.warn(`[activitypub/send] Worker exited with code ${code}`);
+
+	// Remove from pool and free arrays
+	const poolIdx = SendPool.pool.indexOf(proc);
+	if (poolIdx !== -1) {
+		SendPool.pool.splice(poolIdx, 1);
 	}
-	if (name === 'EC') {
-		return 'ecdsa-p256-sha256';
-	}
-	return 'rsa-sha256';
-}
-
-async function sign(keyPem, keyId, url, digest) {
-	const parsedUrl = new URL(url);
-	const date = new Date().toUTCString();
-
-	const headersToSign = {
-		date,
-		host: parsedUrl.host,
-	};
-
-	if (digest) {
-		headersToSign.digest = digest;
+	const freeIdx = SendPool.free.indexOf(proc);
+	if (freeIdx !== -1) {
+		SendPool.free.splice(freeIdx, 1);
 	}
 
-	const method = digest ? 'POST' : 'GET';
-	const privateKey = await importPrivateKey(keyPem, ['sign']);
+	// Re-queue in-flight task if this worker had one
+	const taskId = SendPool.busy.get(proc);
+	if (taskId) {
+		const task = SendPool.pending.get(taskId);
+		if (task) {
+			// Re-queue immediately — the worker crashed mid-flight
+			SendPool.requeueTask(task);
+		}
+		SendPool.busy.delete(proc);
+		SendPool.pending.delete(taskId);
+		SendPool.clearTaskTimer(taskId);
+		SendPool.inFlight.delete(task.queueId);
+	}
 
-	const signedHeaders = digest ?
-		['(request-target)', 'host', 'date', 'digest'] :
-		['(request-target)', 'host', 'date'];
+	// Fork a replacement worker only if not shutting down
+	if (!SendPool.isShuttingDown) {
+		SendPool.forkWorker();
+	}
+};
 
-	const signingString = genDraftSigningString(
-		{ method, url: parsedUrl.href, headers: headersToSign },
-		signedHeaders,
-		{ keyId },
-	);
+/**
+ * Handle a result from a worker — analytics on success, re-queue on failure.
+ */
+SendPool.handleResult = function (message) {
+	const { id, success, error } = message;
+	const task = SendPool.pending.get(id);
 
-	const signature = await genDraftSignature(privateKey, signingString);
-	const signatureHeader = genDraftSignatureHeader(signedHeaders, keyId, signature, getDraftAlgoString(privateKey));
+	// Clear the stuck-task timer
+	SendPool.clearTaskTimer(id);
 
-	return {
-		date,
-		...(digest && { digest }),
-		signature: signatureHeader,
-	};
-}
+	// Remove from pending and busy tracking
+	SendPool.pending.delete(id);
 
-// ---------------------------------------------------------------------------
-// Worker message handler
-// ---------------------------------------------------------------------------
-
-// Track in-flight task IDs for uncaughtException handler
-const pendingTaskIds = new Set();
-
-// Track active task AbortController instances for immediate shutdown abort
-const activeTasks = new Map(); // id -> AbortController
-
-process.on('message', async (message) => {
-	if (!message || typeof message.type !== 'string') {
+	if (!task) {
 		return;
 	}
 
-	// Handle shutdown before the switch — avoids fallthrough eslint issue
-	// and ensures immediate exit without waiting for switch dispatch
-	if (message.type === 'shutdown') {
-		for (const [, controller] of activeTasks) {
-			controller.abort();
+	// Find which worker handled this task, mark it free, and return to pool
+	for (const [worker, taskId] of SendPool.busy) {
+		if (taskId === id) {
+			SendPool.busy.delete(worker);
+			if (!SendPool.free.includes(worker)) {
+				SendPool.free.push(worker);
+			}
+			break;
 		}
-		process.send({ type: 'ack' });
-		process.exit(0);
 	}
 
-	switch (message.type) {
-		case 'send': {
-			const { id, uri, payload, digest, key, keyId } = message;
+	if (success) {
+		// Success — fire analytics and remove from Redis
+		SendPool._activityPub.analytics.send({
+			type: task.payloadType,
+			target: task.uri,
+		});
+		db.delete(`ap:retry:queue:${task.queueId}`);
+		db.sortedSetRemove('ap:retry:queue', task.queueId);
+		SendPool.inFlight.delete(task.queueId);
+	} else {
+		// Failure — re-queue with backoff
+		winston.warn(`[activitypub/send] Task ${id} failed: ${error}`);
+		SendPool.requeueTask(task);
+	}
+};
 
-			// Validate required fields
-			if (!uri || !payload || !digest || !key || !keyId) {
-				process.send({
-					type: 'result',
-					id,
-					success: false,
-					error: 'missing fields',
-				});
+/**
+ * Re-queue a task to the Redis retry queue with exponential backoff.
+ */
+SendPool.requeueTask = function (task) {
+	const oneMinute = 1000 * 60;
+	const maxDelay = 60 * 60 * 1000; // 1 hour
+
+	const attempts = task.attempts || 1;
+	const backoffMs = Math.min(
+		oneMinute * Math.pow(2, attempts - 1),
+		maxDelay,
+	);
+
+	task.attempts = attempts + 1;
+	task.timestamp = Date.now() + backoffMs;
+
+	const nextTryOn = task.timestamp;
+	const retryQueueAdd = [];
+	const retryQueuedSet = [];
+
+	retryQueueAdd.push(['ap:retry:queue', nextTryOn, task.queueId]);
+	retryQueuedSet.push([`ap:retry:queue:${task.queueId}`, {
+		queueId: task.queueId,
+		uri: task.uri,
+		id: task.id,
+		type: task.payloadType,
+		attempts: task.attempts,
+		timestamp: nextTryOn,
+		digest: task.digest,
+		payload: task.payload,
+	}]);
+
+	db.sortedSetAddBulk(retryQueueAdd);
+	db.setObjectBulk(retryQueuedSet);
+};
+
+/**
+ * Clear the stuck-task timer for a task.
+ */
+SendPool.clearTaskTimer = function (taskId) {
+	const timer = SendPool.taskTimers.get(taskId);
+	if (timer) {
+		clearTimeout(timer);
+		SendPool.taskTimers.delete(taskId);
+	}
+};
+
+/**
+ * Dispatch a task to an available worker.
+ */
+SendPool.dispatch = function (taskId, task) {
+	if (SendPool.free.length === 0) {
+		// No free workers — task stays in pending queue
+		return false;
+	}
+
+	const worker = SendPool.free.shift();
+	SendPool.busy.set(worker, taskId);
+
+	// Set 30s stuck detection timer
+	const timer = setTimeout(() => {
+		// Task has been in-flight for >30s — re-queue and kill worker
+		SendPool.clearTaskTimer(taskId);
+		SendPool.pending.delete(taskId);
+		SendPool.requeueTask(task);
+		worker.kill('SIGKILL');
+	}, 30000);
+	SendPool.taskTimers.set(taskId, timer);
+
+	try {
+		worker.send({
+			type: 'send',
+			id: taskId,
+			uri: task.uri,
+			payload: task.payload,
+			digest: task.digest,
+			key: task.key,
+			keyId: task.keyId,
+		});
+	} catch (err) {
+		// Worker disconnected — kill it, re-queue task
+		SendPool.busy.delete(worker);
+		SendPool.pending.delete(taskId);
+		SendPool.inFlight.delete(task.queueId);
+		SendPool.clearTaskTimer(taskId);
+		SendPool.requeueTask(task);
+		try {
+			worker.kill('SIGKILL');
+		} catch (e) { /* already dead */ }
+	}
+
+	return true;
+};
+
+/**
+ * Drain loop — dispatch tasks from Redis queue to available workers.
+ * Active mode: tight loop with setImmediate yield between batches.
+ * Idle mode: 10-second setTimeout before checking again.
+ */
+SendPool.drainLoop = async function () {
+	if (SendPool.draining) {
+		return;
+	}
+	SendPool.draining = true;
+
+	const MAX_PER_BATCH = 50;
+
+	while (SendPool.draining) {
+		try {
+			// Get due tasks from Redis sorted set
+			const dueTasks = await db.getSortedSetRangeByScore(
+				'ap:retry:queue',
+				0,
+				MAX_PER_BATCH,
+				'-inf',
+				Date.now(),
+			);
+
+			if (dueTasks.length === 0) {
+				// No tasks due — switch to idle mode
+				SendPool.draining = false;
+				setTimeout(() => {
+					if (SendPool.pool.length > 0) {
+						SendPool.drainLoop();
+					}
+				}, 10000); // 10-second idle timeout
 				return;
 			}
 
-			pendingTaskIds.add(id);
+			// Batch fetch task data to avoid await inside loop
+			const taskDataList = await Promise.all(
+				dueTasks.map(queueId => db.getObject(`ap:retry:queue:${queueId}`)),
+			);
+			const validTaskData = dueTasks
+				.filter(queueId => !SendPool.inFlight.has(queueId))
+				.map((queueId, i) => (taskDataList[i] ? { queueId, taskData: taskDataList[i] } : null))
+				.filter(Boolean);
 
-			// Create AbortController for this task — allows immediate abort on shutdown
-			const controller = new AbortController();
-			activeTasks.set(id, controller);
+			// Fetch all key data in parallel
+			const keyPromises = validTaskData.map(({ taskData }) => (
+				SendPool._activityPub.getPrivateKey(taskData.type, taskData.id)
+			));
+			const keyResults = await Promise.all(keyPromises);
 
-			try {
-				// SSRF check
-				const { ok } = await check(uri);
-				if (!ok) {
-					process.send({
-						type: 'result',
-						id,
-						success: false,
-						error: 'SSRF check failed — reserved IP address',
-					});
-					pendingTaskIds.delete(id);
-					activeTasks.delete(id);
-					return;
+			// Dispatch each task
+			for (let i = 0; i < validTaskData.length; i++) {
+				const { queueId, taskData } = validTaskData[i];
+				const keyData = keyResults[i];
+
+				const taskId = createHash('sha256').update(`dispatch:${queueId}`).digest('hex');
+				const task = {
+					queueId,
+					uri: taskData.uri,
+					id: taskData.id,
+					payloadType: taskData.type,
+					payload: taskData.payload,
+					digest: taskData.digest,
+					key: keyData.key,
+					keyId: keyData.keyId,
+					attempts: taskData.attempts || 1,
+				};
+
+				SendPool.pending.set(taskId, task);
+				SendPool.inFlight.add(task.queueId);
+
+				// Try to dispatch — if no free worker, leave in pending
+				const dispatched = SendPool.dispatch(taskId, task);
+				if (!dispatched) {
+				// No workers available — task stays in pending for next iteration
+					SendPool.pending.delete(taskId);
+					SendPool.inFlight.delete(task.queueId);
+					break;
 				}
-
-				// Sign
-				const headers = await sign(key, keyId, uri, digest);
-
-				// POST — redirect: 'manual' prevents SSRF via HTTP redirect
-				// Combined signal: task-specific abort (shutdown) + 10s timeout
-				const timeoutSignal = AbortSignal.timeout(10000);
-				const combinedSignal = AbortSignal.any([controller.signal, timeoutSignal]);
-
-				const response = await fetch(uri, {
-					method: 'POST',
-					headers: {
-						...headers,
-						'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-					},
-					body: payload,
-					signal: combinedSignal,
-					redirect: 'manual',
-				});
-
-				// Validate Content-Length to prevent memory exhaustion
-				const contentLength = response.headers.get('content-length');
-				if (contentLength && parseInt(contentLength, 10) > MAX_BODY_SIZE) {
-					process.send({
-						type: 'result',
-						id,
-						success: false,
-						error: 'Response body exceeds 10MB limit',
-					});
-					activeTasks.delete(id);
-					pendingTaskIds.delete(id);
-					return;
-				}
-
-				if (String(response.status).startsWith('2')) {
-					process.send({
-						type: 'result',
-						id,
-						success: true,
-					});
-				} else {
-					let bodyText = '';
-					try {
-						bodyText = await response.text();
-					} catch (e) { /* ignore */ }
-
-					process.send({
-						type: 'result',
-						id,
-						success: false,
-						error: `HTTP ${response.status}: ${bodyText}`,
-					});
-				}
-			} catch (e) {
-				process.send({
-					type: 'result',
-					id,
-					success: false,
-					error: e.message || 'unknown error',
-				});
-			} finally {
-				pendingTaskIds.delete(id);
-				activeTasks.delete(id);
 			}
-			break;
+
+			// Yield to event loop between batches to prevent starvation
+			if (dueTasks.length >= MAX_PER_BATCH) {
+				setImmediate(() => {
+					if (SendPool.pool.length > 0) {
+						SendPool.drainLoop();
+					}
+				});
+			}
+		} catch (e) {
+			winston.error(`[activitypub/send] drainLoop error: ${e.message}`);
+			SendPool.draining = false;
+			// Schedule retry after a delay
+			setTimeout(() => {
+				if (SendPool.pool.length > 0) {
+					SendPool.drainLoop();
+				}
+			}, 10000);
 		}
-
-		default:
-			winston.warn(`[activitypub/send] Unknown message type: ${message.type}`);
-			break;
 	}
-});
+};
 
-// Uncaught exception handler — send error back if task ID is known, then exit
-process.on('uncaughtException', (err) => {
-	if (pendingTaskIds.size > 0) {
-		// Send error for the first pending task (there should only be one)
-		const taskId = pendingTaskIds.values().next().value;
+/**
+ * Graceful shutdown — stop drain loop, shutdown workers, wait, then kill.
+ */
+SendPool.shutdown = function () {
+	SendPool.isShuttingDown = true;
+	SendPool.draining = false;
+
+	// Send shutdown to all workers
+	for (const worker of SendPool.pool) {
 		try {
-			process.send({
-				type: 'result',
-				id: taskId,
-				success: false,
-				error: `uncaughtException: ${err.message}`,
-			});
-		} catch (e) { /* IPC may be broken */ }
+			worker.send({ type: 'shutdown' });
+		} catch (e) { /* worker may already be disconnected */ }
 	}
-	winston.error(`[activitypub/send] Uncaught exception: ${err.stack}`);
-	process.exit(1);
-});
 
-// Emit ready signal after startup
-process.send({ type: 'ready' });
+	// Wait for workers to exit (10s timeout)
+	const shutdownTimeout = setTimeout(() => {
+		for (const worker of SendPool.pool) {
+			try {
+				worker.kill('SIGTERM');
+			} catch (e) { /* already dead */ }
+		}
+		// Second kill after 2s
+		setTimeout(() => {
+			for (const worker of SendPool.pool) {
+				try {
+					worker.kill('SIGKILL');
+				} catch (e) { /* already dead */ }
+			}
+		}, 2000);
+	}, 10000);
+
+	shutdownTimeout.unref();
+};
+
+module.exports = SendPool;
