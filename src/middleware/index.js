@@ -259,8 +259,14 @@ middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, ne
 });
 
 function normalizeUploadRequestPath(requestPath) {
+	const decodedPath = decodeURIComponent(requestPath);
+	if (decodedPath.includes(':')) {
+		const err = new Error('[[error:invalid-path]]');
+		err.status = 403;
+		throw err;
+	}
 	return path.posix.normalize(
-		decodeURIComponent(requestPath).replace(/\\/g, '/')
+		decodedPath.replace(/\\/g, '/')
 	).toLowerCase();
 }
 

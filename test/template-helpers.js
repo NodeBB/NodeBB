@@ -93,8 +93,8 @@ describe('helpers', () => {
 				backgroundImage: '/assets/uploads/image.png',
 				imageClass: 'auto',
 				icon: 'fa-book',
-			}, 16, 'rounded-circle'),
-			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"><i class="fa fa-fw fa-book"></i></span>'
+			}, '16px', 'rounded-circle'),
+			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16px; height: 16px; font-size: 8px;"><i class="fa fa-fw fa-book" style="line-height: 16px;"></i></span>'
 		);
 		done();
 	});
