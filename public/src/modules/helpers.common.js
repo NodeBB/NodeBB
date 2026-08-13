@@ -174,7 +174,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		const sizeEscaped = escape(size);
 		const fontSize = (parseInt(size, 10) / 2) || 16;
-		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${category.icon ? `<i class="fa fa-fw ${escape(category.icon)}"></i>` : ''}</span>`;
+		const icon = category.icon ? `<i class="fa fa-fw ${escape(category.icon)}" style="line-height: ${sizeEscaped};"></i>` : '';
+		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${icon}</span>`;
 	}
 
 	function buildCategoryLabel(category, tag = 'a', className = '') {
