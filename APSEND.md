@@ -288,6 +288,10 @@ src/activitypub/
 1. Remove `retryFailedMessages()` and its cron registration from `jobs.js`
 2. Remove `_sendMessage()` from main process (no longer needed)
 
+**Post-implementation findings (Phase 4 review):**
+- ~~**`retryFailedMessages` cron job**~~ — **FIXED**: Removed `ap:retry:send` cron registration and the `retryFailedMessages()` function from `jobs.js`.
+- ~~**`_sendMessage()` in main process**~~ — **FIXED**: Removed `_sendMessage()` from `index.js`. All sends now go through the worker pool via `SendPool`.
+
 ### Phase 5: Testing
 1. Unit test `sendWorker.js` (mock fetch, verify signing + HTTP POST + SSRF check)
 2. Unit test `SendPool` (fork lifecycle, ready signal, crash recovery, result handling)
