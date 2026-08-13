@@ -300,6 +300,10 @@ src/activitypub/
 5. Test graceful shutdown (drain + timeout)
 6. Verify drain loop handles retries (failed task re-queued with backoff)
 
+**Post-implementation findings (Phase 5 review):**
+- ~~**Unit test `sendWorker.js`**~~ — **FIXED**: Created `test/activitypub/sendWorker.js` covering IPC protocol (ready, result, shutdown, malformed messages), SSRF protection (localhost, private IP, link-local IP), task timeout, and uncaught exception handling.
+- ~~**Unit test `SendPool`**~~ — **FIXED**: Created `test/activitypub/sendPool.js` covering pool lifecycle (pool, free, busy, pending, inFlight, draining, isShuttingDown, maxWorkers), dispatch (success/failure, pending map, inFlight, busy, taskTimers), handleResult (pending removal, inFlight removal, busy removal, free return, timer clear), requeueTask (attempts increment, timestamp backoff, exponential backoff, 1-hour cap), clearTaskTimer, shutdown (isShuttingDown, draining), drainLoop (draining flag, reentrancy guard), forkWorker, handleWorkerExit (replacement worker suppression during shutdown).
+
 ## Key Decisions & Trade-offs
 
 | Decision | Choice | Rationale |
