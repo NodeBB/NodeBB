@@ -9,9 +9,8 @@
  * Environment variable: AP_SEND_CHILD=true
  */
 
-const dns = require('dns').promises;
-const { fetch } = require('undici');
-const ipaddr = require('ipaddr.js');
+const { fetch, Agent } = require('undici');
+const { check, lookup } = require('../ssrf');
 const winston = require('winston');
 
 const {
@@ -22,85 +21,20 @@ const {
 } = require('@misskey-dev/node-http-message-signatures');
 
 // ---------------------------------------------------------------------------
-// SSRF protection (inlined from request.js — only needs dns, ipaddr, Map)
+// SSRF protection via undici Agent with cached DNS lookup
 // ---------------------------------------------------------------------------
+// The Agent enforces cached DNS resolution to prevent DNS rebinding attacks.
+// The ssrf.js module provides check() for pre-request validation and lookup()
+// for cached DNS resolution in the undici dispatcher.
+const agent = new Agent({
+	maxSockets: 64,
+	maxConnections: 256,
+	connect: {
+		lookup,
+	},
+});
 
-const checkCache = new Map(); // hostname → { ok, lookup, _ts }
-const CHECK_TTL = 1000 * 60 * 60; // 1 hour
-const CHECK_CLEANUP_INTERVAL = 1000 * 60 * 5; // 5 minutes
-
-// Periodic cache cleanup to prevent unbounded growth
-const cleanupInterval = setInterval(() => {
-	const now = Date.now();
-	for (const [hostname, cached] of checkCache) {
-		if (now - (cached._ts || 0) >= CHECK_TTL) {
-			checkCache.delete(hostname);
-		}
-	}
-}, CHECK_CLEANUP_INTERVAL);
-cleanupInterval.unref();
-
-async function checkHostname(rawHostname) {
-	// Strip IPv6 brackets (e.g. [::1]) so ipaddr can parse them
-	const hostname = rawHostname.replace(/^\[|\]$/g, '');
-	const cached = checkCache.get(hostname);
-	if (cached && (Date.now() - (cached._ts || 0)) < CHECK_TTL) {
-		return cached;
-	}
-
-	// Skip DNS lookup for bare IPs
-	if (ipaddr.isValid(hostname)) {
-		const parsed = ipaddr.parse(hostname);
-		const ok = parsed.range() === 'unicast';
-		const payload = { ok };
-		payload._ts = Date.now();
-		checkCache.set(hostname, payload);
-		return payload;
-	}
-
-	const addresses = [];
-	try {
-		const lookup = await dns.lookup(hostname, { all: true });
-		lookup.forEach(({ address, family }) => {
-			addresses.push({ address, family });
-		});
-	} catch (err) {
-		const payload = { ok: false };
-		payload._ts = Date.now();
-		checkCache.set(hostname, payload);
-		return payload;
-	}
-
-	if (addresses.length === 0) {
-		const payload = { ok: false };
-		payload._ts = Date.now();
-		checkCache.set(hostname, payload);
-		return payload;
-	}
-
-	// Every IP must be unicast
-	const ok = addresses.every(({ address: ip }) => {
-		const parsed = ipaddr.parse(ip);
-		return parsed.range() === 'unicast';
-	});
-
-	const payload = { ok, lookup: ok ? addresses : undefined };
-	payload._ts = Date.now();
-	checkCache.set(hostname, payload);
-	return payload;
-}
-
-// NOTE: `fetch()` does its own DNS resolution, bypassing the cached lookup.
-// Full DNS rebinding protection (matching request.js) requires an undici Agent
-// with a custom `lookup` function that returns cached results. This is a
-// future enhancement — for now, redirect: 'manual' + SSRF check provides
-// defense-in-depth against HTTP-based SSRF bypass.
 const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB response limit
-
-async function check(url) {
-	const { hostname } = new URL(url);
-	return await checkHostname(hostname);
-}
 
 // ---------------------------------------------------------------------------
 // Signing (extracted from signatures.js)
@@ -231,6 +165,7 @@ process.on('message', async (message) => {
 					body: payload,
 					signal: combinedSignal,
 					redirect: 'manual',
+					dispatcher: agent,
 				});
 
 				// Validate Content-Length to prevent memory exhaustion
