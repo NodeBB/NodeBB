@@ -387,42 +387,6 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
-	try {
-		const headers = await ActivityPub.sign(keyData, uri, digest);
-
-		const { response, body } = await request.post(uri, {
-			headers: {
-				...headers,
-				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-			},
-			body: payload,
-			timeout: 10000, // configurable?
-		});
-
-		if (String(response.statusCode).startsWith('2')) {
-			ActivityPub.analytics.send({
-				type: payload.type,
-				target: uri,
-			});
-			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
-			return true;
-		}
-		if (typeof body === 'object') {
-			throw new Error(JSON.stringify(body));
-		}
-		throw new Error(String(body));
-	} catch (e) {
-		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
-		ActivityPub.analytics.sendError({
-			payload,
-			uri,
-			error: e,
-		});
-		return false;
-	}
-};
-
 ActivityPub.send = async (type, id, targets, payload) => {
 	if (!meta.config.activitypubEnabled) {
 		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
