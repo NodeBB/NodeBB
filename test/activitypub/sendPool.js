@@ -3,6 +3,7 @@
 const assert = require('assert');
 const os = require('os');
 
+const db = require('../mocks/databasemock');
 const activitypub = require('../../src/activitypub');
 const SendPool = activitypub.SendPool;
 

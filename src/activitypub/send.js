@@ -151,6 +151,8 @@ SendPool.handleResult = function (message) {
 	} else {
 		// Failure — re-queue with backoff
 		winston.warn(`[activitypub/send] Task ${id} failed: ${error}`);
+		// No longer in-flight — allow the re-queued task to be picked up again
+		SendPool.inFlight.delete(task.queueId);
 		SendPool.requeueTask(task);
 	}
 };
@@ -210,6 +212,7 @@ SendPool.dispatch = function (taskId, task) {
 		// Task has been in-flight for >30s — re-queue and kill worker
 		SendPool.clearTaskTimer(taskId);
 		SendPool.pending.delete(taskId);
+		SendPool.inFlight.delete(task.queueId);
 		SendPool.requeueTask(task);
 		worker.kill('SIGKILL');
 	}, 30000);
@@ -274,10 +277,16 @@ SendPool.drainLoop = async function () {
 			const taskDataList = await Promise.all(
 				dueTasks.map(queueId => db.getObject(`ap:retry:queue:${queueId}`)),
 			);
-			const validTaskData = dueTasks
-				.filter(queueId => !SendPool.inFlight.has(queueId))
-				.map((queueId, i) => (taskDataList[i] ? { queueId, taskData: taskDataList[i] } : null))
-				.filter(Boolean);
+			// Pair each queueId with its own task data (taskDataList is aligned
+			// with the unfiltered dueTasks array) and skip in-flight or missing tasks
+			const validTaskData = [];
+			for (let i = 0; i < dueTasks.length; i++) {
+				const queueId = dueTasks[i];
+				const taskData = taskDataList[i];
+				if (taskData && !SendPool.inFlight.has(queueId)) {
+					validTaskData.push({ queueId, taskData });
+				}
+			}
 
 			// Fetch all key data in parallel
 			const keyPromises = validTaskData.map(({ taskData }) => (
