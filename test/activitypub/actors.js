@@ -873,7 +873,7 @@ describe('Pruning', () => {
 			assert(assertion);
 
 			const result = await activitypub.actors.prune();
-			console.log(result.counts);
+
 			assert.strictEqual(result.counts.deleted, 0);
 			assert.strictEqual(result.counts.preserved, current.counts.preserved + 1);
 			assert.strictEqual(result.counts.missing, 0);
