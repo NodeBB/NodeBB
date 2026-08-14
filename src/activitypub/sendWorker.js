@@ -13,6 +13,8 @@ const { fetch, Agent } = require('undici');
 const { check, lookup } = require('../ssrf');
 const winston = require('winston');
 
+const DEBUG = process.env.AP_SEND_DEBUG === 'true';
+
 const {
 	importPrivateKey,
 	genDraftSigningString,
@@ -151,6 +153,13 @@ process.on('message', async (message) => {
 				// Sign
 				const headers = await sign(key, keyId, uri, digest);
 
+				// Debug: log full request details
+				if (DEBUG) {
+					winston.debug(`[activitypub/send] REQUEST uri=${uri}`);
+					winston.debug(`[activitypub/send] REQUEST headers=${JSON.stringify(headers)}`);
+					winston.debug(`[activitypub/send] REQUEST payload=${payload.substring(0, 500)}`);
+				}
+
 				// POST — redirect: 'manual' prevents SSRF via HTTP redirect
 				// Combined signal: task-specific abort (shutdown) + 10s timeout
 				const timeoutSignal = AbortSignal.timeout(10000);
@@ -193,6 +202,12 @@ process.on('message', async (message) => {
 					try {
 						bodyText = await response.text();
 					} catch (e) { /* ignore */ }
+
+					// Debug: log full response details
+					if (DEBUG) {
+						winston.debug(`[activitypub/send] RESPONSE status=${response.status} headers=${JSON.stringify(Object.fromEntries(response.headers.entries()))}`);
+						winston.debug(`[activitypub/send] RESPONSE body=${bodyText.substring(0, 1000)}`);
+					}
 
 					process.send({
 						type: 'result',
