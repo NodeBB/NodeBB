@@ -67,11 +67,14 @@ mongoModule.init = async function (opts) {
 mongoModule.createSessionStore = async function (options) {
 	const { MongoStore } = require('connect-mongo');
 	const meta = require('../meta');
-
+	const client = await connection.connect(options);
 	const store = MongoStore.create({
-		clientPromise: connection.connect(options),
+		client: client,
 		ttl: meta.getSessionTTLSeconds(),
 	});
+	store.close = async function () {
+		await client.close();
+	};
 
 	return store;
 };
@@ -218,6 +221,9 @@ async function getCollectionStats(db) {
 
 mongoModule.close = async function () {
 	await client.close();
+	if (mongoModule.sessionStore) {
+		await mongoModule.sessionStore.close();
+	}
 	if (mongoModule.objectCache) {
 		mongoModule.objectCache.reset();
 	}

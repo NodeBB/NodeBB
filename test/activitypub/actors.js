@@ -1,5 +1,7 @@
 'use strict';
 
+const { before, beforeEach, after, afterEach, it, describe } = require('node:test');
+
 const assert = require('assert');
 const nconf = require('nconf');
 
@@ -829,8 +831,9 @@ describe('Pruning', () => {
 	});
 
 	describe('Users', () => {
+		let current;
 		before(async function () {
-			this.current = await activitypub.actors.prune();
+			current = await activitypub.actors.prune();
 		});
 
 		it('should do nothing if the user is newer than the prune cutoff', async () => {
@@ -870,9 +873,9 @@ describe('Pruning', () => {
 			assert(assertion);
 
 			const result = await activitypub.actors.prune();
-
+			console.log(result.counts);
 			assert.strictEqual(result.counts.deleted, 0);
-			assert.strictEqual(result.counts.preserved, this.current.counts.preserved + 1);
+			assert.strictEqual(result.counts.preserved, current.counts.preserved + 1);
 			assert.strictEqual(result.counts.missing, 0);
 		});
 

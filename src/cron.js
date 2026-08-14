@@ -88,6 +88,13 @@ exports.removeJob = function (name) {
 	}
 };
 
+exports.removeAll = function () {
+	for (const [name, job] of Object.entries(jobs)) {
+		job.stop();
+		delete jobs[name];
+	}
+};
+
 exports.getJobs = async function () {
 	const jobNames = await db.getSortedSetRange('cronJobs', 0, -1);
 	const jobs = await db.getObjects(jobNames.map(name => `cronJob:${name}`));

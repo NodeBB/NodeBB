@@ -314,11 +314,15 @@ postgresModule.createSessionStore = async function (options) {
 
 	function done(db) {
 		const sessionStore = require('connect-pg-simple')(session);
-		return new sessionStore({
+		const store = new sessionStore({
 			pool: db,
 			ttl: meta.getSessionTTLSeconds(),
 			pruneSessionInterval: nconf.get('isPrimary') ? 60 : false,
 		});
+		store.close = async function () {
+			await db.end();
+		};
+		return store;
 	}
 
 	const db = await connection.connect(options);
@@ -392,6 +396,9 @@ postgresModule.info = async function (db) {
 
 postgresModule.close = async function () {
 	await postgresModule.pool.end();
+	if (postgresModule.sessionStore) {
+		await postgresModule.sessionStore.close();
+	}
 };
 
 require('./postgres/main')(postgresModule);

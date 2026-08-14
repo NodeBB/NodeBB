@@ -3,11 +3,9 @@
 const nconf = require('nconf');
 
 const databaseName = nconf.get('database');
-const winston = require('winston');
 
 if (!databaseName) {
-	winston.error(new Error('Database type not set! Run ./nodebb setup'));
-	process.exit();
+	throw new Error('Database type not set! Run ./nodebb setup');
 }
 
 const primaryDB = require(`./${databaseName}`);

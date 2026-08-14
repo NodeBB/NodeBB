@@ -45,6 +45,9 @@ redisModule.createSessionStore = async function (options) {
 		client: client,
 		ttl: meta.getSessionTTLSeconds(),
 	});
+	store.close = async function () {
+		await client.close();
+	};
 	return store;
 };
 
@@ -62,6 +65,9 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = async function () {
 	await redisModule.client.close();
+	if (redisModule.sessionStore) {
+		await redisModule.sessionStore.close();
+	}
 	if (redisModule.objectCache) {
 		redisModule.objectCache.reset();
 	}

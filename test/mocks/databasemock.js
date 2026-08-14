@@ -5,7 +5,8 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
-require('../../require-main');
+const { before, after } = require('node:test');
+
 require('../../nodebb-global');
 
 const path = require('path');
@@ -138,9 +139,7 @@ const db = require('../../src/database');
 
 module.exports = db;
 
-before(async function () {
-	this.timeout(30000);
-
+db.setupTestSuite = async function () {
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony/templates'));
 	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony', 'theme.json'));
@@ -177,19 +176,16 @@ before(async function () {
 	require('../../src/user').startJobs();
 
 	await webserver.listen();
-	// Iterate over all of the test suites/contexts
-	this.test.parent.suites.forEach((suite) => {
-		// Attach an afterAll listener that resets the defaults
-		suite.afterAll(async () => {
-			await setupMockDefaults();
-		});
-	});
-	// Attach a global afterAll that waits for pending minifier requests
-	// (e.g., from harmony theme's buildSkins scheduled via setTimeout)
-	this.test.parent.afterAll(async () => {
-		await require('../../src/meta/minifier').killAll();
-	});
-});
+};
+
+db.tearDown = async () => {
+	require('../../src/cron').removeAll();
+	await require('../../src/meta/minifier').killAll();
+	const webserver = require('../../src/webserver');
+	await webserver.destroy();
+	await db.emptydb();
+	await db.close();
+};
 
 async function setupMockDefaults() {
 	const meta = require('../../src/meta');
@@ -274,3 +270,13 @@ async function enableDefaultPlugins() {
 
 	await db.sortedSetAdd('plugins:active', Object.keys(defaultEnabled), defaultEnabled);
 }
+
+before(async () => {
+	console.log('setup');
+	await db.setupTestSuite();
+}, { timeout: 30000 });
+
+after(async () => {
+	console.log('teardown');
+	await db.tearDown();
+});

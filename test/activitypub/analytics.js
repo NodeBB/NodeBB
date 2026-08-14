@@ -1,7 +1,11 @@
 'use strict';
 
+const { before, beforeEach, after, it, describe } = require('node:test');
+
 const assert = require('assert');
 const nconf = require('nconf');
+const util = require('util');
+const sleep = util.promisify(setTimeout);
 
 const db = require('../mocks/databasemock');
 const controllers = require('../../src/controllers');
@@ -126,6 +130,7 @@ describe('Analytics', () => {
 
 	it('should increment various metrics', async () => {
 		let counters;
+		const oldValue = analytics.pause;
 		analytics.pause = true;
 		({ counters } = analytics.peek());
 		const before = { ...counters };
@@ -151,6 +156,7 @@ describe('Analytics', () => {
 			assert(before.hasOwnProperty(metric) && after.hasOwnProperty(metric), JSON.stringify({ before, after }, null, 2));
 			assert(before[metric] < after[metric]);
 		});
-		analytics.pause = false;
+		await sleep(2000);
+		analytics.pause = oldValue;
 	});
 });
