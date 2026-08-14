@@ -219,35 +219,38 @@ middleware.privateUploads = function privateUploads(req, res, next) {
 	}
 
 	if (requestPath === uploadPrefix || requestPath.startsWith(`${uploadPrefix}/`)) {
-		const extensions = (meta.config.privateUploadsExtensions || '')
+		const privateExtensions = (meta.config.privateUploadsExtensions || '')
 			.split(',')
 			.map(ext => ext.trim().toLowerCase())
 			.filter(Boolean);
 		let ext = path.extname(requestPath);
-		ext = ext ? ext.replace(/^\./, '').toLowerCase() : ext;
-		if (!extensions.length || extensions.includes(ext)) {
+		ext = ext ? ext.replace(/^\./, '').trim().toLowerCase() : ext;
+		if (!ext || !privateExtensions.length || privateExtensions.includes(ext)) {
 			return res.status(403).json('not-allowed');
 		}
 	}
 	next();
 };
 
+const unsafeExtensions = new Set([
+	'', '.',
+	'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
+	'.svg', '.svgz',
+	'.xml', '.xsl', '.xslt',
+	'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
+	'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
+	'.xsd', '.mathml', '.xht',
+]);
+
 middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next) {
 	// Trim uploaded files' timestamps when downloading + force download if unsafe
 	const p = normalizeUploadRequestPath(req.path);
-	let basename = path.basename(p);
-	const extname = path.extname(p).toLowerCase();
-	const unsafeExtensions = [
-		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
-		'.svg', '.svgz',
-		'.xml', '.xsl', '.xslt',
-		'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
-		'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
-		'.xsd', '.mathml', '.xht',
-	];
-	const isInlineSafe = !unsafeExtensions.includes(extname);
-	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
+
 	if (p.startsWith('/uploads/')) {
+		let basename = path.basename(p);
+		const extname = path.extname(p).trim().toLowerCase();
+		const isInlineSafe = !unsafeExtensions.has(extname);
+		const dispositionType = isInlineSafe ? 'inline' : 'attachment';
 		if (middleware.regexes.timestampedUpload.test(basename)) {
 			basename = basename.slice(14);
 		}
@@ -260,7 +263,7 @@ middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, ne
 
 function normalizeUploadRequestPath(requestPath) {
 	const decodedPath = decodeURIComponent(requestPath);
-	if (decodedPath.includes(':')) {
+	if (decodedPath.includes(':') || /[. ](\/|$)/.test(decodedPath)) {
 		const err = new Error('[[error:invalid-path]]');
 		err.status = 403;
 		throw err;
