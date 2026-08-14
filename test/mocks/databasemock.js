@@ -11,6 +11,7 @@ require('../../nodebb-global');
 
 const path = require('path');
 const nconf = require('nconf');
+const { setTimeout } = require('node:timers/promises');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
 
@@ -183,6 +184,7 @@ db.tearDown = async () => {
 	await require('../../src/meta/minifier').killAll();
 	const webserver = require('../../src/webserver');
 	await webserver.destroy();
+	await setTimeout(5000); // wait for delayed queries to finish
 	await db.emptydb();
 	await db.close();
 };

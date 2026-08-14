@@ -1,7 +1,5 @@
 'use strict';
 
-const { before, after, it, describe } = require('node:test');
-
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 const slugify = require('../../src/slugify');
