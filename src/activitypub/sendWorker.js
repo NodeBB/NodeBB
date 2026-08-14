@@ -158,9 +158,9 @@ process.on('message', async (message) => {
 
 				// Debug: log full request details
 				if (DEBUG) {
-					winston.debug(`[activitypub/send] REQUEST uri=${uri}`);
-					winston.debug(`[activitypub/send] REQUEST headers=${JSON.stringify(headers)}`);
-					winston.debug(`[activitypub/send] REQUEST payload=${payload.substring(0, 500)}`);
+					winston.verbose(`[activitypub/send] REQUEST uri=${uri}`);
+					winston.verbose(`[activitypub/send] REQUEST headers=${JSON.stringify(headers)}`);
+					winston.verbose(`[activitypub/send] REQUEST payload=${payload.substring(0, 500)}`);
 				}
 
 				// POST — redirect: 'manual' prevents SSRF via HTTP redirect
@@ -209,8 +209,8 @@ process.on('message', async (message) => {
 
 					// Debug: log full response details
 					if (DEBUG) {
-						winston.debug(`[activitypub/send] RESPONSE status=${response.status} headers=${JSON.stringify(Object.fromEntries(response.headers.entries()))}`);
-						winston.debug(`[activitypub/send] RESPONSE body=${bodyText.substring(0, 1000)}`);
+						winston.verbose(`[activitypub/send] RESPONSE status=${response.status} headers=${JSON.stringify(Object.fromEntries(response.headers.entries()))}`);
+						winston.verbose(`[activitypub/send] RESPONSE body=${bodyText.substring(0, 1000)}`);
 					}
 
 					process.send({

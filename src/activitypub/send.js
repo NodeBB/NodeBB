@@ -8,10 +8,6 @@ const winston = require('winston');
 
 const db = require('../database');
 
-// ---------------------------------------------------------------------------
-// SendPool — worker pool management for outbound federation
-// ---------------------------------------------------------------------------
-
 const SendPool = {
 	pool: [],
 	free: [],
@@ -24,11 +20,8 @@ const SendPool = {
 	maxWorkers: 0,
 };
 
-SendPool.maxWorkers = Math.max(1, os.cpus().length - 1);
+SendPool.maxWorkers = Math.max(4, os.availableParallelism() * 2);
 
-/**
- * Initialize the send pool — fork workers and wait for ready signals.
- */
 SendPool.init = function (activityPub) {
 	if (activityPub) {
 		SendPool._activityPub = activityPub;
@@ -38,9 +31,6 @@ SendPool.init = function (activityPub) {
 	}
 };
 
-/**
- * Fork a new worker process and set up message/exit handlers.
- */
 SendPool.forkWorker = function () {
 	const workerPath = path.join(__dirname, 'sendWorker.js');
 	const proc = fork(workerPath, [], {
@@ -89,9 +79,6 @@ SendPool.forkWorker = function () {
 	SendPool.pool.push(proc);
 };
 
-/**
- * Handle worker exit — re-queue in-flight task if any.
- */
 SendPool.handleWorkerExit = function (proc, code) {
 	winston.warn(`[activitypub/send] Worker exited with code ${code}`);
 
@@ -127,9 +114,6 @@ SendPool.handleWorkerExit = function (proc, code) {
 	}
 };
 
-/**
- * Handle a result from a worker — analytics on success, re-queue on failure.
- */
 SendPool.handleResult = function (message) {
 	const { id, success, error } = message;
 	const task = SendPool.pending.get(id);
@@ -171,9 +155,6 @@ SendPool.handleResult = function (message) {
 	}
 };
 
-/**
- * Re-queue a task to the Redis retry queue with exponential backoff.
- */
 SendPool.requeueTask = function (task) {
 	const oneMinute = 1000 * 60;
 	const maxDelay = 60 * 60 * 1000; // 1 hour
@@ -207,9 +188,6 @@ SendPool.requeueTask = function (task) {
 	db.setObjectBulk(retryQueuedSet);
 };
 
-/**
- * Clear the stuck-task timer for a task.
- */
 SendPool.clearTaskTimer = function (taskId) {
 	const timer = SendPool.taskTimers.get(taskId);
 	if (timer) {
@@ -218,9 +196,6 @@ SendPool.clearTaskTimer = function (taskId) {
 	}
 };
 
-/**
- * Dispatch a task to an available worker.
- */
 SendPool.dispatch = function (taskId, task) {
 	if (SendPool.free.length === 0) {
 		// No free workers — task stays in pending queue
@@ -265,11 +240,6 @@ SendPool.dispatch = function (taskId, task) {
 	return true;
 };
 
-/**
- * Drain loop — dispatch tasks from Redis queue to available workers.
- * Active mode: tight loop with setImmediate yield between batches.
- * Idle mode: 10-second setTimeout before checking again.
- */
 SendPool.drainLoop = async function () {
 	if (SendPool.draining) {
 		return;
@@ -367,9 +337,6 @@ SendPool.drainLoop = async function () {
 	}
 };
 
-/**
- * Graceful shutdown — stop drain loop, shutdown workers, wait, then kill.
- */
 SendPool.shutdown = function () {
 	SendPool.isShuttingDown = true;
 	SendPool.draining = false;
