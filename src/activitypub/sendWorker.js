@@ -12,8 +12,11 @@
 const { fetch, Agent } = require('undici');
 const { check, lookup } = require('../ssrf');
 const winston = require('winston');
+const nconf = require('nconf');
+const { version } = require('../../package.json');
 
 const DEBUG = process.env.AP_SEND_DEBUG === 'true';
+const userAgent = `NodeBB/${version.split('.').shift()}.x (${nconf.get('url')})`;
 
 const {
 	importPrivateKey,
@@ -170,6 +173,7 @@ process.on('message', async (message) => {
 					headers: {
 						...headers,
 						'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+						'user-agent': userAgent,
 					},
 					body: payload,
 					signal: combinedSignal,
