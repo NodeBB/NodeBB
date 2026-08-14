@@ -184,7 +184,7 @@ db.tearDown = async () => {
 	await require('../../src/meta/minifier').killAll();
 	const webserver = require('../../src/webserver');
 	await webserver.destroy();
-	await setTimeout(5000); // wait for delayed queries to finish
+	await setTimeout(2500); // wait for delayed queries to finish
 	await db.emptydb();
 	await db.close();
 };

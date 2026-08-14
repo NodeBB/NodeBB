@@ -5,6 +5,7 @@ const { before, beforeEach, after, it, describe } = require('node:test');
 const assert = require('assert');
 const nconf = require('nconf');
 
+const db = require('../mocks/databasemock');
 const request = require('../../src/request');
 const utils = require('../../src/utils');
 const user = require('../../src/user');

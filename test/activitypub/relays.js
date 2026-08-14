@@ -1,6 +1,6 @@
 'use strict';
 
-const { before, after, afterEach,it, describe } = require('node:test');
+const { before, after, afterEach, it, describe } = require('node:test');
 
 const assert = require('assert');
 const nconf = require('nconf');
