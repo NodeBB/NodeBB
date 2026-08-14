@@ -149,9 +149,15 @@ SendPool.handleResult = function (message) {
 		db.sortedSetRemove('ap:retry:queue', task.queueId);
 		SendPool.inFlight.delete(task.queueId);
 	} else {
-		// Failure — re-queue with backoff
-		winston.warn(`[activitypub/send] Task ${id} failed: ${error}`);
-		// No longer in-flight — allow the re-queued task to be picked up again
+		try {
+			SendPool._activityPub.analytics.sendError({
+				payload: JSON.parse(task.payload),
+				uri: task.uri,
+				error: new Error(error),
+			});
+		} catch (e) {
+			winston.warn(`[activitypub/send] Task ${id} failed: ${error}`);
+		}
 		SendPool.inFlight.delete(task.queueId);
 		SendPool.requeueTask(task);
 	}
