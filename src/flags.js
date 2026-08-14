@@ -754,7 +754,7 @@ Flags.update = async function (flagId, uid, changeset) {
 		}
 		const notifObj = await notifications.create({
 			type: 'my-flags',
-			bodyShort: translator.compile(`[[notifications:flag-assigned-to-you, ${flagId}]]`),
+			bodyShort: translator.compile('notifications:flag-assigned-to-you', flagId),
 			path: `/flags/${flagId}`,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
