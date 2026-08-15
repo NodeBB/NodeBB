@@ -1,7 +1,7 @@
 {
 	"queue": "File d'attente",
-	"no-users-in-queue": "There are no users in the registration queue.",
-	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"no-users-in-queue": "Il n'y a aucun utilisateur dans la file d'attente d'inscription.",
+	"description": "Pour activer cette fonctionnalité, allez dans <a href=\"%1\">Paramètres &rarr; Utilisateur &rarr; Inscription des utilisateurs</a> et définissez <strong>Type d'inscription</strong> sur \"Validation par l'administrateur\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "Nom",
