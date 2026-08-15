@@ -383,6 +383,7 @@ define('navigator', [
 				$(anchorEl).translateText(text);
 			} else {
 				anchorEl.setAttribute('tabindex', -1);
+				anchorEl.innerText = '';
 			}
 		}
 		const anchorHeight = anchorEl.getBoundingClientRect().height;
