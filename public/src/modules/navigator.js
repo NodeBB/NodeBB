@@ -376,14 +376,11 @@ define('navigator', [
 		remaining = Math.min(remaining, ajaxify.data.postcount - index);
 
 		function toggleAnchor(text) {
-			anchorEl.innerText = text;
 			anchorEl.style.display = text ? 'inline' : 'none';
-			if (text) {
-				$(anchorEl).translateText(text);
-			}
 			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
 			if (text) {
 				anchorEl.removeAttribute('tabindex');
+				$(anchorEl).translateText(text);
 			} else {
 				anchorEl.setAttribute('tabindex', -1);
 			}
