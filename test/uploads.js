@@ -334,6 +334,7 @@ describe('Upload Controllers', () => {
 					`/assets/uploads/%2e%2e/uploads/files/${filename}`,
 					`/assets/uploads/%2e/files/${filename}`,
 					`/assets/uploads%5cfiles%5c${filename}`,
+					`/assets/uploads/files/test-%G1.pdf`, // invalid percent encoding, should be blocked
 				];
 				for (const p of requestPathsToCheck) {
 					// eslint-disable-next-line no-await-in-loop
