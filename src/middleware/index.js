@@ -34,10 +34,6 @@ const middleware = module.exports;
 
 const relative_path = nconf.get('relative_path');
 
-middleware.regexes = {
-	timestampedUpload: /^\d+-.+$/,
-};
-
 const csrfMiddleware = csrfSynchronisedProtection;
 
 middleware.applyCSRF = function (req, res, next) {
@@ -203,74 +199,6 @@ async function expose(exposedField, method, canViewMethod, field, req, res, next
 
 	res.locals[exposedField] = value;
 	next();
-}
-
-middleware.privateUploads = function privateUploads(req, res, next) {
-	if (req.loggedIn || !meta.config.privateUploads) {
-		return next();
-	}
-
-	const uploadPrefix = `${nconf.get('relative_path')}/assets/uploads/files`.toLowerCase();
-	let requestPath = req.path;
-	try {
-		requestPath = normalizeUploadRequestPath(requestPath);
-	} catch (err) {
-		return res.status(403).json('not-allowed');
-	}
-
-	if (requestPath === uploadPrefix || requestPath.startsWith(`${uploadPrefix}/`)) {
-		const privateExtensions = (meta.config.privateUploadsExtensions || '')
-			.split(',')
-			.map(ext => ext.trim().toLowerCase())
-			.filter(Boolean);
-		let ext = path.extname(requestPath);
-		ext = ext ? ext.replace(/^\./, '').trim().toLowerCase() : ext;
-		if (!ext || !privateExtensions.length || privateExtensions.includes(ext)) {
-			return res.status(403).json('not-allowed');
-		}
-	}
-	next();
-};
-
-const unsafeExtensions = new Set([
-	'', '.',
-	'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
-	'.svg', '.svgz',
-	'.xml', '.xsl', '.xslt',
-	'.rss', '.atom', '.rpf', '.rng', '.sch', '.dtd', '.epub',
-	'.xaml', '.plist', '.vcf', '.opf', '.rdf', '.wsdl', '.resx',
-	'.xsd', '.mathml', '.xht',
-]);
-
-middleware.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next) {
-	// Trim uploaded files' timestamps when downloading + force download if unsafe
-	const p = normalizeUploadRequestPath(req.path);
-
-	if (p.startsWith('/uploads/')) {
-		let basename = path.basename(p);
-		const extname = path.extname(p).trim().toLowerCase();
-		const isInlineSafe = !unsafeExtensions.has(extname);
-		const dispositionType = isInlineSafe ? 'inline' : 'attachment';
-		if (middleware.regexes.timestampedUpload.test(basename)) {
-			basename = basename.slice(14);
-		}
-		res.setHeader('X-Content-Type-Options', 'nosniff');
-		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
-	}
-
-	next();
-});
-
-function normalizeUploadRequestPath(requestPath) {
-	const decodedPath = decodeURIComponent(requestPath);
-	if (decodedPath.includes(':') || /[. ](\/|$)/.test(decodedPath)) {
-		const err = new Error('[[error:invalid-path]]');
-		err.status = 403;
-		throw err;
-	}
-	return path.posix.normalize(
-		decodedPath.replace(/\\/g, '/')
-	).toLowerCase();
 }
 
 middleware.busyCheck = function busyCheck(req, res, next) {
