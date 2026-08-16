@@ -25,6 +25,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		generateGroupDisplayName,
 		membershipBtn,
 		spawnPrivilegeStates,
+		cacheBustedUrl,
 		localeToHTML,
 		renderDigestAvatar,
 		userAgentIcons,
@@ -213,7 +214,11 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 
 		if (category.backgroundImage) {
-			style.push(`background-image: url(${category.backgroundImage})`);
+			const backgroundUrl = utils.cacheBustedUrl(
+				category.backgroundImage,
+				category['backgroundImage:updatedAt']
+			);
+			style.push(`background-image: url(${backgroundUrl})`);
 			if (category.imageClass) {
 				style.push(`background-size: ${category.imageClass}`);
 			}
@@ -299,6 +304,10 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 				</td>
 			`;
 		}).join('');
+	}
+
+	function cacheBustedUrl(url, updatedAt) {
+		return escape(utils.cacheBustedUrl(url, updatedAt));
 	}
 
 	function localeToHTML(locale, fallback) {

@@ -498,7 +498,8 @@ module.exports = function (User) {
 		if (!meta.config.defaultAvatar) {
 			return '';
 		}
-		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : relative_path + meta.config.defaultAvatar;
+		const src = utils.cacheBustedUrl(meta.config.defaultAvatar, meta.config['defaultAvatar:updatedAt']);
+		return src.startsWith('http') ? src : relative_path + src;
 	};
 
 	User.setUserField = async function (uid, field, value) {
