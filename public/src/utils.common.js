@@ -478,6 +478,14 @@ const utils = {
 		return !utils.isAbsoluteUrl(url);
 	},
 
+	cacheBustedUrl: function (url, updatedAt) {
+		if (!url || !updatedAt) {
+			return url;
+		}
+		const separator = url.includes('?') ? '&' : '?';
+		return `${url}${separator}v=${updatedAt}`;
+	},
+
 	makeNumberHumanReadable: function (num, toFixed = 1) {
 		const n = parseInt(num, 10);
 		if (!n) {

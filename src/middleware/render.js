@@ -160,6 +160,7 @@ module.exports = function (middleware) {
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 			'brand:logo:display': meta.config['brand:logo'] ? '' : 'hide',
+			'brand:logo:updatedAt': meta.config['brand:logo:updatedAt'] || '',
 			allowRegistration: registrationType === 'normal',
 			searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 			postQueueEnabled: !!meta.config.postQueue,

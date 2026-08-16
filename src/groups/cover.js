@@ -33,49 +33,56 @@ module.exports = function (Groups) {
 				tempPath = await image.writeImageDataToTempFile(data.imageData);
 			}
 
-			const filename = `groupCover-${data.groupName}${path.extname(tempPath)}`;
+			await deleteCover(data.groupName);
+
+			const filename = `groupCover-${data.groupName}-${Date.now()}${path.extname(tempPath)}`;
 			const uploadData = await image.uploadImage(filename, 'files', {
 				path: tempPath,
 				uid: uid,
 				name: 'groupCover',
 			});
-			const { url } = uploadData;
-			await Groups.setGroupField(data.groupName, 'cover:url', url);
 
 			await image.resizeImage({
 				path: tempPath,
 				type: type,
 				width: 358,
 			});
-			const thumbUploadData = await image.uploadImage(`groupCoverThumb-${data.groupName}${path.extname(tempPath)}`, 'files', {
+			const thumbFilename = `groupCoverThumb-${data.groupName}-${Date.now()}${path.extname(tempPath)}`;
+			const thumbUploadData = await image.uploadImage(thumbFilename, 'files', {
 				path: tempPath,
 				uid: uid,
 				name: 'groupCover',
 			});
-			await Groups.setGroupField(data.groupName, 'cover:thumb:url', thumbUploadData.url);
 
-			if (data.position) {
-				await Groups.updateCoverPosition(data.groupName, data.position);
-			}
+			await Groups.setGroupFields(data.groupName, {
+				'cover:url': uploadData.url,
+				'cover:thumb:url': thumbUploadData.url,
+				...(data.position ? { 'cover:position': data.position } : {}),
+			});
 
-			return { url: url };
+			return { url: uploadData.url };
 		} finally {
 			file.delete(tempPath);
 		}
 	};
 
 	Groups.removeCover = async function (data) {
+		await deleteCover(data.groupName);
+		await db.deleteObjectFields(`group:${data.groupName}`, ['cover:url', 'cover:thumb:url', 'cover:position']);
+	};
+
+	async function deleteCover(groupName) {
 		const fields = ['cover:url', 'cover:thumb:url'];
-		const values = await Groups.getGroupFields(data.groupName, fields);
-		await Promise.all(fields.map((field) => {
+		const values = await Groups.getGroupFields(groupName, fields);
+		await Promise.all(fields.map(async (field) => {
 			if (!values[field] || !values[field].startsWith(`${nconf.get('relative_path')}/assets/uploads/files/`)) {
 				return;
 			}
 			const filename = values[field].split('/').pop();
 			const filePath = path.join(nconf.get('upload_path'), 'files', filename);
-			return file.delete(filePath);
+			if (file.isPathInside(nconf.get('upload_path'), filePath)) {
+				await file.delete(filePath);
+			}
 		}));
-
-		await db.deleteObjectFields(`group:${data.groupName}`, ['cover:url', 'cover:thumb:url', 'cover:position']);
-	};
+	}
 };

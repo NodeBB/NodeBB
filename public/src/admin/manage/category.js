@@ -206,7 +206,7 @@ define('admin/manage/category', [
 				params: { cid: cid },
 			}, function (imageUrlOnServer) {
 				$('#category-image').val(imageUrlOnServer);
-				previewEl.css('background-image', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
+				previewEl.css('background-image', `url(${imageUrlOnServer}?v=${Date.now()})`);
 
 				modified($('#category-image'));
 			});

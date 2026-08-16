@@ -1,15 +1,14 @@
 'use strict';
 
-const path = require('path');
 const nconf = require('nconf');
 const mime = require('mime').default;
 
 const meta = require('../meta');
 const user = require('../user');
 const plugins = require('../plugins');
-const image = require('../image');
 const privilegesHelpers = require('../privileges/helpers');
 const helpers = require('./helpers');
+const utils = require('../utils');
 
 const Controllers = module.exports;
 
@@ -286,17 +285,17 @@ Controllers.manifest = async function (req, res) {
 	};
 
 	if (meta.config['brand:screenshot']) {
-		let sizes;
-		try {
-			const { width, height } = await image.size(path.join(nconf.get('base_dir'), meta.config['brand:screenshot'].replace('assets', 'public')));
-			sizes = `${width}x${height}`;
-		} catch (e) {
-			// noop
-		}
+		const width = meta.config['brand:screenshot:width'];
+		const height = meta.config['brand:screenshot:height'];
+		const sizes = width && height ? `${width}x${height}` : '';
+		const screenshotSrc = utils.cacheBustedUrl(
+			meta.config['brand:screenshot'],
+			meta.config['brand:screenshot:updatedAt']
+		);
 		manifest.screenshots = [
 			{
-				src: `${nconf.get('relative_path')}${meta.config['brand:screenshot']}`,
-				...(sizes && { sizes }),
+				src: `${nconf.get('relative_path')}${screenshotSrc}`,
+				sizes: sizes || '',
 				type: mime.getType(meta.config['brand:screenshot']),
 			},
 		];
@@ -312,86 +311,33 @@ Controllers.manifest = async function (req, res) {
 		];
 	}
 
-	if (meta.config['brand:touchIcon']) {
-		manifest.icons.push({
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-36.png`,
-			sizes: '36x36',
-			type: 'image/png',
-			density: 0.75,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-48.png`,
-			sizes: '48x48',
-			type: 'image/png',
-			density: 1.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-72.png`,
-			sizes: '72x72',
-			type: 'image/png',
-			density: 1.5,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-96.png`,
-			sizes: '96x96',
-			type: 'image/png',
-			density: 2.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-144.png`,
-			sizes: '144x144',
-			type: 'image/png',
-			density: 3.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-192.png`,
-			sizes: '192x192',
-			type: 'image/png',
-			density: 4.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/uploads/system/touchicon-512.png`,
-			sizes: '512x512',
-			type: 'image/png',
-			density: 10.0,
-		});
-	} else {
-		manifest.icons.push({
-			src: `${nconf.get('relative_path')}/assets/images/touch/36.png`,
-			sizes: '36x36',
-			type: 'image/png',
-			density: 0.75,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/images/touch/48.png`,
-			sizes: '48x48',
-			type: 'image/png',
-			density: 1.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/images/touch/72.png`,
-			sizes: '72x72',
-			type: 'image/png',
-			density: 1.5,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/images/touch/96.png`,
-			sizes: '96x96',
-			type: 'image/png',
-			density: 2.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/images/touch/144.png`,
-			sizes: '144x144',
-			type: 'image/png',
-			density: 3.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/images/touch/192.png`,
-			sizes: '192x192',
-			type: 'image/png',
-			density: 4.0,
-		}, {
-			src: `${nconf.get('relative_path')}/assets/images/touch/512.png`,
-			sizes: '512x512',
-			type: 'image/png',
-			density: 10.0,
-		});
-	}
+	const custom = meta.config['brand:touchIcon'];
+	const basePath = custom ?
+		`${nconf.get('relative_path')}/assets/uploads/system` :
+		`${nconf.get('relative_path')}/assets/images/touch`;
 
+	const sizes = [36, 48, 72, 96, 144, 192, 512];
+	const densities = [0.75, 1, 1.5, 2, 3, 4, 10];
+
+	sizes.forEach((size, index) => {
+		const src = custom ?
+			utils.cacheBustedUrl(`touchicon-${size}.png`, meta.config['brand:touchIcon:updatedAt']) :
+			`${size}.png`;
+		manifest.icons.push({
+			src: `${basePath}/${src}`,
+			sizes: `${size}x${size}`,
+			type: 'image/png',
+			density: densities[index],
+		});
+	});
 
 	if (meta.config['brand:maskableIcon']) {
+		const maskableIconSrc = utils.cacheBustedUrl(
+			`/assets/uploads/system/maskableicon-orig.png`,
+			meta.config['brand:maskableIcon:updatedAt']
+		);
 		manifest.icons.push({
-			src: `${nconf.get('relative_path')}/assets/uploads/system/maskableicon-orig.png`,
+			src: `${nconf.get('relative_path')}${maskableIconSrc}`,
 			sizes: '512x512',
 			type: 'image/png',
 			purpose: 'maskable',
