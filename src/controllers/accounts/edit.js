@@ -94,6 +94,11 @@ editController.email = async function (req, res, next) {
 		return next();
 	}
 
+	const isAdmin = await privileges.admin.can('admin:users', req.uid);
+	if (meta.config['email:disableEdit'] && !isAdmin) {
+		return helpers.notAllowed(req, res);
+	}
+
 	req.session.returnTo = `/uid/${targetUid}`;
 	req.session.registration = req.session.registration || {};
 	req.session.registration.updateEmail = true;

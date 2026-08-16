@@ -516,6 +516,93 @@ describe('Controllers', () => {
 				assert.strictEqual(userData['email:confirmed'], 1);
 			});
 
+			describe('when email:disableEdit is enabled', () => {
+				afterEach(() => {
+					meta.config['email:disableEdit'] = 0;
+				});
+
+				async function getCallback(uid) {
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid, session: { id: 0 } },
+						interstitials: [],
+					});
+					return result.interstitials[0].callback;
+				}
+
+				it('should not allow a regular user to change their email', async () => {
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username, email: `${username}@nodebb.org` }, {
+						emailVerification: 'verify',
+					});
+					const callback = await getCallback(uid);
+					meta.config['email:disableEdit'] = 1;
+
+					await assert.rejects(callback({ uid }, {
+						email: `${username}@nodebb.com`,
+					}), { message: '[[error:no-privileges]]' });
+
+					const userData = await user.getUserData(uid);
+					assert.strictEqual(userData.email, `${username}@nodebb.org`);
+				});
+
+				it('should not allow a regular user to clear their email', async () => {
+					meta.config.requireEmailAddress = 0;
+
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username, email: `${username}@nodebb.org` }, {
+						emailVerification: 'verify',
+					});
+					const callback = await getCallback(uid);
+					meta.config['email:disableEdit'] = 1;
+
+					await assert.rejects(callback({ uid }, {
+						email: '',
+					}), { message: '[[error:no-privileges]]' });
+
+					const userData = await user.getUserData(uid);
+					assert.strictEqual(userData.email, `${username}@nodebb.org`);
+
+					meta.config.requireEmailAddress = 1;
+				});
+
+				it('should still allow a user without an email to set one', async () => {
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username });
+					const callback = await getCallback(uid);
+					meta.config['email:disableEdit'] = 1;
+
+					await callback({ uid }, { email: `${username}@nodebb.org` });
+
+					const pending = await user.email.isValidationPending(uid, `${username}@nodebb.org`);
+					assert.strictEqual(pending, true);
+				});
+
+				it('should still allow an admin to change a user\'s email', async () => {
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username, email: `${username}@nodebb.org` }, {
+						emailVerification: 'verify',
+					});
+					const adminUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					await groups.join('administrators', adminUid);
+					meta.config['email:disableEdit'] = 1;
+
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: adminUid, session: { id: 0 } },
+						interstitials: [],
+					});
+					await result.interstitials[0].callback({ uid }, {
+						email: `${username}@nodebb.com`,
+					});
+
+					const pending = await user.email.isValidationPending(uid, `${username}@nodebb.com`);
+					assert.strictEqual(pending, true);
+
+					await groups.leave('administrators', adminUid);
+				});
+			});
+
 			describe('blocking access for unconfirmed emails', () => {
 				let jar;
 				let token;
@@ -1400,6 +1487,14 @@ describe('Controllers', () => {
 			const { jar } = await helpers.loginUser('foo', 'barbar');
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/username`, { jar });
 			assert.equal(response.statusCode, 200);
+		});
+
+		it('should not render edit/email if email:disableEdit is enabled', async () => {
+			meta.config['email:disableEdit'] = 1;
+			const { jar } = await helpers.loginUser('foo', 'barbar');
+			const { response } = await request.get(`${nconf.get('url')}/api/user/foo/edit/email`, { jar });
+			assert.strictEqual(response.statusCode, 403);
+			meta.config['email:disableEdit'] = 0;
 		});
 	});
 
