@@ -47,7 +47,7 @@
 	{{{end}}}
 	<li>
 		<a component="topic/merge" href="#" class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem">
-			<i class="fa fa-fw fa-code-fork text-secondary"></i> {{tx("topic:thread-tools.merge")}}
+			<i class="fa fa-fw fa-code-merge text-secondary"></i> {{tx("topic:thread-tools.merge")}}
 		</a>
 	</li>
 
