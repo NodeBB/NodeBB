@@ -1490,10 +1490,35 @@ describe('Controllers', () => {
 		});
 
 		it('should not render edit/email if email:disableEdit is enabled', async () => {
+			// The route sits behind requirePageReAuth, so the controller is called directly here
+			const editController = require('../src/controllers/accounts/edit');
 			meta.config['email:disableEdit'] = 1;
-			const { jar } = await helpers.loginUser('foo', 'barbar');
-			const { response } = await request.get(`${nconf.get('url')}/api/user/foo/edit/email`, { jar });
-			assert.strictEqual(response.statusCode, 403);
+
+			let statusCode;
+			const req = {
+				uid: fooUid,
+				loggedIn: true,
+				path: '/user/foo/edit/email',
+				params: { userslug: 'foo' },
+				session: {},
+			};
+			const res = {
+				locals: { isAPI: true },
+				status: function (code) {
+					statusCode = code;
+					return this;
+				},
+				json: function () {
+					return this;
+				},
+			};
+			await editController.email(req, res, () => {
+				assert(false, 'next() should not have been called');
+			});
+
+			assert.strictEqual(statusCode, 403);
+			assert.strictEqual(req.session.registration, undefined);
+
 			meta.config['email:disableEdit'] = 0;
 		});
 	});
