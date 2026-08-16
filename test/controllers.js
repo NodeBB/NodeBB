@@ -1499,6 +1499,7 @@ describe('Controllers', () => {
 				uid: fooUid,
 				loggedIn: true,
 				path: '/user/foo/edit/email',
+				originalUrl: '/api/user/foo/edit/email',
 				params: { userslug: 'foo' },
 				session: {},
 			};
