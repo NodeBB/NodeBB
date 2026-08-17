@@ -18,6 +18,13 @@ define('admin/extend/plugins', [
 			$(`.nav-pills button[data-bs-target="${window.location.hash}"]`).trigger('click');
 		}
 
+		$('#plugin-tabs').on('shown.bs.tab', function (ev) {
+			const target = $(ev.target).attr('data-bs-target');
+			if (target) {
+				history.replaceState(null, null, target);
+			}
+		});
+
 		const searchInputEl = $('#plugin-search');
 
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
