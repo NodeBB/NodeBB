@@ -8,6 +8,7 @@ const meta = require('../meta');
 const posts = require('../posts');
 const topics = require('../topics');
 const categories = require('../categories');
+const groups = require('../groups');
 const user = require('../user');
 const activitypub = require('../activitypub');
 const helpers = require('./helpers');
@@ -145,6 +146,7 @@ privsPosts.canEdit = async function (pid, uid) {
 		isMod: posts.isModerator([pid], uid),
 		isOwner: posts.isOwner(pid, uid),
 		isEditor: db.isSetMember(`pid:${pid}:editors`, uid),
+		isGroupEditor: isGroupEditor(pid, uid),
 		edit: privsPosts.can('posts:edit', pid, uid),
 		postData: posts.getPostFields(pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
 		userData: user.getUserFields(uid, ['reputation']),
@@ -187,10 +189,18 @@ privsPosts.canEdit = async function (pid, uid) {
 
 	const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
 	return {
-		flag: result.edit && (result.isOwner || result.isEditor || result.isMod),
+		flag: result.edit && (result.isOwner || result.isEditor || result.isGroupEditor || result.isMod),
 		message: '[[error:no-privileges]]',
 	};
 };
+
+async function isGroupEditor(pid, uid) {
+	const groupNames = await db.getSetMembers(`pid:${pid}:editors:groups`);
+	if (!groupNames.length) {
+		return false;
+	}
+	return await groups.isMemberOfAny(uid, groupNames);
+}
 
 privsPosts.canDelete = async function (pid, uid) {
 	const postData = await posts.getPostFields(pid, ['uid', 'tid', 'timestamp', 'deleterUid']);

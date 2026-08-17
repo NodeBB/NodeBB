@@ -25,7 +25,8 @@ module.exports = function (Groups) {
 				`group:${groupName}:pending`,
 				`group:${groupName}:invited`,
 				`group:${groupName}:owners`,
-				`group:${groupName}:member:pids`
+				`group:${groupName}:member:pids`,
+				`group:${groupName}:editor:pids`
 			);
 		});
 		const sets = groupNames.map(groupName => `${groupName.toLowerCase()}:${groupName}`);
@@ -34,6 +35,7 @@ module.exports = function (Groups) {
 			.map(groupName => slugify(groupName));
 
 		await removeGroupsFromPrivilegeGroups(groupNames);
+		await removeGroupsFromPostEditors(groupNames);
 		await Promise.all([
 			db.deleteAll(keys),
 			db.sortedSetRemove([
@@ -51,6 +53,14 @@ module.exports = function (Groups) {
 		]);
 		plugins.hooks.fire('action:groups.destroy', { groups: groupsData });
 	};
+
+	async function removeGroupsFromPostEditors(groupNames) {
+		await Promise.all(groupNames.map(
+			groupName => batch.processSortedSet(`group:${groupName}:editor:pids`, async (pids) => {
+				await db.setsRemove(pids.map(pid => `pid:${pid}:editors:groups`), groupName);
+			}, { batch: 500 })
+		));
+	}
 
 	async function removeGroupsFromPrivilegeGroups(groupNames) {
 		await batch.processSortedSet('groups:createtime', async (otherGroups) => {
