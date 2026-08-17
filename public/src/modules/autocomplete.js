@@ -76,14 +76,14 @@ define('autocomplete', [
 			input,
 			onSelect,
 			source: (request, response) => {
-				socket.emit('groups.search', {
+				api.get('/groups', {
 					query: request.term,
-				}, function (err, results) {
+				}, function (err, result) {
 					if (err) {
 						return alerts.error(err);
 					}
-					if (results && results.length) {
-						const names = results.map(function (group) {
+					if (result && result.groups.length) {
+						const names = result.groups.map(function (group) {
 							return group && {
 								label: group.name,
 								value: group.name,
