@@ -20,7 +20,7 @@
 		{{{ end }}}
 	</div>
 	<div class="d-flex flex-column gap-1">
-		<button data-action="toggleActive" class="btn btn-light btn-sm hidden text-nowrap">
+		<button data-action="toggleActive" class="btn btn-light btn-sm hidden text-nowrap" data-active-state="1">
 			<i class="fa fa-power-off text-primary"></i> {{tx("admin/extend/plugins:plugin-item.activate")}}
 		</button>
 
