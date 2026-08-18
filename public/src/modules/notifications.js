@@ -103,7 +103,8 @@ define('notifications', [
 		});
 	};
 
-	Notifications.onNewNotification = async function (notifData) {
+	Notifications.onNewNotification = async function (data) {
+		const { notification: notifData, unreadCount } = data;
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
@@ -122,8 +123,9 @@ define('notifications', [
 			return;
 		}
 
-		const { unread } = await api.get('/notifications/count');
-		Notifications.updateNotifCount(unread);
+		if (unreadCount !== undefined) {
+			Notifications.updateNotifCount(unreadCount);
+		}
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;
