@@ -252,8 +252,7 @@ helpers.getGroupPrivilegesAll = async function (cids, groupPrivileges) {
 			types[key] = getType(key);
 		}
 		return {
-			name: validator.escape(member),
-			nameEscaped: translator.escape(validator.escape(member)),
+			name: member,
 			privileges: memberPrivs,
 			types: types,
 			isPrivate: groupData[index] && !!groupData[index].private,
