@@ -37,6 +37,11 @@ define('notifications', [
 			triggerEl = null;
 		}
 		callback = callback || function () {};
+		// resync the unread count in case a socket push was missed
+		// or a notification was rescinded server-side
+		api.get('/notifications/count').then(({ unread }) => {
+			Notifications.updateNotifCount(unread);
+		}).catch(alerts.error);
 		api.get('/notifications').then((data) => {
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
