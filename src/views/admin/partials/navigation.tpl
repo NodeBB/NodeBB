@@ -38,6 +38,7 @@
 				{{{ end }}}
 				{{{ if user.privileges.admin:users }}}
 				<a class="btn btn-ghost btn-sm text-start" id="manage-users" href="{relative_path}/admin/manage/users">{{tx("admin/menu:manage/users")}}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/digest">{{tx("admin/menu:manage/digest")}}</a>
 				{{{ end }}}
 				{{{ if user.privileges.admin:groups }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/groups">{{tx("admin/menu:manage/groups")}}</a>
@@ -51,7 +52,6 @@
 				{{{ end }}}
 				{{{ if user.privileges.superadmin }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/uploads">{{tx("admin/menu:manage/uploads")}}</a>
-				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/digest">{{tx("admin/menu:manage/digest")}}</a>
 				<hr/>
 				<h6 class="text-xs ps-4">{{tx("pages:moderator-tools")}}</h6>
 				<a class="btn btn-ghost btn-sm text-start" target="_top" href="{relative_path}/flags">{{tx("admin/menu:manage/flagged-content")}} <i class="fa fa-external-link"></i></a>
