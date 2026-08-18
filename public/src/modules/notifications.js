@@ -100,7 +100,8 @@ define('notifications', [
 		});
 	};
 
-	Notifications.onNewNotification = async function (notifData) {
+	Notifications.onNewNotification = async function (data) {
+		const { notification: notifData, unreadCount } = data;
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
@@ -119,8 +120,8 @@ define('notifications', [
 			return;
 		}
 
-		if (notifData.hasOwnProperty('unreadCount')) {
-			Notifications.updateNotifCount(notifData.unreadCount);
+		if (unreadCount !== undefined) {
+			Notifications.updateNotifCount(unreadCount);
 		}
 
 		if (!unreadNotifs[notifData.nid]) {
