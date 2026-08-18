@@ -106,6 +106,11 @@ define('notifications', [
 		}
 		const { template } = ajaxify.data;
 		if (template.chats && String(ajaxify.data.roomId) === String(notifData.roomId)) {
+			// user is already looking at this room, mark the notification read
+			// instead of leaving it unread until the next room load
+			if (notifData.nid) {
+				markNotification(notifData.nid, true);
+			}
 			return;
 		}
 
