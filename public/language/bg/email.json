@@ -35,6 +35,7 @@
     "digest.subject": "Резюме за %1",
     "digest.title.day": "Дневното Ви резюме",
     "digest.title.week": "Седмичното Ви резюме",
+    "digest.title.biweek": "Your Bi-Weekly Digest",
     "digest.title.month": "Месечното Ви резюме",
     "notif.chat.new-message-from-user": "Ново съобщение от „%1“",
     "notif.chat.new-message-from-user-in-room": "Ново съобщение от %1 в стая %2",
