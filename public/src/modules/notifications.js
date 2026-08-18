@@ -119,8 +119,9 @@ define('notifications', [
 			return;
 		}
 
-		const { unread } = await api.get('/notifications/count');
-		Notifications.updateNotifCount(unread);
+		if (notifData.hasOwnProperty('unreadCount')) {
+			Notifications.updateNotifCount(notifData.unreadCount);
+		}
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;

@@ -248,7 +248,8 @@ async function pushToUids(uids, notification) {
 					uid,
 					notification,
 				});
-				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
+				const unreadCount = await User.notifications.getUnreadCount(uid);
+				websockets.in(`uid_${uid}`).emit('event:new_notification', { ...notification, unreadCount });
 			}));
 		}
 	}
