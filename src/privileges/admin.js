@@ -93,19 +93,12 @@ privsAdmin.socketMap = {
 	'admin.categories.copyPrivilegesFrom': 'admin:privileges',
 	'admin.categories.copyPrivilegesToAllCategories': 'admin:privileges',
 
-	'admin.user.makeAdmins': 'admin:admins-mods',
-	'admin.user.removeAdmins': 'admin:admins-mods',
-
 	'admin.user.loadGroups': 'admin:users',
-	'admin.user.saveCustomFields': 'admin:users',
-	'admin.groups.join': 'admin:users',
-	'admin.groups.leave': 'admin:users',
 	'admin.user.resetLockouts': 'admin:users',
 	'admin.user.validateEmail': 'admin:users',
 	'admin.user.sendValidationEmail': 'admin:users',
 	'admin.user.sendPasswordResetEmail': 'admin:users',
 	'admin.user.forcePasswordReset': 'admin:users',
-	'admin.user.invite': 'admin:users',
 
 	'admin.tags.create': 'admin:tags',
 	'admin.tags.rename': 'admin:tags',

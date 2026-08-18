@@ -238,3 +238,25 @@ Admin.activitypub.removeCoreDomain = async (req, res) => {
 	await activitypub.blocklists.core.remove(domain);
 	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
 };
+
+Admin.plugins = {};
+
+Admin.plugins.install = async (req, res) => {
+	await api.admin.plugins.install(req, { id: req.params.pluginId, version: req.body.version });
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.plugins.uninstall = async (req, res) => {
+	await api.admin.plugins.uninstall(req, { id: req.params.pluginId });
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.plugins.setActive = async (req, res) => {
+	await api.admin.plugins.setActive(req, { id: req.params.pluginId, active: req.body.active });
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.plugins.upgrade = async (req, res) => {
+	await api.admin.plugins.upgrade(req, { id: req.params.pluginId, version: req.body.version });
+	helpers.formatApiResponse(200, res);
+};

@@ -314,6 +314,12 @@ paths:
     $ref: 'write/admin/activitypub/blocklists/url.yaml'
   /admin/activitypub/blocklists/{url}/refresh:
     $ref: 'write/admin/activitypub/blocklists/url/refresh.yaml'
+  /admin/plugins/{pluginId}:
+    $ref: 'write/admin/plugins/pluginId.yaml'
+  /admin/plugins/{pluginId}/active:
+    $ref: 'write/admin/plugins/pluginId/active.yaml'
+  /admin/plugins/{pluginId}/upgrade:
+    $ref: 'write/admin/plugins/pluginId/upgrade.yaml'
   /files/:
     $ref: 'write/files.yaml'
   /files/folder:

@@ -31,11 +31,11 @@
 			<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-light btn-sm text-nowrap"><i class="fa fa-arrow-up-right-from-square text-primary"></i> {{tx("admin/extend/plugins:plugin-item.themes")}}</a>
 			{{{ else }}}
 
-			<button data-action="toggleActive" class="btn btn-light btn-sm text-nowrap {{{ if !./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}">
+			<button data-action="toggleActive" class="btn btn-light btn-sm text-nowrap {{{ if !./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}" data-active-state="0">
 				<i class="fa fa-power-off text-danger"></i> {{tx("admin/extend/plugins:plugin-item.deactivate")}}
 			</button>
 
-			<button data-action="toggleActive" class="btn btn-light btn-sm text-nowrap {{{ if ./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}">
+			<button data-action="toggleActive" class="btn btn-light btn-sm text-nowrap {{{ if ./active }}}hidden{{{ end }}} {{{ if !canChangeState }}}disabled{{{ end }}}" data-active-state="1">
 				<i class="fa fa-power-off text-primary"></i> {{tx("admin/extend/plugins:plugin-item.activate")}}
 			</button>
 

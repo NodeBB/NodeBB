@@ -55,18 +55,11 @@ define('admin/manage/users', [
 				selected: false,
 			})));
 
-			const options = defaultFields.map((field, i) => (`
-				<div class="form-check mb-2">
-					<input data-field="${field.field}" class="form-check-input" type="checkbox" id="option-${i}" ${field.selected ? 'checked' : ''}>
-					<label class="form-check-label" for="option-${i}">
-						${field.label}
-					</label>
-				</div>`
-			)).join('');
+			const html = await Benchpress.render('admin/partials/export-users-csv', { options: defaultFields });
 
 			const modal = await modals.dialog({
-				message: options,
 				title: '[[admin/manage/users:export-users-fields-title]]',
+				message: html,
 				buttons: {
 					submit: {
 						label: '[[admin/manage/users:export]]',

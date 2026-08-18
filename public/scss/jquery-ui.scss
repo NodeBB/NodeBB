@@ -6,3 +6,13 @@
 @import 'jquery-ui/themes/base/draggable';
 @import 'jquery-ui/themes/base/sortable';
 @import 'jquery-ui/themes/base/theme';
+
+// jquery-ui positions its menus by setting `left` inline, so rtlcss must not
+// flip the stylesheet's `left: 0` to `right: 0` — otherwise the menu ends up
+// anchored on both edges and stretches across the page in rtl
+/*rtl:begin:ignore*/
+.ui-autocomplete {
+	left: 0;
+	right: auto;
+}
+/*rtl:end:ignore*/

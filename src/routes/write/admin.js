@@ -47,5 +47,10 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.removeBlocklist);
 	setupApiRoute(router, 'post', '/activitypub/blocklists/:url/refresh', [...middlewares], controllers.write.admin.activitypub.refreshBlocklist);
 
+	setupApiRoute(router, 'post', '/plugins/:pluginId', [...middlewares, requireAPIReAuth], controllers.write.admin.plugins.install);
+	setupApiRoute(router, 'delete', '/plugins/:pluginId', [...middlewares], controllers.write.admin.plugins.uninstall);
+	setupApiRoute(router, 'put', '/plugins/:pluginId/active', [...middlewares, middleware.checkRequired.bind(null, ['active'])], controllers.write.admin.plugins.setActive);
+	setupApiRoute(router, 'put', '/plugins/:pluginId/upgrade', [...middlewares], controllers.write.admin.plugins.upgrade);
+
 	return router;
 };
