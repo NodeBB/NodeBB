@@ -657,6 +657,7 @@ describe('Admin Controllers', () => {
 				this.timeout(50000);
 
 				const uploadRoutes = [
+					'upload/file',
 					'category/uploadpicture',
 					'uploadfavicon',
 					'uploadTouchIcon',
