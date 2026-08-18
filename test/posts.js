@@ -1228,8 +1228,8 @@ describe('Post\'s', () => {
 				uids: [editorUid],
 			});
 
-			const userData = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
-			assert.strictEqual(userData[0].username, 'editor user');
+			const { users } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.strictEqual(users[0].username, 'editor user');
 
 			const result = await apiPosts.edit({ uid: editorUid }, { pid, content: 'edited by editor' });
 			assert.strictEqual(Object.hasOwn(result, 'ip'), false);
@@ -1237,6 +1237,133 @@ describe('Post\'s', () => {
 			assert.strictEqual(content, 'edited by editor');
 
 			meta.config.trackIpPerPost = oldValue;
+		});
+
+		it('should allow members of an editor group to edit the post', async () => {
+			const ownerUid = await user.create({ username: 'group owner user' });
+			const memberUid = await user.create({ username: 'group editor user' });
+			const outsiderUid = await user.create({ username: 'not a group member' });
+			await groups.create({ name: 'editors-test-group' });
+			await groups.join('editors-test-group', memberUid);
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group editor testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-test-group'],
+			});
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, ['editors-test-group']);
+			assert(await db.isSortedSetMember('group:editors-test-group:editor:pids', pid));
+
+			await apiPosts.edit({ uid: memberUid }, { pid, content: 'edited by group member' });
+			assert.strictEqual(await posts.getPostField(pid, 'content'), 'edited by group member');
+
+			const canEdit = await privileges.posts.canEdit(pid, outsiderUid);
+			assert.strictEqual(canEdit.flag, false);
+		});
+
+		it('should keep group editors working when the group is renamed', async () => {
+			const ownerUid = await user.create({ username: 'rename owner user' });
+			const memberUid = await user.create({ username: 'rename editor user' });
+			await groups.create({ name: 'editors-rename-group' });
+			await groups.join('editors-rename-group', memberUid);
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group rename testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-rename-group'],
+			});
+
+			await groups.update('editors-rename-group', { name: 'editors-renamed-group' });
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, ['editors-renamed-group']);
+			assert(await db.isSortedSetMember('group:editors-renamed-group:editor:pids', pid));
+			assert(!await db.exists('group:editors-rename-group:editor:pids'));
+
+			const canEdit = await privileges.posts.canEdit(pid, memberUid);
+			assert.strictEqual(canEdit.flag, true);
+		});
+
+		it('should remove group from post editors when the group is deleted', async () => {
+			const ownerUid = await user.create({ username: 'delete owner user' });
+			await groups.create({ name: 'editors-delete-group' });
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group delete testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-delete-group'],
+			});
+
+			await groups.destroy('editors-delete-group');
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, []);
+			assert(!await db.exists('group:editors-delete-group:editor:pids'));
+		});
+
+		it('should clean up editor groups when the post is purged', async () => {
+			const ownerUid = await user.create({ username: 'purge owner user' });
+			await groups.create({ name: 'editors-purge-group' });
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group purge testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-purge-group'],
+			});
+
+			await posts.purge([pid], ownerUid);
+
+			assert(!await db.exists(`pid:${pid}:editors:groups`));
+			assert(!await db.isSortedSetMember('group:editors-purge-group:editor:pids', pid));
+		});
+
+		it('should not save privilege or non-existent groups as editors', async () => {
+			const ownerUid = await user.create({ username: 'filter owner user' });
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group filter testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['cid:0:privileges:admin:admincp', 'guests', 'does-not-exist-group'],
+			});
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, []);
 		});
 	});
 

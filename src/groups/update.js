@@ -222,6 +222,7 @@ module.exports = function (Groups) {
 		await db.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
 		await db.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
 		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
+		await updatePostEditorGroups(oldName, newName);
 
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
@@ -244,6 +245,15 @@ module.exports = function (Groups) {
 
 			await Promise.all(usersData.map(u => user.setUserField(u.uid, 'groupTitle', JSON.stringify(u.newTitleArray))));
 		}, {});
+	}
+
+	async function updatePostEditorGroups(oldName, newName) {
+		await batch.processSortedSet(`group:${oldName}:editor:pids`, async (pids) => {
+			const keys = pids.map(pid => `pid:${pid}:editors:groups`);
+			await db.setsRemove(keys, oldName);
+			await db.setsAdd(keys, newName);
+		}, { batch: 500 });
+		await db.rename(`group:${oldName}:editor:pids`, `group:${newName}:editor:pids`);
 	}
 
 	async function renameGroupsMember(keys, oldName, newName) {
