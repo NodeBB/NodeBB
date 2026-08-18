@@ -8,7 +8,7 @@ const routeHelpers = require('../helpers');
 const { setupApiRoute } = routeHelpers;
 
 module.exports = function () {
-	const middlewares = [middleware.ensureLoggedIn, middleware.admin.checkPrivileges];
+	const middlewares = [middleware.ensureLoggedIn, middleware.admin.checkPrivilege('admin:settings')];
 
 	// setupApiRoute(router, 'put', '/', [
 	//  ...middlewares,
