@@ -169,7 +169,7 @@
     "move-posts-instruction": "Clicca sui post da spostare, poi inserisci l'ID della discussione o vai alla discussione di destinazione",
     "move-topic-instruction": "Seleziona la categoria di destinazione e fai clic su sposta",
     "change-owner-instruction": "Clicca sui post che vuoi assegnare ad un altro utente",
-    "manage-editors-instruction": "Gestisci gli utenti che possono modificare questo post qui sotto.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Seleziona una o più categorie in cui pubblicare il post. La discussione(i) sarà accessibile dalla categoria originale e da tutte le categorie in cui è stato pubblicato il post.",
     "crossposts.listing": "Questa discussione è stata pubblicata anche nelle seguenti categorie locali:",
     "crossposts.none": "Questa discussione non è stata pubblicata in altre categorie.",

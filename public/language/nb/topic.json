@@ -169,7 +169,7 @@
     "move-posts-instruction": "Klikk på innleggene du vil flytte, og skriv deretter inn en emne-ID, eller gå til målemnet",
     "move-topic-instruction": "Velg målkategorien og klikk deretter flytt",
     "change-owner-instruction": "Klikk på innleggene du vil tildele til en annen bruker",
-    "manage-editors-instruction": "Administrer brukere som kan redigere dette innlegget nedenfor.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Velg én eller flere kategorier å krysspublisere til. Innlegget vil være tilgjengelig fra den opprinnelige kategorien og alle kategorier det er krysspublisert til.",
     "crossposts.listing": "Dette innlegget er krysspublisert til følgende lokale kategorier:",
     "crossposts.none": "Dette innlegget er ikke krysspublisert til noen andre kategorier.",

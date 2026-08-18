@@ -169,7 +169,7 @@
     "move-posts-instruction": "Cliquez sur les articles que vous souhaitez déplacer, puis entrez un ID de sujet ou accédez au sujet cible",
     "move-topic-instruction": "Sélectionnez la catégorie cible puis cliquer sur déplacer",
     "change-owner-instruction": "Cliquez sur les messages que vous souhaitez attribuer à un autre utilisateur.",
-    "manage-editors-instruction": "Gérez les utilisateurs qui peuvent modifier le message ci-dessous.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Sélectionnez une ou plusieurs catégories pour publier ce sujet en simultané. Le(s) sujet(s) seront accessibles depuis la catégorie d'origine ainsi que toutes les catégories sélectionnées.",
     "crossposts.listing": "Ce sujet a été publié simultanément dans les catégories locales suivantes :",
     "crossposts.none": "Ce sujet n'a pas été publié simultanément dans d'autres catégories.",

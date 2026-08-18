@@ -169,7 +169,7 @@
     "move-posts-instruction": "Kliknij na posty, które chcesz przenieść, po czym podaj ID tematu lub przejdź do tematu docelowego.",
     "move-topic-instruction": "Wybierz kategorię docelową i kliknij przenieś",
     "change-owner-instruction": "Kliknij w posty, które chcesz przypisać do innego użytkownika",
-    "manage-editors-instruction": "Zarządzaj użytkownikami, którzy mogą edytować ten post poniżej.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Select one or more categories to cross-post to. Topic(s) will be accessible from the original category and all cross-posted categories.",
     "crossposts.listing": "This topic has been cross-posted to the following local categories:",
     "crossposts.none": "This topic has not been cross-posted to any additional categories",

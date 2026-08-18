@@ -169,7 +169,7 @@
     "move-posts-instruction": "移動する投稿をクリックしてから、スレッドIDを入力するか対象スレッドへ移動してください",
     "move-topic-instruction": "対象カテゴリを選択してから移動をクリックしてください",
     "change-owner-instruction": "別のユーザーに割り当てる投稿をクリックしてください",
-    "manage-editors-instruction": "以下で、この投稿を編集できるユーザーを管理します。",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "クロスポスト先のカテゴリを1つ以上選択してください。スレッドは元のカテゴリとすべてのクロスポスト先カテゴリからアクセスできます。",
     "crossposts.listing": "このスレッドは以下のローカルカテゴリにクロスポストされています：",
     "crossposts.none": "このスレッドは追加のカテゴリにクロスポストされていません",

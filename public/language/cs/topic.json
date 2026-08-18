@@ -169,7 +169,7 @@
     "move-posts-instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
     "move-topic-instruction": "Select the target category and then click move",
     "change-owner-instruction": "Klikněte na příspěvek u kterého chcete změnit vlastníka",
-    "manage-editors-instruction": "Spravujte uživatele, kteří mohou tento příspěvek upravovat, níže.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Select one or more categories to cross-post to. Topic(s) will be accessible from the original category and all cross-posted categories.",
     "crossposts.listing": "This topic has been cross-posted to the following local categories:",
     "crossposts.none": "This topic has not been cross-posted to any additional categories",

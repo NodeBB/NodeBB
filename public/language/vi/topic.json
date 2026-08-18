@@ -169,7 +169,7 @@
     "move-posts-instruction": "Chọn bài đăng bạn muốn di chuyển, sau đó nhập ID chủ đề hoặc đi đến chủ đề mong muốn",
     "move-topic-instruction": "Chọn danh mục nhắm đến và sau đó nhấp vào di chuyển",
     "change-owner-instruction": "Bấm vào bài viết bạn muốn chỉ định cho người dùng khác",
-    "manage-editors-instruction": "Quản lý những người dùng có thể chỉnh sửa bài đăng này bên dưới.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Chọn một hoặc nhiều danh mục để đăng chéo bài viết. Chủ đề sẽ được truy cập từ danh mục gốc và tất cả các danh mục được đăng chéo.",
     "crossposts.listing": "Chủ đề này đã được đăng tải chéo lên các chuyên mục nội bộ sau:",
     "crossposts.none": "Chủ đề này chưa được đăng tải chéo lên bất kỳ chuyên mục nào khác.",

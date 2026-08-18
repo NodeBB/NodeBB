@@ -169,7 +169,7 @@
     "move-posts-instruction": "Klicke auf die Beiträge, die du verschieben möchtest, und gebe dann eine Themen-ID ein oder gehe zum Zielthema",
     "move-topic-instruction": "Wähle die Ziel-Kategorie und klicke \"Verschieben\"",
     "change-owner-instruction": "Klicke auf die Beiträge, die einem anderen Benutzer zugeordnet werden sollen",
-    "manage-editors-instruction": "Verwalte unten die Leute, die diesen Beitrag bearbeiten können.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Wähle eine oder mehrere Kategorien aus, in denen du einen Beitrag veröffentlichen möchtest. Die Themen sind dann in der ursprünglichen Kategorie und in allen Kategorien, in denen der Beitrag veröffentlicht wurde, zugänglich.",
     "crossposts.listing": "Dieses Thema wurde auch in den folgenden lokalen Kategorien gepostet:",
     "crossposts.none": "Dieses Thema wurde in keine weiteren Kategorien gepostet.",
