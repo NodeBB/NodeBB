@@ -201,6 +201,7 @@ define('navigator', [
 		return await socket.emit('posts.getPostTimestampByIndex', {
 			tid: ajaxify.data.tid,
 			index: index - 1,
+			sort: ajaxify.data.sortOption,
 		});
 	}
 
@@ -376,16 +377,14 @@ define('navigator', [
 		remaining = Math.min(remaining, ajaxify.data.postcount - index);
 
 		function toggleAnchor(text) {
-			anchorEl.innerText = text;
 			anchorEl.style.display = text ? 'inline' : 'none';
-			if (text) {
-				$(anchorEl).translateText(text);
-			}
 			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
 			if (text) {
 				anchorEl.removeAttribute('tabindex');
+				$(anchorEl).translateText(text);
 			} else {
 				anchorEl.setAttribute('tabindex', -1);
+				anchorEl.innerText = '';
 			}
 		}
 		const anchorHeight = anchorEl.getBoundingClientRect().height;
@@ -412,7 +411,11 @@ define('navigator', [
 		}
 		renderPostIndex = index;
 
-		const postData = await socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 });
+		const postData = await socket.emit('posts.getPostSummaryByIndex', {
+			tid: ajaxify.data.tid,
+			index: index - 1,
+			sort: ajaxify.data.sortOption,
+		});
 
 		const html = await app.parseAndTranslate('partials/topic/navigation-post', { post: postData });
 		paginationBlockEl
@@ -445,7 +448,11 @@ define('navigator', [
 	function generateUrl(index) {
 		const pathname = window.location.pathname.replace(config.relative_path, '');
 		const parts = pathname.split('/');
-		const newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		let newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		const { sort } = utils.params();
+		if (sort) {
+			newUrl += `?sort=${encodeURIComponent(sort)}`;
+		}
 		const data = {
 			newUrl,
 			index,

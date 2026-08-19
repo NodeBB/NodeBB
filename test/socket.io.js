@@ -21,6 +21,7 @@ const meta = require('../src/meta');
 const events = require('../src/events');
 
 const socketAdmin = require('../src/socket.io/admin');
+const apiAdmin = require('../src/api/admin');
 
 describe('socket.io', () => {
 	let io;
@@ -457,70 +458,64 @@ describe('socket.io', () => {
 	});
 
 	it('should toggle plugin active', (done) => {
-		socketAdmin.plugins.toggleActive({ uid: adminUid }, 'nodebb-plugin-location-to-map', (err, data) => {
-			assert.ifError(err);
-			assert.deepEqual(data, { id: 'nodebb-plugin-location-to-map', active: true });
+		apiAdmin.plugins.setActive({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', active: true }).then(() => {
 			done();
-		});
+		}).catch(err => assert.fail(err.message));
 	});
 
 	describe('install/upgrade plugin', () => {
-		it('should toggle plugin install', function (done) {
+		it('should install a plugin', function (done) {
 			this.timeout(0);
 			const oldValue = process.env.NODE_ENV;
 			process.env.NODE_ENV = 'development';
-			socketAdmin.plugins.toggleInstall({
+			apiAdmin.plugins.install({
 				uid: adminUid,
 			}, {
 				id: 'nodebb-plugin-location-to-map',
 				version: 'latest',
-			}, (err, data) => {
-				assert.ifError(err);
-				assert.equal(data.name, 'nodebb-plugin-location-to-map');
+			}).then(() => {
 				process.env.NODE_ENV = oldValue;
 				done();
-			});
+			}).catch(err => assert.fail(err.message));
 		});
 
 		it('should upgrade plugin', function (done) {
 			this.timeout(0);
 			const oldValue = process.env.NODE_ENV;
 			process.env.NODE_ENV = 'development';
-			socketAdmin.plugins.upgrade({
+			apiAdmin.plugins.upgrade({
 				uid: adminUid,
 			}, {
 				id: 'nodebb-plugin-markdown',
 				version: 'latest',
-			}, (err) => {
-				assert.ifError(err);
+			}).then((err) => {
 				process.env.NODE_ENV = oldValue;
 				done();
-			});
+			}).catch(err => assert.fail(err.message));
 		});
 
 		it('should fail to upgrade plugin if it is not installed', function (done) {
 			this.timeout(0);
 			const oldValue = process.env.NODE_ENV;
 			process.env.NODE_ENV = 'development';
-			socketAdmin.plugins.toggleInstall({
+			apiAdmin.plugins.uninstall({
 				uid: adminUid,
 			}, {
 				id: 'nodebb-plugin-location-to-map',
-				version: 'latest',
-			}, function (err) {
-				assert.ifError(err);
-				socketAdmin.plugins.upgrade({
+			}).then(() => {
+				apiAdmin.plugins.upgrade({
 					uid: adminUid,
 				}, {
 					id: 'nodebb-plugin-location-to-map',
 					version: 'latest',
-				}, (err) => {
-					console.log(err);
+				}).then(() => {
+					assert.fail('Upgrade should have failed if plugin is not installed');
+				}).catch((err) => {
 					assert.strictEqual(err.message, '[[error:plugin-not-installed]]');
 					process.env.NODE_ENV = oldValue;
 					done();
 				});
-			});
+			}).catch(err => assert.fail(err.message));
 		});
 	});
 

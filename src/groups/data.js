@@ -66,7 +66,14 @@ module.exports = function (Groups) {
 
 	Groups.setGroupField = async function (groupName, field, value) {
 		await db.setObjectField(`group:${groupName}`, field, value);
-		plugins.hooks.fire('action:group.set', { field: field, value: value, type: 'set' });
+		plugins.hooks.fire('action:group.set', { groupName, field, value, type: 'set' });
+	};
+
+	Groups.setGroupFields = async function (groupName, data) {
+		await db.setObject(`group:${groupName}`, data);
+		for (const [field, value] of Object.entries(data)) {
+			plugins.hooks.fire('action:group.set', { groupName, field, value, type: 'set' });
+		}
 	};
 
 	async function modifyGroups(groups, fields) {

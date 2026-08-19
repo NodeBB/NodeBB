@@ -203,6 +203,10 @@ async function completeConfigSetup(config) {
 		config.saas_plan = install.values.saas_plan;
 	}
 
+	if (install.values && install.values.hasOwnProperty('trust_proxy')) {
+		config.trust_proxy = install.values.trust_proxy;
+	}
+
 	nconf.overrides(config);
 	const db = require('./database');
 	await db.init();

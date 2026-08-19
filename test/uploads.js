@@ -262,6 +262,56 @@ describe('Upload Controllers', () => {
 			}
 		});
 
+		it('should block NTFS stream ::$DATA and . bypass', async () => {
+			const oldPrivateUploads = meta.config.privateUploads;
+			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
+			const uploadPath = nconf.get('upload_path');
+			const filename = `private-ext-${Date.now()}.pdf`;
+			const filePath = path.join(uploadPath, 'files', filename);
+
+			meta.config.privateUploads = 1;
+			meta.config.privateUploadsExtensions = 'pdf';
+
+			try {
+				await fs.writeFile(filePath, 'PDFSECRET', 'utf8');
+
+				const relativePath = nconf.get('relative_path') || '';
+				const publicPath = `${relativePath}/assets/uploads/files/${filename}`;
+				const directUrl = new URL(publicPath, nconf.get('base_url')).href;
+				const streamUrl = new URL(publicPath.replace(/\.pdf$/, '.pdf::$DATA'), nconf.get('base_url')).href;
+				const percentEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%3A%3A%24DATA'), nconf.get('base_url')).href;
+				const extraDot = new URL(publicPath.replace(/\.pdf$/, '.pdf.'), nconf.get('base_url')).href;
+				const extraDotEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%2E'), nconf.get('base_url')).href;
+				const space = new URL(publicPath.replace(/\.pdf$/, '.pdf '), nconf.get('base_url')).href;
+				const spaceEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%20'), nconf.get('base_url')).href;
+
+				const { response: directResponse } = await request.get(directUrl);
+				assert.strictEqual(directResponse.statusCode, 403, `Failed for url: ${directUrl}`);
+
+				const { response: streamResponse } = await request.get(streamUrl);
+				assert.strictEqual(streamResponse.statusCode, 403, `Failed for url: ${streamUrl}`);
+
+				const { response: percentEncodedResponse } = await request.get(percentEncoded);
+				assert.strictEqual(percentEncodedResponse.statusCode, 403, `Failed for url: ${percentEncoded}`);
+
+				const { response: extraDotResponse } = await request.get(extraDot);
+				assert.strictEqual(extraDotResponse.statusCode, 403, `Failed for url: ${extraDot}`);
+
+				const { response: extraDotEncodedResponse } = await request.get(extraDotEncoded);
+				assert.strictEqual(extraDotEncodedResponse.statusCode, 403, `Failed for url: ${extraDotEncoded}`);
+
+				const { response: spaceResponse } = await request.get(space);
+				assert.strictEqual(spaceResponse.statusCode, 403, `Failed for url: ${space}`);
+
+				const { response: spaceEncodedResponse } = await request.get(spaceEncoded);
+				assert.strictEqual(spaceEncodedResponse.statusCode, 403, `Failed for url: ${spaceEncoded}`);
+			} finally {
+				await file.delete(filePath);
+				meta.config.privateUploads = oldPrivateUploads;
+				meta.config.privateUploadsExtensions = oldPrivateUploadsExtensions;
+			}
+		});
+
 		it('should block path traversal and double slashes for unauthenticated users', async () => {
 			const oldPrivateUploads = meta.config.privateUploads;
 			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
@@ -284,6 +334,7 @@ describe('Upload Controllers', () => {
 					`/assets/uploads/%2e%2e/uploads/files/${filename}`,
 					`/assets/uploads/%2e/files/${filename}`,
 					`/assets/uploads%5cfiles%5c${filename}`,
+					`/assets/uploads/files/test-%G1.pdf`, // invalid percent encoding, should be blocked
 				];
 				for (const p of requestPathsToCheck) {
 					// eslint-disable-next-line no-await-in-loop
@@ -587,13 +638,28 @@ describe('Upload Controllers', () => {
 				`/assets/x/../uploads/xss-dirty.xml`,
 				`/assets/uploads/%2e%2e/uploads/xss-dirty.xml`,
 				`/assets/uploads/%2e/xss-dirty.xml`,
+				`/assets/uploads/xss-dirty.xml `,
+			];
+
+			const urlsTo403 = [
+				`/assets/uploads/xss-dirty.xml::$DATA`,
+				`/assets/uploads/xss-dirty.xml%3A%3A%24DATA`,
+				`/assets/uploads/xss-dirty.xml.`,
+				`/assets/uploads/xss-dirty.xml%2E`,
+				`/assets/uploads/xss-dirty.xml%20`,
 			];
 
 			for (const url of urlsToTest) {
 				// eslint-disable-next-line no-await-in-loop
 				const { response: fileResponse } = await request.get(`${nconf.get('url')}${url}`);
-				assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
 				assert.equal(fileResponse.statusCode, 200, `Failed for url: ${url}`);
+				assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"', `Failed for url: ${url}`);
+			}
+
+			for (const url of urlsTo403) {
+				// eslint-disable-next-line no-await-in-loop
+				const { response: fileResponse } = await request.get(`${nconf.get('url')}${url}`);
+				assert.equal(fileResponse.statusCode, 403, `Failed for url: ${url}`);
 			}
 		});
 

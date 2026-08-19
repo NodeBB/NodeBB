@@ -56,11 +56,10 @@ module.exports = function (User) {
 				await deletePicture(data.uid, 'cover:url');
 			}
 
-			await User.setUserField(data.uid, 'cover:url', uploadData.url);
-
-			if (data.position) {
-				await User.updateCoverPosition(data.uid, data.position);
-			}
+			await User.setUserFields(data.uid, {
+				'cover:url': uploadData.url,
+				...(data.position ? { 'cover:position': data.position } : {}),
+			});
 
 			return {
 				url: uploadData.url,
@@ -267,7 +266,9 @@ module.exports = function (User) {
 			return false;
 		}
 		const filename = value.split('/').pop();
-		return path.join(nconf.get('upload_path'), `profile/uid-${uid}`, filename);
+		const resolved = path.join(nconf.get('upload_path'), `profile/uid-${uid}`, filename);
+		return file.isPathInside(nconf.get('upload_path'), resolved) ?
+			resolved :
+			false;
 	}
-
 };

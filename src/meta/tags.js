@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 
 const plugins = require('../plugins');
+const utils = require('../utils');
 const Meta = require('./index');
 
 
@@ -48,18 +49,19 @@ Tags.parse = async (req, data, meta, link) => {
 	if (Meta.config['brand:logo'] && !isAPI) {
 		defaultTags.push({
 			name: 'msapplication-square150x150logo',
-			content: Meta.config['brand:logo'],
+			content: utils.cacheBustedUrl(Meta.config['brand:logo'], Meta.config['brand:logo:updatedAt']),
 		});
 	}
 
-	const faviconPath = Meta.config['brand:favicon'] || `${relative_path}/assets/uploads/system/favicon.ico`;
-	const cacheBuster = Meta.config['cache-buster'] || '';
+	const faviconPath = Meta.config['brand:favicon'] ?
+		utils.cacheBustedUrl(Meta.config['brand:favicon'], Meta.config['brand:favicon:updatedAt']) :
+		`${relative_path}/assets/uploads/system/favicon.ico`;
 
 	// Link Tags
 	const defaultLinks = isAPI ? [] : [{
 		rel: 'icon',
 		type: 'image/x-icon',
-		href: `${faviconPath}${cacheBuster ? `?${cacheBuster}` : ''}`,
+		href: faviconPath,
 	}, {
 		rel: 'manifest',
 		href: `${relative_path}/manifest.webmanifest`,
@@ -110,69 +112,31 @@ Tags.parse = async (req, data, meta, link) => {
 };
 
 function addTouchIcons(defaultLinks) {
-	if (Meta.config['brand:touchIcon']) {
-		defaultLinks.push({
-			rel: 'apple-touch-icon',
-			href: `${relative_path + upload_url}/system/touchicon-orig.png`,
-		}, {
-			rel: 'icon',
-			sizes: '36x36',
-			href: `${relative_path + upload_url}/system/touchicon-36.png`,
-		}, {
-			rel: 'icon',
-			sizes: '48x48',
-			href: `${relative_path + upload_url}/system/touchicon-48.png`,
-		}, {
-			rel: 'icon',
-			sizes: '72x72',
-			href: `${relative_path + upload_url}/system/touchicon-72.png`,
-		}, {
-			rel: 'icon',
-			sizes: '96x96',
-			href: `${relative_path + upload_url}/system/touchicon-96.png`,
-		}, {
-			rel: 'icon',
-			sizes: '144x144',
-			href: `${relative_path + upload_url}/system/touchicon-144.png`,
-		}, {
-			rel: 'icon',
-			sizes: '192x192',
-			href: `${relative_path + upload_url}/system/touchicon-192.png`,
-		});
-	} else {
-		defaultLinks.push({
-			rel: 'apple-touch-icon',
-			href: `${relative_path}/assets/images/touch/512.png`,
-		}, {
-			rel: 'icon',
-			sizes: '36x36',
-			href: `${relative_path}/assets/images/touch/36.png`,
-		}, {
-			rel: 'icon',
-			sizes: '48x48',
-			href: `${relative_path}/assets/images/touch/48.png`,
-		}, {
-			rel: 'icon',
-			sizes: '72x72',
-			href: `${relative_path}/assets/images/touch/72.png`,
-		}, {
-			rel: 'icon',
-			sizes: '96x96',
-			href: `${relative_path}/assets/images/touch/96.png`,
-		}, {
-			rel: 'icon',
-			sizes: '144x144',
-			href: `${relative_path}/assets/images/touch/144.png`,
-		}, {
-			rel: 'icon',
-			sizes: '192x192',
-			href: `${relative_path}/assets/images/touch/192.png`,
-		}, {
-			rel: 'icon',
-			sizes: '512x512',
-			href: `${relative_path}/assets/images/touch/512.png`,
-		});
-	}
+	const custom = Meta.config['brand:touchIcon'];
+	const updatedAt = Meta.config['brand:touchIcon:updatedAt'];
+
+	const config = custom ? {
+		basePath: `${relative_path + upload_url}/system`,
+		appleIcon: 'touchicon-orig.png',
+		sizes: [36, 48, 72, 96, 144, 192],
+		name: size => utils.cacheBustedUrl(`touchicon-${size}.png`, updatedAt),
+	} : {
+		basePath: `${relative_path}/assets/images/touch`,
+		appleIcon: '512.png',
+		sizes: [36, 48, 72, 96, 144, 192, 512],
+		name: size => `${size}.png`,
+	};
+
+	defaultLinks.push({
+		rel: 'apple-touch-icon',
+		href: `${config.basePath}/${config.appleIcon}`,
+	});
+
+	config.sizes.forEach(size => defaultLinks.push({
+		rel: 'icon',
+		sizes: `${size}x${size}`,
+		href: `${config.basePath}/${config.name(size)}`,
+	}));
 }
 
 function addIfNotExists(meta, keyName, tagName, value) {
@@ -200,6 +164,8 @@ async function addSiteOGImage(meta) {
 	if (ogImage && !ogImage.startsWith('http')) {
 		ogImage = url + ogImage;
 	}
+
+	ogImage = utils.cacheBustedUrl(ogImage, Meta.config[`${key}:updatedAt`]);
 
 	const { images } = await plugins.hooks.fire('filter:meta.addSiteOGImage', {
 		images: [{

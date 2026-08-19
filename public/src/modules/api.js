@@ -3,6 +3,7 @@
 import { fire as fireHook } from 'hooks';
 import { confirm } from 'modals';
 import * as translator from 'translator';
+import * as storage from 'storage';
 
 const baseUrl = config.relative_path + '/api/v3';
 
@@ -30,6 +31,7 @@ async function call(options, callback) {
 			const message = await translator.translate('[[error:api.reauth-required]]', config.userLang);
 			confirm(message, (ok) => {
 				if (ok) {
+					storage.setItem('location-hash', window.location.hash);
 					ajaxify.go(url);
 				}
 			});

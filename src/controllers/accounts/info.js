@@ -26,13 +26,13 @@ infoController.get = async function (req, res) {
 
 	const notes = await getNotes({ uid: res.locals.uid, isPrivileged }, start, stop);
 
-	payload.history = history;
 	payload.sessions = sessions;
 	payload.usernames = usernames;
 	payload.emails = emails;
 	payload.invitedBy = invitedBy;
 
 	if (isPrivileged) {
+		payload.history = history;
 		payload.moderationNotes = notes.notes;
 		const pageCount = Math.ceil(notes.count / itemsPerPage);
 		payload.pagination = pagination.create(page, pageCount, req.query);
