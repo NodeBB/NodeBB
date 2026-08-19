@@ -926,8 +926,8 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 	let uids = admins.concat(globalMods);
 	let notifObj;
 	const { reports } = flagObj;
-	const repoterUid = reports.length ? reports[reports.length - 1]?.reporter : 0;
-	const displayname = await user.getNotificationDisplayname(repoterUid);
+	const reporterUid = reports.at(-1)?.reporter?.uid ?? 0;
+	const displayname = await user.getNotificationDisplayname(reporterUid);
 	if (flagObj.type === 'post') {
 		const tid = await posts.getPostField(flagObj.targetId, 'tid');
 		const [title, cid] = await Promise.all([
