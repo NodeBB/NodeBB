@@ -127,7 +127,7 @@
     "cant-remove-last-admin": "אתם המנהלים היחידים. הוסיפו משתמש אחר לניהול לפני שאתם מוריד את עצמכם מניהול",
     "account-deletion-disabled": "מחיקת החשבון מושבת",
     "cant-delete-admin": "הסירו הרשאות מנהל מחשבון זה לפני שתנסו למחוק אותו.",
-    "cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
+    "cant-remove-self-as-admin": "אתה לא יכול להסיר את עצמך מתפקיד מנהל",
     "already-deleting": "נמחק כבר",
     "invalid-image": "תמונה לא תקינה",
     "invalid-image-type": "סוג תמונה לא חוקי: %1. הסוגים המאושרים הם: %2",

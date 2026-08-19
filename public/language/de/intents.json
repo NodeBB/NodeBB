@@ -5,7 +5,7 @@
 	"display.follow": "Folgen",
 	"display.object": "Anzeigen",
 	"title": "Open Social Web-Nutzernamen registrieren",
-	"description": "Gebe deinen Open Social Web-Nutzernamen ein, um sich für „Activity Intents“ zu registrieren. So kannst du Inhalte aus diesem Forum auf Ihrem sozialen Profil teilen.",
+	"description": "Gib deinen Open Social Web-Namen ein, um dich für „Activity Intents“ zu registrieren. So kannst du Inhalte aus diesem Forum auf deinem Social-Media-Profil teilen.",
 	"handle-label": "Open Social Web Nutzername",
 	"handle-placeholder": "nutzername@beispiel.de",
 	"register-button": "Nutzernamen registrieren",
