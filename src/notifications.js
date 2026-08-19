@@ -248,7 +248,13 @@ async function pushToUids(uids, notification) {
 					uid,
 					notification,
 				});
-				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
+				const uidsInRoom = await websockets.getUidsInRoom(`uid_${uid}`);
+				let unreadCount;
+				if (uidsInRoom.length) {
+					// only calculate the unread count for users connected right now
+					unreadCount = await User.notifications.getUnreadCount(uid);
+				}
+				websockets.in(`uid_${uid}`).emit('event:new_notification', { notification, unreadCount });
 			}));
 		}
 	}

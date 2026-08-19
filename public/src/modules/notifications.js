@@ -38,6 +38,9 @@ define('notifications', [
 		}
 		callback = callback || function () {};
 		api.get('/notifications').then((data) => {
+			// resync the unread count in case a socket push was missed
+			// or a notification was rescinded server-side
+			Notifications.updateNotifCount(data.unread.length);
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
@@ -100,7 +103,8 @@ define('notifications', [
 		});
 	};
 
-	Notifications.onNewNotification = async function (notifData) {
+	Notifications.onNewNotification = async function (data) {
+		const { notification: notifData, unreadCount } = data;
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
@@ -119,8 +123,9 @@ define('notifications', [
 			return;
 		}
 
-		const { unread } = await api.get('/notifications/count');
-		Notifications.updateNotifCount(unread);
+		if (unreadCount !== undefined) {
+			Notifications.updateNotifCount(unreadCount);
+		}
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;
