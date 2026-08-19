@@ -918,6 +918,32 @@ describe('Post\'s', () => {
 			assert(utils.isNumber(timestamp));
 		});
 
+		it('should get post summary and timestamp by index with sort', async () => {
+			const result = await topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic for sorted navigation',
+				content: 'main post',
+			});
+			await apiTopics.reply({ uid: voterUid }, { tid: result.topicData.tid, content: 'first reply' });
+			await sleep(5);
+			const lastReply = await apiTopics.reply({ uid: voterUid }, { tid: result.topicData.tid, content: 'second reply' });
+
+			const timestamp = await socketPosts.getPostTimestampByIndex({ uid: voterUid }, {
+				index: 1,
+				tid: result.topicData.tid,
+				sort: 'newest_to_oldest',
+			});
+			assert.strictEqual(timestamp, lastReply.timestamp);
+
+			const summary = await socketPosts.getPostSummaryByIndex({ uid: voterUid }, {
+				index: 1,
+				tid: result.topicData.tid,
+				sort: 'newest_to_oldest',
+			});
+			assert.strictEqual(summary.pid, lastReply.pid);
+		});
+
 		it('should get post timestamp by index', async () => {
 			const summary = await socketPosts.getPostSummaryByPid({ uid: voterUid }, {
 				pid: pid,
