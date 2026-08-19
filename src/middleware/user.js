@@ -70,8 +70,9 @@ module.exports = function (middleware) {
 			} else if (user.hasOwnProperty('master') && user.master === true) {
 				// If the token received was a master token, a _uid must also be present for all calls
 				const body = req.body || {};
-				if (body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
-					user.uid = body._uid || req.query._uid;
+				const query = req.query || {};
+				if (body.hasOwnProperty('_uid') || query.hasOwnProperty('_uid')) {
+					user.uid = body._uid || query._uid;
 					delete user.master;
 					return await finishLogin(req, user);
 				}
@@ -238,6 +239,10 @@ module.exports = function (middleware) {
 		if (req.loggedIn) {
 			const canLoginIfBanned = await user.bans.canLoginIfBanned(req.uid);
 			if (!canLoginIfBanned) {
+				// Token-authenticated requests get an error response instead of a redirect
+				if (req.headers.hasOwnProperty('authorization')) {
+					return controllers.helpers.notAllowed(req, res, '[[error:user-banned]]');
+				}
 				req.logout(() => {
 					res.redirect('/');
 				});
