@@ -201,6 +201,7 @@ define('navigator', [
 		return await socket.emit('posts.getPostTimestampByIndex', {
 			tid: ajaxify.data.tid,
 			index: index - 1,
+			sort: ajaxify.data.sortOption,
 		});
 	}
 
@@ -410,7 +411,11 @@ define('navigator', [
 		}
 		renderPostIndex = index;
 
-		const postData = await socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 });
+		const postData = await socket.emit('posts.getPostSummaryByIndex', {
+			tid: ajaxify.data.tid,
+			index: index - 1,
+			sort: ajaxify.data.sortOption,
+		});
 
 		const html = await app.parseAndTranslate('partials/topic/navigation-post', { post: postData });
 		paginationBlockEl
@@ -443,7 +448,11 @@ define('navigator', [
 	function generateUrl(index) {
 		const pathname = window.location.pathname.replace(config.relative_path, '');
 		const parts = pathname.split('/');
-		const newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		let newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		const { sort } = utils.params();
+		if (sort) {
+			newUrl += `?sort=${encodeURIComponent(sort)}`;
+		}
 		const data = {
 			newUrl,
 			index,
