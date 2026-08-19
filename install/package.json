@@ -81,7 +81,7 @@
         "fs-extra": "11.4.0",
         "graceful-fs": "4.2.11",
         "helmet": "8.3.0",
-        "html-to-text": "10.0.0",
+        "html-to-text": "10.0.1",
         "imagesloaded": "5.0.0",
         "ipaddr.js": "2.5.0",
         "jquery": "3.7.1",
