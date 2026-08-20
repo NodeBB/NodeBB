@@ -682,5 +682,18 @@ describe('authentication', () => {
 			assert.strictEqual(response.statusCode, 200);
 			assert.strictEqual(body.username, 'apiUserTarget');
 		});
+
+		it('should return an error if master api token _uid points to a banned user', async () => {
+			await user.bans.ban(newUid);
+			const { response, body } = await helpers.request('get', `/api/categories?_uid=${newUid}`, {
+				headers: {
+					Authorization: `Bearer ${masterToken}`,
+				},
+			});
+
+			assert.strictEqual(response.statusCode, 403);
+			assert.strictEqual(body.error, '[[error:user-banned]]');
+			await user.bans.unban(newUid);
+		});
 	});
 });
