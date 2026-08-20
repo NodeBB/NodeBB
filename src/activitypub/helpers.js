@@ -216,9 +216,6 @@ Helpers.query = async (id, { strict = true } = {}) => {
  *   1. Backreference via non-strict query on domain B (actor's id host)
  *   2. Forward via strict query on domain A (subject's host) — only if split-domain is enabled
  *
- * @param {string} actorId - The actor's id URI (domain B)
- * @param {object} actor - The fetched actor document
- * @returns {{ ok: boolean, splitDomain: boolean, canonicalHandle: string|null, reason: string|null }|false}
  *   Returns false if actorId cannot be parsed as a URI (shouldn't happen for valid actors).
  *   Returns the structured verdict on success.
  */
