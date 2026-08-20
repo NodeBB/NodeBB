@@ -2370,6 +2370,19 @@ describe('Topic\'s', () => {
 			assert.strictEqual(data.topics[0].title, 'old replied');
 			assert.strictEqual(data.topics[1].title, 'most recent replied');
 		});
+
+		it('should not expose the author signature', async () => {
+			await User.setUserField(topic.userId, 'signature', 'some signature');
+			const data = await topics.getSortedTopics({
+				cids: [category.cid],
+				uid: topic.userId,
+				start: 0,
+				stop: -1,
+				sort: 'recent',
+			});
+			assert(data.topics[0].user);
+			assert.strictEqual(data.topics[0].user.signature, undefined);
+		});
 	});
 
 	describe('scheduled topics', () => {
