@@ -57,9 +57,6 @@ TopicObject:
             picture:
               type: string
               nullable: true
-            signature:
-              type: string
-              nullable: true
             status:
               type: string
             icon:text:
@@ -87,7 +84,6 @@ TopicObject:
             - reputation
             - postcount
             - picture
-            - signature
             - banned
             - status
             - icon:text

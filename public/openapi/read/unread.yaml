@@ -91,9 +91,6 @@ get:
                                 picture:
                                   nullable: true
                                   type: string
-                                signature:
-                                  nullable: true
-                                  type: string
                                 banned:
                                   type: boolean
                                 status:
@@ -121,7 +118,6 @@ get:
                                 - reputation
                                 - postcount
                                 - picture
-                                - signature
                                 - banned
                                 - status
                                 - icon:text

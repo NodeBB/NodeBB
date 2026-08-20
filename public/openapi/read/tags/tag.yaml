@@ -127,9 +127,6 @@ get:
                             picture:
                               nullable: true
                               type: string
-                            signature:
-                              nullable: true
-                              type: string
                             banned:
                               type: number
                             status:
