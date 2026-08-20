@@ -59,7 +59,7 @@ Actors.qualify = async (ids, options = {}) => {
 	ids = ids.filter(id => !activitypub._constants.acceptablePublicAddresses.includes(id));
 
 	// Translate webfinger handles to uris
-	ids = (await Promise.all(ids.map(async (id) => {
+	const idsArr = (await Promise.all(ids.map(async (id) => {
 		const originalId = id;
 		if (activitypub.helpers.isWebfinger(id)) {
 			const host = id.replace(/^(acct:|@)/, '').split('@')[1];
@@ -67,7 +67,8 @@ Actors.qualify = async (ids, options = {}) => {
 				return 'loopback';
 			}
 
-			({ actorUri: id } = await activitypub.helpers.query(id));
+			const result = await activitypub.helpers.query(id);
+			({ actorUri: id } = result || { actorUri: null });
 		}
 		// ensure the final id is a valid URI
 		if (!id || !activitypub.helpers.isUri(id)) {
@@ -78,18 +79,18 @@ Actors.qualify = async (ids, options = {}) => {
 	})));
 
 	// Webfinger failures = assertion failure
-	if (!ids.length || !ids.every(Boolean)) {
+	if (!idsArr.length || !idsArr.every(Boolean)) {
 		return false;
 	}
 
 	// Filter out loopback uris — never persist local URIs as remote actors
-	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
+	const filtered = idsArr.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 
 	// Separate those who need migration from user to category
 	const migrate = new Set();
 	if (options.qualifyGroup) {
-		const exists = await db.exists(ids.map(id => `userRemote:${id}`));
-		ids.forEach((id, idx) => {
+		const exists = await db.exists(filtered.map(id => `userRemote:${id}`));
+		filtered.forEach((id, idx) => {
 			if (exists[idx]) {
 				migrate.add(id);
 			}
@@ -99,14 +100,15 @@ Actors.qualify = async (ids, options = {}) => {
 	// Only assert those who haven't been seen recently (configurable), unless update flag passed in (force refresh)
 	if (!options.update) {
 		const upperBound = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubUserPruneDays);
-		const lastCrawled = await db.sortedSetScores('usersRemote:lastCrawled', ids.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
-		ids = ids.filter((id, idx) => {
+		const lastCrawled = await db.sortedSetScores('usersRemote:lastCrawled', filtered.map(id => ((typeof id === 'object' && id.hasOwnProperty('id')) ? id.id : id)));
+		const remaining = filtered.filter((id, idx) => {
 			const timestamp = lastCrawled[idx];
 			return migrate.has(id) || !timestamp || timestamp < upperBound;
 		});
+		return { ids: remaining };
 	}
 
-	return ids;
+	return { ids: filtered };
 };
 
 Actors.assert = async (ids, options = {}) => {
@@ -120,25 +122,28 @@ Actors.assert = async (ids, options = {}) => {
 	 *   - true: no new IDs processed; all passed-in IDs present.
 	 */
 
-	ids = await Actors.qualify(ids, options);
-	if (!ids || !ids.length) {
-		return ids;
+	const qualified = await Actors.qualify(ids, options);
+	if (!qualified || !qualified.ids || !qualified.ids.length) {
+		return qualified;
 	}
 
-	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
+	const { ids: idsArr } = qualified;
+
+	activitypub.helpers.log(`[activitypub/actors] Asserting ${idsArr.length} actor(s)`);
 
 	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVE!
 
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
-	const categories = new Set();
-	let actors = await Promise.all(ids.map(async (id) => {
+	const actorCategories = new Set();
+	let actors = await Promise.all(idsArr.map(async (id) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 
-			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite).
+			// This check runs unconditionally — before any WebFinger logic.
 			if (typeof id === 'string') {
 				const queriedHost = new URL(id).hostname;
 				const actorHost = new URL(actor.id).hostname;
@@ -148,24 +153,24 @@ Actors.assert = async (ids, options = {}) => {
 				}
 			}
 
-			// webfinger backreference check
-			const { hostname: domain } = new URL(id);
-			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
-			if (id !== canonicalId) {
+			// Two-way WebFinger verification (includes backreference + optional split-domain forward check).
+			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor);
+			if (!verdict || !verdict.ok) {
+				activitypub.helpers.log(`[activitypub/actors] Webfinger verification failed (${verdict?.reason || 'unknown'}) for ${actor.id}`);
 				return null;
 			}
-
+			actor._canonicalHandle = verdict.canonicalHandle;
 
 			let typeOk = false;
 			if (Array.isArray(actor.type)) {
 				typeOk = actor.type.some(type => activitypub._constants.acceptableActorTypes.has(type));
 				if (!typeOk && actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type))) {
-					categories.add(actor.id);
+					actorCategories.add(actor.id);
 				}
 			} else {
 				typeOk = activitypub._constants.acceptableActorTypes.has(actor.type);
 				if (!typeOk && activitypub._constants.acceptableGroupTypes.has(actor.type)) {
-					categories.add(actor.id);
+					actorCategories.add(actor.id);
 				}
 			}
 
@@ -219,7 +224,7 @@ Actors.assert = async (ids, options = {}) => {
 		}
 	}));
 	actors = actors.filter(Boolean); // remove unresolvable actors
-	if (!actors.length && !categories.size) {
+	if (!actors.length && !actorCategories.size) {
 		return [];
 	}
 
@@ -285,8 +290,8 @@ Actors.assert = async (ids, options = {}) => {
 	}
 
 	// Handle any actors that should be asserted as a group instead
-	if (categories.size) {
-		const assertion = await Actors.assertGroup(Array.from(categories), options);
+	if (actorCategories.size) {
+		const assertion = await Actors.assertGroup(Array.from(actorCategories), options);
 		if (assertion === false) {
 			return false;
 		} else if (Array.isArray(assertion)) {
@@ -310,27 +315,30 @@ Actors.assertGroup = async (ids, options = {}) => {
 	 *   - true: no new IDs processed; all passed-in IDs present.
 	 */
 
-	ids = await Actors.qualify(ids, {
+	const qualified = await Actors.qualify(ids, {
 		qualifyGroup: true,
 		...options,
 	});
-	if (!ids) {
-		return ids;
+	if (!qualified || !qualified.ids) {
+		return qualified;
 	}
 
-	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} group(s)`);
+	const { ids: idsArr } = qualified;
+
+	activitypub.helpers.log(`[activitypub/actors] Asserting ${idsArr.length} group(s)`);
 
 	// NOTE: MAKE SURE EVERY DB ADDITION HAS A CORRESPONDING REMOVAL IN ACTORS.REMOVEGROUP!
 
 	const urlMap = new Map();
 	const followersUrlMap = new Map();
 	const pubKeysMap = new Map();
-	let groups = await Promise.all(ids.map(async (id) => {
+	let groups = await Promise.all(idsArr.map(async (id) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing group ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 
-			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite).
+			// This check runs unconditionally — before any WebFinger logic.
 			if (typeof id === 'string') {
 				const queriedHost = new URL(id).hostname;
 				const actorHost = new URL(actor.id).hostname;
@@ -340,12 +348,13 @@ Actors.assertGroup = async (ids, options = {}) => {
 				}
 			}
 
-			// webfinger backreference check
-			const { hostname: domain } = new URL(id);
-			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
-			if (id !== canonicalId) {
+			// Two-way WebFinger verification (includes backreference + optional split-domain forward check).
+			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor);
+			if (!verdict || !verdict.ok) {
+				activitypub.helpers.log(`[activitypub/actors] Webfinger verification failed (${verdict?.reason || 'unknown'}) for ${actor.id}`);
 				return null;
 			}
+			actor._canonicalHandle = verdict.canonicalHandle;
 
 			const typeOk = Array.isArray(actor.type) ?
 				actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type)) :
