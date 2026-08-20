@@ -338,7 +338,6 @@ Actors.assertGroup = async (ids, options = {}) => {
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
 
 			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite).
-			// This check runs unconditionally — before any WebFinger logic.
 			if (typeof id === 'string') {
 				const queriedHost = new URL(id).hostname;
 				const actorHost = new URL(actor.id).hostname;
@@ -347,14 +346,6 @@ Actors.assertGroup = async (ids, options = {}) => {
 					return null;
 				}
 			}
-
-			// Two-way WebFinger verification (includes backreference + optional split-domain forward check).
-			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor);
-			if (!verdict || !verdict.ok) {
-				activitypub.helpers.log(`[activitypub/actors] Webfinger verification failed (${verdict?.reason || 'unknown'}) for ${actor.id}`);
-				return null;
-			}
-			actor._canonicalHandle = verdict.canonicalHandle;
 
 			const typeOk = Array.isArray(actor.type) ?
 				actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type)) :
