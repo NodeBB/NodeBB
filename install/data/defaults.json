@@ -208,6 +208,7 @@
     "tinyconBackground": "#ff0000",
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
+    "activitypubAllowSplitDomain": 0,
     "activitypubParentTraversalDepth": 50,
     "activitypubPublicKeyFetchRateLimit": 256,
     "activitypubProbe": 1,

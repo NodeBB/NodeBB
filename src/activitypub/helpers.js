@@ -98,7 +98,7 @@ Helpers.isWebfinger = (value) => {
 	return false;
 };
 
-Helpers.query = async (id) => {
+Helpers.query = async (id, { strict = true } = {}) => {
 	const isUri = Helpers.isUri(id);
 	// username@host ids use acct: URI schema
 	const uri = isUri ? new URL(id) : new URL(`acct:${id}`);
@@ -112,6 +112,10 @@ Helpers.query = async (id) => {
 
 	const cached = webfingerCache.get(id);
 	if (cached !== undefined) {
+		// Gate cache read on strict: strict queries of cached split-domain payloads return false
+		if (strict && cached.splitDomain) {
+			return false;
+		}
 		return cached;
 	}
 
@@ -177,18 +181,117 @@ Helpers.query = async (id) => {
 	} else {
 		subjectHostname = subjectUrl.hostname;
 	}
-	if (subjectHostname !== hostname) {
+
+	// Check for split-domain: queried hostname differs from subject hostname.
+	const splitDomain = subjectHostname.toLowerCase() !== hostname.toLowerCase();
+	if (splitDomain && strict) {
+		// Strict mode: reject responses where the subject hostname differs
 		return false;
 	}
 
-	const payload = { subject, username, hostname, actorUri, publicKey, _raw: body };
+	const payload = {
+		subject, username, hostname, actorUri, publicKey,
+		_raw: body,
+		subjectHostname: subjectUrl.protocol === 'acct:' ? subjectHostname : subjectHostname,
+		splitDomain,
+	};
 	const claimedId = subjectUrl.pathname;
-	webfingerCache.set(claimedId, payload);
+	// Always cache by the queried id so subsequent queries hit the cache
+	webfingerCache.set(id, payload);
+	// Also cache by the claimed subject path for alias lookups
 	if (claimedId !== id) {
-		webfingerCache.set(id, payload);
+		webfingerCache.set(claimedId, payload);
 	}
 
 	return payload;
+};
+
+/**
+ * Verify an actor's identity via two-way WebFinger validation.
+ *
+ * For same-domain actors (standard), performs a single backreference check
+ * (domain B WebFinger must resolve to the actor's own id).
+ *
+ * For split-domain actors, performs a two-way validation:
+ *   1. Backreference via non-strict query on domain B (actor's id host)
+ *   2. Forward via strict query on domain A (subject's host) — only if split-domain is enabled
+ *
+ * @param {string} actorId - The actor's id URI (domain B)
+ * @param {object} actor - The fetched actor document
+ * @returns {{ ok: boolean, splitDomain: boolean, canonicalHandle: string|null, reason: string|null }|false}
+ *   Returns false if actorId cannot be parsed as a URI (shouldn't happen for valid actors).
+ *   Returns the structured verdict on success.
+ */
+Helpers.verifyActorWebfinger = async (actorId, actor) => {
+	if (!Helpers.isUri(actorId)) {
+		return false;
+	}
+
+	const idHostname = new URL(actorId).hostname;
+	const preferredUsername = actor.preferredUsername || 'user';
+
+	// Step 1: Backreference — non-strict query on domain B (the actor's id host).
+	// This allows the WebFinger subject to point elsewhere (split-domain forward target).
+	const backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
+	if (!backref) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'no-backreference' };
+	}
+
+	// The backreference self-link must point at this exact actor document.
+	if (backref.actorUri !== actorId) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
+	}
+
+	// The subject's hostname tells us the canonical domain (A).
+	const subjectHost = backref.subjectHostname;
+	const normalizedSubjectHost = subjectHost.toLowerCase();
+	const normalizedIdHost = idHostname.toLowerCase();
+
+	// Same-domain: subject hostname matches id hostname → standard backreference.
+	if (normalizedSubjectHost === normalizedIdHost) {
+		return {
+			ok: true,
+			splitDomain: false,
+			canonicalHandle: `${preferredUsername}@${idHostname}`,
+			reason: null,
+		};
+	}
+
+	// Subject points to a different domain → candidate split-domain.
+	// Check if split-domain is enabled via config.
+	if (!meta.config.activitypubAllowSplitDomain) {
+		// Split-domain is disabled — reject actors whose subject hostname differs.
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
+	}
+
+	// Step 2: Forward query on domain A (the subject's host) with strict mode.
+	// This ensures domain A explicitly confirms this actor on B.
+	const forwardResult = await Helpers.query(`${preferredUsername}@${normalizedSubjectHost}`, { strict: true });
+	if (!forwardResult || forwardResult.actorUri !== actorId) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
+	}
+
+	// Two-way check passed — this is a genuine split-domain actor.
+	// Blocklist check: if domain A (canonical) is blocked, reject.
+	const blockCheck = await activitypub.instances.isAllowed(normalizedSubjectHost);
+	if (!blockCheck.allowed) {
+		activitypub.helpers.log(
+			`[activitypub/verify] canonical domain blocked (${normalizedSubjectHost}: ${blockCheck.severity}) for ${actorId}`,
+		);
+		return {
+			ok: false,
+			splitDomain: true,
+			canonicalHandle: null,
+			reason: 'canonical-blocked',
+		};
+	}
+
+	return {
+		ok: true,
+		splitDomain: true,
+		canonicalHandle: `${preferredUsername}@${normalizedSubjectHost}`,
+		reason: 'split-domain',
+	};
 };
 
 Helpers.generateKeys = async (type, id) => {
