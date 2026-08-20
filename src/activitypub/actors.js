@@ -347,6 +347,13 @@ Actors.assertGroup = async (ids, options = {}) => {
 				}
 			}
 
+			// Two-way WebFinger verification (backreference check for security).
+			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor);
+			if (!verdict || !verdict.ok) {
+				activitypub.helpers.log(`[activitypub/actors] Webfinger verification failed (${verdict?.reason || 'unknown'}) for ${actor.id}`);
+				return null;
+			}
+
 			const typeOk = Array.isArray(actor.type) ?
 				actor.type.some(type => activitypub._constants.acceptableGroupTypes.has(type)) :
 				activitypub._constants.acceptableGroupTypes.has(actor.type);
