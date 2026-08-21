@@ -16,7 +16,7 @@ SendPool._pool = workerpool.pool(
 	{
 		minWorkers: 4,
 		maxWorkers: Math.min(os.availableParallelism() * 2, 64),
-		workerType: 'process',
+		workerType: 'thread',
 		forkOpts: { silent: true },
 	},
 );
