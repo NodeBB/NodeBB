@@ -23,7 +23,7 @@ SendPool._pool = workerpool.pool(
 
 Object.defineProperty(SendPool, 'pool', {
 	get() {
-		return this._pool?.workers?.length || 0;
+		return this._pool?.stats()?.totalWorkers || 0;
 	},
 });
 
@@ -33,18 +33,22 @@ SendPool.init = function (activityPub) {
 	}
 };
 
-SendPool.handleResult = function (queueId, result) {
+SendPool.handleResult = async function (queueId, result) {
 	if (result.success) {
 		// Success — fire analytics and remove from Redis
-		SendPool._activityPub.analytics.send({
-			type: result.payloadType,
-			target: result.uri,
-		});
+		try {
+			await SendPool._activityPub.analytics.send({
+				type: result.payloadType,
+				target: result.uri,
+			});
+		} catch (e) {
+			winston.warn(`[activitypub/send] Analytics send failed: ${e.message}`);
+		}
 		db.delete(`ap:retry:queue:${queueId}`);
 		db.sortedSetRemove('ap:retry:queue', queueId);
 	} else {
 		try {
-			SendPool._activityPub.analytics.sendError({
+			await SendPool._activityPub.analytics.sendError({
 				payload: JSON.parse(result.payload),
 				uri: result.uri,
 				error: new Error(result.error),
@@ -177,15 +181,15 @@ SendPool.drainLoop = async function () {
 				SendPool._inFlight.add(task.queueId);
 
 				SendPool.dispatch(task)
-					.then((result) => {
+					.then(async (result) => {
 						SendPool._inFlight.delete(task.queueId);
 						if (result.success) {
-							SendPool.handleResult(queueId, {
+							await SendPool.handleResult(queueId, {
 								...task,
 								success: true,
 							});
 						} else {
-							SendPool.handleResult(queueId, {
+							await SendPool.handleResult(queueId, {
 								...task,
 								success: false,
 								error: result.error,
@@ -193,10 +197,9 @@ SendPool.drainLoop = async function () {
 							SendPool.requeueTask(task);
 						}
 					})
-					.catch((e) => {
-						// Exec rejected (e.g., worker crash, queue full)
+					.catch(async (e) => {
 						SendPool._inFlight.delete(task.queueId);
-						SendPool.handleResult(queueId, {
+						await SendPool.handleResult(queueId, {
 							...task,
 							success: false,
 							error: e.message || 'unknown error',
@@ -235,11 +238,12 @@ SendPool.shutdown = function () {
 	});
 
 	// Force kill workers if they haven't exited within the timeout
-	setTimeout(() => {
+	const forceKillTimer = setTimeout(() => {
 		SendPool._pool.terminate(true, 10000).catch(() => {
 			winston.warn('[activitypub/send] Force shutdown failed');
 		});
 	}, 12000);
+	forceKillTimer.unref();
 };
 
 module.exports = SendPool;
