@@ -1,31 +1,12 @@
 'use strict';
 
-/**
- * ActivityPub outbound send worker.
- *
- * Dedicated worker for workerpool — receives send tasks, signs payloads,
- * POSTs to remote inboxes, and returns results as Promises.
- */
-
 const { fetch, Agent } = require('undici');
 const { check, lookup } = require('../ssrf');
+const Signatures = require('./signatures');
 const winston = require('winston');
 const nconf = require('nconf');
 const { version } = require('../../package.json');
 
-const {
-	importPrivateKey,
-	genDraftSigningString,
-	genDraftSignature,
-	genDraftSignatureHeader,
-} = require('@misskey-dev/node-http-message-signatures');
-
-// ---------------------------------------------------------------------------
-// SSRF protection via undici Agent with cached DNS lookup
-// ---------------------------------------------------------------------------
-// The Agent enforces cached DNS resolution to prevent DNS rebinding attacks.
-// The ssrf.js module provides check() for pre-request validation and lookup()
-// for cached DNS resolution in the undici dispatcher.
 const agent = new Agent({
 	maxSockets: 64,
 	maxConnections: 256,
@@ -35,61 +16,6 @@ const agent = new Agent({
 });
 
 const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB response limit
-
-// ---------------------------------------------------------------------------
-// Signing (extracted from signatures.js)
-// ---------------------------------------------------------------------------
-
-function getDraftAlgoString(key) {
-	const { name } = key.algorithm;
-	if (name === 'RSA') {
-		return 'rsa-sha256';
-	}
-	if (name === 'EC') {
-		return 'ecdsa-p256-sha256';
-	}
-	return 'rsa-sha256';
-}
-
-async function sign(keyPem, keyId, url, digest) {
-	const parsedUrl = new URL(url);
-	const date = new Date().toUTCString();
-
-	const headersToSign = {
-		date,
-		host: parsedUrl.host,
-	};
-
-	if (digest) {
-		headersToSign.digest = digest;
-	}
-
-	const method = digest ? 'POST' : 'GET';
-	const privateKey = await importPrivateKey(keyPem, ['sign']);
-
-	const signedHeaders = digest ?
-		['(request-target)', 'host', 'date', 'digest'] :
-		['(request-target)', 'host', 'date'];
-
-	const signingString = genDraftSigningString(
-		{ method, url: parsedUrl.href, headers: headersToSign },
-		signedHeaders,
-		{ keyId },
-	);
-
-	const signature = await genDraftSignature(privateKey, signingString);
-	const signatureHeader = genDraftSignatureHeader(signedHeaders, keyId, signature, getDraftAlgoString(privateKey));
-
-	return {
-		date,
-		...(digest && { digest }),
-		signature: signatureHeader,
-	};
-}
-
-// ---------------------------------------------------------------------------
-// Worker task — exported to workerpool
-// ---------------------------------------------------------------------------
 
 async function send({ id, uri, payload, digest, key, keyId }) {
 	const userAgent = `NodeBB/${version.split('.').shift()}.x (${nconf.get('url')})`;
@@ -108,7 +34,7 @@ async function send({ id, uri, payload, digest, key, keyId }) {
 		}
 
 		// Sign
-		const headers = await sign(key, keyId, uri, digest);
+		const headers = await Signatures.sign({ key, keyId }, uri, 'POST', digest);
 
 		// Debug: log full request details
 		if (DEBUG) {
