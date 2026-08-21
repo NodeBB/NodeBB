@@ -1,10 +1,12 @@
 'use strict';
 
+const crypto = require('crypto');
 const nconf = require('nconf');
 const winston = require('winston');
 const sanitize = require('sanitize-html');
 const _ = require('lodash');
 
+const db = require('../database');
 const meta = require('../meta');
 const plugins = require('../plugins');
 const utils = require('../utils');
@@ -62,11 +64,60 @@ module.exports = function (Posts) {
 			postData.content = postData.content.replace(meta.config.activitypubBreakString, '');
 		}
 		({ postData } = await plugins.hooks.fire('filter:parse.post', { postData, type }));
+		postData.content = await Posts.addImageDimensions(postData);
 		if (postData.pid) {
 			cache.set(cacheKey, postData.content);
 		}
 
 		return postData;
+	};
+
+	const imgTagRegex = /<img\s[^>]*?src="([^"]+)"[^>]*?>/g;
+	const hasDimensionRegex = /\s(?:width|height)\s*=/i;
+	const uploadPathRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/;
+	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
+
+	// Adds intrinsic width/height to local uploaded images so they reserve
+	// space before loading, preventing layout shift in rendered posts.
+	// Sizes are stored in `upload:<md5>` hashes by Posts.uploads.saveSize
+	Posts.addImageDimensions = async function (postData) {
+		const { content } = postData;
+		if (!content || !content.includes('<img')) {
+			return content;
+		}
+		// Not every caller selects `uploads`, but they all share the parsed
+		// content via the post cache, so fall back to a lookup when it is absent
+		let { uploads } = postData;
+		if (!uploads && postData.pid) {
+			uploads = await Posts.uploads.list(postData.pid);
+		}
+		if (!Array.isArray(uploads) || !uploads.length) {
+			return content;
+		}
+
+		const sizes = await db.getObjects(uploads.map(filePath => `upload:${md5(filePath)}`));
+		const sizeByPath = new Map();
+		uploads.forEach((filePath, idx) => {
+			const size = sizes[idx];
+			if (size && size.width && size.height) {
+				sizeByPath.set(filePath, size);
+			}
+		});
+		if (!sizeByPath.size) {
+			return content;
+		}
+
+		return content.replace(imgTagRegex, (tag, src) => {
+			if (hasDimensionRegex.test(tag)) {
+				return tag;
+			}
+			const match = src.match(uploadPathRegex);
+			const size = match && sizeByPath.get(match[1].replace('-resized', ''));
+			if (!size) {
+				return tag;
+			}
+			return `<img width="${size.width}" height="${size.height}" ${tag.slice('<img '.length)}`;
+		});
 	};
 
 	Posts.clearCachedPost = function (pid) {
