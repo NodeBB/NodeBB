@@ -443,7 +443,7 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		}
 
 		// Start the drain loop if not already draining
-		if (SendPool.pool.length > 0) {
+		if (SendPool.pool > 0) {
 			SendPool.drainLoop();
 		}
 	});
@@ -683,7 +683,7 @@ ActivityPub.probe = async ({ uid, url }) => {
 // ---------------------------------------------------------------------------
 
 ActivityPub.shutdown = function () {
-	if (SendPool.pool.length > 0) {
+	if (SendPool.pool > 0) {
 		SendPool.shutdown();
 	}
 };
