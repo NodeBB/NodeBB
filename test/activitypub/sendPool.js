@@ -8,17 +8,15 @@ const SendPool = activitypub.SendPool;
 
 describe('SendPool', () => {
 	let originalActivityPub;
-	let originalPoolSize;
 
 	beforeEach(() => {
 		originalActivityPub = SendPool._activityPub;
-		originalPoolSize = SendPool._pool?.size;
+		SendPool._draining = false;
 	});
 
 	afterEach((done) => {
 		// Restore original state
 		SendPool._activityPub = originalActivityPub;
-		SendPool._draining = false;
 
 		// Shutdown pool
 		SendPool.shutdown();
@@ -60,20 +58,17 @@ describe('SendPool', () => {
 	});
 
 	describe('handleResult()', () => {
-		it('should not fail when handling a result for a non-existent queue', () => {
-			assert.doesNotThrow(() => {
-				SendPool.handleResult('non-existent-queue', {
-					success: true,
-				});
+		it('should not reject when handling a success result', async () => {
+			await SendPool.handleResult('non-existent-queue', {
+				success: true,
 			});
 		});
 
-		it('should handle failure result without error', () => {
-			assert.doesNotThrow(() => {
-				SendPool.handleResult('fail-queue', {
-					success: false,
-					error: 'test error',
-				});
+		it('should not reject on failure result without payload', async () => {
+			await SendPool.handleResult('fail-queue', {
+				success: false,
+				payload: '{ invalid',
+				error: 'test error',
 			});
 		});
 	});
