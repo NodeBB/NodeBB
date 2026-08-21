@@ -7,10 +7,6 @@ const workerpool = require('workerpool');
 
 const db = require('../database');
 
-// ---------------------------------------------------------------------------
-// Worker pool — managed by workerpool
-// ---------------------------------------------------------------------------
-
 const SendPool = {
 	_activityPub: null,
 };
@@ -37,10 +33,6 @@ SendPool.init = function (activityPub) {
 	}
 };
 
-// ---------------------------------------------------------------------------
-// Result handler — called after worker completes a task
-// ---------------------------------------------------------------------------
-
 SendPool.handleResult = function (queueId, result) {
 	if (result.success) {
 		// Success — fire analytics and remove from Redis
@@ -62,10 +54,6 @@ SendPool.handleResult = function (queueId, result) {
 		}
 	}
 };
-
-// ---------------------------------------------------------------------------
-// Retry queue — exponential backoff into Redis
-// ---------------------------------------------------------------------------
 
 SendPool.requeueTask = function (task) {
 	const oneMinute = 1000 * 60;
@@ -100,10 +88,6 @@ SendPool.requeueTask = function (task) {
 	db.setObjectBulk(retryQueuedSet);
 };
 
-// ---------------------------------------------------------------------------
-// Dispatch — send task to workerpool
-// ---------------------------------------------------------------------------
-
 SendPool.dispatch = function (task) {
 	// workerpool handles queuing automatically when all workers are busy.
 	// The 30s timeout on exec kills the worker and rejects the promise,
@@ -119,10 +103,6 @@ SendPool.dispatch = function (task) {
 		.then(result => result)
 		.catch(e => ({ success: false, error: e.message }));
 };
-
-// ---------------------------------------------------------------------------
-// Drain loop — fetch due tasks from Redis and dispatch
-// ---------------------------------------------------------------------------
 
 SendPool.drainLoop = async function () {
 	if (SendPool._draining) {
@@ -245,10 +225,6 @@ SendPool.drainLoop = async function () {
 		}
 	}
 };
-
-// ---------------------------------------------------------------------------
-// Shutdown — graceful termination with force-fallback
-// ---------------------------------------------------------------------------
 
 SendPool.shutdown = function () {
 	SendPool._draining = false;
