@@ -829,6 +829,42 @@ describe('Post\'s', () => {
 			assert.equal(parsedContent, `<a href="${nconf.get('base_url')}/users">test</a> <a href="${nconf.get('url_parsed').protocol}//youtube.com/">youtube</a> some test <img src="${nconf.get('base_url')}/path/to/img"/>`);
 			done();
 		});
+
+		it('should add width and height to local uploaded images', async () => {
+			const fs = require('fs');
+			const filename = `${utils.generateUUID()}.png`;
+			const relPath = `/files/${filename}`;
+			const destPath = path.join(nconf.get('upload_path'), 'files', filename);
+			await fs.promises.mkdir(path.dirname(destPath), { recursive: true });
+			await fs.promises.copyFile(path.join(__dirname, 'files/test.png'), destPath);
+			try {
+				await posts.uploads.associate(postData.pid, [relPath]);
+				const src = `${nconf.get('relative_path')}/assets/uploads${relPath}`;
+				const content = `<img src="${src}" alt="local"> <img src="https://example.org/remote.png" alt="remote"> <img width="10" src="${src}" alt="sized">`;
+				const result = await posts.addImageDimensions({ content, uploads: [relPath] });
+				assert(result.includes(`<img width="250" height="250" src="${src}" alt="local">`));
+				assert(result.includes('<img src="https://example.org/remote.png" alt="remote">'));
+				assert(result.includes(`<img width="10" src="${src}" alt="sized">`));
+
+				// callers that don't select the `uploads` field fall back to a lookup
+				const viaPid = await posts.addImageDimensions({ content, pid: postData.pid });
+				assert(viaPid.includes(`<img width="250" height="250" src="${src}" alt="local">`));
+			} finally {
+				await posts.uploads.dissociate(postData.pid, [relPath]);
+				await fs.promises.unlink(destPath).catch(() => {});
+			}
+		});
+
+		it('should leave content unchanged if there is no stored size for the upload', async () => {
+			const src = `${nconf.get('relative_path')}/assets/uploads/files/does-not-exist.png`;
+			const content = `<img src="${src}" alt="missing">`;
+			assert.strictEqual(await posts.addImageDimensions({ content, uploads: ['/files/does-not-exist.png'] }), content);
+		});
+
+		it('should leave content unchanged if the post has no uploads', async () => {
+			const content = '<img src="https://example.org/remote.png" alt="remote">';
+			assert.strictEqual(await posts.addImageDimensions({ content }), content);
+		});
 	});
 
 	describe('socket/api methods', () => {
