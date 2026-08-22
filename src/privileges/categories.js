@@ -262,6 +262,16 @@ privsCategories.canPostTopic = async function (uid) {
 	return cids.length > 0;
 };
 
+privsCategories.canCrosspostTopic = async function (uid, excludeCid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		return false;
+	}
+	let cids = await categories.getAllCidsFromSet('categories:cid');
+	cids = cids.filter(cid => String(cid) !== String(excludeCid));
+	cids = await privsCategories.filterCids('topics:crosspost', cids, uid);
+	return cids.length > 0;
+};
+
 privsCategories.userPrivileges = async function (cid, uid) {
 	const userPrivilegeList = await privsCategories.getUserPrivilegeList();
 	return await helpers.userOrGroupPrivileges(cid, uid, userPrivilegeList);
