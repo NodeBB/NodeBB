@@ -61,6 +61,18 @@ describe('Crossposts', () => {
 		assert.strictEqual(scoreAfter, null, 'tag index should be cleaned up when the crosspost is removed');
 	});
 
+	it('should bump the topic in crossposted categories when it is replied to', async () => {
+		const { tid } = await createTopic();
+		await topics.crossposts.add(tid, targetCategory.cid, uid);
+
+		const before = await db.sortedSetScore(`cid:${targetCategory.cid}:tids`, tid);
+		const { timestamp } = await topics.reply({ uid, tid, content: 'a reply to bump the topic' });
+
+		const after = await db.sortedSetScore(`cid:${targetCategory.cid}:tids`, tid);
+		assert(after > before, 'reply should bump the topic in the crossposted category');
+		assert.strictEqual(after, timestamp);
+	});
+
 	it('should remove the topic from the destination sets when uncrossposted', async () => {
 		const { tid } = await createTopic();
 		await topics.crossposts.add(tid, targetCategory.cid, uid);
