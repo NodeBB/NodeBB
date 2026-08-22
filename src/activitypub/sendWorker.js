@@ -3,7 +3,6 @@
 const { fetch, Agent } = require('undici');
 const { check, lookup } = require('../ssrf');
 const Signatures = require('./signatures');
-const winston = require('winston');
 const nconf = require('nconf');
 const { version } = require('../../package.json');
 
@@ -19,7 +18,6 @@ const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB response limit
 
 async function send({ id, uri, payload, digest, key, keyId }) {
 	const userAgent = `NodeBB/${version.split('.').shift()}.x (${nconf.get('url')})`;
-	const DEBUG = process.env.AP_SEND_DEBUG === 'true';
 
 	try {
 		// Validate required fields
@@ -35,13 +33,6 @@ async function send({ id, uri, payload, digest, key, keyId }) {
 
 		// Sign
 		const headers = await Signatures.sign({ key, keyId }, uri, 'POST', digest);
-
-		// Debug: log full request details
-		if (DEBUG) {
-			winston.verbose(`[activitypub/send] REQUEST uri=${uri}`);
-			winston.verbose(`[activitypub/send] REQUEST headers=${JSON.stringify(headers)}`);
-			winston.verbose(`[activitypub/send] REQUEST payload=${payload.substring(0, 500)}`);
-		}
 
 		// POST — redirect: 'manual' prevents SSRF via HTTP redirect
 		// 10s timeout to prevent stuck tasks
@@ -74,12 +65,6 @@ async function send({ id, uri, payload, digest, key, keyId }) {
 		try {
 			bodyText = await response.text();
 		} catch (e) { /* ignore */ }
-
-		// Debug: log full response details
-		if (DEBUG) {
-			winston.verbose(`[activitypub/send] RESPONSE status=${response.status} headers=${JSON.stringify(Object.fromEntries(response.headers.entries()))}`);
-			winston.verbose(`[activitypub/send] RESPONSE body=${bodyText.substring(0, 1000)}`);
-		}
 
 		return { id, success: false, error: `HTTP ${response.status}: ${bodyText}` };
 	} catch (e) {
