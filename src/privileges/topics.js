@@ -24,7 +24,9 @@ privsTopics.get = async function (tid, uid) {
 		'posts:delete', 'posts:view_deleted', 'read', 'purge',
 	];
 	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled', 'postcount']);
-	const [userPrivileges, isAdministrator, isModerator, disabled, topicTools] = await Promise.all([
+	const [
+		userPrivileges, isAdministrator, isModerator, disabled, topicTools, canCrosspostTopic,
+	] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, topicData.cid),
 		user.isAdministrator(uid),
 		user.isModerator(uid, topicData.cid),
@@ -34,6 +36,7 @@ privsTopics.get = async function (tid, uid) {
 			uid: uid,
 			tools: [],
 		}),
+		privsCategories.canCrosspostTopic(uid, topicData.cid),
 	]);
 	const privData = _.zipObject(privs, userPrivileges);
 	const isOwner = uid > 0 && uid === topicData.uid;
@@ -75,6 +78,7 @@ privsTopics.get = async function (tid, uid) {
 		editable: editable,
 		deletable: deletable,
 		canMoveOwnTopic: canMoveOwnTopic,
+		canCrosspost: canCrosspostTopic && (privData['topics:read'] || isAdministrator),
 		view_deleted: isAdministrator || isOwner || privData['posts:view_deleted'],
 		view_scheduled: privData['topics:schedule'] || isAdministrator,
 		isAdminOrMod: isAdminOrMod,
