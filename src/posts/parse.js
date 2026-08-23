@@ -85,8 +85,9 @@ module.exports = function (Posts) {
 		if (!content || !content.includes('<img')) {
 			return content;
 		}
-		// Not every caller selects `uploads`, but they all share the parsed
-		// content via the post cache, so fall back to a lookup when it is absent
+		// Callers share parsed content through the post cache, so a caller that
+		// did not select `uploads` would cache unsized content for the others.
+		// The routes that render posts select it; this covers the remaining ones
 		let { uploads } = postData;
 		if (!uploads && postData.pid) {
 			uploads = await Posts.uploads.list(postData.pid);
