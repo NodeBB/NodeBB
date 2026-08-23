@@ -20,7 +20,7 @@ const translator = require('../translator');
 const cacheCreate = require('../cache/lru');
 const crosspostCache = cacheCreate({
 	name: 'crosspost',
-	size: 500,
+	max: 500,
 	ttl: 3600000,
 });
 
