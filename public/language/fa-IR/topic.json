@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "این موضوع پاک شده است. تنها کاربرانِ با حق مدیریت موضوع می‌توانند آن را ببینند.",
     "following-topic.message": "زمانی که کسی پست جدیدی در این تاپیک بفرستد شما نوتیفیکشن دریافت خواهید کرد.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "شما این تاپیک را در لیست تاپیک‌های خوانده‌نشده می‌بینید، اما وقتی پست جدیدی ارسال می‌شود نوتیفیکشن دریافت نمی‌کنید.",
     "ignoring-topic.message": "شما دیگر نمی‌خواهید این موضوع را در فهرست تاپیک‌های خوانده نشده ببینید. وقتی کسی شما را منشن کند و یا به پست شما امتیاز مثبت دهد نوتیفیکشن ارسال می‌شود.",
     "login-to-subscribe": "برای دنبال کردن این موضوع، لطفا ثبت نام کنید و یا با نام کاربری خود وارد شوید",

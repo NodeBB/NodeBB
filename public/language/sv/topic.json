@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Det här ämnet har raderats. Endast användare med ämneshanterings-privilegier kan se det.",
     "following-topic.message": "Du kommer nu få notiser när någon gör inlägg i detta ämne.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Du kommer att se det här ämnet i listan olästa ämnen, men du kommer inte att få meddelande när någon gör inlägg till detta ämne.",
     "ignoring-topic.message": "Du kommer inte längre se detta ämne i listan olästa ämnen. Du kommer att meddelas när du nämns eller ditt inlägg är upp röstat.",
     "login-to-subscribe": "Var god registrera eller logga in för att kunna prenumerera på detta ämne.",

@@ -81,6 +81,7 @@
     "forked-message": "Bu mövzu <a href=\"%1\">%2</a>-dən kopyalandı",
     "deleted-message": "Bu mövzu silindi. Yalnız mövzu idarəçiliyi imtiyazlarına malik olan istifadəçilər onu görə bilər.",
     "following-topic.message": "İndi kimsə bu mövzuya yazı göndərən zaman bildirişlər alacaqsınız.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Siz bu mövzunu oxunmamış mövzular siyahısında görəcəksiniz, lakin kimsə bu mövzuya yazı yazdıqda bildirişlər almayacaqsınız.",
     "ignoring-topic.message": "Bu mövzunu oxunmamış mövzular siyahısında görməyəcəksiniz. Qeyd etdiyiniz zaman və ya yazınız səsə qoyulduqda sizə bildiriş göndəriləcək.",
     "login-to-subscribe": "Bu mövzuya abunə olmaq üçün qeydiyyatdan keçin və ya daxil olun.",

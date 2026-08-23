@@ -13,5 +13,6 @@
     "watching.description": "通知我新主題",
     "not-watching.description": "不要通知我新主題",
     "following-tag.message": "當有人張貼帶這標簽的主題時，您會收到通知。",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "當有人張貼帶這標簽的主題時，您不會收到通知。"
 }

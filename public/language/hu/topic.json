@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "A  témakör törölve lett. Csak a témakör-kezelési joggal rendelkező felhasználók láthatják.",
     "following-topic.message": "Mostantól értesítést kapsz, mikor valaki hozzászól ehhez a témakörhöz.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Látni fogod ezt a témakört az olvasatlan témakörök listáján, de nem kapsz értesítést, mikor valaki hozzászól a témakörhöz.",
     "ignoring-topic.message": "Nem fogod látni ezt a témakört az olvasatlan témakörök listáján. Értesítést fogsz kapni, mikor valaki megemlít téged, vagy kedveli a hozzászólásod.",
     "login-to-subscribe": "Kérlek, regisztrálj vagy lépj be, hogy feliratkozz erre a témakörre.",

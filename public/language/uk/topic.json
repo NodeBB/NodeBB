@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Цю тему було видалено. Лише користувачі з правом керування темами можуть її бачити.",
     "following-topic.message": "Відтепер ви будете отримувати сповіщення коли хтось постить в цю тему.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Ви будете бачити цю тему в списку непрочитаних, але ви не будете отримувати сповіщень, коли хтось постить до неї.",
     "ignoring-topic.message": "Ви більше не будете бачити цю тему в списку непрочитаних. Вас буде сповіщено коли хтось вас згадає або за ваш пост буде проголосовано.",
     "login-to-subscribe": "Будь ласка, зареєструйтесь або увійдіть щоб підписатися на цю тему.",

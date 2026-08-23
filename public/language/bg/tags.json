@@ -13,5 +13,6 @@
     "watching.description": "Искам да получавам известия за нови теми.",
     "not-watching.description": "Не искам да получавам известия за нови теми.",
     "following-tag.message": "Вече ще получавате известия, когато някой публикува тема с този етикет.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Няма да получавате известия, когато някой публикува тема с този етикет."
 }

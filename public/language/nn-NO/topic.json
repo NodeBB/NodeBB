@@ -81,6 +81,7 @@
     "forked-message": "Dette emnet vart kopiert frå <a href=\"%1\">%2</a>",
     "deleted-message": "Dette emnet er sletta. Berre brukarar med rettar til emneadministrasjon kan sjå det.",
     "following-topic.message": "Du vil no motta varsel når nokon legg inn innlegg i dette emnet.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Du vil sjå dette emnet i lista over uleste emne, men du vil ikkje motta varsel når nokon legg inn innlegg.",
     "ignoring-topic.message": "Du vil ikkje lenger sjå dette emnet i lista over uleste emne. Du vil verte varsla når du vert nemnd eller innlegget ditt  blir anbefalt.",
     "login-to-subscribe": "Ver venleg å registrer deg eller logg inn for å abonnere på dette emnet.",

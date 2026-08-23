@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "See teema on kustutatud. Ainult kasutajad kellel on piisavalt õigusi saavad seda näha.",
     "following-topic.message": "Sulle ei edastata enam teateid uutest postitustest kui keegi postitab siia teemasse.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Sa näed seda postitust lugemata postituste nimekirjas, kuid sa ei näe selle kohta teateid, kui keegi sinna postitab.",
     "ignoring-topic.message": "Sa ei näe seda teemat enam lugemata teemade nimekirjas. Sind teavitatakse, kui Sind mainitakse või Sinu postitust kiidetakse heaks.",
     "login-to-subscribe": "Palun registreeru kasutajaks või logi sisse, et tellida teateid selle postituse kohta.",

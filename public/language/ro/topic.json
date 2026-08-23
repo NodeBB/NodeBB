@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Acest subiect a fost șters. Doar utilizatorii cu privilegii pentru moderarea subiectelor îl poate vedea.",
     "following-topic.message": "Vei primi notificări când cineva va posta un nou mesaj in acest subiect.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring-topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login-to-subscribe": "Te rugăm să te înregistrezi sau să te autentifici ca să te poți abona la acest subiect.",

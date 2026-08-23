@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Este tópico foi eliminado. Apenas utilizadores com privilégios de moderação do tópico podem vê-lo.",
     "following-topic.message": "A partir de agora receberás uma notificação sempre que alguém publicar neste tópico.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Verás este tópico na lista de tópicos por ler mas não irás receber notificações quando alguém publicar neste tópico.",
     "ignoring-topic.message": "Não verás mais este tópico na tua lista de tópicos por ler. Serás notificado sempre que fores mencionado ou o teu tópico seja votado favoravelmente.",
     "login-to-subscribe": "Por favor regista-te ou inicia sessão para subscreveres este tópico.",

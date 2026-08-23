@@ -13,5 +13,6 @@
     "watching.description": "Benachrichtige mich über neuen Themen.",
     "not-watching.description": "Benachrichtige mich nicht über neuen Themen",
     "following-tag.message": "Du wirst nun benachrichtigt, wenn jemand ein Thema mit diesem Tag veröffentlicht.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Du wirst nicht benachrichtigt, wenn jemand ein Thema mit diesem Tag veröffentlicht."
 }

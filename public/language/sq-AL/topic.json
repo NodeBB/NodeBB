@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Kjo temë është fshirë. Vetëm përdoruesit me privilegje mund ta shohin atë.",
     "following-topic.message": "Tani do të merrni njoftime kur dikush poston në këtë temë.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Ju do ta shihni këtë temë në listën e temave të palexuara, por nuk do të merrni njoftime kur dikush poston në të.",
     "ignoring-topic.message": "Nuk do ta shihni më këtë temë në listën e temave të palexuara. Do të njoftoheni kur të përmendeni ose kur postimi juaj të votohet.",
     "login-to-subscribe": "Ju lutemi regjistrohuni për të marrë njoftime në këtë temë.",

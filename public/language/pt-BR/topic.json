@@ -81,6 +81,7 @@
     "forked-message": "Este tópico foi ramificado de <a href=\"%1\">%2</a>",
     "deleted-message": "Este tópico foi deletado. Apenas usuários com privilégios de moderação de tópico podem vê-lo.",
     "following-topic.message": "Agora você receberá notificações quando alguém responder este tópico.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Você verá este tópico na lista de tópicos não-lidos, mas você não receberá notificações quando alguém postar no tópico.",
     "ignoring-topic.message": "Você não verá mais este tópico na lista de tópicos não lidos. Você será notificado quando você for mencionado ou sua postagem for votada positivamente.",
     "login-to-subscribe": "Por favor se cadastre ou entre para assinar à este tópico.",
