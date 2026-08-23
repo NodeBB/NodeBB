@@ -33,7 +33,7 @@ define('forum/account/tags', [
 				alerts.alert({
 					alert_id: 'follow_tag',
 					message: config['notificationType_new-topic-with-tag'] === 'none' ?
-						'[[modules:chat.notification-settings]]: [[modules:chat.notification-setting-none]]' :
+						'[[tags:following-tag.message-no-notifications]]' :
 						'[[tags:following-tag.message]]',
 					type: 'success',
 					timeout: 5000,

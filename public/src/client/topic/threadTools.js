@@ -171,7 +171,7 @@ define('forum/topic/threadTools', [
 				let message = '';
 				if (type === 'follow') {
 					message = state && config['notificationType_new-reply'] === 'none' ?
-						'[[modules:chat.notification-settings]]: [[modules:chat.notification-setting-none]]' :
+						'[[topic:following-topic.message-no-notifications]]' :
 						(state ? '[[topic:following-topic.message]]' : '[[topic:not-following-topic.message]]');
 				} else if (type === 'ignore') {
 					message = state ? '[[topic:ignoring-topic.message]]' : '[[topic:not-following-topic.message]]';

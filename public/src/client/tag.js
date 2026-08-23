@@ -23,7 +23,7 @@ define('forum/tag', [
 				let message = '';
 				if (type === 'follow') {
 					message = config['notificationType_new-topic-with-tag'] === 'none' ?
-						'[[modules:chat.notification-settings]]: [[modules:chat.notification-setting-none]]' :
+						'[[tags:following-tag.message-no-notifications]]' :
 						'[[tags:following-tag.message]]';
 				} else if (type === 'unfollow') {
 					message = '[[tags:not-following-tag.message]]';
