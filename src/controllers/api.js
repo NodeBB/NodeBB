@@ -143,6 +143,8 @@ apiController.loadConfig = async function (req) {
 		}
 	}
 	config.hideReadNotifications = settings.hideReadNotifications;
+	config['notificationType_new-reply'] = settings['notificationType_new-reply'];
+	config['notificationType_new-topic-with-tag'] = settings['notificationType_new-topic-with-tag'];
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;
