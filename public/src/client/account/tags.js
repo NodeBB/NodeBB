@@ -32,7 +32,9 @@ define('forum/account/tags', [
 			api.put(`/tags/${event.item}/follow`, {}).then(() => {
 				alerts.alert({
 					alert_id: 'follow_tag',
-					message: '[[tags:following-tag.message]]',
+					message: config['notificationType_new-topic-with-tag'] === 'none' ?
+						'[[modules:chat.notification-settings]]: [[modules:chat.notification-setting-none]]' :
+						'[[tags:following-tag.message]]',
 					type: 'success',
 					timeout: 5000,
 				});
