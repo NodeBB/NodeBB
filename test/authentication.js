@@ -84,7 +84,8 @@ describe('authentication', () => {
 			return body.next;
 		}
 
-		const home = `${nconf.get('relative_path')}/`;
+		const relativePath = nconf.get('relative_path');
+		const home = `${relativePath}/`;
 		const invalidTargets = [
 			{ name: 'an external absolute URL', value: 'https://attacker.example/topic/1' },
 			{ name: 'a scheme-relative URL', value: '//attacker.example/topic/1' },
@@ -94,16 +95,25 @@ describe('authentication', () => {
 			{ name: 'an encoded backslash authority URL', value: '/%5Cattacker.example/topic/1' },
 			{ name: 'an encoded control character', value: '/topic/1%0D%0AX-Test%3Avalue' },
 			{ name: 'a malformed encoded URL', value: '/topic/%' },
-			{ name: 'a same-origin URL outside the configured subfolder', value: `${nconf.get('base_url')}/outside` },
-			{ name: 'a same-origin URL traversing outside the configured subfolder', value: `${nconf.get('url')}/../outside` },
 			{ name: 'a same-origin URL that becomes scheme-relative after subfolder stripping', value: `${nconf.get('url')}//attacker.example/topic/1` },
-			{ name: 'an encoded path that becomes scheme-relative after subfolder stripping', value: `${nconf.get('relative_path')}/%2F%2Fattacker.example/topic/1` },
+			{ name: 'an encoded path that becomes scheme-relative after subfolder stripping', value: `${relativePath}/%2F%2Fattacker.example/topic/1` },
+		];
+		const mountBoundaryTargets = [
+			{ name: 'a same-origin URL at the origin root', value: `${nconf.get('base_url')}/outside` },
+			{ name: 'a same-origin URL resolving to the origin root', value: `${nconf.get('url')}/../outside` },
 		];
 
 		['login', 'register'].forEach((page) => {
 			invalidTargets.forEach((target) => {
 				it(`should reject ${target.name} from the ${page} page`, async () => {
 					assert.strictEqual(await getLoginDestination(page, target.value), home);
+				});
+			});
+			mountBoundaryTargets.forEach((target) => {
+				const expected = relativePath ? home : '/outside';
+				const behavior = relativePath ? 'reject' : 'preserve';
+				it(`should ${behavior} ${target.name} from the ${page} page`, async () => {
+					assert.strictEqual(await getLoginDestination(page, target.value), expected);
 				});
 			});
 
@@ -120,12 +130,18 @@ describe('authentication', () => {
 				assert.strictEqual(await getLoginDestination(page, `${nconf.get('url')}${path}`), `${nconf.get('relative_path')}${path}`);
 			});
 
-			it(`should not confuse a subfolder-prefix lookalike on the ${page} page`, async () => {
-				assert.strictEqual(
-					await getLoginDestination(page, `${nconf.get('relative_path')}ish/topic/1`),
-					`${nconf.get('relative_path')}${nconf.get('relative_path')}ish/topic/1`
-				);
-			});
+			if (relativePath) {
+				it(`should not confuse a subfolder-prefix lookalike on the ${page} page`, async () => {
+					assert.strictEqual(
+						await getLoginDestination(page, `${relativePath}ish/topic/1`),
+						`${relativePath}${relativePath}ish/topic/1`
+					);
+				});
+			} else {
+				it(`should reject a path without a leading slash from the ${page} page`, async () => {
+					assert.strictEqual(await getLoginDestination(page, 'ish/topic/1'), home);
+				});
+			}
 		});
 
 		async function getApiReauthDestination(returnTo, expectedSessionReturnTo) {
