@@ -59,6 +59,9 @@
 								<span class="d-inline-flex align-items-center gap-2 copy hidden"><i class="fa fa-fw fa-copy text-muted"></i> <span class="copy-ip-text"></span></span>
 							</a>
 						</li>
+						<li>
+							<a href="#" class="dropdown-item rounded-1" data-action="flag" data-mid="{messages.mid}" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-flag text-muted"></i> {{tx("flags:report")}}</span></a>
+						</li>
 						{{{ end }}}
 
 						<li>

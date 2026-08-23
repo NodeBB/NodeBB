@@ -21,6 +21,8 @@ const translator = require('./translator');
 
 const Flags = module.exports;
 
+let Messaging;
+
 Flags._states = new Map([
 	['open', {
 		label: '[[flags:state-open]]',
@@ -41,6 +43,8 @@ Flags._states = new Map([
 ]);
 
 Flags.init = async function () {
+	Messaging = require('./messaging');
+
 	// Query plugins for custom filter strategies and merge into core filter strategies
 	function prepareSets(sets, orSets, prefix, value) {
 		if (!Array.isArray(value)) {
@@ -320,6 +324,11 @@ Flags.validate = async function (payload) {
 		const editable = await privileges.users.canEdit(payload.uid, payload.id);
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
+		}
+	} else if (payload.type === 'chat-message') {
+		const canView = await Messaging.canViewMessage([parseInt(payload.id, 10)], payload.roomId, payload.uid);
+		if (!canView[0]) {
+			throw new Error('[[error:no-privileges]]');
 		}
 	} else {
 		throw new Error('[[error:invalid-data]]');
@@ -630,27 +639,6 @@ Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
-Flags.canView = async (flagId, uid) => {
-	const exists = await db.isSortedSetMember('flags:datetime', flagId);
-	if (!exists) {
-		return false;
-	}
-
-	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
-		db.getObject(`flag:${flagId}`),
-		user.isAdminOrGlobalMod(uid),
-	]);
-
-	if (type === 'post') {
-		const cid = await Flags.getTargetCid(type, targetId);
-		const isModerator = await user.isModerator(uid, cid);
-
-		return isAdminOrGlobalMod || isModerator;
-	}
-
-	return isAdminOrGlobalMod;
-};
-
 Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	const limit = meta.config['flags:limitPerTarget'];
 	if (!skipLimitCheck && limit > 0) {
@@ -690,6 +678,31 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	}
 };
 
+Flags.canView = async (flagId, uid) => {
+	const exists = await db.isSortedSetMember('flags:datetime', flagId);
+	if (!exists) {
+		return false;
+	}
+
+	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
+		db.getObject(`flag:${flagId}`),
+		user.isAdminOrGlobalMod(uid),
+	]);
+
+	if (type === 'chat-message') {
+		return user.isAdministrator(uid);
+	}
+
+	if (type === 'post') {
+		const cid = await Flags.getTargetCid(type, targetId);
+		const isModerator = await user.isModerator(uid, cid);
+
+		return isAdminOrGlobalMod || isModerator;
+	}
+
+	return isAdminOrGlobalMod;
+};
+
 Flags.getTarget = async function (type, id, uid) {
 	if (type === 'user') {
 		const userData = await user.getUserData(id);
@@ -703,6 +716,10 @@ Flags.getTarget = async function (type, id, uid) {
 		postData = await posts.parsePost(postData);
 		postData = await topics.addPostData([postData], uid);
 		return postData[0];
+	}
+	if (type === 'chat-message') {
+		const message = await Messaging.getMessageData(parseInt(id, 10), uid, await Messaging.getRoomIdByMid(id));
+		return message && message[0] ? message[0] : {};
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -720,6 +737,8 @@ Flags.targetExists = async function (type, id) {
 			}
 		}
 		return await user.exists(id);
+	} else if (type === 'chat-message') {
+		return await Messaging.messageExists(id);
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -959,6 +978,22 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
+		});
+	} else if (flagObj.type === 'chat-message') {
+		const roomData = await Messaging.getRoomData(flagObj.targetId);
+		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
+		let bodyLong = String(flagObj.target?.content || '');
+		if (bodyLong && bodyLong.length > 500) {
+			bodyLong = bodyLong.substring(0, 497) + '...';
+		}
+		notifObj = await notifications.create({
+			type: 'new-chat-message-flag',
+			bodyShort: translator.compile('notifications:user-flagged-chat-message', displayname, roomData?.roomName || targetDisplayname),
+			bodyLong: bodyLong,
+			path: `/flags/${flagObj.flagId}`,
+			nid: `flag:chat:${flagObj.targetId}:${uid}`,
+			from: uid,
+			mergeId: `notifications:user-flagged-chat|${flagObj.targetId}`,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');

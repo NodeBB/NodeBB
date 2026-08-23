@@ -21,11 +21,12 @@ define('forum/chats', [
 	'chat',
 	'api',
 	'uploadHelpers',
+	'modules/flags',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	events, search, autocomplete, hooks, modals, benchpress, alerts,
-	chatModule, api, uploadHelpers
+	chatModule, api, uploadHelpers, flagsModule
 ) {
 	const Chats = {
 		activeAutocomplete: new WeakMap(),
@@ -436,7 +437,18 @@ define('forum/chats', [
 				case 'unpin':
 					pinnedMessages.unpin(messageId, roomId);
 					break;
+				case 'flag':
+					Chats.flagMessage(msgEl.attr('data-mid'), roomId);
+					break;
 			}
+		});
+	};
+
+	Chats.flagMessage = function (messageId, roomId) {
+		flagsModule.Flag.showFlagModal({
+			type: 'chat-message',
+			id: messageId,
+			roomId: roomId,
 		});
 	};
 

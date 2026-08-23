@@ -25,6 +25,7 @@
 	"filter-type-all": "All Content",
 	"filter-type-post": "Post",
 	"filter-type-user": "User",
+	"filter-type-chat-message": "Chat Message",
 	"filter-state": "State",
 	"filter-assignee": "Assignee",
 	"filter-cid": "Category",
