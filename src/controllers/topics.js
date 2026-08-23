@@ -17,6 +17,12 @@ const utils = require('../utils');
 const analytics = require('../analytics');
 const activitypub = require('../activitypub');
 const translator = require('../translator');
+const cacheCreate = require('../cache/lru');
+const crosspostCache = cacheCreate({
+	name: 'crosspost',
+	max: 500,
+	ttl: 3600000,
+});
 
 const topicsController = module.exports;
 
@@ -134,9 +140,10 @@ topicsController.get = async function getTopic(req, res, next) {
 		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
 	);
 
-	const [author, crossposts] = await Promise.all([
+	const [author, crossposts, canCrosspost] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
 		topics.crossposts.get(topicData.tid, req.uid),
+		loadCrosspostPrivilege(req, topicData.cid),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges, settings.userLang),
 		addTags(topicData, req, res, currentPage, postAtIndex),
@@ -147,6 +154,7 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	topicData.author = author;
 	topicData.crossposts = crossposts;
+	topicData.canCrosspost = canCrosspost;
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
@@ -209,6 +217,17 @@ async function markAsRead(req, tid) {
 		}
 		await Promise.all(promises);
 	}
+}
+
+async function loadCrosspostPrivilege(req, excludeCid) {
+	excludeCid = String(excludeCid || '');
+	let cidsUserCanCrosspost = crosspostCache.get(`uid:${req.uid}`);
+	if (cidsUserCanCrosspost === undefined) {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		cidsUserCanCrosspost = await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
+		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost);
+	}
+	return cidsUserCanCrosspost.filter(cid => cid !== excludeCid).length > 0;
 }
 
 async function buildBreadcrumbs(topicData) {
