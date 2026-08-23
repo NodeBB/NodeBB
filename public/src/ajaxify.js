@@ -87,6 +87,12 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.go = function (url, callback, quiet) {
+		if (utils.hasTextFragment(url)) {
+			url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
+			window.location.href = utils.prependRelativePath(url, config.relative_path);
+			return true;
+		}
+
 		// Automatically reconnect to socket and re-ajaxify on success
 		if (!socket.connected && parseInt(app.user.uid, 10) >= 0) {
 			app.reconnect();
@@ -200,15 +206,9 @@ ajaxify.widgets = { render: render };
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		ajaxify.requestedPage = null;
 		if (window.history && window.history.pushState) {
-			const prependSlash = url && !url.startsWith('?') && !url.startsWith('#');
-			const { relative_path } = config;
-			const historyUrl = prependSlash ?
-				(relative_path + '/' + url) :
-				relative_path + (url || (relative_path ? '' : '/'));
-
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, '', historyUrl);
+			}, '', utils.prependRelativePath(url, config.relative_path));
 		}
 	};
 
@@ -584,7 +584,10 @@ $(document).ready(function () {
 						const pathname = this.href.replace(rootAndPath, '');
 
 						// Special handling for urls with hashes
-						if (window.location.pathname === this.pathname && this.hash.length) {
+						if (utils.hasTextFragment(this)) {
+							ajaxify.go(pathname);
+							e.preventDefault();
+						} else if (window.location.pathname === this.pathname && this.hash.length) {
 							window.location.hash = this.hash;
 						} else if (ajaxify.go(pathname)) {
 							e.preventDefault();

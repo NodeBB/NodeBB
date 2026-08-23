@@ -727,6 +727,24 @@ const utils = {
 			);
 	},
 
+	prependRelativePath: function (url, relativePath) {
+		const prependSlash = url && !url.startsWith('?') && !url.startsWith('#');
+		return prependSlash ?
+			(relativePath + '/' + url) :
+			relativePath + (url || (relativePath ? '' : '/'));
+	},
+
+	hasTextFragment: function (url) {
+		try {
+			const hash = url instanceof URL ? url.hash : new URL(url, 'http://localhost').hash;
+			const directiveStart = hash.indexOf(':~:');
+			const directive = directiveStart === -1 ? '' : hash.slice(directiveStart + 3);
+			return Boolean(directive && directive.split('&').some(value => value.startsWith('text=')));
+		} catch (err) {
+			return false;
+		}
+	},
+
 	rtrim: function (str) {
 		return str.replace(/\s+$/g, '');
 	},

@@ -513,6 +513,40 @@ describe('Utility Methods', () => {
 		});
 	});
 
+	describe('prependRelativePath', () => {
+		it('should preserve the relative-path behaviour used by ajaxify history', () => {
+			assert.strictEqual(utils.prependRelativePath('topic/1#:~:text=target', '/forum'), '/forum/topic/1#:~:text=target');
+			assert.strictEqual(utils.prependRelativePath('?sort=latest', '/forum'), '/forum?sort=latest');
+			assert.strictEqual(utils.prependRelativePath('#post', '/forum'), '/forum#post');
+			assert.strictEqual(utils.prependRelativePath('', '/forum'), '/forum');
+			assert.strictEqual(utils.prependRelativePath('', ''), '/');
+		});
+	});
+
+	describe('hasTextFragment', () => {
+		it('should detect text fragments with and without a regular fragment', () => {
+			assert(utils.hasTextFragment('/topic/1#:~:text=target'));
+			assert(utils.hasTextFragment('/topic/1#post:~:text=target'));
+		});
+
+		it('should detect text among multiple fragment directives', () => {
+			assert(utils.hasTextFragment('/topic/1#:~:unknown=one&text=target'));
+			assert(utils.hasTextFragment('/topic/1#:~:unknown=x:~:y&text=target'));
+			assert(utils.hasTextFragment('/topic/1#:~:text=first&text=second'));
+		});
+
+		it('should ignore regular and encoded fragments', () => {
+			assert(!utils.hasTextFragment('/topic/1#post'));
+			assert(!utils.hasTextFragment('/topic/1#%3A~%3Atext%3Dtarget'));
+			assert(!utils.hasTextFragment('/topic/1#:~:text%3Dtarget'));
+		});
+
+		it('should handle URL objects and invalid values', () => {
+			assert(utils.hasTextFragment(new URL('https://example.org/topic/1#:~:text=target')));
+			assert(!utils.hasTextFragment('http://['));
+		});
+	});
+
 	describe('isSafeHref', () => {
 		it('should return true for http/https url', (done) => {
 			assert(utils.isSafeHref('http://nodebb.org'));
