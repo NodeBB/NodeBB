@@ -712,6 +712,13 @@ define('navigator', [
 		let done = false;
 
 		function animateScroll() {
+			function calculateScrollTop() {
+				if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
+					return scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
+				}
+				return scrollTo.offset().top - navbarHeight - topicHeaderHeight;
+			}
+
 			function reenableScroll() {
 				// Re-enable onScroll behaviour
 				setTimeout(() => { // fixes race condition from jQuery — onAnimateComplete called too quickly
@@ -738,12 +745,7 @@ define('navigator', [
 				}
 			}
 
-			let scrollTop;
-			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
-				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
-			} else {
-				scrollTop = scrollTo.offset().top - navbarHeight - topicHeaderHeight;
-			}
+			const scrollTop = calculateScrollTop();
 
 			if (duration === 0) {
 				$(window).scrollTop(scrollTop);
@@ -753,7 +755,22 @@ define('navigator', [
 			}
 			$('html, body').animate({
 				scrollTop: scrollTop + 'px',
-			}, duration, onAnimateComplete);
+			}, {
+				duration,
+				step(value, tween) {
+					const previousScrollTop = tween.nodebbScrollTop === undefined ? scrollTop : tween.nodebbScrollTop;
+					const nextScrollTop = calculateScrollTop();
+					const delta = nextScrollTop - previousScrollTop;
+					if (delta) {
+						// Keep the tween aligned if content above the target changes height.
+						tween.start += delta;
+						tween.end += delta;
+						tween.now += delta;
+						tween.nodebbScrollTop = nextScrollTop;
+					}
+				},
+				complete: onAnimateComplete,
+			});
 		}
 
 		function highlightPost() {
