@@ -26,25 +26,27 @@ require('./user/registration')(SocketUser);
 
 SocketUser.reset = {};
 
-SocketUser.reset.send = async function (socket, email) {
-	if (!email) {
+SocketUser.reset.send = async function (socket, identifier) {
+	if (typeof identifier !== 'string' || !identifier.trim()) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	identifier = identifier.trim();
 
 	if (meta.config['password:disableEdit']) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	async function logEvent(text) {
+		const identifierField = utils.isEmailValid(identifier) ? 'email' : 'username';
 		await events.log({
 			type: 'password-reset',
 			text: text,
 			ip: socket.ip,
 			uid: socket.uid,
-			email: email,
+			[identifierField]: identifier,
 		});
 	}
 	try {
-		await user.reset.send(email);
+		await user.reset.send(identifier);
 		await logEvent('[[success:success]]');
 		await sleep(2500 + (utils.secureRandom(0, 500) - 250));
 	} catch (err) {

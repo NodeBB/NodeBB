@@ -19,6 +19,7 @@ const topics = require('../src/topics');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
 const events = require('../src/events');
+const utils = require('../src/utils');
 
 const socketAdmin = require('../src/socket.io/admin');
 const apiAdmin = require('../src/api/admin');
@@ -749,6 +750,28 @@ describe('socket.io', () => {
 			const event = eventsData[0];
 			assert.strictEqual(event.type, 'password-reset');
 			assert.strictEqual(event.text, '[[success:success]]');
+			assert.strictEqual(event.email, 'regular@test.com');
+			assert.strictEqual(Object.hasOwn(event, 'username'), false);
+		});
+
+		it('should accept an exact username and classify it correctly in the event log', async () => {
+			const username = `reset-${utils.generateUUID().slice(0, 8)}`;
+			const uid = await user.create({
+				username,
+				email: `${username}@nodebb.org`,
+			}, { emailVerification: 'verify' });
+			await socketUser.reset.send({ uid: 0 }, username);
+			const [eventsData, codes] = await Promise.all([
+				events.getEvents({ filter: '', start: 0, stop: 0 }),
+				db.getObject('reset:uid'),
+			]);
+			const event = eventsData[0];
+			assert.strictEqual(event.type, 'password-reset');
+			assert.strictEqual(event.text, '[[success:success]]');
+			assert.strictEqual(event.username, username);
+			assert.strictEqual(Object.hasOwn(event, 'email'), false);
+			assert(Object.values(codes).some(codeUid => parseInt(codeUid, 10) === uid));
+			await user.reset.cleanByUid(uid);
 		});
 
 		it('should not generate code if rate limited', async () => {
