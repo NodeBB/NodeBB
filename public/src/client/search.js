@@ -229,6 +229,7 @@ define('forum/search', [
 			});
 			storage.setItem('search-preferences', JSON.stringify(saveData));
 			alerts.success('[[search:search-preferences-saved]]');
+			searchModule.query(data);
 			return false;
 		});
 
