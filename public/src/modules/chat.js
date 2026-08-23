@@ -299,6 +299,16 @@ define('chat', [
 		return $('#chat-modal-' + roomId);
 	};
 
+	function bringModalToFront(chatModal) {
+		const chatModals = $('.chat-modal');
+		if (chatModals.length <= 1) {
+			return;
+		}
+		chatModals.css('zIndex', '');
+		const zIndex = parseInt(chatModal.css('zIndex'), 10) || 1055;
+		chatModal.css('zIndex', zIndex + 1);
+	}
+
 	Chat.modalExists = function (roomId) {
 		return $('#chat-modal-' + roomId).length !== 0;
 	};
@@ -371,6 +381,7 @@ define('chat', [
 				chatModal.attr('data-uuid', uuid);
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
+				bringModalToFront(chatModal);
 				chatModal.find('.timeago').timeago();
 				chatModal.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
@@ -400,6 +411,10 @@ define('chat', [
 				chatModal.find('button[data-action="minimize"]').on('click', function () {
 					const uuid = chatModal.attr('data-uuid');
 					Chat.minimize(uuid);
+				});
+
+				chatModal.on('mousedown', function () {
+					bringModalToFront(chatModal);
 				});
 
 				chatModal.on('mouseup', function () {
@@ -563,6 +578,7 @@ define('chat', [
 		require(['forum/chats/messages'], function (ChatsMessages) {
 			const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
 			chatModal.removeClass('hide');
+			bringModalToFront(chatModal);
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottomAfterImageLoad(chatModal.find('.chat-content'));
 			Chat.focusInput(chatModal);
