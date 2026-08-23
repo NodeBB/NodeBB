@@ -222,6 +222,9 @@ get:
                     type: array
                     items:
                       $ref: ../../components/schemas/CrosspostObject.yaml#/CrosspostObject
+                  canCrosspost:
+                    type: boolean
+                    description: Whether the user can cross post to any category other than the topic's current category.
               - type: object
                 description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
                 properties:
