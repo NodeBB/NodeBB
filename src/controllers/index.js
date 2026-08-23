@@ -111,11 +111,13 @@ Controllers.login = async function (req, res) {
 	}
 
 	if (req.headers['x-return-to']) {
-		req.session.returnTo = req.headers['x-return-to'];
+		req.session.returnTo = helpers.normalizeReturnToPath(req.headers['x-return-to']) || '/';
+	} else if (req.session.returnTo) {
+		const normalizedReturnTo = helpers.normalizeReturnToPath(req.session.returnTo);
+		if (normalizedReturnTo) {
+			req.session.returnTo = normalizedReturnTo;
+		}
 	}
-
-	// Occasionally, x-return-to is passed a full url.
-	req.session.returnTo = req.session.returnTo && req.session.returnTo.replace(nconf.get('base_url'), '').replace(nconf.get('relative_path'), '');
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.osw_logins = !!meta.config.activitypubEnabled;
@@ -154,7 +156,6 @@ Controllers.register = async function (req, res, next) {
 	}
 
 	let errorText;
-	const returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url') + nconf.get('relative_path'), '');
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	}
@@ -169,8 +170,8 @@ Controllers.register = async function (req, res, next) {
 			}
 		}
 
-		if (returnTo) {
-			req.session.returnTo = returnTo;
+		if (req.headers['x-return-to']) {
+			req.session.returnTo = helpers.normalizeReturnToPath(req.headers['x-return-to']) || '/';
 		}
 
 		const loginStrategies = require('../routes/authentication').getLoginStrategies();
