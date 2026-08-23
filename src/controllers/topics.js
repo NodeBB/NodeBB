@@ -225,7 +225,7 @@ async function loadCrosspostPrivilege(req, excludeCid) {
 	if (cidsUserCanCrosspost === undefined) {
 		const cids = await categories.getAllCidsFromSet('categories:cid');
 		cidsUserCanCrosspost = await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
-		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost, 3600000);
+		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost);
 	}
 	return cidsUserCanCrosspost.filter(cid => cid !== excludeCid).length > 0;
 }
