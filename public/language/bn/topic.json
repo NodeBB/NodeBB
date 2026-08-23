@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "এই টপিকটি মুছে ফেলা হয়েছে। শুধুমাত্র টপিক ব্যবস্থাপনার ক্ষমতাপ্রাপ্ত সদস্যগণ এটি দেখতে পারবেন।",
     "following-topic.message": "এখন থেকে এই টপিকে অন্যকেউ পোস্ট করলে আপনি নোটিফিকেশন পাবেন।",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring-topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login-to-subscribe": "এই টপিকে সাবস্ক্রাইব করতে চাইলে অনুগ্রহ করে নিবন্ধণ করুন অথবা প্রবেশ করুন।",

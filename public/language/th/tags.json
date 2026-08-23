@@ -13,5 +13,6 @@
     "watching.description": "แจ้งเตือนฉันเมื่อมีกระทู้ใหม่",
     "not-watching.description": "ไม่ต้องแจ้งเตือนฉันเมื่อมีกระทู้ใหม่",
     "following-tag.message": "คุณจะได้รับการแจ้งเตือนเมื่อบางคนตั้งกระทู้โดยใช้แท็กนี้",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "คุณจะไม่ได้รับการแจ้งเตือนเมื่อบางคนตั้งกระทู้โดยใช้แท็กนี้"
 }

@@ -81,6 +81,7 @@
     "forked-message": "Ten temat został oddzielony od <a href=\"%1\">%2</a>",
     "deleted-message": "Ten temat został usunięty. Mogą go zobaczyć tylko użytkownicy upoważnieni do zarządzania tematami.",
     "following-topic.message": "Będziesz teraz otrzymywać powiadomienia o nowych odpowiedziach w tym temacie.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Zobaczysz ten temat na liście nieprzeczytanych, ale nie będziesz otrzymywać powiadomień o odpowiedziach w tym temacie.",
     "ignoring-topic.message": "Nie zobaczysz już tego tematu na liście nieprzeczytanych. Otrzymasz powiadomienie, kiedy ktoś o Tobie wspomni lub zagłosuje na Twój post.",
     "login-to-subscribe": "Zarejestruj lub zaloguj się, aby subskrybować ten temat.",

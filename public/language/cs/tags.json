@@ -13,5 +13,6 @@
     "watching.description": "Upozorni mě na nová témata",
     "not-watching.description": "Neupozorňuj mě na nová témata.",
     "following-tag.message": "Nyní budete dostávat upozornění pokud někdo přidá téma s tímto štítkem.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Nebudete dostávat upozornění pokud někdo přidá téma s tímto štítkem."
 }

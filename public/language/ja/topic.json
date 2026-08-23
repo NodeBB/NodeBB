@@ -81,6 +81,7 @@
     "forked-message": "このスレッドは<a href=\"%1\">%2</a>からフォークされました",
     "deleted-message": "このスレッドが削除されました。スレッド管理権を持っているユーザーにしか読めません。",
     "following-topic.message": "このスレッドが更新された際に通知を受け取ります。",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "あなたはスレッド一覧を未読にすると、このスレッドを参照できます。ただし誰かがこのスレッドに投稿したときは通知を受信できません。",
     "ignoring-topic.message": "あなたは、これ以上この未読スレッドを一覧に表示しておくことが出来なくなります。追跡するか、あなたの投稿が高評価を受けると通知されます。",
     "login-to-subscribe": "このスレッドを購読するには、アカウント登録またはログインが必要です。",

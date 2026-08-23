@@ -81,6 +81,7 @@
     "forked-message": "Dieses Thema wurde aufgespalten von <a href=\"%1\">%2</a>",
     "deleted-message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",
     "following-topic.message": "Du erhältst nun eine Benachrichtigung, wenn jemand einen Beitrag zu diesem Thema verfasst.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Ungelesene Beiträge in diesem Thema werden angezeigt, aber du erhältst keine Benachrichtigung wenn jemand einen Beitrag zu diesem Thema verfasst.",
     "ignoring-topic.message": "Ungelesene Beiträge in diesem Thema werden nicht mehr angezeigt. Du erhältst eine Benachrichtigung, wenn du in diesem Thema erwähnt wirst oder deine Beiträge positiv bewertet werden.",
     "login-to-subscribe": "Bitte registrieren oder einloggen um dieses Thema zu abonnieren",

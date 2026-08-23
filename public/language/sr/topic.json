@@ -81,6 +81,7 @@
     "forked-message": "Ова тема је раздвојена од <a href=\"%1\">%2</a>",
     "deleted-message": "Ова тема је избрисана. Само корисници са привилегијама управљања темама је могу видети.",
     "following-topic.message": "Од сада ће те примати обавештења када неко одговори у овој теми.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Видећете ову тему у списку непрочитаних тема али нећете примати обавештења када неко одговори у њој.",
     "ignoring-topic.message": "Више нећете видети ову тему у списку непрочитаних тема. Бићете обавештени када вас неко спомене или када неко гласа за вашу поруку.",
     "login-to-subscribe": "Региструјте се или се пријавите за праћење ове теме.",

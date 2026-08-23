@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Ova tema je obrisana. Samo korisnici sa privilegijom upravljanja tema je mogu vidjeti.",
     "following-topic.message": "Od sada ćete primati obavijesti kada netko objavi objavu u ovoj temi.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Od sada ćete vidjeti ovu temu u popisu nepročitanih tema,ali nećete dobivati obavijesti kada netko objavi objavu u temi.",
     "ignoring-topic.message": "Od sada više nećete vidjeti ovu temu u popisu nepročitanih tema.Bit će te obaviješteni kada ste spomenuti ili je netko glasao za vašu objavu.",
     "login-to-subscribe": "Registriraj se ili prijavi kako bi se mogao pretplatit na ovu temu.",

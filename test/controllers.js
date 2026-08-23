@@ -9,6 +9,7 @@ const util = require('util');
 const db = require('./mocks/databasemock');
 const request = require('../src/request');
 const api = require('../src/api');
+const apiController = require('../src/controllers/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
@@ -61,6 +62,32 @@ describe('Controllers', () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 		assert.equal(response.statusCode, 200);
 		assert(body.csrf_token);
+	});
+
+	it('should expose notification settings used by client-side subscription hints', async () => {
+		await Promise.all([
+			user.setSetting(fooUid, 'notificationType_new-reply', 'none'),
+			user.setSetting(fooUid, 'notificationType_new-topic-with-tag', 'none'),
+		]);
+
+		try {
+			const config = await apiController.loadConfig({
+				uid: fooUid,
+				loggedIn: true,
+				user: { uid: fooUid },
+				query: {},
+				headers: {},
+				body: {},
+				session: {},
+			});
+			assert.strictEqual(config['notificationType_new-reply'], 'none');
+			assert.strictEqual(config['notificationType_new-topic-with-tag'], 'none');
+		} finally {
+			await Promise.all([
+				user.setSetting(fooUid, 'notificationType_new-reply', 'notification'),
+				user.setSetting(fooUid, 'notificationType_new-topic-with-tag', 'notification'),
+			]);
+		}
 	});
 
 	it('should load /config with no csrf_token as spider', async () => {

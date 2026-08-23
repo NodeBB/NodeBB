@@ -81,6 +81,7 @@
     "forked-message": "此話題是從 <a href=\"%1\">%2</a> 衍生而來",
     "deleted-message": "此主題已被刪除。只有擁有主題管理權限的使用者可以查看。",
     "following-topic.message": "當有人回覆此主題時，您會收到通知。",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "您將在未讀主題列表中看到這個主題，但您不會在貼文被回覆時收到通知。",
     "ignoring-topic.message": "您將不會在未讀主題列表裡看到這個主題，但在被提及以及貼文被點贊時仍將收到通知。",
     "login-to-subscribe": "請註冊或登入後，再訂閱此主題。",

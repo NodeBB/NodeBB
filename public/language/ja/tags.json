@@ -13,5 +13,6 @@
     "watching.description": "新しいスレッドの通知を受け取る。",
     "not-watching.description": "新しいスレッドの通知を受け取らない。",
     "following-tag.message": "このタグでスレッドが投稿されると通知を受け取ります。",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "このタグでスレッドが投稿されても通知を受け取りません。"
 }

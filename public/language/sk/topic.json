@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Táto téma bola odstránená. Iba užívatelia s výsadami správcu ju môžu vidieť.",
     "following-topic.message": "Odteraz budete prijímať oznámenia, keď niekto prispeje do tejto témy.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Uvidíte túto tému v zozname neprečítaných tém, ale nebudete dostávať oznámenia, keď niekto pridá príspevok do tejto témy.",
     "ignoring-topic.message": "Už nebudete naďalej vidieť túto tému v zozname neprečítaných. Budete informovaný, keď sa niekto zmieni o Vašom príspevku alebo mu dá hlas.",
     "login-to-subscribe": "Prosím Zaregistrujte sa alebo sa Prihláste, aby ste mohli odoberať túto Tému",

@@ -13,5 +13,6 @@
     "watching.description": "Thông báo tôi chủ đề mới.",
     "not-watching.description": "Không thông báo tôi chủ đề mới.",
     "following-tag.message": "Bây giờ bạn sẽ nhận được thông báo khi ai đó đăng chủ đề có thẻ này.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Bạn sẽ không nhận được thông báo khi ai đó đăng chủ đề có thẻ này.\n\n \n\n "
 }

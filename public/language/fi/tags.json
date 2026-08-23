@@ -13,5 +13,6 @@
     "watching.description": "Notify me of new topics.",
     "not-watching.description": "Do not notify me of new topics.",
     "following-tag.message": "Saat jatkossa ilmoituksen kun joku aloittaa aiheen tällä tunnisteella.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Et saa ilmoitusta kun joku aloittaa aiheen tällä tunnisteella."
 }

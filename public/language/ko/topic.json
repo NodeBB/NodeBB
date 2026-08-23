@@ -81,6 +81,7 @@
     "forked-message": "이 토픽이 <a href=\"%1\">%2</a>에서 포크되었습니다",
     "deleted-message": "이 토픽은 삭제되었습니다. 토픽 관리 권한이 있는 사용자만 볼 수 있습니다.",
     "following-topic.message": "이 토픽에 누군가가 게시물을 올리면 알림을 받게됩니다.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "이 토픽은 읽지 않은 토픽 목록에 표시되지만 토픽에 게시물이 올라오면 알림을 받지 않습니다.",
     "ignoring-topic.message": "이 토픽은 읽지 않은 토픽 목록에 표시되지 않습니다. 언급되거나 게시물이 추천될 때 알림을 받게됩니다.",
     "login-to-subscribe": "이 토픽을 구독하려면 등록하거나 로그인하세요.",

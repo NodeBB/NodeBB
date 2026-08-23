@@ -81,6 +81,7 @@
     "forked-message": "נושא זה פוצל מתוך הנושא <a href=\"%1\">%2</a>",
     "deleted-message": "נושא זה נמחק. רק משתמשים עם הרשאות מתאימות יוכלו לצפות בו.",
     "following-topic.message": "תקבלו התראות כאשר יפורסם פוסט חדש בנושא זה.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "נושא זה יופיע ברשימת הנושאים שלא נקראו, אולם לא תקבלו התראה כשיפורסם פוסט בנושא זה.",
     "ignoring-topic.message": "נושא זה לא יופיע יותר ברשימת הנושאים שלא נקראו. תקבלו הודעה כשיזכירו אתכם או כשהפוסט שלכם יקבל הצבעה חיובית",
     "login-to-subscribe": "הירשמו או התחברו כדי לעקוב אחר נושא זה.",

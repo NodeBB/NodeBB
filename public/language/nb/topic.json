@@ -81,6 +81,7 @@
     "forked-message": "Dette emnet vart forgrenet fra <a href=\"%1\">%2</a>",
     "deleted-message": "Denne innlegget har blitt slettet. ",
     "following-topic.message": "Du vil nå motta varsler når noen svarer på dette innlegget.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Du vil se dette innlegget i oversikten over uleste innlegg, men du vil ikke motta varslinger når noen skriver et svar.",
     "ignoring-topic.message": "Du vil ikke lenger se dette innlegget blant uleste innlegg. Du vil få et varsel når du blir nevnt eller innlegget blir anbefalt.",
     "login-to-subscribe": "Vennligst registrer deg eller logg inn for å abonnere på denne tråden.",

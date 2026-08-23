@@ -81,6 +81,7 @@
     "forked-message": "Bu başlık <a href=\"%1\">%2</a> başlığından bölünerek ayırıldı",
     "deleted-message": "Bu başlık silindi. Sadece başlık düzenleme yetkisi olan kullanıcılar görebilir.",
     "following-topic.message": "Artık bir kullanıcı bu konuya yeni ileti gönderdiğinde siz de bildirim alacaksınız.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Bu konuyu \"Okunmamış\" listesinde göreceksiniz, ama bir kullanıcı yeni bir ileti yazdığında bildirim gelmeyecek.",
     "ignoring-topic.message": "Bu konuyu artık \"Okunmamış\" listesinde görmeyeceksiniz. Eğer bir iletide bahsedilirseniz veya iletiniz oylanırsa bildirim alacaksınız.",
     "login-to-subscribe": "Lütfen bu konuyu takip etmek için üye olun veya giriş yapın.",
