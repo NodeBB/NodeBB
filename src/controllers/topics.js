@@ -227,7 +227,7 @@ async function loadCrosspostPrivilege(req, excludeCid) {
 		cidsUserCanCrosspost = await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
 		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost);
 	}
-	return cidsUserCanCrosspost.filter(cid => cid !== excludeCid).length > 0;
+	return cidsUserCanCrosspost.some(cid => cid !== excludeCid);
 }
 
 async function buildBreadcrumbs(topicData) {
