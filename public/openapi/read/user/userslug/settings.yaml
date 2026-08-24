@@ -85,6 +85,8 @@ get:
                           type: boolean
                   disableEmailSubscriptions:
                     type: number
+                  disableNotificationEmails:
+                    type: number
                   dailyDigestFreqOptions:
                     type: array
                     items:
