@@ -61,6 +61,35 @@ describe('Crossposts', () => {
 		assert.strictEqual(scoreAfter, null, 'tag index should be cleaned up when the crosspost is removed');
 	});
 
+	it('should pin a crossposted topic in its crossposted categories too', async () => {
+		const { tid } = await createTopic();
+		await topics.crossposts.add(tid, targetCategory.cid, uid);
+
+		await topics.tools.pin(tid, adminUid);
+
+		const [pinnedScore, tidsScore] = await Promise.all([
+			db.sortedSetScore(`cid:${targetCategory.cid}:tids:pinned`, tid),
+			db.sortedSetScore(`cid:${targetCategory.cid}:tids`, tid),
+		]);
+		assert(pinnedScore, 'pinning should reach the crossposted category');
+		assert.strictEqual(tidsScore, null, 'a pinned topic should not be left in the crossposted topic set');
+	});
+
+	it('should unpin a crossposted topic in its crossposted categories too', async () => {
+		const { tid } = await createTopic();
+		await topics.tools.pin(tid, adminUid);
+		await topics.crossposts.add(tid, targetCategory.cid, uid);
+
+		await topics.tools.unpin(tid, adminUid);
+
+		const [pinnedScore, tidsScore] = await Promise.all([
+			db.sortedSetScore(`cid:${targetCategory.cid}:tids:pinned`, tid),
+			db.sortedSetScore(`cid:${targetCategory.cid}:tids`, tid),
+		]);
+		assert.strictEqual(pinnedScore, null, 'unpinning should clear the crossposted pinned set');
+		assert(tidsScore, 'an unpinned topic should be back in the crossposted topic set');
+	});
+
 	it('should bump the topic in crossposted categories when it is replied to', async () => {
 		const { tid } = await createTopic();
 		await topics.crossposts.add(tid, targetCategory.cid, uid);
