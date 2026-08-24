@@ -18,10 +18,9 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const batch = require('./batch');
 const translator = require('./translator');
+const messaging = require('./messaging');
 
 const Flags = module.exports;
-
-let Messaging;
 
 Flags._states = new Map([
 	['open', {
@@ -43,7 +42,6 @@ Flags._states = new Map([
 ]);
 
 Flags.init = async function () {
-	Messaging = require('./messaging');
 
 	// Query plugins for custom filter strategies and merge into core filter strategies
 	function prepareSets(sets, orSets, prefix, value) {
@@ -328,7 +326,7 @@ Flags.validate = async function (payload) {
 			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
 		}
 	} else if (payload.type === 'message') {
-		const canView = await Messaging.canViewMessage([parseInt(payload.id, 10)], payload.roomId, payload.uid);
+		const canView = await messaging.canViewMessage([parseInt(payload.id, 10)], payload.roomId, payload.uid);
 		if (!canView[0]) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -723,7 +721,7 @@ Flags.getTarget = async function (type, id, uid) {
 		return postData[0];
 	}
 	if (type === 'message') {
-		const message = await Messaging.getMessageData(parseInt(id, 10), uid, await Messaging.getRoomIdByMid(id));
+		const message = await messaging.getMessageData(parseInt(id, 10), uid, await messaging.getRoomIdByMid(id));
 		return message && message[0] ? message[0] : {};
 	}
 	throw new Error('[[error:invalid-data]]');
@@ -743,7 +741,7 @@ Flags.targetExists = async function (type, id) {
 		}
 		return await user.exists(id);
 	} else if (type === 'message') {
-		return await Messaging.messageExists(id);
+		return await messaging.messageExists(id);
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -757,11 +755,11 @@ Flags.getTargetUid = async function (type, id) {
 		return await posts.getPostField(id, 'uid');
 	}
 	if (type === 'message') {
-		const roomId = await Messaging.getRoomIdByMid(id);
+		const roomId = await messaging.getRoomIdByMid(id);
 		if (!roomId) {
 			return 0;
 		}
-		const uid = await Messaging.getMessageField(id, 'fromuid');
+		const uid = await messaging.getMessageField(id, 'fromuid');
 		return uid ? parseInt(uid, 10) : 0;
 	}
 	return id;
@@ -993,8 +991,8 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
 		});
 	} else if (flagObj.type === 'message') {
-		const roomId = await Messaging.getRoomIdByMid(flagObj.targetId);
-		const roomData = roomId ? await Messaging.getRoomData(roomId) : null;
+		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
+		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
 		let bodyLong = String(flagObj.target?.content || '');
 		if (bodyLong && bodyLong.length > 500) {

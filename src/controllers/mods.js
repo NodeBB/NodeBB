@@ -176,7 +176,7 @@ modsController.flags.detail = async function (req, res, next) {
 				uids = _.uniq(uids.concat(modUids));
 			}
 		} else if (flagData.type === 'message') {
-			uids = admins.concat(globalMods);
+			uids = admins;
 		}
 		const userData = await user.getUsersData(uids);
 		return await user.hidePrivateData(userData.filter(u => u && u.userslug), uid);
