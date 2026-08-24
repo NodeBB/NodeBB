@@ -207,6 +207,13 @@ Chats.messages.delete = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Chats.messages.permanentlyDelete = async (req, res) => {
+	const { mid } = req.params;
+	await api.chats.permanentlyDeleteMessage(req, { mid });
+
+	helpers.formatApiResponse(200, res);
+};
+
 Chats.messages.restore = async (req, res) => {
 	const { mid } = req.params;
 	await api.chats.restoreMessage(req, { mid });

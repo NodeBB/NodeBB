@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('../database');
 const sockets = require('../socket.io');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
@@ -7,6 +8,18 @@ const activitypub = require('../activitypub');
 module.exports = function (Messaging) {
 	Messaging.deleteMessage = async (mid, uid) => await doDeleteRestore(mid, 1, uid);
 	Messaging.restoreMessage = async (mid, uid) => await doDeleteRestore(mid, 0, uid);
+	Messaging.permanentlyDeleteMessage = async (mid) => {
+		const msgData = await Messaging.getMessageFields(mid, [
+			'mid', 'fromuid', 'roomId', 'deleted', 'system',
+		]);
+		if (!msgData) {
+			return;
+		}
+		await db.delete(`message:${mid}`);
+		await db.sortedSetRemove(`chat:room:${msgData.roomId}:mids`, mid);
+
+		plugins.hooks.fire('action:messaging.delete', { message: msgData });
+	};
 
 	async function doDeleteRestore(mid, state, uid) {
 		const field = state ? 'deleted' : 'restored';

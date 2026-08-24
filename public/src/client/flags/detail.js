@@ -143,7 +143,7 @@ define('forum/flags/detail', [
 						if (!confirm) {
 							return;
 						}
-						api.del(`/chats/${ajaxify.data.target.roomId}/messages/${ajaxify.data.target.mid}`, {}).then(ajaxify.refresh).catch(alerts.error);
+						api.del(`/chats/${ajaxify.data.target.roomId}/messages/${ajaxify.data.target.mid}/permanent`, {}).then(ajaxify.refresh).catch(alerts.error);
 					});
 					break;
 				}
