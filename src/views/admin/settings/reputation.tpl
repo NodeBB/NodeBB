@@ -119,6 +119,14 @@
 					</p>
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label" for="flags:chat-messageFlagsPerDay">{{tx("admin/settings/reputation:flags.limit-chat-message-flags-per-day")}}</label>
+					<input type="number" min="0" class="form-control" data-field="flags:chat-messageFlagsPerDay" id="flags:chat-messageFlagsPerDay">
+					<p class="form-text">
+						{{tx("admin/settings/reputation:flags.limit-chat-message-flags-per-day-help")}}
+					</p>
+				</div>
+
 
 				<div class="mb-3">
 					<label class="form-label" for="flags:autoFlagOnDownvoteThreshold">{{tx("admin/settings/reputation:flags.auto-flag-on-downvote-threshold")}}</label>

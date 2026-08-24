@@ -138,6 +138,16 @@ define('forum/flags/detail', [
 					postAction('restore', api.put, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
+				case 'delete-chat-message': {
+					modals.confirm('[[flags:delete-message-confirm]]', function (confirm) {
+						if (!confirm) {
+							return;
+						}
+						api.del(`/chats/${ajaxify.data.target.mid}`, {}).then(ajaxify.refresh).catch(alerts.error);
+					});
+					break;
+				}
+
 				case 'delete-flag': {
 					modals.confirm('[[flags:delete-flag-confirm]]', function (ok) {
 						if (ok) {

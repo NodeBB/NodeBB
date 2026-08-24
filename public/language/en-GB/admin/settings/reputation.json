@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "Set to 0 to disable, (default: 10)",
 	"flags.limit-user-flags-per-day": "Maximum number of times a user can flag users in a day",
 	"flags.limit-user-flags-per-day-help": "Set to 0 to disable, (default: 10)",
+	"flags.limit-chat-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-chat-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "Number of downvotes to auto flag posts",
 	"flags.auto-flag-on-downvote-threshold-help": "Set to 0 to disable, (default: 0)",
 	"flags.auto-resolve-on-ban": "Automatically resolve all of a user's tickets when they are banned",

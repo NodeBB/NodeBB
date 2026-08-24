@@ -51,6 +51,10 @@
 			<a class="d-flex gap-2 align-items-center btn btn-sm btn-outline-success border border-secondary-subtle text-start" href="#" data-action="restore-post"><i class="fa fa-fw fa-reply"></i><i class="fa fa-fw fa-trash"></i> {{tx("flags:restore-post")}}</a>
 			{{{ end }}}
 			{{{ end }}}
+
+			{{{ if type_bool.chat-message }}}
+			<a class="d-flex gap-2 align-items-center btn btn-sm btn-outline-danger border border-secondary-subtle text-start" href="#" data-action="delete-chat-message"><i class="fa fa-fw fa-trash"></i> {{tx("flags:delete-message")}}</a>
+			{{{ end }}}
 		</div>
 
 		<form class="d-flex flex-column gap-3" id="attributes">
@@ -128,6 +132,15 @@
 					<a href="{config.relative_path}/user/{./target.userslug}">{target.username}</a>
 				</div>
 				<blockquote>{{{ if target.aboutme }}}{target.aboutme}{{{ else }}}<em>{{tx("flags:target-aboutme-empty")}}</em>{{{ end }}}</blockquote>
+				{{{ end }}}
+
+				{{{ if type_bool.chat-message }}}
+				<div class="d-flex gap-2 align-items-center">
+					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{target.user.userslug}">{{buildAvatar(target.user, "16px", true)}}</a>
+					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
+					<span class="timeago text-muted" title="{target.timestampISO}"></span>
+				</div>
+				<blockquote>{{target.content}}</blockquote>
 				{{{ end }}}
 
 				{{{ if type_bool.empty }}}

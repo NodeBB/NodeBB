@@ -115,12 +115,13 @@ Flags.get = async function (flagId) {
 	if (!base) {
 		throw new Error('[[error:no-flag]]');
 	}
+	const readableType = base.type === 'chat-message' ? 'Chat message' : base.type.charAt(0).toUpperCase() + base.type.slice(1);
 	const flagObj = {
 		state: 'open',
 		assignee: null,
 		...base,
 		datetimeISO: utils.toISOString(base.datetime),
-		target_readable: `${base.type.charAt(0).toUpperCase() + base.type.slice(1)} ${base.targetId}`,
+		target_readable: `${readableType} ${base.targetId}`,
 		target: await Flags.getTarget(base.type, base.targetId, 0),
 		notes,
 		reports,
@@ -224,8 +225,9 @@ Flags.list = async function (data) {
 			}
 		});
 
+		const readableType = flagObj.type === 'chat-message' ? 'Chat message' : flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1);
 		return Object.assign(flagObj, {
-			target_readable: `${flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1)} ${flagObj.targetId}`,
+			target_readable: `${readableType} ${flagObj.targetId}`,
 			datetimeISO: utils.toISOString(flagObj.datetime),
 		});
 	}));
@@ -673,6 +675,9 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 			}
 			break;
 
+		case 'chat-message':
+			return true;
+
 		default:
 			throw new Error('[[error:invalid-data]]');
 	}
@@ -750,6 +755,14 @@ Flags.targetFlagged = async function (type, id) {
 Flags.getTargetUid = async function (type, id) {
 	if (type === 'post') {
 		return await posts.getPostField(id, 'uid');
+	}
+	if (type === 'chat-message') {
+		const roomId = await Messaging.getRoomIdByMid(id);
+		if (!roomId) {
+			return 0;
+		}
+		const uid = await Messaging.getMessageField(id, 'fromuid');
+		return uid ? parseInt(uid, 10) : 0;
 	}
 	return id;
 };
@@ -980,7 +993,8 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
 		});
 	} else if (flagObj.type === 'chat-message') {
-		const roomData = await Messaging.getRoomData(flagObj.targetId);
+		const roomId = await Messaging.getRoomIdByMid(flagObj.targetId);
+		const roomData = roomId ? await Messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
 		let bodyLong = String(flagObj.target?.content || '');
 		if (bodyLong && bodyLong.length > 500) {
@@ -991,9 +1005,9 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyShort: translator.compile('notifications:user-flagged-chat-message', displayname, roomData?.roomName || targetDisplayname),
 			bodyLong: bodyLong,
 			path: `/flags/${flagObj.flagId}`,
-			nid: `flag:chat:${flagObj.targetId}:${uid}`,
+			nid: `flag:chat-message:${flagObj.targetId}:${uid}`,
 			from: uid,
-			mergeId: `notifications:user-flagged-chat|${flagObj.targetId}`,
+			mergeId: `notifications:user-flagged-chat-message|${flagObj.targetId}`,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');
