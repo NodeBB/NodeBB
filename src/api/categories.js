@@ -215,9 +215,8 @@ categoriesAPI.copyPrivileges = async (caller, data) => {
 
 	const group = data.group || '';
 	const filter = data.filter || '';
-	const [fromExists, toExists, groupExists] = await Promise.all([
-		categories.exists(data.fromCid),
-		categories.exists(data.toCid),
+	const [[fromExists, toExists], groupExists] = await Promise.all([
+		categories.exists([data.fromCid, data.toCid]),
 		group ? groups.exists(group) : true,
 	]);
 	if (!fromExists || !toExists) {
