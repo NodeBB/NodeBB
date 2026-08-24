@@ -1,5 +1,6 @@
 {
 	"notifications": "Powiadomienia",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Powiadomienie powitalne",
 	"welcome-notification-link": "Odnośnik do komunikatu powitalnego",
 	"welcome-notification-uid": "Powiadomienie powitalne użytkownika (UID)",

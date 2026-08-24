@@ -1,5 +1,6 @@
 {
 	"notifications": "Bildirimler",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Hoş Geldin Bildirimi",
 	"welcome-notification-link": "Hoş Geldin Bildirimi Bağlantısı",
 	"welcome-notification-uid": "Kullanıcı Hoş Geldiniz Bildirimi  (UID)",

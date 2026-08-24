@@ -1,5 +1,6 @@
 {
 	"notifications": "Értesítések",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Üdvözlő értesítés",
 	"welcome-notification-link": "Üdvözlő értesítés linkje",
 	"welcome-notification-uid": "Felhasználói üdvözlő értesítés (UID)",
