@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Որոնման համար մուտքագրեք օգտվողի ID",
 	"search.username": "Ըստ օգտատիրոջ անվան ",
 	"search.username-placeholder": "Մուտքագրեք օգտատիրոջ անուն որոնման համար",
+	"search.fullname": "By Full Name",
 	"search.email": "Էլ. փոստով",
 	"search.email-placeholder": "Որոնման համար մուտքագրեք էլ. փոստ",
 	"search.ip": "IP հասցեով",

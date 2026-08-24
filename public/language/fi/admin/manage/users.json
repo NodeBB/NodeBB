@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Syötä etsittävä käyttäjän ID",
 	"search.username": "Käyttäjätunnuksella",
 	"search.username-placeholder": "Syötä etsittävä käyttäjätunnus",
+	"search.fullname": "By Full Name",
 	"search.email": "Sähköpostitse",
 	"search.email-placeholder": "Syötä etsittävä sähköpostiosoite",
 	"search.ip": "IP-osoitteella",

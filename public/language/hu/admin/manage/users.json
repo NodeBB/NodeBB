@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Írj be egy azonosítót a kereséshez",
 	"search.username": "Felhasználónév szerint",
 	"search.username-placeholder": "Írj be egy felhasználónevet a kereséshez",
+	"search.fullname": "By Full Name",
 	"search.email": "Email szerint",
 	"search.email-placeholder": "Írj be egy email-t a kereséshez",
 	"search.ip": "IP-cím szerint",

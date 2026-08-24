@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "検索するユーザーIDを入力してください",
 	"search.username": "ユーザー名別",
 	"search.username-placeholder": "検索するユーザー名を入力してください",
+	"search.fullname": "By Full Name",
 	"search.email": "メール別",
 	"search.email-placeholder": "検索するメールアドレスを入力してください",
 	"search.ip": "IP アドレス別",

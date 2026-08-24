@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "搜尋使用者ID",
 	"search.username": "通過使用者名",
 	"search.username-placeholder": "輸入您想查詢的使用者名",
+	"search.fullname": "By Full Name",
 	"search.email": "通過電郵地址",
 	"search.email-placeholder": "輸入您想查詢的電郵地址",
 	"search.ip": "通過IP地址",

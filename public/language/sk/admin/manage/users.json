@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Pre hľadanie, zadajte ID používateľa",
 	"search.username": "Podľa mena používateľa",
 	"search.username-placeholder": "Zadajte hľadané používateľské meno",
+	"search.fullname": "By Full Name",
 	"search.email": "Podľa e-mailu",
 	"search.email-placeholder": "Zadajte hľadaný e-mail",
 	"search.ip": "Podľa IP adresy",

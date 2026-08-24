@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "הזינו מזהה משתמש (ID) לחיפוש",
 	"search.username": "לפי שם משתמש",
 	"search.username-placeholder": "הזינו שם משתמש לחיפוש",
+	"search.fullname": "By Full Name",
 	"search.email": "לפי דוא\"ל",
 	"search.email-placeholder": "הזינו דוא\"ל לחיפוש",
 	"search.ip": "לפי כתובת IP",

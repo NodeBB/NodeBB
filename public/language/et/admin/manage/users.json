@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Enter a user ID to search",
 	"search.username": "Kasutajanime järgi",
 	"search.username-placeholder": "Sisesta kasutajanimi, keda soovid otsida",
+	"search.fullname": "By Full Name",
 	"search.email": "Emaili kaudu",
 	"search.email-placeholder": "Sisesta email, mida soovid otsida",
 	"search.ip": "IP Aadressi järgi",

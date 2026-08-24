@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Въведете потребителски идентификатор, който да потърсите",
 	"search.username": "По име на потребител",
 	"search.username-placeholder": "Въведете потребителско име, което да потърсите",
+	"search.fullname": "By Full Name",
 	"search.email": "По е-поща",
 	"search.email-placeholder": "Въведете е-поща, която да потърсите",
 	"search.ip": "По IP адрес",
