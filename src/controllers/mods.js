@@ -33,7 +33,7 @@ modsController.flags.list = async function (req, res) {
 		quick: ['mine'],
 		sort: ['newest', 'oldest', 'reports', 'upvotes', 'downvotes', 'replies'],
 		state: ['open', 'wip', 'resolved', 'rejected'],
-		type: ['post', 'user', 'chat-message'],
+		type: ['post', 'user', 'message'],
 	};
 
 	const [isAdminOrGlobalMod, moderatedCids, { filters: allFilters }, { sorts: allSorts }] = await Promise.all([
@@ -137,8 +137,8 @@ modsController.flags.detail = async function (req, res, next) {
 		return next(); // 404
 	}
 
-	// chat-message flags require admin access regardless of global mod status
-	if (results.flagData.type === 'chat-message' && !results.isAdmin) {
+	// message flags require admin access regardless of global mod status
+	if (results.flagData.type === 'message' && !results.isAdmin) {
 		return next();
 	}
 
@@ -175,7 +175,7 @@ modsController.flags.detail = async function (req, res, next) {
 				const modUids = (await privileges.categories.getUidsWithPrivilege([cid], 'moderate'))[0];
 				uids = _.uniq(uids.concat(modUids));
 			}
-		} else if (flagData.type === 'chat-message') {
+		} else if (flagData.type === 'message') {
 			uids = admins.concat(globalMods);
 		}
 		const userData = await user.getUsersData(uids);
@@ -189,13 +189,13 @@ modsController.flags.detail = async function (req, res, next) {
 		results.flagData.type_path = 'uid';
 	} else if (results.flagData.type === 'post') {
 		results.flagData.type_path = 'post';
-	} else if (results.flagData.type === 'chat-message') {
-		results.flagData.type_path = 'chat-message';
+	} else if (results.flagData.type === 'message') {
+		results.flagData.type_path = 'message';
 	}
 
 	res.render('flags/detail', Object.assign(results.flagData, {
 		assignees: assignees,
-		type_bool: ['post', 'user', 'chat-message', 'empty'].reduce((memo, cur) => {
+		type_bool: ['post', 'user', 'message', 'empty'].reduce((memo, cur) => {
 			if (cur !== 'empty') {
 				memo[cur] = results.flagData.type === cur && (
 					!results.flagData.target ||

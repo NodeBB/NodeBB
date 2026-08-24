@@ -120,10 +120,10 @@
 				</div>
 
 				<div class="mb-3">
-					<label class="form-label" for="flags:chat-messageFlagsPerDay">{{tx("admin/settings/reputation:flags.limit-chat-message-flags-per-day")}}</label>
-					<input type="number" min="0" class="form-control" data-field="flags:chat-messageFlagsPerDay" id="flags:chat-messageFlagsPerDay">
+					<label class="form-label" for="flags:messageFlagsPerDay">{{tx("admin/settings/reputation:flags.limit-message-flags-per-day")}}</label>
+					<input type="number" min="0" class="form-control" data-field="flags:messageFlagsPerDay" id="flags:messageFlagsPerDay">
 					<p class="form-text">
-						{{tx("admin/settings/reputation:flags.limit-chat-message-flags-per-day-help")}}
+						{{tx("admin/settings/reputation:flags.limit-message-flags-per-day-help")}}
 					</p>
 				</div>
 

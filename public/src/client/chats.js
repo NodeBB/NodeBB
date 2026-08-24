@@ -446,7 +446,7 @@ define('forum/chats', [
 
 	Chats.flagMessage = function (messageId, roomId) {
 		flags.showFlagModal({
-			type: 'chat-message',
+			type: 'message',
 			id: messageId,
 			roomId: roomId,
 		});

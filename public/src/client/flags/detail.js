@@ -138,7 +138,7 @@ define('forum/flags/detail', [
 					postAction('restore', api.put, `/posts/${ajaxify.data.target.pid}/state`);
 					break;
 
-				case 'delete-chat-message': {
+				case 'delete-message': {
 					modals.confirm('[[flags:delete-message-confirm]]', function (confirm) {
 						if (!confirm) {
 							return;

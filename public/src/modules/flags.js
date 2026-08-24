@@ -100,7 +100,7 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 				const postEl = components.get('post', 'pid', id);
 				postEl.find('[component="post/flag"]').addClass('hidden').parent().attr('hidden', '');
 				postEl.find('[component="post/already-flagged"]').removeClass('hidden').parent().attr('hidden', null);
-			} else if (type === 'chat-message') {
+			} else if (type === 'message') {
 				const msgEl = components.get('chat/message', id);
 				if (msgEl.length) {
 					msgEl.find('[data-action="flag"]').closest('li').addClass('hidden');

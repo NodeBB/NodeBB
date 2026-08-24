@@ -115,7 +115,7 @@ Flags.get = async function (flagId) {
 	if (!base) {
 		throw new Error('[[error:no-flag]]');
 	}
-	const readableType = base.type === 'chat-message' ? 'Chat message' : base.type.charAt(0).toUpperCase() + base.type.slice(1);
+	const readableType = base.type === 'message' ? 'Chat message' : base.type.charAt(0).toUpperCase() + base.type.slice(1);
 	const flagObj = {
 		state: 'open',
 		assignee: null,
@@ -225,7 +225,7 @@ Flags.list = async function (data) {
 			}
 		});
 
-		const readableType = flagObj.type === 'chat-message' ? 'Chat message' : flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1);
+		const readableType = flagObj.type === 'message' ? 'Chat message' : flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1);
 		return Object.assign(flagObj, {
 			target_readable: `${readableType} ${flagObj.targetId}`,
 			datetimeISO: utils.toISOString(flagObj.datetime),
@@ -327,7 +327,7 @@ Flags.validate = async function (payload) {
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
 		}
-	} else if (payload.type === 'chat-message') {
+	} else if (payload.type === 'message') {
 		const canView = await Messaging.canViewMessage([parseInt(payload.id, 10)], payload.roomId, payload.uid);
 		if (!canView[0]) {
 			throw new Error('[[error:no-privileges]]');
@@ -675,7 +675,7 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 			}
 			break;
 
-		case 'chat-message':
+		case 'message':
 			return true;
 
 		default:
@@ -694,7 +694,7 @@ Flags.canView = async (flagId, uid) => {
 		user.isAdminOrGlobalMod(uid),
 	]);
 
-	if (type === 'chat-message') {
+	if (type === 'message') {
 		return user.isAdministrator(uid);
 	}
 
@@ -722,7 +722,7 @@ Flags.getTarget = async function (type, id, uid) {
 		postData = await topics.addPostData([postData], uid);
 		return postData[0];
 	}
-	if (type === 'chat-message') {
+	if (type === 'message') {
 		const message = await Messaging.getMessageData(parseInt(id, 10), uid, await Messaging.getRoomIdByMid(id));
 		return message && message[0] ? message[0] : {};
 	}
@@ -742,7 +742,7 @@ Flags.targetExists = async function (type, id) {
 			}
 		}
 		return await user.exists(id);
-	} else if (type === 'chat-message') {
+	} else if (type === 'message') {
 		return await Messaging.messageExists(id);
 	}
 	throw new Error('[[error:invalid-data]]');
@@ -756,7 +756,7 @@ Flags.getTargetUid = async function (type, id) {
 	if (type === 'post') {
 		return await posts.getPostField(id, 'uid');
 	}
-	if (type === 'chat-message') {
+	if (type === 'message') {
 		const roomId = await Messaging.getRoomIdByMid(id);
 		if (!roomId) {
 			return 0;
@@ -992,7 +992,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
 		});
-	} else if (flagObj.type === 'chat-message') {
+	} else if (flagObj.type === 'message') {
 		const roomId = await Messaging.getRoomIdByMid(flagObj.targetId);
 		const roomData = roomId ? await Messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
@@ -1001,13 +1001,13 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyLong = bodyLong.substring(0, 497) + '...';
 		}
 		notifObj = await notifications.create({
-			type: 'new-chat-message-flag',
-			bodyShort: translator.compile('notifications:user-flagged-chat-message', displayname, roomData?.roomName || targetDisplayname),
+			type: 'new-message-flag',
+			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomData?.roomName || targetDisplayname),
 			bodyLong: bodyLong,
 			path: `/flags/${flagObj.flagId}`,
-			nid: `flag:chat-message:${flagObj.targetId}:${uid}`,
+			nid: `flag:message:${flagObj.targetId}:${uid}`,
 			from: uid,
-			mergeId: `notifications:user-flagged-chat-message|${flagObj.targetId}`,
+			mergeId: `notifications:user-flagged-message|${flagObj.targetId}`,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');

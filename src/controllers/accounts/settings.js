@@ -180,7 +180,7 @@ async function getNotificationSettings(userData) {
 		privilegedTypes.push('notificationType_new-user-flag');
 	}
 	if (privileges.isAdmin) {
-		privilegedTypes.push('notificationType_new-chat-message-flag');
+		privilegedTypes.push('notificationType_new-message-flag');
 	}
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: notifications.baseTypes.slice(),

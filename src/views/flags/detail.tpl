@@ -52,8 +52,8 @@
 			{{{ end }}}
 			{{{ end }}}
 
-			{{{ if type_bool.chat-message }}}
-			<a class="d-flex gap-2 align-items-center btn btn-sm btn-outline-danger border border-secondary-subtle text-start" href="#" data-action="delete-chat-message"><i class="fa fa-fw fa-trash"></i> {{tx("flags:delete-message")}}</a>
+			{{{ if type_bool.message }}}
+			<a class="d-flex gap-2 align-items-center btn btn-sm btn-outline-danger border border-secondary-subtle text-start" href="#" data-action="delete-message"><i class="fa fa-fw fa-trash"></i> {{tx("flags:delete-message")}}</a>
 			{{{ end }}}
 		</div>
 
@@ -134,7 +134,7 @@
 				<blockquote>{{{ if target.aboutme }}}{target.aboutme}{{{ else }}}<em>{{tx("flags:target-aboutme-empty")}}</em>{{{ end }}}</blockquote>
 				{{{ end }}}
 
-				{{{ if type_bool.chat-message }}}
+				{{{ if type_bool.message }}}
 				<div class="d-flex gap-2 align-items-center">
 					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{target.user.userslug}">{{buildAvatar(target.user, "16px", true)}}</a>
 					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
