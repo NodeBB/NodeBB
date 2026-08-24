@@ -55,6 +55,45 @@ Crossposts.get = async function (tids, uid) {
 	return isArray ? crossposts : crossposts[0];
 };
 
+Crossposts.syncCrosspostedTopicCids = async function (crossposts, topicData) {
+	// `:tids:posts`, `:tids:votes` and `:tids:views` are only written for the topic's own
+	// category, so crossposted categories keep the values they were seeded with. Reconcile
+	// them when the topic is read, which is cheap and only runs for crossposted topics.
+	// Pinned topics are absent from these zsets by design, so they are skipped.
+	if (!crossposts.length || topicData.pinned) {
+		return;
+	}
+
+	const cids = crossposts.map(crosspost => crosspost.cid);
+	const count = cids.length;
+	const scores = await db.sortedSetsScore([
+		...cids.map(cid => `cid:${cid}:tids:posts`),
+		...cids.map(cid => `cid:${cid}:tids:votes`),
+		...cids.map(cid => `cid:${cid}:tids:views`),
+	], topicData.tid);
+
+	const postcounts = scores.slice(0, count);
+	const votes = scores.slice(count, count * 2);
+	const viewcounts = scores.slice(count * 2);
+
+	const bulkAdd = [];
+	cids.forEach((cid, index) => {
+		if (topicData.postcount !== postcounts[index]) {
+			bulkAdd.push([`cid:${cid}:tids:posts`, topicData.postcount, topicData.tid]);
+		}
+		if (topicData.votes !== votes[index]) {
+			bulkAdd.push([`cid:${cid}:tids:votes`, topicData.votes, topicData.tid]);
+		}
+		if (topicData.viewcount !== viewcounts[index]) {
+			bulkAdd.push([`cid:${cid}:tids:views`, topicData.viewcount, topicData.tid]);
+		}
+	});
+
+	if (bulkAdd.length) {
+		await db.sortedSetAddBulk(bulkAdd);
+	}
+};
+
 Crossposts.add = async function (tid, cid, uid) {
 	/**
 	 * NOTE: If uid is 0, the assumption is that it is a "system" crosspost, not a guest!

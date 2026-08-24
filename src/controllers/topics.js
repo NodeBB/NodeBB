@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 const path = require('path');
+const winston = require('winston');
 const qs = require('querystring');
 const validator = require('validator');
 
@@ -155,6 +156,11 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData.author = author;
 	topicData.crossposts = crossposts;
 	topicData.canCrosspost = canCrosspost;
+
+	// not awaited on purpose so topic loading is not blocked
+	topics.crossposts.syncCrosspostedTopicCids(crossposts, topicData)
+		.catch(err => winston.error(err.stack));
+
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;

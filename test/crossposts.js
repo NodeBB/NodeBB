@@ -102,6 +102,51 @@ describe('Crossposts', () => {
 		assert.strictEqual(after, timestamp);
 	});
 
+	it('should reconcile stale post, vote and view scores in crossposted categories', async () => {
+		const { tid } = await createTopic();
+		await topics.crossposts.add(tid, targetCategory.cid, uid);
+
+		// posts/votes/views are only ever written for the topic's own category,
+		// so stand in for the drift that accumulates there
+		await db.sortedSetAddBulk([
+			[`cid:${targetCategory.cid}:tids:posts`, 0, tid],
+			[`cid:${targetCategory.cid}:tids:votes`, -5, tid],
+			[`cid:${targetCategory.cid}:tids:views`, 0, tid],
+		]);
+
+		const [crossposts, topicData] = await Promise.all([
+			topics.crossposts.get(tid),
+			topics.getTopicData(tid),
+		]);
+		await topics.crossposts.syncCrosspostedTopicCids(crossposts, topicData);
+
+		const scores = await db.sortedSetsScore([
+			`cid:${targetCategory.cid}:tids:posts`,
+			`cid:${targetCategory.cid}:tids:votes`,
+			`cid:${targetCategory.cid}:tids:views`,
+		], tid);
+		assert.deepStrictEqual(scores, [topicData.postcount, topicData.votes, topicData.viewcount]);
+	});
+
+	it('should leave a pinned topic out of the reconciled zsets', async () => {
+		const { tid } = await createTopic();
+		await topics.tools.pin(tid, adminUid);
+		await topics.crossposts.add(tid, targetCategory.cid, uid);
+
+		const [crossposts, topicData] = await Promise.all([
+			topics.crossposts.get(tid),
+			topics.getTopicData(tid),
+		]);
+		await topics.crossposts.syncCrosspostedTopicCids(crossposts, topicData);
+
+		const scores = await db.sortedSetsScore([
+			`cid:${targetCategory.cid}:tids:posts`,
+			`cid:${targetCategory.cid}:tids:votes`,
+			`cid:${targetCategory.cid}:tids:views`,
+		], tid);
+		assert(scores.every(score => score === null), 'a pinned topic should not be re-added to these sets');
+	});
+
 	it('should remove the topic from the destination sets when uncrossposted', async () => {
 		const { tid } = await createTopic();
 		await topics.crossposts.add(tid, targetCategory.cid, uid);
