@@ -26,7 +26,7 @@ define('forum/chats', [
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	events, search, autocomplete, hooks, modals, benchpress, alerts,
-	chatModule, api, uploadHelpers, flagsModule
+	chatModule, api, uploadHelpers, flags
 ) {
 	const Chats = {
 		activeAutocomplete: new WeakMap(),
@@ -445,7 +445,7 @@ define('forum/chats', [
 	};
 
 	Chats.flagMessage = function (messageId, roomId) {
-		flagsModule.Flag.showFlagModal({
+		flags.showFlagModal({
 			type: 'chat-message',
 			id: messageId,
 			roomId: roomId,
