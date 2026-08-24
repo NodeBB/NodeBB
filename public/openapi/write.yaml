@@ -262,6 +262,8 @@ paths:
     $ref: 'write/chats/roomId/messages/mid/raw.yaml'
   /chats/{roomId}/messages/{mid}/ip:
     $ref: 'write/chats/roomId/messages/mid/ip.yaml'
+  /chats/{roomId}/messages/{mid}/permanent:
+    $ref: 'write/chats/roomId/messages/mid/permanent.yaml'
   /flags/:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:

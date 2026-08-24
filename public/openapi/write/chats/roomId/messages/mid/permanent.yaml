@@ -1,0 +1,33 @@
+delete:
+  tags:
+    - chats
+  summary: permanently delete a chat message
+  description: This operation permanently deletes a chat message, removing it from the database entirely
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 2
+  responses:
+    '200':
+      description: Message permanently deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
