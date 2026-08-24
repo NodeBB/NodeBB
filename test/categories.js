@@ -11,6 +11,8 @@ const Topics = require('../src/topics');
 const User = require('../src/user');
 const groups = require('../src/groups');
 const privileges = require('../src/privileges');
+const utils = require('../src/utils');
+const helpers = require('./helpers');
 
 describe('Categories', () => {
 	let categoryObj;
@@ -582,6 +584,120 @@ describe('Categories', () => {
 			await socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1.cid, group: 'registered-users' });
 			const canDelete = await privileges.categories.can('topics:delete', child1.cid, 0);
 			assert(!canDelete);
+		});
+
+		describe('copy privileges via API', () => {
+			let privilegeUid;
+			let unprivilegedUid;
+			let privilegeJar;
+			let unprivilegedJar;
+			let groupName;
+
+			before(async () => {
+				const privilegeUsername = utils.generateUUID().slice(0, 8);
+				const unprivilegedUsername = utils.generateUUID().slice(0, 8);
+				[privilegeUid, unprivilegedUid] = await Promise.all([
+					User.create({ username: privilegeUsername, password: '123456' }),
+					User.create({ username: unprivilegedUsername, password: '123456' }),
+				]);
+				await privileges.admin.give(['admin:privileges'], privilegeUid);
+
+				[{ jar: privilegeJar }, { jar: unprivilegedJar }] = await Promise.all([
+					helpers.loginUser(privilegeUsername, '123456'),
+					helpers.loginUser(unprivilegedUsername, '123456'),
+				]);
+
+				groupName = utils.generateUUID().slice(0, 8);
+				await groups.create({ name: groupName });
+			});
+
+			after(async () => {
+				await Promise.all([
+					User.deleteAccount(privilegeUid),
+					User.deleteAccount(unprivilegedUid),
+					groups.destroy(groupName),
+				]);
+			});
+
+			async function createCategoryPair() {
+				const [from, to] = await Promise.all([
+					Categories.create({ name: utils.generateUUID().slice(0, 8) }),
+					Categories.create({ name: utils.generateUUID().slice(0, 8) }),
+				]);
+				return { fromCid: from.cid, toCid: to.cid };
+			}
+
+			it('should copy privileges through the v3 route with only admin:privileges', async () => {
+				const { fromCid, toCid } = await createCategoryPair();
+				await privileges.categories.give(['groups:moderate'], fromCid, groupName);
+
+				const { response, body } = await helpers.request('post', `/api/v3/categories/${toCid}/privileges/copy`, {
+					jar: privilegeJar,
+					body: { fromCid },
+				});
+
+				assert.strictEqual(response.statusCode, 200);
+				assert(await groups.isMember(groupName, `cid:${toCid}:privileges:groups:moderate`));
+				const group = body.response.groups.find(group => group.name === groupName);
+				assert(group);
+				assert.strictEqual(group.privileges['groups:moderate'], true);
+			});
+
+			it('should copy only the requested group and privilege type', async () => {
+				const { fromCid, toCid } = await createCategoryPair();
+				await privileges.categories.give(['groups:moderate', 'groups:find'], fromCid, groupName);
+
+				const { response } = await helpers.request('post', `/api/v3/categories/${toCid}/privileges/copy`, {
+					jar: privilegeJar,
+					body: { fromCid, group: groupName, filter: 'moderation' },
+				});
+
+				assert.strictEqual(response.statusCode, 200);
+				assert(await groups.isMember(groupName, `cid:${toCid}:privileges:groups:moderate`));
+				assert.strictEqual(await groups.isMember(groupName, `cid:${toCid}:privileges:groups:find`), false);
+			});
+
+			it('should reject callers without admin:privileges', async () => {
+				const { fromCid, toCid } = await createCategoryPair();
+				const { response } = await helpers.request('post', `/api/v3/categories/${toCid}/privileges/copy`, {
+					jar: unprivilegedJar,
+					body: { fromCid },
+				});
+
+				assert.strictEqual(response.statusCode, 403);
+				await assert.rejects(
+					apiCategories.copyPrivileges({ uid: unprivilegedUid }, { fromCid, toCid }),
+					{ message: '[[error:no-privileges]]' },
+				);
+			});
+
+			it('should validate source and target categories', async () => {
+				const { fromCid, toCid } = await createCategoryPair();
+				await assert.rejects(
+					apiCategories.copyPrivileges({ uid: privilegeUid }, { fromCid: 9999999, toCid }),
+					{ message: '[[error:no-category]]' },
+				);
+				await assert.rejects(
+					apiCategories.copyPrivileges({ uid: privilegeUid }, { fromCid, toCid: 9999999 }),
+					{ message: '[[error:no-category]]' },
+				);
+				await assert.rejects(
+					apiCategories.copyPrivileges({ uid: privilegeUid }, { fromCid: 'all', toCid }),
+					{ message: '[[error:invalid-data]]' },
+				);
+			});
+
+			it('should validate the optional group and filter', async () => {
+				const { fromCid, toCid } = await createCategoryPair();
+				await assert.rejects(
+					apiCategories.copyPrivileges({ uid: privilegeUid }, { fromCid, toCid, group: 'does-not-exist' }),
+					{ message: '[[error:no-group]]' },
+				);
+				await assert.rejects(
+					apiCategories.copyPrivileges({ uid: privilegeUid }, { fromCid, toCid, filter: 'does-not-exist' }),
+					{ message: '[[error:invalid-data]]' },
+				);
+			});
 		});
 	});
 

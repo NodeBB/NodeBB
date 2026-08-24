@@ -136,6 +136,8 @@ paths:
     $ref: 'write/categories/cid/watch/member.yaml'
   /categories/{cid}/privileges:
     $ref: 'write/categories/cid/privileges.yaml'
+  /categories/{cid}/privileges/copy:
+    $ref: 'write/categories/cid/privileges/copy.yaml'
   /categories/{cid}/privileges/{privilege}:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
   /categories/{cid}/privileges/{privilege}/{member}:

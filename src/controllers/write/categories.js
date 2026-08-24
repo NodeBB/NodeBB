@@ -81,6 +81,18 @@ Categories.getPrivileges = async (req, res) => {
 	helpers.formatApiResponse(200, res, await api.categories.getPrivileges(req, { cid: req.params.cid }));
 };
 
+Categories.copyPrivileges = async (req, res) => {
+	await api.categories.copyPrivileges(req, {
+		fromCid: req.body.fromCid,
+		toCid: req.params.cid,
+		group: req.body.group,
+		filter: req.body.filter,
+	});
+
+	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
+	helpers.formatApiResponse(200, res, privilegeSet);
+};
+
 Categories.setPrivilege = async (req, res) => {
 	const { cid, privilege } = req.params;
 	const member = req.params.member || req.body.member;

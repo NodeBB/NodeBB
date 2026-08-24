@@ -8,6 +8,7 @@ const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 const categoriesAPI = module.exports;
 
@@ -197,6 +198,38 @@ categoriesAPI.getPrivileges = async (caller, { cid }) => {
 	}
 
 	return responsePayload;
+};
+
+categoriesAPI.copyPrivileges = async (caller, data) => {
+	await hasAdminPrivilege(caller.uid, 'privileges');
+
+	if (!data || !utils.isNumber(data.fromCid) || !utils.isNumber(data.toCid)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (data.group !== undefined && typeof data.group !== 'string') {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (data.filter !== undefined && typeof data.filter !== 'string') {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const group = data.group || '';
+	const filter = data.filter || '';
+	const [[fromExists, toExists], groupExists] = await Promise.all([
+		categories.exists([data.fromCid, data.toCid]),
+		group ? groups.exists(group) : true,
+	]);
+	if (!fromExists || !toExists) {
+		throw new Error('[[error:no-category]]');
+	}
+	if (!groupExists) {
+		throw new Error('[[error:no-group]]');
+	}
+	if (filter && !privileges.categories.getPrivilegesByFilter(filter).length) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	await categories.copyPrivilegesFrom(data.fromCid, data.toCid, group, filter);
 };
 
 categoriesAPI.setPrivilege = async (caller, data) => {
