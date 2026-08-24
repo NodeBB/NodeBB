@@ -111,11 +111,7 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	hostname = hostname.trim();
 
 	const cached = webfingerCache.get(id);
-	if (cached !== undefined) {
-		// Gate cache read on strict: strict queries of cached split-domain payloads return false
-		if (strict && cached.splitDomain) {
-			return false;
-		}
+	if (cached !== undefined && !(strict && cached.splitDomain)) {
 		return cached;
 	}
 
@@ -206,19 +202,6 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	return payload;
 };
 
-/**
- * Verify an actor's identity via two-way WebFinger validation.
- *
- * For same-domain actors (standard), performs a single backreference check
- * (domain B WebFinger must resolve to the actor's own id).
- *
- * For split-domain actors, performs a two-way validation:
- *   1. Backreference via non-strict query on domain B (actor's id host)
- *   2. Forward via strict query on domain A (subject's host) — only if split-domain is enabled
- *
- *   Returns false if actorId cannot be parsed as a URI (shouldn't happen for valid actors).
- *   Returns the structured verdict on success.
- */
 Helpers.verifyActorWebfinger = async (actorId, actor) => {
 	if (!Helpers.isUri(actorId)) {
 		return false;
@@ -254,27 +237,18 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 		};
 	}
 
-	// Subject points to a different domain → candidate split-domain.
-	// Check if split-domain is enabled via config.
 	if (!meta.config.activitypubAllowSplitDomain) {
-		// Split-domain is disabled — reject actors whose subject hostname differs.
+		// Split-domain disabled; reject actors whose subject hostname differs
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
 	}
 
-	// Step 2: Forward query on domain A (the subject's host) with strict mode.
-	// This ensures domain A explicitly confirms this actor on B.
 	const forwardResult = await Helpers.query(`${preferredUsername}@${normalizedSubjectHost}`, { strict: true });
 	if (!forwardResult || forwardResult.actorUri !== actorId) {
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
 	}
 
-	// Two-way check passed — this is a genuine split-domain actor.
-	// Blocklist check: if domain A (canonical) is blocked, reject.
-	const blockCheck = await activitypub.instances.isAllowed(normalizedSubjectHost);
-	if (!blockCheck.allowed) {
-		activitypub.helpers.log(
-			`[activitypub/verify] canonical domain blocked (${normalizedSubjectHost}: ${blockCheck.severity}) for ${actorId}`,
-		);
+	const blocked = await activitypub.instances.isAllowed(normalizedSubjectHost);
+	if (!blocked.allowed) {
 		return {
 			ok: false,
 			splitDomain: true,
