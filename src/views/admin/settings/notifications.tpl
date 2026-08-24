@@ -5,6 +5,11 @@
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<div id="notifications" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header hidden">{{tx("admin/settings/notifications:notifications")}}</h5>
+				<div class="form-check form-switch mb-3">
+					<input class="form-check-input" type="checkbox" id="disableNotificationEmails" data-field="disableNotificationEmails">
+					<label for="disableNotificationEmails" class="form-check-label">{{tx("admin/settings/notifications:disable-notification-emails")}}</label>
+				</div>
+
 				<div class="mb-3">
 					<label class="form-label">{{tx("admin/settings/notifications:welcome-notification")}}</label>
 					<textarea class="form-control" data-field="welcomeNotification"></textarea>

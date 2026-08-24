@@ -169,6 +169,7 @@
     "emailConfirmInterval": 10,
     "emailConfirmExpiry": 24,
     "removeEmailNotificationImages": 0,
+    "disableNotificationEmails": 0,
     "sendValidationEmail": 1,
     "includeUnverifiedEmails": 0,
     "emailPrompt": 1,
