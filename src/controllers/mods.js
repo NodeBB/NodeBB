@@ -126,6 +126,7 @@ modsController.flags.list = async function (req, res) {
 
 modsController.flags.detail = async function (req, res, next) {
 	const results = await utils.promiseParallel({
+		isAdmin: user.isAdministrator(req.uid),
 		isAdminOrGlobalMod: user.isAdminOrGlobalMod(req.uid),
 		moderatedCids: user.getModeratedCids(req.uid),
 		flagData: flags.get(req.params.flagId),
@@ -134,6 +135,11 @@ modsController.flags.detail = async function (req, res, next) {
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
 	if (!results.flagData || (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length))) {
 		return next(); // 404
+	}
+
+	// chat-message flags require admin access regardless of global mod status
+	if (results.flagData.type === 'chat-message' && !results.isAdmin) {
+		return next();
 	}
 
 	// extra checks for plain moderators
@@ -149,9 +155,6 @@ modsController.flags.detail = async function (req, res, next) {
 			if (!isFlagInModeratedCids.includes(true)) {
 				return next();
 			}
-		}
-		if (results.flagData.type === 'chat-message') {
-			return next();
 		}
 	}
 
