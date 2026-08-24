@@ -234,6 +234,44 @@ describe('Admin Controllers', () => {
 		assert.strictEqual(body.users[0].username, 'admin');
 	});
 
+	it('should expose full name search in the ACP user selector', async () => {
+		await groups.join('administrators', adminUid);
+		({ jar } = await helpers.loginUser('admin', 'barbar'));
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/users`, { jar: jar });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body.includes('<option value="fullname"'));
+		assert(body.includes('By Full Name'));
+	});
+
+	it('should search users by full name in the ACP', async () => {
+		await groups.join('administrators', adminUid);
+		({ jar } = await helpers.loginUser('admin', 'barbar'));
+		const uids = await Promise.all([
+			user.create({ username: 'fullnamesearch-acp-1', fullname: 'Profile Scanner Match' }),
+			user.create({ username: 'fullnamesearch-acp-2', fullname: 'Profile Scanner Match' }),
+		]);
+		const { response, body } = await request.get(
+			`${nconf.get('url')}/api/admin/manage/users?query=pRoFiLe%20ScAnNeR&searchBy=fullname`,
+			{ jar: jar, json: true }
+		);
+		assert.strictEqual(response.statusCode, 200);
+		assert.deepStrictEqual(body.users.map(user => user.uid).sort(), uids.sort());
+		assert.strictEqual(body.matchCount, 2);
+		assert.strictEqual(body.page, 1);
+		assert.strictEqual(body.pageCount, 1);
+		assert.strictEqual(body.resultsPerPage, 50);
+		assert.strictEqual(body.searchBy_fullname, true);
+	});
+
+	it('should keep ACP full name search restricted to administrators', async () => {
+		const { jar: regularJar } = await helpers.loginUser('regular', 'regularpwd');
+		const { response } = await request.get(
+			`${nconf.get('url')}/api/admin/manage/users?query=profile&searchBy=fullname`,
+			{ jar: regularJar, json: true }
+		);
+		assert.strictEqual(response.statusCode, 403);
+	});
+
 	it('should return empty results if query is too short', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users?query=a`, { jar: jar });
 		assert.strictEqual(response.statusCode, 200);

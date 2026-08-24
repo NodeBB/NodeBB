@@ -13,6 +13,7 @@
 				</div>
 				<select id="user-search-by" class="form-select form-select-sm w-auto">
 					<option value="username" {{{if searchBy_username}}}selected{{{end}}}>{{tx("admin/manage/users:search.username")}}</option>
+					<option value="fullname" {{{if searchBy_fullname}}}selected{{{end}}}>{{tx("admin/manage/users:search.fullname")}}</option>
 					<option value="email" {{{if searchBy_email}}}selected{{{end}}}>{{tx("admin/manage/users:search.email")}}</option>
 					<option value="uid" {{{if searchBy_uid}}}selected{{{end}}}>{{tx("admin/manage/users:search.uid")}}</option>
 					<option value="ip" {{{if searchBy_ip}}}selected{{{end}}}>{{tx("admin/manage/users:search.ip")}}</option>
