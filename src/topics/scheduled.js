@@ -48,13 +48,13 @@ async function postTids(tids) {
 	await Promise.all(topicsData.map(t => topics.restore(t.tid)));
 	await Promise.all(topicsData.map(t => topics.updateLastPostTimeFromLastPid(t.tid)));
 
-	await Promise.all([].concat(
+	await Promise.all([
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(topicsData),
 		federatePosts(uids, topicsData),
-		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
-	));
+	]);
+	await Promise.all(topicsData.map(topicData => unpin(topicData.tid, topicData)));
 }
 
 // topics/tools.js#pin/unpin would block non-admins/mods, thus the local versions
