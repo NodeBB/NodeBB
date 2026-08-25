@@ -235,6 +235,13 @@ Mocks.profile = async (actors) => {
 			return null;
 		}
 
+		// For split-domain: use the canonical domain (domain A) for the handle
+		// instead of the actor's id hostname (domain B)
+		const canonicalHost = actor._canonicalHandle ?
+			actor._canonicalHandle.split('@').slice(1).join('@') :
+			hostname;
+		const canonicalHostname = canonicalHost;
+
 		let picture;
 		if (icon) {
 			picture = typeof icon === 'string' ? icon : icon.url;
@@ -278,8 +285,8 @@ Mocks.profile = async (actors) => {
 
 		const payload = {
 			uid,
-			username: `${preferredUsername}@${hostname}`,
-			userslug: `${preferredUsername}@${hostname}`,
+			username: `${preferredUsername}@${canonicalHostname}`,
+			userslug: `${preferredUsername}@${canonicalHostname}`.toLowerCase(),
 			displayname: name,
 			fullname: name,
 			joindate: new Date(published).getTime() || Date.now(),
@@ -299,6 +306,9 @@ Mocks.profile = async (actors) => {
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
 			customFields: customFields && new URLSearchParams(customFields).toString(),
+
+			// Store the canonical webfinger handle for split-domain identity verification
+			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 
 		return payload;
@@ -334,6 +344,12 @@ Mocks.category = async (actors) => {
 			return null;
 		}
 
+		// For split-domain: use the canonical domain (domain A) for the handle
+		const canonicalHost = actor._canonicalHandle ?
+			actor._canonicalHandle.split('@').slice(1).join('@') :
+			hostname;
+		const canonicalHostname = canonicalHost;
+
 		// No support for category avatars yet ;(
 		// let picture;
 		// if (image) {
@@ -348,8 +364,8 @@ Mocks.category = async (actors) => {
 		const payload = {
 			cid,
 			name,
-			handle: `${preferredUsername}@${hostname}`,
-			slug: `${preferredUsername}@${hostname}`,
+			handle: `${preferredUsername}@${canonicalHostname}`,
+			slug: `${preferredUsername}@${canonicalHostname}`,
 			description: summary,
 			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
 			icon: backgroundImage ? 'fa-nbb-none' : 'fa-comments',
@@ -369,6 +385,9 @@ Mocks.category = async (actors) => {
 			_activitypub: {
 				postingRestrictedToMods,
 			},
+
+			// Store the canonical webfinger handle for split-domain identity verification
+			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 
 		return payload;

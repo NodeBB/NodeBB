@@ -98,7 +98,7 @@ Helpers.isWebfinger = (value) => {
 	return false;
 };
 
-Helpers.query = async (id) => {
+Helpers.query = async (id, { strict = true } = {}) => {
 	const isUri = Helpers.isUri(id);
 	// username@host ids use acct: URI schema
 	const uri = isUri ? new URL(id) : new URL(`acct:${id}`);
@@ -111,7 +111,7 @@ Helpers.query = async (id) => {
 	hostname = hostname.trim();
 
 	const cached = webfingerCache.get(id);
-	if (cached !== undefined) {
+	if (cached !== undefined && !(strict && cached.splitDomain)) {
 		return cached;
 	}
 
@@ -177,18 +177,91 @@ Helpers.query = async (id) => {
 	} else {
 		subjectHostname = subjectUrl.hostname;
 	}
-	if (subjectHostname !== hostname) {
+
+	// Check for split-domain: queried hostname differs from subject hostname.
+	const splitDomain = subjectHostname.toLowerCase() !== hostname.toLowerCase();
+	if (splitDomain && strict) {
+		// Strict mode: reject responses where the subject hostname differs
 		return false;
 	}
 
-	const payload = { subject, username, hostname, actorUri, publicKey, _raw: body };
+	const payload = {
+		subject, username, hostname, actorUri, publicKey,
+		_raw: body,
+		subjectHostname: subjectUrl.protocol === 'acct:' ? subjectHostname : subjectHostname,
+		splitDomain,
+	};
 	const claimedId = subjectUrl.pathname;
-	webfingerCache.set(claimedId, payload);
+	// Always cache by the queried id so subsequent queries hit the cache
+	webfingerCache.set(id, payload);
+	// Also cache by the claimed subject path for alias lookups
 	if (claimedId !== id) {
-		webfingerCache.set(id, payload);
+		webfingerCache.set(claimedId, payload);
 	}
 
 	return payload;
+};
+
+Helpers.verifyActorWebfinger = async (actorId, actor) => {
+	if (!Helpers.isUri(actorId)) {
+		return false;
+	}
+
+	const idHostname = new URL(actorId).hostname;
+	const preferredUsername = actor.preferredUsername || 'user';
+
+	// Step 1: Backreference — non-strict query on domain B (the actor's id host).
+	// This allows the WebFinger subject to point elsewhere (split-domain forward target).
+	const backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
+	if (!backref) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'no-backreference' };
+	}
+
+	// The backreference self-link must point at this exact actor document.
+	if (backref.actorUri !== actorId) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
+	}
+
+	// The subject's hostname tells us the canonical domain (A).
+	// Missing subjectHostname (e.g., legacy cache entries) defaults to same-domain.
+	const subjectHost = backref.subjectHostname;
+	if (!subjectHost || subjectHost.toLowerCase() === idHostname.toLowerCase()) {
+		return {
+			ok: true,
+			splitDomain: false,
+			canonicalHandle: `${preferredUsername}@${idHostname}`,
+			reason: null,
+		};
+	}
+
+	const normalizedSubjectHost = subjectHost.toLowerCase();
+
+	if (!meta.config.activitypubAllowSplitDomain) {
+		// Split-domain disabled; reject actors whose subject hostname differs
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
+	}
+
+	const forwardResult = await Helpers.query(`${preferredUsername}@${normalizedSubjectHost}`, { strict: true });
+	if (!forwardResult || forwardResult.actorUri !== actorId) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
+	}
+
+	const blocked = await activitypub.instances.isAllowed(normalizedSubjectHost);
+	if (!blocked.allowed) {
+		return {
+			ok: false,
+			splitDomain: true,
+			canonicalHandle: null,
+			reason: 'canonical-blocked',
+		};
+	}
+
+	return {
+		ok: true,
+		splitDomain: true,
+		canonicalHandle: `${preferredUsername}@${normalizedSubjectHost}`,
+		reason: 'split-domain',
+	};
 };
 
 Helpers.generateKeys = async (type, id) => {
