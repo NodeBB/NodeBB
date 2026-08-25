@@ -27,7 +27,7 @@ delete:
             type: object
             properties:
               status:
-                $ref: ../../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties: {}
