@@ -45,7 +45,7 @@ module.exports = function () {
 	setupApiRoute(router, 'put', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.edit);
 	setupApiRoute(router, 'post', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.restore);
 	setupApiRoute(router, 'put', '/:roomId/messages/:mid/state', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.restore);
-	setupApiRoute(router, 'delete', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.permanentlyDelete);
+	setupApiRoute(router, 'delete', '/:roomId/messages/:mid', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.purge);
 	setupApiRoute(router, 'delete', '/:roomId/messages/:mid/state', [...middlewares, middleware.assert.room, middleware.assert.message], controllers.write.chats.messages.delete);
 
 	setupApiRoute(router, 'get', '/:roomId/messages/:mid/raw', [...middlewares, middleware.assert.room], controllers.write.chats.messages.getRaw);
