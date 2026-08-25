@@ -45,10 +45,8 @@ async function postTids(tids) {
 
 	// Restore first to be not filtered for being deleted
 	// Restoring handles "updateRecentTid"
-	await Promise.all([].concat(
-		topicsData.map(topicData => topics.restore(topicData.tid)),
-		topicsData.map(topicData => topics.updateLastPostTimeFromLastPid(topicData.tid))
-	));
+	await Promise.all(topicsData.map(t => topics.restore(t.tid)));
+	await Promise.all(topicsData.map(t => topics.updateLastPostTimeFromLastPid(t.tid)));
 
 	await Promise.all([].concat(
 		sendNotifications(uids, topicsData),
