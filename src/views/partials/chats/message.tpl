@@ -52,15 +52,15 @@
 						<li class="dropdown-divider"></li>
 						{{{ end }}}
 
+						<li>
+							<a href="#" class="dropdown-item rounded-1" data-action="flag" data-mid="{messages.mid}" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-flag text-muted"></i> {{tx("flags:report")}}</span></a>
+						</li>
 						{{{ if isAdminOrGlobalMod }}}
 						<li>
 							<a href="#" class="dropdown-item rounded-1 chat-ip-button" role="menuitem">
 								<span class="d-inline-flex align-items-center gap-2 show"><i class="fa fa-fw fa-info-circle text-muted"></i> {{tx("modules:chat.show-ip")}}</span>
 								<span class="d-inline-flex align-items-center gap-2 copy hidden"><i class="fa fa-fw fa-copy text-muted"></i> <span class="copy-ip-text"></span></span>
 							</a>
-						</li>
-						<li>
-							<a href="#" class="dropdown-item rounded-1" data-action="flag" data-mid="{messages.mid}" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-flag text-muted"></i> {{tx("flags:report")}}</span></a>
 						</li>
 						{{{ end }}}
 
