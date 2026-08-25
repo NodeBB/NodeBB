@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "每个 IP 地址每分钟允许的公钥获取请求最大数量。（默认值：256）",
 	"allowLoopback": "允许环回处理",
 	"allowLoopback-help": "仅用于调试目的，您最好将其禁用。",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
 	"parentTraversalDepth": "父级遍历深度",
 	"parentTraversalDepth-help": "构建上下文时，沿回复链向上遍历的最大次数。（默认值：50）",
 

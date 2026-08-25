@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Povolit zpracování smyčky",
 	"allowLoopback-help": "Užitečné pouze pro účely ladění. Pravděpodobně byste měli ponechat tuto možnost vypnutou.",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
 	"parentTraversalDepth": "Hloubka prohledávání stromové struktury",
 	"parentTraversalDepth-help": "Maximální počet opakování procházení řetězce odpovědí při vytváření kontextu. (Výchozí hodnota: 50)",
 

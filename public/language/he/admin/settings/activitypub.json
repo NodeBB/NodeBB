@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "המספר המרבי של בקשות לאחזור מפתח ציבורי המותר לדקה לכל IP. (ברירת מחדל: 256)",
 	"allowLoopback": "אפשר עיבוד loopback",
 	"allowLoopback-help": "שימושי למטרות ניפוי באגים בלבד. אתם כנראה תרצו להשאיר את זה מושבת.",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
 	"parentTraversalDepth": "Parent traversal עומק",
 	"parentTraversalDepth-help": "מספר מרבי של פעמים לעבור את שרשרת התשובות בעת בניית הקשר. (ברירת מחדל: 50)",
 

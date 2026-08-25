@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "Tillat behandling av egne aktiviteter",
 	"allowLoopback-help": "Bare nyttig ved feilsøking. Du bør vanligvis la dette være deaktivert.",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
 	"parentTraversalDepth": "Nivå for gjennomgang av svartråd",
 	"parentTraversalDepth-help": "Maksimalt antall nivåer systemet skal gå oppover i svartråden når kontekst bygges. (Standard: 50)",
 

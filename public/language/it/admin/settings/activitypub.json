@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Numero massimo di richieste di recupero della chiave pubblica consentite al minuto per IP. (Predefinito: 256)",
 	"allowLoopback": "Consenti l'elaborazione del loopback",
 	"allowLoopback-help": "Utile solo a scopo di debug. Probabilmente è meglio lasciarlo disattivato.",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
 	"parentTraversalDepth": "Profondità della traversata parentale",
 	"parentTraversalDepth-help": "Numero massimo di volte in cui percorrere la catena di risposte durante la creazione del contesto. (Predefinito: 50)",
 

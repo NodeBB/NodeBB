@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Максимален брой заявки за получаване на публичния ключ, които са разрешени в рамките на една минута от един и същ IP адрес. (по подразбиране: 256)",
 	"allowLoopback": "Разрешаване на обработката на локална обратна връзка",
 	"allowLoopback-help": "Полезно само за дебъгване. Най-добре е това да бъде изключено",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
 	"parentTraversalDepth": "Дълбочина на обхождане нагоре",
 	"parentTraversalDepth-help": "Максимален брой стъпки за обхождане нагоре по веригата на отговорите при изграждане на контекст. (по подразбиране: 50)",
 
