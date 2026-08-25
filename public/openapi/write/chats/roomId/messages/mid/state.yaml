@@ -1,8 +1,8 @@
 delete:
   tags:
     - chats
-  summary: permanently delete a chat message
-  description: This operation permanently deletes a chat message, removing it from the database entirely
+  summary: delete a chat message
+  description: This operation soft-deletes a chat message (sets the deleted flag)
   parameters:
     - in: path
       name: roomId
@@ -20,14 +20,14 @@ delete:
       example: 2
   responses:
     '200':
-      description: Message permanently deleted
+      description: Message successfully deleted
       content:
         application/json:
           schema:
             type: object
             properties:
               status:
-                $ref: ../../../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties: {}
