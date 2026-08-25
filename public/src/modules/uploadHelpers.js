@@ -65,8 +65,23 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 		const postContainer = options.container;
 		const drop = options.container.find('.imagedrop');
 
+		function onDocumentDragLeave(e) {
+			// relatedTarget is null when the drag left the window or was cancelled with esc
+			if (!e.originalEvent.relatedTarget) {
+				hideDrop();
+			}
+		}
+
+		function hideDrop() {
+			drop.hide();
+			drop.off('dragleave', hideDrop);
+			$(document)
+				.off('dragend drop', hideDrop)
+				.off('dragleave', onDocumentDragLeave);
+		}
+
 		postContainer.on('dragenter', function onDragEnter() {
-			if (draggingDocument) {
+			if (draggingDocument || drop.is(':visible')) {
 				return;
 			}
 			drop.css('top', '0px');
@@ -74,10 +89,12 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			drop.css('line-height', postContainer.height() + 'px');
 			drop.show();
 
-			drop.on('dragleave', function () {
-				drop.hide();
-				drop.off('dragleave');
-			});
+			drop.on('dragleave', hideDrop);
+			// the drag can end without dragleave/drop ever firing on the overlay
+			// (cancelled with esc, or dropped outside of it), leaving it stuck open
+			$(document)
+				.on('dragend drop', hideDrop)
+				.on('dragleave', onDocumentDragLeave);
 		});
 
 		drop.on('drop', function onDragDrop(e) {
@@ -98,7 +115,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				});
 			}
 
-			drop.hide();
+			hideDrop();
 			return false;
 		});
 
@@ -112,8 +129,8 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			.on('dragstart', function () {
 				draggingDocument = true;
 			})
-			.off('dragend')
-			.on('dragend, mouseup', function () {
+			.off('dragend mouseup')
+			.on('dragend mouseup', function () {
 				draggingDocument = false;
 			});
 

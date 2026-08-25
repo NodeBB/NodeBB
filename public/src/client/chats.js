@@ -762,6 +762,9 @@ define('forum/chats', [
 			socket.emit('modules.chats.enter', roomId);
 			const chatEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
 			chatEl.addClass('active');
+			if (chatEl.length) {
+				chatEl[0].scrollIntoView({ block: 'nearest' });
+			}
 			if (chatEl.hasClass('unread')) {
 				api.del(`/chats/${roomId}/state`, {});
 				chatEl.removeClass('unread');

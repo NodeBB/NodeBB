@@ -83,7 +83,7 @@ define('notifications', [
 						notifications: notifs,
 						list: notifList,
 					});
-					callback();
+					callback({ unread: data.unread, read: data.read });
 				});
 			});
 		}).catch(alerts.error);
