@@ -180,6 +180,9 @@ async function getNotificationSettings(userData) {
 	if (privileges.isAdmin || privileges.isGlobalMod) {
 		privilegedTypes.push('notificationType_new-user-flag');
 	}
+	if (privileges.isAdmin) {
+		privilegedTypes.push('notificationType_new-message-flag');
+	}
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: notifications.baseTypes.slice(),
 		privilegedTypes: privilegedTypes,

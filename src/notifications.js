@@ -60,6 +60,7 @@ Notifications.privilegedTypes = [
 	'notificationType_post-queue',
 	'notificationType_new-post-flag',
 	'notificationType_new-user-flag',
+	'notificationType_new-message-flag',
 ];
 
 const notificationPruneCutoff = 2592000000; // one month

@@ -298,13 +298,63 @@ async function setupData() {
 	await flags.appendNote(flagId, 1, 'test note', 1626446956652);
 	await flags.create('post', 2, unprivUid, 'sample reasons', Date.now()); // for testing flag notes (since flag 1 deleted)
 
-	// Create a new chat room & send a message
-	const roomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
+	// Create a chat room & multiple messages for chat deletion/restoration tests
+	const chatRoomId = await messaging.newRoom(adminUid, { uids: [unprivUid] });
 	await messaging.sendMessage({
-		roomId,
+		roomId: chatRoomId,
 		uid: adminUid,
 		content: 'this is a chat message',
 	});
+	// Create a second message for permanent delete test
+	const secondMsg = await messaging.sendMessage({
+		roomId: chatRoomId,
+		uid: adminUid,
+		content: 'this is another chat message',
+	});
+	// Create a third message for POST /mid restore test (soft-delete it)
+	const restorePostMsg = await messaging.sendMessage({
+		roomId: chatRoomId,
+		uid: adminUid,
+		content: 'this is a message for POST restore testing',
+	});
+	await messaging.deleteMessage(restorePostMsg.mid, adminUid);
+	// Create a fourth message for PUT /mid/state restore test (soft-delete it)
+	const restoreStateMsg = await messaging.sendMessage({
+		roomId: chatRoomId,
+		uid: adminUid,
+		content: 'this is a message for PUT state restore testing',
+	});
+	await messaging.deleteMessage(restoreStateMsg.mid, adminUid);
+
+	// Get the mid of the first message for test mock data
+	const [firstMsg] = await messaging.getMessages({ callerUid: adminUid, uid: adminUid, roomId: chatRoomId });
+	// Get the mid of the second message (for permanent delete test)
+	const [secondMsgData] = await messaging.getMessagesData([secondMsg.mid], adminUid, chatRoomId);
+	// Get the mid of the POST restore message
+	const [restorePostMsgData] = await messaging.getMessagesData([restorePostMsg.mid], adminUid, chatRoomId);
+	// Get the mid of the PUT state restore message
+	const [restoreStateMsgData] = await messaging.getMessagesData([restoreStateMsg.mid], adminUid, chatRoomId);
+
+	mocks.put['/chats/{roomId}/messages/{mid}/state'] = [
+		{ in: 'path', name: 'roomId', example: chatRoomId },
+		{ in: 'path', name: 'mid', example: restoreStateMsgData.mid },
+	];
+	mocks.delete['/chats/{roomId}/messages/{mid}/state'] = [
+		{ in: 'path', name: 'roomId', example: chatRoomId },
+		{ in: 'path', name: 'mid', example: firstMsg.mid },
+	];
+	mocks.delete['/chats/{roomId}/messages/{mid}'] = [
+		{ in: 'path', name: 'roomId', example: chatRoomId },
+		{ in: 'path', name: 'mid', example: secondMsgData.mid },
+	];
+	mocks.post['/chats/{roomId}/messages/{mid}'] = [
+		{ in: 'path', name: 'roomId', example: chatRoomId },
+		{ in: 'path', name: 'mid', example: restorePostMsgData.mid },
+	];
+	mocks.get['/chats/{roomId}/messages/{mid}/ip'] = [
+		{ in: 'path', name: 'roomId', example: chatRoomId },
+		{ in: 'path', name: 'mid', example: firstMsg.mid },
+	];
 
 	// Create an empty file to test DELETE /files and thumb deletion
 	fs.closeSync(fs.openSync(path.resolve(nconf.get('upload_path'), 'files/test.txt'), 'w'));

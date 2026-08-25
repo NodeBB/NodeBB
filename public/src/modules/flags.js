@@ -6,9 +6,11 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 	let flagModal;
 	let flagCommit;
 	let flagReason;
+	let currentData = {};
 
 	Flag.showFlagModal = function (data) {
-		data.remote = URL.canParse(data.id) ? new URL(data.id).hostname : false;
+		currentData = data;
+		data.remote = data.id && URL.canParse(data.id) ? new URL(data.id).hostname : false;
 
 		app.parseAndTranslate('modals/flag', data, function (html) {
 			flagModal = html;
@@ -38,7 +40,7 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 					reason = flagReason.val();
 				}
 				const notifyRemote = $('input[name="flag-notify-remote"]').is(':checked');
-				createFlag(data.type, data.id, reason, notifyRemote);
+				createFlag(currentData.type, currentData.id, reason, notifyRemote);
 			});
 
 			flagModal.on('click', '#flag-reason-other', function () {
@@ -86,7 +88,7 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 		if (!type || !id || !reason) {
 			return;
 		}
-		const data = { type: type, id: id, reason: reason, notifyRemote: notifyRemote };
+		const data = { type: type, id: id, reason: reason, notifyRemote: notifyRemote, roomId: currentData.roomId };
 		api.post('/flags', data, function (err, flagId) {
 			if (err) {
 				return alerts.error(err);
@@ -98,6 +100,11 @@ define('flags', ['hooks', 'components', 'api', 'alerts'], function (hooks, compo
 				const postEl = components.get('post', 'pid', id);
 				postEl.find('[component="post/flag"]').addClass('hidden').parent().attr('hidden', '');
 				postEl.find('[component="post/already-flagged"]').removeClass('hidden').parent().attr('hidden', null);
+			} else if (type === 'message') {
+				const msgEl = components.get('chat/message', id);
+				if (msgEl.length) {
+					msgEl.find('[data-action="flag"]').closest('li').addClass('hidden');
+				}
 			}
 			hooks.fire('action:flag.create', { flagId: flagId, data: data });
 		});

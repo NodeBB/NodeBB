@@ -45,6 +45,20 @@ module.exports = function (Messaging) {
 		await db.setObject(`message:${mid}`, data);
 	};
 
+	Messaging.getRoomIdByMid = async (mid) => {
+		const roomId = await Messaging.getMessageField(mid, 'roomId');
+		return roomId ? parseInt(roomId, 10) : null;
+	};
+
+	Messaging.getMessageData = async (mid, uid, roomId) => {
+		roomId = roomId || await Messaging.getRoomIdByMid(mid);
+		if (!roomId) {
+			return [];
+		}
+		const message = await Messaging.getMessagesData([mid], uid, roomId, false);
+		return message;
+	};
+
 	Messaging.getMessagesData = async (mids, uid, roomId, isNew) => {
 		let messages = await Messaging.getMessagesFields(mids, []);
 		messages = messages

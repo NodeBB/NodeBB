@@ -18,6 +18,7 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const batch = require('./batch');
 const translator = require('./translator');
+const messaging = require('./messaging');
 
 const Flags = module.exports;
 
@@ -111,12 +112,13 @@ Flags.get = async function (flagId) {
 	if (!base) {
 		throw new Error('[[error:no-flag]]');
 	}
+	const readableType = base.type === 'message' ? 'Chat message' : base.type.charAt(0).toUpperCase() + base.type.slice(1);
 	const flagObj = {
 		state: 'open',
 		assignee: null,
 		...base,
 		datetimeISO: utils.toISOString(base.datetime),
-		target_readable: `${base.type.charAt(0).toUpperCase() + base.type.slice(1)} ${base.targetId}`,
+		target_readable: `${readableType} ${base.targetId}`,
 		target: await Flags.getTarget(base.type, base.targetId, 0),
 		notes,
 		reports,
@@ -220,8 +222,9 @@ Flags.list = async function (data) {
 			}
 		});
 
+		const readableType = flagObj.type === 'message' ? 'Chat message' : flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1);
 		return Object.assign(flagObj, {
-			target_readable: `${flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1)} ${flagObj.targetId}`,
+			target_readable: `${readableType} ${flagObj.targetId}`,
 			datetimeISO: utils.toISOString(flagObj.datetime),
 		});
 	}));
@@ -320,6 +323,11 @@ Flags.validate = async function (payload) {
 		const editable = await privileges.users.canEdit(payload.uid, payload.id);
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
+		}
+	} else if (payload.type === 'message') {
+		const canView = await messaging.canViewMessage([parseInt(payload.id, 10)], payload.roomId, payload.uid);
+		if (!canView[0]) {
+			throw new Error('[[error:no-privileges]]');
 		}
 	} else {
 		throw new Error('[[error:invalid-data]]');
@@ -630,27 +638,6 @@ Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
-Flags.canView = async (flagId, uid) => {
-	const exists = await db.isSortedSetMember('flags:datetime', flagId);
-	if (!exists) {
-		return false;
-	}
-
-	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
-		db.getObject(`flag:${flagId}`),
-		user.isAdminOrGlobalMod(uid),
-	]);
-
-	if (type === 'post') {
-		const cid = await Flags.getTargetCid(type, targetId);
-		const isModerator = await user.isModerator(uid, cid);
-
-		return isAdminOrGlobalMod || isModerator;
-	}
-
-	return isAdminOrGlobalMod;
-};
-
 Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	const limit = meta.config['flags:limitPerTarget'];
 	if (!skipLimitCheck && limit > 0) {
@@ -685,9 +672,37 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 			}
 			break;
 
+		case 'message':
+			return true;
+
 		default:
 			throw new Error('[[error:invalid-data]]');
 	}
+};
+
+Flags.canView = async (flagId, uid) => {
+	const exists = await db.isSortedSetMember('flags:datetime', flagId);
+	if (!exists) {
+		return false;
+	}
+
+	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
+		db.getObject(`flag:${flagId}`),
+		user.isAdminOrGlobalMod(uid),
+	]);
+
+	if (type === 'message') {
+		return user.isAdministrator(uid);
+	}
+
+	if (type === 'post') {
+		const cid = await Flags.getTargetCid(type, targetId);
+		const isModerator = await user.isModerator(uid, cid);
+
+		return isAdminOrGlobalMod || isModerator;
+	}
+
+	return isAdminOrGlobalMod;
 };
 
 Flags.getTarget = async function (type, id, uid) {
@@ -703,6 +718,10 @@ Flags.getTarget = async function (type, id, uid) {
 		postData = await posts.parsePost(postData);
 		postData = await topics.addPostData([postData], uid);
 		return postData[0];
+	}
+	if (type === 'message') {
+		const message = await messaging.getMessageData(parseInt(id, 10), uid, await messaging.getRoomIdByMid(id));
+		return message && message[0] ? message[0] : {};
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -720,6 +739,8 @@ Flags.targetExists = async function (type, id) {
 			}
 		}
 		return await user.exists(id);
+	} else if (type === 'message') {
+		return await messaging.messageExists(id);
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -731,6 +752,14 @@ Flags.targetFlagged = async function (type, id) {
 Flags.getTargetUid = async function (type, id) {
 	if (type === 'post') {
 		return await posts.getPostField(id, 'uid');
+	}
+	if (type === 'message') {
+		const roomId = await messaging.getRoomIdByMid(id);
+		if (!roomId) {
+			return 0;
+		}
+		const uid = await messaging.getMessageField(id, 'fromuid');
+		return uid ? parseInt(uid, 10) : 0;
 	}
 	return id;
 };
@@ -959,6 +988,23 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
+		});
+	} else if (flagObj.type === 'message') {
+		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
+		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
+		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
+		let bodyLong = String(flagObj.target?.content || '');
+		if (bodyLong && bodyLong.length > 500) {
+			bodyLong = bodyLong.substring(0, 497) + '...';
+		}
+		notifObj = await notifications.create({
+			type: 'new-message-flag',
+			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomData?.roomName || targetDisplayname),
+			bodyLong: bodyLong,
+			path: `/flags/${flagObj.flagId}`,
+			nid: `flag:message:${flagObj.targetId}:${uid}`,
+			from: uid,
+			mergeId: `notifications:user-flagged-message|${flagObj.targetId}`,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');
