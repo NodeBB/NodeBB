@@ -223,12 +223,9 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 	}
 
 	// The subject's hostname tells us the canonical domain (A).
+	// Missing subjectHostname (e.g., legacy cache entries) defaults to same-domain.
 	const subjectHost = backref.subjectHostname;
-	const normalizedSubjectHost = subjectHost.toLowerCase();
-	const normalizedIdHost = idHostname.toLowerCase();
-
-	// Same-domain: subject hostname matches id hostname → standard backreference.
-	if (normalizedSubjectHost === normalizedIdHost) {
+	if (!subjectHost || subjectHost.toLowerCase() === idHostname.toLowerCase()) {
 		return {
 			ok: true,
 			splitDomain: false,
@@ -236,6 +233,8 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 			reason: null,
 		};
 	}
+
+	const normalizedSubjectHost = subjectHost.toLowerCase();
 
 	if (!meta.config.activitypubAllowSplitDomain) {
 		// Split-domain disabled; reject actors whose subject hostname differs

@@ -17,6 +17,7 @@ Helpers.mocks.person = (override = {}) => {
 		id = override.id;
 	}
 
+	const username = override.preferredUsername || `user_${uuid.slice(0, 8)}`;
 
 	const actor = {
 		'@context': [
@@ -30,7 +31,7 @@ Helpers.mocks.person = (override = {}) => {
 
 		type: 'Person',
 		name: slugify(id),
-		preferredUsername: id,
+		preferredUsername: username,
 
 		publicKey: {
 			id: `${id}#key`,
@@ -43,8 +44,11 @@ Helpers.mocks.person = (override = {}) => {
 	activitypub._cache.set(`0;${id}`, actor);
 	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@example.org`, {
 		actorUri: id,
-		username: id,
+		username: username,
 		hostname: 'example.org',
+		subject: `acct:${username}@example.org`,
+		splitDomain: false,
+		subjectHostname: 'example.org',
 	});
 
 	return { id, actor };
@@ -60,8 +64,11 @@ Helpers.mocks.group = (override = {}) => {
 	activitypub._cache.set(`0;${id}`, actor);
 	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@${hostname}`, {
 		actorUri: id,
-		username: id,
+		username: actor.preferredUsername,
 		hostname,
+		subject: `acct:${actor.preferredUsername}@${hostname}`,
+		splitDomain: false,
+		subjectHostname: hostname,
 	});
 
 	return { id, actor };

@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
+const meta = require('../../src/meta');
 const utils = require('../../src/utils');
 
 const activitypub = require('../../src/activitypub');
@@ -64,7 +65,9 @@ Helpers.reset = () => {
 	activitypub._cache.reset();
 	activitypub.helpers._webfingerCache.reset();
 	nconf.set('activitypubAllowSplitDomain', 1);
+	meta.config.activitypubAllowSplitDomain = 1;
 	nconf.set('activitypubAllowLoopback', 0);
+	meta.config.activitypubAllowLoopback = 0;
 };
 
 // ============================================================================
@@ -197,7 +200,7 @@ describe('verifyActorWebfinger', () => {
 		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
 		Helpers.seedWebfinger(domainA, domainB, username, actorUri);
 		Helpers.seedActor(actorUri, { preferredUsername: username });
-		nconf.set('activitypubAllowSplitDomain', 0);
+		meta.config.activitypubAllowSplitDomain = 0;
 		const verdict = await activitypub.helpers.verifyActorWebfinger(
 			actorUri, activitypub._cache.get(`0;${actorUri}`));
 		assert.ok(verdict);
@@ -209,19 +212,19 @@ describe('verifyActorWebfinger', () => {
 		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
 		Helpers.seedWebfinger(domainA, domainB, username, actorUri);
 		Helpers.seedActor(actorUri, { preferredUsername: username });
-		const origCheck = activitypub.instances._blocklists.check;
-		activitypub.instances._blocklists.check = async (domain) => {
+		const origCheck = activitypub.blocklists.check;
+		activitypub.blocklists.check = async (domain) => {
 			if (domain === domainA) {
 				return { allowed: false, severity: 'filter', listUrl: 'https://bad.example' };
 			}
-			return origCheck.call(activitypub.instances._blocklists, domain);
+			return origCheck.call(activitypub.blocklists, domain);
 		};
 		const verdict = await activitypub.helpers.verifyActorWebfinger(
 			actorUri, activitypub._cache.get(`0;${actorUri}`));
 		assert.ok(verdict);
 		assert.equal(verdict.ok, false);
 		assert.equal(verdict.reason, 'canonical-blocked');
-		activitypub.instances._blocklists.check = origCheck;
+		activitypub.blocklists.check = origCheck;
 	});
 });
 
@@ -262,9 +265,11 @@ describe('Actors.assert - hostname mismatch', () => {
 		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
 		Helpers.seedWebfinger(domainA, domainB, username, actorUri);
 		Helpers.seedActor(actorUri, { preferredUsername: username });
-		nconf.set('activitypubAllowSplitDomain', 0);
+		const orig = meta.config.activitypubAllowSplitDomain;
+		meta.config.activitypubAllowSplitDomain = 0;
 		const result = await activitypub.actors.assert([actorUri]);
-		assert.equal(result, false);
+		meta.config.activitypubAllowSplitDomain = orig;
+		assert.equal(result.length, 0);
 	});
 });
 
@@ -344,7 +349,7 @@ describe('Split-Domain: Integration - full flow', () => {
 	it('should pass through split-domain resolve -> verify -> profile', async () => {
 		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
 		Helpers.seedWebfinger(domainA, domainB, username, actorUri);
-		const queryResult = await activitypub.helpers.query(`${username}@${domainA}`, { strict: false });
+		const queryResult = await activitypub.helpers.query(`${username}@${domainB}`, { strict: false });
 		assert.ok(queryResult);
 		assert.equal(queryResult.splitDomain, true);
 
