@@ -142,7 +142,7 @@
 					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
 					<span class="timeago text-muted" title="{target.timestampISO}"></span>
 				</div>
-				<blockquote>{{target.content}}</blockquote>
+				<blockquote>{{{ if target.txContent }}}{{tx(target.content)}}{{{ else }}}{target.content}{{{ end }}}</blockquote>
 				{{{ end }}}
 
 				{{{ if type_bool.empty }}}
