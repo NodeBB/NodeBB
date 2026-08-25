@@ -547,11 +547,14 @@ Messaging.canViewMessage = async (mids, roomId, uid) => {
 		mids = [mids];
 		single = true;
 	}
+
+	// Admins get blanket permission to read messages (for flagging/moderation purposes)
 	if (await user.isAdministrator(uid)) {
 		const midList = Array.isArray(mids) ? mids : [mids];
 		const canView = midList.map(() => true);
 		return single ? canView.pop() : canView;
 	}
+
 	const isPublic = parseInt(await db.getObjectField(`chat:room:${roomId}`, 'public'), 10) === 1;
 	const [midTimestamps, userTimestamp] = await Promise.all([
 		db.sortedSetScores(`chat:room:${roomId}:mids`, mids),
