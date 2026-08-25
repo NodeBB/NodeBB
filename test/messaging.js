@@ -856,13 +856,13 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to delete message if not owner', async () => {
-			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'herp');
+			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}/state`, {}, 'herp');
 			assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(body.status.message, 'You are not allowed to delete this message');
 		});
 
 		it('should mark the message as deleted', async () => {
-			await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'foo');
+			await callv3API('delete', `/chats/${roomId}/messages/${mid}/state`, {}, 'foo');
 			const value = await db.getObjectField(`message:${mid}`, 'deleted');
 			assert.strictEqual(1, parseInt(value, 10));
 		});
@@ -896,7 +896,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should error out if a message is deleted again', async () => {
-			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'foo');
+			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}/state`, {}, 'foo');
 			assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(body.status.message, 'This chat message has already been deleted.');
 		});
@@ -923,20 +923,20 @@ describe('Messaging Library', () => {
 			});
 
 			it('should error out for regular users', async () => {
-				const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
+				const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'baz');
 				assert.strictEqual(response.statusCode, 400);
 				assert.strictEqual(body.status.message, 'Chat messaging editing is disabled.');
 			});
 
 			it('should succeed for administrators', async () => {
-				await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'foo');
+				await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'foo');
 				await callv3API('post', `/chats/${roomId}/messages/${mid2}`, {}, 'foo');
 			});
 
 			it('should succeed for global moderators', async () => {
 				await Groups.join(['Global Moderators'], mocks.users.baz.uid);
 
-				await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
+				await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'baz');
 				await callv3API('post', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
 
 				await Groups.leave(['Global Moderators'], mocks.users.baz.uid);
