@@ -96,8 +96,8 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 	}
 };
 
-function unpin(tid, topicData) {
-	return [
+async function unpin(tid, topicData) {
+	await Promise.all([
 		topics.setTopicField(tid, 'pinned', 0),
 		topics.deleteTopicField(tid, 'pinExpiry'),
 		db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid),
@@ -108,7 +108,7 @@ function unpin(tid, topicData) {
 			[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 			[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
 		]),
-	];
+	]);
 }
 
 async function sendNotifications(uids, topicsData) {
