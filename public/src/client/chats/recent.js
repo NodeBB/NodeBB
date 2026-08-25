@@ -32,34 +32,37 @@ define('forum/chats/recent', ['alerts', 'api', 'chat'], function (alerts, api, c
 	async function loadMoreRecentChats() {
 		const recentChats = $('[component="chat/recent"]');
 		if (recentChats.attr('loading')) {
-			return;
+			return false;
 		}
 		recentChats.attr('loading', 1);
-		api.get(`/chats`, {
-			uid: ajaxify.data.uid,
-			start: recentChats.attr('data-nextstart'),
-		}).then(({ rooms, nextStart }) => {
+		try {
+			const { rooms, nextStart } = await api.get(`/chats`, {
+				uid: ajaxify.data.uid,
+				start: recentChats.attr('data-nextstart'),
+			});
 			if (rooms.length) {
-				onRecentChatsLoaded({ rooms, nextStart }, function () {
-					recentChats.removeAttr('loading');
-					recentChats.attr('data-nextstart', nextStart);
-				});
-			} else {
-				recentChats.removeAttr('loading');
+				await onRecentChatsLoaded({ rooms, nextStart });
+				recentChats.attr('data-nextstart', nextStart);
 			}
-		}).catch(alerts.error);
+			return rooms.length > 0;
+		} catch (err) {
+			alerts.error(err);
+			return false;
+		} finally {
+			recentChats.removeAttr('loading');
+		}
 	}
 
-	function onRecentChatsLoaded(data, callback) {
+	recent.loadMore = loadMoreRecentChats;
+
+	async function onRecentChatsLoaded(data) {
 		if (!data.rooms.length) {
-			return callback();
+			return;
 		}
 		data.loadingMore = true;
-		app.parseAndTranslate('chats', 'rooms', data, function (html) {
-			$('[component="chat/recent"]').append(html);
-			html.find('.timeago').timeago();
-			callback();
-		});
+		const html = await app.parseAndTranslate('chats', 'rooms', data);
+		$('[component="chat/recent"]').append(html);
+		html.find('.timeago').timeago();
 	}
 
 
