@@ -209,7 +209,7 @@ Chats.messages.delete = async (req, res) => {
 
 Chats.messages.permanentlyDelete = async (req, res) => {
 	const { mid } = req.params;
-	await api.chats.permanentlyDeleteMessage(req, { mid });
+	await api.chats.purgeMessage(req, { mid });
 
 	helpers.formatApiResponse(200, res);
 };

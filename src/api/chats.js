@@ -447,9 +447,9 @@ chatsAPI.restoreMessage = async (caller, { mid }) => {
 	await messaging.restoreMessage(mid, caller.uid);
 };
 
-chatsAPI.permanentlyDeleteMessage = async (caller, { mid }) => {
+chatsAPI.purgeMessage = async (caller, { mid }) => {
 	await messaging.canDelete(mid, caller.uid);
-	await messaging.permanentlyDeleteMessage(mid);
+	await messaging.purgeMessage(mid);
 };
 
 chatsAPI.pinMessage = async (caller, { roomId, mid }) => {

@@ -8,7 +8,7 @@ const activitypub = require('../activitypub');
 module.exports = function (Messaging) {
 	Messaging.deleteMessage = async (mid, uid) => await doDeleteRestore(mid, 1, uid);
 	Messaging.restoreMessage = async (mid, uid) => await doDeleteRestore(mid, 0, uid);
-	Messaging.permanentlyDeleteMessage = async (mid) => {
+	Messaging.purgeMessage = async (mid) => {
 		const msgData = await Messaging.getMessageFields(mid, [
 			'mid', 'fromuid', 'roomId', 'deleted', 'system',
 		]);

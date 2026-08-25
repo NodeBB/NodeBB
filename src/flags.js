@@ -42,7 +42,6 @@ Flags._states = new Map([
 ]);
 
 Flags.init = async function () {
-
 	// Query plugins for custom filter strategies and merge into core filter strategies
 	function prepareSets(sets, orSets, prefix, value) {
 		if (!Array.isArray(value)) {
