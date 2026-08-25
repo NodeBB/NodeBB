@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "Devredışı bırakmak için 0 girin, (varsayılan: 10)",
 	"flags.limit-user-flags-per-day": "Üyelerin bir günde şikayet edebilecekleri maksimum kullanıcı sayısı",
 	"flags.limit-user-flags-per-day-help": "Devredışı bırakmak için 0 girin, (varsayılan: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "İletileri otomatik olarak şikayet etmek için gerekli olan eksi oy sayısı",
 	"flags.auto-flag-on-downvote-threshold-help": "Devredışı bırakmak için 0 girin, (varsayılan: 0)",
 	"flags.auto-resolve-on-ban": "Bir kullanıcı forumdan yasaklandığında otomatik olarak şikayetlerini çözülmüş say",

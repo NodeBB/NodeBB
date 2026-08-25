@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "0で無効、（デフォルト: 10）",
 	"flags.limit-user-flags-per-day": "1ユーザーが1日にユーザーにフラグを付けられる最大回数",
 	"flags.limit-user-flags-per-day-help": "0で無効、（デフォルト: 10）",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "投稿を自動フラグする低評価の数",
 	"flags.auto-flag-on-downvote-threshold-help": "0で無効、（デフォルト: 0）",
 	"flags.auto-resolve-on-ban": "ユーザーが利用停止されたときに、そのユーザーのすべてのチケットを自動的に解決",

@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "הכנס 0 כדי להשבית, (ברירת מחדל: 10)",
 	"flags.limit-user-flags-per-day": "מספר הפעמים המרבי שמשתמש יכול לדווח על משתמשים ביום",
 	"flags.limit-user-flags-per-day-help": "הכנס 0 כדי להשבית, (ברירת מחדל: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "מספר הצבעות למטה להודעת דיווח אוטומטי",
 	"flags.auto-flag-on-downvote-threshold-help": "הכנס 0 כדי להשבית, (ברירת מחדל: 0)",
 	"flags.auto-resolve-on-ban": "פתור אוטומטי כל כרטיסי משתמש כאשר הוא מוחרם",

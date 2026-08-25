@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "Állítsd 0-ra a tiltáshoz, (alapértelmezetten: 10)",
 	"flags.limit-user-flags-per-day": "Egy felhasználó egy nap maximum hányszor jelölhet meg felhasználókat",
 	"flags.limit-user-flags-per-day-help": "Állítsd 0-ra a tiltáshoz, (alapértelmezetten: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "Nemtetszések száma a hozzászólás automatikus megjelöléséhez",
 	"flags.auto-flag-on-downvote-threshold-help": "Állítsd 0-ra a tiltáshoz, (alapértelmezetten: 0)",
 	"flags.auto-resolve-on-ban": "A felhasználó összes megjelölésének feloldása, amikor kitiltásra kerül",

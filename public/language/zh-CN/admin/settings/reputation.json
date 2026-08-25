@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "设置为0表示禁用（默认：10）",
 	"flags.limit-user-flags-per-day": "用户每日可以举报人数",
 	"flags.limit-user-flags-per-day-help": "设置为0表示禁止（默认：10）",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "被踩多少次数自动转为举报帖子",
 	"flags.auto-flag-on-downvote-threshold-help": "设置为0表示禁止（默认：10）",
 	"flags.auto-resolve-on-ban": "当用户被封禁时，自动解决全部此用户提交的举报",

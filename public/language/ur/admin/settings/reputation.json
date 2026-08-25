@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "غیر فعال کرنے کے لیے 0 سیٹ کریں (طے شدہ: 10)",
 	"flags.limit-user-flags-per-day": "ایک دن میں صارف کے ذریعے رپورٹ کیے جا سکنے والے صارفین کی زیادہ سے زیادہ تعداد",
 	"flags.limit-user-flags-per-day-help": "غیر فعال کرنے کے لیے 0 سیٹ کریں (طے شدہ: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "پوسٹس کی خودکار رپورٹنگ کے لیے منفی ووٹس کی تعداد",
 	"flags.auto-flag-on-downvote-threshold-help": "غیر فعال کرنے کے لیے 0 سیٹ کریں (طے شدہ: 0)",
 	"flags.auto-resolve-on-ban": "جب صارف پر پابندی لگائی جاتی ہے تو اس کی تمام رپورٹس خودکار طور پر ہٹائیں",

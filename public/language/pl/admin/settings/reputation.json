@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "Ustaw 0, aby wyłączyć, (domyślnie: 10)",
 	"flags.limit-user-flags-per-day": "Ile najwięcej użytkowników użytkownik może oflagować jednego dnia.",
 	"flags.limit-user-flags-per-day-help": "Ustaw 0, aby wyłączyć, (domyślnie: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "Liczba głosujących przeciw aby automatycznie oflagować post",
 	"flags.auto-flag-on-downvote-threshold-help": "Ustaw 0, aby wyłączyć, (domyślnie: 0)",
 	"flags.auto-resolve-on-ban": "Automatycznie rozwiąż wszystkie sprawy związane z użytkownikiem, jeśli zostanie zbanowany",

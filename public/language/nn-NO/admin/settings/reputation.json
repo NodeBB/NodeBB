@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "Set ei dagleg grense for kor mange innlegg som kan rapporterast.",
 	"flags.limit-user-flags-per-day": "Grense for brukarar som kan rapporterast per dag",
 	"flags.limit-user-flags-per-day-help": "Set ei dagleg grense for kor mange brukarar som kan rapporterast.",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "Automatisk rapportering ved nedstemningsgrense",
 	"flags.auto-flag-on-downvote-threshold-help": "Angi ein terskel for automatisk rapportering når eit innlegg får nok nedstemmer.",
 	"flags.auto-resolve-on-ban": "Løys automatisk ved utestenging",
