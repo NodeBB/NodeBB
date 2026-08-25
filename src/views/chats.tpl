@@ -46,7 +46,7 @@
 					</div>
 					{{{ end }}}
 
-					<div id="private-rooms" component="chat/recent" class="chats-list overflow-auto mb-0 pe-1 pb-5 pb-lg-0 collapse show ghost-scrollbar" data-nextstart="{nextStart}">
+					<div id="private-rooms" component="chat/recent" class="chats-list overflow-auto mb-0 pe-1 pb-5 pb-lg-0 collapse show ghost-scrollbar" data-nextstart="{nextStart}" data-prevstart="{prevStart}">
 						{{{ each rooms }}}
 						<!-- IMPORT partials/chats/recent_room.tpl -->
 						{{{ end }}}

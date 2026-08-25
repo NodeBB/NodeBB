@@ -68,7 +68,6 @@ define('forum/chats', [
 
 		Chats.addEventListeners();
 		Chats.setActive(ajaxify.data.roomId);
-		loadActiveRoomIntoNav(ajaxify.data.roomId);
 
 		if (env === 'md' || env === 'lg' || env === 'xl' || env === 'xxl') {
 			Chats.addHotkeys();
@@ -779,26 +778,6 @@ define('forum/chats', [
 
 		chatNavWrapper.attr('data-loaded', roomId ? '1' : '0');
 	};
-
-	// if the active room is not in the initially rendered list, keep
-	// loading more rooms until it is found, then highlight and reveal it
-	async function loadActiveRoomIntoNav(roomId) {
-		if (!roomId) {
-			return;
-		}
-		let chatEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
-		while (!chatEl.length) {
-			// eslint-disable-next-line no-await-in-loop
-			const loadedMore = await recentChats.loadMore();
-			if (!loadedMore) {
-				return;
-			}
-			chatEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
-		}
-		if (!chatEl.hasClass('active')) {
-			Chats.setActive(roomId);
-		}
-	}
 
 	return Chats;
 });
