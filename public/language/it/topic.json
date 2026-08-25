@@ -81,7 +81,7 @@
     "forked-message": "Questa discussione è stata biforcato da <a href=\"%1\">%2</a>",
     "deleted-message": "Questa discussione è stata eliminata. Solo gli utenti con diritti di gestione possono vederla.",
     "following-topic.message": "Da ora riceverai notifiche quando qualcuno posterà in questa discussione.",
-    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
+    "following-topic.message-no-notifications": "Ora stai seguendo questa discussione, ma le tue impostazioni di notifica sono impostate su nessuna.",
     "not-following-topic.message": "Vedrai questa discussione nella lista delle discussioni non lette, ma non riceverai notifiche quando qualcuno posterà in questa discussione.",
     "ignoring-topic.message": "Non vedrai più questo discussione nell'elenco delle discussioni non lette. Riceverai una notifica quando vieni menzionato o il tuo post viene votato positivamente.",
     "login-to-subscribe": "Si prega di accedere o registrarsi per potersi iscrivere a questa discussione.",

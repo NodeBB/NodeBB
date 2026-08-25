@@ -1,6 +1,6 @@
 {
 	"notifications": "Notifiche",
-	"disable-notification-emails": "Disable Notification Emails",
+	"disable-notification-emails": "Disattiva le email di notifica",
 	"welcome-notification": "Notifica di benvenuto",
 	"welcome-notification-link": "Link a Notifica di benvenuto",
 	"welcome-notification-uid": "Notifica di benvenuto utente (UID)",
