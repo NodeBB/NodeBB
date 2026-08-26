@@ -305,12 +305,15 @@ const utils = {
 	stripBidiControls: function (input) {
 		return input.replace(/[\u202A-\u202E\u2066-\u2069]/gi, '');
 	},
-	cleanUpTag: function (tag, maxLength) {
+	cleanUpTag: function (tag, maxLength, caseSensitive) {
 		if (typeof tag !== 'string' || !tag.length) {
 			return '';
 		}
 
-		tag = tag.trim().toLowerCase();
+		const doLowerCase = (caseSensitive === undefined) ?
+			(typeof config !== 'undefined' ? !config.caseSensitiveTags : true) :
+			!caseSensitive;
+		tag = doLowerCase ? tag.trim().toLowerCase() : tag.trim();
 		// see https://github.com/NodeBB/NodeBB/issues/4378
 		tag = utils.stripBidiControls(tag);
 		tag = tag.replace(/[,/#!$^*;:{}=_`<>'"~()?|]/g, '');
