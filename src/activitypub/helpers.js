@@ -154,7 +154,28 @@ Helpers.query = async (id, { strict = true } = {}) => {
 		return false;
 	}
 
-	if (response.statusCode !== 200 || !body.hasOwnProperty('links')) {
+	if (response.statusCode !== 200) {
+		return false;
+	}
+
+	// Validate content-type; most servers advertise jrd+json, but some (e.g. GitHub Pages)
+	// serve application/octet-stream — attempt to parse as JSON in that case.
+	const contentType = (response.headers['content-type'] || '').toLowerCase();
+	if (!contentType.includes('application/jrd+json') && !contentType.includes('application/json')) {
+		if (!contentType.includes('application/octet-stream')) {
+			return false;
+		}
+		// Try to parse raw response body as JSON for non-compliant servers
+		if (typeof body === 'string' || body instanceof Buffer) {
+			try {
+				body = JSON.parse(typeof body === 'string' ? body : body.toString('utf8'));
+			} catch (e) {
+				return false;
+			}
+		}
+	}
+
+	if (!body.hasOwnProperty('links')) {
 		return false;
 	}
 
