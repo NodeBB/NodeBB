@@ -506,11 +506,11 @@ module.exports = function (Topics) {
 			tags = await getAllTags();
 		}
 
-		query = query.toLowerCase();
+		const lowerQuery = meta.config.caseSensitiveTags ? query : query.toLowerCase();
 
 		const matches = [];
 		for (let i = 0; i < tags.length; i += 1) {
-			if (tags[i].value && tags[i].value.toLowerCase().startsWith(query)) {
+			if (tags[i].value && (meta.config.caseSensitiveTags ? tags[i].value : tags[i].value.toLowerCase()).startsWith(lowerQuery)) {
 				matches.push(tags[i]);
 				if (matches.length > 39) {
 					break;

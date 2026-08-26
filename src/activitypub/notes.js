@@ -599,13 +599,13 @@ async function assignCategory(post) {
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
 	const rules = await activitypub.rules.list();
 	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
-	tags = tags.map(tag => tag.toLowerCase());
 
 	const matched = rules.reduce((matched, { type, value, cid: target, action: ruleAction }) => {
 		if (!matched.cid) {
 			switch (type) {
 				case 'hashtag': {
-					if (tags.includes(value.toLowerCase())) {
+					const lowerValue = value.toLowerCase();
+					if (tags.some(tag => tag.toLowerCase() === lowerValue)) {
 						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}, action: ${ruleAction}`);
 						return { cid: target, action: ruleAction };
 					}

@@ -18,6 +18,12 @@ process.elapsedNano = function (start) {
 };
 const utils = { ...require('../public/src/utils.common') };
 
+const _originalCleanUpTag = utils.cleanUpTag;
+utils.cleanUpTag = function (tag, maxLength) {
+	const meta = require('./meta');
+	return _originalCleanUpTag(tag, maxLength, meta.config.caseSensitiveTags);
+};
+
 utils.getLanguage = function () {
 	const meta = require('./meta');
 	return meta.config && meta.config.defaultLang ? meta.config.defaultLang : 'en-GB';
