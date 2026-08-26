@@ -392,6 +392,9 @@ postgresModule.info = async function (db) {
 
 postgresModule.close = async function () {
 	await postgresModule.pool.end();
+	if (postgresModule.objectCache) {
+		postgresModule.objectCache.reset();
+	}
 };
 
 require('./postgres/main')(postgresModule);

@@ -45,18 +45,16 @@ async function postTids(tids) {
 
 	// Restore first to be not filtered for being deleted
 	// Restoring handles "updateRecentTid"
-	await Promise.all([].concat(
-		topicsData.map(topicData => topics.restore(topicData.tid)),
-		topicsData.map(topicData => topics.updateLastPostTimeFromLastPid(topicData.tid))
-	));
+	await Promise.all(topicsData.map(t => topics.restore(t.tid)));
+	await Promise.all(topicsData.map(t => topics.updateLastPostTimeFromLastPid(t.tid)));
 
-	await Promise.all([].concat(
+	await Promise.all([
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(topicsData),
 		federatePosts(uids, topicsData),
-		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
-	));
+	]);
+	await Promise.all(topicsData.map(topicData => unpin(topicData.tid, topicData)));
 }
 
 // topics/tools.js#pin/unpin would block non-admins/mods, thus the local versions
@@ -98,8 +96,8 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 	}
 };
 
-function unpin(tid, topicData) {
-	return [
+async function unpin(tid, topicData) {
+	await Promise.all([
 		topics.setTopicField(tid, 'pinned', 0),
 		topics.deleteTopicField(tid, 'pinExpiry'),
 		db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid),
@@ -110,7 +108,7 @@ function unpin(tid, topicData) {
 			[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 			[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
 		]),
-	];
+	]);
 }
 
 async function sendNotifications(uids, topicsData) {

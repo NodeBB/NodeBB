@@ -2643,7 +2643,7 @@ describe('Topic\'s', () => {
 			await topics.scheduled.handleExpired();
 
 			topicData = await topics.getTopicData(topicData.tid);
-			assert(!topicData.pinned);
+			assert(!topicData.pinned, JSON.stringify(topicData, null, 2));
 			assert(!topicData.deleted);
 			// Should remove from topics:scheduled upon publishing
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
