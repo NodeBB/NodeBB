@@ -91,12 +91,34 @@ Out.create.note = enabledCheck(async (uid, post) => {
 	}
 
 	const { activity, targets } = await activitypub.mocks.activities.create(pid, uid, post);
+	const targetsArr = Array.from(targets);
 
-	await Promise.all([
-		activitypub.send('uid', uid, Array.from(targets), activity),
+	// Separate topic participants (immediate) from the rest (deferred)
+	const { tid } = await topics.getTopicFields(pid, ['tid']);
+	const participantUids = await db.getSortedSetMembers(`tid:${tid}:posters`);
+	const participantRemoteUris = participantUids.filter(uid => !utils.isNumber(uid));
+	const immediateTargetsSet = new Set(
+		participantRemoteUris.length
+			? targetsArr.filter(uri => participantRemoteUris.includes(uri))
+			: [],
+	);
+	const deferredTargets = targetsArr.filter(uri => !immediateTargetsSet.has(uri));
+
+	const sendPromises = [
 		activitypub.feps.announce(pid, activity),
-		// utils.isNumber(post.cid) ? activitypubApi.add(caller, { pid }) : undefined,
-	]);
+	];
+	if (immediateTargetsSet.size) {
+		sendPromises.push(activitypub.send('uid', uid, Array.from(immediateTargetsSet), activity, {
+			delayMs: 0,
+		}));
+	}
+	// Always send to deferred targets (even if empty) to match original behavior
+	// where send() was always called with all targets.
+	sendPromises.push(activitypub.send('uid', uid, deferredTargets, activity, {
+		delayMs: 10000,
+	}));
+
+	await Promise.all(sendPromises);
 });
 
 Out.create.privateNote = enabledCheck(async (messageObj) => {

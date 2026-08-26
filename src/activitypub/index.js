@@ -387,7 +387,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub.send = async (type, id, targets, payload) => {
+ActivityPub.send = async (type, id, targets, payload, { delayMs = 0 } = {}) => {
 	if (!meta.config.activitypubEnabled) {
 		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
 	}
@@ -420,10 +420,10 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	setImmediate(() => {
 		const retryQueueAdd = [];
 		const retryQueuedSet = [];
+		const nextTryOn = Date.now() + (delayMs || 0);
 
 		inboxes.forEach((uri) => {
 			const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
-			const nextTryOn = Date.now();
 			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
 			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
 				queueId,
@@ -440,11 +440,11 @@ ActivityPub.send = async (type, id, targets, payload) => {
 		if (retryQueueAdd.length) {
 			db.sortedSetAddBulk(retryQueueAdd);
 			db.setObjectBulk(retryQueuedSet);
-		}
 
-		// Start the drain loop if not already draining
-		if (SendPool.pool > 0) {
-			SendPool.drainLoop();
+			// Start the drain loop if not already draining
+			if (SendPool.pool > 0) {
+				SendPool.drainLoop();
+			}
 		}
 	});
 };
