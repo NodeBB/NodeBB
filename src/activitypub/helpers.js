@@ -56,6 +56,27 @@ Helpers.log = (message) => {
 	}
 };
 
+Helpers._hasValidSelfLink = (actorId, actor) => {
+	// Check if the actor document has a self-link pointing to its own URI.
+	// This is used as a fallback for legacy actors when WebFinger query fails.
+	// We look for an explicit { rel: 'self' } link, NOT just a `url` field
+	// which any actor can set regardless of whether it's a valid self-reference.
+	if (!actor || typeof actor !== 'object') {
+		return false;
+	}
+
+	// Check for `link` array with explicit rel=self pointing to actorId
+	if (Array.isArray(actor.link)) {
+		return actor.link.some(
+			l =>
+				(l && typeof l === 'object' && l.rel === 'self' && l.href === actorId) ||
+				(typeof l === 'string' && l === actorId),
+		);
+	}
+
+	return false;
+};
+
 Helpers.isUri = (value) => {
 	if (typeof value !== 'string') {
 		value = String(value);
@@ -212,7 +233,20 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 
 	// Step 1: Backreference — non-strict query on domain B (the actor's id host).
 	// This allows the WebFinger subject to point elsewhere (split-domain forward target).
-	const backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
+	let backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
+
+	// Fallback for legacy actors (pre-split-domain): if WebFinger query fails, check
+	// the actor document for a self-link pointing to its own URI. This handles actors
+	// that were asserted before split-domain logic required WebFinger backreferences.
+	if (!backref && Helpers._hasValidSelfLink(actorId, actor)) {
+		backref = {
+			actorUri: actorId,
+			subject: `acct:${preferredUsername}@${idHostname}`,
+			hostname: idHostname,
+			subjectHostname: idHostname,
+			splitDomain: false,
+		};
+	}
 	if (!backref) {
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'no-backreference' };
 	}

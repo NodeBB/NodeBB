@@ -159,6 +159,18 @@ describe('verifyActorWebfinger', () => {
 		assert.equal(verdict.reason, 'no-backreference');
 	});
 
+	it('accepts same-domain legacy actors via self-link fallback (upgrade to split-domain)', async () => {
+		const { domainB, username, actorUri } = Helpers.genSplitDomain();
+		// Seed actor with a link array containing rel=self (simulates real AP actor docs)
+		const actor = Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
+		const verdict = await activitypub.helpers.verifyActorWebfinger(
+			actorUri, activitypub._cache.get(`0;${actorUri}`));
+		assert.ok(verdict);
+		assert.ok(verdict.ok);
+		assert.equal(verdict.canonicalHandle, `${username}@${domainB}`);
+		assert.equal(verdict.splitDomain, false);
+	});
+
 	it('rejects with subject-mismatch when backreference self-link points elsewhere', async () => {
 		const { domainB, username, actorUri } = Helpers.genSplitDomain();
 		const spoofedUri = `https://${domainB}/uid/spoofed_user`;
@@ -270,6 +282,20 @@ describe('Actors.assert - hostname mismatch', () => {
 		const result = await activitypub.actors.assert([actorUri]);
 		meta.config.activitypubAllowSplitDomain = orig;
 		assert.equal(result.length, 0);
+	});
+
+	it('upgrades same-domain legacy actors via self-link fallback', async () => {
+		const { domainB, username, actorUri } = Helpers.genSplitDomain();
+		// Seed actor with link array (rel=self) — simulates real AP actor doc
+		const actor = Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
+		const result = await activitypub.actors.assert([actorUri]);
+		assert.ok(Array.isArray(result));
+		assert.equal(result.length, 1);
+		assert.equal(result[0]._canonicalHandle, `${username}@${domainB}`);
+		// Verify profile uses canonical handle
+		const profile = await activitypub.mocks.profile(result);
+		assert.equal(profile[0].username, `${username}@${domainB}`);
+		assert.equal(profile[0].webfinger, undefined); // same-domain → undefined
 	});
 });
 
