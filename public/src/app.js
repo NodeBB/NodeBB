@@ -241,12 +241,24 @@ app.onDomReady = function () {
 		}
 	};
 
+	app.createCategoryTooltips = function () {
+		if (!isTouchDevice) {
+			$('body').tooltip({
+				selector: '.category-path-tooltip',
+				placement: 'top',
+				container: 'body',
+				animation: false,
+			});
+		}
+	};
+
 	app.processPage = function () {
 		highlightNavigationLink();
 		overrides.overrideTimeagoCutoff();
 		$('.timeago').timeago();
 		app.createUserTooltips($('#content'));
 		app.createStatusTooltips();
+		app.createCategoryTooltips();
 	};
 
 	app.toggleNavbar = function (state) {

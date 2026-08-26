@@ -19,6 +19,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		stripTags,
 		buildCategoryIcon,
 		buildCategoryLabel,
+		buildCategoryPath,
 		generateCategoryBackground,
 		generateChildrenCategories,
 		generateTopicClass,
@@ -196,6 +197,16 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			${icon && icon !== 'fa-nbb-none' ? `<i class="fa fa-fw ${icon}"></i>` : ''}
 			${categoryName}
 		</${tag}>`;
+	}
+
+	function buildCategoryPath(category) {
+		if (!category) {
+			return '';
+		}
+		const fullPath = category.ancestorPath ?
+			`${category.ancestorPath} › ${category.name}` :
+			String(category.name);
+		return escape(stripTags(_tx.call(this, fullPath)));
 	}
 
 	function generateCategoryBackground(category) {

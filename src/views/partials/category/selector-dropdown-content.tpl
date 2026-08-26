@@ -24,7 +24,7 @@
         {{{ each categoryItems }}}
         <li role="presentation" class="category {{{ if ./disabledClass }}}disabled {{{ end }}}" data-cid="{./cid}" data-name="{./name}" data-parent-cid="{./parentCid}">
             <a class="dropdown-item rounded-1 {{{ if ./disabledClass }}}disabled{{{ end }}}" role="menuitem" href="#">
-                <span component="category-markup" style="{{{ if ./match }}}font-weight: bold;{{{end}}} margin-left: calc({./depth} * 24px);">
+                <span component="category-markup" class="category-path-tooltip" style="{{{ if ./match }}}font-weight: bold;{{{end}}} margin-inline-start: calc({./depth} * 24px);" title="{{buildCategoryPath(@value)}}">
                     <span class="category-item d-inline-flex align-items-center gap-1">
                         {{{ if ./icon }}}
                         {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
