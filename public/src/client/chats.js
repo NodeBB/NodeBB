@@ -106,6 +106,7 @@ define('forum/chats', [
 		Chats.addScrollHandler(roomId, ajaxify.data.uid, chatMessageContent);
 		Chats.addScrollBottomHandler(roomId, chatMessageContent);
 		Chats.addParentHandler(chatMainWrapper);
+		Chats.addPinnedTimestampHandler(chatMainWrapper);
 		Chats.addCharactersLeftHandler(chatMainWrapper);
 		Chats.addTextareaResizeHandler(chatMainWrapper);
 		Chats.addTypingHandler(chatMainWrapper, roomId);
@@ -197,10 +198,13 @@ define('forum/chats', [
 		});
 	};
 
-	function gotoMessage(event, timestampEl) {
-		const mid = timestampEl.parents('[data-parent-mid]').attr('data-parent-mid');
-		const containerEl = timestampEl.parents('[component="chat/message/content"]');
-		const messageEl = containerEl.find(`[component="chat/message"][data-mid="${mid}"]`);
+	function gotoMessage(event, timestampEl, mid) {
+		// :visible because the conversation is swapped out for the message search
+		// results, and there is nothing to scroll while those are shown
+		const contentEl = timestampEl
+			.closest('[component="chat/message/window"]')
+			.find('[component="chat/message/content"]:visible');
+		const messageEl = contentEl.find(`[component="chat/message"][data-mid="${mid}"]`);
 		if (messageEl.length) {
 			event.preventDefault();
 			messages.scrollToMessage(messageEl);
@@ -224,7 +228,25 @@ define('forum/chats', [
 		// deeper selector, so this runs before the collapse handler above
 		mainWrapper.off('click', '[component="chat/message/parent"] .chat-timestamp')
 			.on('click', '[component="chat/message/parent"] .chat-timestamp', function (ev) {
-				return gotoMessage(ev, $(this));
+				const timestampEl = $(this);
+				return gotoMessage(
+					ev, timestampEl, timestampEl.parents('[data-parent-mid]').attr('data-parent-mid')
+				);
+			});
+	};
+
+	// a pinned message is shown out of context, so its own timestamp links back to
+	// where it sits in the conversation
+	Chats.addPinnedTimestampHandler = function (mainWrapper) {
+		// scoped to .message-header, as the timestamp of a quoted parent rendered in
+		// the panel is already handled by addParentHandler
+		const selector = '[component="chat/messages/pinned"] .message-header .chat-timestamp';
+		mainWrapper.off('click', selector)
+			.on('click', selector, function (ev) {
+				const timestampEl = $(this);
+				return gotoMessage(
+					ev, timestampEl, timestampEl.parents('[component="chat/message"]').attr('data-mid')
+				);
 			});
 	};
 
