@@ -20,6 +20,9 @@ const Privileges = require('../src/privileges');
 const plugins = require('../src/plugins');
 const utils = require('../src/utils');
 const api = require('../src/api');
+const messaging = require('../src/messaging');
+const activitypub = require('../src/activitypub');
+const apHelpers = require('./activitypub/helpers');
 
 describe('Flags', () => {
 	let uid1;
@@ -1200,6 +1203,156 @@ describe('Flags', () => {
 			});
 		});
 
+		describe('remote (federated) chat messages', () => {
+			let uid1;
+			let uid2;
+			let actor;
+			let mid;
+			let roomId;
+			let flagId;
+
+			before(async () => {
+				Meta.config.activitypubEnabled = 1;
+				await Privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
+
+				uid1 = await User.create({ username: utils.generateUUID().slice(0, 10) });
+				uid2 = await User.create({ username: utils.generateUUID().slice(0, 10) });
+				({ id: actor } = apHelpers.mocks.person());
+
+				// Remote actor sends a DM to two local users; both become room members
+				const { note } = apHelpers.mocks.note({
+					attributedTo: actor,
+					to: [
+						`${nconf.get('url')}/uid/${uid1}`,
+						`${nconf.get('url')}/uid/${uid2}`,
+					],
+					cc: [],
+				});
+				const { activity } = apHelpers.mocks.create({
+					actor,
+					object: note,
+					to: [
+						`${nconf.get('url')}/uid/${uid1}`,
+						`${nconf.get('url')}/uid/${uid2}`,
+					],
+					cc: [],
+				});
+
+				await activitypub.inbox.create({ body: activity });
+				mid = note.id;
+				roomId = await messaging.getRoomIdByMid(mid);
+			});
+
+			after(async () => {
+				await Privileges.global.rescind(['groups:chat', 'groups:chat:privileged'], 'fediverse');
+				delete Meta.config.activitypubEnabled;
+			});
+
+			it('should store the remote message as a chat message with its ActivityPub URI as mid', async () => {
+				assert.ok(activitypub.helpers.isUri(mid));
+				assert.strictEqual(await messaging.messageExists(mid), true);
+				assert.strictEqual(await messaging.getMessageField(mid, 'fromuid'), actor);
+			});
+
+			it('should allow a room member to flag a remote message', async () => {
+				const flag = await api.flags.create({ uid: uid1 }, {
+					type: 'message',
+					id: mid,
+					roomId,
+					reason: 'spam',
+					notifyRemote: true,
+				});
+
+				flagId = flag.flagId;
+				assert.strictEqual(flag.type, 'message');
+				assert.strictEqual(flag.targetId, mid);
+				assert.strictEqual(flag.targetUid, actor);
+				assert.strictEqual(flag.reports.length, 1);
+				assert.strictEqual(flag.reports[0].value, 'spam');
+			});
+
+			it('should forward a Flag activity naming the remote message and its author', async () => {
+				const flagActivityId = `${nconf.get('url')}/message/${encodeURIComponent(mid)}#activity/flag/${uid1}`;
+				const sent = activitypub._sent.get(flagActivityId);
+				assert.ok(sent, 'Flag activity was sent');
+				assert.strictEqual(sent.payload.type, 'Flag');
+				assert.strictEqual(sent.payload.actor, `${nconf.get('url')}/uid/${uid1}`);
+				assert.strictEqual(sent.payload.content, 'spam');
+				assert.deepStrictEqual(sent.payload.object, [mid, actor]);
+			});
+
+			it('should store the flagId on the flagged message', async () => {
+				// Coerce both to string since PostgreSQL may return the flagId as a number
+				assert.strictEqual(String(await messaging.getMessageField(mid, 'flagId')), String(flagId));
+			});
+
+			it('should allow a second reporter to add their report to the existing flag', async () => {
+				const flag = await api.flags.create({ uid: uid2 }, {
+					type: 'message',
+					id: mid,
+					roomId,
+					reason: 'harassment',
+					notifyRemote: true,
+				});
+
+				assert.strictEqual(flag.flagId, flagId);
+				const reports = await Flags.getReports(flagId);
+				assert.strictEqual(reports.length, 2);
+			});
+
+			it('should forward a second Flag activity from the new reporter', async () => {
+				const flagActivityId = `${nconf.get('url')}/message/${encodeURIComponent(mid)}#activity/flag/${uid2}`;
+				const sent = activitypub._sent.get(flagActivityId);
+				assert.ok(sent, 'Flag activity was sent');
+				assert.strictEqual(sent.payload.content, 'harassment');
+				assert.deepStrictEqual(sent.payload.object, [mid, actor]);
+			});
+
+			it('should rescind a single report via API and send an Undo Flag', async () => {
+				await api.flags.rescind({ uid: uid2 }, { flagId });
+
+				const flag = await Flags.get(flagId);
+				const reports = await Flags.getReports(flagId);
+				assert.strictEqual(reports.length, 1);
+				assert.strictEqual(flag.targetId, mid);
+				assert.strictEqual(flag.targetUid, actor);
+
+				const undo = Array.from(activitypub._sent.values()).find(({ payload }) => {
+					return payload.type === 'Undo' && payload.object.id.endsWith(`#activity/flag/${uid2}`);
+				});
+				assert.ok(undo, 'Undo Flag activity was sent');
+				assert.strictEqual(undo.payload.object.type, 'Flag');
+				assert.deepStrictEqual(undo.payload.object.object, [mid, actor]);
+			});
+
+			it('should not allow a user who is not in the room to flag a remote message', async () => {
+				const outsider = await User.create({ username: utils.generateUUID().slice(0, 10) });
+
+				await assert.rejects(
+					api.flags.create({ uid: outsider }, {
+						type: 'message',
+						id: mid,
+						roomId,
+						reason: 'spam',
+					}),
+					{ message: '[[error:no-privileges]]' },
+				);
+			});
+
+			it('should send an Undo Flag for remaining reports and clean up when purged', async () => {
+				await Flags.purge([flagId]);
+
+				assert.strictEqual(await messaging.messageExists(mid), true);
+				assert.strictEqual(await messaging.getMessageField(mid, 'flagId'), null);
+				assert.strictEqual(await Flags.exists('message', mid, uid1), false);
+
+				const undo = Array.from(activitypub._sent.values()).find(({ payload }) => {
+					return payload.type === 'Undo' && payload.object.id.endsWith(`#activity/flag/${uid1}`);
+				});
+				assert.ok(undo, 'Undo Flag activity was sent');
+				assert.deepStrictEqual(undo.payload.object.object, [mid, actor]);
+			});
+		});
 
 	});
 });

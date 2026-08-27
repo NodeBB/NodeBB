@@ -371,7 +371,7 @@ Out.flag = enabledCheck(async (uid, flag) => {
 		return;
 	}
 	const reportedIds = [flag.targetId];
-	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
+	if ((flag.type === 'post' || flag.type === 'message') && activitypub.helpers.isUri(flag.targetUid)) {
 		reportedIds.push(flag.targetUid);
 	}
 	const reason = flag.reason ||
@@ -572,7 +572,7 @@ Out.undo.flag = enabledCheck(async (uid, flag) => {
 		return;
 	}
 	const reportedIds = [flag.targetId];
-	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
+	if ((flag.type === 'post' || flag.type === 'message') && activitypub.helpers.isUri(flag.targetUid)) {
 		reportedIds.push(flag.targetUid);
 	}
 	const reason = flag.reason ||
