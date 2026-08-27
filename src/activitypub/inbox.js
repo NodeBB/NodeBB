@@ -187,11 +187,26 @@ inbox.lock = async (req) => {
 		object = object.id;
 	}
 
-	const resolved = await activitypub.helpers.resolveLocalId(object);
-	if (resolved.type !== 'topic') {
-		return; // not a local topic
+	let tid;
+	// Try to resolve via contexts first (for remote topic URLs)
+	let mainPid = await activitypub.contexts.getItems(0, object, { returnRootId: true });
+	if (mainPid) {
+		// mainPid may be a URL string; extract the numeric pid
+		const pid = utils.isNumber(mainPid) ? mainPid : parseInt(mainPid.split('/').pop(), 10);
+		if (utils.isNumber(pid)) {
+			tid = await posts.getPostField(pid, 'tid');
+		}
 	}
-	const tid = resolved.id;
+	// Fallback to direct URL resolution for local URLs
+	if (!tid) {
+		const resolved = await activitypub.helpers.resolveLocalId(object);
+		if (resolved.type === 'topic') {
+			tid = resolved.id;
+		} else {
+			return; // not a local topic
+		}
+	}
+
 	const cid = await topics.getTopicField(tid, 'cid');
 
 	// Check same-origin: actor must be from the same host as the topic's category
@@ -219,11 +234,26 @@ inbox.unlock = async (req) => {
 		object = object.id;
 	}
 
-	const resolved = await activitypub.helpers.resolveLocalId(object);
-	if (resolved.type !== 'topic') {
-		return; // not a local topic
+	let tid;
+	// Try to resolve via contexts first (for remote topic URLs)
+	let mainPid = await activitypub.contexts.getItems(0, object, { returnRootId: true });
+	if (mainPid) {
+		// mainPid may be a URL string; extract the numeric pid
+		const pid = utils.isNumber(mainPid) ? mainPid : parseInt(mainPid.split('/').pop(), 10);
+		if (utils.isNumber(pid)) {
+			tid = await posts.getPostField(pid, 'tid');
+		}
 	}
-	const tid = resolved.id;
+	// Fallback to direct URL resolution for local URLs
+	if (!tid) {
+		const resolved = await activitypub.helpers.resolveLocalId(object);
+		if (resolved.type === 'topic') {
+			tid = resolved.id;
+		} else {
+			return; // not a local topic
+		}
+	}
+
 	const cid = await topics.getTopicField(tid, 'cid');
 
 	// Check same-origin: actor must be from the same host as the topic's category
