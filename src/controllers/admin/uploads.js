@@ -233,7 +233,9 @@ uploadsController.uploadFile = async function (req, res, next) {
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
-	if (!await file.exists(path.join(nconf.get('upload_path'), params.folder))) {
+	const uploadPath = nconf.get('upload_path');
+	const targetFolder = path.join(uploadPath, params.folder || '');
+	if (!file.isPathInside(uploadPath, targetFolder) || !await file.exists(targetFolder)) {
 		return next(new Error('[[error:invalid-path]]'));
 	}
 

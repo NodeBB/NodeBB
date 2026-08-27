@@ -692,6 +692,17 @@ describe('Upload Controllers', () => {
 			assert.strictEqual(body.error, '[[error:invalid-path]]');
 		});
 
+		it('should fail to upload regular file to an existing directory outside of upload_path', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
+				params: JSON.stringify({
+					folder: '../',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:invalid-path]]');
+		});
+
 		it('should fail to upload regular file if directory does not exist', async () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
 				params: JSON.stringify({
