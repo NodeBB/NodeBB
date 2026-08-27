@@ -192,12 +192,13 @@ inbox.lock = async (req) => {
 		return; // not a local topic
 	}
 	const tid = resolved.id;
+	const cid = await topics.getTopicField(tid, 'cid');
 
-	// Check same-origin: actor must be from the same host as the topic
-	const topicHostname = nconf.get('url_parsed').hostname;
+	// Check same-origin: actor must be from the same host as the topic's category
 	const actorHostname = new URL(actor).hostname;
-	if (actorHostname !== topicHostname) {
-		return; // not same-origin, drop
+	const cidHostname = new URL(`${nconf.get('url')}/category/${cid}`).hostname;
+	if (actorHostname !== cidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
 	const isLocked = await topics.getTopicField(tid, 'locked');
@@ -223,12 +224,13 @@ inbox.unlock = async (req) => {
 		return; // not a local topic
 	}
 	const tid = resolved.id;
+	const cid = await topics.getTopicField(tid, 'cid');
 
-	// Check same-origin: actor must be from the same host as the topic
-	const topicHostname = nconf.get('url_parsed').hostname;
+	// Check same-origin: actor must be from the same host as the topic's category
 	const actorHostname = new URL(actor).hostname;
-	if (actorHostname !== topicHostname) {
-		return; // not same-origin, drop
+	const cidHostname = new URL(`${nconf.get('url')}/category/${cid}`).hostname;
+	if (actorHostname !== cidHostname) {
+		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
 	const isLocked = await topics.getTopicField(tid, 'locked');
