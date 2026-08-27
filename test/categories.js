@@ -620,10 +620,8 @@ describe('Categories', () => {
 			});
 
 			async function createCategoryPair() {
-				const [from, to] = await Promise.all([
-					Categories.create({ name: utils.generateUUID().slice(0, 8) }),
-					Categories.create({ name: utils.generateUUID().slice(0, 8) }),
-				]);
+				const from = await Categories.create({ name: utils.generateUUID().slice(0, 8) });
+				const to = await Categories.create({ name: utils.generateUUID().slice(0, 8) });
 				return { fromCid: from.cid, toCid: to.cid };
 			}
 
