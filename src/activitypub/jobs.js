@@ -72,7 +72,9 @@ Jobs.start = async () => {
 
 	// Start draining the send retry queue so tasks left over from a previous
 	// run are retried without waiting for the next outgoing send
-	if (meta.config.activitypubEnabled) {
+	// Only the primary process runs the drain loop to avoid duplicate sends
+	// across parallel NodeBB instances.
+	if (meta.config.activitypubEnabled && nconf.get('isPrimary')) {
 		activitypub.SendPool.drainLoop();
 	}
 };
