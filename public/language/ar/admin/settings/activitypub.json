@@ -103,6 +103,8 @@
 	"analytics.term": "Time scale",
 	"analytics.hourly": "كل ساعة",
 	"analytics.daily": "Daily",
+	"analytics.activities_by_type": "Activities by Type",
+	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
 	"errors.payload-gone": "The payload for this error no longer exists.",

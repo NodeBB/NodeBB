@@ -103,6 +103,8 @@
 	"analytics.term": "סולם זמן",
 	"analytics.hourly": "שעתי",
 	"analytics.daily": "יומי",
+	"analytics.activities_by_type": "Activities by Type",
+	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "השגיאות הבאות %1 נרשמו במקרה זה במהלך 24 השעות האחרונות.",
 	"errors.payload-gone": "ה-payload עבור שגיאה זו אינו קיים עוד.",

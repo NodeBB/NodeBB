@@ -103,6 +103,8 @@
 	"analytics.term": "Échelle de temps",
 	"analytics.hourly": "Par heure",
 	"analytics.daily": "Par jour",
+	"analytics.activities_by_type": "Activities by Type",
+	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "Les %1 erreur(s) suivantes ont été enregistrées par cette instance au cours des dernières 24 heures.",
 	"errors.payload-gone": "Les données de cette erreur n’existent plus.",
