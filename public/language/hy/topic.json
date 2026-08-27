@@ -102,7 +102,7 @@
     "not-watching.description": "Ինձ մի տեղեկացրեք նոր պատասխանների մասին: Ցուցադրեք թեման չկարդացված վիճակում, եթե կատեգորիան անտեսված չէ:",
     "ignoring.description": "Ինձ մի տեղեկացրեք նոր պատասխանների մասին: Մի ցուցադրեք թեման չկարդացված վիճակում:",
     "thread-tools.title": "Թեմայի գործիքներ",
-    "thread-tools.markAsUnreadForAll": "Նշել չկարդացված բոլորի համար",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Ամրացնել թեման",
     "thread-tools.unpin": "Արձակել թեման",
     "thread-tools.lock": "Փակել թեման",

@@ -102,7 +102,7 @@
     "not-watching.description": "不要在有新回覆時通知我。<br/>如果這個版面未被忽略則在未讀主題中顯示。",
     "ignoring.description": "不要在有新回覆時通知我。<br/>不要在未讀主題中顯示該主題。",
     "thread-tools.title": "主題工具",
-    "thread-tools.markAsUnreadForAll": "全部標記為未讀",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "置頂主題",
     "thread-tools.unpin": "取消置頂主題",
     "thread-tools.lock": "鎖定主題",

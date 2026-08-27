@@ -102,7 +102,7 @@
     "not-watching.description": "Не сповіщати мене про нові відповіді.<br/>Показувати тему в непрочитаних якщо категорія не ігнорується.",
     "ignoring.description": "Не сповіщати мене про нові відповіді.<br/>Не показувати тему в непрочитаних.",
     "thread-tools.title": "Інструменти теми",
-    "thread-tools.markAsUnreadForAll": "Відмітити для всіх як непрочитана.",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Прикріпити тему",
     "thread-tools.unpin": "Відкріпити тему",
     "thread-tools.lock": "Заблокувати тему",

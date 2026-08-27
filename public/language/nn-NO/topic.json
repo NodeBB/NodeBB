@@ -102,7 +102,7 @@
     "not-watching.description": "Ikkje varsle meg om nye svar.<br/>Vis innlegg i ulest om kategorien ikkje er ignorert.",
     "ignoring.description": "Ikkje varsle meg om nye svar.<br/>Ikkje vis innlegg i ulest.",
     "thread-tools.title": "Emneverktøy",
-    "thread-tools.markAsUnreadForAll": "Merk som ulest for alle",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Fest emne",
     "thread-tools.unpin": "Avfest emne",
     "thread-tools.lock": "Lås emne",

@@ -102,7 +102,7 @@
     "not-watching.description": "Neupozorňovat na nové odpovědi. <br/>Zobrazit téma v nepřečtených, není-li tato kategorie ignorována",
     "ignoring.description": "Neupozorňovat na nové odpovědi.<br/>Nezobrazovat téma v nepřečtených.",
     "thread-tools.title": "Nástroje tématu",
-    "thread-tools.markAsUnreadForAll": "Označit nepřečtené pro všechny",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Připnout téma",
     "thread-tools.unpin": "Odepnout téma",
     "thread-tools.lock": "Zamknout téma",

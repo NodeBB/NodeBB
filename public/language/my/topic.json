@@ -102,7 +102,7 @@
     "not-watching.description": "မှတ်ချက်အသစ်များကို အသိမပေးပါနှင့်။<br/>ကဏ္ဍကို လျစ်လျူရှုမထားပါက မဖတ်ရသေးသော စာရင်းတွင် ပြပါ။",
     "ignoring.description": "မှတ်ချက်အသစ်များကို အသိမပေးပါနှင့်။<br/>မဖတ်ရသေးသော စာရင်းတွင် အကြောင်းအရာကို မပြပါနှင့်။",
     "thread-tools.title": "အကြောင်းအရာ ကိရိယာများ",
-    "thread-tools.markAsUnreadForAll": "အားလုံးအတွက် မဖတ်ရသေးအဖြစ် သတ်မှတ်ရန်",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "အကြောင်းအရာကို ချိတ်ရန်",
     "thread-tools.unpin": "အကြောင်းအရာကို ဖြုတ်ရန်",
     "thread-tools.lock": "အကြောင်းအရာကို ပိတ်ခတ်ရန်",

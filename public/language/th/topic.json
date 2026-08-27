@@ -102,7 +102,7 @@
     "not-watching.description": "อย่าเตือนฉันเมือมีคำตอบใหม่ <br/> แสดงกระทู้ในรายการที่ยังไม่ได้อ่านหากหมวดหมู่นี้ไม่ได้รับการเมินเฉย",
     "ignoring.description": "อย่าเตือนฉันเมื่อมีคำตอบใหม่ <br/>อย่าแสดงกระทู้ในรายการที่ยังไม่ได้อ่าน",
     "thread-tools.title": "เครื่องมือช่วยจัดการกระทู้",
-    "thread-tools.markAsUnreadForAll": "มาร์คว่ายังไม่ยังอ่านทั้งหมด",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "ปักหมุดกระทู้",
     "thread-tools.unpin": "เลิกปักหมุดกระทู้",
     "thread-tools.lock": "ล็อคกระทู้",

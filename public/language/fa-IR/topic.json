@@ -102,7 +102,7 @@
     "not-watching.description": "برای هر پاسخ جدید نوتیفیکشن ارسال نشود.<br/>اگر دسته بندی نادیده نگرفته شده تاپیک را در صفحه نخوانده ها نشان بده",
     "ignoring.description": "برای پاسخ های جدید نوتیفیکشن ارسال نشود.<br/> تاپیک را در صفحه نخوانده‌ها نشان نده.",
     "thread-tools.title": "ابزارهای موضوع",
-    "thread-tools.markAsUnreadForAll": "برای همه کاربران نخوانده شده علامت بزن",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "سنجاق زدن موضوع",
     "thread-tools.unpin": "برداشتن سنجاق موضوع",
     "thread-tools.lock": "قفل کردن موضوع",

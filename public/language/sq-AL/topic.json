@@ -102,7 +102,7 @@
     "not-watching.description": "Mos më njofto për komentet e reja. <br/>Shfaq temën e palexuar nëse kategoria nuk shpërfillet.",
     "ignoring.description": "Mos më njofto për komentet e reja. <br/>Mos e shfaq temën e palexuar.",
     "thread-tools.title": "Mjetet e temave",
-    "thread-tools.markAsUnreadForAll": "Shënoni si të palexuar për të gjithë",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Fikso temën",
     "thread-tools.unpin": "Ç'fikso temën",
     "thread-tools.lock": "Blloko temën",

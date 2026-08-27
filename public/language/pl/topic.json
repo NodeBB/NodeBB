@@ -102,7 +102,7 @@
     "not-watching.description": "Nie powiadamiaj mnie o nowych odpowiedziach.<br/> Pokazuj temat w nieprzeczytanych, jeśli kategoria nie jest ignorowana.",
     "ignoring.description": "Nie powiadamiaj mnie o nowych odpowiedziach.<br/>Nie pokazuj tematu w nieprzeczytanych.",
     "thread-tools.title": "Narzędzia tematu",
-    "thread-tools.markAsUnreadForAll": "Oznacz jako nieprzeczytany dla wszystkich",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Przypnij temat",
     "thread-tools.unpin": "Odepnij temat",
     "thread-tools.lock": "Zablokuj temat",

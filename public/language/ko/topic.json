@@ -102,7 +102,7 @@
     "not-watching.description": "새 답글 알림 안 함<br/>카테고리가 무시되지 않으면 읽지 않은 토픽에 표시됨.",
     "ignoring.description": "새 답글 알림 안 함<br/>읽지 않은 토픽에 표시되지 않음.",
     "thread-tools.title": "토픽 도구",
-    "thread-tools.markAsUnreadForAll": "모든 사람에게 읽지 않은 토픽으로 표시",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "토픽 고정",
     "thread-tools.unpin": "토픽 고정 해제",
     "thread-tools.lock": "토픽 잠금",

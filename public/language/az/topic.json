@@ -102,7 +102,7 @@
     "not-watching.description": "Yeni cavablar haqqında mənə bildirməyin. <br/>Kateqoriya nəzərə alınmazsa, mövzunu oxunmamış olaraq göstərin.",
     "ignoring.description": "Yeni cavablar haqqında mənə bildirməyin. <br/>Mövzunu oxunmamış olaraq göstərməyin.",
     "thread-tools.title": "Mövzu alətləri",
-    "thread-tools.markAsUnreadForAll": "Hamı üçün oxunmamış işarələ",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Mövzunu pin et",
     "thread-tools.unpin": "Mövzunu pindən çıxart",
     "thread-tools.lock": "Mövzunu kilidlə",

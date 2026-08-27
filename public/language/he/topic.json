@@ -102,7 +102,7 @@
     "not-watching.description": "אל תעדכנו אותי על תגובות חדשות. <br/>הצגת נושא ברשימת לא נקראו במידה ובחרתי לא להתעלם מקטגוריה זו",
     "ignoring.description": "אל תעדכנו אותי על תגובות חדשות. <br/>אל תציגו את הנושא ברשימת לא נקראו",
     "thread-tools.title": "כלי נושא",
-    "thread-tools.markAsUnreadForAll": "סימון לכולם כלא נקרא",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "נעיצת נושא",
     "thread-tools.unpin": "הסרת נעיצה",
     "thread-tools.lock": "נעילת נושא",
