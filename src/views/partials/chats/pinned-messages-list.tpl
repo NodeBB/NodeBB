@@ -9,7 +9,7 @@
 		<a href="{config.relative_path}/user/{messages.fromUser.userslug}" class="text-decoration-none">{{buildAvatar(messages.fromUser, "18px", true, "not-responsive")}}</a>
 		<span class="chat-user fw-semibold"><a href="{config.relative_path}/user/{messages.fromUser.userslug}">{{txDisplayname(messages.fromUser)}}</a></span>
 
-		<span class="chat-timestamp text-muted timeago" title="{messages.timestampISO}"></span>
+		<a href="{config.relative_path}/message/{messages.messageId}" class="chat-timestamp text-muted timeago" title="{messages.timestampISO}"></a>
 		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="{{tx("global:edited-timestamp", isoTimeToLocaleString(messages.editedISO, config.userLang))}}"><i class="fa fa-edit"></i></span></div>
 	</div>
 	<div class="message-body-wrapper">
