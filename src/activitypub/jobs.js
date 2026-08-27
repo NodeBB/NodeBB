@@ -1,5 +1,7 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const db = require('../database');
 const meta = require('../meta');
 const topics = require('../topics');
