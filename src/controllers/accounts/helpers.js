@@ -53,10 +53,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		delete userData.reputation;
 	}
 
-	userData.age = Math.max(
-		0,
-		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
-	);
+	userData.age = Math.max(0, calculateAge(userData.birthday));
 
 	userData = await user.hidePrivateData(userData, callerUID);
 	userData.emailHidden = !userSettings.showemail;
@@ -346,6 +343,23 @@ async function getProfileMenu(uid, callerUID) {
 		}
 	});
 	return data;
+}
+
+function calculateAge(birthday) {
+	if (!birthday) {
+		return 0;
+	}
+	const birthDate = new Date(birthday);
+	const today = new Date();
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const hasHadBirthdayThisYear = (
+		today.getMonth() > birthDate.getMonth() ||
+		(today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate())
+	);
+	if (!hasHadBirthdayThisYear) {
+		age -= 1;
+	}
+	return age;
 }
 
 async function parseAboutMe(userData) {

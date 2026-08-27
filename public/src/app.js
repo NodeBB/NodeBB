@@ -223,7 +223,7 @@ app.onDomReady = function () {
 	app.createStatusTooltips = function () {
 		if (!isTouchDevice) {
 			$('body').tooltip({
-				selector: '.fa-circle.status',
+				selector: '[component="user/status"], [component="user/locality"]',
 				placement: 'top',
 				container: '#content',
 				animation: false,
