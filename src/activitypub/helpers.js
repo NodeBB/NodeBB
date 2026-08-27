@@ -160,8 +160,8 @@ Helpers.query = async (id, { strict = true } = {}) => {
 
 	// Validate content-type; most servers advertise jrd+json, but some (e.g. GitHub Pages)
 	// serve application/octet-stream — attempt to parse as JSON in that case.
-	const contentType = (response.headers['content-type'] || '').toLowerCase();
-	if (!contentType.includes('application/jrd+json') && !contentType.includes('application/json')) {
+	const contentType = (response.headers?.['content-type'] || '').toLowerCase();
+	if (contentType && !contentType.includes('application/jrd+json') && !contentType.includes('application/json')) {
 		if (!contentType.includes('application/octet-stream')) {
 			return false;
 		}
