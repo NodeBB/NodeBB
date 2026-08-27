@@ -80,12 +80,6 @@ define('forum/chats', [
 			messages.toggleScrollUpAlert(chatContentEl);
 			const scrollToEl = chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`);
 			messages.scrollToMessageAfterImageLoad(chatContentEl, scrollToEl);
-			if (scrollToEl) {
-				scrollToEl.addClass('highlight-pulse');
-				setTimeout(() => {
-					scrollToEl.removeClass('highlight-pulse');
-				}, 5000);
-			}
 		} else {
 			messages.scrollToBottomAfterImageLoad(chatContentEl);
 		}
@@ -204,6 +198,17 @@ define('forum/chats', [
 		});
 	};
 
+	function gotoMessage(event, timestampEl) {
+		const mid = timestampEl.parents('[data-parent-mid]').attr('data-parent-mid');
+		const containerEl = timestampEl.parents('[component="chat/message/content"]');
+		const messageEl = containerEl.find(`[component="chat/message"][data-mid="${mid}"]`);
+		if (messageEl.length) {
+			event.preventDefault();
+			messages.scrollToMessage(messageEl);
+			return false;
+		}
+	}
+
 	Chats.addParentHandler = function (mainWrapper) {
 		mainWrapper.off('click', '[component="chat/message/parent"]')
 			.on('click', '[component="chat/message/parent"]', function () {
@@ -215,6 +220,12 @@ define('forum/chats', [
 				if (chatContent.length && messages.isAtBottom(chatContent)) {
 					messages.scrollToBottom(chatContent);
 				}
+			});
+
+		// deeper selector, so this runs before the collapse handler above
+		mainWrapper.off('click', '[component="chat/message/parent"] .chat-timestamp')
+			.on('click', '[component="chat/message/parent"] .chat-timestamp', function (ev) {
+				return gotoMessage(ev, $(this));
 			});
 	};
 
