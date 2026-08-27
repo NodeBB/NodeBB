@@ -1249,5 +1249,160 @@ describe('Inbox', () => {
 				await db.sortedSetRemove('relays:createtime', relayActor);
 			});
 		});
+
+		describe('.lock', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { postData, topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.pid = postData.pid;
+			});
+
+			it('should lock a topic when a same-origin actor sends a Lock activity', async function () {
+				// Verify topic is unlocked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0);
+
+				// Create a Lock activity from a same-origin actor (the local user's AP URL)
+				const lockActivity = {
+					type: 'Lock',
+					actor: `${nconf.get('url')}/uid/${this.uid}`,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// Verify topic is now locked
+				const isLockedAfter = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLockedAfter, 1);
+			});
+
+			it('should do nothing when the topic is already locked', async function () {
+				// Topic is already locked from previous test
+				const lockActivity = {
+					type: 'Lock',
+					actor: `${nconf.get('url')}/uid/${this.uid}`,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// Topic should still be locked (no error)
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1);
+			});
+
+			it('should drop the activity if the actor is not same-origin', async function () {
+				const remoteActor = helpers.mocks.person();
+				const lockActivity = {
+					type: 'Lock',
+					actor: remoteActor.id,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				// This should not throw and should not lock the topic
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// Topic should still be locked from previous test
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1);
+			});
+
+			it('should do nothing if the object does not resolve to a local topic', async function () {
+				const lockActivity = {
+					type: 'Lock',
+					actor: `${nconf.get('url')}/uid/${this.uid}`,
+					object: `${nconf.get('url')}/post/999999`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// No error should be thrown
+				assert(true);
+			});
+		});
+
+		describe('.unlock', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { postData, topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.pid = postData.pid;
+
+				// Lock the topic first
+				await topics.tools.lock(this.tid, 'system');
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1);
+			});
+
+			it('should unlock a topic when a same-origin actor sends an Unlock activity', async function () {
+				const unlockActivity = {
+					type: 'Unlock',
+					actor: `${nconf.get('url')}/uid/${this.uid}`,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.unlock({ body: unlockActivity });
+
+				// Verify topic is now unlocked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0);
+			});
+
+			it('should do nothing when the topic is not locked', async function () {
+				const unlockActivity = {
+					type: 'Unlock',
+					actor: `${nconf.get('url')}/uid/${this.uid}`,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.unlock({ body: unlockActivity });
+
+				// Topic should still be unlocked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0);
+			});
+
+			it('should drop the activity if the actor is not same-origin', async function () {
+				// Re-lock the topic
+				await topics.tools.lock(this.tid, 'system');
+
+				const remoteActor = helpers.mocks.person();
+				const unlockActivity = {
+					type: 'Unlock',
+					actor: remoteActor.id,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.unlock({ body: unlockActivity });
+
+				// Topic should still be locked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1);
+			});
+
+			it('should do nothing if the object is a string URL (not an object)', async function () {
+				const unlockActivity = {
+					type: 'Unlock',
+					actor: `${nconf.get('url')}/uid/${this.uid}`,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.unlock({ body: unlockActivity });
+
+				// No error, topic state unchanged
+				assert(true);
+			});
+		});
 	});
 });
