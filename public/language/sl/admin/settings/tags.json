@@ -8,6 +8,8 @@
     "max-per-topic": "Največ oznak na temo",
     "min-length": "Najmanjša dolžina oznake",
     "max-length": "Največja dolžina oznake",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Sorodne teme",
     "max-related-topics": "Največ sorodnih tem za prikaz (če jih tema podpira)"
 }

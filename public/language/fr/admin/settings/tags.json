@@ -8,6 +8,8 @@
     "max-per-topic": "Nombre maximale de mots-clés par sujet",
     "min-length": "Longueur minimale des mots-clés",
     "max-length": "Longueur maximale des mots-clés",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Sujets connexes",
     "max-related-topics": "Nombre maximum de sujets connexes à afficher (si supporté par le thème)"
 }

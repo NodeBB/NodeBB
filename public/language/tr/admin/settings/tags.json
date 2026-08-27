@@ -8,6 +8,8 @@
     "max-per-topic": "Konu Başına Maksimum Etiket Sayısı",
     "min-length": "Minimum Etiket Uzunluğu",
     "max-length": "Maksimum Etiket Uzunluğu",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "İlgili Konular",
     "max-related-topics": "Görüntülenecek maksimum ilgili konu sayısı (Tema destekliyorsa)"
 }

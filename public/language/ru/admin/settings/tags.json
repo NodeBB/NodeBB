@@ -8,6 +8,8 @@
     "max-per-topic": "Максимальное количество меток в теме",
     "min-length": "Минимальная длина метки",
     "max-length": "Максимальная длина метки",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Похожие темы",
     "max-related-topics": "Максимальное количество похожих тем для отображения (если тема поддерживает эту настройку)"
 }

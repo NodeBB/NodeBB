@@ -8,6 +8,8 @@
     "max-per-topic": "Címkék maximális száma témakörönként",
     "min-length": "Címke minimális hossza",
     "max-length": "Címke maximális hossza",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Kapcsolódó témakörök",
     "max-related-topics": "Megjelenítendő kapcsolódó témakörök maximális száma (ha a téma támogatja)"
 }

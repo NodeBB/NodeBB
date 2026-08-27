@@ -8,6 +8,8 @@
     "max-per-topic": "จำนวนแท็กของกระทู้สูงสุด",
     "min-length": "ความยาวแท็กขั้นต่ำ",
     "max-length": "ความยาวแท็กสูงสุด",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "กระทู้ที่เกี่ยวข้อง",
     "max-related-topics": "แสดงจำนวนกระทู้ที่เกี่ยวข้องมากสุด (ถ้าธีมรองรับ)"
 }

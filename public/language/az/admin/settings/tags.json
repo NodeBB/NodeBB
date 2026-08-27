@@ -8,6 +8,8 @@
     "max-per-topic": "Mövzu üzrə maksimum teqlər",
     "min-length": "Minimum teq uzunluğu",
     "max-length": "Maksimum teq uzunluğu",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Əlaqəli mövzular",
     "max-related-topics": "Göstəriləcək maksimum əlaqəli mövzular (tema tərəfindən dəstəklənirsə)"
 }

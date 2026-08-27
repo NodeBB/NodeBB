@@ -8,6 +8,8 @@
     "max-per-topic": "Maximale Tags pro Thema",
     "min-length": "Minimale Tag Länge",
     "max-length": "Maximale Tag Länge",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Zusammenhängende Themen",
     "max-related-topics": "Maximale Anzahl an Zusammenhängenden Themen die angezeigt werden sollen (Wenn vom Design unterstützt)"
 }

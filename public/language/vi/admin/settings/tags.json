@@ -8,6 +8,8 @@
     "max-per-topic": "Số Thẻ Tối Đa Mỗi Chủ Đề",
     "min-length": "Độ Dài Thẻ Tối Thiểu",
     "max-length": "Độ Dài Thẻ Tối Đa",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Chủ Đề Liên Quan",
     "max-related-topics": "Số chủ đề liên quan tối đa để hiển thị (nếu giao diện hỗ trợ)"
 }

@@ -8,6 +8,8 @@
     "max-per-topic": "מקסימום תגיות לנושא",
     "min-length": "אורך תגית מינימלי",
     "max-length": "אורך תגית מקסימלי",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "נושאים קשורים",
     "max-related-topics": "מספר מרבי של נושאים קשורים להצגה (אם נתמך על-ידי ערכת הנושא)"
 }

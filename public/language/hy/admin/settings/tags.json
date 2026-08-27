@@ -8,6 +8,8 @@
     "max-per-topic": "Առավելագույն պիտակներ յուրաքանչյուր թեմայի համար",
     "min-length": "Պիտակի նվազագույն երկարությունը",
     "max-length": "Պիտակի առավելագույն երկարությունը",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Առնչվող թեմաներ",
     "max-related-topics": "Ցուցադրվող առավելագույն առնչվող թեմաներ (եթե աջակցվում է թեմայի կողմից)"
 }

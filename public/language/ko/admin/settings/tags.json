@@ -8,6 +8,8 @@
     "max-per-topic": "토픽당 최대 태그",
     "min-length": "최소 태그 길이",
     "max-length": "최대 태그 길이",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "관련 토픽",
     "max-related-topics": "표시할 최대 관련 토픽(테마에서 지원하는 경우)"
 }
