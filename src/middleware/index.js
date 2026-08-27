@@ -150,7 +150,11 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	let iconPath;
 	if (brandTouchIcon) {
 		const uploadPath = nconf.get('upload_path');
-		iconPath = path.join(uploadPath, brandTouchIcon.replace(/assets\/uploads/, ''));
+		// brand:touchIcon is stored as a public url path, e.g. /assets/uploads/system/touchicon-orig.png
+		const relativePath = path.normalize(brandTouchIcon)
+			.replace(/^[/\\]+/, '')
+			.replace(/^assets[/\\]uploads[/\\]?/, '');
+		iconPath = path.join(uploadPath, relativePath);
 		if (!file.isPathInside(uploadPath, iconPath)) {
 			return res.status(404).send('Not found');
 		}
