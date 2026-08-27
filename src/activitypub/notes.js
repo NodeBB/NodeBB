@@ -598,7 +598,7 @@ async function assignCategory(post) {
 
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
 	const rules = await activitypub.rules.list();
-	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
+	const tags = await Notes._normalizeTags(post._activitypub.tag || []);
 
 	const matched = rules.reduce((matched, { type, value, cid: target, action: ruleAction }) => {
 		if (!matched.cid) {

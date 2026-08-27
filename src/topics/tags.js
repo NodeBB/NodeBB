@@ -486,7 +486,7 @@ module.exports = function (Topics) {
 	}
 
 	async function findMatches(data) {
-		let { query } = data;
+		const { query } = data;
 		let tagWhitelist = [];
 		if (parseInt(data.cid, 10)) {
 			tagWhitelist = await categories.getTagWhitelist([data.cid]);
@@ -510,7 +510,10 @@ module.exports = function (Topics) {
 
 		const matches = [];
 		for (let i = 0; i < tags.length; i += 1) {
-			if (tags[i].value && (meta.config.caseSensitiveTags ? tags[i].value : tags[i].value.toLowerCase()).startsWith(lowerQuery)) {
+			if (tags[i].value && (meta.config.caseSensitiveTags ?
+				tags[i].value :
+				tags[i].value.toLowerCase()).startsWith(lowerQuery)
+			) {
 				matches.push(tags[i]);
 				if (matches.length > 39) {
 					break;
