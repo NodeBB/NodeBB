@@ -98,9 +98,9 @@ Out.create.note = enabledCheck(async (uid, post) => {
 	const participantUids = await db.getSortedSetMembers(`tid:${tid}:posters`);
 	const participantRemoteUris = participantUids.filter(uid => !utils.isNumber(uid));
 	const immediateTargetsSet = new Set(
-		participantRemoteUris.length
-			? targetsArr.filter(uri => participantRemoteUris.includes(uri))
-			: [],
+		participantRemoteUris.length ?
+			targetsArr.filter(uri => participantRemoteUris.includes(uri)) :
+			[],
 	);
 	const deferredTargets = targetsArr.filter(uri => !immediateTargetsSet.has(uri));
 
