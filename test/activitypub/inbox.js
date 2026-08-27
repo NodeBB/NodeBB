@@ -1263,6 +1263,10 @@ describe('Inbox', () => {
 				this.pid = postData.pid;
 			});
 
+			after(() => {
+				activitypub._sent.clear();
+			});
+
 			it('should lock a topic when a same-origin actor sends a Lock activity', async function () {
 				// Verify topic is unlocked
 				const isLocked = await topics.getTopicField(this.tid, 'locked');
@@ -1297,7 +1301,7 @@ describe('Inbox', () => {
 				assert.strictEqual(isLocked, 1);
 			});
 
-			it('should drop the activity if the actor is not same-origin', async function () {
+			it('should throw when the actor is not same-origin', async function () {
 				const remoteActor = helpers.mocks.person();
 				const lockActivity = {
 					type: 'Lock',
@@ -1305,12 +1309,11 @@ describe('Inbox', () => {
 					object: `${nconf.get('url')}/topic/${this.tid}`,
 				};
 
-				// This should not throw and should not lock the topic
-				await activitypub.inbox.lock({ body: lockActivity });
-
-				// Topic should still be locked from previous test
-				const isLocked = await topics.getTopicField(this.tid, 'locked');
-				assert.strictEqual(isLocked, 1);
+				// This should throw an origin mismatch error
+				await assert.rejects(
+					activitypub.inbox.lock({ body: lockActivity }),
+					{ message: '[[error:activitypub.origin-mismatch]]' },
+				);
 			});
 
 			it('should do nothing if the object does not resolve to a local topic', async function () {
@@ -1341,8 +1344,10 @@ describe('Inbox', () => {
 
 				// Lock the topic first
 				await topics.tools.lock(this.tid, 'system');
-				const isLocked = await topics.getTopicField(this.tid, 'locked');
-				assert.strictEqual(isLocked, 1);
+			});
+
+			after(() => {
+				activitypub._sent.clear();
 			});
 
 			it('should unlock a topic when a same-origin actor sends an Unlock activity', async function () {
@@ -1373,10 +1378,7 @@ describe('Inbox', () => {
 				assert.strictEqual(isLocked, 0);
 			});
 
-			it('should drop the activity if the actor is not same-origin', async function () {
-				// Re-lock the topic
-				await topics.tools.lock(this.tid, 'system');
-
+			it('should throw when the actor is not same-origin', async function () {
 				const remoteActor = helpers.mocks.person();
 				const unlockActivity = {
 					type: 'Unlock',
@@ -1384,11 +1386,11 @@ describe('Inbox', () => {
 					object: `${nconf.get('url')}/topic/${this.tid}`,
 				};
 
-				await activitypub.inbox.unlock({ body: unlockActivity });
-
-				// Topic should still be locked
-				const isLocked = await topics.getTopicField(this.tid, 'locked');
-				assert.strictEqual(isLocked, 1);
+				// This should throw an origin mismatch error
+				await assert.rejects(
+					activitypub.inbox.unlock({ body: unlockActivity }),
+					{ message: '[[error:activitypub.origin-mismatch]]' },
+				);
 			});
 
 			it('should do nothing if the object is a string URL (not an object)', async function () {
