@@ -57,8 +57,11 @@
 					<div class="card-body">
 						<div class="row">
 							<div class="col-md-6">
-								<div class="position-relative" style="aspect-ratio: 1;">
-									<canvas id="activitiesByType"></canvas>
+								<div class="position-relative no-data-container w-100" style="aspect-ratio: 1;">
+									<canvas id="activitiesByType" height="250"></canvas>
+									<div class="no-data-message text-center text-muted" style="display: none;">
+										<p class="mb-0">{{tx("admin/settings/activitypub:analytics.activities_by_type_empty")}}</p>
+									</div>
 								</div>
 							</div>
 							<div class="col-md-6 d-flex align-items-center">

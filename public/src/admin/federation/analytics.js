@@ -90,7 +90,7 @@ async function renderActivitiesByTypeLegend() {
 		return `<li class="mb-2">
 			<span class="badge me-2" style="background-color: ${color};">&nbsp;</span>
 			<span>${type}</span>
-			<span class="float-end">${count} (${pct}%)</span>
+			<span class="float-end ms-2">${count} (${pct}%)</span>
 		</li>`;
 	}).join('');
 
@@ -165,6 +165,11 @@ async function initializeCharts() {
 	receivedCanvas.width = $(receivedCanvas).parent().width();
 	sentCanvas.width = $(sentCanvas).parent().width();
 
+	const pieCanvas = document.getElementById('activitiesByType');
+	if (pieCanvas) {
+		pieCanvas.width = $(pieCanvas).parent().width();
+	}
+
 	const chartOpts = {
 		responsive: true,
 		animation: false,
@@ -180,6 +185,33 @@ async function initializeCharts() {
 		},
 	};
 
+	const byType = ajaxify.data.data.byType;
+	const pieEntries = Object.entries(byType)
+		.filter(([, count]) => count > 0)
+		.sort(([, a], [, b]) => b - a);
+	const noDataContainer = $(pieCanvas).closest('.no-data-container');
+	const noDataMessage = noDataContainer.find('.no-data-message');
+
+	if (pieEntries.length === 0) {
+		pieCanvas.style.display = 'none';
+		noDataMessage.css('display', 'block');
+		noDataContainer.css({
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+		});
+	}
+
+	const pieData = {
+		labels: pieEntries.map(([type]) => type),
+		datasets: [{
+			data: pieEntries.map(([, count]) => count),
+			backgroundColor: pieEntries.map(([, count], idx) =>
+				pieColors[idx % pieColors.length]
+			),
+		}],
+	};
+
 	return new Map([
 		['received', new Chart(receivedCanvas.getContext('2d'), {
 			type: 'line',
@@ -190,6 +222,19 @@ async function initializeCharts() {
 			type: 'line',
 			data: data.sent,
 			options: chartOpts,
+		})],
+		['activitiesByType', new Chart(pieCanvas.getContext('2d'), {
+			type: 'pie',
+			data: pieData,
+			options: {
+				responsive: true,
+				animation: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+			},
 		})],
 	]);
 }
