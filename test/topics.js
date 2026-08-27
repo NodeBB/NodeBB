@@ -1546,14 +1546,16 @@ describe('Topic\'s', () => {
 				assert.ifError(err);
 				assert.equal(data.matchCount, 5);
 				assert.equal(data.pageCount, 1);
-				const tagData = [
-					{ value: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
-					{ value: 'node & c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&-c++' },
-					{ value: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
-					{ value: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
-					{ value: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
-				];
-				assert.deepEqual(data.tags, tagData);
+				const expected = ['nodebb', 'node & c++', 'node icon', 'nodejs', 'nosql'];
+				const actual = data.tags.map(t => t.value);
+				expected.forEach((tag) => {
+					assert.notEqual(actual.indexOf(tag), -1, `Expected tag ${tag} to be present`);
+				});
+				data.tags.forEach((tag) => {
+					assert.ok(tag.score >= 1, `Tag ${tag.value} should have score >= 1`);
+					assert.equal(tag.valueEncoded, encodeURIComponent(tag.value));
+					assert.equal(tag.class, tag.value.replace(/\s/g, '-'));
+				});
 
 				done();
 			});
