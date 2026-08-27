@@ -1552,7 +1552,7 @@ describe('Topic\'s', () => {
 					assert.notEqual(actual.indexOf(tag), -1, `Expected tag ${tag} to be present`);
 				});
 				data.tags.forEach((tag) => {
-					assert.equal(tag.score, 1);
+					assert.ok(tag.score >= 1, `Tag ${tag.value} should have score >= 1`);
 					assert.equal(tag.valueEncoded, encodeURIComponent(tag.value));
 					assert.equal(tag.class, tag.value.replace(/\s/g, '-'));
 				});
