@@ -289,6 +289,8 @@ topicsAPI.bump = async (caller, { tid }) => {
 
 	await topics.markAsUnreadForAll(tid);
 	topics.pushUnreadCount(caller.uid);
+
+	activitypub.out.announce.topic(tid, caller.uid);
 };
 
 topicsAPI.move = async (caller, { tid, cid }) => {
