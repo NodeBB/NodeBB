@@ -402,19 +402,15 @@ async function getSelectData(cids, fields) {
 }
 
 Categories.buildForSelectCategories = function (categories, fields, parentCid) {
-	function recursive({ ...category }, categoriesData, level, depth, ancestorPath) {
+	function recursive({ ...category }, categoriesData, level, depth) {
 		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
 		category.text = level + bullet + category.name;
 		category.depth = depth;
-		category.ancestorPath = ancestorPath;
 		categoriesData.push(category);
 		if (Array.isArray(category.children)) {
-			const childPath = ancestorPath ? `${ancestorPath} › ${category.name}` : category.name;
-			category.children.forEach(child => recursive(
-				child, categoriesData, `&nbsp;&nbsp;&nbsp;&nbsp;${level}`, depth + 1, childPath
-			));
+			category.children.forEach(child => recursive(child, categoriesData, `&nbsp;&nbsp;&nbsp;&nbsp;${level}`, depth + 1));
 		}
 	}
 	parentCid = String(parentCid || 0);
@@ -429,11 +425,11 @@ Categories.buildForSelectCategories = function (categories, fields, parentCid) {
 		return a.cid - b.cid;
 	});
 
-	rootCategories.forEach(category => recursive(category, categoriesData, '', 0, ''));
+	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
 
 	const pickFields = [
 		'cid', 'name', 'level', 'depth', 'icon', 'parentCid',
-		'color', 'bgColor', 'backgroundImage', 'imageClass', 'ancestorPath',
+		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
 	fields = fields || [];
 	if (fields.includes('text') && fields.includes('value')) {

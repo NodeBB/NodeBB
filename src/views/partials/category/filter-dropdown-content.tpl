@@ -30,7 +30,7 @@
         {{{each categoryItems}}}
         <li role="presentation" class="category {{{ if ./disabledClass }}}disabled{{{ end }}}" data-cid="{./cid}" data-parent-cid="{./parentCid}" data-name="{./name}">
             <a class="dropdown-item rounded-1 d-flex align-items-center gap-2 {{{ if ./disabledClass }}}disabled{{{ end }}}" role="menuitem" href="#">
-                <span component="category-markup" class="flex-grow-1 category-path-tooltip" style="{{{ if ./match }}}font-weight: bold;{{{end}}} margin-inline-start: calc({./depth} * 24px);" title="{{buildCategoryPath(@value)}}">
+                <span component="category-markup" class="flex-grow-1" style="{{{ if ./match }}}font-weight: bold;{{{end}}} margin-inline-start: calc({./depth} * 24px);">
                     <div class="category-item d-inline-flex align-items-center gap-1">
                         {{{ if ./icon }}}
                         {{buildCategoryIcon(@value, "24px", "rounded-circle")}}
