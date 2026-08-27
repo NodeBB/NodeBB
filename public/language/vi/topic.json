@@ -102,7 +102,7 @@
     "not-watching.description": "Không thông báo tôi các trả lời mới. <br/>Hiển thị mục chưa đọc nếu chuyên mục bị bỏ qua.",
     "ignoring.description": "Đừng thông báo tôi các trả lời mới. <br/>Không hiển thị chủ đề chưa đọc.",
     "thread-tools.title": "Công cụ chủ đề",
-    "thread-tools.markAsUnreadForAll": "Đánh Dấu Chưa Đọc Tất Cả",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Ghim Chủ Đề",
     "thread-tools.unpin": "Bỏ Ghim Chủ Đề",
     "thread-tools.lock": "Khóa Chủ Đề",

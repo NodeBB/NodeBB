@@ -102,7 +102,7 @@
     "not-watching.description": "Ne értesítsen az új válaszokról.<br/>Témakör megjelenítése olvasatlanként, ha a kategória nincs mellőzve.",
     "ignoring.description": "Ne értesítsen az új válaszokról.<br/>Témakör ne jelenjen meg olvasatlanként.",
     "thread-tools.title": "Témaköri eszközök",
-    "thread-tools.markAsUnreadForAll": "Mind megjelölése olvasatlanként",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Témakör rögzítése",
     "thread-tools.unpin": "Témakör rögzítésének feloldása",
     "thread-tools.lock": "Témakör zárolása",

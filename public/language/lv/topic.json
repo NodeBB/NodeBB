@@ -102,7 +102,7 @@
     "not-watching.description": "Nepaziņot par jaunām atbildēm. <br/>Atzīmēt tematu kā nelasītu, ja kategorija nav ignorēta.",
     "ignoring.description": "Nepaziņot par jaunām atbildēm. <br/>Neatzīmēt tematu kā nelasītu.",
     "thread-tools.title": "Rīkoties",
-    "thread-tools.markAsUnreadForAll": "Visiem atzīmēt kā nelasītu",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Noenkurot tematu",
     "thread-tools.unpin": "Atenkurot tematu",
     "thread-tools.lock": "Slēgt tematu",

@@ -102,7 +102,7 @@
     "not-watching.description": "میں نئے جوابات کے لیے نوٹیفکیشنز نہیں چاہتا۔<br/>موضوع غیر پڑھے ہوئے کی فہرست میں دکھائی دے، صرف اس صورت میں جب زمرہ نظر انداز نہ کیا گیا ہو۔",
     "ignoring.description": "میں نئے جوابات کے لیے نوٹیفکیشنز نہیں چاہتا۔<br/>میں نہیں چاہتا کہ موضوع غیر پڑھے ہوئے کی فہرست میں دکھائی دے۔",
     "thread-tools.title": "موضوع کے ٹولز",
-    "thread-tools.markAsUnreadForAll": "سب کے لیے غیر پڑھا ہوا نشان زد کریں",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "موضوع کو پن کریں",
     "thread-tools.unpin": "موضوع کو ان پن کریں",
     "thread-tools.lock": "موضوع کو مقفل کریں",

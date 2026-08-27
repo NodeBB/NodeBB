@@ -102,7 +102,7 @@
     "not-watching.description": "Non me notifiquedes as novas respostas. <br/>Amosa-lo fío en non lidos se a categoría non está ignorada.",
     "ignoring.description": "Non me notifiquedes as novas respostas. <br/>Non amosa-lo fío en non lidos.",
     "thread-tools.title": "Ferramentas do tema",
-    "thread-tools.markAsUnreadForAll": "Mark Unread For All",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Fixar Tema",
     "thread-tools.unpin": "Despegar Tema",
     "thread-tools.lock": "Pechar Tema",

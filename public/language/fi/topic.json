@@ -102,7 +102,7 @@
     "not-watching.description": "Älä ilmoita uusista vastauksista. <br/>Näytä aihe lukemattomissa, jos kategoriaa ei ole ohitettu.",
     "ignoring.description": "Älä ilmoita uusista vastauksista.<br/>Älä näytä aihetta lukemattomissa.",
     "thread-tools.title": "Aihe työkalut",
-    "thread-tools.markAsUnreadForAll": "Merkitse lukemattomaksi kaikille",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Kiinnitä aihe",
     "thread-tools.unpin": "Poista aiheen kiinnitys",
     "thread-tools.lock": "Lukitse aihe",

@@ -102,7 +102,7 @@
     "not-watching.description": "Не уведомлять о новых сообщениях.<br/>Показывать тему в непрочитанных, если эта категория не игнорируется.",
     "ignoring.description": "Не уведомлять о новых сообщениях.<br/>Не показывать эту тему в непрочитанных.",
     "thread-tools.title": "Управление темой",
-    "thread-tools.markAsUnreadForAll": "Пометить непрочитанной для всех",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Прикрепить тему",
     "thread-tools.unpin": "Открепить тему",
     "thread-tools.lock": "Закрыть тему",
