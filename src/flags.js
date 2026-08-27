@@ -124,7 +124,7 @@ Flags.get = async function (flagId) {
 		reports,
 	};
 	['flagId', 'targetUid', 'datetime', 'targetId'].forEach((prop) => {
-		if (flagObj?.[prop]) {
+		if (flagObj?.[prop] && utils.isNumber(flagObj[prop])) {
 			flagObj[prop] = parseInt(flagObj[prop], 10);
 		}
 	});
@@ -325,7 +325,7 @@ Flags.validate = async function (payload) {
 			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
 		}
 	} else if (payload.type === 'message') {
-		const canView = await messaging.canViewMessage([parseInt(payload.id, 10)], payload.roomId, payload.uid);
+		const canView = await messaging.canViewMessage([payload.id], payload.roomId, payload.uid);
 		if (!canView[0]) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -364,6 +364,10 @@ Flags.getFlagIdByTarget = async function (type, id) {
 
 		case 'user':
 			method = user.getUserField;
+			break;
+
+		case 'message':
+			method = messaging.getMessageField;
 			break;
 
 		default:
@@ -481,6 +485,8 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 		}
 	} else if (type === 'user') {
 		batched.push(user.setUserField(id, 'flagId', flagId));
+	} else if (type === 'message') {
+		batched.push(messaging.setMessageField(id, 'flagId', flagId));
 	}
 
 	// Run all the database calls in one single batched call...
@@ -504,6 +510,7 @@ Flags.purge = async function (flagIds) {
 	const flagData = (await db.getObjects(flagIds.map(flagId => `flag:${flagId}`))).filter(Boolean);
 	const postFlags = flagData.filter(flagObj => flagObj.type === 'post');
 	const userFlags = flagData.filter(flagObj => flagObj.type === 'user');
+	const messageFlags = flagData.filter(flagObj => flagObj.type === 'message');
 	const assignedFlags = flagData.filter(flagObj => !!flagObj.assignee);
 
 	const [allReports, cids] = await Promise.all([
@@ -529,8 +536,9 @@ Flags.purge = async function (flagIds) {
 			...assignedFlags.map(flagObj => ([`flags:byAssignee:${flagObj.assignee}`, flagObj.flagId])),
 			...userFlags.map(flagObj => ([`flags:byTargetUid:${flagObj.targetUid}`, flagObj.flagId])),
 		]),
-		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`, ['flagId'])),
-		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`, ['flagId'])),
+		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`), ['flagId']),
+		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`), ['flagId']),
+		db.deleteObjectFields(messageFlags.map(flagObj => `message:${flagObj.targetId}`), ['flagId']),
 		db.deleteAll([
 			...flagIds.map(flagId => `flag:${flagId}`),
 			...flagIds.map(flagId => `flag:${flagId}:notes`),
@@ -720,7 +728,7 @@ Flags.getTarget = async function (type, id, uid) {
 		return postData[0];
 	}
 	if (type === 'message') {
-		const message = await messaging.getMessageData(parseInt(id, 10), uid, await messaging.getRoomIdByMid(id));
+		const message = await messaging.getMessageData(id, uid, await messaging.getRoomIdByMid(id));
 		return message && message[0] ? message[0] : {};
 	}
 	throw new Error('[[error:invalid-data]]');
@@ -759,7 +767,7 @@ Flags.getTargetUid = async function (type, id) {
 			return 0;
 		}
 		const uid = await messaging.getMessageField(id, 'fromuid');
-		return uid ? parseInt(uid, 10) : 0;
+		return uid || 0;
 	}
 	return id;
 };
