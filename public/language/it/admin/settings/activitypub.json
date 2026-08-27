@@ -104,6 +104,7 @@
 	"analytics.hourly": "Orario",
 	"analytics.daily": "Giornaliero",
 	"analytics.activities_by_type": "Activities by Type",
+	"analytics.activities_by_type_empty": "No activities recorded yet.",
 	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "Nelle ultime 24 ore, questa istanza ha registrato il seguente %1 errore(i).",

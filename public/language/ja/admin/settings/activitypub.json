@@ -104,6 +104,7 @@
 	"analytics.hourly": "時間別",
 	"analytics.daily": "日別",
 	"analytics.activities_by_type": "Activities by Type",
+	"analytics.activities_by_type_empty": "No activities recorded yet.",
 	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "このインスタンスでは、過去 24 時間以内に次の %1 件のエラーが記録されました。",

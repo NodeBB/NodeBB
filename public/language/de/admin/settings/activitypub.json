@@ -104,6 +104,7 @@
 	"analytics.hourly": "Stündlich",
 	"analytics.daily": "Täglich",
 	"analytics.activities_by_type": "Activities by Type",
+	"analytics.activities_by_type_empty": "No activities recorded yet.",
 	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "Folgende(r) %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
