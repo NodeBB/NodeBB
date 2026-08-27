@@ -179,6 +179,68 @@ inbox.move = async (req) => {
 	});
 };
 
+inbox.lock = async (req) => {
+	let { actor, object } = req.body;
+
+	// object can be a URL string or an object with id
+	if (typeof object === 'object' && object.id) {
+		object = object.id;
+	}
+
+	const resolved = await activitypub.helpers.resolveLocalId(object);
+	if (resolved.type !== 'topic') {
+		return; // not a local topic
+	}
+	const tid = resolved.id;
+
+	// Check same-origin: actor must be from the same host as the topic
+	const topicHostname = nconf.get('url_parsed').hostname;
+	const actorHostname = new URL(actor).hostname;
+	if (actorHostname !== topicHostname) {
+		return; // not same-origin, drop
+	}
+
+	const isLocked = await topics.getTopicField(tid, 'locked');
+	if (isLocked) {
+		activitypub.helpers.log(`[activitypub/inbox/lock] Topic ${tid} is already locked.`);
+		return;
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/lock] Locking topic ${tid}.`);
+	await topics.tools.lock(tid, 'system');
+};
+
+inbox.unlock = async (req) => {
+	let { actor, object } = req.body;
+
+	// object can be a URL string or an object with id
+	if (typeof object === 'object' && object.id) {
+		object = object.id;
+	}
+
+	const resolved = await activitypub.helpers.resolveLocalId(object);
+	if (resolved.type !== 'topic') {
+		return; // not a local topic
+	}
+	const tid = resolved.id;
+
+	// Check same-origin: actor must be from the same host as the topic
+	const topicHostname = nconf.get('url_parsed').hostname;
+	const actorHostname = new URL(actor).hostname;
+	if (actorHostname !== topicHostname) {
+		return; // not same-origin, drop
+	}
+
+	const isLocked = await topics.getTopicField(tid, 'locked');
+	if (!isLocked) {
+		activitypub.helpers.log(`[activitypub/inbox/unlock] Topic ${tid} is not locked.`);
+		return;
+	}
+
+	activitypub.helpers.log(`[activitypub/inbox/unlock] Unlocking topic ${tid}.`);
+	await topics.tools.unlock(tid, 'system');
+};
+
 inbox.update = async (req) => {
 	let { actor, object } = req.body;
 
