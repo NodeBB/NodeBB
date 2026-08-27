@@ -50,6 +50,25 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="mb-4">
+				<div class="card">
+					<div class="card-header">{{tx("admin/settings/activitypub:analytics.activities_by_type")}}</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="position-relative" style="aspect-ratio: 1;">
+									<canvas id="activitiesByType"></canvas>
+								</div>
+							</div>
+							<div class="col-md-6 d-flex align-items-center">
+								<ul id="activitiesByTypeLegend" class="list-unstyled mb-0"></ul>
+							</div>
+						</div>
+						<p class="text-muted mt-3 mb-0 small">{{tx("admin/settings/activitypub:analytics.activities_by_type_not_filterable")}}</p>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<!-- IMPORT admin/partials/settings/toc.tpl -->

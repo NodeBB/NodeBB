@@ -100,6 +100,8 @@ federationController.analytics = async function (req, res) {
 	const sent = await analytics[method](sentSet, Date.now(), count);
 	const sentErr = await analytics[method](sentErrSet, Date.now(), count);
 
+	const byType = await getActivitiesByType();
+
 	res.render('admin/federation/analytics', {
 		title: '[[admin/menu:federation/analytics]]',
 		instances,
@@ -108,10 +110,26 @@ federationController.analytics = async function (req, res) {
 			receivedErr,
 			sent,
 			sentErr,
+			byType,
 		},
 		hideSave: 1,
 	});
 };
+
+async function getActivitiesByType() {
+	const analyticsKeys = await db.getSortedSetRange('analyticsKeys', 0, -1);
+	const typeKeys = analyticsKeys.filter((key) => key.startsWith('activities:byType:'));
+
+	const results = await Promise.all(typeKeys.map(async (key) => {
+		const entries = await db.getSortedSetRangeWithScores(`analytics:${key}`, 0, -1);
+		return {
+			type: key.replace('activities:byType:', ''),
+			count: entries.reduce((sum, { score }) => sum + score, 0),
+		};
+	}));
+
+	return Object.fromEntries(results.map(({ type, count }) => [type, count]));
+}
 
 federationController.errors = async function (req, res) {
 	const { hostname: filterHostname, type: filterType } = req.query;
