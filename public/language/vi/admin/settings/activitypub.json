@@ -13,8 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Số lượng tối đa các yêu cầu truy xuất khóa công khai được phép mỗi phút cho mỗi địa chỉ IP. (Mặc định: 256)",
 	"allowLoopback": "Cho phép xử lý vòng lặp",
 	"allowLoopback-help": "Chỉ hữu ích cho mục đích gỡ lỗi. Có lẽ bạn nên tắt tính năng này.",
-	"allowSplitDomain": "Allow split-domain federation",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
+	"allowSplitDomain": "Cho phép liên kết tên miền phân tách",
+	"allowSplitDomain-help": "Cho phép các tác nhân có tên miền xử lý WebFinger khác với tên miền tài liệu ActivityPub của chúng. Điều này hữu ích cho các trường hợp tách biệt danh tính (WebFinger) khỏi việc lưu trữ nội dung (ActivityPub).",
 	"parentTraversalDepth": "Độ sâu duyệt cha",
 	"parentTraversalDepth-help": "Số lần tối đa duyệt ngược chuỗi phản hồi khi xây dựng ngữ cảnh. (Mặc định: 50)",
 
