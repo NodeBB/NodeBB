@@ -187,33 +187,16 @@ inbox.lock = async (req) => {
 		object = object.id;
 	}
 
-	let tid;
-	// Try to resolve via contexts first (for remote topic URLs)
-	let mainPid = await activitypub.contexts.getItems(0, object, { returnRootId: true });
-	if (mainPid) {
-		// mainPid may be a URL string; extract the numeric pid
-		const pid = utils.isNumber(mainPid) ? mainPid : parseInt(mainPid.split('/').pop(), 10);
-		if (utils.isNumber(pid)) {
-			tid = await posts.getPostField(pid, 'tid');
-		}
-	}
-	// Fallback to direct URL resolution for local URLs
-	if (!tid) {
-		const resolved = await activitypub.helpers.resolveLocalId(object);
-		if (resolved.type === 'topic') {
-			tid = resolved.id;
-		} else {
-			return; // not a local topic
-		}
-	}
-
-	const cid = await topics.getTopicField(tid, 'cid');
-
-	// Check same-origin: actor must be from the same host as the topic's category
+	// Check same-origin: actor must be from the same host as the topic
 	const actorHostname = new URL(actor).hostname;
-	const cidHostname = new URL(`${nconf.get('url')}/category/${cid}`).hostname;
-	if (actorHostname !== cidHostname) {
+	const objectHostname = new URL(object).hostname;
+	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	const tid = await activitypub.helpers.resolveTopicId(object);
+	if (!tid) {
+		return; // not a local topic
 	}
 
 	const isLocked = await topics.getTopicField(tid, 'locked');
@@ -234,33 +217,16 @@ inbox.unlock = async (req) => {
 		object = object.id;
 	}
 
-	let tid;
-	// Try to resolve via contexts first (for remote topic URLs)
-	let mainPid = await activitypub.contexts.getItems(0, object, { returnRootId: true });
-	if (mainPid) {
-		// mainPid may be a URL string; extract the numeric pid
-		const pid = utils.isNumber(mainPid) ? mainPid : parseInt(mainPid.split('/').pop(), 10);
-		if (utils.isNumber(pid)) {
-			tid = await posts.getPostField(pid, 'tid');
-		}
-	}
-	// Fallback to direct URL resolution for local URLs
-	if (!tid) {
-		const resolved = await activitypub.helpers.resolveLocalId(object);
-		if (resolved.type === 'topic') {
-			tid = resolved.id;
-		} else {
-			return; // not a local topic
-		}
-	}
-
-	const cid = await topics.getTopicField(tid, 'cid');
-
-	// Check same-origin: actor must be from the same host as the topic's category
+	// Check same-origin: actor must be from the same host as the topic
 	const actorHostname = new URL(actor).hostname;
-	const cidHostname = new URL(`${nconf.get('url')}/category/${cid}`).hostname;
-	if (actorHostname !== cidHostname) {
+	const objectHostname = new URL(object).hostname;
+	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	const tid = await activitypub.helpers.resolveTopicId(object);
+	if (!tid) {
+		return; // not a local topic
 	}
 
 	const isLocked = await topics.getTopicField(tid, 'locked');
