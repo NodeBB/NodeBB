@@ -181,6 +181,11 @@ helpers.redirect = function (res, url, permanent) {
 	if (res.locals.isAPI) {
 		res.set('X-Redirect', encodeURIComponent(url)).status(200).json(url);
 	} else {
+		// Reject unsafe redirect URLs — fall back to home page
+		if (!helpers.normalizeReturnToPath(url)) {
+			winston.warn(`[security] Unsafe redirect attempted: ${url}`);
+			url = '/';
+		}
 		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}
 };

@@ -48,7 +48,7 @@ Controller.fetch = async (req, res, next) => {
 				}
 
 				default:
-					return helpers.redirect(res, url.href, false);
+					return helpers.redirect(res, { external: url.href });
 			}
 		}
 
@@ -59,13 +59,13 @@ Controller.fetch = async (req, res, next) => {
 			url = new URL(`outgoing?url=${encodeURIComponent(url.href)}`, nconf.get('url'));
 		}
 
-		helpers.redirect(res, url.href, false);
+		helpers.redirect(res, { external: url.href });
 	} catch (e) {
 		if (!url || !url.href) {
 			return next();
 		}
 		activitypub.helpers.log(`[activitypub/fetch] Invalid URL received: ${url}`);
-		helpers.redirect(res, url.href, false);
+		helpers.redirect(res, { external: url.href });
 	}
 };
 

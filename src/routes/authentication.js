@@ -98,7 +98,10 @@ Auth.reloadRoutes = async function (params) {
 					opts.state = req.session.ssoState;
 				}
 				if (req.query.next) {
-					req.session.next = req.query.next;
+					const next = helpers.normalizeReturnToPath(req.query.next);
+					if (next) {
+						req.session.next = next;
+					}
 				}
 
 				// Allow SSO plugins to override/append options (for use in passport prototype authorizationParams)
