@@ -58,10 +58,10 @@ middleware.verify = async function (req, res, next) {
 			return next();
 		}
 
-		// Set calling user
-		const keyId = req.headers.signature.split(',').filter(line => line.trim().startsWith('keyId="'));
-		if (keyId.length) {
-			req.uid = keyId.at(-1).trim().slice(7, -1).replace(/#.*$/, '');
+		// Set calling user (keyId may be a draft `keyId` or RFC 9421 `keyid` parameter)
+		const keyId = activitypub.signatures.getKeyId(req.headers);
+		if (keyId) {
+			req.uid = keyId.replace(/#.*$/, '');
 		}
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
@@ -142,12 +142,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	], ['id']);
 	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
 
-	const { signature } = req.headers;
-	let keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
-		const index = v.indexOf('=');
-		return [v.substring(0, index).trim(), v.slice(index + 1)];
-	})).get('keyId');
-	keyId = (keyId || '').slice(1, -1).replace(/#[\w-]+$/, '');
+	const keyId = (activitypub.signatures.getKeyId(req.headers) || '').replace(/#[\w-]+$/, '');
 	if (compare !== keyId) {
 		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);

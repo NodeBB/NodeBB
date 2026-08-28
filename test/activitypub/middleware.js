@@ -98,6 +98,24 @@ describe('middleware.verify', () => {
 			assert.strictEqual(response.statusCode, 400);
 		});
 
+		it('should call next() and set req.uid when an RFC 9421 signature is valid', async () => {
+			const path = `/user/${username}/inbox`;
+			const body = { foo: 'bar' };
+			const endpoint = `${nconf.get('url')}${path}`;
+			const hash = createHash('sha256');
+			hash.update(JSON.stringify(body));
+			const checksum = `SHA-256=${hash.digest('base64')}`;
+			const signedHeaders = await activitypub.signatures.signRfc9421(keyData, endpoint, 'POST', checksum);
+			const req = buildReq('POST', path, signedHeaders);
+			req.body = body;
+			const res = buildRes();
+			const { nextCalled, res: response } = await runMiddleware(req, res);
+
+			assert.strictEqual(nextCalled, true);
+			assert.strictEqual(response.statusCode, null);
+			assert.strictEqual(req.uid, `${nconf.get('url')}/uid/${uid}`);
+		});
+
 		it('should reject with 401 when no signature is present', async () => {
 			const path = `/user/${username}/inbox`;
 			const req = buildReq('POST', path, {});

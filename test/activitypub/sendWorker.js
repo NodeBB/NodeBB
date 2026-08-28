@@ -94,7 +94,11 @@ describe('sendWorker', () => {
 					try {
 						if (entry.hasRfc) {
 							const base = new RFC9421SignatureBaseFactory({ method: req.method, url: fullUrl, headers: req.headers });
-							const sigB64 = req.headers.signature.match(/^sig1=\("(.*)"\)$/)[1];
+							// Signature values are unquoted base64 (RFC 9421 2.3); strip an optional quote for leniency
+							let sigB64 = String(req.headers.signature).replace(/^sig1=/, '');
+							if (sigB64.startsWith('"') && sigB64.endsWith('"')) {
+								sigB64 = sigB64.slice(1, -1);
+							}
 							const pub = await importPublicKey(pubPem, ['verify']);
 							entry.rfcValid = await webcrypto.subtle.verify(
 								{ name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
