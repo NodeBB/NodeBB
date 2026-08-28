@@ -138,7 +138,7 @@ Themes.set = async (data) => {
 			break;
 		}
 		case 'bootswatch':
-			if (!Meta.css.supportedSkins.includes(data.id.toLowerCase())) {
+			if (data.id && data.id !== '' && !Meta.css.supportedSkins.includes(data.id.toLowerCase())) {
 				throw new Error('[[error:invalid-skin-id]]');
 			}
 			await Meta.configs.setMultiple({

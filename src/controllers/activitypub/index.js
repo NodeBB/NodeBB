@@ -6,6 +6,7 @@ const winston = require('winston');
 const db = require('../../database');
 const meta = require('../../meta');
 const posts = require('../../posts');
+const topics = require('../../topics');
 const user = require('../../user');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
@@ -47,12 +48,8 @@ Controller.fetch = async (req, res, next) => {
 					return helpers.redirect(res, `/user/${userslug}`);
 				}
 
-				default: {
-					if (res.locals.isAPI) {
-						return helpers.redirect(res, url.href);
-					}
-					return helpers.redirect(res, `outgoing?url=${encodeURIComponent(url.href)}`);
-				}
+				default:
+					return helpers.redirect(res, { external: url.href });
 			}
 		}
 
@@ -63,17 +60,13 @@ Controller.fetch = async (req, res, next) => {
 			url = new URL(`outgoing?url=${encodeURIComponent(url.href)}`, nconf.get('url'));
 		}
 
-		helpers.redirect(res, url.href, false);
+		helpers.redirect(res, { external: url.href });
 	} catch (e) {
 		if (!url || !url.href) {
 			return next();
 		}
 		activitypub.helpers.log(`[activitypub/fetch] Invalid URL received: ${url}`);
-		if (res.locals.isAPI) {
-			helpers.redirect(res, url.href);
-		} else {
-			helpers.redirect(res, `outgoing?url=${encodeURIComponent(url.href)}`);
-		}
+		helpers.redirect(res, { external: url.href });
 	}
 };
 
@@ -161,6 +154,11 @@ Controller.getOutbox = async (req, res) => {
 	let activities;
 	let upvotes, downvotes, shares;
 
+	// Pre-declare for topic filtering
+	let postsData = [];
+	let postTids;
+	let hiddenTids = new Set();
+
 	// Fetch enough from each source so that after merging by score and filtering votes/shares,
 	// we still have perPage items. Posts are pre-filtered via category sets; votes/shares are filtered after.
 	const fetchLimit = (perPage * 4) - 1;
@@ -201,9 +199,38 @@ Controller.getOutbox = async (req, res) => {
 			const visibleVotePids = await privileges.posts.filter('topics:read', voteSharePids, callerUid);
 			const visibleVoteSet = new Set(visibleVotePids);
 			allActivities = allActivities.filter(({ type, value }) => {
-				if (type === 'post') return true; // already filtered via category sets
+				if (type === 'post') return true; // topic filtering below
 				return visibleVoteSet.has(value);
 			});
+		}
+
+		// Fetch post summaries for topic deletion/scheduled check
+		const postItems = allActivities.filter(({ type }) => type === 'post');
+		if (postItems.length) {
+			postsData = await posts.getPostSummaryByPids(
+				postItems.map(({ value }) => value), callerUid, { stripTags: false }
+			);
+			postTids = [...new Set(postsData.map(p => p.tid).filter(Boolean))];
+			if (postTids.length) {
+				const topicData = await topics.getTopicsFields(postTids, ['tid', 'deleted', 'scheduled']);
+				hiddenTids = new Set(
+					topicData.filter(t => t.deleted || t.scheduled > Date.now()).map(t => t.tid)
+				);
+			}
+
+			// Filter out posts and votes/shares targeting hidden posts
+			if (hiddenTids.size) {
+				const postTidMap = postsData.reduce((map, p) => {
+					if (p.tid) map.set(p.pid, p.tid);
+					return map;
+				}, new Map());
+				allActivities = allActivities.filter(({ type, value }) => {
+					const pid = parseInt(value, 10);
+					if (type === 'post') return !hiddenTids.has(postTidMap.get(pid));
+					const targetTid = postTidMap.get(pid);
+					return targetTid !== undefined ? !hiddenTids.has(targetTid) : true;
+				});
+			}
 		}
 
 		// Slice to perPage
@@ -218,14 +245,12 @@ Controller.getOutbox = async (req, res) => {
 		prev = `${nconf.get('url')}/uid/${uid}/outbox?before=${allActivities[0].score}`;
 		next = `${nconf.get('url')}/uid/${uid}/outbox?after=${allActivities[allActivities.length - 1].score}`;
 
-		const postItems = allActivities.filter((({ type }) => type === 'post'));
-		const postsData = await posts.getPostSummaryByPids(
-			postItems.map(({ value }) => value), callerUid, { stripTags: false }
-		);
-		const postsMap = postsData.reduce((map, postData) => {
-			map.set(postData.pid, postData);
-			return map;
-		}, new Map());
+		const postsMap = (postsData || [])
+			.filter(p => !hiddenTids.has(p.tid))
+			.reduce((map, postData) => {
+				map.set(postData.pid, postData);
+				return map;
+			}, new Map());
 
 		activities = await Promise.all(allActivities.map(async ({ type, value: id }) => {
 			switch (type) {
