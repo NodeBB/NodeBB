@@ -189,4 +189,102 @@ describe('middleware.verify', () => {
 			assert.notStrictEqual(req.uid, `${nconf.get('url')}/uid/${uid2}`);
 		});
 	});
+
+	describe('keyId with leading whitespace (algorithm before keyId)', () => {
+		it('should extract req.uid even when keyId is preceded by whitespace', async () => {
+			// Regression test: when algorithm precedes keyId in the signature header,
+			// the library trims the leading space before keyId, but the middleware's
+			// naive split(',') does not. Both code paths must trim to stay in sync.
+			const path = `/user/${username}/inbox`;
+			const signedHeaders = await getValidSignature(path);
+
+			// Reorder: algorithm before keyId introduces whitespace before keyId.
+			// The library trims it; the middleware must too.
+			const parts = signedHeaders.signature.split(',');
+			const algorithmPart = parts.find(p => p.startsWith('algorithm='));
+			const signaturePart = parts.find(p => p.startsWith('signature='));
+			const headersPart = parts.find(p => p.startsWith('headers='));
+			const reordered = `${algorithmPart}, keyId="${nconf.get('url')}/uid/${uid}#key", ${headersPart}, ${signaturePart}`;
+
+			const req = buildReq('GET', path, {
+				signature: reordered,
+				date: signedHeaders.date,
+			});
+			const res = buildRes();
+			const { nextCalled, res: response } = await runMiddleware(req, res);
+
+			assert.strictEqual(nextCalled, true);
+			assert.strictEqual(response.statusCode, null);
+			const expectedUid = `${nconf.get('url')}/uid/${uid}`;
+			assert.strictEqual(req.uid, expectedUid);
+		});
+	});
+});
+
+describe('middleware.assertPayload', () => {
+	let uid;
+	let username;
+	let keyData;
+	let path;
+
+	before(async () => {
+		username = utils.generateUUID().slice(0, 10);
+		uid = await user.create({ username });
+		keyData = await activitypub.getPrivateKey('uid', uid);
+		path = `/user/${username}/inbox`;
+	});
+
+	function buildReqWithSignature(method, path, headers = {}) {
+		const { host } = nconf.get('url_parsed');
+		return {
+			method,
+			path,
+			baseUrl: nconf.get('relative_path'),
+			headers: { host, ...headers },
+		};
+	}
+
+	function buildRes() {
+		const res = { statusCode: null };
+		res.sendStatus = (code) => { res.statusCode = code; };
+		return res;
+	}
+
+	async function runPayloadMiddleware(req, body) {
+		const res = buildRes();
+		let nextCalled = false;
+		req.body = body;
+		await middleware.assertPayload(req, res, () => { nextCalled = true; });
+		return { nextCalled, res };
+	}
+
+	it('should extract keyId from signature header with leading whitespace', async () => {
+		// Regression test: assertPayload's Map-based keyId parsing must trim
+		// whitespace from parameter names to match the library's behavior.
+		const signedHeaders = await activitypub.sign(keyData, `${nconf.get('url')}${path}`, null);
+
+		// Reorder so algorithm precedes keyId, introducing whitespace before keyId.
+		const parts = signedHeaders.signature.split(',');
+		const algorithmPart = parts.find(p => p.startsWith('algorithm='));
+		const signaturePart = parts.find(p => p.startsWith('signature='));
+		const headersPart = parts.find(p => p.startsWith('headers='));
+		const reordered = `${algorithmPart}, keyId="${nconf.get('url')}/uid/${uid}#key", ${headersPart}, ${signaturePart}`;
+
+		const req = buildReqWithSignature('POST', path, { signature: reordered, date: signedHeaders.date });
+		const body = {
+			id: `https://example.org/activity/${utils.generateUUID()}`,
+			type: 'Create',
+			actor: `${nconf.get('url')}/uid/${uid}`,
+			object: { type: 'Note', id: `${nconf.get('url')}/topic/1` },
+		};
+		const res = buildRes();
+		const { nextCalled, res: response } = await runPayloadMiddleware(req, body);
+
+		// The actor (local uid) has no stored keys in the remote AP DB, so
+		// compare is ''. After the fix, keyId is correctly parsed as the
+		// actual keyId URL. '' !== keyId → cross-check fails → 403.
+		// Before the fix, both were '' → cross-check passed → next() called.
+		assert.strictEqual(nextCalled, false);
+		assert.strictEqual(response.statusCode, 403);
+	});
 });
