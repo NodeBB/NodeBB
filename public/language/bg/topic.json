@@ -102,7 +102,7 @@
     "not-watching.description": "Не искам да получавам известия за новите отговори.<br/>Темата да се показва в списъка с непрочетени, само ако категорията не се пренебрегва.",
     "ignoring.description": "Не искам да получавам известия за новите отговори.<br/>Не искам темата да се показва в списъка с непрочетени.",
     "thread-tools.title": "Инструменти за темата",
-    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
+    "thread-tools.markAsUnreadForAll": "Побутване (отбелязване като непрочетена за всички)",
     "thread-tools.pin": "Закачане на темата",
     "thread-tools.unpin": "Откачане на темата",
     "thread-tools.lock": "Заключване на темата",

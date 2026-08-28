@@ -8,8 +8,8 @@
     "max-per-topic": "Максимален брой етикети за тема",
     "min-length": "Минимална дължина на етикетите",
     "max-length": "Максимална дължина на етикетите",
-    "case-sensitive": "Case-Sensitive Tags",
-    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
+    "case-sensitive": "Различаващи малки и главни букви етикети",
+    "case-sensitive-help": "Когато това е включено, етикетите ще различават малки от главни букви (#NodeBB и #nodebb ще се приемат за различни етикети). Ако е изключено, етикетите ще бъдат нормализирани и автоматично превръщани в малки букви.",
     "related-topics": "Свързани теми",
     "max-related-topics": "Максимален брой свързани теми, които да бъдат показвани (ако това се поддържа от темата)"
 }

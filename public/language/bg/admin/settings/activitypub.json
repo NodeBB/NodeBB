@@ -103,9 +103,9 @@
 	"analytics.term": "Времева скала",
 	"analytics.hourly": "По часове",
 	"analytics.daily": "По дни",
-	"analytics.activities_by_type": "Activities by Type",
-	"analytics.activities_by_type_empty": "No activities recorded yet.",
-	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
+	"analytics.activities_by_type": "Дейности по вид",
+	"analytics.activities_by_type_empty": "Все още няма записани дейности.",
+	"analytics.activities_by_type_not_filterable": "<strong>Забележка:</strong> Тази разбивка е глобална и не се филтрира по избраното име на сървър.",
 
 	"errors.intro": "Следните грешки (%1) бяха записани от тази инсталация в рамките на последните 24 часа.",
 	"errors.payload-gone": "Данните за тази грешка вече не съществуват.",
