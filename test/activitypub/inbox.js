@@ -1328,6 +1328,94 @@ describe('Inbox', () => {
 				// No error should be thrown
 				assert(true);
 			});
+
+			describe('remote topic mirrored locally', () => {
+				let originalGet;
+
+				before(async function () {
+					// A topic hosted on example.org, mirrored into a local category
+					// (its main post is stored locally under the remote URL as pid)
+					const { cid } = await categories.create({ name: utils.generateUUID() });
+					const { topicData } = await topics.post({
+						cid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.remoteTid = topicData.tid;
+					this.remoteActor = 'https://example.org/user/alice';
+					this.remoteTopicUrl = 'https://example.org/topic/5';
+					this.remoteMainPid = 'https://example.org/post/42';
+					await topics.setTopicField(this.remoteTid, 'mainPid', this.remoteMainPid);
+					await db.setObject(`post:${this.remoteMainPid}`, {
+						pid: this.remoteMainPid,
+						uid: this.remoteActor,
+						tid: String(this.remoteTid),
+						content: utils.generateUUID(),
+					});
+					await db.sortedSetAdd(`tid:${this.remoteTid}:posts`, 1, this.remoteMainPid);
+
+					// A remote reply whose URL tail collides with the pid of a post
+					// in a *different* local topic (guards against extracting numeric
+					// pids from remote URLs)
+					const { cid: otherCid } = await categories.create({ name: utils.generateUUID() });
+					const { topicData: otherTopic, postData: otherPost } = await topics.post({
+						cid: otherCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.collidingTid = otherTopic.tid;
+					this.remoteReplyUrl = `https://example.org/post/${otherPost.pid}`;
+
+					// example.org serves its topic as a collection of post URLs
+					originalGet = activitypub.get;
+					activitypub.get = async (type, id, url, options) => {
+						if (url === this.remoteTopicUrl) {
+							return {
+								'@context': 'https://www.w3.org/ns/activitystreams',
+								id: this.remoteTopicUrl,
+								type: 'OrderedCollection',
+								totalItems: 2,
+								orderedItems: [this.remoteMainPid, this.remoteReplyUrl],
+							};
+						}
+						return originalGet(type, id, url, options);
+					};
+				});
+
+				after(() => {
+					activitypub.get = originalGet;
+				});
+
+				it('should lock the mirrored topic, not a topic with a colliding local pid', async function () {
+					const lockActivity = {
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: this.remoteTopicUrl,
+					};
+
+					await activitypub.inbox.lock({ body: lockActivity });
+
+					const [mirroredLocked, collidingLocked] = await Promise.all([
+						topics.getTopicField(this.remoteTid, 'locked'),
+						topics.getTopicField(this.collidingTid, 'locked'),
+					]);
+					assert.strictEqual(mirroredLocked, 1, 'mirrored topic should be locked');
+					assert.notStrictEqual(collidingLocked, 1, 'colliding local topic must not be locked');
+				});
+
+				it('should unlock the mirrored topic afterwards', async function () {
+					const unlockActivity = {
+						type: 'Unlock',
+						actor: this.remoteActor,
+						object: this.remoteTopicUrl,
+					};
+
+					await activitypub.inbox.unlock({ body: unlockActivity });
+
+					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
+					assert.strictEqual(isLocked, 0, 'mirrored topic should be unlocked');
+				});
+			});
 		});
 
 		describe('.unlock', () => {

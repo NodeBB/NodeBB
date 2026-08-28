@@ -393,6 +393,36 @@ Helpers.resolveLocalId = async (input) => {
 	return { type: null, id: null };
 };
 
+// Resolves a topic URL (local or remote) to a local tid
+// Returns null if the topic is not mirrored locally
+Helpers.resolveTopicId = async (object) => {
+	const resolved = await Helpers.resolveLocalId(object);
+	if (resolved.type === 'topic') {
+		// Local topic
+		return resolved.id;
+	}
+
+	// Remote topic: fetch its collection and resolve via a locally mirrored post
+	// (mirrored posts are stored locally under their remote URL as pid)
+	try {
+		const topic = await activitypub.get('uid', 0, object);
+		if (activitypub._constants.acceptable.contextTypes.has(topic.type)) {
+			const items = (topic.orderedItems || topic.items || [])
+				.map(item => (Helpers.isUri(item) ? item : (item && item.id)))
+				.filter(Boolean);
+			const existing = await Promise.all(items.map(pid => posts.exists(pid)));
+			const index = existing.indexOf(true);
+			if (index !== -1) {
+				return await posts.getPostField(items[index], 'tid');
+			}
+		}
+	} catch (e) {
+		Helpers.log(`[activitypub/helpers] Unable to resolve topic ${object}: ${e.message}`);
+	}
+
+	return null;
+};
+
 Helpers.resolveActor = (type, id) => {
 	switch (type) {
 		case 'user':
