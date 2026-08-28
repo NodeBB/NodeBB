@@ -47,8 +47,12 @@ Controller.fetch = async (req, res, next) => {
 					return helpers.redirect(res, `/user/${userslug}`);
 				}
 
-				default:
-					return helpers.redirect(res, url.href, false);
+				default: {
+					if (res.locals.isAPI) {
+						return helpers.redirect(res, url.href);
+					}
+					return helpers.redirect(res, `outgoing?url=${encodeURIComponent(url.href)}`);
+				}
 			}
 		}
 
@@ -65,7 +69,11 @@ Controller.fetch = async (req, res, next) => {
 			return next();
 		}
 		activitypub.helpers.log(`[activitypub/fetch] Invalid URL received: ${url}`);
-		helpers.redirect(res, url.href, false);
+		if (res.locals.isAPI) {
+			helpers.redirect(res, url.href);
+		} else {
+			helpers.redirect(res, `outgoing?url=${encodeURIComponent(url.href)}`);
+		}
 	}
 };
 
