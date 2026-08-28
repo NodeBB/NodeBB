@@ -103,9 +103,9 @@
 	"analytics.term": "ကာလ",
 	"analytics.hourly": "နာရီအလိုက်",
 	"analytics.daily": "နေ့စဉ်",
-	"analytics.activities_by_type": "Activities by Type",
-	"analytics.activities_by_type_empty": "No activities recorded yet.",
-	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
+	"analytics.activities-by-type": "Activities by Type",
+	"analytics.activities-by-type-empty": "No activities recorded yet.",
+	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
 	"errors.payload-gone": "The payload for this error no longer exists.",

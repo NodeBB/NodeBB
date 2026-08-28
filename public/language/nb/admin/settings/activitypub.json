@@ -103,9 +103,9 @@
 	"analytics.term": "Tidsskala",
 	"analytics.hourly": "Per time",
 	"analytics.daily": "Daglig",
-	"analytics.activities_by_type": "Activities by Type",
-	"analytics.activities_by_type_empty": "No activities recorded yet.",
-	"analytics.activities_by_type_not_filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
+	"analytics.activities-by-type": "Activities by Type",
+	"analytics.activities-by-type-empty": "No activities recorded yet.",
+	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "Denne instansen registrerte følgende feil de siste 24 timene (%1):",
 	"errors.payload-gone": "Dataene knyttet til denne feilen finnes ikke lenger.",
