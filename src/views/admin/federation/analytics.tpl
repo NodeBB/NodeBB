@@ -53,14 +53,14 @@
 
 			<div class="mb-4">
 				<div class="card">
-					<div class="card-header">{{tx("admin/settings/activitypub:analytics.activities_by_type")}}</div>
+					<div class="card-header">{{tx("admin/settings/activitypub:analytics.activities-by-type")}}</div>
 					<div class="card-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="position-relative no-data-container w-100" style="aspect-ratio: 1;">
 									<canvas id="activitiesByType" height="250"></canvas>
 									<div class="no-data-message text-center text-muted" style="display: none;">
-										<p class="mb-0">{{tx("admin/settings/activitypub:analytics.activities_by_type_empty")}}</p>
+										<p class="mb-0">{{tx("admin/settings/activitypub:analytics.activities-by-type-empty")}}</p>
 									</div>
 								</div>
 							</div>
@@ -68,7 +68,7 @@
 								<ul id="activitiesByTypeLegend" class="list-unstyled mb-0"></ul>
 							</div>
 						</div>
-						<p class="text-muted mt-3 mb-0 small">{{tx("admin/settings/activitypub:analytics.activities_by_type_not_filterable")}}</p>
+						<p class="text-muted mt-3 mb-0 small">{{tx("admin/settings/activitypub:analytics.activities-by-type-not-filterable")}}</p>
 					</div>
 				</div>
 			</div>
