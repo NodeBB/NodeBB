@@ -12,6 +12,8 @@ const {
 	parseDraftRequest,
 	parseRFC9421Request,
 	verifyRFC9421Signature,
+	RFC9421SignatureBaseFactory,
+	getWebcrypto,
 } = require('@misskey-dev/node-http-message-signatures');
 
 const Signatures = module.exports;
@@ -73,6 +75,78 @@ Signatures.sign = async ({ key, keyId }, url, method = 'GET', digest = null) => 
 		throw err;
 	}
 };
+
+Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = null) => {
+	const parsedUrl = new URL(url);
+	const date = new Date().toUTCString();
+	const created = Math.floor(Date.now() / 1000);
+
+	// Headers required for signing
+	const headersToSign = {
+		date,
+		host: parsedUrl.host,
+	};
+
+	if (digest) {
+		headersToSign.digest = digest;
+	}
+
+	// Determine signed components list
+	const components = ['@request-target', 'host', 'date'];
+	if (digest) {
+		components.push('digest');
+	}
+
+	// Build Signature-Input header
+	const signatureInput = `sig1=("${components.join('" "')}");created=${created};keyid="${keyId}"`;
+	headersToSign['signature-input'] = signatureInput;
+
+	try {
+		// Import private key
+		const privateKey = await importPrivateKey(key, ['sign']);
+
+		// Build signature base
+		const base = new RFC9421SignatureBaseFactory({
+			method,
+			url: parsedUrl.href,
+			headers: headersToSign,
+		});
+		const signatureBase = base.generate('sig1');
+
+		// Sign
+		const signatureBuffer = await (await getWebcrypto()).subtle.sign(
+			getSignAlgorithm(privateKey),
+			privateKey,
+			new TextEncoder().encode(signatureBase),
+		);
+
+		const signature = Buffer.from(signatureBuffer).toString('base64');
+
+		return {
+			date,
+			...(digest && { digest }),
+			'signature-input': signatureInput,
+			signature: `sig1=("${signature}")`,
+		};
+	} catch (err) {
+		winston.error(`[activitypub/signatures] Sign (RFC 9421) error: ${err.message}`);
+		throw err;
+	}
+};
+
+function getSignAlgorithm(key) {
+	const { name, namedCurve } = key.algorithm;
+	if (name === 'RSASSA-PKCS1-v1_5') {
+		return { name, hash: 'SHA-256' };
+	}
+	if (name === 'ECDSA') {
+		return { name, hash: 'SHA-256', namedCurve };
+	}
+	if (name === 'Ed25519' || name === 'Ed448') {
+		return { name };
+	}
+	throw new Error(`Unsupported key algorithm: ${name}`);
+}
 
 function getDraftAlgoString(key) {
 	const { name } = key.algorithm;
