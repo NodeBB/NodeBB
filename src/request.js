@@ -161,6 +161,7 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 				statusText: response.statusText,
 				headers: Object.fromEntries(response.headers.entries()),
 			},
+			url: currentUrl,
 		};
 	}
 

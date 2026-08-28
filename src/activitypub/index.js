@@ -320,19 +320,23 @@ ActivityPub.verify = async (req) => {
 	return isValid;
 };
 
+async function _checkFederationPolicy(hostname, url) {
+	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
+	if (!allowed) {
+		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${url}, domain is blocked.`);
+		const e = new Error(`[[error:activitypub.get-failed]]`);
+		e.code = `ap_get_domain_blocked`;
+		throw e;
+	}
+};
+
 ActivityPub.get = async (type, id, uri, options) => {
 	if (!meta.config.activitypubEnabled) {
 		throw new Error('[[error:activitypub.not-enabled]]');
 	}
 
 	const { hostname } = new URL(uri);
-	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
-	if (!allowed) {
-		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
-		const e = new Error(`[[error:activitypub.get-failed]]`);
-		e.code = `ap_get_domain_blocked`;
-		throw e;
-	}
+	await _checkFederationPolicy(hostname, uri);
 
 	options = {
 		cache: true,
@@ -348,7 +352,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
 	ActivityPub.helpers.log(`[activitypub/get] ${uri}`);
 	try {
-		const { response, body } = await request.get(uri, {
+		const { response, body, url: resolvedUrl } = await request.get(uri, {
 			headers: {
 				...headers,
 				...options.headers,
@@ -356,6 +360,9 @@ ActivityPub.get = async (type, id, uri, options) => {
 			},
 			timeout: 5000,
 		});
+
+		const { hostname: resolvedHostname } = new URL(resolvedUrl);
+		await _checkFederationPolicy(resolvedHostname, resolvedUrl);
 
 		if (!String(response.statusCode).startsWith('2')) {
 			ActivityPub.helpers.log(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
