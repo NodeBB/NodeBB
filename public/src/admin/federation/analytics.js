@@ -81,7 +81,7 @@ async function renderActivitiesByTypeLegend() {
 	const total = Object.values(byType).reduce((sum, v) => sum + v, 0);
 
 	const entries = Object.entries(byType)
-		.filter(([type, count]) => count > 0)
+		.filter(([, count]) => count > 0)
 		.sort(([, a], [, b]) => b - a);
 
 	const items = entries.map(([type, count], idx) => {
@@ -206,8 +206,9 @@ async function initializeCharts() {
 		labels: pieEntries.map(([type]) => type),
 		datasets: [{
 			data: pieEntries.map(([, count]) => count),
-			backgroundColor: pieEntries.map(([, count], idx) =>
-				pieColors[idx % pieColors.length]
+			backgroundColor: Array.from(
+				pieEntries.keys(),
+				idx => pieColors[idx % pieColors.length]
 			),
 		}],
 	};

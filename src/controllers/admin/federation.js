@@ -118,7 +118,7 @@ federationController.analytics = async function (req, res) {
 
 async function getActivitiesByType() {
 	const analyticsKeys = await db.getSortedSetRange('analyticsKeys', 0, -1);
-	const typeKeys = analyticsKeys.filter((key) => key.startsWith('activities:byType:'));
+	const typeKeys = analyticsKeys.filter(key => key.startsWith('activities:byType:'));
 
 	const results = await Promise.all(typeKeys.map(async (key) => {
 		const entries = await db.getSortedSetRangeWithScores(`analytics:${key}`, 0, -1);
