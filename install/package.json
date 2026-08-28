@@ -98,7 +98,7 @@
         "minimizer-webpack-plugin": "5.8.0",
         "mkdirp": "3.0.1",
         "mongodb": "7.6.0",
-        "morgan": "1.11.0",
+        "morgan": "1.12.0",
         "mousetrap": "1.6.5",
         "multer": "2.3.0",
         "nconf": "0.13.0",
