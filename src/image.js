@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const winston = require('winston');
+const { fileTypeFromBuffer } = require('file-type');
 
 const file = require('./file');
 const plugins = require('./plugins');
@@ -140,25 +141,33 @@ image.convertImageToBase64 = async function (path) {
 	return await fs.promises.readFile(path, 'base64');
 };
 
-image.mimeFromBase64 = function (imageData) {
-	return imageData.slice(5, imageData.indexOf('base64') - 1);
-};
+image.validateBase64 = async function (imageData, maxSize, allowedTypes) {
+	if (!imageData) {
+		throw new Error('[[error:invalid-data]]');
+	}
 
-image.extensionFromBase64 = function (imageData) {
-	return file.typeToExtension(image.mimeFromBase64(imageData));
+	const match = /^data:[^;,]+;base64,(.+)$/.exec(imageData);
+	if (!match) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const buffer = Buffer.from(match[1], 'base64');
+
+	if (buffer.length > maxSize * 1024) {
+		throw new Error(`[[error:file-too-big, ${maxSize}]]`);
+	}
+
+	const detected = await fileTypeFromBuffer(buffer);
+	if (!detected || !allowedTypes.includes(detected.mime)) {
+		throw new Error('[[error:invalid-image]]');
+	}
+
+	return { buffer, mime: detected.mime, extension: `.${detected.ext}` };
 };
 
 image.writeImageDataToTempFile = async function (imageData) {
-	const filename = crypto.createHash('md5').update(imageData).digest('hex');
-
-	const type = image.mimeFromBase64(imageData);
-	const extension = file.typeToExtension(type);
-
-	const filepath = path.join(os.tmpdir(), filename + extension);
-
-	const buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
-
-	await fs.promises.writeFile(filepath, buffer, { encoding: 'base64' });
+	const filename = crypto.createHash('md5').update(imageData.buffer).digest('hex');
+	const filepath = path.join(os.tmpdir(), filename + imageData.extension);
+	await fs.promises.writeFile(filepath, imageData.buffer, { encoding: 'base64' });
 	return filepath;
 };
 
