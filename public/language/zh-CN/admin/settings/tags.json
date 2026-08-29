@@ -8,8 +8,8 @@
     "max-per-topic": "每个主题的最多标签数",
     "min-length": "标签名称最小长度",
     "max-length": "标签名称最大长度",
-    "case-sensitive": "Case-Sensitive Tags",
-    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
+    "case-sensitive": "标签区分大小写",
+    "case-sensitive-help": "启用后，标签将区分大小写（#NodeBB 和 #nodebb 将被视为不同的标签）。禁用后，标签将统一转换为小写。",
     "related-topics": "相关主题",
     "max-related-topics": "最大相关主题显示量(如果主题支持)"
 }

@@ -211,7 +211,7 @@
     "too-many-post-flags-per-day": "Du kannst pro Tag nur %1 Beitrag/Beiträge markieren",
     "too-many-user-flags-per-day": "Du kannst pro Tag nur %1 Benutzer markieren",
     "too-many-message-flags-per-day": "Du kannst pro Tag nur %1 Chat-Nachricht(en) melden",
-    "cant-flag-privileged": "Du darfst die Profile oder Inhalte von privilegierten Benutzern (Moderatoren/Globalmoderatoren/Admins) nicht kennzeichnen.",
+    "cant-flag-privileged": "Du darfst die Profile oder Inhalte von privilegierten Benutzern (Moderatoren/weltweiten Moderatoren/Admins) nicht kennzeichnen.",
     "cant-locate-flag-report": "Meldung-Report kann nicht gefunden werden",
     "self-vote": "Du kannst deine eigenen Beiträge nicht bewerten",
     "too-many-upvotes-today": "Du kannst nur %1 Mal pro Tag upvoten",

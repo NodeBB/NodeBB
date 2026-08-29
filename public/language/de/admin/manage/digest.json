@@ -7,7 +7,7 @@
 	"subscription": "Abonnement Typ",
 	"last-delivery": "Letzte erfolgreiche Zustellung",
 	"default": "System Standard",
-	"default-help": "<em>Systemstandard</em> bedeutet, dass der Benutzer die globale Foreneinstellung für Tagesübersichten nicht explizit außer Kraft gesetzt hat, die derzeit wie folgt lautet: &quot;<strong>%1</strong>&quot;",
+	"default-help": "<em>Systemstandard</em> bedeutet, dass der Benutzer die weltweite Foreneinstellung für Tagesübersichten nicht explizit außer Kraft gesetzt hat, die derzeit wie folgt lautet: &quot;<strong>%1</strong>&quot;",
 	"resend": "Tagesübersicht erneut senden",
 	"resend-all-confirm": "Bist du sicher, dass du diesen Tagesübersichts-Lauf manuell ausführen möchtest?",
 	"resent-single": "Manuelles Übersichtversenden abgeschlossen",
