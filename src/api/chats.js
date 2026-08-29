@@ -410,7 +410,7 @@ chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
 	}
 
 	const { content, deleted, fromuid } = await messaging.getMessageFields(mid, ['content', 'deleted', 'fromuid']);
-	const isSender = parseInt(caller.uid, 10) === parseInt(fromuid, 10);
+	const isSender = String(caller.uid) === String(fromuid);
 	if (deleted && !isSender && !isAdminOrGlobalMod) {
 		throw new Error('[[error:not-allowed]]');
 	}
