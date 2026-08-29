@@ -1,0 +1,12 @@
+{{ fqdn }} {
+    log {
+        format json
+    }
+    reverse_proxy * nodebb:4567 {
+        header_up Host {http.request.host}
+        header_up X-Real-IP {http.request.remote.host}
+        header_up X-Forwarded-For {http.request.remote.host}
+        header_up X-Forwarded-Port {http.request.port}
+        header_up X-Forwarded-Proto {http.request.scheme}
+    }
+}
