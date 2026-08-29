@@ -236,7 +236,7 @@ Signatures.getKeyId = (headers) => {
 	return null;
 };
 
-function getRequestUrl(req) {
+function getRequestUrl(req, { useHostHeader = false } = {}) {
 	const relativePath = nconf.get('relative_path') || '';
 	let requestPath = req.originalUrl || req.url || req.path || '/';
 
@@ -244,7 +244,16 @@ function getRequestUrl(req) {
 		requestPath = `${relativePath}${requestPath.startsWith('/') ? '' : '/'}${requestPath}`;
 	}
 
-	const origin = nconf.get('url_parsed') ? nconf.get('url_parsed').origin : nconf.get('url');
+	let origin = nconf.get('url_parsed') ? nconf.get('url_parsed').origin : nconf.get('url');
+	// RFC 9421: reconstruct the target URI from the request itself (scheme +
+	// Host header + request-target). Prefer the Host header so verification
+	// also succeeds when the dialed host differs from the configured URL
+	// (reverse proxies, www vs non-www, port changes)
+	if (useHostHeader && req.headers && req.headers.host) {
+		const { protocol } = nconf.get('url_parsed') || { protocol: 'https:' };
+		origin = `${protocol}//${req.headers.host}`;
+	}
+
 	return new URL(requestPath, origin).href;
 }
 
@@ -301,7 +310,7 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 			return false;
 		}
 
-		const fullUrl = getRequestUrl(req);
+		const fullUrl = getRequestUrl(req, { useHostHeader: true });
 		const requestObj = {
 			method: req.method,
 			url: fullUrl,
