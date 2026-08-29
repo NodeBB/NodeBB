@@ -94,7 +94,9 @@ Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = nu
 	}
 
 	// Determine signed components list
-	const components = ['@request-target', 'host', 'date'];
+	// @method + @target-uri (not @request-target) so that verifiers requiring
+	// those components explicitly (e.g. Mitra) can validate the signature
+	const components = ['@method', '@target-uri', 'host', 'date'];
 	if (digest) {
 		components.push('digest');
 	}
@@ -128,8 +130,9 @@ Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = nu
 			date,
 			...(digest && { digest }),
 			'signature-input': signatureInput,
-			// RFC 9421 2.3: the Signature value is an unquoted base64 byte sequence
-			signature: `sig1=${signature}`,
+			// RFC 9421 2.3: the Signature value is a structured-field byte
+			// sequence (":base64:" per RFC 8941/9651)
+			signature: `sig1=:${signature}:`,
 		};
 	} catch (err) {
 		winston.error(`[activitypub/signatures] Sign (RFC 9421) error: ${err.message}`);
@@ -396,7 +399,10 @@ function parseSignatureHeader(headerValue) {
 		}
 		const label = member.slice(0, eq).trim();
 		let value = member.slice(eq + 1).trim();
-		if (value.startsWith('"')) {
+		// RFC 8941/9651 byte sequence (colon-delimited base64) — the format RFC 9421 senders use
+		if (value.startsWith(':') && value.endsWith(':') && value.length > 2) {
+			value = value.slice(1, -1);
+		} else if (value.startsWith('"')) {
 			const end = value.indexOf('"', 1);
 			if (end === -1) {
 				continue;
