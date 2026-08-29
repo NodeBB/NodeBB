@@ -21,7 +21,7 @@ privsTopics.get = async function (tid, uid) {
 		'topics:reply', 'topics:read', 'topics:schedule', 'topics:tag',
 		'topics:delete', 'posts:edit', 'posts:history',
 		'posts:upvote', 'posts:downvote',
-		'posts:delete', 'posts:view_deleted', 'read', 'purge',
+		'posts:delete', 'posts:view_deleted', 'read', 'purge', 'bypass_lock',
 	];
 	const topicData = await topics.getTopicFields(tid, ['cid', 'uid', 'locked', 'deleted', 'scheduled', 'postcount']);
 	const [userPrivileges, isAdministrator, isModerator, disabled, topicTools] = await Promise.all([
@@ -62,14 +62,15 @@ privsTopics.get = async function (tid, uid) {
 		'topics:schedule': privData['topics:schedule'] || isAdministrator,
 		'topics:tag': privData['topics:tag'] || isAdministrator,
 		'topics:delete': (privData['topics:delete'] && (isOwner || isModerator)) || isAdministrator,
-		'posts:edit': (privData['posts:edit'] && (!topicData.locked || isModerator)) || isAdministrator,
+		'posts:edit': (privData['posts:edit'] && (!topicData.locked || isModerator || privData.bypass_lock)) || isAdministrator,
 		'posts:history': privData['posts:history'] || isAdministrator,
 		'posts:upvote': privData['posts:upvote'] || isAdministrator,
 		'posts:downvote': privData['posts:downvote'] || isAdministrator,
-		'posts:delete': (privData['posts:delete'] && (!topicData.locked || isModerator)) || isAdministrator,
+		'posts:delete': (privData['posts:delete'] && (!topicData.locked || isModerator || privData.bypass_lock)) || isAdministrator,
 		'posts:view_deleted': privData['posts:view_deleted'] || isAdministrator,
 		read: privData.read || isAdministrator,
 		purge: (privData.purge && (isOwner || isModerator)) || isAdministrator,
+		bypass_lock: privData.bypass_lock || isAdministrator,
 
 		view_thread_tools: editable || deletable || hasTools || canMoveOwnTopic,
 		editable: editable,

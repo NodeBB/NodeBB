@@ -148,6 +148,7 @@ privsPosts.canEdit = async function (pid, uid) {
 		isEditor: db.isSetMember(`pid:${pid}:editors`, uid),
 		isGroupEditor: isGroupEditor(pid, uid),
 		edit: privsPosts.can('posts:edit', pid, uid),
+		bypassLock: privsPosts.can('bypass_lock', pid, uid),
 		postData: posts.getPostFields(pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
 		userData: user.getUserFields(uid, ['reputation']),
 	});
@@ -183,7 +184,7 @@ privsPosts.canEdit = async function (pid, uid) {
 	// edit access inside a locked topic by unsetting `isLocked`.
 	const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
 
-	if (!result.isMod && result.isLocked) {
+	if (!result.isMod && result.isLocked && !result.bypassLock) {
 		return { flag: false, message: '[[error:topic-locked]]' };
 	}
 
@@ -211,6 +212,7 @@ privsPosts.canDelete = async function (pid, uid) {
 		isAdmin: user.isAdministrator(uid),
 		isMod: posts.isModerator([pid], uid),
 		isLocked: topics.isLocked(postData.tid),
+		bypassLock: privsPosts.can('bypass_lock', pid, uid),
 		isOwner: posts.isOwner(pid, uid),
 		'posts:delete': privsPosts.can('posts:delete', pid, uid),
 	});
@@ -219,7 +221,7 @@ privsPosts.canDelete = async function (pid, uid) {
 		return { flag: true };
 	}
 
-	if (!results.isMod && results.isLocked) {
+	if (!results.isMod && results.isLocked && !results.bypassLock) {
 		return { flag: false, message: '[[error:topic-locked]]' };
 	}
 

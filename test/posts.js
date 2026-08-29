@@ -1396,6 +1396,7 @@ describe('Post\'s', () => {
 
 	describe('editing posts in locked topics', () => {
 		let ownerUid;
+		let tid;
 		let pid;
 
 		before(async () => {
@@ -1406,8 +1407,9 @@ describe('Post\'s', () => {
 				title: 'a topic that gets locked',
 				content: 'Some text here for the OP',
 			});
+			tid = topic.topicData.tid;
 			pid = topic.postData.pid;
-			await topics.setTopicField(topic.topicData.tid, 'locked', 1);
+			await topics.setTopicField(tid, 'locked', 1);
 		});
 
 		it('should not allow the owner to edit a post in a locked topic', async () => {
@@ -1432,6 +1434,33 @@ describe('Post\'s', () => {
 			} finally {
 				plugins.hooks.unregister('test-edit-locked', 'filter:privileges.posts.edit', method);
 			}
+		});
+
+		it('should not allow the owner to delete a post in a locked topic', async () => {
+			const { flag, message } = await privileges.posts.canDelete(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
+		});
+
+		it('should allow editing and deleting once bypass_lock is granted', async () => {
+			await privileges.categories.give(['groups:bypass_lock'], cid, 'registered-users');
+			try {
+				assert.strictEqual((await privileges.posts.canEdit(pid, ownerUid)).flag, true);
+				assert.strictEqual((await privileges.posts.canDelete(pid, ownerUid)).flag, true);
+
+				const topicPrivileges = await privileges.topics.get(tid, ownerUid);
+				assert.strictEqual(topicPrivileges.bypass_lock, true);
+				assert.strictEqual(topicPrivileges['posts:edit'], true);
+				assert.strictEqual(topicPrivileges['posts:delete'], true);
+			} finally {
+				await privileges.categories.rescind(['groups:bypass_lock'], cid, 'registered-users');
+			}
+		});
+
+		it('should go back to blocking edits once bypass_lock is rescinded', async () => {
+			const { flag, message } = await privileges.posts.canEdit(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
 		});
 	});
 

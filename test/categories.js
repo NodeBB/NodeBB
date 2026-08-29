@@ -720,6 +720,7 @@ describe('Categories', () => {
 					'posts:downvote': false,
 					purge: false,
 					'posts:view_deleted': false,
+					bypass_lock: false,
 					moderate: false,
 				});
 
@@ -774,6 +775,7 @@ describe('Categories', () => {
 					'groups:topics:read': true,
 					'groups:purge': false,
 					'groups:posts:view_deleted': false,
+					'groups:bypass_lock': false,
 					'groups:moderate': false,
 				});
 
