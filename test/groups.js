@@ -1487,9 +1487,9 @@ describe('Groups', () => {
 		it('should fail to upload group cover with invalid image', (done) => {
 			const data = {
 				groupName: 'Test',
-				imageData: 'data:image/svg;base64,iVBORw0KGgoAAAANSUhEUgAAABwA',
+				imageData: 'data:image/svg;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEAAUAmJaQAA3AA/v89WAAAAA==',
 			};
-			socketGroups.cover.update({ uid: adminUid }, data, (err, data) => {
+			socketGroups.cover.update({ uid: adminUid }, data, (err) => {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
