@@ -3,6 +3,7 @@
 const assert = require('assert');
 const nconf = require('nconf');
 const { createHash } = require('crypto');
+const { importPublicKey, getWebcrypto } = require('@misskey-dev/node-http-message-signatures');
 
 const db = require('../mocks/databasemock');
 const user = require('../../src/user');
@@ -217,6 +218,69 @@ describe('http signature signing and verification', () => {
 
 			const verified = await activitypub.verify(req);
 			assert.strictEqual(verified, false);
+		});
+	});
+
+	describe('.signRfc9421()', () => {
+		let uid;
+		const username = utils.generateUUID().slice(0, 10);
+
+		before(async () => {
+			uid = await user.create({ username });
+		});
+
+		it('should produce a structured-field byte sequence Signature header', async () => {
+			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+			const keyData = await activitypub.getPrivateKey('uid', uid);
+			const { signature } = await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
+			// RFC 8941/9651 byte sequence: ":" + base64 + ":"
+			assert.match(signature, /^sig1=:[0-9A-Za-z+/]+={0,2}:$/);
+		});
+
+		it('should cover the @method and @target-uri components', async () => {
+			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+			const keyData = await activitypub.getPrivateKey('uid', uid);
+			const { 'signature-input': signatureInput } =
+				await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
+			const componentIds = [...signatureInput.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+			assert(componentIds.includes('@method'));
+			assert(componentIds.includes('@target-uri'));
+		});
+
+		it('should produce a signature that verifies against an independent signature base reconstruction', async () => {
+			// Reconstructs the signature base by hand per RFC 9421 2.5 (matching
+			// independent implementations such as Mitra) instead of trusting the
+			// base factory on both sides
+			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
+			const keyData = await activitypub.getPrivateKey('uid', uid);
+			const { date, 'signature-input': signatureInput, signature } =
+				await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
+			const { host } = nconf.get('url_parsed');
+
+			const paramsMatch = signatureInput.match(/^sig1=(\([^)]*\));created=(\d+);keyid="([^"]*)"$/);
+			assert(paramsMatch, `unexpected Signature-Input format: ${signatureInput}`);
+			const [, componentsInnerList, created, keyId] = paramsMatch;
+			const componentIds = [...componentsInnerList.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+			const componentValues = {
+				'@method': 'GET',
+				'@target-uri': endpoint,
+				host,
+				date,
+			};
+			const lines = componentIds.map((id) => `"${id}": ${componentValues[id]}`);
+			lines.push(`"@signature-params": ${componentsInnerList};created=${created};keyid="${keyId}"`);
+			const expectedBase = lines.join('\n');
+
+			const publicKeyPem = await activitypub.getPublicKey('uid', uid);
+			const publicKey = await importPublicKey(publicKeyPem, ['verify']);
+			const webcrypto = await getWebcrypto();
+			const verified = await webcrypto.subtle.verify(
+				{ name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+				publicKey,
+				Buffer.from(signature.slice('sig1=:'.length, -1), 'base64'),
+				new TextEncoder().encode(expectedBase),
+			);
+			assert.strictEqual(verified, true);
 		});
 	});
 

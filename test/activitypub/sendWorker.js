@@ -56,6 +56,7 @@ describe('sendWorker', () => {
 	describe('RFC 9421 signing with draft fallback', () => {
 		const http = require('http');
 		const { createHash, generateKeyPairSync, webcrypto } = require('crypto');
+		const sfv = require('structured-headers');
 		const {
 			RFC9421SignatureBaseFactory,
 			importPublicKey,
@@ -94,16 +95,18 @@ describe('sendWorker', () => {
 					try {
 						if (entry.hasRfc) {
 							const base = new RFC9421SignatureBaseFactory({ method: req.method, url: fullUrl, headers: req.headers });
-							// Signature values are unquoted base64 (RFC 9421 2.3); strip an optional quote for leniency
-							let sigB64 = String(req.headers.signature).replace(/^sig1=/, '');
-							if (sigB64.startsWith('"') && sigB64.endsWith('"')) {
-								sigB64 = sigB64.slice(1, -1);
+							// Parse the Signature header as a strict RFC 8941/9651 dictionary
+							// (like Mitra's sfv parser) — the value must be a byte sequence
+							const sigDict = sfv.parseDictionary(String(req.headers.signature));
+							const sigItem = sigDict.get('sig1');
+							if (!sigItem || !sfv.isByteSequence(sigItem[0])) {
+								throw new Error('Signature value is not a byte sequence');
 							}
 							const pub = await importPublicKey(pubPem, ['verify']);
 							entry.rfcValid = await webcrypto.subtle.verify(
 								{ name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
 								pub,
-								Buffer.from(sigB64, 'base64'),
+								Buffer.from(sigItem[0].base64Value, 'base64'),
 								new TextEncoder().encode(base.generate('sig1')),
 							);
 						} else if (entry.isDraft) {
