@@ -175,19 +175,22 @@ privsPosts.canEdit = async function (pid, uid) {
 		return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
 	}
 
-	const isLocked = await topics.isLocked(results.postData.tid);
-	if (!results.isMod && isLocked) {
-		return { flag: false, message: '[[error:topic-locked]]' };
-	}
-
-	if (!results.isMod && results.postData.deleted && parseInt(uid, 10) !== parseInt(results.postData.deleterUid, 10)) {
-		return { flag: false, message: '[[error:post-deleted]]' };
-	}
-
+	results.isLocked = await topics.isLocked(results.postData.tid);
 	results.pid = utils.isNumber(pid) ? parseInt(pid, 10) : pid;
 	results.uid = uid;
 
+	// Fired ahead of the lock and deleted-post gates, so that plugins can grant
+	// edit access inside a locked topic by unsetting `isLocked`.
 	const result = await plugins.hooks.fire('filter:privileges.posts.edit', results);
+
+	if (!result.isMod && result.isLocked) {
+		return { flag: false, message: '[[error:topic-locked]]' };
+	}
+
+	if (!result.isMod && result.postData.deleted && parseInt(uid, 10) !== parseInt(result.postData.deleterUid, 10)) {
+		return { flag: false, message: '[[error:post-deleted]]' };
+	}
+
 	return {
 		flag: result.edit && (result.isOwner || result.isEditor || result.isGroupEditor || result.isMod),
 		message: '[[error:no-privileges]]',
