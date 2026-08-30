@@ -52,9 +52,11 @@ async function postTids(tids) {
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(topicsData),
-		federatePosts(uids, topicsData),
 	]);
 	await Promise.all(topicsData.map(topicData => unpin(topicData.tid, topicData)));
+	federatePosts(uids, topicsData).catch(
+		err => winston.error(`[scheduled topics] Error federating posts: ${err.message}`)
+	);
 }
 
 // topics/tools.js#pin/unpin would block non-admins/mods, thus the local versions
@@ -168,12 +170,11 @@ async function updateGroupPosts(topicsData) {
 	}));
 }
 
-function federatePosts(uids, topicData) {
-	topicData.forEach(({ mainPid: pid }, idx) => {
+async function federatePosts(uids, topicData) {
+	await Promise.all(topicData.map(async ({mainPid: pid}, idx) => {
 		const uid = uids[idx];
-
-		activitypub.out.create.note(uid, pid);
-	});
+		await activitypub.out.create.note(uid, pid);
+	}));
 }
 
 async function shiftPostTimes(tid, timestamp) {
