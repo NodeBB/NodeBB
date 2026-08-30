@@ -37,8 +37,7 @@ postsAPI.get = async function (caller, data) {
 
 	const selfPost = caller.uid && caller.uid === parseInt(post.uid, 10);
 	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
-		post.content = '[[topic:post-is-deleted]]';
-		post.txContent = true;
+		posts.clearDeletedPostContent(post);
 	}
 
 	return post;

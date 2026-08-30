@@ -105,10 +105,16 @@ controller.list = async function (req, res) {
 	data.topicCount = topicCount;
 
 	const mainPids = await topics.getMainPids(tids);
-	const postData = await posts.getPostSummaryByPids(mainPids, req.uid, {
-		stripTags: false,
-		extraFields: ['bookmarks'],
-	});
+	const [postData, postPrivileges] = await Promise.all([
+		posts.getPostSummaryByPids(mainPids, req.uid, {
+			stripTags: false,
+			extraFields: ['bookmarks'],
+		}),
+		privileges.posts.get(mainPids, req.uid),
+	]);
+	postData.forEach(
+		(postData, index) => posts.modifyPostByPrivilege(postData, postPrivileges[index])
+	);
 	const [{ upvotes }, bookmarkStatus] = await Promise.all([
 		posts.getVoteStatusByPostIDs(mainPids, req.uid),
 		posts.hasBookmarked(mainPids, req.uid),
