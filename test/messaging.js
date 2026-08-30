@@ -488,7 +488,7 @@ describe('Messaging Library', () => {
 			}, 'bar');
 			const { messageId } = msgBody.response;
 
-			await callv3API('delete', `/chats/${deleteRoomId}/messages/${messageId}`, {}, 'bar');
+			await callv3API('delete', `/chats/${deleteRoomId}/messages/${messageId}/state`, {}, 'bar');
 
 			await assert.rejects(
 				api.chats.getRawMessage(
