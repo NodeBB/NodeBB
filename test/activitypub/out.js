@@ -23,6 +23,13 @@ describe('Outbound activities module', () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
 		activitypub._sent.clear();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('.announce', () => {

@@ -21,6 +21,13 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		// await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('"fediverse" pseudo-user', () => {
@@ -215,6 +222,13 @@ describe('Privilege masking', () => {
 	before(async () => {
 		// Grant default fediverse privileges
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('control', () => {

@@ -21,6 +21,13 @@ describe('Inbox', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('Inbox handling', () => {
