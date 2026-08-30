@@ -98,13 +98,22 @@ Posts.getPostIndices = async function (posts, uid) {
 Posts.modifyPostByPrivilege = function (post, privileges) {
 	if (post && privileges) {
 		if (post.deleted && !(post.selfPost || privileges['posts:view_deleted'])) {
-			post.content = '[[topic:post-is-deleted]]';
-			post.txContent = true;
+			Posts.clearDeletedPostContent(post);
 			if (post.user) {
 				post.user.signature = '';
 			}
 		}
 		post.ip = privileges.isAdminOrMod ? post.ip : undefined;
+	}
+};
+
+Posts.clearDeletedPostContent = function (post) {
+	if (post) {
+		post.content = '[[topic:post-is-deleted]]';
+		if (Object.hasOwn(post, 'sourceContent')) {
+			post.sourceContent = '[[topic:post-is-deleted]]';
+		}
+		post.txContent = true;
 	}
 };
 

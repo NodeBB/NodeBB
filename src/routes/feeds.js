@@ -291,7 +291,7 @@ async function generateTopicsFeed(feedOptions, feedTopics, timestampField) {
 			return;
 		}
 		const { mainPost } = topicData;
-		if (!mainPost) {
+		if (!mainPost || mainPost.deleted) {
 			feed.item(feedItem);
 			return;
 		}

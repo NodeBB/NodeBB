@@ -46,10 +46,10 @@ module.exports = function (Topics) {
 		});
 
 		const [allPostData, callerSettings] = await Promise.all([
-			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content', 'sourceContent']),
+			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content', 'sourceContent', 'deleted']),
 			user.getSettings(uid),
 		]);
-		let postData = allPostData.filter(post => post && post.pid);
+		let postData = allPostData.filter(post => post && post.pid && !post.deleted);
 		postData = await handleBlocks(uid, postData);
 		postData = postData.filter(Boolean);
 		const uids = _.uniq(postData.map(post => post.uid));
@@ -80,7 +80,7 @@ module.exports = function (Topics) {
 			if (tidToPost[topic.tid]) {
 				tidToPost[topic.tid].index = calcTeaserIndex(teaserPost, counts[index], sortNewToOld);
 			}
-			return tidToPost[topic.tid];
+			return tidToPost[topic.tid] || null;
 		});
 
 		const result = await plugins.hooks.fire('filter:teasers.get', { teasers, uid });

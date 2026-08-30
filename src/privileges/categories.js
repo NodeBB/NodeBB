@@ -137,7 +137,7 @@ privsCategories.get = async function (cid, uid) {
 		cid: cid,
 		uid: uid,
 		editable: isAdminOrMod,
-		view_deleted: isAdminOrMod || privData['posts:view_deleted'],
+		view_deleted: isAdministrator || privData['posts:view_deleted'],
 		view_scheduled : isAdministrator || privData['topics:schedule'],
 		isAdminOrMod: isAdminOrMod,
 		disabled,

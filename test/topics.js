@@ -2148,6 +2148,24 @@ describe('Topic\'s', () => {
 			assert.equal(teaser.content, 'content 2');
 			await User.blocks.remove(blockedUid, adminUid);
 		});
+
+		it('should not show deleted posts as teasers', async () => {
+			const { topicData } = await topics.post({
+				uid: adminUid,
+				title: 'topic with deleted posts',
+				content: 'content 1',
+				cid: categoryObj.cid,
+			});
+			const { pid } = await topics.reply({ uid: adminUid, content: 'reply 1 content', tid: topicData.tid });
+			await posts.delete(pid, adminUid);
+			await posts.delete(topicData.mainPid);
+			const teasers = await topics.getTeasers([topicData], {
+				uid: 0, // call as guest
+				teaserPost: 'last-post',
+			});
+			console.log({ teasers });
+			assert.deepStrictEqual(teasers[0], null);
+		});
 	});
 
 	describe('tag privilege', () => {
