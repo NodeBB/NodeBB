@@ -16,6 +16,7 @@ const categories = require('../src/categories');
 const privileges = require('../src/privileges');
 const user = require('../src/user');
 const groups = require('../src/groups');
+const plugins = require('../src/plugins');
 const socketPosts = require('../src/socket.io/posts');
 const apiPosts = require('../src/api/posts');
 const apiTopics = require('../src/api/topics');
@@ -1390,6 +1391,71 @@ describe('Post\'s', () => {
 
 			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
 			assert.deepStrictEqual(groupNames, []);
+		});
+	});
+
+	describe('editing posts in locked topics', () => {
+		let ownerUid;
+		let pid;
+
+		before(async () => {
+			ownerUid = await user.create({ username: 'locked topic owner' });
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic that gets locked',
+				content: 'Some text here for the OP',
+			});
+			pid = topic.postData.pid;
+			await topics.setTopicField(topic.topicData.tid, 'locked', 1);
+		});
+
+		it('should not allow the owner to edit a post in a locked topic', async () => {
+			const { flag, message } = await privileges.posts.canEdit(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
+		});
+
+		it('should let a plugin grant edit access by unsetting isLocked', async () => {
+			const method = (data) => {
+				assert.strictEqual(data.isLocked, true);
+				data.isLocked = false;
+				return data;
+			};
+			plugins.hooks.register('test-edit-locked', {
+				hook: 'filter:privileges.posts.edit',
+				method: method,
+			});
+			try {
+				const { flag } = await privileges.posts.canEdit(pid, ownerUid);
+				assert.strictEqual(flag, true);
+			} finally {
+				plugins.hooks.unregister('test-edit-locked', 'filter:privileges.posts.edit', method);
+			}
+		});
+
+		it('should not allow the owner to delete a post in a locked topic', async () => {
+			const { flag, message } = await privileges.posts.canDelete(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
+		});
+
+		it('should let a plugin grant delete access by unsetting isLocked', async () => {
+			const method = (data) => {
+				assert.strictEqual(data.isLocked, true);
+				data.isLocked = false;
+				return data;
+			};
+			plugins.hooks.register('test-delete-locked', {
+				hook: 'filter:privileges.posts.delete',
+				method: method,
+			});
+			try {
+				const { flag } = await privileges.posts.canDelete(pid, ownerUid);
+				assert.strictEqual(flag, true);
+			} finally {
+				plugins.hooks.unregister('test-delete-locked', 'filter:privileges.posts.delete', method);
+			}
 		});
 	});
 
