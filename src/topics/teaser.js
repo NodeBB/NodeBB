@@ -105,7 +105,7 @@ module.exports = function (Topics) {
 		}
 
 		return await Promise.all(teasers.map(async (postData) => {
-			if (blockedUids.includes(parseInt(postData.uid, 10))) {
+			if (blockedUids.includes(String(postData.uid))) {
 				return await getPreviousNonBlockedPost(postData, blockedUids);
 			}
 			return postData;
@@ -121,7 +121,7 @@ module.exports = function (Topics) {
 		let checkedAllReplies = false;
 
 		function checkBlocked(post) {
-			const isPostBlocked = blockedUids.includes(parseInt(post.uid, 10));
+			const isPostBlocked = blockedUids.includes(String(post.uid));
 			prevPost = !isPostBlocked ? post : prevPost;
 			return isPostBlocked;
 		}
