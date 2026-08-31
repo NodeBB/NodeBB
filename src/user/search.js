@@ -50,9 +50,17 @@ module.exports = function (User) {
 					} else {
 						const assertion = await activitypub.actors.assert([handle || data.query]);
 						if (assertion === true) {
-							// Actor already exists; resolve UID from webfinger cache
-							const cached = handle ? activitypub.helpers._webfingerCache.get(handle) : null;
-							uids = cached ? [cached.actorUri] : [handle ? await User.getUidByUserslug(handle) : query];
+							// Actor already exists; prefer the persisted handle:uid mapping
+							// over the webfinger cache, which can hold a stale entry for a
+							// re-resolved handle (audit F-7)
+							const resolved = handle ? await db.getObjectField('handle:uid', handle.toLowerCase()) : null;
+							if (resolved) {
+								uids = [resolved];
+							} else {
+								const wfKey = handle ? activitypub.helpers._webfingerKey(handle) : false;
+								const cached = wfKey ? activitypub.helpers._webfingerCache.get(wfKey) : null;
+								uids = cached ? [cached.actorUri] : [handle ? await User.getUidByUserslug(handle) : query];
+							}
 						} else if (Array.isArray(assertion) && assertion.length) {
 							uids = assertion.map(u => u.id);
 						}
