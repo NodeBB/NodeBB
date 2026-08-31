@@ -158,6 +158,30 @@ describe('User.search()', () => {
 			const hasRemote = result.users.some(u => u.uid === remoteActorUri);
 			assert.ok(hasRemote, 'exact webfinger should resolve to remote user');
 		});
+
+		it('prefers the persisted handle:uid mapping over a stale webfinger cache entry', async () => {
+			const hostname = new URL(remoteActorUri).hostname;
+			const webfinger = `charlie_remote@${hostname}`;
+			// A stale cache entry resolves the handle to a different, already-crawled URI
+			const staleUri = `https://${hostname}/uid/stale_charlie`;
+			await db.sortedSetAdd('usersRemote:lastCrawled', Date.now(), staleUri);
+			activitypub.helpers._webfingerCache.set(webfinger, {
+				actorUri: staleUri,
+				subject: `acct:charlie_remote@${hostname}`,
+				username: 'charlie_remote',
+				hostname,
+			});
+
+			const result = await user.search({
+				query: webfinger,
+				searchBy: 'username',
+				uid: localUid,
+			});
+
+			assert.ok(result.users.length >= 1, 'should find the user');
+			const hasRemote = result.users.some(u => u.uid === remoteActorUri);
+			assert.ok(hasRemote, 'stale webfinger cache entry must not override the persisted handle:uid mapping (audit F-7)');
+		});
 	});
 
 	describe('search by fullname', () => {

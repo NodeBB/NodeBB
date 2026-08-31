@@ -131,6 +131,20 @@ Helpers.isWebfinger = (value) => {
 	return false;
 };
 
+// Normalized webfinger cache key: username case is preserved (usernames may
+// be case-sensitive), hostname is lowercased (hostnames are case-insensitive;
+// URI ids normalize via the URL parser). All webfinger cache read/write paths
+// must use this so case variants can never produce divergent entries (audit F-7)
+Helpers._webfingerKey = (id) => {
+	if (Helpers.isUri(id)) {
+		const uri = new URL(id);
+		return `${uri.pathname || uri.href}@${uri.hostname}`;
+	}
+
+	const [username, hostname] = String(id).split('@');
+	return `${(username || '').trim()}@${(hostname || '').trim().toLowerCase()}`;
+};
+
 Helpers.query = async (id, { strict = true } = {}) => {
 	const isUri = Helpers.isUri(id);
 	// username@host ids use acct: URI schema
@@ -154,12 +168,15 @@ Helpers.query = async (id, { strict = true } = {}) => {
 		return false;
 	}
 
+	// Normalize the cache key (hostnames are case-insensitive, audit F-7)
+	const key = Helpers._webfingerKey(id);
+
 	// Short-circuit recent transport-level failures for this exact id (audit F-4)
-	if (failedWebfingerQueryCache.has(id)) {
+	if (failedWebfingerQueryCache.has(key)) {
 		return false;
 	}
 
-	const cached = webfingerCache.get(id);
+	const cached = webfingerCache.get(key);
 	// A cached entry that carries a hostname only answers queries for the domain
 	// it was fetched from — entries stored under this key while querying a
 	// different domain must not be served (cross-domain cache poisoning, audit
@@ -185,12 +202,12 @@ Helpers.query = async (id, { strict = true } = {}) => {
 			timeout: 5000,
 		}));
 	} catch (e) {
-		failedWebfingerQueryCache.set(id, true);
+		failedWebfingerQueryCache.set(key, true);
 		return false;
 	}
 
 	if (response.statusCode !== 200) {
-		failedWebfingerQueryCache.set(id, true);
+		failedWebfingerQueryCache.set(key, true);
 		return false;
 	}
 
@@ -273,7 +290,7 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	// let a response served by one domain answer WebFinger queries about a
 	// *different* domain's handle, which the non-strict backref read in
 	// verifyActorWebfinger would then trust (audit F-1)
-	webfingerCache.set(id, payload);
+	webfingerCache.set(key, payload);
 
 	return payload;
 };

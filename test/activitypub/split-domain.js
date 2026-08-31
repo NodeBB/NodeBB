@@ -800,3 +800,24 @@ describe('Webfinger failure negative cache (audit F-4)', () => {
 		assert.equal(getCalled, 2);
 	});
 });
+
+// ============================================================================
+
+describe('Webfinger cache key normalization (audit F-7)', () => {
+	beforeEach(Helpers.reset);
+
+	it('serves cached entries for case variants of the hostname', async () => {
+		const { domainB, username, actorUri } = Helpers.genSplitDomain();
+		Helpers.seedSameDomainWebfinger(domainB, username, actorUri);
+		// Uppercase hostname variant of the same handle must hit the same key
+		const result = await activitypub.helpers.query(`${username}@${domainB.toUpperCase()}`);
+		assert.ok(result);
+		assert.equal(result.actorUri, actorUri);
+	});
+
+	it('normalizes keys with lowercase hostnames and preserved username case', () => {
+		assert.equal(activitypub.helpers._webfingerKey('User@EXAMPLE.com'), 'User@example.com');
+		assert.equal(activitypub.helpers._webfingerKey('user@example.com'), 'user@example.com');
+		assert.equal(activitypub.helpers._webfingerKey('https://Example.COM/user'), '/user@example.com');
+	});
+});
