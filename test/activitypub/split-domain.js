@@ -4,6 +4,7 @@ const assert = require('assert');
 const nconf = require('nconf');
 const meta = require('../../src/meta');
 const utils = require('../../src/utils');
+const request = require('../../src/request');
 
 const activitypub = require('../../src/activitypub');
 
@@ -392,5 +393,145 @@ describe('Split-Domain: Integration - full flow', () => {
 		assert.equal(profile[0].username, `${username}@${domainA}`);
 		assert.equal(profile[0].userslug, `${username}@${domainA}`);
 		assert.equal(profile[0].webfinger, `acct:${username}@${domainA}`);
+	});
+});
+
+// ============================================================================
+
+describe('WebFinger cache poisoning (audit F-1)', () => {
+	let originalGet;
+
+	beforeEach(Helpers.reset);
+
+	afterEach(() => {
+		if (originalGet) {
+			request.get = originalGet;
+			originalGet = null;
+		}
+	});
+
+	it('a rejected split-domain backref must not seed an alias entry for the claimed handle', async () => {
+		const attacker = Helpers.genSplitDomain();
+		const victim = Helpers.genSplitDomain();
+		const attackerUri = `https://${attacker.domainB}/uid/${attacker.username}`;
+		const victimUri = `https://${victim.domainA}/uid/${victim.username}`;
+		const attackerActor = Helpers.seedActor(attackerUri, { preferredUsername: attacker.username });
+		const victimActor = Helpers.seedActor(victimUri, { preferredUsername: victim.username });
+
+		// domain B (attacker-controlled) WebFinger claims the victim's domain-A
+		// handle; domain A (honest) only serves the victim's own record
+		originalGet = request.get;
+		request.get = async (url) => {
+			const u = new URL(url);
+			if (u.host === attacker.domainB) {
+				return {
+					body: {
+						subject: `acct:${victim.username}@${victim.domainA}`,
+						links: [{ rel: 'self', type: 'application/activity+json', href: attackerUri }],
+						publicKey: null,
+					},
+					response: { statusCode: 200, headers: { 'content-type': 'application/jrd+json' } },
+				};
+			}
+			if (u.host === victim.domainA) {
+				const resource = new URLSearchParams(u.search.slice(1)).get('resource') || '';
+				if (resource === `acct:${victim.username}@${victim.domainA}`) {
+					return {
+						body: {
+							subject: `acct:${victim.username}@${victim.domainA}`,
+							links: [{ rel: 'self', type: 'application/activity+json', href: victimUri }],
+							publicKey: null,
+						},
+						response: { statusCode: 200, headers: { 'content-type': 'application/jrd+json' } },
+					};
+				}
+			}
+			return {
+				body: {},
+				response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+			};
+		};
+
+		// 1. Attacker's actor: domain B's record is about the victim's account,
+		//    not the queried one → rejected by the subject-user guard
+		const verdict = await activitypub.helpers.verifyActorWebfinger(attackerUri, attackerActor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, false);
+		assert.equal(verdict.reason, 'subject-mismatch');
+
+		// 2. The claimed handle must not exist in the webfinger cache (alias write removed)
+		assert.equal(activitypub.helpers._webfingerCache.get(`${victim.username}@${victim.domainA}`), undefined);
+
+		// 3. Victim's actor asserted by URI (the inbox path): backref reaches
+		//    domain A and verification succeeds
+		const victimVerdict = await activitypub.helpers.verifyActorWebfinger(victimUri, victimActor);
+		assert.ok(victimVerdict);
+		assert.equal(victimVerdict.ok, true);
+		assert.equal(victimVerdict.splitDomain, false);
+		assert.equal(victimVerdict.canonicalHandle, `${victim.username}@${victim.domainA}`);
+	});
+
+	it('does not serve a foreign-domain cache entry for a queried handle (hostname guard)', async () => {
+		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
+		const victimUri = `https://${domainA}/uid/${username}`;
+		const victimActor = Helpers.seedActor(victimUri, { preferredUsername: username });
+
+		// Simulate a legacy poisoned alias entry: key is the domain-A handle, but
+		// the payload was fetched from domain B
+		activitypub.helpers._webfingerCache.set(`${username}@${domainA}`, {
+			actorUri, username, hostname: domainB,
+			subject: `acct:${username}@${domainA}`, splitDomain: true, subjectHostname: domainA,
+			_raw: {
+				links: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }],
+				publicKey: null, subject: `acct:${username}@${domainA}`,
+			},
+		});
+
+		originalGet = request.get;
+		request.get = async (url) => {
+			const u = new URL(url);
+			if (u.host === domainA) {
+				return {
+					body: {
+						subject: `acct:${username}@${domainA}`,
+						links: [{ rel: 'self', type: 'application/activity+json', href: victimUri }],
+						publicKey: null,
+					},
+					response: { statusCode: 200, headers: { 'content-type': 'application/jrd+json' } },
+				};
+			}
+			return {
+				body: {},
+				response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+			};
+		};
+
+		// Despite the poisoned entry, verification must consult domain A itself
+		const verdict = await activitypub.helpers.verifyActorWebfinger(victimUri, victimActor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, true);
+		assert.equal(verdict.splitDomain, false);
+		assert.equal(verdict.canonicalHandle, `${username}@${domainA}`);
+	});
+
+	it('rejects backref records served for a different account (subject-user guard)', async () => {
+		const { domainB, username, actorUri } = Helpers.genSplitDomain();
+		const otherUser = `other_${username}`;
+
+		// domain B's WebFinger for `username` returns a record about `otherUser`
+		activitypub.helpers._webfingerCache.set(`${username}@${domainB}`, {
+			actorUri, username, hostname: domainB,
+			subject: `acct:${otherUser}@${domainB}`, splitDomain: false, subjectHostname: domainB,
+			_raw: {
+				links: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }],
+				publicKey: null, subject: `acct:${otherUser}@${domainB}`,
+			},
+		});
+		Helpers.seedActor(actorUri, { preferredUsername: username });
+
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, activitypub._cache.get(`0;${actorUri}`));
+		assert.ok(verdict);
+		assert.equal(verdict.ok, false);
+		assert.equal(verdict.reason, 'subject-mismatch');
 	});
 });
