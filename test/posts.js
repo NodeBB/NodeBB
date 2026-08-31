@@ -1433,6 +1433,30 @@ describe('Post\'s', () => {
 				plugins.hooks.unregister('test-edit-locked', 'filter:privileges.posts.edit', method);
 			}
 		});
+
+		it('should not allow the owner to delete a post in a locked topic', async () => {
+			const { flag, message } = await privileges.posts.canDelete(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
+		});
+
+		it('should let a plugin grant delete access by unsetting isLocked', async () => {
+			const method = (data) => {
+				assert.strictEqual(data.isLocked, true);
+				data.isLocked = false;
+				return data;
+			};
+			plugins.hooks.register('test-delete-locked', {
+				hook: 'filter:privileges.posts.delete',
+				method: method,
+			});
+			try {
+				const { flag } = await privileges.posts.canDelete(pid, ownerUid);
+				assert.strictEqual(flag, true);
+			} finally {
+				plugins.hooks.unregister('test-delete-locked', 'filter:privileges.posts.delete', method);
+			}
+		});
 	});
 
 	describe('Topic Backlinks', () => {
