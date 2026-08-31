@@ -132,7 +132,13 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	hostname = hostname.trim();
 
 	const cached = webfingerCache.get(id);
-	if (cached !== undefined && !(strict && cached.splitDomain)) {
+	// A cached entry that carries a hostname only answers queries for the domain
+	// it was fetched from — entries stored under this key while querying a
+	// different domain must not be served (cross-domain cache poisoning, audit
+	// F-1). Entries without a hostname (legacy minimal entries) are served as before.
+	const fromSameHost = !cached?.hostname ||
+		(typeof cached.hostname === 'string' && cached.hostname.toLowerCase() === hostname.toLowerCase());
+	if (cached !== undefined && fromSameHost && !(strict && cached.splitDomain)) {
 		return cached;
 	}
 
@@ -230,16 +236,14 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	const payload = {
 		subject, username, hostname, actorUri, publicKey,
 		_raw: body,
-		subjectHostname: subjectUrl.protocol === 'acct:' ? subjectHostname : subjectHostname,
+		subjectHostname,
 		splitDomain,
 	};
-	const claimedId = subjectUrl.pathname;
-	// Always cache by the queried id so subsequent queries hit the cache
+	// Cache only by the queried id. Caching by the claimed subject (an "alias")
+	// let a response served by one domain answer WebFinger queries about a
+	// *different* domain's handle, which the non-strict backref read in
+	// verifyActorWebfinger would then trust (audit F-1)
 	webfingerCache.set(id, payload);
-	// Also cache by the claimed subject path for alias lookups
-	if (claimedId !== id) {
-		webfingerCache.set(claimedId, payload);
-	}
 
 	return payload;
 };
@@ -275,6 +279,17 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 	// The backreference self-link must point at this exact actor document.
 	if (backref.actorUri !== actorId) {
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
+	}
+
+	// The WebFinger record must be about the account that was queried — a record
+	// served for a different account cannot vouch for this actor (audit F-1)
+	if (typeof backref.subject === 'string' && backref.subject.startsWith('acct:')) {
+		const opaque = backref.subject.slice(5);
+		const subjectAt = opaque.lastIndexOf('@');
+		const subjectUser = subjectAt === -1 ? null : opaque.slice(0, subjectAt);
+		if (subjectUser !== null && subjectUser !== preferredUsername) {
+			return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
+		}
 	}
 
 	// The subject's hostname tells us the canonical domain (A).
