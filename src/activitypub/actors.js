@@ -154,7 +154,13 @@ Actors.assert = async (ids, options = {}) => {
 			}
 
 			// Two-way WebFinger verification (includes backreference + optional split-domain forward check).
-			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor);
+			// The self-attested self-link fallback is only allowed for actors/groups
+			// with an existing persisted record (audit F-4)
+			const knownActor = await db.exists(`userRemote:${actor.id}`) ||
+				await db.exists(`categoryRemote:${actor.id}`);
+			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor, {
+				allowSelfLinkFallback: knownActor,
+			});
 			if (!verdict || !verdict.ok) {
 				activitypub.helpers.log(`[activitypub/actors] Webfinger verification failed (${verdict?.reason || 'unknown'}) for ${actor.id}`);
 				return null;
@@ -348,7 +354,12 @@ Actors.assertGroup = async (ids, options = {}) => {
 			}
 
 			// Two-way WebFinger verification (backreference check for security).
-			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor);
+			// The self-attested self-link fallback is only allowed for groups with an
+			// existing persisted record (audit F-4)
+			const knownGroup = await db.exists(`categoryRemote:${actor.id}`);
+			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor, {
+				allowSelfLinkFallback: knownGroup,
+			});
 			if (!verdict || !verdict.ok) {
 				activitypub.helpers.log(`[activitypub/actors] Webfinger verification failed (${verdict?.reason || 'unknown'}) for ${actor.id}`);
 				return null;
