@@ -361,7 +361,7 @@ Messaging.getTeasers = async (uid, roomIds) => {
 		user.blocks.list(uid),
 	]);
 	const uids = _.uniq(
-		teasers.map(t => t && t.fromuid).filter(uid => uid && !blockedUids.includes(uid))
+		teasers.map(t => t && t.fromuid).filter(uid => uid && !blockedUids.includes(String(uid)))
 	);
 
 	const userMap = _.zipObject(

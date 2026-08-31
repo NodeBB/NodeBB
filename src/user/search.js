@@ -112,7 +112,7 @@ module.exports = function (User) {
 		if (blocks.length) {
 			userData.forEach((user) => {
 				if (user) {
-					user.isBlocked = blocks.includes(user.uid);
+					user.isBlocked = blocks.includes(String(user.uid));
 				}
 			});
 		}
