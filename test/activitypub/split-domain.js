@@ -535,3 +535,84 @@ describe('WebFinger cache poisoning (audit F-1)', () => {
 		assert.equal(verdict.reason, 'subject-mismatch');
 	});
 });
+
+// ============================================================================
+
+describe('preferredUsername / hostname validation (audit F-2)', () => {
+	let originalGet;
+	let getCalled;
+
+	beforeEach(Helpers.reset);
+
+	afterEach(() => {
+		if (originalGet) {
+			request.get = originalGet;
+			originalGet = null;
+		}
+	});
+
+	const spyGet = () => {
+		getCalled = 0;
+		originalGet = request.get;
+		request.get = async () => {
+			getCalled += 1;
+			return {
+				body: {},
+				response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+			};
+		};
+	};
+
+	it('does not issue a webfinger request for an attacker-shaped preferredUsername', async () => {
+		const { actorUri } = Helpers.genSplitDomain();
+		// preferredUsername containing @ / port would put attacker-controlled
+		// values into the query's hostname slot
+		const actor = Helpers.seedActor(actorUri, { preferredUsername: 'x@other.example:8443' });
+		spyGet();
+
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, actor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, false);
+		assert.equal(verdict.reason, 'no-backreference');
+		assert.equal(getCalled, 0);
+	});
+
+	it('rejects missing or non-string preferredUsername without a webfinger request', async () => {
+		const { actorUri } = Helpers.genSplitDomain();
+		const noUsername = Helpers.seedActor(actorUri, { preferredUsername: undefined });
+		delete noUsername.preferredUsername;
+		const badType = Helpers.seedActor(actorUri, { preferredUsername: 12345 });
+		spyGet();
+
+		const verdictA = await activitypub.helpers.verifyActorWebfinger(actorUri, noUsername);
+		assert.ok(verdictA);
+		assert.equal(verdictA.ok, false);
+		assert.equal(verdictA.reason, 'no-backreference');
+
+		const verdictB = await activitypub.helpers.verifyActorWebfinger(actorUri, badType);
+		assert.ok(verdictB);
+		assert.equal(verdictB.ok, false);
+		assert.equal(verdictB.reason, 'no-backreference');
+		assert.equal(getCalled, 0);
+	});
+
+	it('query() rejects port-bearing and path-bearing hostnames before any request', async () => {
+		spyGet();
+		const r1 = await activitypub.helpers.query('user@target.example:8443', { strict: false });
+		const r2 = await activitypub.helpers.query('user@b/c', { strict: false });
+		const r3 = await activitypub.helpers.query('user@space host', { strict: false });
+		assert.equal(r1, false);
+		assert.equal(r2, false);
+		assert.equal(r3, false);
+		assert.equal(getCalled, 0);
+	});
+
+	it('query() still fetches normally for plain hostnames', async () => {
+		const { domainB } = Helpers.genSplitDomain();
+		spyGet();
+		const result = await activitypub.helpers.query(`user@${domainB}`, { strict: false });
+		// mock returns 404 → false, but the request must have been made
+		assert.equal(result, false);
+		assert.equal(getCalled, 1);
+	});
+});
