@@ -166,8 +166,6 @@ describe('verifyActorWebfinger', () => {
 		const { domainB, username, actorUri } = Helpers.genSplitDomain();
 		// Seed actor with a link array containing rel=self (simulates real AP actor docs)
 		const actor = Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
-		// allowSelfLinkFallback: true simulates an actor with a persisted record
-		// (first-time assertions require a live webfinger backref, audit F-4)
 		const verdict = await activitypub.helpers.verifyActorWebfinger(
 			actorUri, activitypub._cache.get(`0;${actorUri}`), { allowSelfLinkFallback: true });
 		assert.ok(verdict);
@@ -291,10 +289,7 @@ describe('Actors.assert - hostname mismatch', () => {
 
 	it('upgrades same-domain legacy actors via self-link fallback', async () => {
 		const { domainB, username, actorUri } = Helpers.genSplitDomain();
-		// Seed actor with link array (rel=self) — simulates real AP actor doc
 		Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
-		// Persisted record — the actor was asserted before webfinger verification
-		// existed, so the self-attested fallback is allowed (audit F-4)
 		await db.setObject(`userRemote:${actorUri}`, { username: 'legacy_actor' });
 		const result = await activitypub.actors.assert([actorUri]);
 		assert.ok(Array.isArray(result));
@@ -405,7 +400,7 @@ describe('Split-Domain: Integration - full flow', () => {
 
 // ============================================================================
 
-describe('WebFinger cache poisoning (audit F-1)', () => {
+describe('WebFinger cache poisoning', () => {
 	let originalGet;
 
 	beforeEach(Helpers.reset);
@@ -545,7 +540,7 @@ describe('WebFinger cache poisoning (audit F-1)', () => {
 
 // ============================================================================
 
-describe('preferredUsername / hostname validation (audit F-2)', () => {
+describe('preferredUsername / hostname validation', () => {
 	let originalGet;
 	let getCalled;
 
@@ -626,7 +621,7 @@ describe('preferredUsername / hostname validation (audit F-2)', () => {
 
 // ============================================================================
 
-describe('Split-domain key cross-check (audit F-3)', () => {
+describe('Split-domain key cross-check', () => {
 	beforeEach(Helpers.reset);
 
 	const seedKeys = (domainA, domainB, username, actorUri, forwardPem) => {
@@ -687,7 +682,7 @@ describe('Split-domain key cross-check (audit F-3)', () => {
 
 // ============================================================================
 
-describe('Self-link fallback gating (audit F-4)', () => {
+describe('Self-link fallback gating', () => {
 	let originalGet;
 
 	beforeEach(Helpers.reset);
@@ -736,7 +731,7 @@ describe('Self-link fallback gating (audit F-4)', () => {
 
 // ============================================================================
 
-describe('Webfinger failure negative cache (audit F-4)', () => {
+describe('Webfinger failure negative cache', () => {
 	let originalGet;
 	let getCalled;
 
@@ -803,7 +798,7 @@ describe('Webfinger failure negative cache (audit F-4)', () => {
 
 // ============================================================================
 
-describe('Webfinger cache key normalization (audit F-7)', () => {
+describe('Webfinger cache key normalization', () => {
 	beforeEach(Helpers.reset);
 
 	it('serves cached entries for case variants of the hostname', async () => {

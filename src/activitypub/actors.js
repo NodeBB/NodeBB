@@ -154,8 +154,6 @@ Actors.assert = async (ids, options = {}) => {
 			}
 
 			// Two-way WebFinger verification (includes backreference + optional split-domain forward check).
-			// The self-attested self-link fallback is only allowed for actors/groups
-			// with an existing persisted record (audit F-4)
 			const knownActor = await db.exists(`userRemote:${actor.id}`) ||
 				await db.exists(`categoryRemote:${actor.id}`);
 			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor, {
@@ -354,8 +352,6 @@ Actors.assertGroup = async (ids, options = {}) => {
 			}
 
 			// Two-way WebFinger verification (backreference check for security).
-			// The self-attested self-link fallback is only allowed for groups with an
-			// existing persisted record (audit F-4)
 			const knownGroup = await db.exists(`categoryRemote:${actor.id}`);
 			const verdict = await activitypub.helpers.verifyActorWebfinger(actor.id, actor, {
 				allowSelfLinkFallback: knownGroup,

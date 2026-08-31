@@ -180,7 +180,7 @@ describe('User.search()', () => {
 
 			assert.ok(result.users.length >= 1, 'should find the user');
 			const hasRemote = result.users.some(u => u.uid === remoteActorUri);
-			assert.ok(hasRemote, 'stale webfinger cache entry must not override the persisted handle:uid mapping (audit F-7)');
+			assert.ok(hasRemote, 'stale webfinger cache entry must not override the persisted handle:uid mapping');
 		});
 	});
 
