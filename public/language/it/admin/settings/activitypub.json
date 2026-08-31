@@ -103,9 +103,9 @@
 	"analytics.term": "Scala temporale",
 	"analytics.hourly": "Orario",
 	"analytics.daily": "Giornaliero",
-	"analytics.activities-by-type": "Activities by Type",
-	"analytics.activities-by-type-empty": "No activities recorded yet.",
-	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
+	"analytics.activities-by-type": "Attività per Tipo",
+	"analytics.activities-by-type-empty": "Non sono state registrate attività.",
+	"analytics.activities-by-type-not-filterable": "<strong>Nota:</strong> Questa ripartizione è globale e non è filtrata per il nome host selezionato.",
 
 	"errors.intro": "Nelle ultime 24 ore, questa istanza ha registrato il seguente %1 errore(i).",
 	"errors.payload-gone": "Il payload per questo errore non esiste più.",
