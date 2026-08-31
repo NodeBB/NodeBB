@@ -651,7 +651,9 @@ describe('Categories', () => {
 				});
 
 				assert.strictEqual(response.statusCode, 200);
-				assert(await groups.isMember(groupName, `cid:${toCid}:privileges:groups:moderate`));
+				const isMember = await db.isSortedSetMember(`group:cid:${toCid}:privileges:groups:moderate:members`, groupName);
+				assert.strictEqual(isMember, true, `Db value ${isMember}`);
+				assert.strictEqual(await groups.isMember(groupName, `cid:${toCid}:privileges:groups:moderate`), true, `groups.isMember value: ${isMember}`);
 				assert.strictEqual(await groups.isMember(groupName, `cid:${toCid}:privileges:groups:find`), false);
 			});
 
