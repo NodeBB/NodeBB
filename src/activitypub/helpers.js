@@ -29,11 +29,20 @@ const webfingerCache = ttl({
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours
 });
+// Recent transport-level webfinger query failures (network error / non-200) —
+// a broken or revoked webfinger endpoint must not be re-queried on every
+// interaction (audit F-4)
+const failedWebfingerQueryCache = ttl({
+	name: 'ap-webfinger-query-failures',
+	max: 5000,
+	ttl: 1000 * 60 * 10, // 10 minutes
+});
 const sha256 = payload => crypto.createHash('sha256').update(payload).digest('hex');
 
 const Helpers = module.exports;
 
 Helpers._webfingerCache = webfingerCache; // exported for tests
+Helpers._failedWebfingerQueryCache = failedWebfingerQueryCache; // exported for tests
 
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
@@ -145,6 +154,11 @@ Helpers.query = async (id, { strict = true } = {}) => {
 		return false;
 	}
 
+	// Short-circuit recent transport-level failures for this exact id (audit F-4)
+	if (failedWebfingerQueryCache.has(id)) {
+		return false;
+	}
+
 	const cached = webfingerCache.get(id);
 	// A cached entry that carries a hostname only answers queries for the domain
 	// it was fetched from — entries stored under this key while querying a
@@ -171,10 +185,12 @@ Helpers.query = async (id, { strict = true } = {}) => {
 			timeout: 5000,
 		}));
 	} catch (e) {
+		failedWebfingerQueryCache.set(id, true);
 		return false;
 	}
 
 	if (response.statusCode !== 200) {
+		failedWebfingerQueryCache.set(id, true);
 		return false;
 	}
 
@@ -262,7 +278,7 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	return payload;
 };
 
-Helpers.verifyActorWebfinger = async (actorId, actor) => {
+Helpers.verifyActorWebfinger = async (actorId, actor, { allowSelfLinkFallback = false } = {}) => {
 	if (!Helpers.isUri(actorId)) {
 		return false;
 	}
@@ -282,9 +298,10 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 	let backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
 
 	// Fallback for legacy actors (pre-split-domain): if WebFinger query fails, check
-	// the actor document for a self-link pointing to its own URI. This handles actors
-	// that were asserted before split-domain logic required WebFinger backreferences.
-	if (!backref && Helpers._hasValidSelfLink(actorId, actor)) {
+	// the actor document for a self-link pointing to its own URI. Self-attested,
+	// so only allowed for actors with a persisted record — first-time assertions
+	// require a live webfinger backref (audit F-4).
+	if (!backref && allowSelfLinkFallback && Helpers._hasValidSelfLink(actorId, actor)) {
 		backref = {
 			actorUri: actorId,
 			subject: `acct:${preferredUsername}@${idHostname}`,
@@ -337,6 +354,24 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
 	}
 
+	// Cross-check the key the identity domain published against the actor
+	// document's key. A mismatch means the canonical domain is vouching for a key
+	// it does not hold → reject. Absent keys cannot be compared (some split-domain
+	// deployments do not expose the content-domain key in the identity domain's
+	// webfinger) → proceed with keyVerified: false (audit F-3).
+	let keyVerified = false;
+	const forwardPem = forwardResult.publicKey?.publicKeyPem;
+	const actorPem = actor.publicKey?.publicKeyPem;
+	if (typeof forwardPem === 'string' && forwardPem.trim() &&
+		typeof actorPem === 'string' && actorPem.trim()) {
+		if (forwardPem.trim() !== actorPem.trim()) {
+			return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'key-mismatch' };
+		}
+		keyVerified = true;
+	} else {
+		winston.warn(`[activitypub] Split-domain actor ${actorId} verified without key comparison (key missing from forward webfinger or actor document)`);
+	}
+
 	const blocked = await activitypub.instances.isAllowed(normalizedSubjectHost);
 	if (!blocked.allowed) {
 		return {
@@ -352,6 +387,7 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 		splitDomain: true,
 		canonicalHandle: `${preferredUsername}@${normalizedSubjectHost}`,
 		reason: 'split-domain',
+		keyVerified,
 	};
 };
 
