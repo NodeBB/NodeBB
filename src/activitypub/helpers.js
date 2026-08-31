@@ -21,6 +21,9 @@ const activitypub = require('.');
 
 // \w only matches ASCII, so match unicode letters/numbers/marks explicitly to support non-ASCII handles
 const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
+// WebFinger username charset — used to validate actor.preferredUsername before it
+// is reflected into a WebFinger query target (audit F-2)
+const webfingerUserRegex = /^[\p{L}\p{N}\p{M}_.-]+$/u;
 const webfingerCache = ttl({
 	name: 'ap-webfinger-cache',
 	max: 5000,
@@ -130,6 +133,17 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	}
 	username = username.trim();
 	hostname = hostname.trim();
+
+	// Reject hostnames that do not round-trip through the URL parser (ports, paths,
+	// spaces, ...) — otherwise they would steer the WebFinger request to an
+	// unintended host or path (audit F-2)
+	try {
+		if (new URL(`https://${hostname}/`).hostname.toLowerCase() !== hostname.toLowerCase()) {
+			return false;
+		}
+	} catch (e) {
+		return false;
+	}
 
 	const cached = webfingerCache.get(id);
 	// A cached entry that carries a hostname only answers queries for the domain
@@ -254,7 +268,14 @@ Helpers.verifyActorWebfinger = async (actorId, actor) => {
 	}
 
 	const idHostname = new URL(actorId).hostname;
-	const preferredUsername = actor.preferredUsername || 'user';
+	// preferredUsername is reflected verbatim into the WebFinger query target
+	// (`username@hostname`); restrict it to the WebFinger username charset so an
+	// attacker-supplied value cannot redirect the query to another host (audit F-2)
+	const preferredUsername = typeof actor.preferredUsername === 'string' ?
+		actor.preferredUsername.trim() : '';
+	if (!webfingerUserRegex.test(preferredUsername)) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'no-backreference' };
+	}
 
 	// Step 1: Backreference — non-strict query on domain B (the actor's id host).
 	// This allows the WebFinger subject to point elsewhere (split-domain forward target).
