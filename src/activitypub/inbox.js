@@ -895,7 +895,11 @@ inbox.undo = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	let { type: localType, id } = await helpers.resolveLocalId(object.object);
+	// The original activity's object may be embedded as a full object or a bare URL
+	const subjectId = (object.object && typeof object.object === 'object' && !Array.isArray(object.object)) ?
+		object.object.id : object.object;
+
+	let { type: localType, id } = await helpers.resolveLocalId(subjectId);
 
 	// If object is a Follow activity, check if the target is the instance actor (relay follow)
 	if (!localType && object?.type === 'Follow') {
@@ -961,13 +965,13 @@ inbox.undo = async (req) => {
 			}
 
 			await posts.unvote(id, actor);
-			activitypub.feps.announce(object.object, req.body);
+			activitypub.feps.announce(subjectId, req.body);
 			notifications.rescind(`upvote:post:${id}:uid:${actor}`);
 			break;
 		}
 
 		case 'Announce': {
-			id = id || object.object; // remote announces
+			id = id || subjectId; // remote announces
 			const exists = await posts.exists(id);
 			if (!exists) {
 				activitypub.helpers.log(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);

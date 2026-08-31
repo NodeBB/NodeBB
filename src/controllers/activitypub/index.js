@@ -11,6 +11,7 @@ const user = require('../../user');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
 const activitypub = require('../../activitypub');
+const plugins = require('../../plugins');
 const utils = require('../../utils');
 const helpers = require('../helpers');
 
@@ -394,13 +395,26 @@ Controller.getInbox = async (req, res) => {
 Controller.postInbox = async (req, res) => {
 	// Note: underlying methods are internal use only, hence no exposure via src/api
 	const method = String(req.body.type).toLowerCase();
-	if (!activitypub.inbox.hasOwnProperty(method)) {
-		activitypub.helpers.log(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
-		return res.sendStatus(200);
-	}
-
 	const originalBody = structuredClone(req.body);
+
 	try {
+		// Plugins may claim (and/or transparently rewrite) the activity before built-in handling
+		const context = await plugins.hooks.fire(`filter:activitypub.${method}`, {
+			req,
+			activity: req.body,
+			claimed: false,
+		});
+		if (context.claimed) {
+			await activitypub.analytics.receipt(context.activity);
+			return helpers.formatApiResponse(202, res);
+		}
+		req.body = context.activity;
+
+		if (!activitypub.inbox.hasOwnProperty(method)) {
+			activitypub.helpers.log(`[activitypub/inbox] Received Activity of type ${method} but unable to handle. Ignoring.`);
+			return res.sendStatus(200);
+		}
+
 		await activitypub.inbox[method](req);
 		await activitypub.analytics.receipt(req.body);
 		await helpers.formatApiResponse(202, res);
