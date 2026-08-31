@@ -5,6 +5,7 @@ const nconf = require('nconf');
 const meta = require('../../src/meta');
 const utils = require('../../src/utils');
 const request = require('../../src/request');
+const db = require('../../src/database');
 
 const activitypub = require('../../src/activitypub');
 
@@ -65,6 +66,7 @@ Helpers.seedActor = (actorUri, overrides = {}) => {
 Helpers.reset = () => {
 	activitypub._cache.reset();
 	activitypub.helpers._webfingerCache.reset();
+	activitypub.helpers._failedWebfingerQueryCache.reset();
 	nconf.set('activitypubAllowSplitDomain', 1);
 	meta.config.activitypubAllowSplitDomain = 1;
 	nconf.set('activitypubAllowLoopback', 0);
@@ -164,8 +166,10 @@ describe('verifyActorWebfinger', () => {
 		const { domainB, username, actorUri } = Helpers.genSplitDomain();
 		// Seed actor with a link array containing rel=self (simulates real AP actor docs)
 		const actor = Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
+		// allowSelfLinkFallback: true simulates an actor with a persisted record
+		// (first-time assertions require a live webfinger backref, audit F-4)
 		const verdict = await activitypub.helpers.verifyActorWebfinger(
-			actorUri, activitypub._cache.get(`0;${actorUri}`));
+			actorUri, activitypub._cache.get(`0;${actorUri}`), { allowSelfLinkFallback: true });
 		assert.ok(verdict);
 		assert.ok(verdict.ok);
 		assert.equal(verdict.canonicalHandle, `${username}@${domainB}`);
@@ -288,7 +292,10 @@ describe('Actors.assert - hostname mismatch', () => {
 	it('upgrades same-domain legacy actors via self-link fallback', async () => {
 		const { domainB, username, actorUri } = Helpers.genSplitDomain();
 		// Seed actor with link array (rel=self) — simulates real AP actor doc
-		const actor = Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
+		Helpers.seedActor(actorUri, { preferredUsername: username, link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] });
+		// Persisted record — the actor was asserted before webfinger verification
+		// existed, so the self-attested fallback is allowed (audit F-4)
+		await db.setObject(`userRemote:${actorUri}`, { username: 'legacy_actor' });
 		const result = await activitypub.actors.assert([actorUri]);
 		assert.ok(Array.isArray(result));
 		assert.equal(result.length, 1);
@@ -614,5 +621,182 @@ describe('preferredUsername / hostname validation (audit F-2)', () => {
 		// mock returns 404 → false, but the request must have been made
 		assert.equal(result, false);
 		assert.equal(getCalled, 1);
+	});
+});
+
+// ============================================================================
+
+describe('Split-domain key cross-check (audit F-3)', () => {
+	beforeEach(Helpers.reset);
+
+	const seedKeys = (domainA, domainB, username, actorUri, forwardPem) => {
+		activitypub.helpers._webfingerCache.set(`${username}@${domainB}`, {
+			actorUri, username, hostname: domainB,
+			subject: `acct:${username}@${domainA}`, splitDomain: true, subjectHostname: domainA,
+			publicKey: forwardPem ? { id: `https://${domainA}/${username}#key`, owner: `acct:${username}@${domainA}`, publicKeyPem: forwardPem } : null,
+			_raw: { links: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] },
+		});
+		activitypub.helpers._webfingerCache.set(`${username}@${domainA}`, {
+			actorUri, username, hostname: domainA,
+			subject: `acct:${username}@${domainA}`, splitDomain: false, subjectHostname: domainA,
+			publicKey: forwardPem ? { id: `https://${domainA}/${username}#key`, owner: `acct:${username}@${domainA}`, publicKeyPem: forwardPem } : null,
+			_raw: { links: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }] },
+		});
+	};
+
+	it('rejects when the forward webfinger key differs from the actor document key', async () => {
+		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
+		seedKeys(domainA, domainB, username, actorUri, 'FORWARD-KEY-PEM');
+		const actor = Helpers.seedActor(actorUri, {
+			preferredUsername: username,
+			publicKey: { id: `${actorUri}#key`, owner: actorUri, publicKeyPem: 'ACTOR-DOC-KEY-PEM' },
+		});
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, actor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, false);
+		assert.equal(verdict.reason, 'key-mismatch');
+	});
+
+	it('accepts with keyVerified: true when the keys match', async () => {
+		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
+		seedKeys(domainA, domainB, username, actorUri, 'SAME-KEY-PEM');
+		const actor = Helpers.seedActor(actorUri, {
+			preferredUsername: username,
+			publicKey: { id: `${actorUri}#key`, owner: actorUri, publicKeyPem: 'SAME-KEY-PEM' },
+		});
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, actor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, true);
+		assert.equal(verdict.reason, 'split-domain');
+		assert.equal(verdict.keyVerified, true);
+	});
+
+	it('accepts with keyVerified: false when the forward webfinger carries no key', async () => {
+		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
+		seedKeys(domainA, domainB, username, actorUri, null);
+		const actor = Helpers.seedActor(actorUri, {
+			preferredUsername: username,
+			publicKey: { id: `${actorUri}#key`, owner: actorUri, publicKeyPem: 'ACTOR-DOC-KEY-PEM' },
+		});
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, actor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, true);
+		assert.equal(verdict.keyVerified, false);
+	});
+});
+
+// ============================================================================
+
+describe('Self-link fallback gating (audit F-4)', () => {
+	let originalGet;
+
+	beforeEach(Helpers.reset);
+
+	afterEach(() => {
+		if (originalGet) {
+			request.get = originalGet;
+			originalGet = null;
+		}
+	});
+
+	const seedSelfLinkedActor = (domainB, username, actorUri) => Helpers.seedActor(actorUri, {
+		preferredUsername: username,
+		link: [{ rel: 'self', href: actorUri, type: 'application/activity+json' }],
+	});
+
+	it('rejects first-time actors with a valid self-link when webfinger is unavailable', async () => {
+		const { domainB, username, actorUri } = Helpers.genSplitDomain();
+		const actor = seedSelfLinkedActor(domainB, username, actorUri);
+		originalGet = request.get;
+		request.get = async () => ({
+			body: {},
+			response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+		});
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, actor);
+		assert.ok(verdict);
+		assert.equal(verdict.ok, false);
+		assert.equal(verdict.reason, 'no-backreference');
+	});
+
+	it('accepts known actors via self-link fallback when webfinger is unavailable', async () => {
+		const { domainB, username, actorUri } = Helpers.genSplitDomain();
+		const actor = seedSelfLinkedActor(domainB, username, actorUri);
+		originalGet = request.get;
+		request.get = async () => ({
+			body: {},
+			response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+		});
+		const verdict = await activitypub.helpers.verifyActorWebfinger(actorUri, actor, { allowSelfLinkFallback: true });
+		assert.ok(verdict);
+		assert.equal(verdict.ok, true);
+		assert.equal(verdict.splitDomain, false);
+		assert.equal(verdict.canonicalHandle, `${username}@${domainB}`);
+	});
+});
+
+// ============================================================================
+
+describe('Webfinger failure negative cache (audit F-4)', () => {
+	let originalGet;
+	let getCalled;
+
+	beforeEach(Helpers.reset);
+
+	afterEach(() => {
+		if (originalGet) {
+			request.get = originalGet;
+			originalGet = null;
+		}
+	});
+
+	it('short-circuits repeated queries after a transport failure', async () => {
+		const { domainB } = Helpers.genSplitDomain();
+		getCalled = 0;
+		originalGet = request.get;
+		request.get = async () => {
+			getCalled += 1;
+			return {
+				body: {},
+				response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+			};
+		};
+
+		const r1 = await activitypub.helpers.query(`user@${domainB}`, { strict: false });
+		assert.equal(r1, false);
+		assert.equal(getCalled, 1);
+
+		// Second query within the failure window: no additional network call
+		const r2 = await activitypub.helpers.query(`user@${domainB}`, { strict: false });
+		assert.equal(r2, false);
+		assert.equal(getCalled, 1);
+	});
+
+	it('does not negative-cache strict policy rejections of split-domain responses', async () => {
+		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
+		getCalled = 0;
+		originalGet = request.get;
+		request.get = async () => {
+			getCalled += 1;
+			return {
+				body: {
+					subject: `acct:${username}@${domainA}`,
+					links: [{ rel: 'self', type: 'application/activity+json', href: actorUri }],
+					publicKey: null,
+				},
+				response: { statusCode: 200, headers: { 'content-type': 'application/jrd+json' } },
+			};
+		};
+
+		// Strict query rejects split-domain responses by policy (no cache write)
+		const r1 = await activitypub.helpers.query(`${username}@${domainB}`);
+		assert.equal(r1, false);
+		assert.equal(getCalled, 1);
+
+		// A subsequent non-strict query must still be answered (fresh fetch → payload),
+		// not short-circuited by a failure entry
+		const r2 = await activitypub.helpers.query(`${username}@${domainB}`, { strict: false });
+		assert.ok(r2);
+		assert.equal(r2.splitDomain, true);
+		assert.equal(getCalled, 2);
 	});
 });
