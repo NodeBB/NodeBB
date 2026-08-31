@@ -21,17 +21,12 @@ const activitypub = require('.');
 
 // \w only matches ASCII, so match unicode letters/numbers/marks explicitly to support non-ASCII handles
 const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
-// WebFinger username charset — used to validate actor.preferredUsername before it
-// is reflected into a WebFinger query target (audit F-2)
 const webfingerUserRegex = /^[\p{L}\p{N}\p{M}_.-]+$/u;
 const webfingerCache = ttl({
 	name: 'ap-webfinger-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours
 });
-// Recent transport-level webfinger query failures (network error / non-200) —
-// a broken or revoked webfinger endpoint must not be re-queried on every
-// interaction (audit F-4)
 const failedWebfingerQueryCache = ttl({
 	name: 'ap-webfinger-query-failures',
 	max: 5000,
@@ -131,10 +126,6 @@ Helpers.isWebfinger = (value) => {
 	return false;
 };
 
-// Normalized webfinger cache key: username case is preserved (usernames may
-// be case-sensitive), hostname is lowercased (hostnames are case-insensitive;
-// URI ids normalize via the URL parser). All webfinger cache read/write paths
-// must use this so case variants can never produce divergent entries (audit F-7)
 Helpers._webfingerKey = (id) => {
 	if (Helpers.isUri(id)) {
 		const uri = new URL(id);
@@ -157,9 +148,6 @@ Helpers.query = async (id, { strict = true } = {}) => {
 	username = username.trim();
 	hostname = hostname.trim();
 
-	// Reject hostnames that do not round-trip through the URL parser (ports, paths,
-	// spaces, ...) — otherwise they would steer the WebFinger request to an
-	// unintended host or path (audit F-2)
 	try {
 		if (new URL(`https://${hostname}/`).hostname.toLowerCase() !== hostname.toLowerCase()) {
 			return false;
@@ -168,27 +156,18 @@ Helpers.query = async (id, { strict = true } = {}) => {
 		return false;
 	}
 
-	// Normalize the cache key (hostnames are case-insensitive, audit F-7)
 	const key = Helpers._webfingerKey(id);
-
-	// Short-circuit recent transport-level failures for this exact id (audit F-4)
 	if (failedWebfingerQueryCache.has(key)) {
 		return false;
 	}
 
 	const cached = webfingerCache.get(key);
-	// A cached entry that carries a hostname only answers queries for the domain
-	// it was fetched from — entries stored under this key while querying a
-	// different domain must not be served (cross-domain cache poisoning, audit
-	// F-1). Entries without a hostname (legacy minimal entries) are served as before.
 	const fromSameHost = !cached?.hostname ||
 		(typeof cached.hostname === 'string' && cached.hostname.toLowerCase() === hostname.toLowerCase());
 	if (cached !== undefined && fromSameHost && !(strict && cached.splitDomain)) {
 		return cached;
 	}
 
-	// Build the resource from the raw id; URL serialization percent-encodes non-ASCII
-	// characters, which URLSearchParams would then encode a second time
 	const query = new URLSearchParams({ resource: isUri ? uri.href : `acct:${username}@${hostname}` });
 
 	// Make a webfinger query to retrieve routing information
@@ -211,8 +190,6 @@ Helpers.query = async (id, { strict = true } = {}) => {
 		return false;
 	}
 
-	// Validate content-type; most servers advertise jrd+json, but some (e.g. GitHub Pages)
-	// serve application/octet-stream — attempt to parse as JSON in that case.
 	const contentType = (response.headers?.['content-type'] || '').toLowerCase();
 	if (contentType && !contentType.includes('application/jrd+json') && !contentType.includes('application/json')) {
 		if (!contentType.includes('application/octet-stream')) {
@@ -286,10 +263,6 @@ Helpers.query = async (id, { strict = true } = {}) => {
 		subjectHostname,
 		splitDomain,
 	};
-	// Cache only by the queried id. Caching by the claimed subject (an "alias")
-	// let a response served by one domain answer WebFinger queries about a
-	// *different* domain's handle, which the non-strict backref read in
-	// verifyActorWebfinger would then trust (audit F-1)
 	webfingerCache.set(key, payload);
 
 	return payload;
@@ -301,9 +274,6 @@ Helpers.verifyActorWebfinger = async (actorId, actor, { allowSelfLinkFallback = 
 	}
 
 	const idHostname = new URL(actorId).hostname;
-	// preferredUsername is reflected verbatim into the WebFinger query target
-	// (`username@hostname`); restrict it to the WebFinger username charset so an
-	// attacker-supplied value cannot redirect the query to another host (audit F-2)
 	const preferredUsername = typeof actor.preferredUsername === 'string' ?
 		actor.preferredUsername.trim() : '';
 	if (!webfingerUserRegex.test(preferredUsername)) {
@@ -314,10 +284,6 @@ Helpers.verifyActorWebfinger = async (actorId, actor, { allowSelfLinkFallback = 
 	// This allows the WebFinger subject to point elsewhere (split-domain forward target).
 	let backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
 
-	// Fallback for legacy actors (pre-split-domain): if WebFinger query fails, check
-	// the actor document for a self-link pointing to its own URI. Self-attested,
-	// so only allowed for actors with a persisted record — first-time assertions
-	// require a live webfinger backref (audit F-4).
 	if (!backref && allowSelfLinkFallback && Helpers._hasValidSelfLink(actorId, actor)) {
 		backref = {
 			actorUri: actorId,
@@ -336,8 +302,6 @@ Helpers.verifyActorWebfinger = async (actorId, actor, { allowSelfLinkFallback = 
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
 	}
 
-	// The WebFinger record must be about the account that was queried — a record
-	// served for a different account cannot vouch for this actor (audit F-1)
 	if (typeof backref.subject === 'string' && backref.subject.startsWith('acct:')) {
 		const opaque = backref.subject.slice(5);
 		const subjectAt = opaque.lastIndexOf('@');
@@ -371,11 +335,7 @@ Helpers.verifyActorWebfinger = async (actorId, actor, { allowSelfLinkFallback = 
 		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
 	}
 
-	// Cross-check the key the identity domain published against the actor
-	// document's key. A mismatch means the canonical domain is vouching for a key
-	// it does not hold → reject. Absent keys cannot be compared (some split-domain
-	// deployments do not expose the content-domain key in the identity domain's
-	// webfinger) → proceed with keyVerified: false (audit F-3).
+	// Cross-check the key the identity domain published against the actor document's key.
 	let keyVerified = false;
 	const forwardPem = forwardResult.publicKey?.publicKeyPem;
 	const actorPem = actor.publicKey?.publicKeyPem;
