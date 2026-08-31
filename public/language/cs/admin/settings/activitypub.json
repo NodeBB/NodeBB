@@ -14,7 +14,7 @@
 	"allowLoopback": "Povolit zpracování smyčky",
 	"allowLoopback-help": "Užitečné pouze pro účely ladění. Pravděpodobně byste měli ponechat tuto možnost vypnutou.",
 	"allowSplitDomain": "Allow split-domain federation",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
 	"parentTraversalDepth": "Hloubka prohledávání stromové struktury",
 	"parentTraversalDepth-help": "Maximální počet opakování procházení řetězce odpovědí při vytváření kontextu. (Výchozí hodnota: 50)",
 

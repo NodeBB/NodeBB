@@ -14,7 +14,7 @@
 	"allowLoopback": "Cho phép xử lý vòng lặp",
 	"allowLoopback-help": "Chỉ hữu ích cho mục đích gỡ lỗi. Có lẽ bạn nên tắt tính năng này.",
 	"allowSplitDomain": "Cho phép liên kết tên miền phân tách",
-	"allowSplitDomain-help": "Cho phép các tác nhân có tên miền xử lý WebFinger khác với tên miền tài liệu ActivityPub của chúng. Điều này hữu ích cho các trường hợp tách biệt danh tính (WebFinger) khỏi việc lưu trữ nội dung (ActivityPub).",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
 	"parentTraversalDepth": "Độ sâu duyệt cha",
 	"parentTraversalDepth-help": "Số lần tối đa duyệt ngược chuỗi phản hồi khi xây dựng ngữ cảnh. (Mặc định: 50)",
 

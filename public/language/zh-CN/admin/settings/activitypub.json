@@ -14,7 +14,7 @@
 	"allowLoopback": "允许环回处理",
 	"allowLoopback-help": "仅用于调试目的，您最好将其禁用。",
 	"allowSplitDomain": "允许跨域联邦",
-	"allowSplitDomain-help": "启用后，可允许 WebFinger 标识域名与 ActivityPub 文档域名不同的行为者/用户。这对于将身份标识（WebFinger）与内容托管（ActivityPub）分离的实例很有用。",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
 	"parentTraversalDepth": "父级遍历深度",
 	"parentTraversalDepth-help": "构建上下文时，沿回复链向上遍历的最大次数。（默认值：50）",
 

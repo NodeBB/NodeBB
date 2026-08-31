@@ -14,7 +14,7 @@
 	"allowLoopback": "Autoriser le traitement en boucle",
 	"allowLoopback-help": "À utiliser uniquement à des fins de débogage. Il est recommandé de laisser cette option désactivée.",
 	"allowSplitDomain": "Allow split-domain federation",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub).",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
 	"parentTraversalDepth": "Profondeur de parcours des parents",
 	"parentTraversalDepth-help": "Nombre maximal de fois où la chaîne de réponses peut être parcourue vers le haut lors de la construction du contexte. (Par défaut : 50)",
 
