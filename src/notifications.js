@@ -160,18 +160,40 @@ Notifications.filterExists = async function (nids) {
 };
 
 Notifications.findRelated = async function (mergeIds, set) {
+	const notificationData = await getRelatedNotificationData(mergeIds, set);
+	return notificationData.map(notification => notification.nid);
+};
+
+async function getRelatedNotificationData(mergeIds, set, fields = []) {
 	mergeIds = mergeIds.filter(Boolean);
 	if (!mergeIds.length) {
 		return [];
 	}
-	// A related notification is one in a zset that has the same mergeId
 	const nids = await db.getSortedSetMembers(set);
-
 	const keys = nids.map(nid => `notifications:${nid}`);
-	const notificationData = await db.getObjectsFields(keys, ['mergeId']);
-	const notificationMergeIds = notificationData.map(notifObj => String(notifObj.mergeId));
+	const notificationData = await db.getObjectsFields(keys, _.uniq(['mergeId', ...fields]));
 	const mergeSet = new Set(mergeIds.map(id => String(id)));
-	return nids.filter((nid, idx) => mergeSet.has(notificationMergeIds[idx]));
+	// getSortedSetMembers returns oldest first, so consumers can retain the first match per mergeId.
+	return notificationData.reduce((related, notification, index) => {
+		if (notification && mergeSet.has(String(notification.mergeId))) {
+			related.push({ ...notification, nid: nids[index] });
+		}
+		return related;
+	}, []);
+}
+
+Notifications.findOldestRelated = async function (mergeIds, set) {
+	const notificationData = await getRelatedNotificationData(mergeIds, set, ['path', 'pid']);
+	const oldestByMergeId = new Map();
+	notificationData.forEach((notification) => {
+		const mergeId = String(notification.mergeId);
+		if (oldestByMergeId.has(mergeId)) {
+			return;
+		}
+		notification.pid = utils.isNumber(notification.pid) ? parseInt(notification.pid, 10) || 0 : notification.pid;
+		oldestByMergeId.set(mergeId, notification);
+	});
+	return [...oldestByMergeId.values()];
 };
 
 Notifications.create = async function (data) {
