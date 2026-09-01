@@ -10,8 +10,9 @@ define('forum/reset', ['alerts'], function (alerts) {
 		const successEl = $('#success');
 
 		$('#reset').on('click', function () {
-			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {
-				socket.emit('user.reset.send', inputEl.val(), function (err) {
+			const identifier = inputEl.val().trim();
+			if (identifier) {
+				socket.emit('user.reset.send', identifier, function (err) {
 					if (err) {
 						return alerts.error(err);
 					}
