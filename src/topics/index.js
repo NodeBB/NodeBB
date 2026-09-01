@@ -279,13 +279,13 @@ async function getForker(topicData) {
 	if (!parseInt(topicData.forkerUid, 10)) {
 		return null;
 	}
-	const [
-		forker,
-		forkedFromTitle,
-	] = await Promise.all([
+	const [forker, forkedFromTitle] = await Promise.all([
 		user.getUserFields(topicData.forkerUid, ['username', 'userslug', 'picture']),
 		Topics.getTopicField(topicData.forkedFromTid, 'title'),
 	]);
+	if (!forker.userslug || !forkedFromTitle) {
+		return null;
+	}
 	forker.forkedFromTitle = forkedFromTitle;
 	return forker;
 }
