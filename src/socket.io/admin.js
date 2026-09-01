@@ -58,6 +58,12 @@ SocketAdmin.before = async function (socket, method) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
+	// match src/middleware/admin.js checkPrivileges behaviour
+	const hasPassword = await user.hasPassword(socket.uid);
+	if (!hasPassword) {
+		return;
+	}
+
 	const session = socket.request?.session || {};
 	const loginTime = session?.meta ? session.meta.datetime : 0;
 	const adminReloginDuration = meta.config.adminReloginDuration * 60000;
