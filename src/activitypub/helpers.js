@@ -18,6 +18,7 @@ const db = require('../database');
 const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
+const emoji = require('./emoji');
 
 // \w only matches ASCII, so match unicode letters/numbers/marks explicitly to support non-ASCII handles
 const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
@@ -751,7 +752,7 @@ Helpers.addressed = (id, activity) => {
 	return combined.has(id);
 };
 
-Helpers.renderEmoji = (text, tags, strip = false) => {
+Helpers.renderEmoji = async (text, tags, strip = false) => {
 	if (!text || !tags) {
 		return text;
 	}
@@ -760,19 +761,22 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 	let result = text;
 
 	const parsed = new Set();
-	tags.forEach((tag) => {
+	const eligibleTags = [];
+
+	// Collect eligible emoji tags
+	for (const tag of tags) {
 		const isEmoji = tag.type === 'Emoji';
 		const hasUrl = tag.icon && tag.icon.url;
 		const isImage = !tag.icon?.mediaType || tag.icon.mediaType.startsWith('image/');
 
 		if (isEmoji && (strip || (hasUrl && isImage))) {
-			if (!Helpers.isUri(tag.icon.url)) {
-				return;
+			if (hasUrl && !Helpers.isUri(tag.icon.url)) {
+				continue;
 			}
 
 			let { name } = tag;
 			if (parsed.has(name)) {
-				return;
+				continue;
 			}
 
 			if (!name.startsWith(':')) {
@@ -782,18 +786,33 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 				name = `${name}:`;
 			}
 
-			const imgTag = strip ?
-				'' :
-				`<img class="not-responsive emoji" src="${tag.icon.url}" title="${name}" />`;
-
-			let index = result.indexOf(name);
-			while (index !== -1) {
-				result = result.substring(0, index) + imgTag + result.substring(index + name.length);
-				index = result.indexOf(name, index + imgTag.length);
-			}
+			eligibleTags.push({ name, tag });
 			parsed.add(name);
 		}
-	});
+	}
+
+	// Process all emoji tags in parallel
+	const replacements = await Promise.all(eligibleTags.map(async ({ name, tag }) => {
+		let imgTag;
+		if (strip) {
+			imgTag = '';
+		} else {
+			imgTag = await emoji.processEmojiTag(tag);
+		}
+		return { name, imgTag };
+	}));
+
+	// Apply replacements
+	for (const { name, imgTag } of replacements) {
+		if (imgTag === null) {
+			continue;
+		}
+		let index = result.indexOf(name);
+		while (index !== -1) {
+			result = result.substring(0, index) + imgTag + result.substring(index + name.length);
+			index = result.indexOf(name, index + imgTag.length);
+		}
+	}
 
 	return result;
 };

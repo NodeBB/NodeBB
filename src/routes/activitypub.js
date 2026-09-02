@@ -58,4 +58,6 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.category));
 
 	app.get('/message/:mid', [...middlewares, middleware.assert.message], helpers.tryRoute(controllers.activitypub.actors.message));
+
+	app.get('/emoji/ap/:shortcode/:hostname', helpers.tryRoute(controllers.activitypub.emoji.serve));
 };

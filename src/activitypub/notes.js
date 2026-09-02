@@ -207,7 +207,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			}
 
 			// Remove any custom emoji from title
-			title = activitypub.helpers.renderEmoji(title, _activitypub.tag, true);
+			title = await activitypub.helpers.renderEmoji(title, _activitypub.tag, true);
 		}
 		mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
