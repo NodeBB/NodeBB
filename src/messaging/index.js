@@ -220,33 +220,42 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 	}
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1);
+
+	// First pass loads only what the query is actually matched against, so the
+	// expensive hydration (teasers, unread counts, membership, ...) can be limited
+	// to the rooms that matched instead of running over the user's entire chat list.
+	const [names, users] = await Promise.all([
+		Messaging.getRoomsData(roomIds, ['roomName']),
+		getUsers(roomIds, uid),
+	]);
+
+	const lowerQuery = String(query).toLowerCase();
+	const matchedIndices = roomIds.reduce((matched, roomId, idx) => {
+		const roomName = names[idx] && names[idx].roomName;
+		const titleMatch = roomName && roomName.toLowerCase().includes(lowerQuery);
+
+		const usernameMatch = !titleMatch && (users[idx] || []).some(user => user && (
+			(user.displayname && user.displayname.toLowerCase().includes(lowerQuery)) ||
+			(user.username && user.username.toLowerCase().includes(lowerQuery))
+		));
+
+		if (titleMatch || usernameMatch) {
+			matched.push(idx);
+		}
+		return matched;
+	}, []);
+
+	const matchedRoomIds = matchedIndices.map(idx => roomIds[idx]);
 	const results = await utils.promiseParallel({
-		roomData: Messaging.getRoomsData(roomIds),
-		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
-		inRoom: Messaging.isUserInRoom(uid, roomIds),
-		users: getUsers(roomIds, uid),
-		teasers: Messaging.getTeasers(uid, roomIds),
+		roomData: Messaging.getRoomsData(matchedRoomIds),
+		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, matchedRoomIds),
+		inRoom: Messaging.isUserInRoom(uid, matchedRoomIds),
+		teasers: Messaging.getTeasers(uid, matchedRoomIds),
 	});
+	// reuse the user lists already fetched for matching, kept aligned with roomData
+	results.users = matchedIndices.map(idx => users[idx]);
 
 	results.roomData = await modifyChatRooms(uid, results);
-
-	// Filter rooms based on query
-	results.roomData = results.roomData
-		.filter((room, idx) => {
-			if (!room) return false;
-
-			// Search in room title
-			const titleMatch = room.roomName && room.roomName.toLowerCase().includes(query.toLowerCase());
-
-			// Search in usernames
-			const users = results.users[idx] || [];
-			const usernameMatch = users.some(user => user && (
-				(user.displayname && user.displayname.toLowerCase().includes(query.toLowerCase())) ||
-				(user.username && user.username.toLowerCase().includes(query.toLowerCase()))
-			));
-
-			return titleMatch || usernameMatch;
-		});
 
 	return await plugins.hooks.fire('filter:messaging.searchRecentChats', {
 		rooms: results.roomData,
@@ -387,27 +396,28 @@ Messaging.getTeasers = async (uid, roomIds) => {
 };
 
 Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
-	let done = false;
-	let latestMid = null;
+	// Walk backwards in batches; one message at a time meant two round trips per
+	// deleted/system message, and this runs once per room in the chat list.
+	const batchSize = 10;
 	let index = 0;
-	let mids;
+	let done = false;
 
 	while (!done) {
 		/* eslint-disable no-await-in-loop */
-		mids = await getMessageIds(roomId, uid, index, index);
-		if (mids.length) {
-			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
-			done = !states.deleted && !states.system;
-			if (done) {
-				latestMid = mids[0];
-			}
-			index += 1;
-		} else {
-			done = true;
+		const mids = await getMessageIds(roomId, uid, index, index + batchSize - 1);
+		if (!mids.length) {
+			return null;
 		}
+		const states = await Messaging.getMessagesFields(mids, ['deleted', 'system']);
+		const matchIndex = states.findIndex(state => state && !state.deleted && !state.system);
+		if (matchIndex !== -1) {
+			return mids[matchIndex];
+		}
+		index += mids.length;
+		done = mids.length < batchSize; // short read means we hit the start of the room
 	}
 
-	return latestMid;
+	return null;
 };
 
 Messaging.canMessageUser = async (uid, toUid) => {
