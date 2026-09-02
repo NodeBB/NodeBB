@@ -1006,6 +1006,7 @@ describe('Messaging Library', () => {
 
 	describe('searchRecentChats', () => {
 		const searchPlugin = 'messaging-search-test';
+		const searchHook = 'filter:messaging.searchMessages';
 		let alice;
 		let bob;
 		let carol;
@@ -1074,19 +1075,34 @@ describe('Messaging Library', () => {
 		});
 
 		it('should not match message content without a search plugin', async () => {
-			assert.deepStrictEqual(await search(alice, 'pineapple'), []);
+			// dbsearch ships with core and is active here, so the hook has to be
+			// emptied to get at the no-listener behaviour
+			const listeners = plugins.loadedHooks[searchHook];
+			delete plugins.loadedHooks[searchHook];
+			try {
+				assert.deepStrictEqual(await search(alice, 'pineapple'), []);
+			} finally {
+				plugins.loadedHooks[searchHook] = listeners;
+			}
 		});
 
 		describe('with a search plugin', () => {
+			let listeners;
+
 			before(() => {
+				// replace the hook rather than adding to it: with dbsearch also
+				// listening, results would depend on whether it has indexed these
+				// messages yet, which is not the same across database backends
+				listeners = plugins.loadedHooks[searchHook];
+				plugins.loadedHooks[searchHook] = [];
 				plugins.hooks.register(searchPlugin, {
-					hook: 'filter:messaging.searchMessages',
+					hook: searchHook,
 					method: fakeMessageSearch,
 				});
 			});
 
 			after(() => {
-				plugins.hooks.unregister(searchPlugin, 'filter:messaging.searchMessages', fakeMessageSearch);
+				plugins.loadedHooks[searchHook] = listeners;
 			});
 
 			it('should match a room by message content', async () => {
