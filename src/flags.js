@@ -756,6 +756,7 @@ Flags.update = async function (flagId, uid, changeset) {
 			type: 'my-flags',
 			bodyShort: translator.compile('notifications:flag-assigned-to-you', flagId),
 			path: `/flags/${flagId}`,
+			flagId: flagId,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
 		});
@@ -943,6 +944,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyLong: String(flagObj.target?.content || ''),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
+			flagId: flagObj.flagId,
 			nid: `flag:post:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-post-in|${flagObj.targetId}`,
@@ -956,6 +958,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyShort: translator.compile('notifications:user-flagged-user', displayname, targetDisplayname),
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
+			flagId: flagObj.flagId,
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
@@ -974,6 +977,17 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
 	}
 	await notifications.push(notifObj, uids);
+};
+
+Flags.markNotificationsRead = async function (flagId, uid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		return;
+	}
+	const nids = await user.notifications.getUnreadByField(uid, 'flagId', [flagId]);
+	if (nids.length) {
+		await notifications.markReadMultiple(nids, uid);
+		await user.notifications.pushCount(uid);
+	}
 };
 
 async function mergeBanHistory(history, targetUid, uids) {

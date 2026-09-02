@@ -13,6 +13,7 @@ const Flags = require('../src/flags');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
 const Posts = require('../src/posts');
+const notifications = require('../src/notifications');
 const User = require('../src/user');
 const Groups = require('../src/groups');
 const Meta = require('../src/meta');
@@ -648,6 +649,59 @@ describe('Flags', () => {
 
 				delete Meta.config['flags:actionOnReject'];
 			});
+		});
+	});
+
+	describe('.markNotificationsRead()', () => {
+		let result;
+		let flagObj;
+		let nid;
+		let unreadSet;
+		let readSet;
+
+		beforeEach(async () => {
+			result = await Topics.post({
+				cid: category.cid,
+				uid: uid3,
+				title: 'Topic to flag',
+				content: 'This is flaggable content',
+			});
+			flagObj = await api.flags.create({ uid: uid1 }, { type: 'post', id: result.postData.pid, reason: 'spam' });
+			nid = `flag:post:${result.postData.pid}:${uid1}`;
+			unreadSet = `uid:${adminUid}:notifications:unread`;
+			readSet = `uid:${adminUid}:notifications:read`;
+			await sleep(2000);
+		});
+
+		it('should store the flagId on the flag notification', async () => {
+			const [notifObj] = await notifications.getMultiple([nid]);
+			assert.strictEqual(notifObj.flagId, flagObj.flagId);
+		});
+
+		it('should mark the flag notification as read', async () => {
+			assert(await db.isSortedSetMember(unreadSet, nid));
+
+			await Flags.markNotificationsRead(flagObj.flagId, adminUid);
+
+			assert(!await db.isSortedSetMember(unreadSet, nid));
+			assert(await db.isSortedSetMember(readSet, nid));
+		});
+
+		it('should mark the flag notification as read when the flag detail page is viewed', async () => {
+			const { jar: adminJar } = await helpers.loginUser('testUser2', 'abcdef');
+			assert(await db.isSortedSetMember(unreadSet, nid));
+
+			const { response } = await request.get(`${nconf.get('url')}/flags/${flagObj.flagId}`, { jar: adminJar });
+			assert.strictEqual(response.statusCode, 200);
+
+			assert(!await db.isSortedSetMember(unreadSet, nid));
+			assert(await db.isSortedSetMember(readSet, nid));
+		});
+
+		it('should not touch notifications of a user who never received one', async () => {
+			assert(!await db.isSortedSetMember(`uid:${uid3}:notifications:unread`, nid));
+			await Flags.markNotificationsRead(flagObj.flagId, uid3);
+			assert(!await db.isSortedSetMember(`uid:${uid3}:notifications:read`, nid));
 		});
 	});
 
