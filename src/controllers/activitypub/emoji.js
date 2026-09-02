@@ -17,7 +17,7 @@ Controller.serve = async (req, res) => {
 	const { shortcode, hostname } = req.params;
 
 	try {
-		const metadata = await emoji.getEmoji(shortcode, hostname);
+		let metadata = await emoji.getEmoji(shortcode, hostname);
 		if (!metadata || !metadata.localPath) {
 			return res.sendStatus(404);
 		}
@@ -29,12 +29,24 @@ Controller.serve = async (req, res) => {
 			return res.sendStatus(403);
 		}
 
-		// Check file exists
+		// Check file exists; re-download from remote if stale
+		let filePath = metadata.localPath;
 		try {
-			await fs.access(metadata.localPath);
+			await fs.access(filePath);
 		} catch {
-			// File may have been deleted from disk but still in Redis
-			return res.sendStatus(404);
+			// File missing on disk — clear stale Redis entry and re-download
+			if (metadata.remoteUrl) {
+				winston.info(`[activitypub:emoji] Re-downloading stale emoji ${shortcode} from ${metadata.remoteUrl}`);
+				await emoji.deleteEmoji(shortcode, hostname);
+				const tag = { name: shortcode, icon: { url: metadata.remoteUrl, mediaType: metadata.mediaType } };
+				metadata = await emoji.cacheEmoji(tag);
+				if (!metadata || !metadata.localPath) {
+					return res.sendStatus(404);
+				}
+				filePath = metadata.localPath;
+			} else {
+				return res.sendStatus(404);
+			}
 		}
 
 		const mediaType = metadata.mediaType || 'image/png';
@@ -44,7 +56,7 @@ Controller.serve = async (req, res) => {
 
 		// Stream the file
 		const { createReadStream } = require('fs');
-		const stream = createReadStream(metadata.localPath);
+		const stream = createReadStream(filePath);
 		stream.pipe(res);
 
 		stream.on('error', (err) => {
