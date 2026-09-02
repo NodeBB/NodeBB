@@ -174,8 +174,12 @@ modsController.flags.detail = async function (req, res, next) {
 		return await user.hidePrivateData(userData.filter(u => u && u.userslug), uid);
 	}
 
-	const assignees = await getAssignees(results.flagData, req.uid);
-	results.flagData.history = await flags.getHistory(req.params.flagId);
+	const [assignees, history] = await Promise.all([
+		getAssignees(results.flagData, req.uid),
+		flags.getHistory(req.params.flagId),
+		flags.markNotificationsRead(req.params.flagId, req.uid),
+	]);
+	results.flagData.history = history;
 
 	if (results.flagData.type === 'user') {
 		results.flagData.type_path = 'uid';
