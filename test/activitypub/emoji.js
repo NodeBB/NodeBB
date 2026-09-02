@@ -80,16 +80,20 @@ describe('Emoji', () => {
 		});
 
 		it('should return cached metadata when emoji exists', async () => {
-			const metadata = {
+			const stored = {
 				name: ':poop:',
 				remoteUrl: 'https://mastodon.social/emojis/poop.png',
-				localPath: '/fake/path/poop.png',
+				localPath: 'emoji/ap/mastodon.social/poop.png',
 				mediaType: 'image/png',
 			};
-			await db.setObjectField(emojiLookupKey, 'poop:mastodon.social', JSON.stringify(metadata));
+			await db.setObjectField(emojiLookupKey, 'poop:mastodon.social', JSON.stringify(stored));
 
 			const result = await emojiModule.getEmoji(':poop:', 'mastodon.social');
-			assert.deepStrictEqual(result, metadata);
+			// getEmoji resolves localPath relative to upload_path
+			assert.strictEqual(result.name, ':poop:');
+			assert.strictEqual(result.remoteUrl, 'https://mastodon.social/emojis/poop.png');
+			assert.strictEqual(result.mediaType, 'image/png');
+			assert.ok(result.localPath.endsWith('emoji/ap/mastodon.social/poop.png'));
 		});
 	});
 
