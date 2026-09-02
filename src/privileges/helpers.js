@@ -10,6 +10,7 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const utils = require('../utils');
 const activitypub = require('../activitypub');
+const cacheTracker = require('../cache/tracker');
 
 const helpers = module.exports;
 
@@ -339,6 +340,10 @@ helpers.giveOrRescind = async function (method, privileges, cids, members) {
 		});
 		/* eslint-disable no-await-in-loop */
 		await method(groupKeys, member);
+	}
+
+	if (privileges.some(priv => priv === 'groups:topics:crosspost' || priv === 'topics:crosspost')) {
+		cacheTracker.resetCache('crosspost');
 	}
 };
 

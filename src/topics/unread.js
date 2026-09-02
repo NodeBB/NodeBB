@@ -274,7 +274,7 @@ module.exports = function (Topics) {
 				return hasUnblockedUnread;
 			}
 			let postData = await posts.getPostsFields(pidsSinceLastVisit, ['pid', 'uid']);
-			postData = postData.filter(post => !params.blockedUids.includes(parseInt(post.uid, 10)));
+			postData = postData.filter(post => !params.blockedUids.includes(String(post.uid)));
 
 			done = postData.length > 0;
 			hasUnblockedUnread = postData.length > 0;

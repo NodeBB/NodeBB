@@ -163,7 +163,7 @@ define('chat', [
 	};
 
 	Chat.isFromBlockedUser = function (fromUid) {
-		return app.user.blocks.includes(parseInt(fromUid, 10));
+		return app.user.blocks.includes(String(fromUid));
 	};
 
 	Chat.isLookingAtRoom = function (roomId) {
@@ -299,6 +299,16 @@ define('chat', [
 		return $('#chat-modal-' + roomId);
 	};
 
+	function bringModalToFront(chatModal) {
+		const chatModals = $('.chat-modal');
+		if (chatModals.length <= 1) {
+			return;
+		}
+		chatModals.css('zIndex', '');
+		const zIndex = parseInt(chatModal.css('zIndex'), 10) || 1055;
+		chatModal.css('zIndex', zIndex + 1);
+	}
+
 	Chat.modalExists = function (roomId) {
 		return $('#chat-modal-' + roomId).length !== 0;
 	};
@@ -371,6 +381,7 @@ define('chat', [
 				chatModal.attr('data-uuid', uuid);
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
+				bringModalToFront(chatModal);
 				chatModal.find('.timeago').timeago();
 				chatModal.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
@@ -402,6 +413,10 @@ define('chat', [
 					Chat.minimize(uuid);
 				});
 
+				chatModal.on('mousedown', function () {
+					bringModalToFront(chatModal);
+				});
+
 				chatModal.on('mouseup', function () {
 					taskbar.updateActive(chatModal.attr('data-uuid'));
 
@@ -426,7 +441,7 @@ define('chat', [
 				Chats.addActionHandlers(chatModal.find('[component="chat/message/window"]'), roomId);
 				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'));
 				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
-				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));
+				Chats.addDeleteHandler(roomId, chatModal.find('[component="chat/controls"] [data-action="delete"]'));
 				Chats.addSendHandlers(roomId, chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 				Chats.addManageHandler(roomId, chatModal.find('[data-action="manage"]'));
 
@@ -510,6 +525,7 @@ define('chat', [
 
 	Chat.close = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', uuid);
@@ -563,6 +579,7 @@ define('chat', [
 		require(['forum/chats/messages'], function (ChatsMessages) {
 			const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
 			chatModal.removeClass('hide');
+			bringModalToFront(chatModal);
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottomAfterImageLoad(chatModal.find('.chat-content'));
 			Chat.focusInput(chatModal);
@@ -606,6 +623,7 @@ define('chat', [
 
 	Chat.minimize = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('hide');
 		chatModal.addClass('hide');
 		taskbar.minimize('chat', uuid);
 		hooks.fire('action:chat.minimized', {

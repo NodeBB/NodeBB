@@ -289,6 +289,22 @@ describe('Groups', () => {
 			const isMembers = await Groups.isMemberOfGroups(-1, ['guests', 'registered-users', 'spiders']);
 			assert.deepStrictEqual(isMembers, [false, false, true]);
 		});
+
+		it('should work for group names that start with a 0/-1', async () => {
+			const groupName = '0group';
+			await Groups.create({
+				name: groupName,
+				description: 'group that starts with a 0',
+			});
+			await Groups.join(['parentgroup'], groupName);
+			const [member] = await db.getSortedSetRevRange(`group:parentgroup:members`, 0, -1);
+			assert.strictEqual(member, groupName);
+			assert.strictEqual(await Groups.isMember(groupName, 'parentgroup'), true);
+			assert.deepStrictEqual(await Groups.isMemberOfGroups(groupName, ['parentgroup']), [true]);
+			assert.deepStrictEqual(await Groups.isMembers([groupName], 'parentgroup'), [true]);
+			assert.deepStrictEqual(await Groups.isMembers([groupName], 'guests'), [false]);
+			assert.deepStrictEqual(await Groups.isMembers(['-1something'], 'spiders'), [false]);
+		});
 	});
 
 	describe('.isMemberOfGroupList', () => {
@@ -1487,9 +1503,9 @@ describe('Groups', () => {
 		it('should fail to upload group cover with invalid image', (done) => {
 			const data = {
 				groupName: 'Test',
-				imageData: 'data:image/svg;base64,iVBORw0KGgoAAAANSUhEUgAAABwA',
+				imageData: 'data:image/svg;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEAAUAmJaQAA3AA/v89WAAAAA==',
 			};
-			socketGroups.cover.update({ uid: adminUid }, data, (err, data) => {
+			socketGroups.cover.update({ uid: adminUid }, data, (err) => {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});

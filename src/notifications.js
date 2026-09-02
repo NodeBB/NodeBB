@@ -270,11 +270,11 @@ async function pushToUids(uids, notification) {
 				uidsToNotify.push(userSettings.uid);
 			}
 
-			if (setting === 'email' || setting === 'notificationemail') {
+			if (!meta.config.disableNotificationEmails && (setting === 'email' || setting === 'notificationemail')) {
 				uidsToEmail.push(userSettings.uid);
 			}
 		});
-		return { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail };
+		return { uidsToNotify, uidsToEmail };
 	}
 
 	// Remove uid from recipients list if they have blocked the user triggering the notification

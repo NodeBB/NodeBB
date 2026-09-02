@@ -65,8 +65,23 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 		const postContainer = options.container;
 		const drop = options.container.find('.imagedrop');
 
+		function onDocumentDragLeave(e) {
+			// relatedTarget is null when the drag left the window or was cancelled with esc
+			if (!e.originalEvent.relatedTarget) {
+				hideDrop();
+			}
+		}
+
+		function hideDrop() {
+			drop.hide();
+			drop.off('dragleave', hideDrop);
+			$(document)
+				.off('dragend drop', hideDrop)
+				.off('dragleave', onDocumentDragLeave);
+		}
+
 		postContainer.on('dragenter', function onDragEnter() {
-			if (draggingDocument) {
+			if (draggingDocument || drop.is(':visible')) {
 				return;
 			}
 			drop.css('top', '0px');
@@ -74,10 +89,12 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			drop.css('line-height', postContainer.height() + 'px');
 			drop.show();
 
-			drop.on('dragleave', function () {
-				drop.hide();
-				drop.off('dragleave');
-			});
+			drop.on('dragleave', hideDrop);
+			// the drag can end without dragleave/drop ever firing on the overlay
+			// (cancelled with esc, or dropped outside of it), leaving it stuck open
+			$(document)
+				.on('dragend drop', hideDrop)
+				.on('dragleave', onDocumentDragLeave);
 		});
 
 		drop.on('drop', function onDragDrop(e) {
@@ -98,7 +115,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				});
 			}
 
-			drop.hide();
+			hideDrop();
 			return false;
 		});
 
@@ -112,8 +129,8 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			.on('dragstart', function () {
 				draggingDocument = true;
 			})
-			.off('dragend')
-			.on('dragend, mouseup', function () {
+			.off('dragend mouseup')
+			.on('dragend mouseup', function () {
 				draggingDocument = false;
 			});
 
@@ -145,12 +162,16 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 						// eslint-disable-next-line no-await-in-loop
 						const convertedBlob = await convertImage(file, convertPastedImageTo, 0.9);
 						const ext = convertedBlob.type.split('/')[1];
-						const fileName = `${utils.generateUUID()}-image.${ext}`;
+						const uploadName = `${utils.generateUUID()}-image.${ext}`;
 
-						const convertedFile = new File([convertedBlob], fileName, {
+						// The uuid only has to keep the upload from colliding with others in
+						// the upload folder, so keep a readable name on the file itself, it is
+						// what the composer labels the image with
+						const baseName = (file.name || 'image').replace(/\.[^.]+$/, '');
+						const convertedFile = new File([convertedBlob], `${baseName}.${ext}`, {
 							type: convertedBlob.type,
 						});
-						addFile(convertedFile, fileName);
+						addFile(convertedFile, uploadName);
 					} else {
 						const fileName = utils.generateUUID() + '-' + file.name;
 						addFile(file, fileName);

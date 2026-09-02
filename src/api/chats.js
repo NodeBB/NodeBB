@@ -399,17 +399,22 @@ chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
-		user.isAdministrator(caller.uid),
+	const [isAdminOrGlobalMod, canViewMessage, inRoom] = await Promise.all([
+		user.isAdminOrGlobalMod(caller.uid),
 		messaging.canViewMessage(mid, roomId, caller.uid),
 		messaging.isUserInRoom(caller.uid, roomId),
 	]);
 
-	if (!isAdmin && (!inRoom || !canViewMessage)) {
+	if (!isAdminOrGlobalMod && (!inRoom || !canViewMessage)) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
-	const content = await messaging.getMessageField(mid, 'content');
+	const { content, deleted, fromuid } = await messaging.getMessageFields(mid, ['content', 'deleted', 'fromuid']);
+	const isSender = String(caller.uid) === String(fromuid);
+	if (deleted && !isSender && !isAdminOrGlobalMod) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
 	return { content };
 };
 

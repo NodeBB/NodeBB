@@ -476,6 +476,34 @@ describe('Messaging Library', () => {
 			);
 		});
 
+		it('should not return the raw content of a deleted message to other users', async () => {
+			const otherUid = await User.create({ username: 'chatdeletereader' });
+			const { body: roomBody } = await callv3API('post', '/chats', {
+				uids: [otherUid],
+			}, 'bar');
+			const deleteRoomId = roomBody.response.roomId;
+
+			const { body: msgBody } = await callv3API('post', `/chats/${deleteRoomId}`, {
+				roomId: deleteRoomId, message: 'this message will be deleted',
+			}, 'bar');
+			const { messageId } = msgBody.response;
+
+			await callv3API('delete', `/chats/${deleteRoomId}/messages/${messageId}`, {}, 'bar');
+
+			await assert.rejects(
+				api.chats.getRawMessage(
+					{ uid: otherUid }, { mid: messageId, roomId: deleteRoomId }
+				),
+				{ message: '[[error:not-allowed]]' }
+			);
+
+			// the sender can still read their own deleted message
+			const { content } = await api.chats.getRawMessage(
+				{ uid: mocks.users.bar.uid }, { mid: messageId, roomId: deleteRoomId }
+			);
+			assert.equal(content, 'this message will be deleted');
+		});
+
 		it('should return not allowed error if user is not in room', async () => {
 			const uids = await User.create({ username: 'dummy' });
 			let { body } = await callv3API('post', '/chats', { uids: [uids] }, 'baz');

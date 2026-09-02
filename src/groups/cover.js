@@ -3,8 +3,10 @@
 const path = require('path');
 
 const nconf = require('nconf');
+const { fileTypeFromFile } = require('file-type');
 
 const db = require('../database');
+const meta = require('../meta');
 const image = require('../image');
 const file = require('../file');
 
@@ -24,13 +26,20 @@ module.exports = function (Groups) {
 			if (!data.imageData && !data.file && data.position) {
 				return await Groups.updateCoverPosition(data.groupName, data.position);
 			}
-			const type = data.file ? data.file.type : image.mimeFromBase64(data.imageData);
-			if (!type || !allowedTypes.includes(type)) {
-				throw new Error('[[error:invalid-image]]');
-			}
 
-			if (!tempPath) {
-				tempPath = await image.writeImageDataToTempFile(data.imageData);
+			let type;
+			if (tempPath) {
+				const detected = await fileTypeFromFile(tempPath);
+				if (!detected || !allowedTypes.includes(detected.mime)) {
+					throw new Error('[[error:invalid-image]]');
+				}
+				type = detected.mime;
+			} else {
+				const imageData = await image.validateBase64(
+					data.imageData, meta.config.maximumCoverImageSize, allowedTypes
+				);
+				tempPath = await image.writeImageDataToTempFile(imageData);
+				type = imageData.mime;
 			}
 
 			await deleteCover(data.groupName);

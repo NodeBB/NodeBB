@@ -26,6 +26,7 @@ uploadsController.upload = async function (req, res, filesIterator) {
 		const images = [];
 		for (const fileObj of files) {
 			/* eslint-disable no-await-in-loop */
+			await validateFileExtension(fileObj);
 			images.push(await filesIterator(fileObj));
 		}
 
@@ -119,12 +120,12 @@ uploadsController.uploadThumb = async function (req, res) {
 	if (!meta.config.allowTopicsThumbnail) {
 		return helpers.formatApiResponse(503, res, new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
+	const canUpload = await privileges.global.can('upload:post:image', req.uid);
+	if (!canUpload) {
+		throw new Error('[[error:no-privileges]]');
+	}
 
 	return await uploadsController.upload(req, res, async (uploadedFile) => {
-		const canUpload = await privileges.global.can('upload:post:image', req.uid);
-		if (!canUpload) {
-			throw new Error('[[error:no-privileges]]');
-		}
 		const detected = await fileTypeFromFile(uploadedFile.path);
 		const isImage = detected && detected.mime.startsWith('image/');
 		if (!isImage) {
@@ -173,8 +174,6 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 	if (!isAdmin && uploadedFile.size > meta.config.maximumFileSize * 1024) {
 		throw new Error(`[[error:file-too-big, ${meta.config.maximumFileSize}]]`);
 	}
-
-	await validateFileExtension(uploadedFile);
 
 	return await saveFileToLocal(uid, 'files', uploadedFile);
 };

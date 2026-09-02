@@ -35,10 +35,9 @@ postsAPI.get = async function (caller, data) {
 	Object.assign(post, voted);
 	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
 
-	const selfPost = caller.uid && caller.uid === parseInt(post.uid, 10);
+	const selfPost = caller.uid && String(caller.uid) === String(post.uid);
 	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
-		post.content = '[[topic:post-is-deleted]]';
-		post.txContent = true;
+		posts.clearDeletedPostContent(post);
 	}
 
 	return post;
@@ -73,8 +72,8 @@ postsAPI.getRaw = async (caller, { pid }) => {
 		return null;
 	}
 
-	const postData = await posts.getPostFields(pid, ['content', 'sourceContent', 'deleted']);
-	const selfPost = caller.uid && caller.uid === parseInt(postData.uid, 10);
+	const postData = await posts.getPostFields(pid, ['uid', 'content', 'sourceContent', 'deleted']);
+	const selfPost = caller.uid && String(caller.uid) === String(postData.uid);
 
 	if (postData.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
 		return null;
@@ -120,7 +119,7 @@ postsAPI.edit = async function (caller, data) {
 
 	const editResult = await posts.edit(data);
 
-	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
+	const selfPost = String(caller.uid) === String(editResult.post.uid);
 	if (!selfPost && editResult.post.changed) {
 		await events.log({
 			type: `post-edit`,

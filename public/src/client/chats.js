@@ -79,12 +79,6 @@ define('forum/chats', [
 			messages.toggleScrollUpAlert(chatContentEl);
 			const scrollToEl = chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`);
 			messages.scrollToMessageAfterImageLoad(chatContentEl, scrollToEl);
-			if (scrollToEl) {
-				scrollToEl.addClass('highlight-pulse');
-				setTimeout(() => {
-					scrollToEl.removeClass('highlight-pulse');
-				}, 5000);
-			}
 		} else {
 			messages.scrollToBottomAfterImageLoad(chatContentEl);
 		}
@@ -112,6 +106,7 @@ define('forum/chats', [
 		Chats.addScrollHandler(roomId, ajaxify.data.uid, chatMessageContent);
 		Chats.addScrollBottomHandler(roomId, chatMessageContent);
 		Chats.addParentHandler(chatMainWrapper);
+		Chats.addPinnedTimestampHandler(chatMainWrapper);
 		Chats.addCharactersLeftHandler(chatMainWrapper);
 		Chats.addTextareaResizeHandler(chatMainWrapper);
 		Chats.addTypingHandler(chatMainWrapper, roomId);
@@ -203,6 +198,20 @@ define('forum/chats', [
 		});
 	};
 
+	function gotoMessage(event, timestampEl, mid) {
+		// :visible because the conversation is swapped out for the message search
+		// results, and there is nothing to scroll while those are shown
+		const contentEl = timestampEl
+			.closest('[component="chat/message/window"]')
+			.find('[component="chat/message/content"]:visible');
+		const messageEl = contentEl.find(`[component="chat/message"][data-mid="${mid}"]`);
+		if (messageEl.length) {
+			event.preventDefault();
+			messages.scrollToMessage(messageEl);
+			return false;
+		}
+	}
+
 	Chats.addParentHandler = function (mainWrapper) {
 		mainWrapper.off('click', '[component="chat/message/parent"]')
 			.on('click', '[component="chat/message/parent"]', function () {
@@ -214,6 +223,30 @@ define('forum/chats', [
 				if (chatContent.length && messages.isAtBottom(chatContent)) {
 					messages.scrollToBottom(chatContent);
 				}
+			});
+
+		// deeper selector, so this runs before the collapse handler above
+		mainWrapper.off('click', '[component="chat/message/parent"] .chat-timestamp')
+			.on('click', '[component="chat/message/parent"] .chat-timestamp', function (ev) {
+				const timestampEl = $(this);
+				return gotoMessage(
+					ev, timestampEl, timestampEl.parents('[data-parent-mid]').attr('data-parent-mid')
+				);
+			});
+	};
+
+	// a pinned message is shown out of context, so its own timestamp links back to
+	// where it sits in the conversation
+	Chats.addPinnedTimestampHandler = function (mainWrapper) {
+		// scoped to .message-header, as the timestamp of a quoted parent rendered in
+		// the panel is already handled by addParentHandler
+		const selector = '[component="chat/messages/pinned"] .message-header .chat-timestamp';
+		mainWrapper.off('click', selector)
+			.on('click', selector, function (ev) {
+				const timestampEl = $(this);
+				return gotoMessage(
+					ev, timestampEl, timestampEl.parents('[component="chat/message"]').attr('data-mid')
+				);
 			});
 	};
 
@@ -762,6 +795,9 @@ define('forum/chats', [
 			socket.emit('modules.chats.enter', roomId);
 			const chatEl = chatNavWrapper.find(`[data-roomid="${roomId}"]`);
 			chatEl.addClass('active');
+			if (chatEl.length) {
+				chatEl[0].scrollIntoView({ block: 'nearest' });
+			}
 			if (chatEl.hasClass('unread')) {
 				api.del(`/chats/${roomId}/state`, {});
 				chatEl.removeClass('unread');

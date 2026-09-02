@@ -51,6 +51,7 @@ settingsController.get = async function (req, res, next) {
 	userData.bootswatchSkinOptions = bsSkinOptions;
 	userData.notificationSettings = notificationSettings;
 	userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions;
+	userData.disableNotificationEmails = meta.config.disableNotificationEmails;
 
 	userData.dailyDigestFreqOptions = [
 		{ value: 'off', name: '[[user:digest-off]]', selected: userData.settings.dailyDigestFreq === 'off' },

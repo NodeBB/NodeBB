@@ -101,7 +101,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 		const [teasers, users, userSettings, categoriesData, guestHandles, thumbs] = await Promise.all([
 			Topics.getTeasers(topics, options),
-			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
+			user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'banned', 'status']),
 			loadShowfullnameSettings(),
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'backgroundImage', 'imageClass', 'bgColor', 'color', 'disabled']),
 			loadGuestHandles(),
@@ -279,13 +279,13 @@ async function getForker(topicData) {
 	if (!parseInt(topicData.forkerUid, 10)) {
 		return null;
 	}
-	const [
-		forker,
-		forkedFromTitle,
-	] = await Promise.all([
+	const [forker, forkedFromTitle] = await Promise.all([
 		user.getUserFields(topicData.forkerUid, ['username', 'userslug', 'picture']),
 		Topics.getTopicField(topicData.forkedFromTid, 'title'),
 	]);
+	if (!forker.userslug || !forkedFromTitle) {
+		return null;
+	}
 	forker.forkedFromTitle = forkedFromTitle;
 	return forker;
 }

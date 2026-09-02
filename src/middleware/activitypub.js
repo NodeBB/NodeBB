@@ -59,9 +59,9 @@ middleware.verify = async function (req, res, next) {
 		}
 
 		// Set calling user
-		const keyId = req.headers.signature.split(',').filter(line => line.startsWith('keyId="'));
+		const keyId = req.headers.signature.split(',').filter(line => line.trim().startsWith('keyId="'));
 		if (keyId.length) {
-			req.uid = keyId.at(-1).slice(7, -1).replace(/#.*$/, '');
+			req.uid = keyId.at(-1).trim().slice(7, -1).replace(/#.*$/, '');
 		}
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
@@ -145,7 +145,7 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	const { signature } = req.headers;
 	let keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
 		const index = v.indexOf('=');
-		return [v.substring(0, index), v.slice(index + 1)];
+		return [v.substring(0, index).trim(), v.slice(index + 1)];
 	})).get('keyId');
 	keyId = (keyId || '').slice(1, -1).replace(/#[\w-]+$/, '');
 	if (compare !== keyId) {

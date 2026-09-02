@@ -190,7 +190,7 @@ module.exports = function (Topics) {
 		const pidToPrivs = _.zipObject(parentPids, postPrivileges);
 
 		parentPids = parentPids.filter(p => pidToPrivs[p]['topics:read']);
-		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'sourceContent', 'deleted']);
+		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'sourceContent', 'deleted', 'uploads']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
 
@@ -199,8 +199,7 @@ module.exports = function (Topics) {
 		await Promise.all(parentPosts.map(async (parentPost) => {
 			const postPrivs = pidToPrivs[parentPost.pid];
 			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
-				parentPost.content = `[[topic:post-is-deleted]]`;
-				parentPost.txContent = true;
+				posts.clearDeletedPostContent(parentPost);
 				return;
 			}
 			const foundPost = postData.find(p => String(p.pid) === String(parentPost.pid));

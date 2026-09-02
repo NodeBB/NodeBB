@@ -2148,6 +2148,24 @@ describe('Topic\'s', () => {
 			assert.equal(teaser.content, 'content 2');
 			await User.blocks.remove(blockedUid, adminUid);
 		});
+
+		it('should not show deleted posts as teasers', async () => {
+			const { topicData } = await topics.post({
+				uid: adminUid,
+				title: 'topic with deleted posts',
+				content: 'content 1',
+				cid: categoryObj.cid,
+			});
+			const { pid } = await topics.reply({ uid: adminUid, content: 'reply 1 content', tid: topicData.tid });
+			await posts.delete(pid, adminUid);
+			await posts.delete(topicData.mainPid);
+			const teasers = await topics.getTeasers([topicData], {
+				uid: 0, // call as guest
+				teaserPost: 'last-post',
+			});
+			console.log({ teasers });
+			assert.deepStrictEqual(teasers[0], null);
+		});
 	});
 
 	describe('tag privilege', () => {
@@ -2369,6 +2387,19 @@ describe('Topic\'s', () => {
 			});
 			assert.strictEqual(data.topics[0].title, 'old replied');
 			assert.strictEqual(data.topics[1].title, 'most recent replied');
+		});
+
+		it('should not expose the author signature', async () => {
+			await User.setUserField(topic.userId, 'signature', 'some signature');
+			const data = await topics.getSortedTopics({
+				cids: [category.cid],
+				uid: topic.userId,
+				start: 0,
+				stop: -1,
+				sort: 'recent',
+			});
+			assert(data.topics[0].user);
+			assert.strictEqual(data.topics[0].user.signature, undefined);
 		});
 	});
 
@@ -2630,7 +2661,7 @@ describe('Topic\'s', () => {
 			await topics.scheduled.handleExpired();
 
 			topicData = await topics.getTopicData(topicData.tid);
-			assert(!topicData.pinned);
+			assert(!topicData.pinned, JSON.stringify(topicData, null, 2));
 			assert(!topicData.deleted);
 			// Should remove from topics:scheduled upon publishing
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);

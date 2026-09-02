@@ -47,7 +47,7 @@ Actors.qualify = async (ids, options = {}) => {
 	if (!ids.length) {
 		return false;
 	}
-	// Existance in failure cache is automatic assertion failure
+	// Existence in failure cache is automatic assertion failure
 	if (ids.some(id => failedWebfingerCache.has(id))) {
 		return false;
 	}

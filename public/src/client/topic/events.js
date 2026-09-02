@@ -61,7 +61,7 @@ define('forum/topic/events', [
 	};
 
 	function onUserStatusChange(data) {
-		app.updateUserStatus($('[data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
+		app.updateUserStatus($(`[data-uid="${data.uid}"] [component="user/status"]`), data.status);
 	}
 
 	function updatePostVotesAndUserReputation(data) {
