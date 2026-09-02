@@ -525,6 +525,7 @@ define('chat', [
 
 	Chat.close = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', uuid);
@@ -622,6 +623,7 @@ define('chat', [
 
 	Chat.minimize = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('hide');
 		chatModal.addClass('hide');
 		taskbar.minimize('chat', uuid);
 		hooks.fire('action:chat.minimized', {
