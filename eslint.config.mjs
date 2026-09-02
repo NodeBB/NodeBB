@@ -9,6 +9,8 @@ import stylisticJs from '@stylistic/eslint-plugin'
 import js from '@eslint/js';
 import globals from 'globals';
 
+import knownHookName from './eslint-rules/known-hook-name.mjs';
+
 export default defineConfig([
 	{
 		ignores: [
@@ -74,6 +76,20 @@ export default defineConfig([
 		languageOptions: {
 			sourceType: 'module',
 		}
+	},
+	{
+		// server-side hooks only; the client has its own hook namespace
+		files: ['src/**/*.js'],
+		plugins: {
+			nodebb: {
+				rules: {
+					'known-hook-name': knownHookName,
+				},
+			},
+		},
+		rules: {
+			'nodebb/known-hook-name': 'error',
+		},
 	}
 ]);
 
