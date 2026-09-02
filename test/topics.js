@@ -2165,7 +2165,7 @@ describe('Topic\'s', () => {
 				uid: 0, // call as guest
 				teaserPost: 'last-post',
 			});
-			console.log({ teasers });
+
 			assert.deepStrictEqual(teasers[0], null);
 		});
 	});
