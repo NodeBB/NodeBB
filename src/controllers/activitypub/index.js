@@ -19,6 +19,7 @@ const Controller = module.exports;
 
 Controller.actors = require('./actors');
 Controller.topics = require('./topics');
+Controller.emoji = require('./emoji');
 
 Controller.fetch = async (req, res, next) => {
 	// Given a `resource` query parameter, attempts to retrieve and parse it

@@ -249,7 +249,7 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-		summary = activitypub.helpers.renderEmoji(summary || '', tag);
+		summary = await activitypub.helpers.renderEmoji(summary || '', tag);
 
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
@@ -361,13 +361,15 @@ Mocks.category = async (actors) => {
 
 		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
 
+		const descriptionParsed = posts.sanitize(await activitypub.helpers.renderEmoji(summary || '', tag));
+
 		const payload = {
 			cid,
 			name,
 			handle: `${preferredUsername}@${canonicalHostname}`,
 			slug: `${preferredUsername}@${canonicalHostname}`,
 			description: summary,
-			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
+			descriptionParsed,
 			icon: backgroundImage ? 'fa-nbb-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,
@@ -459,7 +461,7 @@ Mocks.message = async (object) => {
 	object = await Mocks._normalize(object);
 
 	let content = object.sourceContent || object.content;
-	content = activitypub.helpers.renderEmoji(content, object.tag);
+	content = await activitypub.helpers.renderEmoji(content, object.tag);
 
 	const message = {
 		mid: object.id,

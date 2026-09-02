@@ -49,7 +49,7 @@ module.exports = function (Posts) {
 
 			// Rewrite emoji references to inline image assets
 			const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
-			postData[property] = activitypub.helpers.renderEmoji(postData[property], _activitypub.tag);
+			postData[property] = await activitypub.helpers.renderEmoji(postData[property], _activitypub.tag);
 
 			hasAttachment = _activitypub && _activitypub.attachment && _activitypub.attachment.length;
 		}
