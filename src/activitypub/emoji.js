@@ -200,12 +200,22 @@ async function processEmojiTag(emojiTag) {
 	return `<img class="not-responsive emoji" src="${icon.url}" title="${normalizeShortcode(name)}" />`;
 }
 
+/**
+ * Delete a cached emoji entry from Redis.
+ * Does not delete the on-disk file (stale files are pruned by re-download).
+ */
+async function deleteEmoji(shortcode, hostname) {
+	const fieldKey = buildFieldKey(shortcode, hostname);
+	await db.deleteObjectField(emojiLookupKey, fieldKey);
+}
+
 module.exports = {
 	extractHostname,
 	buildFieldKey,
 	normalizeShortcode,
 	getEmoji,
 	cacheEmoji,
+	deleteEmoji,
 	getProxyUrl,
 	processEmojiTag,
 };
