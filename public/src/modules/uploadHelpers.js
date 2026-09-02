@@ -162,12 +162,16 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 						// eslint-disable-next-line no-await-in-loop
 						const convertedBlob = await convertImage(file, convertPastedImageTo, 0.9);
 						const ext = convertedBlob.type.split('/')[1];
-						const fileName = `${utils.generateUUID()}-image.${ext}`;
+						const uploadName = `${utils.generateUUID()}-image.${ext}`;
 
-						const convertedFile = new File([convertedBlob], fileName, {
+						// The uuid only has to keep the upload from colliding with others in
+						// the upload folder, so keep a readable name on the file itself, it is
+						// what the composer labels the image with
+						const baseName = (file.name || 'image').replace(/\.[^.]+$/, '');
+						const convertedFile = new File([convertedBlob], `${baseName}.${ext}`, {
 							type: convertedBlob.type,
 						});
-						addFile(convertedFile, fileName);
+						addFile(convertedFile, uploadName);
 					} else {
 						const fileName = utils.generateUUID() + '-' + file.name;
 						addFile(file, fileName);
