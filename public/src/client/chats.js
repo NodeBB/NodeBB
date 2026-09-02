@@ -75,18 +75,24 @@ define('forum/chats', [
 
 		const chatContentEl = chatMainWrapper.find('[component="chat/message/content"]');
 		messages.wrapImagesInLinks(chatContentEl);
-		if (ajaxify.data.scrollToIndex) {
-			messages.toggleScrollUpAlert(chatContentEl);
-			const scrollToEl = chatContentEl.find(`[data-index="${ajaxify.data.scrollToIndex - 1}"]`);
-			messages.scrollToMessageAfterImageLoad(chatContentEl, scrollToEl);
-		} else {
-			messages.scrollToBottomAfterImageLoad(chatContentEl);
-		}
+		scrollToInitialPosition(chatContentEl, ajaxify.data.scrollToIndex);
 		create.init();
 		search.init(document.getElementById('search-chats'), document.getElementById('private-rooms'));
 
 		hooks.fire('action:chat.loaded', $('.chats-full'));
 	};
+
+	// a room opened at a specific message -- a search hit, or a link to one -- lands
+	// on it, anything else opens at the latest message
+	function scrollToInitialPosition(contentEl, scrollToIndex) {
+		if (scrollToIndex) {
+			messages.toggleScrollUpAlert(contentEl);
+			const scrollToEl = contentEl.find(`[data-index="${scrollToIndex - 1}"]`);
+			messages.scrollToMessageAfterImageLoad(contentEl, scrollToEl);
+		} else {
+			messages.scrollToBottomAfterImageLoad(contentEl);
+		}
+	}
 
 	Chats.addEventListeners = function () {
 		const { roomId } = ajaxify.data;
@@ -668,7 +674,7 @@ define('forum/chats', [
 		}).catch(alerts.error);
 	};
 
-	Chats.switchChat = async function (roomId) {
+	Chats.switchChat = async function (roomId, index) {
 		// Allow empty arg for return to chat list/close chat
 		if (!roomId) {
 			roomId = '';
@@ -678,7 +684,8 @@ define('forum/chats', [
 
 		const params = new URL(document.location).searchParams;
 		params.set('switch', 1);
-		const url = `user/${ajaxify.data.userslug}/chats/${roomId}?${params.toString()}`;
+		const position = roomId && index ? `/${index}` : '';
+		const url = `user/${ajaxify.data.userslug}/chats/${roomId}${position}?${params.toString()}`;
 		const dataUrl = `/api/${url}`;
 		try {
 			const payload = await api.get(dataUrl);
@@ -703,8 +710,9 @@ define('forum/chats', [
 		Chats.setActive(roomId);
 		Chats.addEventListeners();
 		hooks.fire('action:chat.loaded', $('.chats-full'));
-		messages.scrollToBottomAfterImageLoad(
-			chatMainWrapper.find('[component="chat/message/content"]')
+		scrollToInitialPosition(
+			chatMainWrapper.find('[component="chat/message/content"]'),
+			ajaxify.data.scrollToIndex
 		);
 		if (history.pushState) {
 			history.pushState({

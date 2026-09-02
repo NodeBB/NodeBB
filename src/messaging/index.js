@@ -288,11 +288,15 @@ async function searchMessageContent(uid, roomIds, rooms, query) {
 		return matches;
 	}
 
+	// results collapse to one row per room, so the cap has to leave room for a busy
+	// room contributing many hits. Search plugins that predate this field fall back
+	// to their own default.
 	const { ids } = await plugins.hooks.fire('filter:messaging.searchMessages', {
 		content: query,
 		roomId: roomIds,
 		uid: [],
 		matchWords: 'all',
+		limit: 500,
 		ids: [],
 	});
 	if (!Array.isArray(ids) || !ids.length) {
@@ -325,7 +329,7 @@ async function searchMessageContent(uid, roomIds, rooms, query) {
 	);
 
 	const inUserRooms = new Set(roomIds.map(String));
-	messages.forEach((msg) => {
+	messages.forEach((msg, idx) => {
 		if (!msg || !msg.fromuid) {
 			return;
 		}
@@ -340,6 +344,7 @@ async function searchMessageContent(uid, roomIds, rooms, query) {
 		if (!isPublic[roomId] && msg.timestamp <= joinTimestamps[roomId]) {
 			return;
 		}
+		msg.mid = parseInt(ids[idx], 10);
 		msg.roomId = parseInt(roomId, 10);
 		msg.content = utils.stripHTMLTags(utils.decodeHTMLEntities(msg.content));
 		matches.set(roomId, msg);
@@ -347,14 +352,22 @@ async function searchMessageContent(uid, roomIds, rooms, query) {
 
 	const teasers = Array.from(matches.values());
 	const uids = _.uniq(teasers.map(teaser => teaser.fromuid));
-	const userMap = _.zipObject(
-		uids,
-		await user.getUsersFields(uids, [
+	// the position the room has to be opened at to land on the matching message,
+	// the same one `/message/:mid` resolves to
+	const [userData, ranks] = await Promise.all([
+		user.getUsersFields(uids, [
 			'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
-		])
-	);
-	await Promise.all(teasers.map(async (teaser) => {
+		]),
+		db.sortedSetsRanks(
+			teasers.map(teaser => `chat:room:${teaser.roomId}:mids`),
+			teasers.map(teaser => teaser.mid)
+		),
+	]);
+
+	const userMap = _.zipObject(uids, userData);
+	await Promise.all(teasers.map(async (teaser, idx) => {
 		teaser.user = userMap[teaser.fromuid];
+		teaser.index = ranks[idx] === null ? null : parseInt(ranks[idx], 10) + 1;
 		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
 		matches.set(String(teaser.roomId), payload.teaser);
 	}));

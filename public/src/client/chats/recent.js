@@ -11,7 +11,9 @@ define('forum/chats/recent', ['alerts', 'api', 'chat'], function (alerts, api, c
 					e.stopPropagation();
 					e.preventDefault();
 					const roomId = this.getAttribute('data-roomid');
-					Chats.switchChat(roomId);
+					// a search result carries the position of the message that
+					// matched, so the room opens on it instead of at the bottom
+					Chats.switchChat(roomId, this.getAttribute('data-index'));
 				})
 				.on('click', '.mark-read', function (e) {
 					e.stopPropagation();
