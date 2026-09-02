@@ -508,14 +508,30 @@ ajaxify.widgets = { render: render };
 		});
 	};
 
+	ajaxify.destroyTooltips = () => {
+		$('.tooltip').each(function () {
+			const id = this.getAttribute('id');
+			const trigger = id ? document.querySelector(`[aria-describedby="${id}"]`) : null;
+			if (trigger && window.bootstrap && window.bootstrap.Tooltip) {
+				const tooltip = window.bootstrap.Tooltip.getInstance(trigger);
+				if (tooltip) {
+					tooltip.hide();
+				}
+			}
+			$(this).remove();
+		});
+	};
+
 	ajaxify.cleanup = (url, tpl_url) => {
 		app.leaveCurrentRoom();
 		$(window).off('scroll');
+		ajaxify.destroyTooltips();
 		hooks.fire('action:ajaxify.cleanup', { url, tpl_url });
 	};
 
 	ajaxify.handleTransientElements = () => {
 		// todo: modals?
+		ajaxify.destroyTooltips();
 
 		const elements = ['[component="notifications"]', '[component="chat/dropdown"]', '[component="sidebar/drafts"]', '[component="header/avatar"]']
 			.map(el => document.querySelector(`${el} .dropdown-menu.show`) || document.querySelector(`${el} + .dropdown-menu.show`))
