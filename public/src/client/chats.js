@@ -339,6 +339,40 @@ define('forum/chats', [
 		});
 	};
 
+	function getTopVisibleMessageIndex(el) {
+		const containerTop = el.offset().top;
+		let index = 0;
+		el.children('[data-index]').each(function () {
+			const msgEl = $(this);
+			const msgIndex = parseInt(msgEl.attr('data-index'), 10);
+			// live-received messages don't carry an index; skip them
+			if (!isNaN(msgIndex) && msgEl.offset().top + msgEl.outerHeight() > containerTop) {
+				index = msgIndex + 1;
+				return false;
+			}
+		});
+		return index;
+	}
+
+	function updateUrlWithMessageIndex(roomId, el) {
+		if (
+			!ajaxify.data.template.chats || !history.replaceState ||
+			String(ajaxify.data.roomId) !== String(roomId) || !ajaxify.data.userslug
+		) {
+			return;
+		}
+		const index = messages.isAtBottom(el) ? 0 : getTopVisibleMessageIndex(el);
+		const newUrl = `user/${ajaxify.data.userslug}/chats/${roomId}${index > 0 ? `/${index}` : ''}`;
+		const fullPath = `${config.relative_path}/${newUrl}`;
+		if (fullPath === window.location.pathname) {
+			return;
+		}
+		const search = window.location.search || '';
+		history.replaceState({
+			url: newUrl + search,
+		}, null, `${window.location.protocol}//${window.location.host}${fullPath}${search}`);
+	}
+
 	Chats.addScrollHandler = function (roomId, uid, el) {
 		let loading = false;
 		let previousScrollTop = el.scrollTop();
@@ -349,6 +383,7 @@ define('forum/chats', [
 			isAtBottom = messages.isAtBottom(el);
 		});
 		el.on('scroll', utils.debounce(async function () {
+			updateUrlWithMessageIndex(roomId, el);
 			if (parseInt(el.attr('data-ignore-next-scroll'), 10) === 1) {
 				el.removeAttr('data-ignore-next-scroll');
 				previousScrollTop = el.scrollTop();
