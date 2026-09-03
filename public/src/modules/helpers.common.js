@@ -558,7 +558,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		for (const { clean, hostname } of emojiMeta) {
 			const code = `:${clean}:`;
 			const proxyUrl = `/emoji/ap/${encodeURIComponent(clean)}/${encodeURIComponent(hostname)}`;
-			const imgTag = `<img class="not-responsive emoji" src="${proxyUrl}" title="${code}" />`;
+			const imgTag = `<img class="not-responsive emoji" src="${escape(proxyUrl)}" title="${escape(code)}" />`;
 			result = result.split(code).join(imgTag);
 		}
 		return result;
