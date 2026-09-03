@@ -14,7 +14,7 @@
 	"allowLoopback": "Разрешаване на обработката на локална обратна връзка",
 	"allowLoopback-help": "Полезно само за дебъгване. Най-добре е това да бъде изключено",
 	"allowSplitDomain": "Различаване на федерирането с отделни домейни",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
+	"allowSplitDomain-help": "Включете, за да разрешите източниците, чиито идентификатор на домейн от WebFinger се различава от техния документен домейн за ActivityPub. Това е полезно за инсталации, които разделят идентичността (WebFinger) от хостинга на съдържанието (ActivityPub). Забележка: оригиналният домейн (WebFinger) е този, който се ползва като истински — неговият запис WebFinger трябва да сочи към документа-източник и, когато и двете страни имат публичен ключ, тези ключове трябва да съвпадат. Идентификаторите, които са потвърдени без съвпадение в ключовете, разчитат само на адреса, така че подхождайте с внимание към идентификатори с разделени домейни, идващи от домейни с неясно качество на ползване на WebFinger.",
 	"parentTraversalDepth": "Дълбочина на обхождане нагоре",
 	"parentTraversalDepth-help": "Максимален брой стъпки за обхождане нагоре по веригата на отговорите при изграждане на контекст. (по подразбиране: 50)",
 

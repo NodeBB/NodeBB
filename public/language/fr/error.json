@@ -210,7 +210,7 @@
     "message-flagged-too-many-times": "C0e message du chat à déjà été signalé par d'autres utilisateurs.",
     "too-many-post-flags-per-day": "Vous pouvez seulement signaler %1 message(s) par jour",
     "too-many-user-flags-per-day": "Vous pouvez seulement signaler %1 utilisateur(s) par jour",
-    "too-many-message-flags-per-day": "You can only flag %1 chat message(s) per day",
+    "too-many-message-flags-per-day": "Vous ne pouvez signaler que %1 message(s) de chat par jour ",
     "cant-flag-privileged": "Vous n'êtes pas autorisé à signaler les profils ou le contenu des utilisateurs privilégiés (modérateurs / modérateurs globaux / administrateurs)",
     "cant-locate-flag-report": "Impossible de trouver le signalement",
     "self-vote": "Vous ne pouvez pas voter sur votre propre message",
