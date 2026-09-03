@@ -192,7 +192,7 @@ module.exports = function (Topics) {
 		parentPids = parentPids.filter(p => pidToPrivs[p]['topics:read']);
 		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'sourceContent', 'deleted', 'uploads']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
-		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
+		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture', 'fullnameEmoji']);
 
 		const usersMap = _.zipObject(parentUids, userData);
 
