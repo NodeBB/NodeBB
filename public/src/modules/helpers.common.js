@@ -30,7 +30,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
-		renderTitleEmoji,
+		renderShortcodeEmoji,
 		increment,
 		lessthan,
 		greaterthan,
@@ -550,11 +550,11 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		return html.join('');
 	}
 
-	function renderTitleEmoji(title, emojiMeta) {
-		if (!title || !emojiMeta || !emojiMeta.length) {
-			return String(title || '');
+	function renderShortcodeEmoji(text, emojiMeta) {
+		if (!text || !emojiMeta || !emojiMeta.length) {
+			return String(text || '');
 		}
-		let result = String(title);
+		let result = String(text);
 		for (const { clean, hostname } of emojiMeta) {
 			const code = `:${clean}:`;
 			const proxyUrl = `/emoji/ap/${encodeURIComponent(clean)}/${encodeURIComponent(hostname)}`;

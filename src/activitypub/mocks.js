@@ -251,6 +251,26 @@ Mocks.profile = async (actors) => {
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
 		summary = await activitypub.helpers.renderEmoji(summary || '', tag);
 
+		// Extract emoji metadata for fullname rendering (titleEmoji pattern)
+		const nameEmoji = [];
+		const emojiTags = (tag || []).filter(tag => tag.type === 'Emoji');
+		for (const emojiTag of emojiTags) {
+			const { name: emojiName, icon } = emojiTag;
+			if (!emojiName || !icon?.url) continue;
+			let code = emojiName;
+			if (!code.startsWith(':')) code = `:${code}`;
+			if (!code.endsWith(':')) code = `${code}:`;
+			if (name && name.includes(code)) {
+				try {
+					const { hostname } = new URL(icon.url);
+					const clean = code.replace(/^:+|:+$/g, '');
+					nameEmoji.push({ code, hostname, clean });
+				} catch {
+					// skip invalid icon URLs
+				}
+			}
+		}
+
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
 			actor.attachment
@@ -289,6 +309,7 @@ Mocks.profile = async (actors) => {
 			userslug: `${preferredUsername}@${canonicalHostname}`.toLowerCase(),
 			displayname: name,
 			fullname: name,
+			fullnameEmoji: nameEmoji.length ? JSON.stringify(nameEmoji) : undefined,
 			joindate: new Date(published).getTime() || Date.now(),
 			picture,
 			status: 'offline',

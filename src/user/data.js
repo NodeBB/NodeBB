@@ -28,7 +28,7 @@ const intFields = [
 module.exports = function (User) {
 	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'url', 'email', 'email:confirmed', 'joindate',
-		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'birthday',
+		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'fullnameEmoji', 'birthday',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
@@ -271,6 +271,11 @@ module.exports = function (User) {
 			}
 
 			db.parseIntFields(user, intFields, requestedFields);
+
+			// Parse fullnameEmoji from JSON (titleEmoji pattern)
+			if (user.hasOwnProperty('fullnameEmoji')) {
+				user.fullnameEmoji = user.fullnameEmoji ? JSON.parse(String(user.fullnameEmoji)) : [];
+			}
 
 			if (user.hasOwnProperty('username')) {
 				user.username = String(user.username || '');
