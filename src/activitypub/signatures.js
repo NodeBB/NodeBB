@@ -95,7 +95,12 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 			return false;
 		}
 
-		// Digest check for requests with body (POST/PUT)
+		const hasBody = req.rawBody || req.body;
+		if (hasBody && !headers.digest) {
+			winston.warn('[activitypub/signatures] Digest header required for requests with a body');
+			return false;
+		}
+
 		if (headers.digest) {
 			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 			if (!bodyData) return false;
@@ -155,6 +160,15 @@ async function tryVerifyDraft(req, fetchPublicKeyFn) {
 			return false;
 		}
 
+		if (req.headers.digest) {
+			const signedHeaders = (parsed.value.params?.headers ?? [])
+				.map(h => h.toLowerCase());
+			if (!signedHeaders.includes('digest')) {
+				winston.warn('[activitypub/signatures] Digest header present but not included in signed headers (draft)');
+				return false;
+			}
+		}
+
 		// Fetch public key PEM
 		const publicKeyPem = await fetchPublicKeyFn(parsed.value.keyId, req.ip);
 		if (!publicKeyPem) {
@@ -193,6 +207,15 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 
 		if (!parsed || !keyId) {
 			return false;
+		}
+
+		if (req.headers.digest) {
+			const signedHeaders = ((parsed.value?.params?.headers ?? []) || [])
+				.map(h => h.toLowerCase());
+			if (!signedHeaders.includes('digest')) {
+				winston.warn('[activitypub/signatures] Digest header present but not included in signed headers (RFC 9421)');
+				return false;
+			}
 		}
 
 		// Fetch public key PEM

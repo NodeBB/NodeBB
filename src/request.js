@@ -98,6 +98,7 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 				...config.headers,
 			},
 			signal: timeout > 0 ? AbortSignal.timeout(timeout) : undefined,
+			size: sizeLimit,
 			dispatcher: manualDispatcher,
 		};
 		if (body instanceof FormData) {
@@ -134,10 +135,17 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 		const { headers } = response;
 		const contentType = headers.get('content-type');
 		const isJSON = contentType && jsonTest.test(contentType);
-		// eslint-disable-next-line no-await-in-loop
-		const buffer = await response.arrayBuffer();
 
-		// Enforce response size limit to prevent memory exhaustion
+		let buffer;
+		try {
+			buffer = await response.arrayBuffer();
+		} catch (err) {
+			// undici throws TypeError when streaming size is exceeded; rethrow
+			if (err.name === 'TypeError' && String(err.message).includes('exceeded')) {
+				throw new Error(`Response size exceeded limit (${sizeLimit} bytes)`);
+			}
+			throw err;
+		}
 		if (buffer.byteLength > sizeLimit) {
 			throw new Error(`Response size (${buffer.byteLength} bytes) exceeds limit (${sizeLimit} bytes)`);
 		}
