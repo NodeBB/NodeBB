@@ -58,7 +58,7 @@ module.exports = function (Posts) {
 		// Scans a post's content and updates sorted set of uploads
 
 		const [postData, isMainPost] = await Promise.all([
-			Posts.getPostFields(pid, ['content', 'uploads']),
+			Posts.getPostFields(pid, ['tid', 'content', 'uploads']),
 			Posts.isMain(pid),
 		]);
 
@@ -75,8 +75,7 @@ module.exports = function (Posts) {
 
 		// Main posts can contain topic thumbs, which are also tracked by pid
 		if (isMainPost) {
-			const tid = await Posts.getPostField(pid, 'tid');
-			let thumbs = await topics.thumbs.get(tid, { thumbsOnly: true });
+			let thumbs = await topics.thumbs.get(postData.tid, { thumbsOnly: true });
 			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
