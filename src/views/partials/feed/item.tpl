@@ -48,7 +48,7 @@
 				<div>
 					{{{ if !./topic.generatedTitle }}}
 					<a class="lh-1 topic-title fw-semibold fs-5 text-reset line-clamp-2" href="{config.relative_path}/topic/{./topic.slug}">
-						{{renderTitleEmoji(./topic.title, ./topic.titleEmoji)}}
+						{{renderShortcodeEmoji(./topic.title, ./topic.titleEmoji)}}
 					</a>
 					{{{ end }}}
 				</div>
