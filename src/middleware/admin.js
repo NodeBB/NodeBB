@@ -40,24 +40,33 @@ async function doBuildHeader(req, res) {
 }
 
 middleware.checkPrivileges = helpers.try(async (req, res, next) => {
+	await checkAdminPrivileges(req, res, next, async () => {
+		// Check for privilege based on page (if not in mapping, deny access)
+		const path = req.path.replace(/^(\/api)?(\/v3)?\/admin\/?/g, '');
+		if (path) {
+			const privilege = privileges.admin.resolve(path);
+			return await privileges.admin.can(privilege, req.uid);
+		}
+
+		// If accessing /admin, check for any valid admin privs
+		const privilegeSet = await privileges.admin.get(req.uid);
+		return Object.values(privilegeSet).some(Boolean);
+	});
+});
+
+// For routes whose privilege cannot be resolved from the request path (e.g. v3 write API)
+middleware.checkPrivilege = privilege => helpers.try(async (req, res, next) => {
+	await checkAdminPrivileges(req, res, next, async () => privileges.admin.can(privilege, req.uid));
+});
+
+async function checkAdminPrivileges(req, res, next, isAllowed) {
 	// Kick out guests, obviously
 	if (req.uid <= 0) {
 		return controllers.helpers.notAllowed(req, res);
 	}
 
-	// Otherwise, check for privilege based on page (if not in mapping, deny access)
-	const path = req.path.replace(/^(\/api)?(\/v3)?\/admin\/?/g, '');
-	if (path) {
-		const privilege = privileges.admin.resolve(path);
-		if (!await privileges.admin.can(privilege, req.uid)) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-	} else {
-		// If accessing /admin, check for any valid admin privs
-		const privilegeSet = await privileges.admin.get(req.uid);
-		if (!Object.values(privilegeSet).some(Boolean)) {
-			return controllers.helpers.notAllowed(req, res);
-		}
+	if (!await isAllowed()) {
+		return controllers.helpers.notAllowed(req, res);
 	}
 
 	const hasPassword = await user.hasPassword(req.uid);
@@ -97,4 +106,4 @@ middleware.checkPrivileges = helpers.try(async (req, res, next) => {
 	} else {
 		res.redirect(`${nconf.get('relative_path')}/login?local=1`);
 	}
-});
+}
