@@ -554,7 +554,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		if (!text || !emojiMeta || !emojiMeta.length) {
 			return String(escape(text) || '');
 		}
-		let result = String(text);
+		let result = escape(text);
 		for (const { clean, hostname } of emojiMeta) {
 			const code = `:${clean}:`;
 			const proxyUrl = `/emoji/ap/${encodeURIComponent(clean)}/${encodeURIComponent(hostname)}`;
