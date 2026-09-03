@@ -93,6 +93,9 @@ Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = nu
 		headersToSign.digest = digest;
 	}
 
+	// Import private key early to determine algorithm for Signature-Input
+	const privateKey = await importPrivateKey(key, ['sign']);
+
 	// Determine signed components list
 	// @method + @target-uri (not @request-target) so that verifiers requiring
 	// those components explicitly (e.g. Mitra) can validate the signature
@@ -102,13 +105,12 @@ Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = nu
 	}
 
 	// Build Signature-Input header
-	const signatureInput = `sig1=("${components.join('" "')}");created=${created};keyid="${keyId}"`;
+	// RFC 9421 Section 2.2: algorithm parameter is required
+	const algorithm = getDraftAlgoString(privateKey);
+	const signatureInput = `sig1=("${components.join('" "')}");algorithm="${algorithm}";created=${created};keyid="${keyId}"`;
 	headersToSign['signature-input'] = signatureInput;
 
 	try {
-		// Import private key
-		const privateKey = await importPrivateKey(key, ['sign']);
-
 		// Build signature base
 		const base = new RFC9421SignatureBaseFactory({
 			method,

@@ -257,9 +257,9 @@ describe('http signature signing and verification', () => {
 				await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
 			const { host } = nconf.get('url_parsed');
 
-			const paramsMatch = signatureInput.match(/^sig1=(\([^)]*\));created=(\d+);keyid="([^"]*)"$/);
+			const paramsMatch = signatureInput.match(/^sig1=(\([^)]*\));algorithm="([^"]*)";created=(\d+);keyid="([^"]*)"$/);
 			assert(paramsMatch, `unexpected Signature-Input format: ${signatureInput}`);
-			const [, componentsInnerList, created, keyId] = paramsMatch;
+			const [, componentsInnerList, algorithm, created, keyId] = paramsMatch;
 			const componentIds = [...componentsInnerList.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
 			const componentValues = {
 				'@method': 'GET',
@@ -268,7 +268,7 @@ describe('http signature signing and verification', () => {
 				date,
 			};
 			const lines = componentIds.map((id) => `"${id}": ${componentValues[id]}`);
-			lines.push(`"@signature-params": ${componentsInnerList};created=${created};keyid="${keyId}"`);
+			lines.push(`"@signature-params": ${componentsInnerList};algorithm="${algorithm}";created=${created};keyid="${keyId}"`);
 			const expectedBase = lines.join('\n');
 
 			const publicKeyPem = await activitypub.getPublicKey('uid', uid);
