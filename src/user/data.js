@@ -272,7 +272,7 @@ module.exports = function (User) {
 
 			db.parseIntFields(user, intFields, requestedFields);
 
-			// Parse fullnameEmoji from JSON (titleEmoji pattern)
+			// Parse fullnameEmoji from JSON
 			if (user.hasOwnProperty('fullnameEmoji')) {
 				user.fullnameEmoji = user.fullnameEmoji ? JSON.parse(String(user.fullnameEmoji)) : [];
 			}

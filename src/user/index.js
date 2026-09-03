@@ -91,6 +91,7 @@ User.getUsers = async function (uids, uid) {
 		'uid', 'username', 'userslug', 'picture', 'status',
 		'postcount', 'reputation', 'email:confirmed', 'lastonline',
 		'flags', 'banned', 'banned:expire', 'joindate',
+		'fullnameEmoji',
 	], uid);
 
 	return User.hidePrivateData(userData, uid);
