@@ -759,9 +759,8 @@ describe('Controllers', () => {
 					cid,
 					title: 'Lorem "Lipsum" Ipsum',
 					content: 'Lorem ipsum dolor sit amet',
+					deleted: 1,
 				}));
-
-				await topics.delete(topicData.tid, uid);
 
 				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
 					headers: {

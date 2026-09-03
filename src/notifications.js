@@ -65,7 +65,7 @@ Notifications.privilegedTypes = [
 
 const notificationPruneCutoff = 2592000000; // one month
 
-const intFields = ['datetime', 'from', 'importance', 'tid', 'pid', 'roomId'];
+const intFields = ['datetime', 'from', 'importance', 'tid', 'pid', 'roomId', 'flagId'];
 
 Notifications.getAllNotificationTypes = async function () {
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
