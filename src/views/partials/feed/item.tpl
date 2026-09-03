@@ -30,7 +30,7 @@
 					<div class="text-sm">
 						<div class="post-author d-flex align-items-center gap-1">
 							<a class="d-inline d-lg-none lh-1 text-decoration-none" href="{config.relative_path}/user/{./user.userslug}">{{buildAvatar(./user, "16px", true, "not-responsive")}}</a>
-							<a class="lh-normal fw-semibold text-nowrap" href="{config.relative_path}/user/{./user.userslug}">{{txDisplayname(./user)}}</a>
+							<a class="lh-normal fw-semibold text-nowrap" href="{config.relative_path}/user/{./user.userslug}">{{renderShortcodeEmoji(txDisplayname(./user), ./user.fullnameEmoji)}}</a>
 						</div>
 						<span class="timeago text-muted lh-normal" title="{./timestampISO}"></span>
 					</div>

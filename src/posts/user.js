@@ -96,7 +96,7 @@ module.exports = function (Posts) {
 
 	async function getUserData(uids, uid) {
 		const fields = [
-			'uid', 'username', 'fullname', 'userslug',
+			'uid', 'username', 'fullname', 'fullnameEmoji', 'userslug',
 			'reputation', 'postcount', 'topiccount', 'picture',
 			'signature', 'banned', 'banned:expire', 'status',
 			'lastonline', 'groupTitle', 'muted', 'mutedUntil',

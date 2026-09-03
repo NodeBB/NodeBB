@@ -251,7 +251,7 @@ Mocks.profile = async (actors) => {
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
 		summary = await activitypub.helpers.renderEmoji(summary || '', tag);
 
-		// Extract emoji metadata for fullname rendering (titleEmoji pattern)
+		// Extract emoji metadata for fullname rendering
 		const nameEmoji = [];
 		const emojiTags = (tag || []).filter(tag => tag.type === 'Emoji');
 		for (const emojiTag of emojiTags) {

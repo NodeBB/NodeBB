@@ -54,7 +54,7 @@ module.exports = function (Topics) {
 		postData = postData.filter(Boolean);
 		const uids = _.uniq(postData.map(post => post.uid));
 		const sortNewToOld = callerSettings.topicPostSort === 'newest_to_oldest';
-		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
+		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'fullnameEmoji']);
 
 		const users = {};
 		usersData.forEach((user) => {
