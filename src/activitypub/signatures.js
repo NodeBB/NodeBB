@@ -170,6 +170,25 @@ function getDraftAlgoString(key) {
 	return 'rsa-sha256';
 }
 
+// Verifies a Content-Digest header in RFC 9530 format (sha-256=:base64:)
+// Mitra and other RFC 9530 implementations use Content-Digest instead of Digest
+function verifyContentDigest(bodyData, contentDigestHeader) {
+	if (!contentDigestHeader) return true; // no header to verify
+	// RFC 9530: sha-256=:base64:  (Mitra uses sha-256=:base64==)
+	const match = contentDigestHeader.match(/^sha-256=:(.+)[=:]$/i);
+	if (!match) {
+		winston.warn('[activitypub/signatures] Invalid Content-Digest format');
+		return false;
+	}
+	const expectedB64 = match[1];
+	const computedB64 = createHash('sha256').update(bodyData).digest('base64');
+	if (expectedB64 !== computedB64) {
+		winston.warn('[activitypub/signatures] Content-Digest mismatch during request verification');
+		return false;
+	}
+	return true;
+}
+
 Signatures.verify = async (req, fetchPublicKeyFn) => {
 	try {
 		const { headers } = req;
@@ -181,19 +200,31 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 		}
 
 		const hasBody = req.rawBody || req.body;
-		if (hasBody && !headers.digest) {
-			winston.warn('[activitypub/signatures] Digest header required for requests with a body');
+		// Accept Digest (RFC 3230) or Content-Digest (RFC 9530) headers
+		const hasDigest = headers.digest || headers['content-digest'];
+		if (hasBody && !hasDigest) {
+			winston.warn('[activitypub/signatures] Digest/Content-Digest header required for requests with a body');
 			return false;
 		}
 
-		if (headers.digest) {
+		if (hasBody && (headers.digest || headers['content-digest'])) {
 			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 			if (!bodyData) return false;
 
-			const computedDigest = Signatures.calculateDigest(bodyData);
-			if (headers.digest !== computedDigest) {
-				winston.warn('[activitypub/signatures] Digest mismatch during request verification');
-				return false;
+			// Verify RFC 3230 Digest header (SHA-256=base64)
+			if (headers.digest) {
+				const computedDigest = Signatures.calculateDigest(bodyData);
+				if (headers.digest !== computedDigest) {
+					winston.warn('[activitypub/signatures] Digest mismatch during request verification');
+					return false;
+				}
+			}
+
+			// Verify RFC 9530 Content-Digest header (sha-256=:base64:)
+			if (headers['content-digest']) {
+				if (!verifyContentDigest(bodyData, headers['content-digest'])) {
+					return false;
+				}
 			}
 		}
 
@@ -278,10 +309,13 @@ async function tryVerifyDraft(req, fetchPublicKeyFn) {
 			return false;
 		}
 
-		if (req.headers.digest) {
+		// Check digest/content-digest coverage in signed headers
+		const hasAnyDigest = req.headers.digest || req.headers['content-digest'];
+		if (hasAnyDigest) {
 			const signedHeaders = (parsed.value.params?.headers ?? [])
 				.map(h => h.toLowerCase());
-			if (!signedHeaders.includes('digest')) {
+			const hasDigestSigned = signedHeaders.includes('digest') || signedHeaders.includes('content-digest');
+			if (!hasDigestSigned) {
 				winston.warn('[activitypub/signatures] Digest header present but not included in signed headers (draft)');
 				return false;
 			}
@@ -348,11 +382,14 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 				continue;
 			}
 
-			// When Digest header is present, it must be covered by the signature.
+			// When Digest/Content-Digest header is present, it must be covered by the signature.
 			// In RFC 9421 the signed components are the first element of the value array.
-			if (req.headers.digest) {
+			// Mitra uses content-digest, others use digest.
+			const hasAnyDigest = req.headers.digest || req.headers['content-digest'];
+			if (hasAnyDigest) {
 				const signedHeaders = components.map(([name]) => name.toLowerCase());
-				if (!signedHeaders.includes('digest')) {
+				const hasDigestSigned = signedHeaders.includes('digest') || signedHeaders.includes('content-digest');
+				if (!hasDigestSigned) {
 					continue; // this signature doesn't cover the digest; try the next one
 				}
 			}
