@@ -552,7 +552,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 	function renderShortcodeEmoji(text, emojiMeta) {
 		if (!text || !emojiMeta || !emojiMeta.length) {
-			return String(text || '');
+			return String(escape(text) || '');
 		}
 		let result = String(text);
 		for (const { clean, hostname } of emojiMeta) {
