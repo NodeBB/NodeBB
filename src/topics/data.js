@@ -91,6 +91,10 @@ function modifyTopic(topic, fields) {
 		topic.title = String(topic.title);
 	}
 
+	if (hasField('titleEmoji')) {
+		topic.titleEmoji = topic.titleEmoji ? JSON.parse(String(topic.titleEmoji)) : [];
+	}
+
 	if (hasField('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);
 		if (hasField('scheduled')) {

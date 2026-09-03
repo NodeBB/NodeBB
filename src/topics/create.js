@@ -42,6 +42,10 @@ module.exports = function (Topics) {
 			topicData.tags = data.tags.join(',');
 		}
 
+		if (data.titleEmoji) {
+			topicData.titleEmoji = data.titleEmoji;
+		}
+
 		if (Array.isArray(data.thumbs) && data.thumbs.length) {
 			const thumbs = Topics.thumbs.filterThumbs(data.thumbs);
 			topicData.thumbs = JSON.stringify(thumbs);

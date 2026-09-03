@@ -206,8 +206,28 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 				generatedTitle = 1;
 			}
 
-			// Remove any custom emoji from title
-			title = await activitypub.helpers.renderEmoji(title, _activitypub.tag, true);
+			// Extract emoji metadata for title rendering
+			const titleEmoji = [];
+			const emojiTags = (_activitypub.tag || []).filter(tag => tag.type === 'Emoji');
+			for (const tag of emojiTags) {
+				const { name, icon } = tag;
+				if (!name || !icon?.url) continue;
+				let code = name;
+				if (!code.startsWith(':')) code = `:${code}`;
+				if (!code.endsWith(':')) code = `${code}:`;
+				if (title.includes(code)) {
+					try {
+						const { hostname } = new URL(icon.url);
+						const clean = code.replace(/^:+|:+$/g, '');
+						titleEmoji.push({ code, hostname, clean });
+					} catch {
+						// skip invalid icon URLs
+					}
+				}
+			}
+			if (titleEmoji.length) {
+				mainPost.titleEmoji = JSON.stringify(titleEmoji);
+			}
 		}
 		mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
@@ -273,6 +293,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					cid: options.cid || cid,
 					pid: mainPid,
 					title,
+					titleEmoji: mainPost.titleEmoji,
 					timestamp,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
@@ -296,6 +317,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					cid: options.cid || cid,
 					pid: mainPid,
 					title,
+					titleEmoji: mainPost.titleEmoji,
 					timestamp,
 					tags,
 					content: mainPost.content,

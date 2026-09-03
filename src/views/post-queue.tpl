@@ -147,14 +147,14 @@
 							<span class="small topic-title text-break">
 								{{{ if posts.data.tid }}}
 								<div class="d-flex flex-column align-items-start gap-1">
-									<a href="{config.relative_path}/topic/{posts.data.tid}">{posts.topic.title}</a>
+									<a href="{config.relative_path}/topic/{posts.data.tid}">{{renderTitleEmoji(posts.topic.title, posts.topic.titleEmoji)}}</a>
 									<span class="badge text-body border border-gray-300 stats text-xs">
 										<span class="text-lowercase fw-normal">{{tx("global:lastpost")}}</span>
 										<span title="{posts.topic.lastposttimeISO}" class="timeago fw-bold"></span>
 									</span>
 								</div>
 								{{{ end }}}
-								<span class="title-text">{posts.data.title}</span>
+								<span class="title-text">{{renderTitleEmoji(posts.data.title, posts.data.titleEmoji)}}</span>
 							</span>
 							{{{if !posts.data.tid}}}
 							<div class="topic-title-editable hidden">
