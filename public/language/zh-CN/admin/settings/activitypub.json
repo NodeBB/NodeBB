@@ -14,7 +14,7 @@
 	"allowLoopback": "允许环回处理",
 	"allowLoopback-help": "仅用于调试目的，您最好将其禁用。",
 	"allowSplitDomain": "允许跨域联邦",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
+	"allowSplitDomain-help": "启用后，允许 WebFinger 句柄域名与其 ActivityPub 文档域名不同的 Actor。这对于将身份标识（WebFinger）与内容托管（ActivityPub）分离的实例非常有用。注意：规范（WebFinger）域名是信任锚点——其 WebFinger 记录必须引用 Actor 文档，且当双方均发布公钥时，公钥必须一致。未通过密钥匹配验证的句柄仅依赖 URL 引用，因此请谨慎对待来自 WebFinger 规范性较差域名的分域句柄。",
 	"parentTraversalDepth": "父级遍历深度",
 	"parentTraversalDepth-help": "构建上下文时，沿回复链向上遍历的最大次数。（默认值：50）",
 
@@ -103,9 +103,9 @@
 	"analytics.term": "时间尺度",
 	"analytics.hourly": "每时",
 	"analytics.daily": "每日",
-	"analytics.activities-by-type": "Activities by Type",
-	"analytics.activities-by-type-empty": "No activities recorded yet.",
-	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
+	"analytics.activities-by-type": "按类型划分的活动",
+	"analytics.activities-by-type-empty": "暂无活动记录。",
+	"analytics.activities-by-type-not-filterable": "<strong>注:</strong> 此细分是全局的，未按所选主机名进行筛选。",
 
 	"errors.intro": "该实例在过去 24 小时内记录了以下 %1 个错误。",
 	"errors.payload-gone": "此错误的负载已不存在。",
