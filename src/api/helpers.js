@@ -89,6 +89,25 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 						activitypub.out.undo.announce('cid', cid, tid); // microblogs
 					});
 				}
+				break;
+			}
+
+			case 'lock': {
+				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
+					setImmediate(() => {
+						activitypub.out.lock(caller.uid, tid);
+					});
+				}
+				break;
+			}
+
+			case 'unlock': {
+				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
+					setImmediate(() => {
+						activitypub.out.unlock(caller.uid, tid);
+					});
+				}
+				break;
 			}
 		}
 	}));

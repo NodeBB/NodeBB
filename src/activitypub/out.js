@@ -461,6 +461,66 @@ Out.move.context = enabledCheck(async (uid, tid) => {
 	});
 });
 
+Out.lock = enabledCheck(async (uid, tid) => {
+	const { cid, mainPid } = await topics.getTopicFields(tid, ['cid', 'mainPid']);
+
+	// Only local categories
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const allowed = await privileges.topics.can('topics:read', tid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating lock of tid ${tid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+	}, { cid, pid: mainPid });
+
+	await activitypub.send('uid', uid, Array.from(targets), {
+		id: `${nconf.get('url')}/topic/${tid}#activity/lock/${Date.now()}`,
+		type: 'Lock',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to,
+		cc,
+		audience: `${nconf.get('url')}/category/${cid}`,
+		object: `${nconf.get('url')}/topic/${tid}`,
+	});
+});
+
+Out.unlock = enabledCheck(async (uid, tid) => {
+	const { cid, mainPid } = await topics.getTopicFields(tid, ['cid', 'mainPid']);
+
+	// Only local categories
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const allowed = await privileges.topics.can('topics:read', tid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating unlock of tid ${tid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+	}, { cid, pid: mainPid });
+
+	await activitypub.send('uid', uid, Array.from(targets), {
+		id: `${nconf.get('url')}/topic/${tid}#activity/unlock/${Date.now()}`,
+		type: 'Unlock',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to,
+		cc,
+		audience: `${nconf.get('url')}/category/${cid}`,
+		object: `${nconf.get('url')}/topic/${tid}`,
+	});
+});
+
 Out.undo = {};
 
 Out.undo.follow = enabledCheck(async (type, id, actor) => {

@@ -97,8 +97,7 @@ module.exports = function (Topics) {
 		if (!topicData || !topicData.cid) {
 			throw new Error('[[error:no-topic]]');
 		}
-		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
-		if (!isAdminOrMod) {
+		if (uid !== 'system' && !await privileges.categories.isAdminOrMod(topicData.cid, uid)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		await Topics.setTopicField(tid, 'locked', lock ? 1 : 0);
