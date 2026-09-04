@@ -3,6 +3,7 @@
 const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
+const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const analytics = require('../analytics');
 const helpers = require('./helpers');
@@ -193,3 +194,14 @@ middleware.configureResponse = async function (req, res, next) {
 	res.header('Content-Type', 'application/activity+json');
 	next();
 };
+
+middleware.canViewUsers = helpers.try(async function (req, res, next) {
+	// For S2S ActivityPub requests, check view:users privilege.
+	// This mirrors the check in WebFinger (well-known.js profile()) which uses uid -2.
+	const callerUid = req.uid || activitypub._constants.uid;
+	const canView = await privileges.global.can('view:users', callerUid);
+	if (!canView) {
+		return res.sendStatus(404);
+	}
+	next();
+});
