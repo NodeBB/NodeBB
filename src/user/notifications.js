@@ -118,12 +118,19 @@ UserNotifications.getNotifications = async function (nids, uid) {
 		user.getSettings(uid),
 	]);
 
+	const postNotifications = notifObjs.filter(n => n && n.pid);
+	const pids = _.uniq(postNotifications.map(n => String(n.pid)));
+	const visiblePids = new Set(await privileges.posts.filter('topics:read', pids, uid));
+
 	const deletedNids = [];
 	let notificationData = notifObjs.filter((notification, index) => {
 		if (!notification || !notification.nid) {
 			deletedNids.push(nids[index]);
 		}
 		if (notification) {
+			if (notification.pid && !visiblePids.has(String(notification.pid))) {
+				return false;
+			}
 			notification.read = isRead[index];
 			notification.readClass = !notification.read ? 'unread' : '';
 		}
