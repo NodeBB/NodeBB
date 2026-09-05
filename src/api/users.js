@@ -145,6 +145,18 @@ usersAPI.updateSettings = async function (caller, data) {
 	const payload = { ...defaults, ...current, ...data.settings };
 	delete payload.uid;
 
+	// A stored pagination value can exceed the configured maximum (saved before
+	// the maximum was lowered). Clamp it into range instead of rejecting the
+	// whole save, mirroring the read-side clamp in user.getSettings.
+	const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
+	const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
+	if (parseInt(payload.postsPerPage, 10)) {
+		payload.postsPerPage = Math.max(2, Math.min(maxPostsPerPage, parseInt(payload.postsPerPage, 10)));
+	}
+	if (parseInt(payload.topicsPerPage, 10)) {
+		payload.topicsPerPage = Math.max(2, Math.min(maxTopicsPerPage, parseInt(payload.topicsPerPage, 10)));
+	}
+
 	return await user.saveSettings(data.uid, payload);
 };
 
