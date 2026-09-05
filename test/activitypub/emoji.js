@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert');
+const path = require('path');
 
 const db = require('../mocks/databasemock');
 const activitypub = require('../../src/activitypub');
@@ -93,7 +94,7 @@ describe('Emoji', () => {
 			assert.strictEqual(result.name, ':poop:');
 			assert.strictEqual(result.remoteUrl, 'https://mastodon.social/emojis/poop.png');
 			assert.strictEqual(result.mediaType, 'image/png');
-			assert.ok(result.localPath.endsWith('emoji/ap/mastodon.social/poop.png'));
+			assert.ok(result.localPath.endsWith(path.normalize('emoji/ap/mastodon.social/poop.png')), JSON.stringify(result));
 		});
 	});
 
