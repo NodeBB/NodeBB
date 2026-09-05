@@ -1773,6 +1773,29 @@ describe('User', () => {
 			assert.strictEqual(userSettings.usePagination, true);
 		});
 
+		it('should clamp stale stored pagination values exceeding the configured maximum instead of failing the save', async () => {
+			const username = utils.generateUUID().slice(0, 6);
+			const uid = await User.create({ username });
+			const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
+			// simulate a value stored before the site maximum was lowered
+			await db.setObject(`user:${uid}:settings`, {
+				postsPerPage: String(maxPostsPerPage + 10),
+				topicsPerPage: '10',
+			});
+			const updated = await apiUser.updateSettings({ uid: uid }, {
+				uid: uid,
+				settings: {
+					bootswatchSkin: 'default',
+					userLang: 'en-GB',
+					usePagination: 1,
+					topicsPerPage: '10',
+				},
+			});
+			assert.strictEqual(updated.postsPerPage, maxPostsPerPage);
+			const stored = await db.getObject(`user:${uid}:settings`);
+			assert.strictEqual(parseInt(stored.postsPerPage, 10), maxPostsPerPage);
+		});
+
 		it('should properly escape homePageRoute', async () => {
 			const username = utils.generateUUID().slice(0, 6);
 			const uid = await User.create({ username, password: '123456' });
