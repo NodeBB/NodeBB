@@ -183,7 +183,7 @@ inbox.update = async (req) => {
 	let { actor, object } = req.body;
 
 	// Refetch object by id if Update was announce-wrapped
-	if (req.res.locals.apAnnounced) {
+	if (req?.res?.locals?.apAnnounced) {
 		try {
 			const refetched = await activitypub.get('uid', 0, object.id);
 			if (refetched) {
