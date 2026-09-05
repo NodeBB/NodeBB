@@ -55,6 +55,9 @@ module.exports = function (Posts) {
 		}
 
 		({ post: postData } = await plugins.hooks.fire('filter:post.create', { post: postData, data: data }));
+
+		const uploads = await Posts.uploads.getUploadsForPost(postData, isMain);
+		postData.uploads = JSON.stringify(uploads);
 		await db.setObject(`post:${postData.pid}`, postData);
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
@@ -68,7 +71,8 @@ module.exports = function (Posts) {
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
 			groups.onNewPostMade(postData),
 			addReplyTo(postData, timestamp),
-			Posts.uploads.sync(pid),
+			Posts.uploads.saveUploadsToPid(uploads, postData.pid),
+			Posts.uploads.saveSize(uploads),
 			hasAttachment ? Posts.attachments.update(pid, _activitypub.attachment) : null,
 		]);
 

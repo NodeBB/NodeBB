@@ -55,41 +55,46 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.sync = async function (pid) {
-		// Scans a post's content and updates sorted set of uploads
-
 		const [postData, isMainPost] = await Promise.all([
 			Posts.getPostFields(pid, ['tid', 'content', 'uploads']),
 			Posts.isMain(pid),
 		]);
 
-		const content = postData.content || '';
 		const currentUploads = postData.uploads || [];
+		const uploads = await Posts.uploads.getUploadsForPost(postData, isMainPost);
 
-		// Extract upload file paths from post content
-		let match = searchRegex.exec(content);
-		let uploads = new Set();
-		while (match) {
-			uploads.add(match[1].replace('-resized', ''));
-			match = searchRegex.exec(content);
-		}
-
-		// Main posts can contain topic thumbs, which are also tracked by pid
-		if (isMainPost) {
-			let thumbs = await topics.thumbs.get(postData.tid, { thumbsOnly: true });
-			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
-				require_protocol: true,
-			}));
-			thumbs.forEach(t => uploads.add(t));
-		}
-
-		uploads = Array.from(uploads);
-
-		// Create add/remove sets
 		const add = uploads.filter(path => !currentUploads.includes(path));
 		const remove = currentUploads.filter(path => !uploads.includes(path));
 		await Posts.uploads.associate(pid, add);
 		await Posts.uploads.dissociate(pid, remove);
 	};
+
+	Posts.uploads.saveUploadsToPid = async function (uploads, pid) {
+		const now = Date.now();
+		await db.sortedSetAddBulk(uploads.map(path => [`upload:${md5(path)}:pids`, now, pid]));
+	};
+
+	Posts.uploads.getUploadsForPost = async function ({ tid, content }, isMainPost) {
+		const uploadsSet = getUploadsFromPostContent(content || '');
+		if (isMainPost) {
+			let thumbs = await topics.thumbs.get(tid, { thumbsOnly: true });
+			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
+				require_protocol: true,
+			}));
+			thumbs.forEach(t => uploadsSet.add(t));
+		}
+		return await _filterValidPaths(Array.from(uploadsSet));
+	};
+
+	function getUploadsFromPostContent(content) {
+		let match = searchRegex.exec(content);
+		const uploads = new Set();
+		while (match) {
+			uploads.add(match[1].replace('-resized', ''));
+			match = searchRegex.exec(content);
+		}
+		return uploads;
+	}
 
 	Posts.uploads.list = async function (pids) {
 		const isArray = Array.isArray(pids);
@@ -186,12 +191,9 @@ module.exports = function (Posts) {
 			}
 		});
 
-		const now = Date.now();
-		const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
-
 		await Promise.all([
 			db.setObjectField(`post:${pid}`, 'uploads', JSON.stringify(currentUploads)),
-			db.sortedSetAddBulk(bulkAdd),
+			Posts.uploads.saveUploadsToPid(filePaths, pid),
 			Posts.uploads.saveSize(filePaths),
 		]);
 	};
