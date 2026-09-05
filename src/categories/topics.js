@@ -217,7 +217,7 @@ module.exports = function (Categories) {
 	}
 
 	Categories.notifyCategoryFollowers = async (postData, exceptUid) => {
-		const { cid } = postData.topic;
+		const { cid, title } = postData.topic;
 		const followers = [];
 		await batch.processSortedSet(`cid:${cid}:uid:watch:state`, async (uids) => {
 			followers.push(
@@ -236,16 +236,15 @@ module.exports = function (Categories) {
 			return;
 		}
 
-		const [displayname, categoryName, title] = await Promise.all([
+		const [displayname, categoryName] = await Promise.all([
 			user.getNotificationDisplayname(postData.user.uid),
 			Categories.getCategoryField(cid, 'name'),
-			topics.getNotificationTitle(postData.topic.tid),
 		]);
 
 		const bodyShort = tx.compile(
 			'notifications:user-posted-topic-in-category',
 			displayname,
-			title,
+			tx.escape(title),
 			categoryName
 		);
 

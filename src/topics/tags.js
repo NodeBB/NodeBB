@@ -610,16 +610,15 @@ module.exports = function (Topics) {
 	};
 
 	Topics.notifyTagFollowers = async function (postData, exceptUid) {
-		const { tags } = postData.topic;
+		const { tags, title } = postData.topic;
 		if (!tags.length) {
 			return;
 		}
 
-		const [followersOfPoster, allFollowers, displayname, title] = await Promise.all([
+		const [followersOfPoster, allFollowers, displayname] = await Promise.all([
 			db.getSortedSetRange(`followers:${exceptUid}`, 0, -1),
 			db.getSortedSetRange(tags.map(tag => `tag:${tag.value}:followers`), 0, -1),
 			user.getNotificationDisplayname(exceptUid),
-			Topics.getTopicField(postData.topic.tid, 'title'),
 		]);
 		const followerSet = new Set(followersOfPoster);
 		// filter out followers of the poster since they get a notification already
@@ -640,7 +639,7 @@ module.exports = function (Topics) {
 			suffix = '-multiple';
 			tagArgs = [tagArgs.join(', ')];
 		}
-		const bodyShort = tx.compile(`${notifBase}${suffix}`, displayname, title, ...tagArgs);
+		const bodyShort = tx.compile(`${notifBase}${suffix}`, displayname, tx.escape(title), ...tagArgs);
 
 		const notification = await notifications.create({
 			type: 'new-topic-with-tag',
