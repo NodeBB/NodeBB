@@ -14,7 +14,7 @@
 	"allowLoopback": "Loopback-Verarbeitung erlauben",
 	"allowLoopback-help": "Nur für Debugging-Zwecke nützlich. Sollte am besten deaktiviert bleiben.",
 	"allowSplitDomain": "Verbund mit geteilten Domänen zulassen",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
+	"allowSplitDomain-help": "Aktiviere diese Option, um Akteure zuzulassen, deren WebFinger-Handle-Domain sich von der Domain ihres ActivityPub-Dokuments unterscheidet. Das ist nützlich für Instanzen, die Identität (WebFinger) und Content-Hosting (ActivityPub) voneinander trennen. Hinweis: Die kanonische (WebFinger-)Domain ist der Vertrauensanker – ihr WebFinger-Eintrag muss auf das Akteur-Dokument verweisen, und wenn beide Seiten einen öffentlichen Schlüssel veröffentlichen, müssen die Schlüssel übereinstimmen. Handles, die ohne Schlüsselübereinstimmung verifiziert wurden, stützen sich allein auf den URL-Verweis; behandle daher Handles mit getrennten Domains, die aus Domains mit mangelhafter WebFinger-Sicherheit stammen, mit Vorsicht.",
 	"parentTraversalDepth": "Tiefe der Eltern-Traversierung",
 	"parentTraversalDepth-help": "Maximale Anzahl der Durchläufe durch die Antwortkette beim Erstellen des Kontexts. (Standard: 50)",
 
