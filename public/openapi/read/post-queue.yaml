@@ -125,8 +125,13 @@ get:
                                   type: number
                                   description: A topic identifier
                                 toPid:
-                                  type: [number, string]
-                                  nullable: true
+                                  anyOf:
+                                    - type: number
+                                    - type: string
+                                    - type: string
+                                      nullable: true
+                                      enum:
+                                        - null
                             user:
                               type: object
                               properties:

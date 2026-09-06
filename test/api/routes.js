@@ -11,12 +11,22 @@ const db = require('../mocks/databasemock');
 let readApi;
 let writeApi;
 
+async function parseApi(filePath) {
+	const window = global.window;
+	try {
+		delete global.window;
+		return await SwaggerParser.dereference(filePath);
+	} finally {
+		global.window = window;
+	}
+}
+
 describe('routes', function () {
 	before(async function () {
 		const readApiPath = path.resolve(__dirname, '../../public/openapi/read.yaml');
 		const writeApiPath = path.resolve(__dirname, '../../public/openapi/write.yaml');
-		readApi = await SwaggerParser.dereference(readApiPath);
-		writeApi = await SwaggerParser.dereference(writeApiPath);
+		readApi = await parseApi(readApiPath);
+		writeApi = await parseApi(writeApiPath);
 	});
 
 	it('should grab all mounted routes and ensure a schema exists', async function () {

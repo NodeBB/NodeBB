@@ -210,17 +210,22 @@ TopicObjectSlim:
         votes:
           type: number
         teaserPid:
-          oneOf:
+          anyOf:
             - type: number
             - type: string
-            - type: 'null'
+            - type: string
+              nullable: true
+              enum:
+                - null
         thumbs:
           type: array
           items:
             type: object
             properties:
               id:
-                type: [number, string]
+                oneOf:
+                  - type: number
+                  - type: string
                 description: The topic id
               name:
                 type: string
