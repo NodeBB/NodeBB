@@ -13,6 +13,7 @@ get:
       example: 'post'
   responses:
     "200":
+      description: System cache information
       content:
         application/json:
           schema:

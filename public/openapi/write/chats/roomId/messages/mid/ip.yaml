@@ -32,5 +32,6 @@ get:
                 type: object
                 properties:
                   ip:
-                    type: ['string', 'null']
+                    type: string
+                    nullable: true
                     description: message IP address, or null if not available
