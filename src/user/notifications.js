@@ -16,24 +16,21 @@ const user = require('./index');
 const UserNotifications = module.exports;
 
 UserNotifications.get = async function (uid) {
-	const { hideReadNotifications } = await user.getSettings(uid);
-
 	if (parseInt(uid, 10) <= 0) {
 		return { read: [], unread: [] };
 	}
+	const { hideReadNotifications } = await user.getSettings(uid);
+	let [unreadNids, readNids] = await Promise.all([
+		db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 49),
+		hideReadNotifications ? [] : db.getSortedSetRevRange(`uid:${uid}:notifications:read`, 0, 49),
+	]);
+	readNids = readNids.slice(0, 50 - unreadNids.length);
+	const [unread, read] = await Promise.all([
+		UserNotifications.getNotifications(unreadNids, uid, unreadNids.map(() => false)),
+		UserNotifications.getNotifications(readNids, uid, readNids.map(() => true)),
+	]);
 
-	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 49);
-	unread = unread.filter(Boolean);
-	let read = [];
-	if (!hideReadNotifications && unread.length < 50) {
-		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 49 - unread.length);
-	}
-
-	return await plugins.hooks.fire('filter:user.notifications.get', {
-		uid,
-		read: read.filter(Boolean),
-		unread: unread,
-	});
+	return await plugins.hooks.fire('filter:user.notifications.get', { uid, read, unread });
 };
 
 async function filterNotifications(nids, filter) {
@@ -93,11 +90,6 @@ async function deleteUserNids(nids, uid) {
 	], nids);
 }
 
-async function getNotificationsFromSet(set, uid, start, stop) {
-	const nids = await db.getSortedSetRevRange(set, start, stop);
-	return await UserNotifications.getNotifications(nids, uid);
-}
-
 UserNotifications.ownsNids = async function (nids, uid) {
 	const [isInRead, isInUnread] = await Promise.all([
 		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
@@ -106,15 +98,15 @@ UserNotifications.ownsNids = async function (nids, uid) {
 	return nids.map((nid, index) => (isInRead[index] || isInUnread[index]));
 };
 
-UserNotifications.getNotifications = async function (nids, uid) {
+UserNotifications.getNotifications = async function (nids, uid, readState) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return [];
 	}
 
 	const [notifObjs, isRead, isUnread, userSettings] = await Promise.all([
 		notifications.getMultiple(nids),
-		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
-		db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
+		readState ? readState : db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+		readState ? readState.map(r => !r) : db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
 		user.getSettings(uid),
 	]);
 
@@ -171,7 +163,7 @@ UserNotifications.getUnreadInterval = async function (uid, interval) {
 	}
 	const min = Date.now() - times[interval];
 	const nids = await db.getSortedSetRevRangeByScore(`uid:${uid}:notifications:unread`, 0, 20, '+inf', min);
-	return await UserNotifications.getNotifications(nids, uid);
+	return await UserNotifications.getNotifications(nids, uid, nids.map(() => false));
 };
 
 UserNotifications.getDailyUnread = async function (uid) {
