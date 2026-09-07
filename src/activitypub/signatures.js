@@ -283,11 +283,22 @@ function getRequestUrl(req, { useHostHeader = false } = {}) {
 	// also succeeds when the dialed host differs from the configured URL
 	// (reverse proxies, www vs non-www, port changes)
 	if (useHostHeader && req.headers && req.headers.host) {
-		const { protocol } = nconf.get('url_parsed') || { protocol: 'https:' };
+		const protocol = getRequestProtocol(req);
 		origin = `${protocol}//${req.headers.host}`;
 	}
 
 	return new URL(requestPath, origin).href;
+}
+
+// Determines the scheme of the dialed request. The Host header carries no
+// scheme, so use the request's own protocol (express's req.protocol honors
+// trust proxy and X-Forwarded-Proto), falling back to the configured URL
+function getRequestProtocol(req) {
+	if (req && typeof req.protocol === 'string' && (req.protocol === 'http' || req.protocol === 'https')) {
+		return `${req.protocol}:`;
+	}
+	const { protocol } = nconf.get('url_parsed') || { protocol: 'https:' };
+	return protocol;
 }
 
 async function tryVerifyDraft(req, fetchPublicKeyFn) {
