@@ -443,6 +443,8 @@ Mocks.post = async (objects) => {
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
 			to, cc, audience, attachment, tag, image,
+
+			endTime, oneOf, anyOf, // poll-specific
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -455,6 +457,24 @@ Mocks.post = async (objects) => {
 		const timestamp = new Date(published).getTime();
 		let edited = new Date(updated);
 		edited = Number.isNaN(edited.valueOf()) ? undefined : edited;
+
+		// Polls (FEP-9967)
+		let polls;
+		if (object.type === 'Question' && ['oneOf', 'anyOf'].some(prop => object.hasOwnProperty(prop))) {
+			polls = [
+				{
+					title: utils.stripHTMLTags(content),
+					end: new Date(endTime),
+					maximumVotesPerUser: (anyOf && anyOf.length) || 1,
+					options: (oneOf || anyOf).map((option) => {
+						return {
+							id: option.name,
+							title: option.name,
+						};
+					}),
+				},
+			];
+		}
 
 		const payload = {
 			uid,
@@ -469,6 +489,7 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
+			...(polls && { polls }),
 			_activitypub: { to, cc, audience, attachment, tag, url, image },
 		};
 
