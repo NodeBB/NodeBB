@@ -50,12 +50,17 @@ UserNotifications.getAll = async function (uid, filter) {
 UserNotifications.getAllWithCounts = async function (uid, filter) {
 	const nids = await getAllNids(uid);
 	const keys = nids.map(nid => `notifications:${nid}`);
-	let notifications = await db.getObjectsFields(keys, ['nid', 'type']);
+	let notifications = await db.getObjectsFields(keys, ['nid', 'type', 'pid']);
+
+	const postNotifications = notifications.filter(n => n && n.pid);
+	const pids = _.uniq(postNotifications.map(n => String(n.pid)));
+	const visiblePids = new Set(await privileges.posts.filter('topics:read', pids, uid));
+	notifications = notifications.filter(n => !n.pid || visiblePids.has(String(n.pid)));
+
 	const counts = {};
 	notifications.forEach((n) => {
 		if (n && n.type) {
-			counts[n.type] = counts[n.type] || 0;
-			counts[n.type] += 1;
+			counts[n.type] = (counts[n.type] || 0) + 1;
 		}
 	});
 	if (filter) {
