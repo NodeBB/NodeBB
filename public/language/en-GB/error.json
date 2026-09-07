@@ -29,6 +29,8 @@
 	"invalid-password": "Invalid Password",
 	"invalid-login-credentials": "Invalid login credentials",
 	"invalid-username-or-password": "Please specify both a username and password",
+	"username-required": "Please enter your username",
+	"password-required": "Please enter your password",
 	"invalid-search-term": "Invalid search term",
 	"invalid-url": "Invalid URL",
 	"invalid-event": "Invalid event: %1",
