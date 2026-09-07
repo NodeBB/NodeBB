@@ -25,6 +25,8 @@
     "invalid-password": "סיסמא לא תקינה",
     "invalid-login-credentials": "פרטי ההתחברות שגויים",
     "invalid-username-or-password": "אנא הגדירו שם משתמש וסיסמה",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "מילת חיפוש לא תקינה",
     "invalid-url": "שגיאה בכתובת URL",
     "invalid-event": "אירוע לא תקין: %1",

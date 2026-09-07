@@ -25,6 +25,8 @@
     "invalid-password": "無効なパスワード",
     "invalid-login-credentials": "ログイン資格情報が無効です",
     "invalid-username-or-password": "ユーザー名とパスワードの両方を指定してください",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "無効な検索ワード",
     "invalid-url": "無効なURL",
     "invalid-event": "無効なイベント: %1",

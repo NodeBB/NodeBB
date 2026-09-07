@@ -25,6 +25,8 @@
     "invalid-password": "Ogiltigt lösenord",
     "invalid-login-credentials": "Ogiltig inloggning",
     "invalid-username-or-password": "Specificera både användarnamn och lösenord",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Ogiltig sökterm",
     "invalid-url": "Ogiltig URL",
     "invalid-event": "Invalid event: %1",

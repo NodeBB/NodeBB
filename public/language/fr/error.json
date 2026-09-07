@@ -25,6 +25,8 @@
     "invalid-password": "Mot de passe invalide",
     "invalid-login-credentials": "Certificat d'identification invalide",
     "invalid-username-or-password": "Veuillez entrer un nom d'utilisateur et un mot de passe",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Données de recherche invalides",
     "invalid-url": "URL invalide",
     "invalid-event": "Événement non valide: %1",

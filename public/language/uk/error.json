@@ -25,6 +25,8 @@
     "invalid-password": "Невірний пароль",
     "invalid-login-credentials": "Невірне ім'я користувача або пароль",
     "invalid-username-or-password": "Вкажіть, будь ласка, ім'я користувача та пароль",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Невірний пошуковий запит",
     "invalid-url": "Недійсна URL-адреса",
     "invalid-event": "Invalid event: %1",

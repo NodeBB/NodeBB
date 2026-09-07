@@ -25,6 +25,8 @@
     "invalid-password": "Ugyldig passord",
     "invalid-login-credentials": "Ugyldige innloggingsopplysningar",
     "invalid-username-or-password": "Ver venleg å oppgi både brukarnamn og passord",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Ugyldig søkjeord",
     "invalid-url": "Ugyldig URL",
     "invalid-event": "Ugyldig hending: %1",

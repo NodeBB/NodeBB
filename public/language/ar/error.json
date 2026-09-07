@@ -25,6 +25,8 @@
     "invalid-password": "كلمة السر غير مقبولة",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "المرجود تحديد اسم مستخدم و كلمة مرور",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "كلمة البحث غير صحيحة",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

@@ -25,6 +25,8 @@
     "invalid-password": "Ijambobanga Ntiryemewe",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Tanga izina ukoresha n'ijambobanga",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Icyashatswe nticyemewe",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

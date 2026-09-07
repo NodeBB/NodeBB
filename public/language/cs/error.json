@@ -25,6 +25,8 @@
     "invalid-password": "Neplatné heslo",
     "invalid-login-credentials": "Neplatné přihlašovací údaje",
     "invalid-username-or-password": "Zadejte prosím uživatelské jméno a i heslo",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Neplatný výraz pro vyhledávání",
     "invalid-url": "Neplatné URL",
     "invalid-event": "Invalid event: %1",

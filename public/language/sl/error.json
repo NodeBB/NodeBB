@@ -25,6 +25,8 @@
     "invalid-password": "Napačno geslo",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Prosimo, vpišite uporabniško ime in geslo.",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Napačen iskalni izraz",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

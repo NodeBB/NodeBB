@@ -25,6 +25,8 @@
     "invalid-password": "Mật Khẩu Không Hợp Lệ",
     "invalid-login-credentials": "Thông tin đăng nhập không hợp lệ",
     "invalid-username-or-password": "Hãy nhập tên đăng nhập và mật khẩu cụ thể",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Cụm từ tìm kiếm không hợp lệ",
     "invalid-url": "URL không đúng",
     "invalid-event": "Sự kiện không hợp lệ: %1",

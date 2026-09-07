@@ -25,6 +25,8 @@
     "invalid-password": "غلط پاس ورڈ",
     "invalid-login-credentials": "غلط تصدیقی معلومات",
     "invalid-username-or-password": "براہ کرم صارف نام اور پاس ورڈ درج کریں",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "غلط تلاش کا جملہ",
     "invalid-url": "غلط ایڈریس",
     "invalid-event": "غلط ایونٹ: %1",

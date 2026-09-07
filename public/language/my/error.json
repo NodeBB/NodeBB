@@ -25,6 +25,8 @@
     "invalid-password": "စကားဝှက် မမှန်ကန်ပါ",
     "invalid-login-credentials": "ဝင်ရောက်မှု အချက်အလက်များ မမှန်ကန်ပါ",
     "invalid-username-or-password": "ကျေးဇူးပြု၍ အကောင့်နာမည်နှင့် စကားဝှက် နှစ်ခုစလုံးကို သတ်မှတ်ပေးပါ",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "ရှာဖွေမှုဆိုင်ရာသတ်မှတ်ချက်များ မမှန်ကန်ပါ",
     "invalid-url": "URL မမှန်ကန်ပါ",
     "invalid-event": "ဖြစ်ရပ် မမှန်ကန်ပါ: %1",

@@ -25,6 +25,8 @@
     "invalid-password": "Password Salah",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Mohon spesifikasikan username dan password",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Kata pencarian salah",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

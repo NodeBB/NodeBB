@@ -25,6 +25,8 @@
     "invalid-password": "Yanlış şifrə",
     "invalid-login-credentials": "Yanlış giriş məlumatları",
     "invalid-username-or-password": "Zəhmət olmasa istifadəçi adı və şifrənizi daxil edin",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Yanlış axtarış termini",
     "invalid-url": "Yanlış URL",
     "invalid-event": "Yanlış hadisə: %1",

@@ -25,6 +25,8 @@
     "invalid-password": "Nederīga parole",
     "invalid-login-credentials": "Nederīgi ielogošanās dati",
     "invalid-username-or-password": "Lūdzu, norādi gan lietotājvārdu, gan paroli",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Nederīga meklēšanas frāze",
     "invalid-url": "Nederīga saite",
     "invalid-event": "Invalid event: %1",

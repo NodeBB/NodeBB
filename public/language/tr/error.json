@@ -25,6 +25,8 @@
     "invalid-password": "Geçersiz Şifre",
     "invalid-login-credentials": "Geçersiz giriş bilgileri",
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve şifre girin.",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Geçersiz arama sözcüğü",
     "invalid-url": "Geçersiz bağlantı",
     "invalid-event": "Geçersiz Aktivite: %1",

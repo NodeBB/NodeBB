@@ -25,6 +25,8 @@
     "invalid-password": "Անվավեր գաղտնաբառ",
     "invalid-login-credentials": "Անվավեր մուտքի հավատարմագրեր",
     "invalid-username-or-password": "Նշեք օգտվողի  և՛ անունը, և՛ գաղտնաբառը",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Անվավեր որոնման տերմին",
     "invalid-url": "Անվավեր URL",
     "invalid-event": "Անվավեր իրադարձություն՝ %1",

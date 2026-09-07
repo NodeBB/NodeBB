@@ -25,6 +25,8 @@
     "invalid-password": "Parolă Invalidă",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Te rugăm să specifici atât un nume de utilizator cât si o parolă",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Cuvânt de căutare invalid",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

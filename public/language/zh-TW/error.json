@@ -25,6 +25,8 @@
     "invalid-password": "無效密碼",
     "invalid-login-credentials": "無效登入憑證",
     "invalid-username-or-password": "請確認使用者名稱和密碼",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "無效的搜尋關鍵字",
     "invalid-url": "無效的 URL",
     "invalid-event": "Invalid event: %1",

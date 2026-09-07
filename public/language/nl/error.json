@@ -25,6 +25,8 @@
     "invalid-password": "Ongeldig wachtwoord",
     "invalid-login-credentials": "Ongeldige aanmeldingsreferenties",
     "invalid-username-or-password": "Geef zowel een gebruikersnaam als wachtwoord op",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Ongeldig zoekterm",
     "invalid-url": "Ongeldig web adres",
     "invalid-event": "Invalid event: %1",

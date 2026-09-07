@@ -25,6 +25,8 @@
     "invalid-password": "รหัสผ่านไม่ถูกต้อง",
     "invalid-login-credentials": "เซสชันการเข้าสู้ระบบหมดอายุ",
     "invalid-username-or-password": "กรุณาระบุชื่อผู้ใช้และรหัสผ่าน",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "ข้อความค้นหาไม่ถูกต้อง",
     "invalid-url": "URL ไม่ถูกต้อง",
     "invalid-event": "อีเว้นต์ไม่ถูกต้อง: %1",

@@ -25,6 +25,8 @@
     "invalid-password": "Fjalëkalim i pasaktë",
     "invalid-login-credentials": "Kredencialet e hyrjes të pasakta",
     "invalid-username-or-password": "Ju lutemi specifikoni një emër përdoruesi dhe fjalëkalimin.",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Term kërkimi i pasaktë",
     "invalid-url": "URL e pasaktë",
     "invalid-event": "Dicka shkoi keq: %1",

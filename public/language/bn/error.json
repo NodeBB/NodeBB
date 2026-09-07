@@ -25,6 +25,8 @@
     "invalid-password": "ভুল পাসওয়ার্ড",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "অনুগ্রহ পূর্বক ইউজারনেম এবং পাসওয়ার্ড উভয়ই প্রদান করুন",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "অগ্রহনযোগ্য সার্চ টার্ম",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

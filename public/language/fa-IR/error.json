@@ -25,6 +25,8 @@
     "invalid-password": "کلمه عبور نامعتبر است.",
     "invalid-login-credentials": "نام کاربری یا گذرواژه صحیح نیست",
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "کلمه جستجو نامعتبر است",
     "invalid-url": "URL نامعتبر",
     "invalid-event": "رویداد: %1 نامعتبر",

@@ -25,6 +25,8 @@
     "invalid-password": "Virheellinen salasana",
     "invalid-login-credentials": "Virheelliset kirjautumistiedot",
     "invalid-username-or-password": "Syötä molemmat, käyttäjätunnus ja salasana",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Virheellinen hakutermi",
     "invalid-url": "Virheellinen URL-osoite",
     "invalid-event": "Invalid event: %1",

@@ -25,6 +25,8 @@
     "invalid-password": "Неправильный пароль",
     "invalid-login-credentials": "Неправильный логин или пароль",
     "invalid-username-or-password": "Пожалуйста, укажите имя пользователя и пароль",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Некорректный поисковый запрос",
     "invalid-url": "Некорректный URL",
     "invalid-event": "Недействительное событие: %1",

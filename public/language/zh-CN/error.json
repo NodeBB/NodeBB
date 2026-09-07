@@ -25,6 +25,8 @@
     "invalid-password": "无效密码",
     "invalid-login-credentials": "无效登录凭证",
     "invalid-username-or-password": "请确认用户名和密码",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "无效的搜索关键字",
     "invalid-url": "无效的 URL",
     "invalid-event": "无效的事件：%1",

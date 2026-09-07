@@ -25,6 +25,8 @@
     "invalid-password": "Άκυρος Κωδικός",
     "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Παρακαλώ γράψε το όνομα χρήστη και τον κωδικό",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Άκυρος όρος αναζήτησης",
     "invalid-url": "Invalid URL",
     "invalid-event": "Invalid event: %1",

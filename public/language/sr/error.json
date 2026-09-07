@@ -25,6 +25,8 @@
     "invalid-password": "Неисправна лозинка",
     "invalid-login-credentials": "Неважећи акредитиви за пријављивање",
     "invalid-username-or-password": "Молимо наведите и корисничко име и лозинку",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Неисправан упит за претрагу",
     "invalid-url": "Неважећа адреса",
     "invalid-event": "Неважећи догађај: %1",

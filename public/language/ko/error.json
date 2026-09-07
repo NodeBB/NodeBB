@@ -25,6 +25,8 @@
     "invalid-password": "잘못된 비밀번호",
     "invalid-login-credentials": "로그인 자격 증명이 올바르지 않습니다",
     "invalid-username-or-password": "사용자 이름과 비밀번호를 모두 지정하세요",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "잘못된 검색어",
     "invalid-url": "잘못된 URL",
     "invalid-event": "잘못된 이벤트: %1",

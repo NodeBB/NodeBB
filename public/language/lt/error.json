@@ -25,6 +25,8 @@
     "invalid-password": "Klaidingas slaptažodis",
     "invalid-login-credentials": "Blogi prisijungimo duomenys",
     "invalid-username-or-password": "Prašome nurodyti tiek vartotojo vardą, tiek ir slaptažodį",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Neteisingas paieškos terminas",
     "invalid-url": "Neteisingas URL",
     "invalid-event": "Invalid event: %1",

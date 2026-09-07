@@ -25,6 +25,8 @@
     "invalid-password": "Błędne hasło",
     "invalid-login-credentials": "Niewłaściwe dane logowania",
     "invalid-username-or-password": "Podaj nazwę użytkownika i hasło",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Błędne szukane wyrażenie",
     "invalid-url": "Błąd w adresie URL",
     "invalid-event": "Nieprawidłowe zdarzenie: %1",

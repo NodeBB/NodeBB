@@ -25,6 +25,8 @@
     "invalid-password": "Érvénytelen jelszó",
     "invalid-login-credentials": "Érvénytelen belépési hitelesítés",
     "invalid-username-or-password": "Kérlek, adj meg egy felhasználónevet és egy jelszót",
+    "username-required": "Please enter your username",
+    "password-required": "Please enter your password",
     "invalid-search-term": "Érvénytelen keresési feltétel",
     "invalid-url": "Érvénytelen URL",
     "invalid-event": "Érvénytelen esemény: %1",
