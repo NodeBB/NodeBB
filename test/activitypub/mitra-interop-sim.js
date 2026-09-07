@@ -138,8 +138,12 @@ describe('Mitra-style incoming RFC 9421 request (interop simulation)', () => {
 	it('should verify when the signed @target-uri host differs from the configured URL (host mismatch)', async () => {
 		// Mitra signs the URL it dialed. If that differs from NodeBB's configured
 		// origin (reverse proxy, port, www vs. non-www, IP vs. domain), the
-		// target URI is reconstructed from the Host header instead
-		const dialedUrl = 'https://nodebb.example/uid/1/inbox';
+		// target URI is reconstructed from the Host header instead. The scheme
+		// comes from the (simulated) connection protocol, not the configured URL,
+		// so this stays correct for any test config (http or https, with or
+		// without a relative path)
+		const relativePath = nconf.get('relative_path') || '';
+		const dialedUrl = `https://nodebb.example${relativePath}/uid/1/inbox`;
 		const body = JSON.stringify({ id: 'https://mitra.example/activities/125', type: 'Announce', actor: 'https://mitra.example/users/alice', object: 'https://mitra.example/statuses/abc' });
 		const bodyBuf = Buffer.from(body, 'utf8');
 		const digestB64 = createHash('sha256').update(bodyBuf).digest('base64');
@@ -164,6 +168,8 @@ describe('Mitra-style incoming RFC 9421 request (interop simulation)', () => {
 			method: 'POST',
 			originalUrl: '/uid/1/inbox',
 			url: '/uid/1/inbox',
+			// Simulates a TLS-terminated dialed connection (express req.protocol)
+			protocol: 'https',
 			ip: '203.0.113.7',
 			rawBody: bodyBuf,
 			body: JSON.parse(body),
