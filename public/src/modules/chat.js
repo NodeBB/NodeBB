@@ -106,11 +106,13 @@ define('chat', [
 				const html = await app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms });
 				const listEl = chatsListEl.get(0);
 
-				const prevFirstRoom = getFirstRoomKey(listEl);
+				const prevFirstRoom = listEl.querySelector('[data-roomid]');
+				const prevFirstRoomKey = prevFirstRoom && `${prevFirstRoom.getAttribute('data-roomid')}:${prevFirstRoom.classList.contains('unread')}`;
 				chatsListEl.find('*').not('.navigation-link').remove();
 				chatsListEl.prepend(html);
-				if (prevFirstRoom && prevFirstRoom !== getFirstRoomKey(listEl)) {
-					// new or updated chat at the top, scroll it into view
+				const firstRoom = listEl.querySelector('[data-roomid]');
+				const firstRoomKey = firstRoom && `${firstRoom.getAttribute('data-roomid')}:${firstRoom.classList.contains('unread')}`;
+				if (prevFirstRoomKey && prevFirstRoomKey !== firstRoomKey) {
 					listEl.scrollTop = 0;
 				}
 				chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
@@ -141,14 +143,6 @@ define('chat', [
 			});
 		}).catch(alerts.error);
 	};
-
-	function getFirstRoomKey(listEl) {
-		const firstRoom = listEl.querySelector('[data-roomid]');
-		if (!firstRoom) {
-			return null;
-		}
-		return `${firstRoom.getAttribute('data-roomid')}:${firstRoom.classList.contains('unread')}`;
-	}
 
 	function onMarkReadClicked(e) {
 		const subselector = e.target.closest('.mark-read');
