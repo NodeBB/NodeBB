@@ -12,12 +12,12 @@ get:
             type: object
             properties:
               status:
-                $ref: ../../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
                 properties:
                   hashtags:
-                    $ref: ../../../../components/schemas/admin/hashtags.yaml#/HashtagsArray
+                    $ref: ../../../components/schemas/admin/hashtags.yaml#/HashtagsArray
                   relay:
                     type: string
                     description: Current relay host
@@ -53,8 +53,8 @@ post:
             type: object
             properties:
               status:
-                $ref: ../../../../components/schemas/Status.yaml#/Status
+                $ref: ../../../components/schemas/Status.yaml#/Status
               response:
-                $ref: ../../../../components/schemas/admin/hashtags.yaml#/HashtagsArray
+                $ref: ../../../components/schemas/admin/hashtags.yaml#/HashtagsArray
     "400":
       description: Invalid request data

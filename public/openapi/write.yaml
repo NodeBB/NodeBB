@@ -318,6 +318,12 @@ paths:
     $ref: 'write/admin/activitypub/blocklists/url.yaml'
   /admin/activitypub/blocklists/{url}/refresh:
     $ref: 'write/admin/activitypub/blocklists/url/refresh.yaml'
+  /admin/activitypub/hashtags:
+    $ref: 'write/admin/activitypub/hashtags.yaml'
+  /admin/activitypub/hashtags/{tag}:
+    $ref: 'write/admin/activitypub/hashtags/tag.yaml'
+  /admin/activitypub/hashtags/relay:
+    $ref: 'write/admin/activitypub/hashtags/relay.yaml'
   /admin/plugins/{pluginId}:
     $ref: 'write/admin/plugins/pluginId.yaml'
   /admin/plugins/{pluginId}/active:
