@@ -28,6 +28,7 @@ Actors.application = async function (req, res) {
 		url: `${nconf.get('url')}/actor`,
 		inbox: `${nconf.get('url')}/inbox`,
 		outbox: `${nconf.get('url')}/outbox`,
+		following: `${nconf.get('url')}/actor/following`,
 		attributedTo: `${nconf.get('url')}/actor/admins`,
 
 		type: 'Application',
@@ -47,6 +48,29 @@ Actors.application = async function (req, res) {
 			publicKeyPem: publicKey,
 		},
 	});
+};
+
+Actors.following = async function (req, res) {
+	const count = await db.sortedSetCard('followingRemote:0');
+	const collection = await activitypub.helpers.generateCollection({
+		set: 'followingRemote:0',
+		count,
+		perPage: 50,
+		page: req.query.page,
+		url: `${nconf.get('url')}/actor/following`,
+	});
+
+	if (collection.hasOwnProperty('orderedItems')) {
+		collection.orderedItems = collection.orderedItems.map((actorUri) => {
+			if (utils.isNumber(actorUri)) {
+				return `${nconf.get('url')}/uid/${actorUri}`;
+			}
+
+			return actorUri;
+		});
+	}
+
+	res.status(200).json(collection);
 };
 
 Actors.user = async function (req, res) {

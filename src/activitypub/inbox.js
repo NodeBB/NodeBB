@@ -845,7 +845,7 @@ inbox.accept = async (req) => {
 	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
 	if (object.id === `${nconf.get('url')}/actor`) {
 		return activitypub.relays.handshake(req.body);
-	} else if (!['user', 'category'].includes(localType)) {
+	} else if (!['user', 'category', 'application'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -878,6 +878,18 @@ inbox.accept = async (req) => {
 				db.sortedSetRemove(`followRequests:cid.${id}`, actor),
 				db.sortedSetAdd(`cid:${id}:following`, timestamp, actor),
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, `cid|${id}`), // for notes assertion checking
+			]);
+		} else if (localType === 'application') {
+			// Instance actor follow acceptance
+			if (!await db.isSortedSetMember('followRequests:uid.0', actor)) {
+				if (await db.isSortedSetMember('followingRemote:0', actor)) return; // already following
+				throw new Error('[[error:invalid-data]]'); // not following, not requested, so reject to hopefully stop retries
+			}
+			const timestamp = await db.sortedSetScore('followRequests:uid.0', actor);
+			await Promise.all([
+				db.sortedSetRemove('followRequests:uid.0', actor),
+				db.sortedSetAdd('followingRemote:0', timestamp, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, 0), // for followers backreference
 			]);
 		}
 
@@ -915,7 +927,14 @@ inbox.undo = async (req) => {
 		case 'Follow': {
 			switch (localType) {
 				case 'application': {
+					// Relay unfollow
 					await activitypub.relays.removeFollower(actor);
+					// Generic instance-actor unfollow
+					await Promise.all([
+						db.sortedSetRemove('followingRemote:0', actor),
+						db.sortedSetRemove('followRequests:uid.0', actor),
+						db.sortedSetRemove(`followersRemote:${actor}`, 0),
+					]);
 					break;
 				}
 
