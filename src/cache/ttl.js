@@ -19,7 +19,6 @@ module.exports = function (opts) {
 	cache.hits = 0;
 	cache.misses = 0;
 	cache.enabled = opts.hasOwnProperty('enabled') ? opts.enabled : true;
-	const cacheSet = ttlCache.set;
 
 	// expose properties
 	const propertyMap = new Map([
@@ -38,6 +37,8 @@ module.exports = function (opts) {
 		});
 	});
 
+	const versions = new Map();
+
 	cache.has = function (key) {
 		if (!cache.enabled) {
 			return false;
@@ -54,20 +55,68 @@ module.exports = function (opts) {
 		if (ttl) {
 			opts.ttl = ttl;
 		}
-		cacheSet.apply(ttlCache, [key, value, opts]);
+		ttlCache.set(key, value, opts);
 	};
 
-	cache.get = function (key) {
+	cache.get = function (key, loader) {
 		if (!cache.enabled) {
 			return undefined;
 		}
 		const data = ttlCache.get(key);
-		if (data === undefined) {
-			cache.misses += 1;
-		} else {
+		if (data !== undefined) {
 			cache.hits += 1;
+			return data;
 		}
-		return data;
+		cache.misses += 1;
+		if (!loader) {
+			return undefined;
+		}
+		const version = versions.get(key) || 0;
+		return Promise.resolve().then(() => loader()).then((value) => {
+			if (versions.get(key) === version) {
+				cache.set(key, value);
+			}
+			return value;
+		});
+	};
+
+	cache.getMany = function (keys, loader) {
+		if (!cache.enabled) {
+			return [];
+		}
+
+		const data = new Array(keys.length);
+		const uncachedKeys = [];
+		const uncachedIndexes = [];
+		const getManyVersions = new Map();
+
+		keys.forEach((key, index) => {
+			data[index] = cache.get(key);
+
+			if (data[index] === undefined) {
+				uncachedKeys.push(key);
+				uncachedIndexes.push(index);
+				getManyVersions.set(key, versions.get(key) || 0);
+			}
+		});
+
+		if (!loader || !uncachedKeys.length) {
+			return data;
+		}
+
+		return Promise.resolve().then(() => loader(uncachedKeys)).then((values) => {
+			uncachedKeys.forEach((key, index) => {
+				const value = values[index];
+
+				data[uncachedIndexes[index]] = value;
+
+				if ((versions.get(key) || 0) === getManyVersions.get(key)) {
+					cache.set(key, value);
+				}
+			});
+
+			return data;
+		});
 	};
 
 	cache.del = function (keys) {
@@ -77,8 +126,9 @@ module.exports = function (opts) {
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		pubsub.publish(`${cache.name}:ttlCache:del`, keys);
-		keys.forEach(key => ttlCache.delete(key));
+
+		localDel(keys);
+		pubsub.publish(`${cache.name}:ttlCache:del`, { id: `${os.hostname()}:${process.pid}`, keys });
 	};
 	cache.delete = cache.del;
 
@@ -96,39 +146,24 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
+	function localDel(keys) {
+		keys.forEach((key) => {
+			versions.set(key, (versions.get(key) || 0) + 1);
+			ttlCache.delete(key);
+		});
+	}
+
 	pubsub.on(`${cache.name}:ttlCache:reset`, ({ id }) => {
 		if (id !== `${os.hostname()}:${process.pid}`) {
 			localReset();
 		}
 	});
 
-	pubsub.on(`${cache.name}:ttlCache:del`, (keys) => {
-		if (Array.isArray(keys)) {
-			keys.forEach(key => ttlCache.delete(key));
+	pubsub.on(`${cache.name}:ttlCache:del`, ({ id, keys }) => {
+		if (id !== `${os.hostname()}:${process.pid}` && Array.isArray(keys)) {
+			localDel(keys);
 		}
 	});
-
-	cache.getUnCachedKeys = function (keys, cachedData) {
-		if (!cache.enabled) {
-			return keys;
-		}
-		let data;
-		let isCached;
-		const unCachedKeys = keys.filter((key) => {
-			data = cache.get(key);
-			isCached = data !== undefined;
-			if (isCached) {
-				cachedData[key] = data;
-			}
-			return !isCached;
-		});
-
-		const hits = keys.length - unCachedKeys.length;
-		const misses = keys.length - hits;
-		cache.hits += hits;
-		cache.misses += misses;
-		return unCachedKeys;
-	};
 
 	cache.dump = function () {
 		return Array.from(ttlCache.entries());

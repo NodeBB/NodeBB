@@ -132,10 +132,9 @@ module.exports = function (module) {
 		if (!key || !field) {
 			return null;
 		}
-		const cachedData = {};
-		cache.getUnCachedKeys([key], cachedData);
-		if (cachedData[key]) {
-			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
+		const cachedData = cache.get(key);
+		if (cachedData !== undefined) {
+			return cachedData?.hasOwnProperty(field) ? cachedData[field] : null;
 		}
 
 		const res = await module.pool.query({
@@ -167,10 +166,7 @@ SELECT h."data"->>$2::TEXT f
 			return [];
 		}
 
-		const cachedData = {};
-		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
-
-		if (unCachedKeys.length) {
+		const cachedData = await cache.getMany(keys, async (unCachedKeys) => {
 			const res = await module.pool.query({
 				name: 'getObjectsFields',
 				text: `
@@ -185,18 +181,14 @@ SELECT h."data"
 				values: [unCachedKeys],
 			});
 			const data = res.rows.map(row => row.data);
-
-			unCachedKeys.forEach((key, i) => {
-				cachedData[key] = data[i] || null;
-				cache.set(key, cachedData[key]);
-			});
-		}
+			return data;
+		});
 
 		if (!Array.isArray(fields) || !fields.length) {
-			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+			return cachedData.map(data => (data ? { ...data } : null));
 		}
-		return keys.map((key) => {
-			const item = cachedData[key] || {};
+		return cachedData.map((data) => {
+			const item = data || {};
 			const result = {};
 			fields.forEach((field) => {
 				result[field] = item[field] !== undefined ? item[field] : null;
