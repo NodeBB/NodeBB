@@ -1,5 +1,6 @@
 'use strict';
 
+const nconf = require('nconf');
 const db = require('../database');
 
 const activitypub = module.parent.exports;
@@ -15,7 +16,7 @@ const relayTemplates = {
 };
 
 Hashtags.getRelay = async () => {
-	return await db.get(RELAY_KEY);
+	return await db.get(RELAY_KEY) || 'relay.fedi.buzz';
 };
 
 Hashtags.setRelay = async (host) => {
@@ -46,12 +47,8 @@ Hashtags.resolveActor = (tag, relay) => {
 	return template.replace('{tag}', encodeURIComponent(tag));
 };
 
-Hashtags.follow = async (tag) => {
+Hashtags.follow = async (tag, cid) => {
 	const relay = await Hashtags.getRelay();
-	if (!relay) {
-		throw new Error('[[error:activitypub.hashtag.no-relay-configured]]');
-	}
-
 	const actor = Hashtags.resolveActor(tag, relay);
 
 	// Check if already followed
@@ -60,8 +57,20 @@ Hashtags.follow = async (tag) => {
 		return existing;
 	}
 
-	// Send Follow activity via instance actor
-	await activitypub.out.follow('uid', 0, actor);
+	const now = Date.now();
+
+	// Send Follow activity via instance actor (bypass actors.assert for hashtag actors)
+	await activitypub.send('uid', 0, actor, {
+		'@context': [
+			'https://www.w3.org/ns/activitystreams',
+			'https://pleroma.example/schemas/litepub-0.1.jsonld',
+		],
+		id: `${nconf.get('url')}/actor#activity/follow/${encodeURIComponent(actor)}/${now}`,
+		type: 'Follow',
+		to: [actor],
+		object: actor,
+		state: 'pending',
+	});
 
 	// Store record
 	const record = {
@@ -69,10 +78,15 @@ Hashtags.follow = async (tag) => {
 		relay,
 		actor,
 		state: 'pending',
-		createdAt: Date.now(),
+		createdAt: now,
 	};
 	await db.setObject(`ap:hashtag:${tag}`, record);
-	await db.sortedSetAdd(FOLLOWED_KEY, Date.now(), tag);
+	await db.sortedSetAdd(FOLLOWED_KEY, now, tag);
+
+	// Create auto-categorization rule if category provided
+	if (cid) {
+		await activitypub.rules.upsert('hashtag', tag, cid, 0);
+	}
 
 	return record;
 };
@@ -83,8 +97,38 @@ Hashtags.unfollow = async (tag) => {
 		return false;
 	}
 
-	// Undo Follow via instance actor
-	await activitypub.out.undo.follow('uid', 0, record.actor);
+	const now = Date.now();
+
+	// Undo Follow via instance actor (bypass actors.assert for hashtag actors)
+	await activitypub.send('uid', 0, record.actor, {
+		'@context': [
+			'https://www.w3.org/ns/activitystreams',
+			'https://pleroma.example/schemas/litepub-0.1.jsonld',
+		],
+		id: `${nconf.get('url')}/actor#activity/undo:follow/${encodeURIComponent(record.actor)}/${now}`,
+		type: 'Undo',
+		to: [record.actor],
+		published: new Date(now).toISOString(),
+		object: {
+			'@context': [
+				'https://www.w3.org/ns/activitystreams',
+				'https://pleroma.example/schemas/litepub-0.1.jsonld',
+			],
+			id: `${nconf.get('url')}/actor#activity/follow/${encodeURIComponent(record.actor)}/${record.createdAt}`,
+			type: 'Follow',
+			actor: `${nconf.get('url')}/actor`,
+			to: [record.actor],
+			object: record.actor,
+			state: 'cancelled',
+		},
+	});
+
+	// Remove auto-categorization rule
+	const rules = await activitypub.rules.list();
+	const rule = rules.find(r => r.type === 'hashtag' && r.value === tag);
+	if (rule) {
+		await activitypub.rules.delete(rule.rid);
+	}
 
 	// Remove record
 	await Promise.all([
@@ -107,7 +151,7 @@ Hashtags.list = async () => {
 };
 
 Hashtags.get = async (tag) => {
-	const exists = await db.sortedSetMember(FOLLOWED_KEY, tag);
+	const exists = await db.isSortedSetMember(FOLLOWED_KEY, tag);
 	if (!exists) {
 		return null;
 	}

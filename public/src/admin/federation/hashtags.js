@@ -3,6 +3,7 @@
 import { post, del, put } from 'api';
 import { error, success } from 'alerts';
 import { render } from 'benchpress';
+import * as categorySelector from 'categorySelector';
 import * as modals from 'modals';
 
 export async function init() {
@@ -93,6 +94,8 @@ function throwModal() {
 				}
 				modal.modal('hide');
 			}).catch(error);
+
+			return false;
 		};
 
 		const modal = await modals.dialog({
@@ -109,6 +112,17 @@ function throwModal() {
 
 		modal.on('shown.bs.modal', function () {
 			modal.find('#hashtagTag').focus();
+		});
+
+		// category selector
+		categorySelector.init(modal.find('[component="category-selector"]'), {
+			onSelect: function (selectedCategory) {
+				modal.find('[name="cid"]').val(selectedCategory.cid);
+			},
+			cacheList: false,
+			showLinks: true,
+			template: 'admin/partials/category/selector-dropdown-right',
+			localOnly: true,
 		});
 	});
 }
