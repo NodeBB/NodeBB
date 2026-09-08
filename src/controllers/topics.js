@@ -227,12 +227,10 @@ async function markAsRead(req, tid) {
 
 async function loadCrosspostPrivilege(req, excludeCid) {
 	excludeCid = String(excludeCid || '');
-	let cidsUserCanCrosspost = crosspostCache.get(`uid:${req.uid}`);
-	if (cidsUserCanCrosspost === undefined) {
+	const cidsUserCanCrosspost = await crosspostCache.get(`uid:${req.uid}`, async () => {
 		const cids = await categories.getAllCidsFromSet('categories:cid');
-		cidsUserCanCrosspost = await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
-		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost);
-	}
+		return await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
+	});
 	return cidsUserCanCrosspost.some(cid => cid !== excludeCid);
 }
 
