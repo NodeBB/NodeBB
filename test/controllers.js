@@ -2136,6 +2136,31 @@ describe('Controllers', () => {
 			assert.deepStrictEqual(selectedCids, [category2.cid]);
 			assert.strictEqual(selectedCategory.cid, category2.cid);
 		});
+
+		describe('.buildTitle()', () => {
+			it('should not prefix a right-to-left mark for ltr languages', async () => {
+				const title = await controllerHelpers.buildTitle('shishko', 'en-GB', 'chats');
+				assert(!title.startsWith('\u200F'));
+				assert(title.startsWith('shishko | '));
+			});
+
+			it('should prefix a right-to-left mark for rtl languages', async () => {
+				const title = await controllerHelpers.buildTitle('shishko', 'he', 'chats');
+				assert(title.startsWith('\u200Fshishko | '));
+			});
+
+			it('should not double the right-to-left mark if the layout already has one', async () => {
+				const oldLayout = meta.config.titleLayout;
+				meta.config.titleLayout = '\u200F{pageTitle} | {browserTitle}';
+				try {
+					const title = await controllerHelpers.buildTitle('shishko', 'he', 'chats');
+					assert(title.startsWith('\u200Fshishko | '));
+					assert(!title.startsWith('\u200F\u200F'));
+				} finally {
+					meta.config.titleLayout = oldLayout;
+				}
+			});
+		});
 	});
 
 	after((done) => {
