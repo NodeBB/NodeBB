@@ -52,7 +52,7 @@
 			<div class="col-lg-9">
 				<div class="tab-content">
 					<div class="tab-pane fade" id="trending">
-						<div class="alert alert-info no-plugins {{{ if !trending.length }}}hide{{{ end }}}">{{tx("admin/extend/plugins:none-found")}}</div>
+						<div class="alert alert-info no-plugins {{{ if trending.length }}}hide{{{ end }}}">{{tx("admin/extend/plugins:none-found")}}</div>
 						<ul class="trending list-unstyled">
 							{{{ each trending }}}
 							<!-- IMPORT admin/partials/installed_plugin_item.tpl -->
