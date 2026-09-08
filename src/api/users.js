@@ -623,7 +623,8 @@ usersAPI.search = async function (caller, data) {
 			searchBy === 'email' ||
 			filters.includes('banned') ||
 			filters.includes('muted') ||
-			filters.includes('flagged')
+			filters.includes('flagged') ||
+			data.sortBy === 'flags'
 		) && !isPrivileged)
 	) {
 		throw new Error('[[error:no-privileges]]');

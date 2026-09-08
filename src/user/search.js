@@ -11,7 +11,7 @@ const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (User) {
-	const validSorts = new Set(['joindate', 'lastonline', 'postcount', 'reputation']);
+	const validSorts = new Set(['joindate', 'lastonline', 'postcount', 'reputation', 'flags']);
 
 	const filterFnMap = {
 		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
