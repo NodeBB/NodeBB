@@ -1,0 +1,60 @@
+get:
+  tags:
+    - admin
+  summary: Get followed hashtags
+  description: Returns the list of followed hashtags and relay configuration
+  responses:
+    "200":
+      description: List of followed hashtags
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  hashtags:
+                    $ref: ../../../../components/schemas/admin/hashtags.yaml#/HashtagsArray
+                  relay:
+                    type: string
+                    description: Current relay host
+                    example: relay.fedi.buzz
+post:
+  tags:
+    - admin
+  summary: Follow a hashtag
+  description: Follow a hashtag actor via the configured relay and optionally create an auto-categorization rule
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - tag
+          properties:
+            tag:
+              type: string
+              description: The hashtag name without the # symbol
+              example: nodebb
+            cid:
+              type: number
+              description: Category ID for auto-categorization (optional)
+              example: 1
+  responses:
+    "200":
+      description: Hashtag followed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/admin/hashtags.yaml#/HashtagsArray
+    "400":
+      description: Invalid request data
