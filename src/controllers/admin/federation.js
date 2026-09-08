@@ -131,6 +131,23 @@ async function getActivitiesByType() {
 	return Object.fromEntries(results.map(({ type, count }) => [type, count]));
 }
 
+federationController.hashtags = async function (req, res) {
+	const hashtags = await activitypub.hashtags.list();
+	const relay = await activitypub.hashtags.getRelay();
+	const relayOptions = activitypub.hashtags.getRelayOptions();
+
+	hashtags.forEach((h) => {
+		h.stateClass = h.state === 'pending' ? 'warning' : (h.state === 'active' ? 'success' : 'danger');
+	});
+
+	res.render('admin/federation/hashtags', {
+		title: '[[admin/menu:federation/hashtags]]',
+		hashtags,
+		relay,
+		relayOptions,
+	});
+};
+
 federationController.errors = async function (req, res) {
 	const { hostname: filterHostname, type: filterType } = req.query;
 	let errors = await db.getSortedSetRevRangeByScoreWithScores('ap.errors', 0, -1, Date.now(), '-inf');
