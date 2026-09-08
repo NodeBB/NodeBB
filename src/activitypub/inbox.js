@@ -891,6 +891,8 @@ inbox.accept = async (req) => {
 				db.sortedSetAdd('followingRemote:0', timestamp, actor),
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, 0), // for followers backreference
 			]);
+			// Transition hashtag follow state to active
+			await activitypub.hashtags.updateState(actor, 'active');
 		}
 
 		activitypub.actors._followerCache.del(actor);
@@ -935,6 +937,8 @@ inbox.undo = async (req) => {
 						db.sortedSetRemove('followRequests:uid.0', actor),
 						db.sortedSetRemove(`followersRemote:${actor}`, 0),
 					]);
+					// Transition hashtag follow state to error
+					await activitypub.hashtags.updateState(actor, 'error');
 					break;
 				}
 
@@ -1054,4 +1058,9 @@ inbox.reject = async (req) => {
 		db.sortedSetRemove('ap:retry:queue', queueId),
 		db.delete(`ap:retry:queue:${queueId}`),
 	]);
+
+	// Transition hashtag follow state to error if this is a rejected Follow from instance actor
+	if (type === 'Follow' && id === `${nconf.get('url')}/actor`) {
+		await activitypub.hashtags.updateState(actor, 'error');
+	}
 };
