@@ -246,14 +246,23 @@ Admin.activitypub.getHashtags = async (req, res) => {
 };
 
 Admin.activitypub.addHashtag = async (req, res) => {
-	let { tag } = req.body;
+	let { tag, cid } = req.body;
 
 	if (!tag || !tag.trim()) {
 		return helpers.formatApiResponse(400, res);
 	}
 	tag = tag.trim().toLowerCase();
 
-	await activitypub.hashtags.follow(tag);
+	if (cid) {
+		cid = parseInt(cid, 10);
+		const categories = require('../../categories');
+		const exists = await categories.exists(cid);
+		if (!exists) {
+			return helpers.formatApiResponse(400, res);
+		}
+	}
+
+	await activitypub.hashtags.follow(tag, cid);
 	helpers.formatApiResponse(200, res, await activitypub.hashtags.list());
 };
 

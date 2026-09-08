@@ -121,6 +121,8 @@
 	"hashtags.follow": "Follow Hashtag",
 	"hashtags.modal.tag": "Hashtag",
 	"hashtags.modal.tag-help": "Enter the hashtag name without the # symbol (e.g., nodebb).",
+	"hashtags.modal.category": "Category",
+	"hashtags.modal.category-help": "Select a category to auto-route matching content.",
 	"hashtags.state-pending": "Pending",
 	"hashtags.state-active": "Active",
 	"hashtags.state-error": "Error",
