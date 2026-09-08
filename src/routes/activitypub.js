@@ -33,6 +33,7 @@ module.exports = function (app, middleware, controllers) {
 	];
 
 	app.get('/actor', middlewares, helpers.tryRoute(controllers.activitypub.actors.application));
+	app.get('/actor/following', middlewares, helpers.tryRoute(controllers.activitypub.actors.following));
 	app.get('/actor/admins', middlewares, helpers.tryRoute(controllers.activitypub.getAdmins));
 	app.post('/inbox', [...middlewares, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 
