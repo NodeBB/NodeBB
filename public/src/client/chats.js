@@ -755,7 +755,7 @@ define('forum/chats', [
 			roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
 			roomEl.find('.timeago').timeago();
 			moveChatAndHrToTop(roomEl);
-		} else if (parseInt(ajaxify.data.uid, 10) === parseInt(app.user.uid, 10)) {
+		} else if (String(ajaxify.data.uid) === String(app.user.uid)) {
 			// The room isn't on screen, so it has to be fetched -- but `GET /chats`
 			// returns the *viewer's* rooms, which have no business being spliced
 			// into a list that is showing another user's rooms.
