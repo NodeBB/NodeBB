@@ -240,7 +240,7 @@ function addTags(categoryData, res, currentPage) {
 	res.locals.linkTags = [
 		{
 			rel: 'up',
-			href: url,
+			href: categoryData.parent ? `${url}/category/${categoryData.parent.slug}` : url,
 		},
 		{
 			rel: 'canonical',
