@@ -1074,4 +1074,45 @@ describe('Messaging Library', () => {
 			assert(second.timestamp > second.prevTimestamp);
 		});
 	});
+
+	describe('.isRoomMember()', () => {
+		const plugins = require('../src/plugins');
+		let memberRoomId;
+
+		before(async () => {
+			memberRoomId = await Messaging.newRoom(mocks.users.foo.uid, {
+				uids: [mocks.users.bar.uid],
+			});
+		});
+
+		it('should report actual membership', async () => {
+			assert.strictEqual(await Messaging.isRoomMember(mocks.users.foo.uid, memberRoomId), true);
+			assert.strictEqual(await Messaging.isRoomMember(mocks.users.herp.uid, memberRoomId), false);
+		});
+
+		it('should accept an array of roomIds', async () => {
+			assert.deepStrictEqual(
+				await Messaging.isRoomMember(mocks.users.bar.uid, [memberRoomId, 0]),
+				[true, false]
+			);
+		});
+
+		it('should not be overridable via filter:messaging.isUserInRoom', async () => {
+			plugins.hooks.register('my-test-plugin', {
+				hook: 'filter:messaging.isUserInRoom',
+				method: async data => ({ ...data, inRoom: true }),
+			});
+
+			try {
+				assert.strictEqual(
+					await Messaging.isUserInRoom(mocks.users.herp.uid, memberRoomId), true
+				);
+				assert.strictEqual(
+					await Messaging.isRoomMember(mocks.users.herp.uid, memberRoomId), false
+				);
+			} finally {
+				plugins.hooks.unregister('my-test-plugin', 'filter:messaging.isUserInRoom');
+			}
+		});
+	});
 });
