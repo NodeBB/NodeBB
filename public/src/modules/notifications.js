@@ -29,6 +29,14 @@ define('notifications', [
 	});
 	hooks.on('filter:notifications.load', _addTimeagoString);
 
+	function getFirstNotifKey(listEl) {
+		const firstNotif = listEl.querySelector('[data-nid]');
+		if (!firstNotif) {
+			return null;
+		}
+		return `${firstNotif.getAttribute('data-nid')}:${firstNotif.classList.contains('unread')}`;
+	}
+
 	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
 		// backwards compatibilty for old signature (notifList, callback)
 		if (triggerEl && typeof notifList === 'function') {
@@ -47,7 +55,12 @@ define('notifications', [
 
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
+					const prevFirstNotif = getFirstNotifKey(notifList.get(0));
 					notifList.html(html);
+					if (prevFirstNotif && prevFirstNotif !== getFirstNotifKey(notifList.get(0))) {
+						// new or updated notification at the top, scroll it into view
+						notifList.get(0).scrollTop = 0;
+					}
 					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
 						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
