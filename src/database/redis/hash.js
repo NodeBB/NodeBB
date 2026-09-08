@@ -101,7 +101,10 @@ module.exports = function (module) {
 		}
 		const cachedData = cache.get(key);
 		if (cachedData !== undefined) {
-			return cachedData?.hasOwnProperty(field) ? cachedData[field] : null;
+			if (cachedData !== null && typeof cachedData === 'object') {
+				return Object.hasOwn(cachedData, field) ? cachedData[field] : null;
+			}
+			return null;
 		}
 		return await module.client.hGet(key, String(field));
 	};
