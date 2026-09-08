@@ -224,14 +224,19 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 	// First pass loads only what the query is actually matched against, so the
 	// expensive hydration (teasers, unread counts, membership, ...) can be limited
 	// to the rooms that matched instead of running over the user's entire chat list.
-	const [names, users] = await Promise.all([
-		Messaging.getRoomsData(roomIds, ['roomName']),
+	const rooms = await Messaging.getRoomsData(roomIds, ['roomName', 'public']);
+	const [users, contentMatches] = await Promise.all([
 		getUsers(roomIds, uid),
+		searchMessageContent(uid, roomIds, rooms, query),
 	]);
 
 	const lowerQuery = String(query).toLowerCase();
-	const matchedIndices = roomIds.reduce((matched, roomId, idx) => {
-		const roomName = names[idx] && names[idx].roomName;
+	const matchedIndices = [];
+	// a room matched only by message content shows that message instead of its last
+	// one, otherwise the row would carry a teaser with no trace of the query in it
+	const teaserOverrides = [];
+	roomIds.forEach((roomId, idx) => {
+		const roomName = rooms[idx] && rooms[idx].roomName;
 		const titleMatch = roomName && roomName.toLowerCase().includes(lowerQuery);
 
 		const usernameMatch = !titleMatch && (users[idx] || []).some(user => user && (
@@ -239,18 +244,22 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 			(user.username && user.username.toLowerCase().includes(lowerQuery))
 		));
 
+		const contentMatch = contentMatches.get(String(roomId));
 		if (titleMatch || usernameMatch) {
-			matched.push(idx);
+			matchedIndices.push(idx);
+			teaserOverrides.push(null);
+		} else if (contentMatch) {
+			matchedIndices.push(idx);
+			teaserOverrides.push(contentMatch);
 		}
-		return matched;
-	}, []);
+	});
 
 	const matchedRoomIds = matchedIndices.map(idx => roomIds[idx]);
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(matchedRoomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, matchedRoomIds),
 		inRoom: Messaging.isUserInRoom(uid, matchedRoomIds),
-		teasers: Messaging.getTeasers(uid, matchedRoomIds),
+		teasers: getSearchTeasers(uid, matchedRoomIds, teaserOverrides),
 	});
 	// reuse the user lists already fetched for matching, kept aligned with roomData
 	results.users = matchedIndices.map(idx => users[idx]);
@@ -263,6 +272,125 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 		callerUid: callerUid,
 	});
 };
+
+// Matches the query against message content across every room the user is in.
+// The matching itself belongs to whichever plugin implements
+// `filter:messaging.searchMessages` (nodebb-plugin-dbsearch ships with core and
+// indexes chat messages); with no such plugin the hook yields nothing and search
+// degrades to matching room names and participants, as before.
+// Returns a map of roomId -> teaser for the best matching message in that room.
+async function searchMessageContent(uid, roomIds, rooms, query) {
+	const matches = new Map();
+	// the room list search fires on every keystroke, and a one or two character
+	// query matches too much to be worth an index lookup. Same floor the in-room
+	// message search uses.
+	if (!roomIds.length || String(query).length < 3) {
+		return matches;
+	}
+
+	// results collapse to one row per room, so the cap has to leave room for a busy
+	// room contributing many hits. Search plugins that predate this field fall back
+	// to their own default.
+	const { ids } = await plugins.hooks.fire('filter:messaging.searchMessages', {
+		content: query,
+		roomId: roomIds,
+		uid: [],
+		matchWords: 'all',
+		limit: 500,
+		ids: [],
+	});
+	if (!Array.isArray(ids) || !ids.length) {
+		return matches;
+	}
+
+	const isPublic = _.zipObject(
+		roomIds.map(String),
+		rooms.map(room => !!(room && room.public))
+	);
+	const [messages, blockedUids] = await Promise.all([
+		Messaging.getMessagesFields(ids, ['roomId', 'fromuid', 'content', 'timestamp']),
+		user.blocks.list(uid),
+	]);
+
+	// The search index carries no notion of chat privileges, so re-apply the cutoff
+	// `getMessageIds` enforces: in a private room a member cannot see what was said
+	// before they joined. A missing score means no membership at all, in which case
+	// nothing is visible, so the cutoff is pushed past every possible timestamp.
+	const privateRoomIds = _.uniq(
+		messages
+			.filter(msg => msg && !isPublic[String(msg.roomId)])
+			.map(msg => String(msg.roomId))
+	);
+	const joinTimestamps = _.zipObject(
+		privateRoomIds,
+		(await db.sortedSetsScore(
+			privateRoomIds.map(roomId => `chat:room:${roomId}:uids`), uid
+		)).map(score => (score === null ? Infinity : score))
+	);
+
+	const inUserRooms = new Set(roomIds.map(String));
+	messages.forEach((msg, idx) => {
+		if (!msg || !msg.fromuid) {
+			return;
+		}
+		const roomId = String(msg.roomId);
+		// ids come back ranked, so the first hit per room is the best one
+		if (!inUserRooms.has(roomId) || matches.has(roomId)) {
+			return;
+		}
+		if (blockedUids.includes(String(msg.fromuid))) {
+			return;
+		}
+		if (!isPublic[roomId] && msg.timestamp <= joinTimestamps[roomId]) {
+			return;
+		}
+		msg.mid = parseInt(ids[idx], 10);
+		msg.roomId = parseInt(roomId, 10);
+		msg.content = utils.stripHTMLTags(utils.decodeHTMLEntities(msg.content));
+		matches.set(roomId, msg);
+	});
+
+	const teasers = Array.from(matches.values());
+	const uids = _.uniq(teasers.map(teaser => teaser.fromuid));
+	// the position the room has to be opened at to land on the matching message,
+	// the same one `/message/:mid` resolves to
+	const [userData, ranks] = await Promise.all([
+		user.getUsersFields(uids, [
+			'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+		]),
+		db.sortedSetsRanks(
+			teasers.map(teaser => `chat:room:${teaser.roomId}:mids`),
+			teasers.map(teaser => teaser.mid)
+		),
+	]);
+
+	const userMap = _.zipObject(uids, userData);
+	await Promise.all(teasers.map(async (teaser, idx) => {
+		teaser.user = userMap[teaser.fromuid];
+		teaser.index = ranks[idx] === null ? null : parseInt(ranks[idx], 10) + 1;
+		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
+		matches.set(String(teaser.roomId), payload.teaser);
+	}));
+
+	return matches;
+}
+
+// Rooms surfaced by a content match already carry the message to show, so only the
+// remaining ones pay for the (per-room) latest-undeleted-message lookup.
+async function getSearchTeasers(uid, roomIds, overrides) {
+	const fetched = await Messaging.getTeasers(
+		uid, roomIds.filter((roomId, idx) => !overrides[idx])
+	);
+	let next = 0;
+	return roomIds.map((roomId, idx) => {
+		if (overrides[idx]) {
+			return overrides[idx];
+		}
+		const teaser = fetched[next];
+		next += 1;
+		return teaser;
+	});
+}
 
 async function modifyChatRooms(uid, results) {
 	const danglingRoomIds = [];
