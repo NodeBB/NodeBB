@@ -482,6 +482,22 @@ describe('User', () => {
 			assert.equal(data.users[1].username, 'brian');
 			assert.equal(data.users[2].username, 'bzari');
 		});
+
+		it('should not sort users by email', async () => {
+			await User.create({ username: 'crian1', email: 'd@c.com' }, { emailVerification: 'verify' });
+			await User.create({ username: 'caris2', email: 'c@c.com' }, { emailVerification: 'verify' });
+			await User.create({ username: 'czari3', email: 'a@c.com' }, { emailVerification: 'verify' });
+			const data = await User.search({
+				uid: testUid,
+				query: 'c',
+				sortBy: 'email',
+				paginate: false,
+			});
+			// sorted by username
+			assert.equal(data.users[0].username, 'caris2');
+			assert.equal(data.users[1].username, 'crian1');
+			assert.equal(data.users[2].username, 'czari3');
+		});
 	});
 
 	describe('.delete()', () => {

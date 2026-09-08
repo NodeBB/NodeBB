@@ -11,6 +11,8 @@ const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (User) {
+	const validSorts = new Set(['joindate', 'lastonline', 'postcount', 'reputation']);
+
 	const filterFnMap = {
 		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
 		flagged: user => parseInt(user.flags, 10) > 0,
@@ -155,9 +157,9 @@ module.exports = function (User) {
 		let filters = data.filters || [];
 		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];
-
-		if (data.sortBy) {
-			fields.push(data.sortBy);
+		const sortBy = validSorts.has(data.sortBy) ? data.sortBy : null;
+		if (sortBy) {
+			fields.push(sortBy);
 		}
 
 		filters.forEach((filter) => {
@@ -195,8 +197,8 @@ module.exports = function (User) {
 			}
 		});
 
-		if (data.sortBy) {
-			sortUsers(userData, data.sortBy, data.sortDirection);
+		if (sortBy) {
+			sortUsers(userData, sortBy, data.sortDirection);
 		}
 
 		return userData.map(user => user.uid);
