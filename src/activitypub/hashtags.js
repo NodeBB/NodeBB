@@ -1,6 +1,5 @@
 'use strict';
 
-const nconf = require('nconf');
 const db = require('../database');
 
 const activitypub = module.parent.exports;
@@ -57,20 +56,8 @@ Hashtags.follow = async (tag, cid) => {
 		return existing;
 	}
 
-	const now = Date.now();
-
-	// Send Follow activity via instance actor (bypass actors.assert for hashtag actors)
-	await activitypub.send('uid', 0, actor, {
-		'@context': [
-			'https://www.w3.org/ns/activitystreams',
-			'https://pleroma.example/schemas/litepub-0.1.jsonld',
-		],
-		id: `${nconf.get('url')}/actor#activity/follow/${encodeURIComponent(actor)}/${now}`,
-		type: 'Follow',
-		to: [actor],
-		object: actor,
-		state: 'pending',
-	});
+	// Send Follow activity via instance actor
+	await activitypub.out.follow('uid', 0, actor);
 
 	// Store record
 	const record = {
@@ -78,10 +65,10 @@ Hashtags.follow = async (tag, cid) => {
 		relay,
 		actor,
 		state: 'pending',
-		createdAt: now,
+		createdAt: Date.now(),
 	};
 	await db.setObject(`ap:hashtag:${tag}`, record);
-	await db.sortedSetAdd(FOLLOWED_KEY, now, tag);
+	await db.sortedSetAdd(FOLLOWED_KEY, Date.now(), tag);
 
 	// Create auto-categorization rule if category provided
 	if (cid) {
@@ -97,31 +84,8 @@ Hashtags.unfollow = async (tag) => {
 		return false;
 	}
 
-	const now = Date.now();
-
-	// Undo Follow via instance actor (bypass actors.assert for hashtag actors)
-	await activitypub.send('uid', 0, record.actor, {
-		'@context': [
-			'https://www.w3.org/ns/activitystreams',
-			'https://pleroma.example/schemas/litepub-0.1.jsonld',
-		],
-		id: `${nconf.get('url')}/actor#activity/undo:follow/${encodeURIComponent(record.actor)}/${now}`,
-		type: 'Undo',
-		to: [record.actor],
-		published: new Date(now).toISOString(),
-		object: {
-			'@context': [
-				'https://www.w3.org/ns/activitystreams',
-				'https://pleroma.example/schemas/litepub-0.1.jsonld',
-			],
-			id: `${nconf.get('url')}/actor#activity/follow/${encodeURIComponent(record.actor)}/${record.createdAt}`,
-			type: 'Follow',
-			actor: `${nconf.get('url')}/actor`,
-			to: [record.actor],
-			object: record.actor,
-			state: 'cancelled',
-		},
-	});
+	// Undo Follow via instance actor
+	await activitypub.out.undo.follow('uid', 0, record.actor);
 
 	// Remove auto-categorization rule
 	const rules = await activitypub.rules.list();
