@@ -11,30 +11,28 @@ const cache = require('../cache');
 const Settings = module.exports;
 
 Settings.get = async function (hash) {
-	const cached = cache.get(`settings:${hash}`);
-	if (cached) {
-		return _.cloneDeep(cached);
-	}
-	const [data, sortedLists] = await Promise.all([
-		db.getObject(`settings:${hash}`),
-		db.getSetMembers(`settings:${hash}:sorted-lists`),
-	]);
-	const values = data || {};
-	await Promise.all(sortedLists.map(async (list) => {
-		const members = await db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1);
-		const keys = members.map(order => `settings:${hash}:sorted-list:${list}:${order}`);
+	const cached = await cache.get(`settings:${hash}`, async () => {
+		const [data, sortedLists] = await Promise.all([
+			db.getObject(`settings:${hash}`),
+			db.getSetMembers(`settings:${hash}:sorted-lists`),
+		]);
+		const values = data || {};
+		await Promise.all(sortedLists.map(async (list) => {
+			const members = await db.getSortedSetRange(`settings:${hash}:sorted-list:${list}`, 0, -1);
+			const keys = members.map(order => `settings:${hash}:sorted-list:${list}:${order}`);
 
-		values[list] = [];
+			values[list] = [];
 
-		const objects = await db.getObjects(keys);
-		objects.forEach((obj) => {
-			values[list].push(obj);
-		});
-	}));
+			const objects = await db.getObjects(keys);
+			objects.forEach((obj) => {
+				values[list].push(obj);
+			});
+		}));
 
-	const result = await plugins.hooks.fire('filter:settings.get', { plugin: hash, values: values });
-	cache.set(`settings:${hash}`, result.values);
-	return _.cloneDeep(result.values);
+		const result = await plugins.hooks.fire('filter:settings.get', { plugin: hash, values: values });
+		return result.values;
+	});
+	return _.cloneDeep(cached);
 };
 
 Settings.getOne = async function (hash, field) {

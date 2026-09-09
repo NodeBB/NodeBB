@@ -476,13 +476,11 @@ module.exports = function (Topics) {
 	};
 
 	async function getAllTags() {
-		const cached = cache.get('tags:topic:count');
-		if (cached !== undefined) {
-			return cached;
-		}
-		const tags = await db.getSortedSetRevRangeWithScores('tags:topic:count', 0, -1);
-		cache.set('tags:topic:count', tags);
-		return tags;
+		const cached = await cache.get(
+			'tags:topic:count',
+			() => db.getSortedSetRevRangeWithScores('tags:topic:count', 0, -1)
+		);
+		return cached;
 	}
 
 	async function findMatches(data) {

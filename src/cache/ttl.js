@@ -111,7 +111,7 @@ module.exports = function (opts) {
 		}
 
 		return Promise.resolve()
-			.then(() => loader(uncachedKeys))
+			.then(() => loader(uncachedKeys, uncachedIndexes))
 			.then((values) => {
 				uncachedKeys.forEach((key, index) => {
 					const value = values[index];
