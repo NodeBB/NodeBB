@@ -2,6 +2,7 @@
 
 module.exports = function (opts) {
 	const { TTLCache } = require('@isaacs/ttlcache');
+	const { LRUCache } = require('lru-cache');
 	const os = require('os');
 	const winston = require('winston');
 	const chalk = require('chalk').default;
@@ -37,7 +38,9 @@ module.exports = function (opts) {
 		});
 	});
 
-	const versions = new Map();
+	const invalidationVersions = new LRUCache({
+		max: Math.max(10000, opts.max ? Math.floor(opts.max / 5) : 10000),
+	});
 
 	cache.has = function (key) {
 		if (!cache.enabled) {
@@ -73,11 +76,11 @@ module.exports = function (opts) {
 		if (!loader) {
 			return undefined;
 		}
-		const version = versions.get(key) || 0;
+		const version = getInvalidationVersion(key);
 		return Promise.resolve()
 			.then(() => loader())
 			.then((value) => {
-				if ((versions.get(key) || 0) === version) {
+				if (getInvalidationVersion(key) === version) {
 					cache.set(key, value);
 				}
 				return value;
@@ -102,7 +105,7 @@ module.exports = function (opts) {
 			if (data[index] === undefined) {
 				uncachedKeys.push(key);
 				uncachedIndexes.push(index);
-				getManyVersions.set(key, versions.get(key) || 0);
+				getManyVersions.set(key, getInvalidationVersion(key));
 			}
 		});
 
@@ -116,7 +119,7 @@ module.exports = function (opts) {
 				uncachedKeys.forEach((key, index) => {
 					const value = values[index];
 					data[uncachedIndexes[index]] = value;
-					if ((versions.get(key) || 0) === getManyVersions.get(key)) {
+					if (getInvalidationVersion(key) === getManyVersions.get(key)) {
 						cache.set(key, value);
 					}
 				});
@@ -152,9 +155,13 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
+	function getInvalidationVersion(key) {
+		return invalidationVersions.get(key) || 0;
+	}
+
 	function localDel(keys) {
 		keys.forEach((key) => {
-			versions.set(key, (versions.get(key) || 0) + 1);
+			invalidationVersions.set(key, (invalidationVersions.get(key) || 0) + 1);
 			ttlCache.delete(key);
 		});
 	}
