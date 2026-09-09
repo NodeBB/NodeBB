@@ -111,7 +111,10 @@ Hashtags.list = async () => {
 
 	const records = await db.getObjects(tags.map(tag => `ap:hashtag:${tag}`));
 
-	return records.filter(Boolean);
+	return records.filter(Boolean).map((record) => {
+		record.createdAt = parseInt(record.createdAt, 10);
+		return record;
+	});
 };
 
 Hashtags.get = async (tag) => {
@@ -119,7 +122,11 @@ Hashtags.get = async (tag) => {
 	if (!exists) {
 		return null;
 	}
-	return await db.getObject(`ap:hashtag:${tag}`);
+	const record = await db.getObject(`ap:hashtag:${tag}`);
+	if (record) {
+		record.createdAt = parseInt(record.createdAt, 10);
+	}
+	return record;
 };
 
 Hashtags.updateState = async (actor, state) => {
