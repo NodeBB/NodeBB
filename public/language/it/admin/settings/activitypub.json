@@ -14,7 +14,7 @@
 	"allowLoopback": "Consenti l'elaborazione del loopback",
 	"allowLoopback-help": "Utile solo a scopo di debug. Probabilmente è meglio lasciarlo disattivato.",
 	"allowSplitDomain": "Consenti la federazione con domini separati",
-	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
+	"allowSplitDomain-help": "Abilita questa opzione per consentire agli attori il cui dominio WebFinger differisce dal dominio del loro documento ActivityPub. Ciò è utile per le istanze che separano l’identità (WebFinger) dall’hosting dei contenuti (ActivityPub). Nota: il dominio canonico (WebFinger) è l'ancora di fiducia — il suo record WebFinger deve fare riferimento al documento dell'attore e, quando entrambe le parti pubblicano una chiave pubblica, le chiavi devono corrispondere. I pseudonimi verificati senza corrispondenza delle chiavi si basano esclusivamente sul riferimento URL, pertanto è necessario prestare attenzione agli pseudonimi con domini separati provenienti da domini con scarsa cura del WebFinger.",
 	"parentTraversalDepth": "Profondità della traversata parentale",
 	"parentTraversalDepth-help": "Numero massimo di volte in cui percorrere la catena di risposte durante la creazione del contesto. (Predefinito: 50)",
 
@@ -51,7 +51,7 @@
 	"relays.add": "Aggiungi nuovo relè",
 	"relays.relay": "Relè",
 	"relays.state": "Stato",
-	"relays.state--1": "Follower",
+	"relays.state--1": "Chi ti segue.",
 	"relays.state-0": "In sospeso",
 	"relays.state-1": "Solo ricezione",
 	"relays.state-2": "Attivo",
