@@ -193,8 +193,7 @@ define('chat', [
 				modal.attr('new-message', data.self === 0 ? 1 : 0);
 			}
 			data.message.self = data.self;
-			data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-			data.message.timestampISO = utils.toISOString(data.message.timestamp);
+			data.message.timestampISO = utils.toISOString(Math.min(Date.now(), data.message.timestamp));
 			addMessageToModal(data);
 		}
 	};

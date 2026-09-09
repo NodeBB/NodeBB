@@ -1032,4 +1032,87 @@ describe('Messaging Library', () => {
 			assert.equal(response.statusCode, 404);
 		});
 	});
+
+	describe('.markRead()', () => {
+		const plugins = require('../src/plugins');
+		let markReadRoomId;
+
+		before(async () => {
+			markReadRoomId = await Messaging.newRoom(mocks.users.foo.uid, {
+				uids: [mocks.users.herp.uid],
+			});
+		});
+
+		async function markReadAndCaptureHook(uid, roomId) {
+			const fired = new Promise((resolve) => {
+				plugins.hooks.register('my-test-plugin', {
+					hook: 'action:messaging.markRead',
+					method: resolve,
+				});
+			});
+			await Messaging.markRead(uid, roomId);
+			const data = await fired;
+			plugins.hooks.unregister('my-test-plugin', 'action:messaging.markRead');
+			return data;
+		}
+
+		it('should fire action:messaging.markRead with no previous timestamp on first read', async () => {
+			const data = await markReadAndCaptureHook(mocks.users.herp.uid, markReadRoomId);
+
+			assert.strictEqual(parseInt(data.uid, 10), mocks.users.herp.uid);
+			assert.strictEqual(parseInt(data.roomId, 10), parseInt(markReadRoomId, 10));
+			assert(data.timestamp > 0);
+			assert.strictEqual(data.prevTimestamp, 0);
+		});
+
+		it('should hand the timestamp of the previous read to the hook', async () => {
+			const first = await markReadAndCaptureHook(mocks.users.herp.uid, markReadRoomId);
+			await sleep(5);
+			const second = await markReadAndCaptureHook(mocks.users.herp.uid, markReadRoomId);
+
+			assert.strictEqual(second.prevTimestamp, first.timestamp);
+			assert(second.timestamp > second.prevTimestamp);
+		});
+	});
+
+	describe('.isRoomMember()', () => {
+		const plugins = require('../src/plugins');
+		let memberRoomId;
+
+		before(async () => {
+			memberRoomId = await Messaging.newRoom(mocks.users.foo.uid, {
+				uids: [mocks.users.bar.uid],
+			});
+		});
+
+		it('should report actual membership', async () => {
+			assert.strictEqual(await Messaging.isRoomMember(mocks.users.foo.uid, memberRoomId), true);
+			assert.strictEqual(await Messaging.isRoomMember(mocks.users.herp.uid, memberRoomId), false);
+		});
+
+		it('should accept an array of roomIds', async () => {
+			assert.deepStrictEqual(
+				await Messaging.isRoomMember(mocks.users.bar.uid, [memberRoomId, 0]),
+				[true, false]
+			);
+		});
+
+		it('should not be overridable via filter:messaging.isUserInRoom', async () => {
+			plugins.hooks.register('my-test-plugin', {
+				hook: 'filter:messaging.isUserInRoom',
+				method: async data => ({ ...data, inRoom: true }),
+			});
+
+			try {
+				assert.strictEqual(
+					await Messaging.isUserInRoom(mocks.users.herp.uid, memberRoomId), true
+				);
+				assert.strictEqual(
+					await Messaging.isRoomMember(mocks.users.herp.uid, memberRoomId), false
+				);
+			} finally {
+				plugins.hooks.unregister('my-test-plugin', 'filter:messaging.isUserInRoom');
+			}
+		});
+	});
 });

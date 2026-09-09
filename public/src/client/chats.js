@@ -802,7 +802,10 @@ define('forum/chats', [
 			roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
 			roomEl.find('.timeago').timeago();
 			moveChatAndHrToTop(roomEl);
-		} else {
+		} else if (String(ajaxify.data.uid) === String(app.user.uid)) {
+			// The room isn't on screen, so it has to be fetched -- but `GET /chats`
+			// returns the *viewer's* rooms, which have no business being spliced
+			// into a list that is showing another user's rooms.
 			const { rooms } = await api.get(`/chats`, { start: 0, perPage: 2 });
 			const room = rooms.find(r => parseInt(r.roomId, 10) === parseInt(roomId, 10));
 			if (room) {

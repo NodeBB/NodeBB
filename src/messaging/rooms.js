@@ -177,16 +177,25 @@ module.exports = function (Messaging) {
 		]);
 	};
 
+	Messaging.isRoomMember = async (uid, roomIds) => {
+		const single = !Array.isArray(roomIds);
+		if (single) {
+			roomIds = [roomIds];
+		}
+		const isMembers = await db.isMemberOfSortedSets(
+			roomIds.map(id => `chat:room:${id}:uids`),
+			uid
+		);
+		return single ? isMembers.pop() : isMembers;
+	};
+
 	Messaging.isUserInRoom = async (uid, roomIds) => {
 		let single = false;
 		if (!Array.isArray(roomIds)) {
 			roomIds = [roomIds];
 			single = true;
 		}
-		const inRooms = await db.isMemberOfSortedSets(
-			roomIds.map(id => `chat:room:${id}:uids`),
-			uid
-		);
+		const inRooms = await Messaging.isRoomMember(uid, roomIds);
 
 		const data = await Promise.all(roomIds.map(async (roomId, idx) => {
 			const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', {
