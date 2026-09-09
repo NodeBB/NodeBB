@@ -34,7 +34,8 @@ function setupHashtags() {
 			case 'hashtags.remove': {
 				const tag = subselector.getAttribute('data-tag');
 				del(`/admin/activitypub/hashtags/${encodeURIComponent(tag)}`).then(async (data) => {
-					const html = await app.parseAndTranslate('admin/partials/activitypub/hashtags/list', {}, {
+					console.log(data);
+					const html = await app.parseAndTranslate('admin/partials/activitypub/hashtags/list', { hashtags: data }, {
 						hashtags: data.map(h => ({
 							...h,
 							stateClass: getStateClass(h.state),
@@ -82,7 +83,7 @@ function throwModal() {
 
 			const payload = Object.fromEntries(new FormData(formEl));
 			post('/admin/activitypub/hashtags', payload).then(async (data) => {
-				const html = await app.parseAndTranslate('admin/partials/activitypub/hashtags/list', {}, {
+				const html = await app.parseAndTranslate('admin/partials/activitypub/hashtags/list', { hashtags: data }, {
 					hashtags: data.map(h => ({
 						...h,
 						stateClass: getStateClass(h.state),

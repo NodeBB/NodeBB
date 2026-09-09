@@ -113,6 +113,7 @@ Hashtags.list = async () => {
 
 	return records.filter(Boolean).map((record) => {
 		record.createdAt = parseInt(record.createdAt, 10);
+		record.stateClass = record.state === 'pending' ? 'warning' : (record.state === 'active' ? 'success' : 'danger');
 		return record;
 	});
 };
