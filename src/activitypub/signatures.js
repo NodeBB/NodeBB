@@ -106,7 +106,8 @@ Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = nu
 
 	// Build Signature-Input header
 	// RFC 9421 Section 2.2: algorithm parameter is required
-	const algorithm = getDraftAlgoString(privateKey);
+	// Must use registered algorithm identifiers from RFC 9421 §6.2.2
+	const algorithm = getRfc9421AlgoString(privateKey);
 	const signatureInput = `sig1=("${components.join('" "')}");algorithm="${algorithm}";created=${created};keyid="${keyId}"`;
 	headersToSign['signature-input'] = signatureInput;
 
@@ -168,6 +169,26 @@ function getDraftAlgoString(key) {
 		return 'ed25519-sha512';
 	}
 	return 'rsa-sha256';
+}
+
+// Returns the RFC 9421 §6.2.2 registered algorithm identifier for a given key.
+// These identifiers are used in the `algorithm` parameter of the Signature-Input
+// header and MUST match the IANA "HTTP Signature Algorithms" registry values.
+function getRfc9421AlgoString(key) {
+	const { name } = key.algorithm;
+	if (name === 'RSASSA-PKCS1-v1_5' || name === 'RSA') {
+		return 'rsa-v1_5-sha256';
+	}
+	if (name === 'ECDSA' || name === 'EC') {
+		return 'ecdsa-p256-sha256';
+	}
+	if (name === 'Ed25519') {
+		return 'ed25519';
+	}
+	if (name === 'Ed448') {
+		return 'ed448';
+	}
+	return 'rsa-v1_5-sha256';
 }
 
 // Verifies a Content-Digest header in RFC 9530 format (sha-256=:base64:)
