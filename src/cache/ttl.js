@@ -179,7 +179,10 @@ module.exports = function (opts) {
 	});
 
 	cache.dump = function () {
-		return Array.from(ttlCache.entries());
+		return {
+			cache: Array.from(ttlCache.entries()),
+			invalidationVersions: invalidationVersions.dump(),
+		};
 	};
 
 	cache.peek = function (key) {

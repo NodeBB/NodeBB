@@ -205,7 +205,10 @@ module.exports = function (opts) {
 	});
 
 	cache.dump = function () {
-		return lruCache.dump();
+		return {
+			cache: lruCache.dump(),
+			invalidationVersions: invalidationVersions.dump(),
+		};
 	};
 
 	cache.peek = function (key) {
