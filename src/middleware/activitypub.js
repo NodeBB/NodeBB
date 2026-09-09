@@ -94,9 +94,9 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	}
 	activitypub.helpers.log('[middleware/activitypub] Request body check passed.');
 
-	// History check
-	const seen = await db.isSortedSetMember('activities:datetime', req.body.id);
-	if (seen) {
+	// History check (w/in last 10 seconds)
+	const seenTimestamp = await db.sortedSetScore('activities:datetime', req.body.id);
+	if (seenTimestamp && (Date.now() - seenTimestamp) < 10000) {
 		activitypub.helpers.log(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
 		return res.sendStatus(200);
 	}
