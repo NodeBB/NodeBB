@@ -4,7 +4,6 @@ const { fetch, Agent } = require('undici');
 const { check, lookup } = require('../ssrf');
 const Signatures = require('./signatures');
 const nconf = require('nconf');
-const winston = require('winston');
 const { version } = require('../../package.json');
 
 const agent = new Agent({
@@ -84,14 +83,13 @@ async function send({ id, uri, payload, digest, key, keyId }) {
 		}
 
 		// Fall back to signing with the draft method if the RFC 9421 request failed
-		winston.warn(`[activitypub/sendWorker] RFC 9421 request failed (${rfcResult.error}); retrying with draft signature`);
 		const draftHeaders = await Signatures.sign({ key, keyId }, uri, 'POST', digest);
 		const draftResult = await attemptSend({ uri, headers: draftHeaders, payload, userAgent });
 		if (draftResult.success) {
-			return { id, success: true };
+			return { id, success: true, fallback: rfcResult.error };
 		}
 
-		return { id, success: false, error: draftResult.error };
+		return { id, success: false, error: draftResult.error, fallback: rfcResult.error };
 	} catch (e) {
 		return { id, success: false, error: e.message || 'unknown error' };
 	}
