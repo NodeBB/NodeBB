@@ -119,7 +119,17 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 		chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 		const mainPost = chain[0];
-		let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
+		let {
+			pid: mainPid,
+			tid,
+			uid: authorId,
+			timestamp,
+			title,
+			content,
+			sourceContent,
+			contentWarning,
+			_activitypub,
+		} = mainPost;
 		const hasTid = !!tid;
 
 		const authorBanned = await user.bans.isBanned(authorId);
@@ -203,6 +213,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 				prettified = prettified.split('\n').filter(line => !line.startsWith('<p class="quote-inline"')).join('\n');
 				const sentences = tokenizer.sentences(prettified, { sanitize: true, newline_boundaries: true });
 				title = sentences.shift();
+				generatedTitle = 1;
+			}
+
+			if (contentWarning) {
+				title = contentWarning;
 				generatedTitle = 1;
 			}
 
@@ -297,6 +312,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					timestamp,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					contentWarning,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				};
@@ -322,6 +338,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					tags,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					contentWarning,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				});
@@ -381,6 +398,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 						pid: post.pid,
 						content: post.content,
 						sourceContent: post.sourceContent,
+						contentWarning: post.contentWarning,
 						timestamp: post.timestamp,
 						_activitypub: post._activitypub,
 					});
