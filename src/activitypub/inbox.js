@@ -840,12 +840,19 @@ inbox.isFollowed = async (actorId, uid) => {
 
 inbox.accept = async (req) => {
 	const { actor, object } = req.body;
-	const { type } = object;
+	let { type } = object;
 
-	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
 	if (object.id === `${nconf.get('url')}/actor`) {
-		return activitypub.relays.handshake(req.body);
-	} else if (!['user', 'category', 'application'].includes(localType)) {
+		// If the accepting actor is a known relay, handle as relay handshake
+		const isRelay = await db.isSortedSetMember('relays:createtime', actor);
+		if (isRelay) {
+			return activitypub.relays.handshake(req.body);
+		}
+		type = 'Follow'; // treat as Follow acceptance for hashtag/instance follows
+	}
+
+	const { type: localType, id } = await helpers.resolveLocalId(object.actor || object.id);
+	if (!['user', 'category', 'application'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
