@@ -114,13 +114,7 @@ Groups.getNonPrivilegeGroups = async function (set, start, stop, flags) {
 };
 
 Groups.getAllGroupNames = async function (set) {
-	const cacheKey = `zset:${set}`;
-	let names = cache.get(cacheKey);
-	if (names !== undefined) {
-		return [...names];
-	}
-	names = await db.getSortedSetRevRange(set, 0, -1);
-	cache.set(cacheKey, names);
+	const names = await cache.get(`zset:${set}`, () => db.getSortedSetRevRange(set, 0, -1));
 	return [...names];
 };
 

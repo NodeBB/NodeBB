@@ -98,13 +98,7 @@ Categories.getCidByHandle = async function (handle) {
 };
 
 Categories.getAllCidsFromSet = async function (key) {
-	let cids = cache.get(key);
-	if (cids) {
-		return cids.slice();
-	}
-
-	cids = await db.getSortedSetRange(key, 0, -1);
-	cache.set(key, cids);
+	const cids = await cache.get(key, () => db.getSortedSetRange(key, 0, -1));
 	return cids.slice();
 };
 
@@ -185,29 +179,11 @@ Categories.setUnread = async function (tree, cids, uid) {
 };
 
 Categories.getTagWhitelist = async function (cids) {
-	const cachedData = {};
-
-	const nonCachedCids = cids.filter((cid) => {
-		const data = cache.get(`cid:${cid}:tag:whitelist`);
-		const isInCache = data !== undefined;
-		if (isInCache) {
-			cachedData[cid] = data;
-		}
-		return !isInCache;
-	});
-
-	if (!nonCachedCids.length) {
-		return cids.map(cid => cachedData[cid]);
-	}
-
-	const keys = nonCachedCids.map(cid => `cid:${cid}:tag:whitelist`);
-	const data = await db.getSortedSetsMembers(keys);
-
-	nonCachedCids.forEach((cid, index) => {
-		cachedData[cid] = data[index];
-		cache.set(`cid:${cid}:tag:whitelist`, data[index]);
-	});
-	return cids.map(cid => cachedData[cid]);
+	const cachedData = await cache.getMany(
+		cids.map(cid => `cid:${cid}:tag:whitelist`),
+		uncachedKeys => db.getSortedSetsMembers(uncachedKeys)
+	);
+	return cachedData;
 };
 
 // remove system tags from tag whitelist for non privileged user
@@ -286,29 +262,25 @@ Categories.getParentCids = async function (currentCid) {
 };
 
 Categories.getChildrenCids = async function (rootCid) {
-	let allCids = [];
+	const allCids = new Set();
 	async function recursive(keys) {
 		let childrenCids = await db.getSortedSetRange(keys, 0, -1);
 
-		childrenCids = childrenCids.filter(cid => !allCids.includes(cid));
+		childrenCids = childrenCids.filter(cid => !allCids.has(cid));
 		if (!childrenCids.length) {
 			return;
 		}
-		allCids.push(...childrenCids);
+		childrenCids.forEach(cid => allCids.add(cid));
 		keys = childrenCids.map(cid => `cid:${cid}:children`);
 		await recursive(keys);
 	}
 	const key = `cid:${rootCid}:children`;
 	const cacheKey = `${key}:all`;
-	const childrenCids = cache.get(cacheKey);
-	if (childrenCids) {
-		return childrenCids.slice();
-	}
-
-	await recursive(key);
-	allCids = _.uniq(allCids);
-	cache.set(cacheKey, allCids);
-	return allCids.slice();
+	const childrenCids = await cache.get(cacheKey, async () => {
+		await recursive(key);
+		return Array.from(allCids);
+	});
+	return childrenCids.slice();
 };
 
 Categories.flattenCategories = function (allCategories, categoryData) {

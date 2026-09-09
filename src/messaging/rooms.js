@@ -406,14 +406,11 @@ module.exports = function (Messaging) {
 	}
 
 	Messaging.getAllUidsInRoomFromSet = async function (set) {
-		const cacheKey = `${set}:all`;
-		let uids = roomUidCache.get(cacheKey);
-		if (uids !== undefined) {
-			return uids;
-		}
-		uids = await Messaging.getUidsInRoomFromSet(set, 0, -1);
-		roomUidCache.set(cacheKey, uids);
-		return uids;
+		const uids = await roomUidCache.get(
+			`${set}:all`,
+			() => Messaging.getUidsInRoomFromSet(set, 0, -1)
+		);
+		return uids.slice();
 	};
 
 	Messaging.getUidsInRoomFromSet = async (set, start, stop, reverse = false) => db[

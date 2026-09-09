@@ -41,7 +41,6 @@ module.exports = function (opts) {
 	cache.hits = 0;
 	cache.misses = 0;
 	cache.enabled = opts.hasOwnProperty('enabled') ? opts.enabled : true;
-	const cacheSet = lruCache.set;
 
 	// expose properties while keeping backwards compatibility
 	const propertyMap = new Map([
@@ -63,6 +62,10 @@ module.exports = function (opts) {
 		});
 	});
 
+	const invalidationVersions = new LRUCache({
+		max: Math.max(10000, opts.max ? Math.floor(opts.max / 5) : 10000),
+	});
+
 	cache.has = function (key) {
 		if (!cache.enabled) {
 			return false;
@@ -79,20 +82,74 @@ module.exports = function (opts) {
 		if (ttl) {
 			opts.ttl = ttl;
 		}
-		cacheSet.apply(lruCache, [key, value, opts]);
+		lruCache.set(key, value, opts);
 	};
 
-	cache.get = function (key) {
+	cache.get = function (key, loader) {
 		if (!cache.enabled) {
-			return undefined;
+			return loader ?
+				Promise.resolve().then(loader) :
+				undefined;
 		}
 		const data = lruCache.get(key);
-		if (data === undefined) {
-			cache.misses += 1;
-		} else {
+		if (data !== undefined) {
 			cache.hits += 1;
+			return data;
 		}
-		return data;
+		cache.misses += 1;
+		if (!loader) {
+			return undefined;
+		}
+		const version = getInvalidationVersion(key);
+		return Promise.resolve()
+			.then(() => loader())
+			.then((value) => {
+				if (getInvalidationVersion(key) === version) {
+					cache.set(key, value);
+				}
+				return value;
+			});
+	};
+
+	cache.getMany = function (keys, loader) {
+		if (!cache.enabled) {
+			return loader ?
+				Promise.resolve().then(() => loader(keys)) :
+				keys.map(() => undefined);
+		}
+
+		const data = new Array(keys.length);
+		const uncachedKeys = [];
+		const uncachedIndexes = [];
+		const getManyVersions = new Map();
+
+		keys.forEach((key, index) => {
+			data[index] = cache.get(key);
+
+			if (data[index] === undefined) {
+				uncachedKeys.push(key);
+				uncachedIndexes.push(index);
+				getManyVersions.set(key, getInvalidationVersion(key));
+			}
+		});
+
+		if (!loader || !uncachedKeys.length) {
+			return data;
+		}
+
+		return Promise.resolve()
+			.then(() => loader(uncachedKeys, uncachedIndexes))
+			.then((values) => {
+				uncachedKeys.forEach((key, index) => {
+					const value = values[index];
+					data[uncachedIndexes[index]] = value;
+					if (getInvalidationVersion(key) === getManyVersions.get(key)) {
+						cache.set(key, value);
+					}
+				});
+
+				return data;
+			});
 	};
 
 	cache.del = function (keys) {
@@ -102,8 +159,11 @@ module.exports = function (opts) {
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		pubsub.publish(`${cache.name}:lruCache:del`, keys);
-		keys.forEach(key => lruCache.delete(key));
+		localDel(keys);
+		pubsub.publish(`${cache.name}:lruCache:del`, {
+			id: `${os.hostname()}:${process.pid}`,
+			keys,
+		});
 	};
 	cache.delete = cache.del;
 
@@ -121,39 +181,28 @@ module.exports = function (opts) {
 		cache.misses = 0;
 	}
 
+	function getInvalidationVersion(key) {
+		return invalidationVersions.get(key) || 0;
+	}
+
+	function localDel(keys) {
+		keys.forEach((key) => {
+			invalidationVersions.set(key, getInvalidationVersion(key) + 1);
+			lruCache.delete(key);
+		});
+	}
+
 	pubsub.on(`${cache.name}:lruCache:reset`, ({ id }) => {
 		if (id !== `${os.hostname()}:${process.pid}`) {
 			localReset();
 		}
 	});
 
-	pubsub.on(`${cache.name}:lruCache:del`, (keys) => {
-		if (Array.isArray(keys)) {
-			keys.forEach(key => lruCache.delete(key));
+	pubsub.on(`${cache.name}:lruCache:del`, ({ id, keys }) => {
+		if (id !== `${os.hostname()}:${process.pid}` && Array.isArray(keys)) {
+			localDel(keys);
 		}
 	});
-
-	cache.getUnCachedKeys = function (keys, cachedData) {
-		if (!cache.enabled) {
-			return keys;
-		}
-		let data;
-		let isCached;
-		const unCachedKeys = keys.filter((key) => {
-			data = cache.get(key);
-			isCached = data !== undefined;
-			if (isCached) {
-				cachedData[key] = data;
-			}
-			return !isCached;
-		});
-
-		const hits = keys.length - unCachedKeys.length;
-		const misses = keys.length - hits;
-		cache.hits += hits;
-		cache.misses += misses;
-		return unCachedKeys;
-	};
 
 	cache.dump = function () {
 		return lruCache.dump();

@@ -115,11 +115,7 @@ Messaging.isNewSet = async (uid, roomId, timestamp) => {
 
 Messaging.getPublicRoomIdsFromSet = async function (set) {
 	const cacheKey = `${set}:all`;
-	let allRoomIds = cache.get(cacheKey);
-	if (allRoomIds === undefined) {
-		allRoomIds = await db.getSortedSetRange(set, 0, -1);
-		cache.set(cacheKey, allRoomIds);
-	}
+	const allRoomIds = await cache.get(cacheKey, () => db.getSortedSetRange(set, 0, -1));
 	return allRoomIds.slice();
 };
 
