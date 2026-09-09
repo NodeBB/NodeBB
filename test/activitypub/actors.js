@@ -20,6 +20,7 @@ const helpers = require('./helpers');
 describe('as:Person (Actor asserton)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
+		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
 	});
 
@@ -215,6 +216,10 @@ describe('as:Person (Actor asserton)', () => {
 });
 
 describe('as:Group', () => {
+	before(async () => {
+		meta.config.activitypubAllowLoopback = 1;
+	});
+
 	describe('assertion', () => {
 		let actorUri;
 		let actorData;

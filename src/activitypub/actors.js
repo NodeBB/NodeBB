@@ -121,8 +121,11 @@ Actors.assert = async (ids, options = {}) => {
 	 */
 
 	ids = await Actors.qualify(ids, options);
-	if (!ids || !ids.length) {
+	if (ids === false) {
 		return ids;
+	}
+	if (!ids.length) {
+		return true;
 	}
 
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} actor(s)`);
@@ -292,8 +295,11 @@ Actors.assert = async (ids, options = {}) => {
 		} else if (Array.isArray(assertion)) {
 			return [...actors, ...assertion];
 		}
-
-		// otherwise, assertGroup returned true and output can be safely ignored.
+		// assertGroup returned true (all groups already present)
+		// if there are no regular actors, propagate true; otherwise return actors
+		if (!actors.length) {
+			return true;
+		}
 	}
 
 	return actors;
@@ -314,8 +320,11 @@ Actors.assertGroup = async (ids, options = {}) => {
 		qualifyGroup: true,
 		...options,
 	});
-	if (!ids) {
+	if (ids === false) {
 		return ids;
+	}
+	if (!ids.length) {
+		return true;
 	}
 
 	activitypub.helpers.log(`[activitypub/actors] Asserting ${ids.length} group(s)`);
