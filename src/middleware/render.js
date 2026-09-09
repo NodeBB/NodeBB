@@ -47,9 +47,7 @@ module.exports = function (middleware) {
 				options.url = options.url || (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
 
-				if (req.loggedIn) {
-					res.set('cache-control', 'private');
-				}
+				res.set('cache-control', 'private, no-cache');
 
 				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, {
 					req: req,
