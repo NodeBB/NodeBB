@@ -392,20 +392,24 @@ define('admin/manage/users', [
 			if (!uids.length) {
 				return;
 			}
+			const includesSelf = uids.some(uid => parseInt(uid, 10) === parseInt(app.user.uid, 10));
 			async function changePassword(modal) {
+				const currentPassword = modal.find('#currentPassword').val() || '';
 				const newPassword = modal.find('#newPassword').val();
 				const confirmPassword = modal.find('#confirmPassword').val();
 				if (newPassword !== confirmPassword) {
-					throw new Error('[[[user:change-password-error-match]]');
+					throw new Error('[[user:change-password-error-match]]');
 				}
 				await Promise.all(uids.map(uid => api.put('/users/' + uid + '/password', {
-					currentPassword: '',
+					currentPassword: parseInt(uid, 10) === parseInt(app.user.uid, 10) ? currentPassword : '',
 					newPassword: newPassword,
 				})));
 			}
 
 			const modal = await modals.dialog({
 				message: `<div class="d-flex flex-column gap-2">
+					${includesSelf ? `<label class="form-label">[[user:current-password]]</label>
+					<input id="currentPassword" class="form-control" type="password" autocomplete="current-password">` : ''}
 					<label class="form-label">[[user:new-password]]</label>
 					<input id="newPassword" class="form-control" type="text">
 					<label class="form-label">[[user:confirm-password]]</label>
