@@ -16,7 +16,7 @@ const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
 const helpers = require('./helpers');
-const wait = util.promisify(setTimeout);
+const wait = require('timers/promises').setTimeout;
 
 describe('Notes', () => {
 	before(async () => {
@@ -168,6 +168,7 @@ describe('Notes', () => {
 					const unread = await topics.getTotalUnread(uid);
 					assert.strictEqual(unread, 1);
 
+					await wait(100); // notification is created without waiting for topics.post() to complete
 					// Notification inbox delivery is async so can't test directly
 					const exists = await db.exists(`notifications:new_topic:tid:${assertion.tid}:uid:${note.attributedTo}`);
 					assert(exists);
