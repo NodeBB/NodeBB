@@ -85,7 +85,9 @@ module.exports = function (opts) {
 
 	cache.get = function (key, loader) {
 		if (!cache.enabled) {
-			return undefined;
+			return loader ?
+				Promise.resolve().then(loader) :
+				undefined;
 		}
 		const data = lruCache.get(key);
 		if (data !== undefined) {
@@ -97,17 +99,21 @@ module.exports = function (opts) {
 			return undefined;
 		}
 		const version = versions.get(key) || 0;
-		return Promise.resolve().then(() => loader()).then((value) => {
-			if (versions.get(key) === version) {
-				cache.set(key, value);
-			}
-			return value;
-		});
+		return Promise.resolve()
+			.then(() => loader())
+			.then((value) => {
+				if ((versions.get(key) || 0) === version) {
+					cache.set(key, value);
+				}
+				return value;
+			});
 	};
 
 	cache.getMany = function (keys, loader) {
 		if (!cache.enabled) {
-			return [];
+			return loader ?
+				Promise.resolve().then(() => loader(keys)) :
+				keys.map(() => undefined);
 		}
 
 		const data = new Array(keys.length);
@@ -129,19 +135,19 @@ module.exports = function (opts) {
 			return data;
 		}
 
-		return Promise.resolve().then(() => loader(uncachedKeys)).then((values) => {
-			uncachedKeys.forEach((key, index) => {
-				const value = values[index];
+		return Promise.resolve()
+			.then(() => loader(uncachedKeys))
+			.then((values) => {
+				uncachedKeys.forEach((key, index) => {
+					const value = values[index];
+					data[uncachedIndexes[index]] = value;
+					if ((versions.get(key) || 0) === getManyVersions.get(key)) {
+						cache.set(key, value);
+					}
+				});
 
-				data[uncachedIndexes[index]] = value;
-
-				if ((versions.get(key) || 0) === getManyVersions.get(key)) {
-					cache.set(key, value);
-				}
+				return data;
 			});
-
-			return data;
-		});
 	};
 
 	cache.del = function (keys) {
