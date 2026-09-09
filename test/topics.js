@@ -1996,6 +1996,36 @@ describe('Topic\'s', () => {
 		});
 	});
 
+	describe('topic views', () => {
+		let viewsTid;
+
+		before(async () => {
+			const result = await topics.post({
+				uid: adminUid,
+				title: 'topic views test',
+				content: 'topic views test content',
+				cid: categoryObj.cid,
+			});
+			viewsTid = result.topicData.tid;
+		});
+
+		it('should only increment the view count once per interval', async () => {
+			const req = { uid: fooUid, session: {} };
+			await topics.increaseViewCount(req, viewsTid);
+			await topics.increaseViewCount(req, viewsTid);
+			assert.strictEqual(await topics.getTopicField(viewsTid, 'viewcount'), 1);
+			assert.deepStrictEqual(Object.keys(req.session.tids_viewed), [String(viewsTid)]);
+		});
+
+		it('should prune expired entries from the session', async () => {
+			const expired = Date.now() - ((meta.config.incrementTopicViewsInterval + 1) * 60000);
+			const req = { uid: fooUid, session: { tids_viewed: { 1: expired, 2: expired } } };
+			await topics.increaseViewCount(req, viewsTid);
+			assert.deepStrictEqual(Object.keys(req.session.tids_viewed), [String(viewsTid)]);
+			assert.strictEqual(await topics.getTopicField(viewsTid, 'viewcount'), 2);
+		});
+	});
+
 	it('should check if user is moderator', (done) => {
 		socketTopics.isModerator({ uid: adminUid }, topic.tid, (err, isModerator) => {
 			assert.ifError(err);

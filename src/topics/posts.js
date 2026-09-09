@@ -329,17 +329,23 @@ module.exports = function (Topics) {
 	Topics.increaseViewCount = async function (req, tid) {
 		const allow = req.uid > 0 || (meta.config.guestsIncrementTopicViews && req.uid === 0);
 		if (allow) {
-			req.session.tids_viewed = req.session.tids_viewed || {};
 			const now = Date.now();
-			const interval = meta.config.incrementTopicViewsInterval * 60000;
-			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < now - interval) {
+			const cutoff = now - (meta.config.incrementTopicViewsInterval * 60000);
+			const viewed = req.session.tids_viewed || {};
+			for (const [viewedTid, timestamp] of Object.entries(viewed)) {
+				if (timestamp < cutoff) {
+					delete viewed[viewedTid];
+				}
+			}
+			req.session.tids_viewed = viewed;
+			if (!viewed[tid]) {
 				const cid = await Topics.getTopicField(tid, 'cid');
 				const isRemoteCid = !utils.isNumber(cid) || cid === -1;
 				const value = await db.incrObjectFieldBy(`topic:${tid}`, 'viewcount', 1);
 				await db.sortedSetsAdd(
 					isRemoteCid ? [`cid:${cid}:tids:views`] : ['topics:views', `cid:${cid}:tids:views`], value, tid
 				);
-				req.session.tids_viewed[tid] = now;
+				viewed[tid] = now;
 			}
 		}
 	};
