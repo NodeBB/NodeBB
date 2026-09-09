@@ -7,5 +7,14 @@
 
 		<a href="{config.relative_path}/post/{encodeURIComponent(./parent.pid)}" class="text-muted timeago text-nowrap hidden" title="{./parent.timestampISO}"></a>
 	</div>
-	<div component="post/parent/content" class="text-muted line-clamp-1 text-break w-100">{{{ if ./parent.txContent }}}{{tx(./parent.content)}}{{{ else }}}{{./parent.content}}{{{ end }}}</div>
+	<div component="post/parent/content" class="text-muted line-clamp-1 text-break w-100">
+		{{{ if ./parent.contentWarning }}}
+		<details class="content-warning">
+		<summary>{./parent.contentWarning}</summary>
+		{{{ if ./parent.txContent }}}{{tx(./parent.content)}}{{{ else }}}{{./parent.content}}{{{ end }}}
+		</details>
+		{{{ else }}}
+		{{{ if ./parent.txContent }}}{{tx(./parent.content)}}{{{ else }}}{{./parent.content}}{{{ end }}}
+		{{{ end }}}
+	</div>
 </div>
