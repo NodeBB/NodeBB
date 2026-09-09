@@ -110,5 +110,22 @@
 	"errors.intro": "该实例在过去 24 小时内记录了以下 %1 个错误。",
 	"errors.payload-gone": "此错误的负载已不存在。",
 	"errors.hostname": "主机名",
-	"errors.type": "类型"
+	"errors.type": "类型",
+
+	"hashtags": "Hashtags",
+	"hashtags.intro": "Follow global hashtag actors to receive content matching specific tags. The instance actor follows the relay's hashtag actor, which sends Announce activities for matching content. Use auto-categorization rules to route content to categories.",
+	"hashtags.relay-host": "Relay Host",
+	"hashtags.relay-host-help": "Choose the relay provider for hashtag actors.",
+	"hashtags.save-relay": "Save",
+	"hashtags.relay-change-warning": "Changing the relay host will unfollow all current hashtag actors and follow them on the new relay.",
+	"hashtags.follow": "Follow Hashtag",
+	"hashtags.modal.tag": "Hashtag",
+	"hashtags.modal.tag-help": "Enter the hashtag name without the # symbol (e.g., nodebb).",
+	"hashtags.modal.category": "Category",
+	"hashtags.modal.category-help": "Select a category to auto-route matching content.",
+	"hashtags.state-pending": "Pending",
+	"hashtags.state-active": "Active",
+	"hashtags.state-error": "Error",
+	"hashtags.table.tag": "Tag",
+	"hashtags.table.state": "State"
 }

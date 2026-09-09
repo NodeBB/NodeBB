@@ -54,6 +54,7 @@
 	"federation/content": "コンテンツ",
 	"federation/rules": "カテゴリ分け",
 	"federation/relays": "リレー",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "ストレージ",
 	"federation/safety": "信頼と安全",
 	"federation/analytics": "分析",

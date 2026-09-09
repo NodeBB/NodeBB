@@ -54,6 +54,7 @@
 	"federation/content": "Nội dung",
 	"federation/rules": "Phân loại",
 	"federation/relays": "Chuyển tiếp",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "Lưu trữ",
 	"federation/safety": "Tin cậy & An toàn",
 	"federation/analytics": "Phân tích",

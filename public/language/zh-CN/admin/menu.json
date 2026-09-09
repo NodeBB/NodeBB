@@ -54,6 +54,7 @@
 	"federation/content": "内容",
 	"federation/rules": "分类",
 	"federation/relays": "中继服务",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "存储",
 	"federation/safety": "信任与安全",
 	"federation/analytics": "分析",
