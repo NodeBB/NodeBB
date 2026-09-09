@@ -1126,7 +1126,6 @@ describe('Flags', () => {
 			before(async () => {
 				uid = await User.create({ username: 'flags-access-control', password: 'abcdef' });
 				({ jar, csrf_token } = await helpers.loginUser('flags-access-control', 'abcdef'));
-				console.log('cs', csrfToken);
 				flaggerUid = await User.create({ username: 'flags-access-control-flagger', password: 'abcdef' });
 			});
 
