@@ -27,7 +27,7 @@ export function show() {
 			closeButton: false,
 			message: logoutMessage,
 			callback: function () {
-				window.location.href = config.relative_path + '/login';
+				window.location.href = config.relative_path + '/login?local=1';
 			},
 		});
 		alertShown = true;
