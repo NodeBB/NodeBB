@@ -1,0 +1,22 @@
+{
+	"queue": "Várólista",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Név",
+	"list.email": "Email",
+	"list.ip": "IP",
+	"list.time": "idő",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Meghívások",
+	"invitations.description": "Alább a teljes lista a kiküldött meghívókról. Használd a ctrl-f billentyűkombinációt hogy keress az email címek és felhasználónevek között. <br><br>Az email címek mellett látható felhasználónév azoknál jelenik meg, akik már felhasználták a meghívójukat.",
+	"invitations.inviter-username": "Meghívó felhasználóneve",
+	"invitations.invitee-email": "Meghívott email címe",
+	"invitations.invitee-username": "Meghívott felhasználóneve (ha regisztrált)",
+
+	"invitations.confirm-delete": "Biztosan törölni szeretnéd ezt a meghívót?"
+}

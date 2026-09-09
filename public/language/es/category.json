@@ -1,13 +1,13 @@
 {
     "category": "Categoría",
     "subcategories": "Subcategorías",
-    "uncategorized": "Sin categoría",
-    "uncategorized.description": "Temas que no encajan estrictamente con alguna categoría",
+    "uncategorized": "World",
+    "uncategorized.description": "Temas ajenos a este foro. Los puntos de vista y opiniones aquí representados pueden no reflejar los de este foro y sus miembros.",
     "handle.description": "Esta categoría puede ser seguida desde open social web con el identificador %1",
     "new-topic-button": "Nuevo tema",
     "guest-login-post": "Accede para escribir",
     "no-topics": "<strong>No hay temas en esta categoría.</strong><br />¿Por qué no te animas y publicas uno?",
-    "no-followers": "Nobody on this website is tracking or watching this category. Track or watch this category in order to begin receiving updates.",
+    "no-followers": "Nadie en este sitio web está monitoreando esta categoría. Para recibir actualizaciones, sígela o monitoréela.",
     "browsing": "viendo ahora",
     "no-replies": "Nadie ha respondido aún",
     "no-new-posts": "No hay mensajes nuevos.",
@@ -26,5 +26,10 @@
     "notwatching.message": "No estás viendo las actualizaciones de esta categoría y todas las subcategorías.",
     "ignoring.message": "Ahora estás ignorando las actualizaciones de esta categoría y todas las subcategorías",
     "watched-categories": "Categorías seguidas",
-    "x-more-categories": "%1 more categories"
+    "x-more-categories": "%1 more categories",
+    "view-original": "Ver Original",
+    "first-run.welcome": "¡Bienvenido a tu nuevo foro NodeBB!",
+    "first-run.description": "Tu foro está listo. Inicia sesión para personalizar tus categorías, configuración y mucho más.",
+    "first-run.admin-panel": "Puedes administrar tu foro desde el Panel de Admin",
+    "first-run.admin-panel-desc": "accesible a través del icono de engranaje en la barra lateral"
 }

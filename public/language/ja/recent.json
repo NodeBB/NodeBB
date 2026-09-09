@@ -4,10 +4,10 @@
     "week": "1週間以内",
     "month": "1ヶ月以内",
     "year": "年",
-    "alltime": "全て",
+    "alltime": "すべて",
     "no-recent-topics": "最近のスレッドはありません。",
     "no-popular-topics": "人気スレッドはありません。",
-    "load-new-posts": "Load new posts",
-    "uncategorized.title": "All known topics",
-    "uncategorized.intro": "This page shows a chronological listing of every topic that this forum has received.<br />The views and opinions expressed in the topics below are not moderated and may not represent the views and opinions of this website."
+    "load-new-posts": "新しい投稿を読み込む",
+    "uncategorized.title": "既知のすべてのスレッド",
+    "uncategorized.intro": "このページには、このフォーラムが受信したすべてのスレッドの時系列一覧が表示されます。<br />以下のスレッドで表明された見解や意見はモデレートされておらず、このウェブサイトの見解や意見を代表するものではない場合があります。"
 }

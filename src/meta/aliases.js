@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const aliases = {
 	'plugin static dirs': ['staticdirs'],

@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const winston = require('winston');
 
 const db = require('../database');
@@ -12,17 +11,19 @@ const privileges = require('../privileges');
 const meta = require('../meta');
 const io = require('../socket.io');
 const cache = require('../cache');
-const cacheCreate = require('../cacheCreate');
+const cacheCreate = require('../cache/lru');
 const utils = require('../utils');
+const tx = require('../translator');
 
 const roomUidCache = cacheCreate({
-	name: 'chat:room:uids',
+	name: 'chat-room-uids',
 	max: 500,
 	ttl: 0,
 });
 
 const intFields = [
-	'roomId', 'timestamp', 'userCount', 'messageCount', 'joinLeaveMessages',
+	'roomId', 'timestamp', 'userCount', 'messageCount',
+	'joinLeaveMessages', 'notificationSetting',
 ];
 
 module.exports = function (Messaging) {
@@ -47,7 +48,7 @@ module.exports = function (Messaging) {
 		rooms.forEach((data) => {
 			if (data) {
 				db.parseIntFields(data, intFields, fields);
-				data.roomName = validator.escape(String(data.roomName || ''));
+				data.roomName = String(data.roomName || '');
 				data.public = parseInt(data.public, 10) === 1;
 				data.groupChat = data.userCount > 2;
 
@@ -105,11 +106,15 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			db.setObject(`chat:room:${roomId}`, room),
 			db.sortedSetAdd('chat:rooms', now, roomId),
-			db.sortedSetAdd(`chat:room:${roomId}:owners`, now, uid),
-			db.sortedSetsAdd([
-				`chat:room:${roomId}:uids`,
-				`chat:room:${roomId}:uids:online`,
-			], now, uid),
+			db.sortedSetAddBulk([
+				[`chat:room:${roomId}:uids`, now, uid],
+				[`chat:room:${roomId}:uids:online`, now, uid],
+				...(
+					(isPublic || data.uids.length > 1) ?
+						[[`chat:room:${roomId}:owners`, now, uid]] :
+						[uid].concat(data.uids).map(uid => ([`chat:room:${roomId}:owners`, now, uid]))
+				),
+			]),
 		]);
 
 		await Promise.all([
@@ -128,7 +133,6 @@ module.exports = function (Messaging) {
 		]);
 
 		if (!isPublic && parseInt(room.joinLeaveMessages, 10) === 1) {
-			// chat owner should also get the user-join system message
 			await Messaging.addSystemMessage('user-join', uid, roomId);
 		}
 
@@ -173,16 +177,25 @@ module.exports = function (Messaging) {
 		]);
 	};
 
+	Messaging.isRoomMember = async (uid, roomIds) => {
+		const single = !Array.isArray(roomIds);
+		if (single) {
+			roomIds = [roomIds];
+		}
+		const isMembers = await db.isMemberOfSortedSets(
+			roomIds.map(id => `chat:room:${id}:uids`),
+			uid
+		);
+		return single ? isMembers.pop() : isMembers;
+	};
+
 	Messaging.isUserInRoom = async (uid, roomIds) => {
 		let single = false;
 		if (!Array.isArray(roomIds)) {
 			roomIds = [roomIds];
 			single = true;
 		}
-		const inRooms = await db.isMemberOfSortedSets(
-			roomIds.map(id => `chat:room:${id}:uids`),
-			uid
-		);
+		const inRooms = await Messaging.isRoomMember(uid, roomIds);
 
 		const data = await Promise.all(roomIds.map(async (roomId, idx) => {
 			const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', {
@@ -330,9 +343,10 @@ module.exports = function (Messaging) {
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
-		const isInRoom = await Promise.all(
-			uids.map(uid => Messaging.isUserInRoom(uid, roomId))
-		);
+		if (!utils.isNumber(roomId) || !Array.isArray(uids)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		const isInRoom = await Messaging.isUsersInRoom(uids, roomId);
 		uids = uids.filter((uid, index) => isInRoom[index]);
 
 		const keys = uids
@@ -357,9 +371,14 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
-		const isInRoom = await Promise.all(roomIds.map(roomId => Messaging.isUserInRoom(uid, roomId)));
+		if (!Array.isArray(roomIds)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		const isInRoom = await Messaging.isUserInRoom(uid, roomIds);
 		roomIds = roomIds.filter((roomId, index) => isInRoom[index]);
-
+		if (!roomIds.length) {
+			return;
+		}
 		const roomKeys = [
 			...roomIds.map(roomId => `chat:room:${roomId}:uids`),
 			...roomIds.map(roomId => `chat:room:${roomId}:owners`),
@@ -450,7 +469,12 @@ module.exports = function (Messaging) {
 		}
 
 		await db.setObjectField(`chat:room:${payload.roomId}`, 'roomName', payload.newName);
-		await Messaging.addSystemMessage(`room-rename, ${payload.newName.replace(',', '&#44;')}`, payload.uid, payload.roomId);
+		await Messaging.addSystemMessage(
+			'room-rename',
+			payload.uid,
+			payload.roomId,
+			[tx.escape(payload.newName)]
+		);
 
 		plugins.hooks.fire('action:chat.renameRoom', {
 			roomId: payload.roomId,
@@ -532,7 +556,7 @@ module.exports = function (Messaging) {
 			return { options, selectedIcon: labels[currentSetting].icon };
 		}
 
-		const [canReply, users, messages, settings, isOwner, onlineUids, notifOptions] = await Promise.all([
+		const [canReply, users, messages, isOwner, onlineUids, notifOptions] = await Promise.all([
 			Messaging.canReply(roomId, uid),
 			Messaging.getUsersInRoomFromSet(`chat:room:${roomId}:uids:online`, roomId, 0, 39, true),
 			Messaging.getMessages({
@@ -542,7 +566,6 @@ module.exports = function (Messaging) {
 				roomId: roomId,
 				isNew: false,
 			}),
-			user.getSettings(uid),
 			Messaging.isRoomOwner(uid, roomId),
 			io.getUidsInRoom(`chat_room_${roomId}`),
 			getNotificationOptions(),
@@ -551,7 +574,8 @@ module.exports = function (Messaging) {
 
 		users.forEach((user) => {
 			if (user) {
-				user.online = parseInt(user.uid, 10) === parseInt(uid, 10) || onlineUids.includes(String(user.uid));
+				const userUid = String(user.uid);
+				user.online = userUid === String(uid) || onlineUids.includes(userUid);
 			}
 		});
 
@@ -562,7 +586,7 @@ module.exports = function (Messaging) {
 		room.groupChat = users.length > 2;
 		room.icon = Messaging.getRoomIcon(room);
 		room.usernames = Messaging.generateUsernames(room, uid);
-		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, settings.userLang);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

@@ -13,6 +13,7 @@
 	"manage/tags": "Теги",
 	"manage/users": "Користувачі",
 	"manage/admins-mods": "Адміністратори та моди",
+	"manage/api": "API Access",
 	"manage/registration": "Черга реєстрації",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Черга Постів",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "Налаштування %1",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Зовнішній вигляд",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Стилі",
@@ -70,6 +81,7 @@
 	"advanced/logs": "Логи",
 	"advanced/errors": "Помилки",
 	"advanced/cache": "Кеш",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Логування",
 	"development/info": "Інформація",
 

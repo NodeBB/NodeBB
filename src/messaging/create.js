@@ -7,6 +7,7 @@ const plugins = require('../plugins');
 const db = require('../database');
 const user = require('../user');
 const utils = require('../utils');
+const tx = require('../translator');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = async (data) => {
@@ -49,6 +50,10 @@ module.exports = function (Messaging) {
 			if (!await Messaging.canViewMessage(data.toMid, roomId, uid)) {
 				throw new Error('[[error:no-privileges]]');
 			}
+			const system = await Messaging.getMessageField(data.toMid, 'system');
+			if (system) {
+				throw new Error('[[error:invalid-mid]]');
+			}
 		}
 		const mid = data.mid || await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || Date.now();
@@ -62,11 +67,12 @@ module.exports = function (Messaging) {
 		if (data.toMid) {
 			message.toMid = data.toMid;
 		}
-		if (data.system) {
+		if (data.system && data.type) {
 			message.system = data.system;
+			message.type = data.type;
 		}
 
-		if (data.ip) {
+		if (data.ip && meta.config.logIPs) {
 			message.ip = data.ip;
 		}
 
@@ -107,12 +113,19 @@ module.exports = function (Messaging) {
 		return messages[0];
 	};
 
-	Messaging.addSystemMessage = async (content, uid, roomId) => {
+	Messaging.addSystemMessage = async (type, uid, roomId, txArgs = []) => {
+		// content is actually the type of system message
+		// 'user-join', 'user-leave', 'room-rename', etc.
+		const displayname = await user.getNotificationDisplayname(uid);
+		const now = Date.now();
+		txArgs = [displayname, new Date(now).toISOString(), ...txArgs];
 		const message = await Messaging.addMessage({
-			content: content,
+			type: type,
+			content: tx.compile(`modules:chat.system.${type}`, ...txArgs),
 			uid: uid,
 			roomId: roomId,
 			system: 1,
+			timestamp: now,
 		});
 		Messaging.notifyUsersInRoom(uid, roomId, message);
 	};

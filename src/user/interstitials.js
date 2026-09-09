@@ -34,8 +34,10 @@ Interstitials.email = async (data) => {
 	]);
 
 	let email;
-	if (data.userData.uid) {
+	if (data.req.uid && data.userData.uid && data.req.uid === data.userData.uid) {
 		email = await user.getUserField(data.userData.uid, 'email');
+	} else if (data.userData.token) {
+		email = await user.getEmailFromToken(data.userData.token);
 	}
 
 	data.interstitials.push({
@@ -54,9 +56,10 @@ Interstitials.email = async (data) => {
 			// Validate and send email confirmation
 			if (userData.uid) {
 				const isSelf = parseInt(userData.uid, 10) === parseInt(data.req.uid, 10);
-				const [isPasswordCorrect, canEdit, { email: current, 'email:confirmed': confirmed }, { allowed, error }] = await Promise.all([
+				const [isPasswordCorrect, canEdit, isAdmin, { email: current, 'email:confirmed': confirmed }, { allowed, error }] = await Promise.all([
 					user.isPasswordCorrect(userData.uid, formData.password, data.req.ip),
 					privileges.users.canEdit(data.req.uid, userData.uid),
+					privileges.admin.can('admin:users', data.req.uid),
 					user.getUserFields(userData.uid, ['email', 'email:confirmed']),
 					plugins.hooks.fire('filter:user.saveEmail', {
 						uid: userData.uid,
@@ -69,6 +72,13 @@ Interstitials.email = async (data) => {
 
 				if (!isPasswordCorrect) {
 					await sleep(2000);
+				}
+
+				// Changing or removing an existing email is not allowed if email edits are disabled.
+				// Setting an initial email is still allowed, otherwise users caught by
+				// `requireEmailAddress` would have no way out of the interstitial.
+				if (meta.config['email:disableEdit'] && !isAdmin && current.length && formData.email !== current) {
+					throw new Error('[[error:no-privileges]]');
 				}
 
 				if (formData.email && formData.email.length) {

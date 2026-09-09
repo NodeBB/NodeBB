@@ -30,8 +30,16 @@ chatsController.get = async function (req, res, next) {
 	};
 	const isSwitch = res.locals.isAPI && parseInt(req.query.switch, 10) === 1;
 	if (!isSwitch) {
+		let start = 0;
+		if (req.params.roomid) {
+			const roomIndex = await db.sortedSetRevRank(`uid:${uid}:chat:rooms`, req.params.roomid);
+			if (roomIndex !== null) {
+				// render the list around the selected room so it is visible without paging from the top
+				start = Math.max(0, roomIndex - 2);
+			}
+		}
 		const [recentChats, publicRooms, privateRoomCount] = await Promise.all([
-			messaging.getRecentChats(req.uid, uid, 0, 29),
+			messaging.getRecentChats(req.uid, uid, start, start + 29),
 			messaging.getPublicRooms(req.uid, uid),
 			db.sortedSetCard(`uid:${uid}:chat:rooms`),
 		]);
@@ -40,6 +48,7 @@ chatsController.get = async function (req, res, next) {
 		}
 		payload.rooms = recentChats.rooms;
 		payload.nextStart = recentChats.nextStart;
+		payload.prevStart = start;
 		payload.publicRooms = publicRooms;
 		payload.privateRoomCount = privateRoomCount;
 	}

@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const winston = require('winston');
 
 const plugins = require('../plugins');
@@ -42,23 +41,6 @@ admin.getAdmin = async function () {
 	return { enabled: enabled, available: available };
 };
 
-const fieldsToEscape = ['iconClass', 'class', 'route', 'id', 'text', 'textClass', 'title'];
-
-admin.escapeFields = navItems => toggleEscape(navItems, true);
-admin.unescapeFields = navItems => toggleEscape(navItems, false);
-
-function toggleEscape(navItems, flag) {
-	navItems.forEach((item) => {
-		if (item) {
-			fieldsToEscape.forEach((field) => {
-				if (item.hasOwnProperty(field)) {
-					item[field] = validator[flag ? 'escape' : 'unescape'](String(item[field]));
-				}
-			});
-		}
-	});
-}
-
 admin.get = async function () {
 	if (cache) {
 		return cache.map(item => ({ ...item }));
@@ -78,9 +60,11 @@ admin.get = async function () {
 		if (item.groups && !Array.isArray(item.groups)) {
 			item.groups = [item.groups];
 		}
+
+		item.enabled = String(item.enabled) === 'on' || String(item.enabled) === 'true';
+		item.order = parseInt(item.order, 10);
 		return item;
 	});
-	admin.escapeFields(cache);
 
 	return cache.map(item => ({ ...item }));
 };

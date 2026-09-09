@@ -1,0 +1,22 @@
+{
+	"display.create": "Opprett og svar",
+	"display.like": "Anbefal innlegg",
+	"display.dislike": "Stem ned",
+	"display.follow": "Følg",
+	"display.object": "Vis",
+	"title": "Registrer Open Social Web-brukernavn",
+	"description": "Skriv inn Open Social Web-brukernavnet ditt for å registrere deg for Activity Intents. Dette gjør at du kan dele innhold fra dette forumet til den sosiale profilen din.",
+	"handle-label": "Open Social Web-brukernavn",
+	"handle-placeholder": "username@example.com",
+	"register-button": "Registrer brukernavn",
+	"registered-handles": "Registrerte brukernavn",
+	"no-handles": "Ingen brukernavn registrert ennå.",
+	"intents-label": "Støttede handlinger",
+	"register-error": "Kunne ikke registrere brukernavnet. Kontroller formatet på brukernavnet og prøv igjen.",
+	"invalid-handle": "Skriv inn et gyldig brukernavn i formatet @brukernavn@domene.no",
+	"trigger-title": "%1 via Open Social Web",
+	"trigger-description": "Logg inn på forumkontoen din, eller velg et Open Social Web-brukernavn for å fullføre denne handlingen.",
+	"trigger-your-handles": "Dine registrerte brukernavn",
+	"trigger-yes": "Ja, bruk dette",
+	"trigger-no-matching": "Ingen registrerte brukernavn støtter denne handlingen. Registrer et nytt brukernavn eller logg inn."
+}

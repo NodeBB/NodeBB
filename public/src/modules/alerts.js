@@ -5,11 +5,11 @@ import * as hooks from './hooks';
 
 export function alert(params) {
 	params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
-	params.title = params.title ? params.title.trim() || '' : '';
-	params.message = params.message ? params.message.trim() : '';
+	params.title = params.title ? String(params.title).trim() || '' : '';
+	params.message = params.message ? String(params.message).trim() : '';
 	params.type = params.type || 'info';
 
-	const alert = $('#' + params.alert_id);
+	const alert = $(`#${params.alert_id}`);
 	if (alert.length) {
 		updateAlert(alert, params);
 	} else {
@@ -48,7 +48,7 @@ export function warning(message, timeout) {
 }
 
 export function error(message, timeout) {
-	message = (message && message.message) || message;
+	message = (message && message.message) || String(message);
 
 	if (message === '[[error:revalidate-failure]]') {
 		socket.disconnect();
@@ -69,9 +69,9 @@ export function remove(id) {
 	$('#alert_button_' + id).remove();
 }
 
-function updateAlert(alert, params) {
-	alert.find('strong').translateHtml(params.title);
-	alert.find('p').translateHtml(params.message);
+async function updateAlert(alert, params) {
+	const newEl = await app.parseAndTranslate('partials/toast', params);
+	alert.find('[component="toast/body"]').replaceWith(newEl.find('[component="toast/body"]'));
 	alert.removeClass('alert-success alert-danger alert-info alert-warning')
 		.addClass(`alert-${params.type}`);
 

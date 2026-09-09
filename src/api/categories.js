@@ -8,7 +8,6 @@ const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
-const utils = require('../utils');
 
 const categoriesAPI = module.exports;
 
@@ -150,7 +149,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 		tag: data.query.tag,
 		targetUid,
 	});
-	categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
+	await categories.modifyTopicsByPrivilege(result.topics, userPrivileges);
 
 	return { ...result, privileges: userPrivileges };
 };
@@ -158,7 +157,7 @@ categoriesAPI.getTopics = async (caller, data) => {
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	let targetUid = caller.uid;
 	let cids = Array.isArray(cid) ? cid : [cid];
-	cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
+	cids = cids.map(cid => String(cid));
 
 	if (uid) {
 		targetUid = uid;
@@ -170,9 +169,9 @@ categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	// filter to subcategories of cid
 	let cat;
 	do {
-		cat = categoryData.find(c => !cids.includes(c.cid) && cids.includes(c.parentCid));
+		cat = categoryData.find(c => !cids.includes(String(c.cid)) && cids.includes(String(c.parentCid)));
 		if (cat) {
-			cids.push(cat.cid);
+			cids.push(String(cat.cid));
 		}
 	} while (cat);
 
@@ -189,6 +188,8 @@ categoriesAPI.getPrivileges = async (caller, { cid }) => {
 
 	if (cid === 'admin') {
 		responsePayload = await privileges.admin.list(caller.uid);
+	} else if (cid === 'all') {
+		responsePayload = await privileges.categories.listAll();
 	} else if (!parseInt(cid, 10)) {
 		responsePayload = await privileges.global.list();
 	} else {
@@ -214,7 +215,12 @@ categoriesAPI.setPrivilege = async (caller, data) => {
 	if (!privs.length) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	if (parseInt(data.cid, 10) === 0) {
+	if (data.cid === 'all') {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const categoryPrivList = await privileges.categories.getPrivilegeList();
+		const categoryPrivs = privs.filter(priv => categoryPrivList.includes(priv));
+		await privileges.categories[type](categoryPrivs, cids, data.member);
+	} else if (parseInt(data.cid, 10) === 0) {
 		const adminPrivList = await privileges.admin.getPrivilegeList();
 		const adminPrivs = privs.filter(priv => adminPrivList.includes(priv));
 		if (adminPrivs.length) {

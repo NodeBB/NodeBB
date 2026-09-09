@@ -13,6 +13,7 @@
 	"manage/tags": "Tabs",
 	"manage/users": "Utenti",
 	"manage/admins-mods": "Amministratori e Moderatori",
+	"manage/api": "API Accesso",
 	"manage/registration": "Coda di registrazione",
 	"manage/flagged-content": "Contenuti Segnalati",
 	"manage/post-queue": "Coda post",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "%1 Impostazioni",
 
+	"section-federation": "Federazione",
+	"federation/general": "Generale",
+	"federation/content": "Contenuto",
+	"federation/rules": "Categorizzazione",
+	"federation/relays": "Relè",
+	"federation/pruning": "Archiviazione",
+	"federation/safety": "Fiducia e sicurezza",
+	"federation/analytics": "Analisi",
+	"federation/errors": "Errori",
+
 	"section-appearance": "Stile",
 	"appearance/themes": "Themi",
 	"appearance/skins": "Skin",
@@ -70,6 +81,7 @@
 	"advanced/logs": "Registri",
 	"advanced/errors": "Errori",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Lavori",
 	"development/logger": "Registratore",
 	"development/info": "Informazioni",
 

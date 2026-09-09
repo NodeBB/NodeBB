@@ -4,7 +4,8 @@
 	"lead-text": "Ezen az oldalon beállíthatod a NodeBB Write API-jának hozzáférését.",
 	"intro": "Alapértelmezetten a Write API a felhasználókat a munkamenet sütijükön keresztül authentikálja, azonban a NodeBB támogatja a Bearer authentikációt tokeneken keresztül, amiket ezen az oldalon generálhatsz.",
 	"warning": "<strong>Be advised</strong> — treat tokens like passwords. If they are leaked, your account should be considered compromised.",
-	"docs": "Kattints ide a teljes API specifikáció megtekintéséhez",
+	"docs": "Click here to access the Read API specification",
+	"docs.write": "Click here to access the Write API specification",
 
 	"require-https": "API használat korlátozása HTTPS protokollra",
 	"require-https-caveat": "<strong>Megjegyzés</strong>: Némely telepítések terherléselosztás miatt a kéréseket a NodeBB felé HTTP-n keresztül továbbítják. Ilyen esetekben ezt a beállítást nem szabad bekapcsolni.",
@@ -25,5 +26,10 @@
 	"roll": "Roll",
 
 	"delete-confirm": "Are you sure you wish to delete this token? It will not be recoverable.",
-	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable."
+	"roll-confirm": "Are you sure you wish to regenerate this token? The old token will be immediately revoked and will not be recoverable.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

@@ -10,7 +10,7 @@ define('forum/search', [
 	'translator',
 	'categoryFilter',
 	'userFilter',
-], function (searchModule, storage, hooks, alerts, api, translator, categoryFilter, userFilter) {
+], function (searchModule, storage, hooks, alerts, api, tx, categoryFilter, userFilter) {
 	const Search = {};
 	let selectedUsers = [];
 	let selectedTags = [];
@@ -71,13 +71,13 @@ define('forum/search', [
 		const isActive = selectedTags.length > 0;
 		let labelText = '[[search:tags]]';
 		if (selectedTags.length) {
-			labelText = translator.compile(
-				'search:tags-x', selectedTags.map(u => u.value).join(', ')
+			labelText = tx.compile(
+				'search:tags-x', selectedTags.map(u => tx.escape(u.value)).join(', ')
 			);
 		}
 		$('[component="tag/filter/button"]').toggleClass(
 			'active-filter', isActive
-		).find('.filter-label').translateHtml(labelText);
+		).find('.filter-label').translateText(labelText);
 	}
 
 	function updateTimeFilter() {
@@ -229,12 +229,13 @@ define('forum/search', [
 			});
 			storage.setItem('search-preferences', JSON.stringify(saveData));
 			alerts.success('[[search:search-preferences-saved]]');
+			searchModule.query(data);
 			return false;
 		});
 
 		$('#clear-preferences').on('click', async function () {
 			storage.removeItem('search-preferences');
-			const html = await app.parseAndTranslate('partials/search-filters', {});
+			const html = await app.parseAndTranslate('partials/search/filters', {});
 			$('[component="search/filters"]').replaceWith(html);
 			$('#search-in').val(ajaxify.data.searchDefaultIn);
 			$('#post-sort-by').val(ajaxify.data.searchDefaultSortBy);
@@ -294,7 +295,7 @@ define('forum/search', [
 		selectedUsers = _selectedUsers || [];
 		userFilter.init(el, {
 			selectedUsers: _selectedUsers,
-			template: 'partials/search-filters',
+			template: 'partials/search/filters',
 			onSelect: function (_selectedUsers) {
 				selectedUsers = _selectedUsers;
 			},
@@ -302,8 +303,8 @@ define('forum/search', [
 				const isActive = _selectedUsers.length > 0;
 				let labelText = '[[search:posted-by]]';
 				if (isActive) {
-					labelText = translator.compile(
-						'search:posted-by-usernames', selectedUsers.map(u => u.username).join(', ')
+					labelText = tx.compile(
+						'search:posted-by-usernames', selectedUsers.map(u => tx.escape(u.username)).join(', ')
 					);
 				}
 				el.find('[component="user/filter/button"]').toggleClass(
@@ -316,18 +317,16 @@ define('forum/search', [
 	function tagFilterDropdown(el, _selectedTags) {
 		selectedTags = _selectedTags;
 		async function renderSelectedTags() {
-			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterSelected', {
+			const html = await app.parseAndTranslate('partials/search/filters', 'tagFilterSelected', {
 				tagFilterSelected: selectedTags,
 			});
 			el.find('[component="tag/filter/selected"]').html(html);
 		}
 		function tagValueToObject(value) {
-			const escapedTag = utils.escapeHTML(value);
 			return {
 				value: value,
-				valueEscaped: escapedTag,
 				valueEncoded: encodeURIComponent(value),
-				class: escapedTag.replace(/\s/g, '-'),
+				class: value.replace(/\s/g, '-'),
 			};
 		}
 
@@ -345,7 +344,7 @@ define('forum/search', [
 			}
 
 			if (!result.tags.length) {
-				el.find('[component="tag/filter/results"]').translateHtml(
+				el.find('[component="tag/filter/results"]').translateText(
 					'[[tags:no-tags-found]]'
 				);
 				return;
@@ -356,7 +355,7 @@ define('forum/search', [
 				tagMap[tag.value] = tag;
 			});
 
-			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterResults', {
+			const html = await app.parseAndTranslate('partials/search/filters', 'tagFilterResults', {
 				tagFilterResults: result.tags,
 			});
 			el.find('[component="tag/filter/results"]').html(html);

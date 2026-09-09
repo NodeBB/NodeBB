@@ -13,6 +13,7 @@ const Flags = require('../src/flags');
 const Categories = require('../src/categories');
 const Topics = require('../src/topics');
 const Posts = require('../src/posts');
+const notifications = require('../src/notifications');
 const User = require('../src/user');
 const Groups = require('../src/groups');
 const Meta = require('../src/meta');
@@ -38,7 +39,9 @@ describe('Flags', () => {
 		});
 
 		// Create some stuff to flag
-		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' });
+		uid1 = await User.create({ username: 'testUser', password: 'abcdef', email: 'b@c.com' }, {
+			emailVerification: 'verify',
+		});
 
 		adminUid = await User.create({ username: 'testUser2', password: 'abcdef', email: 'c@d.com' });
 		await Groups.join('administrators', adminUid);
@@ -649,6 +652,59 @@ describe('Flags', () => {
 		});
 	});
 
+	describe('.markNotificationsRead()', () => {
+		let result;
+		let flagObj;
+		let nid;
+		let unreadSet;
+		let readSet;
+
+		beforeEach(async () => {
+			result = await Topics.post({
+				cid: category.cid,
+				uid: uid3,
+				title: 'Topic to flag',
+				content: 'This is flaggable content',
+			});
+			flagObj = await api.flags.create({ uid: uid1 }, { type: 'post', id: result.postData.pid, reason: 'spam' });
+			nid = `flag:post:${result.postData.pid}:${uid1}`;
+			unreadSet = `uid:${adminUid}:notifications:unread`;
+			readSet = `uid:${adminUid}:notifications:read`;
+			await sleep(2000);
+		});
+
+		it('should store the flagId on the flag notification', async () => {
+			const [notifObj] = await notifications.getMultiple([nid]);
+			assert.strictEqual(notifObj.flagId, flagObj.flagId);
+		});
+
+		it('should mark the flag notification as read', async () => {
+			assert(await db.isSortedSetMember(unreadSet, nid));
+
+			await Flags.markNotificationsRead(flagObj.flagId, adminUid);
+
+			assert(!await db.isSortedSetMember(unreadSet, nid));
+			assert(await db.isSortedSetMember(readSet, nid));
+		});
+
+		it('should mark the flag notification as read when the flag detail page is viewed', async () => {
+			const { jar: adminJar } = await helpers.loginUser('testUser2', 'abcdef');
+			assert(await db.isSortedSetMember(unreadSet, nid));
+
+			const { response } = await request.get(`${nconf.get('url')}/flags/${flagObj.flagId}`, { jar: adminJar });
+			assert.strictEqual(response.statusCode, 200);
+
+			assert(!await db.isSortedSetMember(unreadSet, nid));
+			assert(await db.isSortedSetMember(readSet, nid));
+		});
+
+		it('should not touch notifications of a user who never received one', async () => {
+			assert(!await db.isSortedSetMember(`uid:${uid3}:notifications:unread`, nid));
+			await Flags.markNotificationsRead(flagObj.flagId, uid3);
+			assert(!await db.isSortedSetMember(`uid:${uid3}:notifications:read`, nid));
+		});
+	});
+
 	describe('.getTarget()', () => {
 		it('should return a post\'s data if queried with type "post"', (done) => {
 			Flags.getTarget('post', 1, 1, (err, data) => {
@@ -905,7 +961,7 @@ describe('Flags', () => {
 				assert(exists);
 			});
 
-			it('should escape flag reason', async () => {
+			it('should escape flag reason and not translate it', async () => {
 				const postData = await Topics.reply({
 					tid: tid,
 					uid: 1,
@@ -920,17 +976,24 @@ describe('Flags', () => {
 					body: {
 						type: 'post',
 						id: postData.pid,
-						reason: '"<script>alert(\'ok\');</script>',
+						reason: '"<script>alert(\'ok\');</script> [[global:votes]]',
 					},
 				});
 
 				const flagData = await Flags.get(body.response.flagId);
-				assert.strictEqual(flagData.reports[0].value, '&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;&#x2F;script&gt;');
+				// unescape in api
+				assert.strictEqual(flagData.reports[0].value, '"<script>alert(\'ok\');</script> [[global:votes]]');
+
+				// escaped in html
+				const { body: body2 } = await request.get(`${nconf.get('url')}/flags/${body.response.flagId}`, {
+					jar, body: {},
+				});
+				assert(body2.includes('&quot;&lt;script&gt;alert(&#x27;ok&#x27;);&lt;/script&gt; [[global:votes]]'));
 			});
 
-			it('should escape filters', async () => {
+			it('should return undefined for invalid filters', async () => {
 				const { body } = await request.get(`${nconf.get('url')}/api/flags?quick="<script>alert('foo');</script>`, { jar });
-				assert.strictEqual(body.filters.quick, '&quot;&lt;script&gt;alert(&#x27;foo&#x27;);&lt;&#x2F;script&gt;');
+				assert.strictEqual(body.filters.quick, undefined);
 			});
 
 			it('should not allow flagging post in private category', async () => {

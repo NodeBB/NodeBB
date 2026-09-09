@@ -1,0 +1,13 @@
+{
+    "themes": "Themes",
+    "checking-for-installed": "ထည့်သွင်းထားသည်များကို စစ်ဆေးနေသည်...",
+    "homepage": "ပင်မစာမျက်နှာ",
+    "select-theme": "Theme ရွေးချယ်ရန်",
+    "revert-theme": "မူလ Theme ပြန်ထားရန်",
+    "current-theme": "လက်ရှိ Theme",
+    "no-themes": "Theme များ မရှိပါ",
+    "revert-confirm": "မူလအတိုင်း ပြန်ထားရန် သေချာပါသလား?",
+    "theme-changed": "Theme ပြောင်းလဲပြီးပါပြီ",
+    "revert-success": "မူလအတိုင်း ပြန်လည်ထားရှိပြီးပါပြီ",
+    "restart-to-activate": "အသုံးပြုရန် ပြန်လည်စတင်ပါ"
+}

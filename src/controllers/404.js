@@ -2,19 +2,23 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const validator = require('validator');
 
 const meta = require('../meta');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
 const middleware = require('../middleware');
 const helpers = require('../middleware/helpers');
-const { secureRandom } = require('../utils');
+
+const relativePath = nconf.get('relative_path');
+const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
+
+const error404Icons = [
+	'fa-hippo', 'fa-cat', 'fa-otter',
+	'fa-dog', 'fa-cow', 'fa-fish',
+	'fa-dragon', 'fa-horse', 'fa-dove',
+];
 
 exports.handle404 = helpers.try(async (req, res) => {
-	const relativePath = nconf.get('relative_path');
-	const isClientScript = new RegExp(`^${relativePath}\\/assets\\/src\\/.+\\.js(\\?v=\\w+)?$`);
-
 	if (plugins.hooks.hasListeners('action:meta.override404')) {
 		return plugins.hooks.fire('action:meta.override404', {
 			req: req,
@@ -57,21 +61,16 @@ exports.send404 = helpers.try(async (req, res) => {
 	const path = String(req.path || '');
 	if (res.locals.isAPI) {
 		return res.json({
-			path: validator.escape(path.replace(/^\/api/, '')),
+			path: path.replace(/^\/api/, ''),
 			title: '[[global:404.title]]',
 			bodyClass: helpers.buildBodyClass(req, res),
 		});
 	}
-	const icons = [
-		'fa-hippo', 'fa-cat', 'fa-otter',
-		'fa-dog', 'fa-cow', 'fa-fish',
-		'fa-dragon', 'fa-horse', 'fa-dove',
-	];
+
 	await middleware.buildHeaderAsync(req, res);
 	res.render('404', {
-		path: validator.escape(path),
+		path: path,
 		title: '[[global:404.title]]',
-		bodyClass: helpers.buildBodyClass(req, res),
-		icon: icons[secureRandom(0, icons.length - 1)],
+		icon: error404Icons[Math.floor(Math.random() * error404Icons.length)],
 	});
 });

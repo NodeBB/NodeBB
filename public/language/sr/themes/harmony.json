@@ -1,6 +1,8 @@
 {
 	"theme-name": "Harmony тема",
 	"skins": "Маске",
+	"light": "Light",
+	"dark": "Dark",
 	"collapse": "Скупи",
 	"expand": "Рашири",
 	"sidebar-toggle": "Sidebar Toggle",

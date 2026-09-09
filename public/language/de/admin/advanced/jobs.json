@@ -1,0 +1,9 @@
+{
+	"jobs": "Jobs",
+	"job-name": "Jobname",
+	"schedule": "Zeitplan",
+	"next-run": "Nächster Lauf",
+	"last-duration": "Letzte Dauer",
+	"running": "Laufend",
+	"active": "Aktiv"
+}

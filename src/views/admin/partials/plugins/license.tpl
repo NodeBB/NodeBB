@@ -1,5 +1,5 @@
-[[admin/extend/plugins:license.intro, {name}, {license.name}]]
+{{tx("admin/extend/plugins:license.intro", name, license.name)}}
 
 <blockquote>{license.text}</blockquote>
 
-[[admin/extend/plugins:license.cta]]
+{{tx("admin/extend/plugins:license.cta")}}

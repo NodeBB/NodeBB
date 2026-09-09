@@ -1,11 +1,11 @@
 'use strict';
 
 define('forum/account/moderate', [
-	'benchpress',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-], function (Benchpress, api, bootbox, alerts) {
+	'benchpress',
+], function (api, modals, alerts, Benchpress) {
 	const AccountModerate = {};
 
 	AccountModerate.banAccount = function (theirid, onSuccess) {
@@ -14,12 +14,10 @@ define('forum/account/moderate', [
 		throwModal({
 			tpl: 'modals/temporary-ban',
 			title: '[[user:ban-account]]',
+			type: 'ban',
 			onSubmit: function (formData) {
-				const until = formData.length > 0 ? (
-					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-				) : 0;
-				api.put('/users/' + theirid + '/ban', {
-					until: until,
+				api.put('/users/' + encodeURIComponent(theirid) + '/ban', {
+					until: formData.until,
 					reason: formData.reason || '',
 				}).then(() => {
 					if (typeof onSuccess === 'function') {
@@ -36,8 +34,9 @@ define('forum/account/moderate', [
 		throwModal({
 			tpl: 'modals/unban',
 			title: '[[user:unban-account]]',
+			type: 'ban',
 			onSubmit: function (formData) {
-				api.del('/users/' + theirid + '/ban', {
+				api.del('/users/' + encodeURIComponent(theirid) + '/ban', {
 					reason: formData.reason || '',
 				}).then(() => {
 					ajaxify.refresh();
@@ -51,13 +50,10 @@ define('forum/account/moderate', [
 		throwModal({
 			tpl: 'modals/temporary-mute',
 			title: '[[user:mute-account]]',
+			type: 'mute',
 			onSubmit: function (formData) {
-				const until = formData.length > 0 ? (
-					Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))
-				) : 0;
-
 				api.put('/users/' + theirid + '/mute', {
-					until: until,
+					until: formData.until,
 					reason: formData.reason || '',
 				}).then(() => {
 					if (typeof onSuccess === 'function') {
@@ -83,33 +79,51 @@ define('forum/account/moderate', [
 		});
 	};
 
-	function throwModal(options) {
-		Benchpress.render(options.tpl, {}).then(function (html) {
-			const modal = bootbox.dialog({
-				title: options.title,
-				message: html,
-				show: true,
-				onEscape: true,
-				buttons: {
-					close: {
-						label: '[[global:close]]',
-						className: 'btn-link',
-					},
-					submit: {
-						label: options.title,
-						callback: function () {
-							const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
-								data[cur.name] = cur.value;
-								return data;
-							}, {});
+	async function throwModal(options) {
+		const reasons = await socket.emit('user.getCustomReasons', { type: options.type || '' });
+		const html = await Benchpress.render(options.tpl, { reasons });
+		const modal = await modals.dialog({
+			title: options.title,
+			message: html,
+			onEscape: true,
+			buttons: {
+				close: {
+					label: '[[global:close]]',
+					className: 'btn-link',
+				},
+				submit: {
+					label: options.title,
+					callback: function () {
+						const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
+							data[cur.name] = cur.value;
+							return data;
+						}, {});
 
-							options.onSubmit(formData);
-						},
+						if (Object.hasOwn(formData, 'length')) {
+							const onHourInMilliseconds = 1000 * 60 * 60;
+							const numHours = parseInt(formData.unit, 10) ? 24 : 1; // unit of 1 is days, 0 is hours
+							formData.until = formData.length > 0 ? (
+								Date.now() + (formData.length * onHourInMilliseconds * numHours)
+							) : 0;
+						} else {
+							formData.until = 0;
+						}
+
+						options.onSubmit(formData);
 					},
 				},
-			});
+			},
 		});
+		modal.find('[data-key]').on('click', function () {
+			const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+			if (reason && reason.body) {
+				modal.find('[name="reason"]').val(reason.body);
+			}
+		});
+		return modal;
 	}
+
+	AccountModerate.throwModal = throwModal;
 
 	return AccountModerate;
 });

@@ -8,5 +8,6 @@
     "login-successful": "Sikeresen beléptél!",
     "dont-have-account": "Még nincs fiókod?",
     "logged-out-due-to-inactivity": "Inaktivitás miatt ki lettél jelentkeztetve az Adminisztrációs vezérlőpultból",
-    "caps-lock-enabled": "Caps Lock bekapcsolva"
+    "caps-lock-enabled": "Caps Lock bekapcsolva",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

@@ -7,10 +7,14 @@ const path = require('node:path');
 process.profile = function (operation, start) {
 	console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 };
-
+const NS_PER_SEC = 1e9;
 process.elapsedTimeSince = function (start) {
 	const diff = process.hrtime(start);
 	return (diff[0] * 1e3) + (diff[1] / 1e6);
+};
+process.elapsedNano = function (start) {
+	const [seconds, nanoseconds] = process.hrtime(start);
+	return (seconds * NS_PER_SEC) + nanoseconds;
 };
 const utils = { ...require('../public/src/utils.common') };
 

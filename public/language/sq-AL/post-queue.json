@@ -10,15 +10,19 @@
 	"user": "Përdorues",
 	"when": "When",
 	"category": "Kategoria",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "Titulli",
 	"content": "Përmbajtja",
 	"posted": "U postua",
 	"reply-to": "Përgjigju \"%1\"",
+	"edit": "Edit",
 	"content-editable": "Klikoni mbi përmbajtjen për ta modifikuar",
 	"category-editable": "Klikoni në kategori për ta modifikuar",
 	"title-editable": "Klikoni mbi titullin për të modifikuar",
 	"reply": "Komento",
 	"topic": "Tema",
+	"crosspost": "Crosspost",
 	"accept": "Prano",
 	"reject": "Refuzo",
 	"remove": "Hiq",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 postime u pranuan",
 	"bulk-reject-success": "%1 postime u refuzuan",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

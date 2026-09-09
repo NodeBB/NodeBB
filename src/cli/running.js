@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const childProcess = require('child_process');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const fork = require('../meta/debugFork');
 const { paths } = require('../constants');

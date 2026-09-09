@@ -1,6 +1,16 @@
 {
 	"alert.confirm-rebuild-and-restart": "Sei sicuro di voler riorganizza e riavviare NodeBB?",
 	"alert.confirm-restart": "Sei sicuro di voler riavviare NodeBB?",
+	"rebuilding.title": "Ricostruzione in corso... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB sta ricostruendo le risorse front-end (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Successo",
+	"rebuilding.success.message": "NodeBB è stato ricostruito e riavviato con successo.",
+	"build.complete": "Costruzione completata!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Riavvio in corso... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB si sta riavviando.",
+	"restarting.success.message": "NodeBB è stato riavviato con successo.",
+
 
 	"acp-title": "%1 | Pannello di controllo amministratore NodeBB",
 	"settings-header-contents": "Contenuti",

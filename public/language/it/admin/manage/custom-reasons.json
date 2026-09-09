@@ -1,0 +1,16 @@
+{
+	"title": "Gestisci motivi personalizzati",
+	"create-reason": "Crea motivo",
+	"edit-reason": "Modifica motivo",
+	"reasons-help": "Le motivazioni sono spiegazioni predefinite utilizzate quando si bannano o si silenziano gli utenti, o quando si rifiutano i post nella coda dei post.",
+	"reason-title": "Titolo",
+	"reason-type": "Tipo",
+	"reason-body": "Corpo",
+	"reason-all": "Tutto",
+	"reason-ban": "Ban",
+	"reason-mute": "Silenzioso",
+	"reason-post-queue": "Coda post",
+	"reason-type-help": "Il tipo di azione a cui si applica questo motivo. Se si seleziona \"Tutti\", questo motivo sarà disponibile per tutti i tipi di azione.",
+	"custom-reasons-saved": "Motivi personalizzati salvati con successo",
+	"delete-reason-confirm-x": "Sei sicuro di voler eliminare il motivo personalizzato con il titolo <strong>%1</strong>?"
+}

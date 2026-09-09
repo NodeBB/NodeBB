@@ -1,9 +1,9 @@
 <div class="tool-modal d-flex">
 	<div class="card shadow">
-		<h5 class="card-header">[[topic:thread-tools.merge-topics]]</h5>
+		<h5 class="card-header">{{tx("topic:thread-tools.merge-topics")}}</h5>
 		<div class="card-body">
 			<p>
-				[[topic:merge-topics-instruction]]
+				{{tx("topic:merge-topics-instruction")}}
 			</p>
 			<p>
 				<div class="input-group">
@@ -17,7 +17,7 @@
 				</div>
 			</p>
 
-			<p><strong>[[topic:merge-topic-list-title]]</strong></p>
+			<p><strong>{{tx("topic:merge-topic-list-title")}}</strong></p>
 			<ul class="topics-section">
 				{{{ each topics }}}
 				<li class="mb-1">
@@ -29,21 +29,21 @@
 				{{{ end }}}
 			</ul>
 			<p>
-				<strong>[[topic:merge-options]]</strong>
+				<strong>{{tx("topic:merge-options")}}</strong>
 			</p>
 			<form>
 				<p>
-					<input class="merge-main-topic-radio" type="radio" name="merge-topic-option" checked="true"> [[topic:merge-select-main-topic]]
+					<input class="merge-main-topic-radio" type="radio" name="merge-topic-option" checked="true"> {{tx("topic:merge-select-main-topic")}}
 				</p>
 				<p>
 					<select class="form-select merge-main-topic-select">
 						{{{ each topics }}}
-						<option value="{topics.tid}">{topics.title}</option>
+						<option value="{./tid}">{./title}</option>
 						{{{ end }}}
 					</select>
 				</p>
 				<p>
-					<input class="merge-new-title-radio" type="radio" name="merge-topic-option"> [[topic:merge-new-title-for-topic]]
+					<input class="merge-new-title-radio" type="radio" name="merge-topic-option"> {{tx("topic:merge-new-title-for-topic")}}
 				</p>
 				<p>
 					<input class="merge-new-title-input form-control" type="text">
@@ -51,8 +51,8 @@
 			</form>
 		</div>
 		<div class="card-footer text-end">
-			<button class="btn btn-link btn-sm" id="merge_topics_cancel">[[global:buttons.close]]</button>
-			<button class="btn btn-primary btn-sm" id="merge_topics_confirm" disabled>[[topic:thread-tools.merge]]</button>
+			<button class="btn btn-link btn-sm" id="merge_topics_cancel">{{tx("global:buttons.close")}}</button>
+			<button class="btn btn-primary btn-sm" id="merge_topics_confirm" disabled>{{tx("topic:thread-tools.merge")}}</button>
 		</div>
 	</div>
 </div>

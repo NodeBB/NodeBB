@@ -96,10 +96,11 @@ get:
                             icon:
                               type: string
                             image:
+                              type: string
                               nullable: true
                             imageClass:
-                              nullable: true
                               type: string
+                              nullable: true
                             bgColor:
                               type: string
                             color:
@@ -126,9 +127,6 @@ get:
                             picture:
                               nullable: true
                               type: string
-                            signature:
-                              nullable: true
-                              type: string
                             banned:
                               type: number
                             status:
@@ -150,53 +148,7 @@ get:
                             fullname:
                               type: string
                         teaser:
-                          type: object
-                          properties:
-                            pid:
-                              type: number
-                            uid:
-                              type: number
-                              description: A user identifier
-                            timestamp:
-                              type: number
-                            tid:
-                              type: number
-                              description: A topic identifier
-                            content:
-                              type: string
-                            timestampISO:
-                              type: string
-                              description: An ISO 8601 formatted date string (complementing `timestamp`)
-                            user:
-                              type: object
-                              properties:
-                                uid:
-                                  type: number
-                                  description: A user identifier
-                                username:
-                                  type: string
-                                  description: A friendly name for a given user account
-                                userslug:
-                                  type: string
-                                  description: An URL-safe variant of the username (i.e. lower-cased, spaces
-                                    removed, etc.)
-                                picture:
-                                  nullable: true
-                                  type: string
-                                icon:text:
-                                  type: string
-                                  description: A single-letter representation of a username. This is used in the
-                                    auto-generated icon given to users
-                                    without an avatar
-                                icon:bgColor:
-                                  type: string
-                                  description: A six-character hexadecimal colour code assigned to the user. This
-                                    value is used in conjunction with
-                                    `icon:text` for the user's
-                                    auto-generated icon
-                                  example: "#f44336"
-                            index:
-                              type: number
+                          $ref: ../../components/schemas/TeaserObject.yaml#/TeaserObject
                         tags:
                           type: array
                           items:
@@ -208,6 +160,7 @@ get:
                         unread:
                           type: boolean
                         bookmark:
+                          type: boolean
                           nullable: true
                         unreplied:
                           type: boolean
@@ -255,12 +208,11 @@ get:
                   rssFeedUrl:
                     type: string
                   feeds:disableRSS:
-                    type: boolean
+                    type: number
                 required:
                   - topics
                   - tag
                   - title
-                  - categories
               - $ref: ../../components/schemas/Pagination.yaml#/Pagination
               - $ref: ../../components/schemas/Breadcrumbs.yaml#/Breadcrumbs
               - $ref: ../../components/schemas/CommonProps.yaml#/CommonProps

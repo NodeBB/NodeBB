@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 const winston = require('winston');
+const tokenizer = require('sbd');
 
 const db = require('../database');
 const utils = require('../utils');
@@ -15,7 +16,7 @@ const meta = require('../meta');
 const posts = require('../posts');
 const privileges = require('../privileges');
 const categories = require('../categories');
-const translator = require('../translator');
+
 
 module.exports = function (Topics) {
 	Topics.create = async function (data) {
@@ -47,12 +48,16 @@ module.exports = function (Topics) {
 			topicData.numThumbs = thumbs.length;
 		}
 
+		if (data.generatedTitle && utils.isNumber(data.generatedTitle)) {
+			topicData.generatedTitle = data.generatedTitle;
+		}
+
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
 
 		const timestampedSortedSetKeys = [
-			'topics:tid',
+			utils.isNumber(tid) ? 'topics:tid' : 'topicsRemote:tid',
 			`cid:${topicData.cid}:tids`,
 			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:uid:${topicData.uid}:tids`,
@@ -89,24 +94,34 @@ module.exports = function (Topics) {
 	Topics.post = async function (data) {
 		data = await plugins.hooks.fire('filter:topic.post', data);
 		const { uid } = data;
+		const cid = String(data.cid);
 		const remoteUid = activitypub.helpers.isUri(uid);
-
-		const [categoryExists, canCreate, canTag, isAdmin] = await Promise.all([
-			parseInt(data.cid, 10) > 0 ? categories.exists(data.cid) : true,
-			privileges.categories.can('topics:create', data.cid, remoteUid ? -2 : uid),
-			privileges.categories.can('topics:tag', data.cid, remoteUid ? -2 : uid),
+		const isRemoteCid = !utils.isNumber(cid) || parseInt(cid, 10) === -1;
+		const [categoryExists, [canCreate, canTag], isAdmin] = await Promise.all([
+			isRemoteCid ? true : categories.exists(cid),
+			privileges.categories.can(
+				['topics:create', 'topics:tag'], cid, remoteUid ? -2 : uid
+			),
 			privileges.users.isAdministrator(uid),
 		]);
 
-		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
 		data.content = String(data.content || '').trimEnd();
+
+		if (data.title) {
+			data.title = String(data.title).trim();
+		} else {
+			const sentences = tokenizer.sentences(data.content, { sanitize: true, newline_boundaries: true });
+			data.title = sentences.shift();
+			data.generatedTitle = 1;
+		}
+
 		if (!isAdmin) {
 			Topics.checkTitle(data.title);
 		}
 
-		await Topics.validateTags(data.tags, data.cid, uid);
-		data.tags = await Topics.filterTags(data.tags, data.cid);
+		await Topics.validateTags(data.tags, cid, uid);
+		data.tags = await Topics.filterTags(data.tags, cid);
 		if (!data.fromQueue && !isAdmin) {
 			Topics.checkContent(data.sourceContent || data.content);
 			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
@@ -124,14 +139,13 @@ module.exports = function (Topics) {
 
 		await guestHandleValid(data);
 		if (!data.fromQueue) {
-			await user.isReadyToPost(uid, data.cid);
+			await user.isReadyToPost(uid, cid);
 		}
 
 		const tid = await Topics.create(data);
 
 		let postData = data;
 		postData.tid = tid;
-		postData.ip = data.req ? data.req.ip : null;
 		postData.isMain = true;
 		postData = await posts.create(postData);
 		postData = await onNewPost(postData, data);
@@ -154,14 +168,15 @@ module.exports = function (Topics) {
 		topicData.index = 0;
 		postData.index = 0;
 
-		if (topicData.scheduled) {
-			await Topics.delete(tid);
+		if (data.deleted || topicData.scheduled) {
+			await Topics.delete(tid, uid);
+			topicData.deleted = true;
 		}
 
 		analytics.increment(['topics', `topics:byCid:${topicData.cid}`]);
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
-		if (!topicData.scheduled) {
+		if (!topicData.scheduled && !topicData.deleted) {
 			setImmediate(async () => {
 				try {
 					if (utils.isNumber(uid)) {
@@ -212,7 +227,6 @@ module.exports = function (Topics) {
 			data.timestamp = topicData.lastposttime + 1;
 		}
 
-		data.ip = data.req ? data.req.ip : null;
 		let postData = await posts.create(data);
 		postData = await onNewPost(postData, data);
 
@@ -230,7 +244,6 @@ module.exports = function (Topics) {
 				try {
 					await Topics.notifyFollowers(postData, uid, {
 						type: 'new-reply',
-						bodyShort: translator.compile('notifications:user-posted-to', postData.user.displayname, postData.topic.title),
 						nid: `new_post:tid:${postData.topic.tid}:pid:${postData.pid}:uid:${uid}`,
 						mergeId: `notifications:user-posted-to|${postData.topic.tid}`,
 					});
@@ -246,16 +259,19 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost({ pid, tid, uid: postOwner }, { uid, handle }) {
+	async function onNewPost({ pid, tid, content, uid: postOwner }, { uid, handle }) {
 		const [[postData], [userInfo]] = await Promise.all([
 			posts.getPostSummaryByPids([pid], uid, { extraFields: ['attachments'] }),
 			posts.getUserInfoForPosts([postOwner], uid),
 		]);
 		await Promise.all([
 			Topics.addParentPosts([postData], uid),
-			Topics.syncBacklinks(postData),
+			Topics.syncBacklinks({ ...postData, content }),
 			Topics.markAsRead([tid], uid),
 		]);
+		if (utils.isNumber(postOwner) && postData.category.cid === -1) {
+			activitypub.notes.syncUserInboxes(tid, uid);
+		}
 
 		// Returned data is a superset of post summary data
 		postData.user = userInfo;

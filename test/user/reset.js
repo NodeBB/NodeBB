@@ -16,9 +16,11 @@ describe('Password reset (library methods)', () => {
 	let uid;
 	let code;
 	before(async () => {
-		uid = await user.create({ username: 'resetuser', password: '123456' });
-		await user.setUserField(uid, 'email', 'reset@me.com');
-		await user.email.confirmByUid(uid);
+		uid = await user.create({
+			username: 'resetuser', password: '123456', email: 'reset@me.com',
+		}, {
+			emailVerification: 'verify',
+		});
 	});
 
 	it('.generate() should generate a new reset code', (done) => {
@@ -116,11 +118,11 @@ describe('locks', () => {
 	let uid;
 	let email;
 	beforeEach(async () => {
-		const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-		uid = await user.create({ username, password });
+		const username = utils.generateUUID().slice(0, 10);
 		email = `${username}@nodebb.org`;
-		await user.setUserField(uid, 'email', email);
-		await user.email.confirmByUid(uid);
+		uid = await user.create({ username, email }, {
+			emailVerification: 'verify',
+		});
 	});
 
 	it('should disallow reset request if one was made within the minute', async () => {
@@ -139,13 +141,26 @@ describe('locks', () => {
 		});
 	});
 
-	it('should not allow multiple socket calls to the reset method either', async () => {
-		await assert.rejects(Promise.all([
+	it('socket method should shallow rate limit error', async () => {
+		const results = await Promise.all([
 			socketUser.reset.send({ uid: 0 }, email),
 			socketUser.reset.send({ uid: 0 }, email),
-		]), {
-			message: '[[error:reset-rate-limited]]',
-		});
+		]);
+		assert.deepStrictEqual(results, [undefined, undefined]);
+	});
+
+	it('socket method should swallow errors when called within the rate limit', async () => {
+		let result = await socketUser.reset.send({ uid: 0 }, email);
+		assert.strictEqual(result, undefined);
+		result = await socketUser.reset.send({ uid: 0 }, email);
+		assert.strictEqual(result, undefined);
+	});
+
+	it('socket method should swallow errors with unknown email', async () => {
+		let result = await socketUser.reset.send({ uid: 0 }, 'unknown@test.com');
+		assert.strictEqual(result, undefined);
+		result = await socketUser.reset.send({ uid: 0 }, 'unknown@test.com');
+		assert.strictEqual(result, undefined);
 	});
 
 	it('should properly unlock user reset', async () => {

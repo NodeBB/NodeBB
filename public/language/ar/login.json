@@ -8,5 +8,6 @@
     "login-successful": "قمت بتسجيل الدخول بنجاح!",
     "dont-have-account": "لا تملك حساب؟",
     "logged-out-due-to-inactivity": "لقد تم تسجيل خروجك من لوحة تحكم بسبب عدم نشاطك",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

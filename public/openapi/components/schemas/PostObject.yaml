@@ -3,7 +3,7 @@ PostObject:
   type: object
   properties:
     pid:
-      type: number
+      type: [number, string]
     tid:
       type: number
       description: A topic identifier
@@ -84,6 +84,8 @@ PostObject:
           description: A topic identifier
         title:
           type: string
+        generatedTitle:
+          type: number
         cid:
           type: number
           description: A category identifier
@@ -92,7 +94,7 @@ PostObject:
         deleted:
           type: number
         scheduled:
-          type: number
+          type: boolean
         timestamp:
           type: number
         timestampISO:
@@ -105,7 +107,7 @@ PostObject:
           description: The post id of the first post in this topic (also called the
             "original post")
         teaserPid:
-          type: number
+          type: [number, string]
           description: The post id of the teaser (the most recent post, depending on settings)
           nullable: true
         titleRaw:
@@ -120,6 +122,25 @@ PostObject:
           type: array
           items:
             $ref: ../../components/schemas/TagObject.yaml#/TagObject
+        thumbs:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: The topic id
+              name:
+                type: string
+                description: The topic thumbnail filename
+              path:
+                type: string
+                description: Path to topic thumbnail without upload_url prefix
+              url:
+                type: string
+                description: Relative path to the topic thumbnail
+        teaser:
+          $ref: ../../components/schemas/TeaserObject.yaml#/TeaserObject
       required:
         - uid
         - tid
@@ -147,6 +168,7 @@ PostObject:
         color:
           type: string
         backgroundImage:
+          type: string
           nullable: true
         imageClass:
           nullable: true
@@ -226,7 +248,7 @@ PostDataObject:
             signature:
               type: string
             banned:
-              type: number
+              type: boolean
             banned:expire:
               type: number
             status:
@@ -291,6 +313,7 @@ PostDataObject:
                     type: string
                     description: HTML that is injected into `topic.tpl` of themes that support custom profile info
         editor:
+          type: number
           nullable: true
         bookmarked:
           type: boolean
@@ -382,6 +405,7 @@ PostDataObject:
           description: A post identifier
         sourceContent:
           type: string
+          nullable: true
           description: The markdown equivalent of a remote post content, as received (or fetched) from the remote site.
       required:
         - pid

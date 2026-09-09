@@ -5,5 +5,7 @@
     "maximum-file-size": "زیادہ سے زیادہ %1 KB",
     "no-uploads-found": "کوئی اپ لوڈز نہیں ملے",
     "public-uploads-info": "اپ لوڈز عوامی ہیں – تمام زائرین انہیں دیکھ سکتے ہیں۔",
-    "private-uploads-info": "اپ لوڈز نجی ہیں – صرف لاگ ان صارفین انہیں دیکھ سکتے ہیں"
+    "private-uploads-info": "اپ لوڈز نجی ہیں – صرف لاگ ان صارفین انہیں دیکھ سکتے ہیں",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

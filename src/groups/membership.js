@@ -5,6 +5,7 @@ const _ = require('lodash');
 const db = require('../database');
 const user = require('../user');
 const cache = require('../cache');
+const utils = require('../utils');
 
 module.exports = function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
@@ -24,7 +25,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMember = async function (uid, groupName) {
-		if (!uid || parseInt(uid, 10) <= 0 || !groupName) {
+		if (!uid || (utils.isNumber(uid) && parseInt(uid, 10) <= 0) || !groupName) {
 			return isMemberOfEphemeralGroup(uid, groupName);
 		}
 
@@ -63,7 +64,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMemberOfGroups = async function (uid, groups) {
-		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
+		if (!uid || (utils.isNumber(uid) && parseInt(uid, 10) <= 0) || !groups.length) {
 			return groups.map(groupName => isMemberOfEphemeralGroup(uid, groupName));
 		}
 		const cachedData = {};
@@ -83,8 +84,10 @@ module.exports = function (Groups) {
 	};
 
 	function isMemberOfEphemeralGroup(uid, groupName) {
-		return (groupName === 'guests' && parseInt(uid, 10) === 0) ||
-			(groupName === 'spiders' && parseInt(uid, 10) === -1);
+		// uid can be a groupname too dont parseInt in that case
+		const parsedUid = utils.isNumber(uid) ? parseInt(uid, 10) : uid;
+		return (groupName === 'guests' && parsedUid === 0) ||
+			(groupName === 'spiders' && parsedUid === -1);
 	}
 
 	function filterNonCached(cachedData, uid, groupName) {
@@ -169,7 +172,9 @@ module.exports = function (Groups) {
 		if (!nonCachedKeys.length) {
 			return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 		}
-		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => `group:${name}:members`));
+		const groupMembers = await db.getSortedSetsMembers(
+			nonCachedKeys.map(name => `group:${name}:members`)
+		);
 
 		nonCachedKeys.forEach((groupName, index) => {
 			cachedData[groupName] = groupMembers[index];

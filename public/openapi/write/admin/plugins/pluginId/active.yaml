@@ -1,0 +1,38 @@
+put:
+  tags:
+    - admin
+  summary: activate or deactivate a plugin
+  description: This operation activates or deactivates a nodebb plugin
+  parameters:
+    - in: path
+      name: pluginId
+      schema:
+        type: string
+      required: true
+      description: a nodebb plugin id
+      example: nodebb-plugin-imgur
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - active
+          properties:
+            active:
+              type: boolean
+  responses:
+    '200':
+      description: plugin succesfully activated or deactivated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      $ref: ../../../../components/responses/400.yaml#/400

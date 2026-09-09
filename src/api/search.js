@@ -17,15 +17,14 @@ const searchApi = module.exports;
 
 searchApi.categories = async (caller, data) => {
 	// used by categorySearch module
-
-	let cids = [];
 	let matchedCids = [];
 	const privilege = data.privilege || 'topics:read';
 	data.states = (data.states || ['watching', 'tracking', 'notwatching', 'ignoring']).map(
 		state => categories.watchStates[state]
 	);
-	data.parentCid = parseInt(data.parentCid || 0, 10);
+	data.parentCid = String(data.parentCid || 0);
 
+	let cids;
 	if (data.search) {
 		({ cids, matchedCids } = await findMatchedCids(caller.uid, data));
 	} else {
@@ -43,15 +42,15 @@ searchApi.categories = async (caller, data) => {
 	});
 
 	if (Array.isArray(data.selectedCids)) {
-		data.selectedCids = data.selectedCids.map(cid => parseInt(cid, 10));
+		data.selectedCids = data.selectedCids.map(cid => String(cid));
 	}
 
 	let categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass'], data.parentCid);
-	categoriesData = categoriesData.slice(0, 200);
+	categoriesData = categoriesData.slice(0, 1000);
 
 	categoriesData.forEach((category) => {
-		category.selected = data.selectedCids ? data.selectedCids.includes(category.cid) : false;
-		if (matchedCids.includes(category.cid)) {
+		category.selected = data.selectedCids ? data.selectedCids.includes(String(category.cid)) : false;
+		if (matchedCids.includes(String(category.cid))) {
 			category.match = true;
 		}
 	});
@@ -73,7 +72,7 @@ async function findMatchedCids(uid, data) {
 		localOnly: data.localOnly,
 	});
 
-	let matchedCids = result.categories.map(c => c.cid);
+	let matchedCids = result.categories.map(c => String(c.cid));
 	// no need to filter if all 3 states are used
 	const filterByWatchState = !Object.values(categories.watchStates)
 		.every(state => data.states.includes(state));
@@ -83,8 +82,12 @@ async function findMatchedCids(uid, data) {
 		matchedCids = matchedCids.filter((cid, index) => data.states.includes(states[index]));
 	}
 
-	const rootCids = _.uniq(_.flatten(await Promise.all(matchedCids.map(categories.getParentCids))));
-	const allChildCids = _.uniq(_.flatten(await Promise.all(matchedCids.map(categories.getChildrenCids))));
+	const rootCids = _.uniq(_.flatten(
+		await Promise.all(matchedCids.map(categories.getParentCids))
+	));
+	const allChildCids = _.uniq(_.flatten(
+		await Promise.all(matchedCids.map(categories.getChildrenCids))
+	));
 
 	return {
 		cids: _.uniq(rootCids.concat(allChildCids).concat(matchedCids)),
@@ -116,6 +119,9 @@ async function loadCids(uid, parentCid) {
 }
 
 searchApi.roomUsers = async (caller, { query, roomId }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [isAdmin, inRoom, isRoomOwner] = await Promise.all([
 		user.isAdministrator(caller.uid),
 		messaging.isUserInRoom(caller.uid, roomId),
@@ -126,14 +132,13 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const results = await user.search({
+	const { users } = await user.search({
 		query,
 		paginate: false,
 		hardCap: -1,
 		uid: caller.uid,
 	});
 
-	const { users } = results;
 	const foundUids = users.map(user => user && user.uid);
 	const isUidInRoom = _.zipObject(
 		foundUids,
@@ -146,7 +151,7 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 	roomUsers.forEach((user, index) => {
 		if (user) {
 			user.isOwner = isOwners[index];
-			user.canKick = isRoomOwner && (parseInt(user.uid, 10) !== parseInt(caller.uid, 10));
+			user.canKick = isRoomOwner && String(user.uid) !== String(caller.uid);
 		}
 	});
 
@@ -163,6 +168,9 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 };
 
 searchApi.roomMessages = async (caller, { query, roomId, uid }) => {
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [roomData, inRoom] = await Promise.all([
 		messaging.getRoomData(roomId),
 		messaging.isUserInRoom(caller.uid, roomId),

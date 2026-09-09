@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const validator = require('validator');
 
 const categories = require('../categories');
 const plugins = require('../plugins');
@@ -35,9 +36,15 @@ module.exports = function (Groups) {
 		const payload = {
 			description: values.description || '',
 			icon: values.icon || '',
-			labelColor: values.labelColor || '#000000',
-			textColor: values.textColor || '#ffffff',
 		};
+
+		if (values.hasOwnProperty('labelColor')) {
+			payload.labelColor = validateColor(values.labelColor, '#000000');
+		}
+
+		if (values.hasOwnProperty('textColor')) {
+			payload.textColor = validateColor(values.textColor, '#ffffff');
+		}
 
 		if (values.hasOwnProperty('userTitle')) {
 			payload.userTitle = values.userTitle || '';
@@ -77,7 +84,7 @@ module.exports = function (Groups) {
 
 		if (values.hasOwnProperty('memberPostCids')) {
 			const validCids = await categories.getCidsByPrivilege('categories:cid', groupName, 'topics:read');
-			const cidsArray = values.memberPostCids.split(',').map(cid => parseInt(cid.trim(), 10)).filter(Boolean);
+			const cidsArray = values.memberPostCids.split(',').map(cid => (cid || '').trim()).filter(Boolean);
 			payload.memberPostCids = cidsArray.filter(cid => validCids.includes(cid)).join(',') || '';
 		}
 
@@ -88,6 +95,14 @@ module.exports = function (Groups) {
 			name: groupName,
 			values: values,
 		});
+	};
+
+	function validateColor(color, fallback) {
+		color = String(color || fallback);
+		if (!validator.isHexColor(color, { requireHash: true })) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		return color;
 	};
 
 	async function updateVisibility(groupName, hidden) {
@@ -207,6 +222,7 @@ module.exports = function (Groups) {
 		await db.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
 		await db.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
 		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
+		await updatePostEditorGroups(oldName, newName);
 
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
@@ -231,6 +247,15 @@ module.exports = function (Groups) {
 		}, {});
 	}
 
+	async function updatePostEditorGroups(oldName, newName) {
+		await batch.processSortedSet(`group:${oldName}:editor:pids`, async (pids) => {
+			const keys = pids.map(pid => `pid:${pid}:editors:groups`);
+			await db.setsRemove(keys, oldName);
+			await db.setsAdd(keys, newName);
+		}, { batch: 500 });
+		await db.rename(`group:${oldName}:editor:pids`, `group:${newName}:editor:pids`);
+	}
+
 	async function renameGroupsMember(keys, oldName, newName) {
 		const isMembers = await db.isMemberOfSortedSets(keys, oldName);
 		keys = keys.filter((key, index) => isMembers[index]);
@@ -250,7 +275,7 @@ module.exports = function (Groups) {
 				navItem.groups.splice(navItem.groups.indexOf(oldName), 1, newName);
 			}
 		});
-		navigation.unescapeFields(navItems);
+
 		await navigation.save(navItems);
 	}
 
@@ -258,9 +283,9 @@ module.exports = function (Groups) {
 		const admin = require('../widgets/admin');
 		const widgets = require('../widgets');
 
-		const data = await admin.get();
+		const areas = await admin.getAreas();
 
-		data.areas.forEach((area) => {
+		areas.forEach((area) => {
 			area.widgets = area.data;
 			area.widgets.forEach((widget) => {
 				if (widget && widget.data && Array.isArray(widget.data.groups) && widget.data.groups.includes(oldName)) {
@@ -268,7 +293,7 @@ module.exports = function (Groups) {
 				}
 			});
 		});
-		for (const area of data.areas) {
+		for (const area of areas) {
 			if (area.data.length) {
 				await widgets.setArea(area);
 			}

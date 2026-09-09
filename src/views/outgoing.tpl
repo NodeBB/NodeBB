@@ -1,5 +1,5 @@
 <div class="flex-fill">
-	<h2 class="fw-semibold tracking-tight text-center">[[notifications:outgoing-link-message, {title}]]</h2>
+	<h2 class="fw-semibold tracking-tight text-center">{{tx("notifications:outgoing-link-message", title)}}</h2>
 
 	<div class="mx-auto">
 		<div class="d-flex flex-column gap-3 justify-content-center text-center">
@@ -8,8 +8,10 @@
 			</div>
 
 			<div class="col-10 offset-1 col-md-4 offset-4 d-flex flex-column gap-3">
-				<a href="{outgoing}" rel="nofollow noopener noreferrer" class="btn btn-primary">[[notifications:continue-to, {outgoing}]]</a>
-				<a href="#" class="btn btn-link" onclick="history.back(); return false;">[[notifications:return-to, {title}]]</a>
+				<a href="{outgoing}" rel="nofollow noopener noreferrer" class="btn btn-primary text-break">
+					{{tx("notifications:continue-to", txEscape(outgoing))}}
+				</a>
+				<a href="#" class="btn btn-link" onclick="history.back(); return false;">{{tx("notifications:return-to", title)}}</a>
 			</div>
 		</div>
 	</div>

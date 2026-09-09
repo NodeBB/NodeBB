@@ -1,0 +1,20 @@
+{
+	"customise": "စိတ်ကြိုက်ပြင်ဆင်ရန်",
+	"custom-css": "စိတ်ကြိုက် CSS",
+	"custom-css.description": "စိတ်ကြိုက် CSS ဖော်ပြချက်",
+	"custom-css.enable": "စိတ်ကြိုက် CSS ဖွင့်ရန်",
+
+	"custom-js": "စိတ်ကြိုက် JS",
+	"custom-js.description": "စိတ်ကြိုက် JS ဖော်ပြချက်",
+	"custom-js.enable": "စိတ်ကြိုက် JS ဖွင့်ရန်",
+
+	"custom-header": "စိတ်ကြိုက် Header",
+	"custom-header.description": "စိတ်ကြိုက် Header ဖော်ပြချက်",
+	"custom-header.enable": "စိတ်ကြိုက် Header ဖွင့်ရန်",
+
+	"custom-css.livereload": "Live Reload",
+	"custom-css.livereload.description": "Live Reload ဖော်ပြချက်",
+	"bsvariables": "Bootstrap Variables",
+	"bsvariables.description": "Bootstrap Variables ဖော်ပြချက်",
+	"bsvariables.enable": "Bootstrap Variables ဖွင့်ရန်"
+}

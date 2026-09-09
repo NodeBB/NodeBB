@@ -1,0 +1,16 @@
+{
+	"title": "Benutzerdefinierte Gründe verwalten",
+	"create-reason": "Grund erstellen",
+	"edit-reason": "Grund bearbeiten",
+	"reasons-help": "Gründe sind vordefinierte Erklärungen, die benutzt werden, wenn man Nutzer sperrt oder stummschaltet oder wenn man Beiträge in der Beitragswarteschlange ablehnt.",
+	"reason-title": "Titel",
+	"reason-type": "Typ",
+	"reason-body": "Körper",
+	"reason-all": "Alle",
+	"reason-ban": "Sperren",
+	"reason-mute": "Stummschalten",
+	"reason-post-queue": "Beitrags-Warteschlange",
+	"reason-type-help": "Die Art der Aktion, für die dieser Grund gilt. Wenn 'Alle' ausgewählt ist, gilt dieser Grund für alle Aktionstypen.",
+	"custom-reasons-saved": "Benutzerdefinierte Gründe erfolgreich gespeichert",
+	"delete-reason-confirm-x": "Bist du sicher, dass du den benutzerdefinierten Grund mit dem Titel <strong>%1</strong>löschen willst? "
+}

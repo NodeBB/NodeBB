@@ -10,15 +10,19 @@
 	"user": "Օգտատեր",
 	"when": "Երբ",
 	"category": "Կատեգորիա",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "Կոչում",
 	"content": "Կոնտենտ",
 	"posted": "Հրապարակված",
 	"reply-to": "Reply to \"%1\"",
+	"edit": "Edit",
 	"content-editable": "Click on content to edit",
 	"category-editable": "Սեղմեք կատեգորիայի վրա՝ խմբագրելու համար",
 	"title-editable": "Սեղմեք վերնագրի վրա՝ խմբագրելու համար",
 	"reply": "Պատասխանել ",
 	"topic": "Թեմա",
+	"crosspost": "Crosspost",
 	"accept": "Ընդունել ",
 	"reject": "Մերժել ",
 	"remove": "Հեռացնել ",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Ցանկանու՞մ եք հեռացնել %1 ընտրված գրառումները:",
 	"bulk-accept-success": "Ընդունված է %1 գրառում",
 	"bulk-reject-success": "%1 գրառում մերժվել է",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

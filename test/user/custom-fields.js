@@ -37,6 +37,23 @@ describe('custom user fields', () => {
 		await adminUser.saveCustomFields({ uid: adminUid }, fields);
 	});
 
+	it('should fail to create custom user fields for reserved fields', async () => {
+		const protectedFields = [
+			...await user.getUserFieldWhitelist(),
+			...user.protectedFields,
+		];
+		for (const field of protectedFields) {
+			// eslint-disable-next-line no-await-in-loop
+			await assert.rejects(
+				adminUser.saveCustomFields({ uid: adminUid }, [
+					{ key: field },
+				]),
+				{ message: `[[error:invalid-custom-user-field, ${field}]]` },
+				`Failed for ${field}`
+			);
+		}
+	});
+
 	it('should fail to update a field if user does not have enough reputation', async () => {
 		await assert.rejects(
 			user.updateProfile(lowRepUid, {

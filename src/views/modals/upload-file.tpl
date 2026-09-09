@@ -1,24 +1,24 @@
-<div class="modal" tabindex="-1" role="dialog" aria-labelledby="upload-file" aria-hidden="true">
+<div class="modal" tabindex="-1" role="dialog" aria-label="{title}">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">{title}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+				<h5 class="modal-title">{{tx(title)}}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{tx("global:buttons.close")}}"></button>
 			</div>
 			<div class="modal-body">
 				<form class="mb-3" id="uploadForm" action="" method="post" enctype="multipart/form-data">
 					<div>
 						{{{ if description }}}
-						<label class="form-label" for="fileInput">{description}</label>
+						<label class="form-label" for="fileInput">{{tx(description)}}</label>
 						{{{ end }}}
 						<input type="file" id="fileInput" name="files[]" {{{ if accept }}}accept="{accept}"{{{ end }}}>
 						{{{ if showHelp }}}
 						<p class="form-text">
 							{{{ if accept }}}
-							[[global:allowed-file-types, {accept}]]
+							{{tx("global:allowed-file-types", accept)}}
 							{{{ end }}}
 
-							{{{ if fileSize }}}<span id="file-size-block">([[uploads:maximum-file-size, {fileSize}]])</span>{{{ end }}}
+							{{{ if fileSize }}}<span id="file-size-block">({{tx("uploads:maximum-file-size", fileSize)}})</span>{{{ end }}}
 						</p>
 						{{{ end }}}
 					</div>
@@ -27,7 +27,7 @@
 
 				<div id="upload-progress-box" class="progress progress-striped hide mb-3">
 					<div id="upload-progress-bar" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0">
-						<span class="sr-only"> [[success:success]]</span>
+						<span class="visually-hidden"> {{tx("success:success")}}</span>
 					</div>
 				</div>
 
@@ -36,8 +36,8 @@
 				<div id="alert-error" class="alert alert-danger hide"></div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-hidden="true">[[global:close]]</button>
-				<button id="fileUploadSubmitBtn" class="btn btn-primary">{button}</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">{{tx("global:close")}}</button>
+				<button id="fileUploadSubmitBtn" class="btn btn-primary">{{tx(button)}}</button>
 			</div>
 		</div>
 	</div>

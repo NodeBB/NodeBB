@@ -13,6 +13,7 @@
 	"manage/tags": "태그",
 	"manage/users": "사용자",
 	"manage/admins-mods": "관리자 및 중재자",
+	"manage/api": "API Access",
 	"manage/registration": "등록 대기열",
 	"manage/flagged-content": "신고된 콘텐츠",
 	"manage/post-queue": "게시물 대기열",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "%1 설정",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "외관",
 	"appearance/themes": "테마",
 	"appearance/skins": "스킨",
@@ -70,6 +81,7 @@
 	"advanced/logs": "로그",
 	"advanced/errors": "오류",
 	"advanced/cache": "캐시",
+	"advanced/jobs": "Jobs",
 	"development/logger": "로거",
 	"development/info": "정보",
 

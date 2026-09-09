@@ -10,15 +10,19 @@
 	"user": "Uporabnik",
 	"when": "When",
 	"category": "Kategorija",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "Naslov",
 	"content": "Vsebina",
 	"posted": "Posted",
 	"reply-to": "Odgovor na %1",
+	"edit": "Edit",
 	"content-editable": "Za urejanje kliknite na vsebino",
 	"category-editable": "Za urejanje kliknite na kategorijo",
 	"title-editable": "Za urejanje kliknite na naslov",
 	"reply": "Odgovori",
 	"topic": "Tema",
+	"crosspost": "Crosspost",
 	"accept": "Sprejmi",
 	"reject": "Zavrni",
 	"remove": "Remove",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

@@ -10,6 +10,7 @@ const batch = require('../batch');
 const categories = require('../categories');
 const user = require('../user');
 const utils = require('../utils');
+const plugins = require('../plugins');
 const TTLCache = require('../cache/ttl');
 
 const failedWebfingerCache = TTLCache({
@@ -21,6 +22,11 @@ const failedWebfingerCache = TTLCache({
 const activitypub = module.parent.exports;
 
 const Actors = module.exports;
+Actors._followerCache = TTLCache({
+	name: 'ap-follower-cache',
+	max: 5000,
+	ttl: 1000 * 60 * 60, // 1 hour
+});
 
 Actors.qualify = async (ids, options = {}) => {
 	/**
@@ -30,6 +36,10 @@ Actors.qualify = async (ids, options = {}) => {
 	 * This method is only called by assert/assertGroup (at least in core.)
 	 */
 
+	if (!meta.config.activitypubEnabled) {
+		return false;
+	}
+
 	// Handle single values
 	if (!Array.isArray(ids)) {
 		ids = [ids];
@@ -37,13 +47,16 @@ Actors.qualify = async (ids, options = {}) => {
 	if (!ids.length) {
 		return false;
 	}
-	// Existance in failure cache is automatic assertion failure
+	// Existence in failure cache is automatic assertion failure
 	if (ids.some(id => failedWebfingerCache.has(id))) {
 		return false;
 	}
 
 	// Filter out uids if passed in
 	ids = ids.filter(id => !utils.isNumber(id));
+
+	// Filter out constants
+	ids = ids.filter(id => !activitypub._constants.acceptablePublicAddresses.includes(id));
 
 	// Translate webfinger handles to uris
 	ids = (await Promise.all(ids.map(async (id) => {
@@ -69,10 +82,8 @@ Actors.qualify = async (ids, options = {}) => {
 		return false;
 	}
 
-	// Filter out loopback uris
-	if (!meta.config.activitypubAllowLoopback) {
-		ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
-	}
+	// Filter out loopback uris — never persist local URIs as remote actors
+	ids = ids.filter(uri => uri !== 'loopback' && new URL(uri).host !== nconf.get('url_parsed').host);
 
 	// Separate those who need migration from user to category
 	const migrate = new Set();
@@ -126,6 +137,17 @@ Actors.assert = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			if (typeof id === 'string') {
+				const queriedHost = new URL(id).hostname;
+				const actorHost = new URL(actor.id).hostname;
+				if (queriedHost !== actorHost) {
+					activitypub.helpers.log(`[activitypub/actors] Actor id hostname mismatch: queried ${queriedHost}, got ${actorHost}`);
+					return null;
+				}
+			}
+
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
 			const { actorUri: canonicalId } = await activitypub.helpers.query(`${actor.preferredUsername}@${domain}`);
@@ -258,6 +280,10 @@ Actors.assert = async (ids, options = {}) => {
 		db.setObject('handle:uid', queries.handleAdd),
 	]);
 
+	if (profiles.length) {
+		await plugins.hooks.fire('action:userRemote.create', { profiles });
+	}
+
 	// Handle any actors that should be asserted as a group instead
 	if (categories.size) {
 		const assertion = await Actors.assertGroup(Array.from(categories), options);
@@ -303,6 +329,16 @@ Actors.assertGroup = async (ids, options = {}) => {
 		try {
 			activitypub.helpers.log(`[activitypub/actors] Processing group ${id}`);
 			const actor = (typeof id === 'object' && id.hasOwnProperty('id')) ? id : await activitypub.get('uid', 0, id, { cache: process.env.CI === 'true' });
+
+			// Verify actor.id hostname matches the queried URL's hostname (prevent spoofed id overwrite)
+			if (typeof id === 'string') {
+				const queriedHost = new URL(id).hostname;
+				const actorHost = new URL(actor.id).hostname;
+				if (queriedHost !== actorHost) {
+					activitypub.helpers.log(`[activitypub/actors] Group id hostname mismatch: queried ${queriedHost}, got ${actorHost}`);
+					return null;
+				}
+			}
 
 			// webfinger backreference check
 			const { hostname: domain } = new URL(id);
@@ -417,16 +453,21 @@ Actors.assertGroup = async (ids, options = {}) => {
 	return categoryObjs;
 };
 
-Actors.getLocalFollowers = async (id) => {
-	// Returns local uids and cids that follow a remote actor (by id)
-	const response = {
+Actors.getFollowers = async (id) => {
+	/**
+	 * Returns followers by local or remote id. Pass in a...
+	 *  - Remote id: returns local uids/cids that follow
+	 *  - Local id: returns remote uids that follow
+	 */
+	let response = Actors._followerCache.get(id);
+	if (response) {
+		return response;
+	}
+
+	response = {
 		uids: new Set(),
 		cids: new Set(),
 	};
-
-	if (!activitypub.helpers.isUri(id)) {
-		return response;
-	}
 
 	const [isUser, isCategory] = await Promise.all([
 		user.exists(id),
@@ -437,10 +478,10 @@ Actors.getLocalFollowers = async (id) => {
 		const members = await db.getSortedSetMembers(`followersRemote:${id}`);
 
 		members.forEach((id) => {
-			if (utils.isNumber(id)) {
-				response.uids.add(parseInt(id, 10));
-			} else if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
+			if (id.startsWith('cid|') && utils.isNumber(id.slice(4))) {
 				response.cids.add(parseInt(id.slice(4), 10));
+			} else {
+				response.uids.add(utils.isNumber(id) ? parseInt(id, 10) : id);
 			}
 		});
 	} else if (isCategory) {
@@ -459,6 +500,7 @@ Actors.getLocalFollowers = async (id) => {
 		});
 	}
 
+	Actors._followerCache.set(id, response);
 	return response;
 };
 
@@ -525,6 +567,8 @@ Actors.remove = async (id) => {
 		db.delete(`userRemote:${id}`),
 		db.sortedSetRemove('usersRemote:lastCrawled', id),
 	]);
+
+	await plugins.hooks.fire('action:userRemote.delete', { id });
 };
 
 Actors.removeGroup = async (id) => {
@@ -588,7 +632,6 @@ Actors.prune = async () => {
 	let deletionCountNonExisting = 0;
 	let notDeletedDueToLocalContent = 0;
 	const preservedIds = [];
-	const cleanupUids = [];
 
 	await batch.processArray(ids, async (ids) => {
 		const exists = await Promise.all([
@@ -621,24 +664,26 @@ Actors.prune = async () => {
 		cids = Array.from(cids);
 
 		// Remote users
-		const [postCounts, roomCounts, followCounts] = await Promise.all([
+		const [postCounts, roomCounts, followCounts, isBanned] = await Promise.all([
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:posts`)),
 			db.sortedSetsCard(uids.map(uid => `uid:${uid}:chat:rooms`)),
 			Actors.getLocalFollowCounts(uids),
+			user.bans.isBanned(uids),
 		]);
 
 		await Promise.all(uids.map(async (uid, idx) => {
 			const { followers, following } = followCounts[idx];
 			const postCount = postCounts[idx];
 			const roomCount = roomCounts[idx];
-			if ([postCount, roomCount, followers, following].every(metric => metric < 1)) {
+			if (!isBanned[idx] && [postCount, roomCount, followers, following].every(metric => metric < 1)) {
 				try {
 					await user.deleteAccount(uid);
 					deletionCount += 1;
 				} catch (err) {
-					winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
 					if (err.message === '[[error:no-user]]') {
-						cleanupUids.push(uid);
+						missing.add(uid);
+					} else {
+						winston.error(`Failed to delete user with uid ${uid}: ${err.stack}`);
 					}
 				}
 			} else {
@@ -646,14 +691,6 @@ Actors.prune = async () => {
 				preservedIds.push(uid);
 			}
 		}));
-
-		if (cleanupUids.length) {
-			await Promise.all([
-				db.sortedSetRemove('usersRemote:lastCrawled', cleanupUids),
-				db.deleteAll(cleanupUids.map(uid => `userRemote:${uid}`)),
-			]);
-			winston.info(`[actors/prune] Cleaned up ${cleanupUids.length} remote users that were not found in the database.`);
-		}
 
 		// Remote categories
 		let counts = await categories.getCategoriesFields(cids, ['topic_count']);
@@ -674,13 +711,17 @@ Actors.prune = async () => {
 		}));
 
 		deletionCountNonExisting += missing.size;
-		await db.sortedSetRemove('usersRemote:lastCrawled', Array.from(missing));
+		if (missing.size) {
+			await db.sortedSetRemove('usersRemote:lastCrawled', Array.from(missing));
+			winston.info(`[actors/prune] Cleaned up ${missing.size} remote users that were not found in the database.`);
+		}
+
 		// update timestamp in usersRemote:lastCrawled so we don't try to delete users
 		// with content over and over
 		const now = Date.now();
 		await db.sortedSetAdd('usersRemote:lastCrawled', preservedIds.map(() => now), preservedIds);
 	}, {
-		batch: 50,
+		batch: 10,
 		interval: 1000,
 	});
 

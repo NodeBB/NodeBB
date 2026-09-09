@@ -18,7 +18,7 @@
 	"description": "Sayt təsviri",
 	"keywords": "Saytın açar sözləri",
 	"keywords-placeholder": "İcmanızı təsvir edən açar sözlər, vergüllə ayrılmış",
-	"logo-and-icons": "Saytın loqosu və ikonaları",
+	"logo-and-icons": "Media & Branding",
 	"logo.image": "Şəkil",
 	"logo.image-placeholder": "Forumun başlığında göstəriləcək loqoya gedən yol",
 	"logo.upload": "Yüklə",
@@ -35,6 +35,8 @@
 	"touch-icon.help": "Tövsiyə olunan ölçü və format: 512x512, yalnız PNG formatı. Əgər toxunma ikonu göstərilməyibsə, NodeBB favikondan istifadə etməyə qayıdacaq.",
 	"maskable-icon": "Maskalana bilən (Ev ekranı) ikonu",
 	"maskable-icon.help": "Tövsiyə olunan ölçü və format: 512x512, yalnız PNG formatı. Əgər maskalana bilən ikona göstərilməyibsə, NodeBB yenidən Touch Icon-a düşəcək.",
+	"screenshot": "Screenshot",
+	"screenshot.help": "Recommended size and format: between 320px and 3480px, JPG and PNG format only. If no screenshot is specified, NodeBB will fall back to a generic screenshot",
 	"outgoing-links": "Çıxış linklər",
 	"outgoing-links.warning-page": "Gedən linklər xəbərdarlıq səhifəsindən istifadə edin",
 	"search": "Axtarış",
@@ -59,5 +61,8 @@
 	"auto-detect": "Qonaqlar üçün avtomatik təsbit dil parametri",
 	"default-language-help": "Defolt dil forumunuzu ziyarət edən bütün istifadəçilər üçün dil parametrlərini müəyyən edir. <br />Fərdi istifadəçilər öz hesab parametrləri səhifəsində defolt dili ləğv edə bilərlər.",
 	"post-sharing": "Yazı paylaşımı",
-	"info-plugins-additional": "Pluginlər yazıların paylaşılması üçün əlavə şəbəkələr əlavə edə bilər."
+	"info-plugins-additional": "Pluginlər yazıların paylaşılması üçün əlavə şəbəkələr əlavə edə bilər.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

@@ -261,8 +261,12 @@ module.exports = function (module) {
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return [];
+		}
+		const aggregated = dbHelpers.aggregateIncrByBulk(data);
 		const multi = module.client.multi();
-		data.forEach((item) => {
+		aggregated.forEach((item) => {
 			multi.zIncrBy(item[0], item[1], String(item[2]));
 		});
 		const result = await multi.exec();
@@ -300,8 +304,8 @@ module.exports = function (module) {
 		let cursor = '0';
 
 		const returnData = [];
-		let done = false;
-		const seen = Object.create(null);
+		let done;
+		const seen = new Set();
 		do {
 			/* eslint-disable no-await-in-loop */
 			const res = await module.client.zScan(params.key, cursor, { MATCH: params.match, COUNT: 5000 });
@@ -310,11 +314,11 @@ module.exports = function (module) {
 
 			for (let i = 0; i < res.members.length; i ++) {
 				const item = res.members[i];
-				if (!seen[item.value]) {
-					seen[item.value] = 1;
+				if (!seen.has(item.value)) {
+					seen.add(item.value);
 
 					if (params.withScores) {
-						returnData.push({ value: item.value, score: parseFloat(item.score) });
+						returnData.push({ value: item.value, score: item.score });
 					} else {
 						returnData.push(item.value);
 					}

@@ -10,15 +10,19 @@
 	"user": "使用者",
 	"when": "When",
 	"category": "版面",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "標題",
 	"content": "內容",
 	"posted": "發佈",
 	"reply-to": "回覆\"%1\"",
+	"edit": "Edit",
 	"content-editable": "Click on content to edit",
 	"category-editable": "Click on category to edit",
 	"title-editable": "Click on title to edit",
 	"reply": "Reply",
 	"topic": "Topic",
+	"crosspost": "Crosspost",
 	"accept": "Accept",
 	"reject": "Reject",
 	"remove": "Remove",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "貼文裏的鏈結"
+	"links-in-this-post": "貼文裏的鏈結",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

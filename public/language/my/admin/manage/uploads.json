@@ -1,0 +1,13 @@
+{
+    "manage-uploads": "အပ်လုဒ်များ စီမံရန်",
+    "upload-file": "ဖိုင်တင်ရန်",
+    "filename": "ဖိုင်အမည်",
+    "usage": "အသုံးပြုမှု",
+    "orphaned": "ပိုင်ရှင်မဲ့",
+    "size/filecount": "အရွယ်/ဖိုင်အရေ",
+    "confirm-delete": "ဖျက်ရန် အတည်ပြု",
+    "filecount": "ဖိုင်အရေ",
+    "new-folder": "ဖိုဒါအသစ်",
+    "name-new-folder": "ဖိုဒါအမည်ပေး",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
+}

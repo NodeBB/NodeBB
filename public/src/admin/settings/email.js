@@ -1,19 +1,18 @@
 'use strict';
 
 
-define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function (ace, alerts) {
-	const module = {};
+define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings', 'hooks'], function (ace, alerts, settings, hooks) {
+	const Email = {};
 	let emailEditor;
 
-	module.init = function () {
+	Email.init = function () {
+		configureSmtpTester();
 		configureEmailTester();
 		configureEmailEditor();
 		handleDigestHourChange();
 
-		$(window).off('action:admin.settingsLoaded', onSettingsLoaded)
-			.on('action:admin.settingsLoaded', onSettingsLoaded);
-		$(window).off('action:admin.settingsSaved', onSettingsSaved)
-			.on('action:admin.settingsSaved', onSettingsSaved);
+		hooks.onPage('action:admin.settingsLoaded', onSettingsLoaded);
+		hooks.onPage('action:admin.settingsSaved', onSettingsSaved);
 	};
 
 	function onSettingsLoaded() {
@@ -26,6 +25,29 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		socket.emit('admin.user.restartJobs');
 	}
 
+	function configureSmtpTester() {
+		$('[data-action="email.smtp.test"]').on('click', function () {
+			const smtpOptions = {};
+			$('[data-field^="email:smtp"]').each(function (index, el) {
+				const $el = $(el);
+				const key = $el.attr('data-field');
+				if ($el.is(':checkbox')) {
+					smtpOptions[key] = $el.is(':checked');
+				} else {
+					smtpOptions[key] = $el.val();
+				}
+			});
+
+			socket.emit('admin.email.testSmtp', { smtp: smtpOptions }, function (err) {
+				if (err) {
+					console.error(err.message);
+					return alerts.error(err);
+				}
+				alerts.success('[[admin/settings/email:smtp-transport.test-success]]');
+			});
+		});
+	}
+
 	function configureEmailTester() {
 		$('button[data-action="email.test"]').off('click').on('click', function () {
 			socket.emit('admin.email.test', { template: $('#test-email').val() }, function (err) {
@@ -33,7 +55,7 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 					console.error(err.message);
 					return alerts.error(err);
 				}
-				alerts.success('Test Email Sent');
+				alerts.success('[[admin/settings/email:testing.success]]');
 			});
 			return false;
 		});
@@ -135,5 +157,5 @@ define('admin/settings/email', ['ace/ace', 'alerts', 'admin/settings'], function
 		});
 	}
 
-	return module;
+	return Email;
 });

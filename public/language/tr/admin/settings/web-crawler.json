@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "RSS Besleyicilerini Devre dışı bırak",
 	"disable-sitemap-xml": "sitemap.xml devre dışı bırak",
 	"sitemap-topics": "Site Haritası'nda görüntülenecek başlıkların sayısı",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Site haritası çerezlerini temizle",
 	"view-sitemap": "Site haritasını gör"
 }

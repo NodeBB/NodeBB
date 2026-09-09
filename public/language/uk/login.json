@@ -8,5 +8,6 @@
     "login-successful": "Ви успішно зайшли!",
     "dont-have-account": "Не маєте акаунту?",
     "logged-out-due-to-inactivity": "Ви були розлогінені з Адмінської Панелі Керування через неактивність",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

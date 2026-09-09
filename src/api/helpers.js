@@ -1,6 +1,5 @@
 'use strict';
 
-const url = require('url');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -12,9 +11,10 @@ const socketHelpers = require('../socket.io/helpers');
 const websockets = require('../socket.io');
 const events = require('../events');
 
-exports.setDefaultPostData = function (reqOrSocket, data) {
-	data.uid = reqOrSocket.uid;
-	data.req = exports.buildReqObject(reqOrSocket, { ...data });
+exports.setDefaultPostData = function (req, data) {
+	data.uid = req.uid;
+	data.req = exports.buildReqObject(req, { ...data });
+	data.ip = req.ip;
 	data.timestamp = Date.now();
 	data.fromQueue = false;
 };
@@ -25,11 +25,15 @@ exports.buildReqObject = (req, payload) => {
 	const headers = req.headers || (req.request && req.request.headers) || {};
 	const session = req.session || (req.request && req.request.session) || {};
 	const encrypted = req.connection ? !!req.connection.encrypted : false;
-	let { host } = headers;
+	let host = headers.host || '';
 	const referer = headers.referer || '';
 
-	if (!host) {
-		host = url.parse(referer).host || '';
+	if (!host && referer) {
+		try {
+			host = new URL(referer).host;
+		} catch (err) {
+			// ignore invalid referer
+		}
 	}
 
 	return {
@@ -46,7 +50,9 @@ exports.buildReqObject = (req, payload) => {
 		path: referer.slice(referer.indexOf(host) + host.length),
 		baseUrl: req.baseUrl,
 		originalUrl: req.originalUrl,
-		headers: { ...headers },
+		headers: Object.fromEntries(
+			Object.entries(headers).filter(([key]) => key !== 'cookie'),
+		),
 	};
 };
 
@@ -77,9 +83,11 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
 			case 'delete': // falls through
 			case 'purge': {
 				if (utils.isNumber(cid) && parseInt(cid, 10) > 0) {
-					activitypub.out.remove.context(caller.uid, tid); // 7888-style
-					activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
-					activitypub.out.undo.announce('cid', cid, tid); // microblogs
+					setImmediate(() => {
+						activitypub.out.remove.context(caller.uid, tid); // 7888-style
+						activitypub.out.delete.note(caller.uid, mainPid); // 1b12-style
+						activitypub.out.undo.announce('cid', cid, tid); // microblogs
+					});
 				}
 			}
 		}
@@ -110,12 +118,10 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	if (!data.room_id) {
-		throw new Error(`[[error:invalid-room-id, ${data.room_id}]]`);
-	}
-	const [exists, deleted] = await Promise.all([
+	const [exists, { deleted, tid }, canRead] = await Promise.all([
 		posts.exists(data.pid),
-		posts.getPostField(data.pid, 'deleted'),
+		posts.getPostFields(data.pid, ['deleted', 'tid']),
+		privileges.posts.canRead(data.pid, caller.uid),
 	]);
 
 	if (!exists) {
@@ -125,6 +131,11 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 	if (deleted) {
 		throw new Error('[[error:post-deleted]]');
 	}
+
+	if (!canRead) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	data.room_id = `topic_${tid}`;
 
 	/*
 	hooks:
@@ -152,18 +163,25 @@ async function executeCommand(caller, command, eventName, notification, data) {
 		switch (command) {
 			case 'upvote': {
 				socketHelpers.upvote(result, notification);
-				await activitypub.out.like.note(caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.like.note(caller.uid, data.pid);
+				});
 				break;
 			}
 
 			case 'downvote': {
-				await activitypub.out.dislike.note(caller.uid, data.pid);
+				setImmediate(() => {
+					activitypub.out.dislike.note(caller.uid, data.pid);
+				});
 				break;
 			}
 
 			case 'unvote': {
 				socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);
-				await activitypub.out.undo.like(caller.uid, data.pid);
+				const verb = result.was.upvoted ? 'like' : 'dislike';
+				setImmediate(() => {
+					activitypub.out.undo[verb](caller.uid, data.pid);
+				});
 				break;
 			}
 

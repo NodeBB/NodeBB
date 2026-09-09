@@ -61,7 +61,8 @@ Categories.getTopics = async (req, res) => {
 
 Categories.setWatchState = async (req, res) => {
 	const { cid } = req.params;
-	let { uid, state } = req.body;
+	const uid = req.params.member || req.body.uid;
+	let { state } = req.body;
 
 	if (req.method === 'DELETE') {
 		// DELETE is always setting state to system default in acp
@@ -73,22 +74,21 @@ Categories.setWatchState = async (req, res) => {
 	}
 
 	const { cids: modified } = await api.categories.setWatchState(req, { cid, state, uid });
-
 	helpers.formatApiResponse(200, res, { modified });
 };
 
 Categories.getPrivileges = async (req, res) => {
-	const privilegeSet = await api.categories.getPrivileges(req, { cid: req.params.cid });
-	helpers.formatApiResponse(200, res, privilegeSet);
+	helpers.formatApiResponse(200, res, await api.categories.getPrivileges(req, { cid: req.params.cid }));
 };
 
 Categories.setPrivilege = async (req, res) => {
 	const { cid, privilege } = req.params;
+	const member = req.params.member || req.body.member;
 
 	await api.categories.setPrivilege(req, {
 		cid,
 		privilege,
-		member: req.body.member,
+		member,
 		set: req.method === 'PUT',
 	});
 
@@ -117,13 +117,12 @@ Categories.follow = async (req, res, next) => {
 	}
 
 	await activitypub.out.follow('cid', id, actor);
-
 	helpers.formatApiResponse(200, res, {});
 };
 
 Categories.unfollow = async (req, res, next) => {
-	const { actor } = req.body;
 	const id = parseInt(req.params.cid, 10);
+	const actor = req.params.actor || req.body.actor;
 
 	if (!id) { // disallow cid 0
 		return next();

@@ -1,0 +1,9 @@
+{
+	"jobs": "Zadania",
+	"job-name": "Nazwa Zadania",
+	"schedule": "Harmonogram",
+	"next-run": "Następne Uruchomienie",
+	"last-duration": "Ostatni Czas Trwania",
+	"running": "Uruchomione",
+	"active": "Aktywne"
+}

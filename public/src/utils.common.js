@@ -16,6 +16,8 @@ function replaceChar(c) {
 }
 const escapeChars = /[&<>"'`=]/g;
 
+const invisibleChars = /[\u200B-\u200F\u202A-\u202E\u2066-\u2069\u3164\uFEFF]/;
+
 const HTMLEntities = Object.freeze({
 	amp: '&',
 	gt: '>',
@@ -319,17 +321,32 @@ const utils = {
 		}
 		return tag;
 	},
-
+	createFieldChecker: function (fields = []) {
+		const allFields = !fields.length;
+		return function hasField(field) {
+			return allFields || fields.includes(field);
+		};
+	},
 	removePunctuation: function (str) {
 		return str.replace(/[.,-/#!$%^&*;:{}=\-_`<>'"~()?]/g, '');
 	},
 
 	isEmailValid: function (email) {
-		return typeof email === 'string' && email.length && email.indexOf('@') !== -1 && email.indexOf(',') === -1 && email.indexOf(';') === -1;
+		return typeof email === 'string' && email.length && email.includes('@') && !email.includes(',') && !email.includes(';');
 	},
 
 	isUserNameValid: function (name) {
-		return (name && name !== '' && (/^['" \-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+		if (!name || name === '') return false;
+		if (name.trim().length === 0) return false;
+		if (invisibleChars.test(name)) return false;
+		return (/^['" \-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name));
+	},
+
+	isSlugValid: function (slug) {
+		if (!slug || slug === '' || slug === '.' || slug === '..') return false;
+		if (slug.trim().length === 0) return false;
+		if (invisibleChars.test(slug)) return false;
+		return true;
 	},
 
 	isPasswordValid: function (password) {
@@ -337,8 +354,21 @@ const utils = {
 	},
 
 	isNumber: function (n) {
+		const typeOf = typeof n;
+		if (typeOf !== 'number' && typeOf !== 'string') {
+			return false;
+		}
 		// `isFinite('') === true` so isNan parseFloat check is necessary
 		return !isNaN(parseFloat(n)) && isFinite(n);
+	},
+
+	isPEM: function (pem) {
+		if (!pem || typeof pem !== 'string') {
+			return false;
+		}
+		// Basic PEM validation
+		return pem.startsWith('-----BEGIN PUBLIC KEY-----') &&
+			pem.trim().endsWith('-----END PUBLIC KEY-----');
 	},
 
 	languageKeyRegex: /\[\[[\w]+:.+\]\]/,
@@ -352,6 +382,7 @@ const utils = {
 			'fa-IR': 'fa',
 			'pt-BR': 'pt-br',
 			nb: 'no',
+			'nn-NO': 'no',
 		};
 		return mapping.hasOwnProperty(userLang) ? mapping[userLang] : userLang;
 	},
@@ -426,6 +457,13 @@ const utils = {
 		});
 	},
 
+	isSafeHref: function (href) {
+		const normalizedHref = String(href).trim().toLowerCase();
+		const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
+		const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
+		return isHttpUrl || isRelativeUrl;
+	},
+
 	// https://github.com/sindresorhus/is-absolute-url
 	isAbsoluteUrlRE: /^[a-zA-Z][a-zA-Z\d+\-.]*:/,
 	isWinPathRE: /^[a-zA-Z]:\\/,
@@ -438,6 +476,14 @@ const utils = {
 
 	isRelativeUrl: function (url) {
 		return !utils.isAbsoluteUrl(url);
+	},
+
+	cacheBustedUrl: function (url, updatedAt) {
+		if (!url || !updatedAt) {
+			return url;
+		}
+		const separator = url.includes('?') ? '&' : '?';
+		return `${url}${separator}v=${updatedAt}`;
 	},
 
 	makeNumberHumanReadable: function (num, toFixed = 1) {
@@ -499,7 +545,7 @@ const utils = {
 	},
 
 	escapeHTML: function (str) {
-		if (str == null) {
+		if (str == null || str === '') {
 			return '';
 		}
 		if (!str) {
@@ -683,6 +729,15 @@ const utils = {
 
 	rtrim: function (str) {
 		return str.replace(/\s+$/g, '');
+	},
+
+	maskToken: function (token) {
+		token = String(token || '');
+		if (!token) {
+			return '';
+		}
+
+		return `${token.slice(0, 4)}...${token.slice(-4)}`;
 	},
 
 	debounce: function (func, wait, immediate) {

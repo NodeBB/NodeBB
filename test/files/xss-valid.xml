@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
+  <book>
+    <title>Book 1</title>
+    <author>John Smith</author>
+    <year>2026</year>
+    <price>29.99</price>
+    <description>Book 1 Description.</description>
+  </book>
+  <book>
+    <title>Book 2</title>
+    <author>Sam Smith</author>
+    <year>2025</year>
+    <price>39.99</price>
+    <description>Book 2 Description.</description>
+  </book>
+</bookstore>

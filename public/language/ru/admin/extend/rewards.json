@@ -12,6 +12,6 @@
 	"disable": "Выключить",
 
 	"alert.delete-success": "Награда успешно удалена",
-	"alert.no-inputs-found": "Некорректная награда!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Награды успешно сохранены"
 }

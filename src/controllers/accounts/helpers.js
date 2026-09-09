@@ -10,10 +10,8 @@ const plugins = require('../../plugins');
 const meta = require('../../meta');
 const utils = require('../../utils');
 const privileges = require('../../privileges');
-const translator = require('../../translator');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
-const posts = require('../../posts');
 const activitypub = require('../../activitypub');
 const flags = require('../../flags');
 const slugify = require('../../slugify');
@@ -21,6 +19,13 @@ const slugify = require('../../slugify');
 const relative_path = nconf.get('relative_path');
 
 const helpers = module.exports;
+
+helpers.meetsMinReputation = function (userData, setting) {
+	return !userData.isSelf ||
+		userData.isAdminOrGlobalModerator ||
+		!!meta.config['reputation:disabled'] ||
+		userData.reputation >= meta.config[setting];
+};
 
 helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {}) {
 	const uid = await user.getUidByUserslug(userslug);
@@ -48,10 +53,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		delete userData.reputation;
 	}
 
-	userData.age = Math.max(
-		0,
-		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
-	);
+	userData.age = Math.max(0, calculateAge(userData.birthday));
 
 	userData = await user.hidePrivateData(userData, callerUID);
 	userData.emailHidden = !userSettings.showemail;
@@ -93,10 +95,12 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	userData.hasPrivateChat = results.hasPrivateChat;
 	userData.iconBackgrounds = results.iconBackgrounds;
 	userData.showHidden = results.canEdit; // remove in v1.19.0
-	userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
-	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
+	userData.allowProfilePicture = helpers.meetsMinReputation(userData, 'min:rep:profile-picture');
+	userData.allowCoverPicture = helpers.meetsMinReputation(userData, 'min:rep:cover-picture');
 	userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
 	userData.allowedProfileImageExtensions = user.getAllowedProfileImageExtensions().map(ext => `.${ext}`).join(', ');
+	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+	userData.profileImageDimension = meta.config.profileImageDimension;
 	userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 	userData.selectedGroup = userData.groups.filter(group => group && userData.groupTitleArray.includes(group.name))
 		.sort((a, b) => userData.groupTitleArray.indexOf(a.name) - userData.groupTitleArray.indexOf(b.name));
@@ -114,19 +118,9 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 	});
 
 	userData.banned = Boolean(userData.banned);
-	userData.muted = parseInt(userData.mutedUntil, 10) > Date.now();
-	userData.fullname = escape(userData.fullname);
-	userData.signature = escape(userData.signature);
-	userData.birthday = validator.escape(String(userData.birthday || ''));
-	userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
-
-	if (userData['cover:url']) {
-		userData['cover:url'] = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
-	} else {
-		userData['cover:url'] = require('../../coverPhoto').getDefaultProfileCover(userData.uid);
-	}
-
-	userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
+	userData.fullname = userData.fullname || '';
+	userData.signature = userData.signature || '';
+	userData.birthday = userData.birthday || '';
 	userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
 	userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
 
@@ -147,12 +141,19 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		const fields = Array
 			.from(new URLSearchParams(customFields))
 			.reduce((memo, [name, value]) => {
-				const isUrl = validator.isURL(value);
+				const isUrl = validator.isURL(value, {
+					require_protocol: true,
+					require_valid_protocol: true,
+					require_tld: true,
+				});
+				if (isUrl && !utils.isSafeHref(value)) {
+					value = '';
+				}
 				memo.push({
 					key: slugify(name),
 					name,
 					value,
-					linkValue: validator.escape(String(value.replace('http://', '').replace('https://', ''))),
+					linkValue: value.replace('http://', '').replace('https://', ''),
 					type: isUrl ? 'input-link' : 'input-text',
 					'min-rep': '',
 					icon: 'fa-solid fa-circle-info',
@@ -192,7 +193,8 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			userValue = JSON.parse(userValue || '[]');
 		}
 		if (f.type === 'input-link' && userValue) {
-			f.linkValue = validator.escape(String(userValue.replace('http://', '').replace('https://', '')));
+			userValue = utils.isSafeHref(userValue) ? userValue : '';
+			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
 		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
 		if (f.type === 'select') {
@@ -210,15 +212,11 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			if (Array.isArray(userValue)) {
 				userValue = userValue.join(', ');
 			}
-			f.value = validator.escape(String(userValue));
+			f.value = String(userValue);
 		}
 	});
 	return fields;
 };
-
-function escape(value) {
-	return translator.escape(validator.escape(String(value || '')));
-}
 
 async function getAllData(uid, callerUID) {
 	// loading these before caches them, so the big promiseParallel doesn't make extra db calls
@@ -347,21 +345,30 @@ async function getProfileMenu(uid, callerUID) {
 	return data;
 }
 
+function calculateAge(birthday) {
+	if (!birthday) {
+		return 0;
+	}
+	const birthDate = new Date(birthday);
+	const today = new Date();
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const hasHadBirthdayThisYear = (
+		today.getMonth() > birthDate.getMonth() ||
+		(today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate())
+	);
+	if (!hasHadBirthdayThisYear) {
+		age -= 1;
+	}
+	return age;
+}
+
 async function parseAboutMe(userData) {
 	if (!userData.aboutme) {
 		userData.aboutme = '';
 		userData.aboutmeParsed = '';
 		return;
-	} else if (activitypub.helpers.isUri(userData.uid)) {
-		userData.aboutme = posts.sanitize(userData.aboutme);
-		userData.aboutmeParsed = userData.aboutme;
-		return;
 	}
-
-	userData.aboutme = validator.escape(String(userData.aboutme || ''));
-	const parsed = await plugins.hooks.fire('filter:parse.aboutme', userData.aboutme);
-	userData.aboutme = translator.escape(userData.aboutme);
-	userData.aboutmeParsed = translator.escape(parsed);
+	userData.aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));
 }
 
 function filterLinks(links, states) {

@@ -13,6 +13,7 @@
 	"manage/tags": "Birkas",
 	"manage/users": "Lietotāji",
 	"manage/admins-mods": "Administratori & moderatori",
+	"manage/api": "API Access",
 	"manage/registration": "Reģistrācijas rinda",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Rakstu apstiprināšanas rinda",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "%1 &mdash; iestatījumi",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Izskats",
 	"appearance/themes": "Tēmas",
 	"appearance/skins": "Ādiņas",
@@ -70,6 +81,7 @@
 	"advanced/logs": "Žurnāls",
 	"advanced/errors": "Kļūdu žurnāls",
 	"advanced/cache": "Kešatmiņa",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Atkļūdošanas žurnāls",
 	"development/info": "Informācija",
 

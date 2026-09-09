@@ -1,19 +1,25 @@
+.template-admin-dashboard #analytics-panel .graph-container {
+	min-height: 300px;
+}
 .dashboard {
 	.card {
 		max-width: 100% !important;
 	}
 
+	#analytics-panel.fullscreen .graph-container {
+		width: 100%!important;
+		height: 100%!important;
+		max-height: 100%!important;
+		padding: 40px;
+	}
+
 	.graph-container {
+		max-height: 400px;
 		position: relative;
 		background: var(--bg-body-bg);
 
 		&.pie-chart {
 			max-height: 180px;
-		}
-
-		&.fullscreen {
-			width: 100%;
-			padding: 40px;
 		}
 	}
 

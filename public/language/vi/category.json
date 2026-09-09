@@ -1,8 +1,8 @@
 {
     "category": "Danh mục",
     "subcategories": "Danh mục phụ",
-    "uncategorized": "Chưa phân loại",
-    "uncategorized.description": "Các chủ đề không phù hợp với bất kỳ danh mục hiện có nào",
+    "uncategorized": "Thế giới",
+    "uncategorized.description": "Các chủ đề từ bên ngoài diễn đàn này. Quan điểm và ý kiến ​​được trình bày ở đây có thể không phản ánh quan điểm của diễn đàn này và các thành viên của nó.",
     "handle.description": "Có thể theo dõi danh mục này từ mạng xã hội mở thông qua xử lý %1",
     "new-topic-button": "Chủ Đề Mới",
     "guest-login-post": "Đăng nhập để đăng bài",
@@ -26,5 +26,10 @@
     "notwatching.message": "Bạn không xem các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "ignoring.message": "Bạn hiện đang bỏ qua các cập nhật từ danh mục này và tất cả các danh mục phụ",
     "watched-categories": "Danh mục đã xem",
-    "x-more-categories": "%1 danh mục khác"
+    "x-more-categories": "%1 danh mục khác",
+    "view-original": "Xem Bản Gốc",
+    "first-run.welcome": "Chào mừng bạn đến với diễn đàn NodeBB mới của bạn.",
+    "first-run.description": "Diễn đàn của bạn đã sẵn sàng. Hãy đăng nhập để tùy chỉnh danh mục, cài đặt và nhiều hơn nữa.",
+    "first-run.admin-panel": "Bạn có thể quản lý diễn đàn của mình thông qua Bảng quản trị.",
+    "first-run.admin-panel-desc": "có thể truy cập thông qua biểu tượng bánh răng ở thanh bên"
 }

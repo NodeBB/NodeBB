@@ -2,7 +2,7 @@
 <noscript>
     <div class="alert alert-info">
         <p>
-            {noScriptMessage}
+            {tx(noScriptMessage)}
         </p>
     </div>
 </noscript>

@@ -1,6 +1,8 @@
 <div class="d-flex flex-column gap-4 topic-thumbs-view-modal">
 	<div class="d-flex justify-content-center align-items-center mb-5" style="height: 33vh; max-height: 33vh;">
-		<img component="topic/thumb/current" class="rounded" src="{src}" style="max-height: 33vh; max-width:100%;" />
+		<a href="{src}" target="_blank">
+			<img component="topic/thumb/current" class="rounded" src="{src}" style="max-height: 33vh; max-width:100%;" />
+		</a>
 	</div>
 	{{{ if (thumbs.length != "1") }}}
 	<hr/>

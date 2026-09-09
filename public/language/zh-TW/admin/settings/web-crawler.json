@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "停用 RSS 訂閱",
 	"disable-sitemap-xml": "停用 Sitemap.xml",
 	"sitemap-topics": "要在 Sitemap 中展現的主題數量",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "清除 Sitemap 快取",
 	"view-sitemap": "檢視 Sitemap"
 }

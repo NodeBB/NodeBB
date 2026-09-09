@@ -13,6 +13,7 @@
 	"manage/tags": "Etiketler",
 	"manage/users": "Kullanıcılar",
 	"manage/admins-mods": "Yöneticiler ve Modlar",
+	"manage/api": "API Access",
 	"manage/registration": "Kayıt Kuyruğu",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "İleti Kuyruğu",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "%1 Ayar",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Görünüm",
 	"appearance/themes": "Temalar",
 	"appearance/skins": "Deriler",
@@ -70,6 +81,7 @@
 	"advanced/logs": "Kayıtlar",
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Kaydedici",
 	"development/info": "bilgi",
 

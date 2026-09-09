@@ -8,18 +8,18 @@
 	"nodejs": "nodejs",
 	"online": "en ligne",
 	"git": "git",
-	"process-memory": "Mémoire de processus",
+	"process-memory": "RSS/Heap utilisé",
 	"system-memory": "Mémoire système",
 	"used-memory-process": "Mémoire utilisée par processus",
 	"used-memory-os": "Mémoire système utilisée",
 	"total-memory-os": "Mémoire système totale",
 	"load": "Charge du système",
 	"cpu-usage": "Utilisation du processeur",
-	"uptime": "disponibilité",
+	"uptime": "Disponibilité",
 
 	"registered": "Enregistré",
 	"sockets": "Sockets",
-	"connection-count": "nombre de connexions",
+	"connection-count": "Nombre de connexions",
 	"guests": "Invités",
 
 	"info": "Info"

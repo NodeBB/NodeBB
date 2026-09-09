@@ -22,5 +22,12 @@
     "unread-topics": "Discussioni non lette",
     "categories": "Categorie",
     "tags": "Tag",
-    "no-users-found": "Nessun utente trovato!"
+    "no-users-found": "Nessun utente trovato!",
+    "temp-ban.length": "Durata",
+    "temp-ban.reason": "Motivo <span class=\"text-muted\">(Opzionale)</span>",
+    "temp-ban.select-reason": "Seleziona un motivo",
+    "temp-ban.hours": "Ore",
+    "temp-ban.days": "Giorni",
+    "temp-ban.explanation": "Inserisci la durata del ban. Tieni presente che un valore pari a 0 sarà considerato come un ban permanente.",
+    "temp-mute.explanation": "Inserisci la durata del silenziamento. Tieni presente che un valore pari a 0 sarà considerato come un silenziamento permanente."
 }

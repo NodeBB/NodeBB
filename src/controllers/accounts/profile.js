@@ -24,6 +24,10 @@ profileController.get = async function (req, res, next) {
 		return next();
 	}
 
+	if (!req.loggedIn && meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(userData.uid)) {
+		return helpers.redirect(res, `/outgoing?url=${encodeURIComponent(userData.uid)}`);
+	}
+
 	await incrementProfileViews(req, userData);
 
 	const [latestPosts, bestPosts, customUserFields] = await Promise.all([
@@ -130,11 +134,10 @@ async function getPosts(callerUid, userData, setSuffix) {
 
 function addTags(res, userData) {
 	const plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
-	res.locals.metaTags = [
+	res.locals.metaTags.push(...[
 		{
 			name: 'title',
 			content: userData.fullname || userData.username,
-			noEscape: true,
 		},
 		{
 			name: 'description',
@@ -143,25 +146,22 @@ function addTags(res, userData) {
 		{
 			property: 'og:title',
 			content: userData.fullname || userData.username,
-			noEscape: true,
 		},
 		{
 			property: 'og:description',
 			content: plainAboutMe,
 		},
-	];
+	]);
 
 	if (userData.picture) {
 		res.locals.metaTags.push(
 			{
 				property: 'og:image',
-				content: userData.picture,
-				noEscape: true,
+				content: `${url}${userData.picture}`,
 			},
 			{
 				property: 'og:image:url',
-				content: userData.picture,
-				noEscape: true,
+				content: `${url}${userData.picture}`,
 			}
 		);
 	}
@@ -177,10 +177,6 @@ function addTags(res, userData) {
 		res.locals.linkTags.push({
 			rel: 'canonical',
 			href: userData.url || userData.uid,
-		});
-		res.locals.metaTags.push({
-			name: 'robots',
-			content: 'noindex',
 		});
 	}
 

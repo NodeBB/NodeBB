@@ -9,6 +9,7 @@ module.exports = function (app, name, middleware, controllers) {
 		middleware.exposeUid,
 		middleware.canViewUsers,
 		middleware.buildAccountData,
+		middleware.noIndexRemoteUser,
 	];
 	const accountMiddlewares = [
 		...middlewares,
@@ -41,8 +42,8 @@ module.exports = function (app, name, middleware, controllers) {
 	setupPageRoute(app, `/${name}/:userslug/downvoted`, accountMiddlewares, controllers.accounts.posts.getDownVotedPosts);
 	setupPageRoute(app, `/${name}/:userslug/edit`, accountMiddlewares, controllers.accounts.edit.get);
 	setupPageRoute(app, `/${name}/:userslug/edit/username`, accountMiddlewares, controllers.accounts.edit.username);
-	setupPageRoute(app, `/${name}/:userslug/edit/email`, accountMiddlewares, controllers.accounts.edit.email);
-	setupPageRoute(app, `/${name}/:userslug/edit/password`, accountMiddlewares, controllers.accounts.edit.password);
+	setupPageRoute(app, `/${name}/:userslug/edit/email`, [...accountMiddlewares, middleware.requirePageReAuth()], controllers.accounts.edit.email);
+	setupPageRoute(app, `/${name}/:userslug/edit/password`, [...accountMiddlewares, middleware.requirePageReAuth()], controllers.accounts.edit.password);
 	setupPageRoute(app, `/${name}/:userslug/info`, accountMiddlewares, controllers.accounts.info.get);
 	setupPageRoute(app, `/${name}/:userslug/settings`, accountMiddlewares, controllers.accounts.settings.get);
 	setupPageRoute(app, `/${name}/:userslug/uploads`, accountMiddlewares, controllers.accounts.uploads.get);

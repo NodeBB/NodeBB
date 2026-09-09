@@ -32,22 +32,20 @@ async function registerAndLoginUser(req, res, userData) {
 	if (deferRegistration) {
 		userData.register = true;
 		req.session.registration = userData;
-
+		const next = `${nconf.get('relative_path')}/register/complete`;
 		if (req.body?.noscript === 'true') {
-			res.redirect(`${nconf.get('relative_path')}/register/complete`);
+			res.redirect(next);
 			return;
 		}
-		res.json({ next: `${nconf.get('relative_path')}/register/complete` });
+		res.json({ next });
 		return;
 	}
 
-	const queue = await user.shouldQueueUser(req.ip);
-	const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, res, userData, queue });
-	if (result.queue) {
-		return await addToApprovalQueue(req, userData);
+	const { queued, uid, message } = await user.createOrQueue(req, userData);
+	if (queued) {
+		return { message };
 	}
 
-	const uid = await user.create(userData);
 	if (res.locals.processLogin) {
 		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
 		if (hasLoginPrivilege) {
@@ -61,6 +59,7 @@ async function registerAndLoginUser(req, res, userData) {
 		await Promise.all([
 			user.confirmIfInviteEmailIsUsed(userData.token, userData.email, uid),
 			user.joinGroupsFromInvitation(uid, userData.token),
+			user.setInviterUid(uid, userData.token),
 		]);
 	}
 	await user.deleteInvitationKey(userData.email, userData.token);
@@ -73,30 +72,26 @@ async function registerAndLoginUser(req, res, userData) {
 	return complete;
 }
 
-authenticationController.register = async function (req, res) {
+async function validateRegistrationPolicy(userData) {
 	const registrationType = meta.config.registrationType || 'normal';
-
 	if (registrationType === 'disabled') {
-		return res.sendStatus(403);
+		return false;
 	}
+	if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+		await user.verifyInvitation(userData);
+	}
+	return true;
+}
 
+// POST /register
+authenticationController.register = async function (req, res) {
 	const userData = req.body;
 	try {
-		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-			await user.verifyInvitation(userData);
+		if (!await validateRegistrationPolicy(userData)) {
+			return res.sendStatus(403);
 		}
 
-		if (
-			!userData.username ||
-			userData.username.length < meta.config.minimumUsernameLength ||
-			slugify(userData.username).length < meta.config.minimumUsernameLength
-		) {
-			throw new Error('[[error:username-too-short]]');
-		}
-
-		if (userData.username.length > meta.config.maximumUsernameLength) {
-			throw new Error('[[error:username-too-long]]');
-		}
+		user.checkUsernameLength(userData.username);
 
 		if (userData.password !== userData['password-confirm']) {
 			throw new Error('[[user:change-password-error-match]]');
@@ -121,24 +116,17 @@ authenticationController.register = async function (req, res) {
 	}
 };
 
-async function addToApprovalQueue(req, userData) {
-	userData.ip = req.ip;
-	await user.addToApprovalQueue(userData);
-	let message = '[[register:registration-added-to-queue]]';
-	if (meta.config.showAverageApprovalTime) {
-		const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
-		if (average_time > 0) {
-			message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
-		}
-	}
-	if (meta.config.autoApproveTime > 0) {
-		message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
-	}
-	return { message: message };
-}
-
+// POST /register/complete
 authenticationController.registerComplete = async function (req, res) {
 	try {
+		if (
+			req.session.registration?.register === true &&
+			!await validateRegistrationPolicy(req.session.registration)
+		) {
+			delete req.session.registration;
+			return res.sendStatus(403);
+		}
+
 		// For the interstitials that respond, execute the callback with the form body
 		const data = await user.interstitials.get(req, req.session.registration);
 		const callbacks = data.interstitials.reduce((memo, cur) => {
@@ -213,6 +201,7 @@ authenticationController.registerComplete = async function (req, res) {
 	}
 };
 
+// POST /register/abort
 authenticationController.registerAbort = async (req, res) => {
 	if (req.uid && req.session.registration) {
 		// Email is the only cancelable interstitial
@@ -232,6 +221,7 @@ authenticationController.registerAbort = async (req, res) => {
 	});
 };
 
+// POST /login
 authenticationController.login = async (req, res, next) => {
 	let { strategy } = await plugins.hooks.fire('filter:login.override', { req, strategy: 'local' });
 	if (!passport._strategy(strategy)) {
@@ -244,6 +234,7 @@ authenticationController.login = async (req, res, next) => {
 	}
 
 	const loginWith = meta.config.allowLoginWith || 'username-email';
+	req.body = req.body || {};
 	req.body.username = String(req.body.username).trim();
 	const errorHandler = res.locals.noScriptErrors || helpers.noScriptErrors;
 	try {
@@ -341,8 +332,10 @@ authenticationController.doLogin = async function (req, uid) {
 	if (!uid) {
 		return;
 	}
+	const isSelf = parseInt(req.uid, 10) === parseInt(uid, 10);
 	const loginAsync = util.promisify(req.login).bind(req);
-	await loginAsync({ uid: uid }, { keepSessionInfo: req.res.locals.reroll !== false });
+	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && (!req.loggedIn || isSelf);
+	await loginAsync({ uid: uid }, { keepSessionInfo });
 	await authenticationController.onSuccessfulLogin(req, uid);
 };
 
@@ -351,8 +344,10 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 	 * Older code required that this method be called from within the SSO plugin.
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
 	 * called in NodeBB core. However, if already called, return prematurely
+	 * only if the user is logging in as themselves and not forcing a reauth.
 	 */
-	if (req.loggedIn && !req.session.forceLogin) {
+	const isSelfRelogin = req.loggedIn && parseInt(req.uid, 10) === parseInt(uid, 10);
+	if (isSelfRelogin && !req.session.forceLogin) {
 		return true;
 	}
 
@@ -367,7 +362,12 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		await user.reset.cleanByUid(uid);
 
 		req.session.meta = {};
-
+		const now = Date.now();
+		if (req.session.forceLogin) {
+			req.session.meta.reAuthAt = now;
+		} else {
+			delete req.session.meta.reAuthAt;
+		}
 		delete req.session.forceLogin;
 		// Associate IP used during login with user account
 		req.session.meta.ip = req.ip;
@@ -375,7 +375,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		// Associate metadata retrieved via user-agent
 		req.session.meta = _.extend(req.session.meta, {
 			uuid: uuid,
-			datetime: Date.now(),
+			datetime: now,
 			platform: req.useragent.platform,
 			browser: req.useragent.browser,
 			version: req.useragent.version,
@@ -386,7 +386,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 			}),
 			trackSession ? user.auth.addSession(uid, req.sessionID) : undefined,
 			user.updateLastOnlineTime(uid),
-			user.onUserOnline(uid, Date.now()),
+			user.onUserOnline(uid, now),
 			analytics.increment('logins'),
 			db.incrObjectFieldBy('global', 'loginCount', 1),
 		]);
@@ -432,20 +432,19 @@ authenticationController.localLogin = async function (req, username, password, n
 
 		userData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
-		if (!canLoginIfBanned) {
-			return next(await getBanError(uid));
-		}
-
-		// Doing this after the ban check, because user's privileges might change after a ban expires
-		const hasLoginPrivilege = await privileges.global.can('local:login', uid);
-		if (parseInt(uid, 10) && !hasLoginPrivilege) {
-			return next(new Error('[[error:local-login-disabled]]'));
-		}
-
 		try {
 			const passwordMatch = await user.isPasswordCorrect(uid, password, req.ip);
 			if (!passwordMatch) {
 				return next(new Error('[[error:invalid-login-credentials]]'));
+			}
+			if (!canLoginIfBanned) {
+				return next(await getBanError(uid));
+			}
+
+			// Doing this after the ban check, because user's privileges might change after a ban expires
+			const hasLoginPrivilege = await privileges.global.can('local:login', uid);
+			if (parseInt(uid, 10) && !hasLoginPrivilege) {
+				return next(new Error('[[error:local-login-disabled]]'));
 			}
 		} catch (e) {
 			if (req.loggedIn) {

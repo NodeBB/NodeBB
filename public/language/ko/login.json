@@ -8,5 +8,6 @@
     "login-successful": "로그인에 성공했습니다!",
     "dont-have-account": "계정이 없으신가요?",
     "logged-out-due-to-inactivity": "비활성으로 인해 관리자 패널에서 로그아웃되었습니다",
-    "caps-lock-enabled": "Caps Lock이 눌려있습니다"
+    "caps-lock-enabled": "Caps Lock이 눌려있습니다",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

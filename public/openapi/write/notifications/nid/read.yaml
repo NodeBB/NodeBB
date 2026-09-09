@@ -1,0 +1,52 @@
+delete:
+  tags:
+    - notifications
+  summary: mark notification unread
+  description: This operation marks a notification as unread for the calling user.
+  parameters:
+    - in: path
+      name: nid
+      schema:
+        type: string
+      required: true
+      description: a valid notification id
+      example: 1
+  responses:
+    '200':
+      description: Notification successfully marked unread.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+put:
+  tags:
+    - notifications
+  summary: mark notification read
+  description: This operation marks a notification as read for the calling user.
+  parameters:
+    - in: path
+      name: nid
+      schema:
+        type: string
+      required: true
+      description: a valid notification id
+      example: 1
+  responses:
+    '200':
+      description: Notification successfully marked read
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

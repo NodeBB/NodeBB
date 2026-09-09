@@ -1,10 +1,10 @@
 {
-    "settings.title": "Theme settings",
-    "settings.intro": "You can customise your theme settings here. Settings are stored on a per-device basis, so you are able to have different settings on different devices (phone, tablet, desktop, etc.)",
-    "settings.mobile-menu-side": "Switch which side each mobile menu is on",
-    "settings.autoHidingNavbar": "Automatically hide the navbar on scroll",
-    "settings.autoHidingNavbar-xs": "Very small screens (e.g. phones in portrait mode)",
-    "settings.autoHidingNavbar-sm": "Smaller screens (e.g. phones, some tablets)",
-    "settings.autoHidingNavbar-md": "Medium sized screens (e.g. tablets in landscape mode)",
-    "settings.autoHidingNavbar-lg": "Larger screens (e.g. desktop computers)"
+    "settings.title": "テーマ設定",
+    "settings.intro": "ここでテーマ設定をカスタマイズできます。設定はデバイスごとに保存されるため、異なるデバイス（スマートフォン、タブレット、デスクトップなど）で異なる設定が可能です。",
+    "settings.mobile-menu-side": "各モバイルメニューを左右どちらに配置するか切り替え",
+    "settings.autoHidingNavbar": "スクロール時にナビバーを自動的に非表示",
+    "settings.autoHidingNavbar-xs": "非常に小さい画面（例: 縦向きのスマートフォン）",
+    "settings.autoHidingNavbar-sm": "小さい画面（例: スマートフォン、一部のタブレット）",
+    "settings.autoHidingNavbar-md": "中程度の画面（例: 横向きのタブレット）",
+    "settings.autoHidingNavbar-lg": "大きい画面（例: デスクトップ）"
 }

@@ -3,5 +3,11 @@
 	"welcome-notification": "Powiadomienie powitalne",
 	"welcome-notification-link": "Odnośnik do komunikatu powitalnego",
 	"welcome-notification-uid": "Powiadomienie powitalne użytkownika (UID)",
-	"post-queue-notification-uid": "Użytkownik kolejki pocztowej (UID)"
+	"post-queue-notification-uid": "Użytkownik kolejki pocztowej (UID)",
+	"notification-uid-help": "Jeśli ustawiono, powiadomienie przyjdzie od tego użytkownika. Jeśli nie ustawiono, powiadomienie będzie systemowe.",
+	"notification-delay": "Opóźnienie wysyłania e-maili z powiadomieniami (w sekundach)",
+	"notification-delay-help": "Jeśli użytkownik przeczytał powiadomienie w tym czasie, e-mail nie zostanie wysłany.<br/>Domyślnie: 60 sekund.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Kolor powiadomienia",
+	"tinycon.notification-background": "Tło powiadomienia"
 }

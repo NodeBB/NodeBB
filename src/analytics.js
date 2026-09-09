@@ -1,6 +1,5 @@
 'use strict';
 
-const cronJob = require('cron').CronJob;
 const winston = require('winston');
 const nconf = require('nconf');
 const util = require('util');
@@ -9,9 +8,11 @@ const _ = require('lodash');
 const sleep = util.promisify(setTimeout);
 
 const db = require('./database');
+const meta = require('./meta');
 const utils = require('./utils');
 const plugins = require('./plugins');
 const pubsub = require('./pubsub');
+const cron = require('./cron');
 
 const Analytics = module.exports;
 
@@ -32,25 +33,38 @@ const runJobs = nconf.get('runJobs');
 Analytics.pause = false;
 
 Analytics.init = async function () {
-	new cronJob('*/10 * * * * *', (async () => {
-		if (Analytics.pause) return;
-		publishLocalAnalytics();
-		if (runJobs) {
-			await sleep(2000);
-			await Analytics.writeData();
-		}
-	}), null, true);
+	await cron.addJob({
+		name: 'analytics:publish',
+		cronTime: '*/10 * * * * *',
+		runOnAllNodes: true,
+		onTick: async () => {
+			if (Analytics.pause) return;
+			await Analytics.writeLocalData();
+		},
+	});
 
 	if (runJobs) {
-		new cronJob('*/30 * * * *', (async () => {
-			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
-		}), null, true);
+		await cron.addJob({
+			name: 'prune:ip:recent',
+			cronTime: '*/30 * * * *',
+			onTick: async () => {
+				await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
+			},
+		});
 	}
 
 	if (runJobs) {
 		pubsub.on('analytics:publish', (data) => {
 			incrementProperties(total, data.local);
 		});
+	}
+};
+
+Analytics.writeLocalData = async function () {
+	publishLocalAnalytics();
+	if (runJobs) {
+		await sleep(2000);
+		await Analytics.writeData();
 	}
 };
 
@@ -111,7 +125,7 @@ Analytics.apPageView = async function ({ ip }) {
 };
 
 async function incrementUniqueVisitors(ip) {
-	if (ip) {
+	if (ip && meta.config.logIPs !== 0) {
 		const score = await db.sortedSetScore('ip:recent', ip);
 		let record = !score;
 		if (score) {
@@ -176,6 +190,12 @@ Analytics.writeData = async function () {
 		incrByBulk.push(['analytics:pageviews:ap', total.apPageViews, today.getTime()]);
 		incrByBulk.push(['analytics:pageviews:ap:month', total.apPageViews, month.getTime()]);
 		total.apPageViews = 0;
+		if (!metrics.includes('pageviews:ap')) {
+			metrics.push('pageviews:ap');
+		}
+		if (!metrics.includes('pageviews:ap:month')) {
+			metrics.push('pageviews:ap:month');
+		}
 	}
 
 	if (total.uniquevisitors > 0) {
@@ -209,30 +229,18 @@ Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
 		set = `analytics:${set}`;
 	}
 
-	const terms = {};
 	const hoursArr = [];
 
 	hour = new Date(hour);
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
 	for (let i = 0, ii = numHours; i < ii; i += 1) {
-		hoursArr.push(hour.getTime() - (i * 3600 * 1000));
+		const d = new Date(hour);
+		d.setHours(d.getHours() - i);
+		hoursArr.push(d.getTime());
 	}
-
 	const counts = await db.sortedSetScores(set, hoursArr);
-
-	hoursArr.forEach((term, index) => {
-		terms[term] = parseInt(counts[index], 10) || 0;
-	});
-
-	const termsArr = [];
-
-	hoursArr.reverse();
-	hoursArr.forEach((hour) => {
-		termsArr.push(terms[hour]);
-	});
-
-	return termsArr;
+	return counts.map(count => parseInt(count, 10) || 0).reverse();
 };
 
 Analytics.getDailyStatsForSet = async function (set, day, numDays) {
@@ -242,25 +250,49 @@ Analytics.getDailyStatsForSet = async function (set, day, numDays) {
 	}
 
 	day = new Date(day);
-	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
-	day.setDate(day.getDate() + 1);
-	day.setHours(0, 0, 0, 0);
+	day.setHours(day.getHours(), 0, 0, 0);
 
-	async function getHourlyStats(hour) {
-		const dayData = await Analytics.getHourlyStatsForSet(
-			set,
-			hour,
-			24
-		);
-		return dayData.reduce((cur, next) => cur + next);
-	}
 	const hours = [];
-	while (numDays > 0) {
-		hours.push(day.getTime() - (1000 * 60 * 60 * 24 * (numDays - 1)));
-		numDays -= 1;
+	const numHours = numDays * 24;
+	for (let i = numHours - 1; i >= 0; i -= 1) {
+		const d = new Date(day);
+		d.setHours(d.getHours() - i);
+		hours.push(d.getTime());
 	}
 
-	return await Promise.all(hours.map(getHourlyStats));
+	const dayData = await Analytics.getHourlyStatsForSet(
+		set,
+		day,
+		numHours,
+	);
+
+	const dailyBuckets = [];
+	let bucketDay = null;
+	let bucketSum = 0;
+
+	for (let i = 0; i < hours.length; i += 1) {
+		const date = new Date(hours[i]);
+		date.setHours(0, 0, 0, 0);
+		const dayTimestamp = date.getTime();
+
+		if (bucketDay === null) {
+			bucketDay = dayTimestamp;
+		}
+
+		if (dayTimestamp !== bucketDay) {
+			dailyBuckets.push(bucketSum);
+			bucketDay = dayTimestamp;
+			bucketSum = 0;
+		}
+
+		bucketSum += dayData[i] || 0;
+	}
+
+	if (bucketDay !== null) {
+		dailyBuckets.push(bucketSum);
+	}
+
+	return dailyBuckets.slice(-numDays);
 };
 
 Analytics.getUnwrittenPageviews = function () {
@@ -283,25 +315,28 @@ Analytics.getSummary = async function () {
 };
 
 Analytics.getCategoryAnalytics = async function (cid) {
+	const now = Date.now();
 	return await utils.promiseParallel({
-		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 24),
-		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, Date.now(), 30),
-		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, Date.now(), 7),
-		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, Date.now(), 7),
+		'pageviews:hourly': Analytics.getHourlyStatsForSet(`analytics:pageviews:byCid:${cid}`, now, 24),
+		'pageviews:daily': Analytics.getDailyStatsForSet(`analytics:pageviews:byCid:${cid}`, now, 30),
+		'topics:daily': Analytics.getDailyStatsForSet(`analytics:topics:byCid:${cid}`, now, 7),
+		'posts:daily': Analytics.getDailyStatsForSet(`analytics:posts:byCid:${cid}`, now, 7),
 	});
 };
 
 Analytics.getErrorAnalytics = async function () {
+	const now = Date.now();
 	return await utils.promiseParallel({
-		'not-found': Analytics.getDailyStatsForSet('analytics:errors:404', Date.now(), 7),
-		toobusy: Analytics.getDailyStatsForSet('analytics:errors:503', Date.now(), 7),
+		'not-found': Analytics.getDailyStatsForSet('analytics:errors:404', now, 7),
+		toobusy: Analytics.getDailyStatsForSet('analytics:errors:503', now, 7),
 	});
 };
 
 Analytics.getBlacklistAnalytics = async function () {
+	const now = Date.now();
 	return await utils.promiseParallel({
-		daily: Analytics.getDailyStatsForSet('analytics:blacklist', Date.now(), 7),
-		hourly: Analytics.getHourlyStatsForSet('analytics:blacklist', Date.now(), 24),
+		daily: Analytics.getDailyStatsForSet('analytics:blacklist', now, 7),
+		hourly: Analytics.getHourlyStatsForSet('analytics:blacklist', now, 24),
 	});
 };
 

@@ -3,7 +3,6 @@
 
 const async = require('async');
 const winston = require('winston');
-const cron = require('cron').CronJob;
 const nconf = require('nconf');
 const _ = require('lodash');
 
@@ -18,17 +17,26 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const emailer = require('./emailer');
 const ttlCache = require('./cache/ttl');
+const cron = require('./cron');
+const tx = require('./translator');
 
 const Notifications = module.exports;
 
-// ttlcache for email-only chat notifications
-const notificationCache = ttlCache({
-	name: 'notification-email-cache',
-	max: 1000,
-	ttl: (meta.config.notificationSendDelay || 60) * 1000,
-	noDisposeOnSet: true,
-	dispose: sendEmail,
-});
+// used to delay email notifications,
+// and cancel them if the notification is already read
+let notificationCache = null;
+function getOrCreateCache() {
+	if (!notificationCache) {
+		notificationCache = ttlCache({
+			name: 'notification-email-cache',
+			max: 1000,
+			ttl: (meta.config.notificationSendDelay || 60) * 1000,
+			noDisposeOnSet: true,
+			dispose: sendEmail,
+		});
+	}
+	return notificationCache;
+}
 
 Notifications.baseTypes = [
 	'notificationType_upvote',
@@ -56,7 +64,7 @@ Notifications.privilegedTypes = [
 
 const notificationPruneCutoff = 2592000000; // one month
 
-const intFields = ['datetime', 'from', 'importance', 'tid', 'pid', 'roomId'];
+const intFields = ['datetime', 'from', 'importance', 'tid', 'pid', 'roomId', 'flagId'];
 
 Notifications.getAllNotificationTypes = async function () {
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
@@ -66,9 +74,13 @@ Notifications.getAllNotificationTypes = async function () {
 	return results.types.concat(results.privilegedTypes);
 };
 
-Notifications.startJobs = function () {
+Notifications.startJobs = async function () {
 	winston.verbose('[notifications.init] Registering jobs.');
-	new cron('*/30 * * * *', Notifications.prune, null, true);
+	await cron.addJob({
+		name: 'notifications:prune',
+		cronTime: '*/30 * * * *',
+		onTick: Notifications.prune,
+	});
 };
 
 Notifications.get = async function (nid) {
@@ -84,7 +96,7 @@ Notifications.getMultiple = async function (nids) {
 	const keys = nids.map(nid => `notifications:${nid}`);
 	const notifications = await db.getObjects(keys);
 
-	const userKeys = notifications.map(n => n && n.from);
+	const userKeys = notifications.filter(n => n && n.from).map(n => n.from);
 	let [usersData, categoriesData] = await Promise.all([
 		User.getUsersFields(userKeys, ['username', 'userslug', 'picture']),
 		categories.getCategoriesFields(userKeys, ['cid', 'name', 'slug', 'picture']),
@@ -103,8 +115,10 @@ Notifications.getMultiple = async function (nids) {
 
 		return userData;
 	});
+	// from can be either uid or cid
+	const userMap = new Map(userKeys.map((from, index) => [String(from), usersData[index]]));
 
-	notifications.forEach((notification, index) => {
+	notifications.forEach((notification) => {
 		if (notification) {
 			intFields.forEach((field) => {
 				if (notification.hasOwnProperty(field)) {
@@ -121,15 +135,19 @@ Notifications.getMultiple = async function (nids) {
 			if (notification.bodyLong) {
 				notification.bodyLong = utils.stripHTMLTags(notification.bodyLong, ['img', 'p', 'a']);
 			}
-
-			notification.user = usersData[index];
+			const fromUser = userMap.get(String(notification.from));
+			if (fromUser !== undefined) {
+				notification.user = fromUser;
+			}
 			if (notification.user && notification.from) {
 				notification.image = notification.user.picture || null;
 				if (notification.user.username === '[[global:guest]]') {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
 			} else if (notification.image === 'brand:logo' || !notification.image) {
-				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
+				notification.image = meta.config['brand:logo'] ?
+					utils.cacheBustedUrl(meta.config['brand:logo'], meta.config['brand:logo:updatedAt']) :
+					`${nconf.get('relative_path')}/assets/logo.png`;
 			}
 		}
 	});
@@ -164,7 +182,7 @@ Notifications.create = async function (data) {
 	const oldNotif = await db.getObject(`notifications:${data.nid}`);
 	if (
 		oldNotif &&
-		parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) &&
+		String(oldNotif.pid, 10) === String(data.pid, 10) &&
 		parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)
 	) {
 		return null;
@@ -179,6 +197,9 @@ Notifications.create = async function (data) {
 	}
 	if (data.bodyShort) {
 		data.bodyShort = utils.stripBidiControls(data.bodyShort);
+	}
+	if (data.bodyLong && tx.isTranslationKey(data.bodyLong)) {
+		data.txBodyLong = 1;
 	}
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
@@ -227,7 +248,13 @@ async function pushToUids(uids, notification) {
 					uid,
 					notification,
 				});
-				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
+				const uidsInRoom = await websockets.getUidsInRoom(`uid_${uid}`);
+				let unreadCount;
+				if (uidsInRoom.length) {
+					// only calculate the unread count for users connected right now
+					unreadCount = await User.notifications.getUnreadCount(uid);
+				}
+				websockets.in(`uid_${uid}`).emit('event:new_notification', { notification, unreadCount });
 			}));
 		}
 	}
@@ -243,11 +270,11 @@ async function pushToUids(uids, notification) {
 				uidsToNotify.push(userSettings.uid);
 			}
 
-			if (setting === 'email' || setting === 'notificationemail') {
+			if (!meta.config.disableNotificationEmails && (setting === 'email' || setting === 'notificationemail')) {
 				uidsToEmail.push(userSettings.uid);
 			}
 		});
-		return { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail };
+		return { uidsToNotify, uidsToEmail };
 	}
 
 	// Remove uid from recipients list if they have blocked the user triggering the notification
@@ -270,19 +297,23 @@ async function pushToUids(uids, notification) {
 
 	if (results.uidsToEmail.length) {
 		const delayNotificationTypes = ['new-chat', 'new-group-chat', 'new-public-chat'];
+		const delayCache = getOrCreateCache();
 		if (delayNotificationTypes.includes(notification.type)) {
 			const cacheKey = `${notification.mergeId}|${results.uidsToEmail.join(',')}`;
-			const payload = notificationCache.get(cacheKey);
+			const payload = delayCache.get(cacheKey);
 			let { bodyLong } = notification;
 			if (payload !== undefined) {
 				bodyLong = [payload.notification.bodyLong, bodyLong].join('\n');
 			}
-			notificationCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
+			delayCache.set(cacheKey, { uids: results.uidsToEmail, notification: { ...notification, bodyLong } });
 			if (notification.bodyLong.length >= 1000) {
-				notificationCache.delete(cacheKey);
+				delayCache.delete(cacheKey);
 			}
 		} else {
-			await sendEmail({ uids: results.uidsToEmail, notification });
+			delayCache.set(`delayed:nid:${notification.nid}`, {
+				uids: results.uidsToEmail,
+				notification,
+			});
 		}
 	}
 
@@ -294,8 +325,19 @@ async function pushToUids(uids, notification) {
 	});
 }
 
-async function sendEmail({ uids, notification }, mergeId, reason) {
+async function sendEmail({ uids, notification }, cacheKey, reason) {
 	if ((reason && reason === 'set') || !uids.length) {
+		return;
+	}
+
+	// check if notification already read by users
+	// if so don't send email, https://github.com/NodeBB/NodeBB/issues/5867
+	const hasRead = await db.isMemberOfSortedSets(
+		uids.map(uid => `uid:${uid}:notifications:read`),
+		notification.nid
+	);
+	uids = uids.filter((uid, index) => !hasRead[index]);
+	if (!uids.length) {
 		return;
 	}
 
@@ -347,7 +389,10 @@ Notifications.pushGroups = async function (notification, groupNames) {
 
 Notifications.rescind = async function (nids) {
 	nids = Array.isArray(nids) ? nids : [nids];
-
+	nids = await Notifications.filterExists(nids);
+	if (!nids.length) {
+		return;
+	}
 	await plugins.hooks.fire('static:notifications.rescind', { nids });
 	await Promise.all([
 		db.sortedSetRemove('notifications', nids),
@@ -367,15 +412,19 @@ Notifications.markUnread = async function (nid, uid) {
 	if (!(parseInt(uid, 10) > 0) || !nid) {
 		return;
 	}
-	const notification = await db.getObject(`notifications:${nid}`);
-	if (!notification) {
-		throw new Error('[[error:no-notification]]');
+	const [notification, [userOwns]] = await Promise.all([
+		db.getObject(`notifications:${nid}`),
+		User.notifications.ownsNids([nid], uid),
+	]);
+	if (!notification || !userOwns) {
+		return;
 	}
-	notification.datetime = notification.datetime || Date.now();
+
+	const timestamp = notification.datetime || Date.now();
 
 	await Promise.all([
 		db.sortedSetRemove(`uid:${uid}:notifications:read`, nid),
-		db.sortedSetAdd(`uid:${uid}:notifications:unread`, notification.datetime, nid),
+		db.sortedSetAdd(`uid:${uid}:notifications:unread`, timestamp, nid),
 	]);
 };
 
@@ -384,16 +433,21 @@ Notifications.markReadMultiple = async function (nids, uid) {
 	if (!Array.isArray(nids) || !nids.length || !(parseInt(uid, 10) > 0)) {
 		return;
 	}
-
-	let notificationKeys = nids.map(nid => `notifications:${nid}`);
-	let mergeIds = await db.getObjectsFields(notificationKeys, ['mergeId']);
+	const userOwns = await User.notifications.ownsNids(nids, uid);
+	nids = nids.filter((nid, index) => userOwns[index]);
+	let mergeIds = await db.getObjectsFields(
+		nids.map(nid => `notifications:${nid}`),
+		['mergeId']
+	);
 	// Isolate mergeIds and find related notifications
 	mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
 
 	const relatedNids = await Notifications.findRelated(mergeIds, `uid:${uid}:notifications:unread`);
-	notificationKeys = _.union(nids, relatedNids).map(nid => `notifications:${nid}`);
 
-	let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'datetime']);
+	let notificationData = await db.getObjectsFields(
+		_.union(nids, relatedNids).map(nid => `notifications:${nid}`),
+		['nid', 'datetime']
+	);
 	notificationData = notificationData.filter(n => n && n.nid);
 
 	nids = notificationData.map(n => n.nid);
@@ -484,14 +538,6 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
-			function typeFromLength(items) {
-				if (items.length === 2) {
-					return 'dual';
-				} else if (items.length === 3) {
-					return 'triple';
-				}
-				return 'multiple';
-			}
 			let set;
 			if (differentiator === 0 && differentiators.length === 1) {
 				set = isolated;
@@ -509,20 +555,15 @@ Notifications.merge = async function (notifications) {
 					const { roomId, roomName, type, user } = set[0];
 					const isGroupChat = type === 'new-group-chat';
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
-						`[[notifications:new-messages-in, ${set.length}, ${roomName}]]` :
-						`[[notifications:new-messages-from, ${set.length}, ${user.displayname}]]`;
+						tx.compile('notifications:new-messages-in', set.length, tx.escape(roomName)) :
+						tx.compile('notifications:new-messages-from', set.length, tx.escape(user.displayname));
 					break;
 				}
 
 				case 'notifications:user-posted-in-public-room': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					if (usernames.length === 2 || usernames.length === 3) {
-						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
-					} else if (usernames.length > 3) {
-						notifObj.bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${usernames.length - 2}, ${notifObj.roomIcon}, ${notifObj.roomName}]]`;
-					}
-
-					notifObj.path = set[set.length - 1].path;
+					buildMergedNotif(mergeId, notifObj, set, [
+						notifObj.roomIcon, tx.escape(notifObj.roomName),
+					]);
 					break;
 				}
 				case 'notifications:upvoted-your-post-in':
@@ -531,24 +572,14 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-flagged-post-in':
 				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
-					const usernames = _.uniq(set.map(notifObj => notifObj && notifObj.user && notifObj.user.displayname));
-					const numUsers = usernames.length;
-
-					const title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
-					let titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-					titleEscaped = titleEscaped ? (`, ${titleEscaped}`) : '';
-
-					if (numUsers === 2 || numUsers === 3) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.join(', ')}${titleEscaped}]]`;
-					} else if (numUsers > 2) {
-						notifications[modifyIndex].bodyShort = `[[${mergeId}-${typeFromLength(usernames)}, ${usernames.slice(0, 2).join(', ')}, ${numUsers - 2}${titleEscaped}]]`;
-					}
-
-					notifications[modifyIndex].path = set[set.length - 1].path;
-				} break;
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.topicTitle),
+					]);
+					break;
+				}
 
 				case 'new-register':
-					notifications[modifyIndex].bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
+					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
 			}
 
@@ -570,5 +601,30 @@ Notifications.merge = async function (notifications) {
 	});
 	return data && data.notifications;
 };
+
+function buildMergedNotif(mergeId, notifObj, notifObjsToMerge, args) {
+	const usernames = _.uniq(notifObjsToMerge.map(n => tx.escape(n?.user?.displayname))).filter(Boolean);
+	const type = typeFromLength(usernames);
+	const isMultiple = type === 'multiple';
+	const txArgs = [
+		`${mergeId}${type ? `-${type}` : ''}`,
+		...usernames.slice(0, usernames.length <= 3 ? 3 : 2),
+		...(isMultiple ? [usernames.length - 2] : []),
+		...args,
+	];
+	notifObj.bodyShort = tx.compile(...txArgs);
+	notifObj.path = notifObjsToMerge[notifObjsToMerge.length - 1].path;
+}
+
+function typeFromLength(items) {
+	if (items.length <= 1) {
+		return '';
+	} else if (items.length === 2) {
+		return 'dual';
+	} else if (items.length === 3) {
+		return 'triple';
+	}
+	return 'multiple';
+}
 
 require('./promisify')(Notifications);

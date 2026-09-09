@@ -8,7 +8,8 @@ define('notifications', [
 	'tinycon',
 	'hooks',
 	'alerts',
-], function (translator, components, navigator, Tinycon, hooks, alerts) {
+	'api',
+], function (translator, components, navigator, Tinycon, hooks, alerts, api) {
 	const Notifications = {};
 
 	let unreadNotifs = {};
@@ -29,12 +30,17 @@ define('notifications', [
 	hooks.on('filter:notifications.load', _addTimeagoString);
 
 	Notifications.loadNotifications = function (triggerEl, notifList, callback) {
+		// backwards compatibilty for old signature (notifList, callback)
+		if (triggerEl && typeof notifList === 'function') {
+			callback = notifList;
+			notifList = triggerEl;
+			triggerEl = null;
+		}
 		callback = callback || function () {};
-		socket.emit('notifications.get', null, function (err, data) {
-			if (err) {
-				return alerts.error(err);
-			}
-
+		api.get('/notifications').then((data) => {
+			// resync the unread count in case a socket push was missed
+			// or a notification was rescinded server-side
+			Notifications.updateNotifCount(data.unread.length);
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
@@ -42,15 +48,14 @@ define('notifications', [
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
 					notifList.html(html);
-					notifList.off('click').on('click', '[data-nid]', function (ev) {
-						const notifEl = $(this);
+					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
+						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
 							ev.stopPropagation();
 							ev.preventDefault();
-							if (triggerEl) {
-								triggerEl.dropdown('toggle');
-							}
 						}
+
+						triggerEl?.dropdown('toggle');
 
 						const unread = notifEl.hasClass('unread');
 						if (!unread) {
@@ -59,9 +64,18 @@ define('notifications', [
 						const nid = notifEl.attr('data-nid');
 						markNotification(nid, true);
 					});
-					components.get('notifications').on('click', '.mark-all-read', () => {
-						Notifications.markAllRead();
-					});
+					const notifComponent = components.get('notifications');
+					notifComponent
+						.off('click', '.mark-all-read')
+						.on('click', '.mark-all-read', () => {
+							Notifications.markAllRead();
+							triggerEl?.dropdown('toggle');
+						});
+					notifComponent
+						.off('click', `[href="${config.relative_path}/notifications"]`)
+						.on('click', `[href="${config.relative_path}/notifications"]`, () => {
+							triggerEl?.dropdown('toggle');
+						});
 
 					Notifications.handleUnreadButton(notifList);
 
@@ -69,10 +83,10 @@ define('notifications', [
 						notifications: notifs,
 						list: notifList,
 					});
-					callback();
+					callback({ unread: data.unread, read: data.read });
 				});
 			});
-		});
+		}).catch(alerts.error);
 	};
 
 	Notifications.handleUnreadButton = function (notifList) {
@@ -86,25 +100,32 @@ define('notifications', [
 				$this.find('.unread').toggleClass('hidden', unread);
 				$this.find('.read').toggleClass('hidden', !unread);
 			});
-			return false;
 		});
 	};
 
-	Notifications.onNewNotification = function (notifData) {
+	Notifications.onNewNotification = async function (data) {
+		const { notification: notifData, unreadCount } = data;
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
-		if (ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(notifData.roomId, 10)) {
+		const { template } = ajaxify.data;
+		if (template.chats && String(ajaxify.data.roomId) === String(notifData.roomId)) {
+			// user is already looking at this room, mark the notification read
+			// instead of leaving it unread until the next room load
+			if (notifData.nid) {
+				markNotification(notifData.nid, true);
+			}
 			return;
 		}
 
-		socket.emit('notifications.getCount', function (err, count) {
-			if (err) {
-				return alerts.error(err);
-			}
+		if (template.topic && String(ajaxify.data.tid) === String(notifData.tid)) {
+			await socket.emit('topics.markTopicNotificationsRead', [notifData.tid]);
+			return;
+		}
 
-			Notifications.updateNotifCount(count);
-		});
+		if (unreadCount !== undefined) {
+			Notifications.updateNotifCount(unreadCount);
+		}
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;
@@ -116,18 +137,18 @@ define('notifications', [
 	};
 
 	function markNotification(nid, read, callback) {
-		socket.emit('notifications.mark' + (read ? 'Read' : 'Unread'), nid, function (err) {
-			if (err) {
-				return alerts.error(err);
-			}
-
-			if (read && unreadNotifs[nid]) {
-				delete unreadNotifs[nid];
-			}
-			if (callback) {
-				callback();
-			}
-		});
+		if (read) {
+			api.put(`/notifications/${encodeURIComponent(nid)}/read`).then(() => {
+				if (unreadNotifs[nid]) {
+					delete unreadNotifs[nid];
+				}
+				if (callback) {
+					callback();
+				}
+			}).catch(alerts.error);
+		} else {
+			api.del(`/notifications/${encodeURIComponent(nid)}/read`).then(callback).catch(alerts.error);
+		}
 	}
 
 	function scrollToPostIndexIfOnPage(notifEl) {
@@ -142,6 +163,7 @@ define('notifications', [
 		return false;
 	}
 
+	let tinyconSetup = false;
 	Notifications.updateNotifCount = function (count) {
 		const notifIcon = components.get('notifications/icon');
 		count = Math.max(0, count);
@@ -159,6 +181,13 @@ define('notifications', [
 		hooks.fire('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
+			if (!tinyconSetup) {
+				Tinycon.setOptions({
+					color: config.tinycon.color,
+					background: config.tinycon.background,
+				});
+				tinyconSetup = true;
+			}
 			Tinycon.setBubble(countText);
 		}
 

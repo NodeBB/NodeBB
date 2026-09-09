@@ -10,15 +10,19 @@
 	"user": "صارف",
 	"when": "کب",
 	"category": "زمرہ",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "عنوان",
 	"content": "مواد",
 	"posted": "پوسٹ کیا گیا",
 	"reply-to": "«%1» کا جواب",
+	"edit": "Edit",
 	"content-editable": "مواد کو ترمیم کرنے کے لیے اس پر کلک کریں",
 	"category-editable": "زمرہ کو ترمیم کرنے کے لیے اس پر کلک کریں",
 	"title-editable": "عنوان کو ترمیم کرنے کے لیے اس پر کلک کریں",
 	"reply": "جواب",
 	"topic": "موضوع",
+	"crosspost": "Crosspost",
 	"accept": "قبول کریں",
 	"reject": "مسترد کریں",
 	"remove": "ہٹائیں",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "کیا آپ واقعی %1 منتخب کردہ پوسٹس کو ہٹانا چاہتے ہیں؟",
 	"bulk-accept-success": "منظور شدہ پوسٹس: %1",
 	"bulk-reject-success": "مسترد شدہ پوسٹس: %1",
-	"links-in-this-post": "اس پوسٹ میں لنکس"
+	"links-in-this-post": "اس پوسٹ میں لنکس",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

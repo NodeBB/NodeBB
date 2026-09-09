@@ -1,18 +1,28 @@
 {
 	"alert.confirm-rebuild-and-restart": "Είστε βέβαιοι ότι θέλετε να αναδημιουργήσετε και να επανεκκινήσετε το NodeBB;",
 	"alert.confirm-restart": "Είστε βέβαιοι ότι θέλετε να επανεκκινήσετε το NodeBB;",
+	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
+	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
+	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Γίνεται επανεκκίνηση...",
+	"restarting.message": "Επανεκκίνηση του NodeBB σε εξέλιξη.",
+	"restarting.success.message": "Η επανεκκίνηση του NodeBB ολοκληρώθηκε επιτυχώς.",
+
 
 	"acp-title": "%1 | NodeBB Πίνακας Ελέγχου",
 	"settings-header-contents": "Περιεχόμενα",
-	"changes-saved": "Changes Saved",
+	"changes-saved": "Οι αλλαγές αποθηκεύτηκαν",
 	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
+	"changes-not-saved": "Οι αλλαγές δεν αποθηκεύτηκαν",
 	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"save-changes": "Αποθήκευση Αλλαγών",
+	"min": "Ελάχ:",
+	"max": "Μεγ:",
+	"view": "Προβολή",
+	"edit": "Επεξεργασία",
+	"add": "Προσθήκη",
+	"select-icon": "Επιλέξτε Εικονίδιο"
 }

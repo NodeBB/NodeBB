@@ -16,6 +16,7 @@ const privileges = require('../privileges');
 const cacheCreate = require('../cache/lru');
 const helpers = require('./helpers');
 const api = require('../api');
+const file = require('../file');
 
 const controllers = {
 	api: require('../controllers/api'),
@@ -32,10 +33,6 @@ const delayCache = cacheCreate({
 const middleware = module.exports;
 
 const relative_path = nconf.get('relative_path');
-
-middleware.regexes = {
-	timestampedUpload: /^\d+-.+$/,
-};
 
 const csrfMiddleware = csrfSynchronisedProtection;
 
@@ -150,11 +147,15 @@ middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 		return res.redirect(brandTouchIcon);
 	}
 
-	let iconPath = '';
+	let iconPath;
 	if (brandTouchIcon) {
 		const uploadPath = nconf.get('upload_path');
-		iconPath = path.join(uploadPath, brandTouchIcon.replace(/assets\/uploads/, ''));
-		if (!iconPath.startsWith(uploadPath)) {
+		// brand:touchIcon is stored as a public url path, e.g. /assets/uploads/system/touchicon-orig.png
+		const relativePath = path.normalize(brandTouchIcon)
+			.replace(/^[/\\]+/, '')
+			.replace(/^assets[/\\]uploads[/\\]?/, '');
+		iconPath = path.join(uploadPath, relativePath);
+		if (!file.isPathInside(uploadPath, iconPath)) {
 			return res.status(404).send('Not found');
 		}
 	} else {
@@ -175,14 +176,14 @@ middleware.privateTagListing = helpers.try(async (req, res, next) => {
 });
 
 middleware.exposeGroupName = helpers.try(async (req, res, next) => {
-	await expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
+	await expose('groupName', groups.getGroupNameByGroupSlug, middleware.canViewGroups, 'slug', req, res, next);
 });
 
 middleware.exposeUid = helpers.try(async (req, res, next) => {
-	await expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
+	await expose('uid', user.getUidByUserslug, middleware.canViewUsers, 'userslug', req, res, next);
 });
 
-async function expose(exposedField, method, field, req, res, next) {
+async function expose(exposedField, method, canViewMethod, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
@@ -196,7 +197,7 @@ async function expose(exposedField, method, field, req, res, next) {
 
 	const value = await method(param);
 	if (!value) {
-		next('route');
+		canViewMethod(req, res, () => next('route'));
 		return;
 	}
 
@@ -204,24 +205,8 @@ async function expose(exposedField, method, field, req, res, next) {
 	next();
 }
 
-middleware.privateUploads = function privateUploads(req, res, next) {
-	if (req.loggedIn || !meta.config.privateUploads) {
-		return next();
-	}
-
-	if (req.path.startsWith(`${nconf.get('relative_path')}/assets/uploads/files`)) {
-		const extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
-		let ext = path.extname(req.path);
-		ext = ext ? ext.replace(/^\./, '') : ext;
-		if (!extensions.length || extensions.includes(ext)) {
-			return res.status(403).json('not-allowed');
-		}
-	}
-	next();
-};
-
 middleware.busyCheck = function busyCheck(req, res, next) {
-	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
+	if (process.env.NODE_ENV === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {
@@ -242,11 +227,11 @@ middleware.delayLoading = function delayLoading(req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
 	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
-	let timesSeen = delayCache.get(req.ip) || 0;
+	const timesSeen = delayCache.get(req.ip) || 0;
 	if (timesSeen > 10) {
 		return res.sendStatus(429);
 	}
-	delayCache.set(req.ip, timesSeen += 1);
+	delayCache.set(req.ip, timesSeen + 1);
 
 	setTimeout(next, 1000);
 };
@@ -270,26 +255,7 @@ middleware.buildSkinAsset = helpers.try(async (req, res, next) => {
 	res.status(200).type('text/css').send(req.originalUrl.includes('-rtl') ? rtl : ltr);
 });
 
-middleware.addUploadHeaders = function addUploadHeaders(req, res, next) {
-	// Trim uploaded files' timestamps when downloading + force download if html
-	let basename = path.basename(req.path);
-	const extname = path.extname(req.path).toLowerCase();
-	const unsafeExtensions = [
-		'.html', '.htm', '.xhtml', '.mht', '.mhtml', '.stm', '.shtm', '.shtml',
-		'.svg', '.svgz',
-		'.xml', '.xsl', '.xslt',
-	];
-	const isInlineSafe = !unsafeExtensions.includes(extname);
-	const dispositionType = isInlineSafe ? 'inline' : 'attachment';
-	if (req.path.startsWith('/uploads/files/')) {
-		if (middleware.regexes.timestampedUpload.test(basename)) {
-			basename = basename.slice(14);
-		}
-		res.header('Content-Disposition', `${dispositionType}; filename="${basename}"`);
-	}
 
-	next();
-};
 
 middleware.validateAuth = helpers.try(async (req, res, next) => {
 	try {
@@ -308,14 +274,105 @@ middleware.validateAuth = helpers.try(async (req, res, next) => {
 });
 
 middleware.checkRequired = function (fields, req, res, next) {
+	const body = req.body || {};
+	const query = req.query || {};
 	// Used in API calls to ensure that necessary parameters/data values are present
 	const missing = fields.filter(
-		field => req.body && !req.body.hasOwnProperty(field) && !req.query.hasOwnProperty(field)
+		field => !body.hasOwnProperty(field) && !query.hasOwnProperty(field)
 	);
 
 	if (!missing.length) {
 		return next();
 	}
 
-	controllers.helpers.formatApiResponse(400, res, new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`));
+	controllers.helpers.formatApiResponse(
+		400,
+		res,
+		new Error(`[[error:required-parameters-missing, ${missing.join(' ')}]]`)
+	);
 };
+
+middleware.requirePasswordAuth = helpers.try(async function (req, res, next) {
+	const password = req.body?.password ?? req.headers['x-password-confirmation'];
+	if (!password) {
+		throw new Error('[[error:invalid-password]]');
+	}
+
+	const validPassword = await user.isPasswordCorrect(req.uid, password, req.ip);
+	if (!validPassword) {
+		throw new Error('[[error:invalid-password]]');
+	}
+	if (req.session?.meta) {
+		req.session.meta.reAuthAt = Date.now();
+	}
+	next();
+});
+
+// handles both cold load(/foo/baz) and ajaxify(/api/foo/baz) for regular routes
+// cold load /foo/baz => returnTo /foo/baz
+// ajaxify /api/foo/baz => returnTo /foo/baz
+middleware.requirePageReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
+	async function redirect(req, res) {
+		if (res.locals.isAPI) {
+			req.session.returnTo = req.url.replace(/^\/api/, '');
+			await controllers.helpers.formatApiResponse(401, res);
+		} else {
+			req.session.returnTo = req.url;
+			const isAdminPath = req.path === '/admin' || req.path.startsWith('/admin/');
+			res.redirect(`${relative_path}/login${isAdminPath ? '?local=1' : ''}`);
+		}
+	}
+	return helpers.try(async (req, res, next) => {
+		if (!req.loggedIn) {
+			return await redirect(req, res);
+		}
+
+		if (isReAuthValid(req, reauthWindowMinutes)) {
+			return next();
+		}
+
+		if (await triggerReLoginHook(req, res)) {
+			return;
+		}
+
+		await redirect(req, res);
+	});
+};
+
+// handles /api/v3 routes only
+// POST /api/v3/admin/tokens => returnTo whatever page the user was on via x-return-to
+// DIRECT GET /api/v3/admin/groups => returnTo undefined
+middleware.requireAPIReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
+	return helpers.try(async (req, res, next) => {
+		if (!res.locals.isAPI) return next();
+		if (!req.loggedIn) {
+			return await controllers.helpers.formatApiResponse(401, res);
+		}
+
+		if (isReAuthValid(req, reauthWindowMinutes)) {
+			return next();
+		}
+
+		req.session.returnTo = controllers.helpers.normalizeReturnToPath(
+			req.headers['x-return-to'], { allowApi: false }
+		) || '/';
+
+		if (await triggerReLoginHook(req, res)) {
+			return;
+		}
+
+		await controllers.helpers.formatApiResponse(401, res);
+	});
+};
+
+function isReAuthValid(req, reauthWindowMinutes) {
+	const reAuthAt = req.session.meta?.reAuthAt || 0;
+	const reauthWindowMs = reauthWindowMinutes * 60 * 1000;
+	return reAuthAt && (Date.now() - reAuthAt) <= reauthWindowMs;
+}
+
+async function triggerReLoginHook(req, res) {
+	req.session.forceLogin = 1;
+	await plugins.hooks.fire('response:auth.relogin', { req, res });
+	return res.headersSent;
+}

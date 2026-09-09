@@ -1,6 +1,16 @@
 {
 	"alert.confirm-rebuild-and-restart": "Jeni i sigurt që dëshironi të rindërtoni dhe rinisni NodeBB?",
 	"alert.confirm-restart": "Jeni i sigurt që dëshironi të rinisni NodeBB?",
+	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
+	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
+	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB is restarting.",
+	"restarting.success.message": "NodeBB has restarted successfully.",
+
 
 	"acp-title": "%1 | NodeBB Paneli i Kontrollit të Administratorit ",
 	"settings-header-contents": "Përmbatja ",

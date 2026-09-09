@@ -135,7 +135,7 @@ Topics.getThumbs = async (req, res) => {
 
 Topics.addThumb = async (req, res) => {
 	// todo: move controller logic to src/api/topics.js
-	await api.topics._checkThumbPrivileges({ tid: req.params.tid, uid: req.user.uid });
+	await api.topics._checkThumbPrivileges({ tid: req.params.tid, uid: req.uid });
 
 	const files = await uploadsController.uploadThumb(req, res); // response is handled here
 
@@ -153,7 +153,13 @@ Topics.addThumb = async (req, res) => {
 
 
 Topics.deleteThumb = async (req, res) => {
-	if (!req.body.path.startsWith('http')) {
+	if (!req.body.path && !req.query.path) {
+		return helpers.formatApiResponse(400, res, new Error('[[error:invalid-data]]'));
+	}
+
+	const path = req.body.path || req.query.path;
+
+	if (!path.startsWith('http')) {
 		await middleware.assert.path(req, res, () => {});
 		if (res.headersSent) {
 			return;
@@ -162,7 +168,7 @@ Topics.deleteThumb = async (req, res) => {
 
 	await api.topics.deleteThumb(req, {
 		tid: req.params.tid,
-		path: req.body.path,
+		path: path,
 	});
 	helpers.formatApiResponse(200, res, await topics.thumbs.get(req.params.tid));
 };
@@ -216,7 +222,7 @@ Topics.move = async (req, res) => {
 };
 
 Topics.getCrossposts = async (req, res) => {
-	const crossposts = await topics.crossposts.get(req.params.tid);
+	const crossposts = await topics.crossposts.get(req.params.tid, req.uid);
 	helpers.formatApiResponse(200, res, { crossposts });
 };
 
@@ -229,9 +235,9 @@ Topics.crosspost = async (req, res) => {
 };
 
 Topics.uncrosspost = async (req, res) => {
-	const { cid } = req.body;
+	const cid = req.body.cid || req.query.cid;
 	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
-	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);
 
+	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);
 	helpers.formatApiResponse(200, res, { crossposts });
 };

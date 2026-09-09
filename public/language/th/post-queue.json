@@ -10,15 +10,19 @@
 	"user": "ผู้ใช้งาน",
 	"when": "เมื่อ",
 	"category": "หมวดหมู่",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "ชื่อหัวข้อ",
 	"content": "เนื้อหา",
 	"posted": "Posted",
 	"reply-to": "ตอบกลับไปยัง \"%1\"",
+	"edit": "Edit",
 	"content-editable": "คลิกที่เนื้อหาเพื่อแก้ไข",
 	"category-editable": "คลิกที่หมวดหมู่เพื่อแก้ไข",
 	"title-editable": "คลิกที่หัวข้อเพื่อแก้ไข",
 	"reply": "ตอบกลับ",
 	"topic": "กระทู้",
+	"crosspost": "Crosspost",
 	"accept": "อนุมัติ",
 	"reject": "ปฏิเสธ",
 	"remove": "ลบออก",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "คุณต้องการลบโพสต์ที่เลือกจำนวน %1 โพสต์หรือไม่?",
 	"bulk-accept-success": "%1 โพสต์ถูกยอมรับ",
 	"bulk-reject-success": "%1 โพสต์ถูกปฏิเสธ",
-	"links-in-this-post": "ลิงก์ในโพสต์นี้"
+	"links-in-this-post": "ลิงก์ในโพสต์นี้",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

@@ -38,6 +38,7 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/search', [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', [], controllers.termsOfUse);
+	setupPageRoute(app, '/intents/:intent', controllers.intents.create);
 
 	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
 	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
@@ -132,13 +133,15 @@ module.exports = async function (app, middleware) {
 	});
 
 	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
-	router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.admin.checkPrivileges);
-	router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, middleware.ensureLoggedIn, middleware.applyCSRF, middleware.admin.checkPrivileges);
-
-	app.use(middleware.stripLeadingSlashes);
 
 	// handle custom homepage routes
 	router.use('/', controllers.home.rewrite);
+
+	router.all(`(/+api/admin|/+api/admin/*?${mounts.admin !== 'admin' ? `|/+api/${mounts.admin}|/+api/${mounts.admin}/*?` : ''})`, middleware.authenticateRequest, middleware.ensureLoggedIn, middleware.admin.checkPrivileges);
+	router.all(`(/+admin|/+admin/*?${mounts.admin !== 'admin' ? `|/+${mounts.admin}|/+${mounts.admin}/*?` : ''})`, middleware.ensureLoggedIn, middleware.applyCSRF, middleware.admin.checkPrivileges);
+
+
+	app.use(middleware.stripLeadingSlashes);
 
 	// homepage handled by `action:homepage.get:[route]`
 	setupPageRoute(router, '/', [], controllers.home.pluginHook);
@@ -171,7 +174,8 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		require('./debug')(app, middleware, controllers);
 	}
 
-	app.use(middleware.privateUploads);
+	app.use(`${relativePath}/assets`, middleware.uploads.privateUploads);
+	app.use(`${relativePath}/assets`, middleware.uploads.addUploadHeaders);
 
 	const statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
@@ -186,7 +190,7 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	}
 
 	statics.forEach((obj) => {
-		app.use(relativePath + obj.route, middleware.addUploadHeaders, express.static(obj.path, staticOptions));
+		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
 	});
 	app.use(`${relativePath}/uploads`, (req, res) => {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);

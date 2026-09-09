@@ -206,6 +206,7 @@ module.exports = function (Posts) {
 			post: postData,
 			upvote: type === 'upvote' && !unvote,
 			downvote: type === 'downvote' && !unvote,
+			was: voteStatus,
 		};
 	}
 
@@ -252,7 +253,7 @@ module.exports = function (Posts) {
 			return;
 		}
 		const threshold = meta.config['flags:autoFlagOnDownvoteThreshold'];
-		if (threshold && postData.votes <= (-threshold)) {
+		if (threshold && postData.votes <= -threshold) {
 			const adminUid = await user.getFirstAdminUid();
 			const reportMsg = await translator.translate(`[[flags:auto-flagged, ${-postData.votes}]]`);
 			const flagObj = await flags.create('post', postData.pid, adminUid, reportMsg, null, true);
@@ -260,7 +261,9 @@ module.exports = function (Posts) {
 		}
 		await Promise.all([
 			updateTopicVoteCount(postData),
-			db.sortedSetAdd('posts:votes', postData.votes, postData.pid),
+			utils.isNumber(postData.pid) ?
+				db.sortedSetAdd('posts:votes', postData.votes, postData.pid) :
+				null,
 			Posts.setPostFields(postData.pid, {
 				upvotes: postData.upvotes,
 				downvotes: postData.downvotes,

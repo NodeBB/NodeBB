@@ -9,5 +9,6 @@
     "no-moderators": "Nincsenek Moderátorok",
     "add-administrator": "Adminisztrátor hozzáadása",
     "add-global-moderator": "Globális moderátor hozzáadása",
-    "add-moderator": "Moderátor hozzáadása"
+    "add-moderator": "Moderátor hozzáadása",
+    "disabled": "Disabled"
 }

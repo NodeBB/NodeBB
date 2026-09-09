@@ -1,18 +1,28 @@
 {
 	"alert.confirm-rebuild-and-restart": "NodeBBを再構築して再起動してもよろしいですか？",
 	"alert.confirm-restart": "NodeBBを本当に再起動しますか？",
+	"rebuilding.title": "再構築中... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBBはフロントエンドのアセット（CSS、JavaScriptなど）を再構築しています。",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> 成功",
+	"rebuilding.success.message": "NodeBBの再構築と再起動が正常に完了しました。",
+	"build.complete": "ビルド完了！... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "再起動中... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBBを再起動しています。",
+	"restarting.success.message": "NodeBBの再起動が正常に完了しました。",
+
 
 	"acp-title": "%1| NodeBB管理画面",
 	"settings-header-contents": "コンテンツ",
-	"changes-saved": "Changes Saved",
-	"changes-saved-message": "Your changes to the NodeBB configuration have been saved.",
-	"changes-not-saved": "Changes Not Saved",
-	"changes-not-saved-message": "NodeBB encountered a problem saving your changes. (%1)",
-	"save-changes": "Save changes",
-	"min": "Min:",
-	"max": "Max:",
-	"view": "View",
-	"edit": "Edit",
-	"add": "Add",
-	"select-icon": "Select Icon"
+	"changes-saved": "変更を保存しました",
+	"changes-saved-message": "NodeBBの設定変更が保存されました",
+	"changes-not-saved": "変更が保存されませんでした",
+	"changes-not-saved-message": "NodeBBが変更の保存中に問題が発生しました。（%1）",
+	"save-changes": "変更を保存",
+	"min": "最小：",
+	"max": "最大：",
+	"view": "表示",
+	"edit": "編集",
+	"add": "追加",
+	"select-icon": "アイコンを選択"
 }

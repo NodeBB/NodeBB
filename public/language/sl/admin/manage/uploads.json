@@ -8,5 +8,6 @@
     "confirm-delete": "Ste prepričani, da želite izbrisati to datoteko?",
     "filecount": "%1 datotek",
     "new-folder": "Nova mapa",
-    "name-new-folder": "Vnesite ime nove mape"
+    "name-new-folder": "Vnesite ime nove mape",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

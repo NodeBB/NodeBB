@@ -1,11 +1,11 @@
-<p>[[admin/settings/activitypub:relays.warning]]</p>
-<p>[[admin/settings/activitypub:relays.litepub]]</p>
+<p>{{tx("admin/settings/activitypub:relays.warning")}}</p>
+<p>{{tx("admin/settings/activitypub:relays.litepub")}}</p>
 
 <hr />
 
 <form role="form">
 	<div class="mb-3">
 		<label class="form-label" for="url">Relay URL</label>
-		<input type="text" id="url" name="url" title="Relay URL" class="form-control" placeholder="https://example.org/actor">
+		<input type="url" id="url" name="url" title="Relay URL" class="form-control" placeholder="https://example.org/actor" required>
 	</div>
 </form>

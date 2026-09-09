@@ -8,5 +8,6 @@
     "confirm-delete": "이 파일을 정말로 삭제 하시겠습니까?",
     "filecount": "%1 개의 파일",
     "new-folder": "새 폴더",
-    "name-new-folder": "새 폴더의 이름을 입력하세요"
+    "name-new-folder": "새 폴더의 이름을 입력하세요",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

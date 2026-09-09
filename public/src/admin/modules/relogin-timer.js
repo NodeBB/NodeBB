@@ -1,9 +1,9 @@
+import { alert as modalsAlert } from 'modals';
 import { translate } from 'translator';
-import { alert as bootboxAlert } from 'bootbox';
 
 let logoutTimer = 0;
+let alertShown = false;
 let logoutMessage;
-
 export function start(adminReloginDuration) {
 	clearTimer();
 	if (adminReloginDuration <= 0) {
@@ -18,15 +18,20 @@ export function start(adminReloginDuration) {
 	}
 
 	const timeoutMs = adminReloginDuration * 60000;
-	logoutTimer = setTimeout(function () {
-		bootboxAlert({
+	logoutTimer = setTimeout(show, timeoutMs);
+}
+
+export function show() {
+	if (!alertShown) {
+		modalsAlert({
 			closeButton: false,
 			message: logoutMessage,
 			callback: function () {
-				window.location.reload();
+				window.location.href = config.relative_path + '/login';
 			},
 		});
-	}, timeoutMs);
+		alertShown = true;
+	}
 }
 
 function clearTimer() {

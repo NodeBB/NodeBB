@@ -1,0 +1,22 @@
+{
+	"queue": "Черга",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Ім'я",
+	"list.email": "Електронна пошта",
+	"list.ip": "IP-адреса",
+	"list.time": "Час",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Запрошення",
+	"invitations.description": "Нижче наведено список надісланих запрошень. Використовуйте Ctrl+F щоб здійснити пошук за поштою чи іменем користувача. <br><br> Ім'я користувача буде показано справа від електронної пошти для тих користувачів, що використали свої запрошення.",
+	"invitations.inviter-username": "Ім'я запрошувача",
+	"invitations.invitee-email": "Електронна пошта запрошуваного",
+	"invitations.invitee-username": "Ім'я запрошуваного (якщо зареєстрований)",
+
+	"invitations.confirm-delete": "Ви впевнені, що бажаєте видалити це запрошення?"
+}

@@ -1,12 +1,12 @@
 'use strict';
 
 define('admin/modules/change-email', [
-	'api', 'bootbox', 'alerts',
-], function (api, bootbox, alerts) {
+	'api', 'modals', 'alerts',
+], function (api, modals, alerts) {
 	const ChangeEmail = {};
 
-	ChangeEmail.init = function (params) {
-		const modal = bootbox.dialog({
+	ChangeEmail.init = async function (params) {
+		const modal = await modals.dialog({
 			message: `
 				<label class="form-label">[[admin/manage/users:new-email]]</label>
 				<input id="newEmail" class="form-control" type="text" value="${utils.escapeHTML(params.email || '')}">
@@ -21,9 +21,9 @@ define('admin/modules/change-email', [
 				change: {
 					label: '[[admin/manage/users:alerts.button-change]]',
 					className: 'btn-primary',
-					callback: function () {
+					callback: async function () {
 						const newEmail = modal.find('#newEmail').val();
-						api.post('/users/' + params.uid + '/emails', {
+						api.post(`/users/${params.uid}/emails`, {
 							skipConfirmation: true,
 							email: newEmail,
 						}).then(() => {

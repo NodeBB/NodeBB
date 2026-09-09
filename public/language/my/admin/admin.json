@@ -1,0 +1,28 @@
+{
+	"alert.confirm-rebuild-and-restart": "သင် NodeBB ကို ပြန်လည်တည်ဆောက်ပြီး ပြန်လည်စတင်လိုသည်မှာ သေချာပါသလား?",
+	"alert.confirm-restart": "သင် NodeBB ကို ပြန်လည်စတင်လိုသည်မှာ သေချာပါသလား?",
+	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
+	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
+	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB is restarting.",
+	"restarting.success.message": "NodeBB has restarted successfully.",
+
+
+	"acp-title": "%1 | NodeBB အက်ဒမင် ထိန်းချုပ်မှု ပန်နယ်",
+	"settings-header-contents": "မာတိကာ",
+	"changes-saved": "သိမ်းဆည်းပြီးပါပြီ",
+	"changes-saved-message": "NodeBB အပြင်အဆင်တွင် သင်ပြုလုပ်ထားသော အပြောင်းအလဲများကို သိမ်းဆည်းပြီးပါပြီ။",
+	"changes-not-saved": "အပြောင်းအလဲများကို မသိမ်းဆည်းရသေးပါ",
+	"changes-not-saved-message": "NodeBB သည် သင်၏ အပြောင်းအလဲများကို သိမ်းဆည်းရာတွင် ပြဿနာတစ်ခု ကြုံတွေ့ခဲ့သည်။ (%1)",
+	"save-changes": "အပြောင်းအလဲများကို သိမ်းဆည်းရန်",
+	"min": "အနည်းဆုံး",
+	"max": "အများဆုံး",
+	"view": "ကြည့်ရန်",
+	"edit": "တည်းဖြတ်ရန်",
+	"add": "ထည့်ရန်",
+	"select-icon": "အိုင်ကွန်ကို ရွေးပါ"
+}

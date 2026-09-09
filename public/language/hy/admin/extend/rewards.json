@@ -12,6 +12,6 @@
 	"disable": "Անջատել",
 
 	"alert.delete-success": "Պարգևը հաջողությամբ ջնջվեց",
-	"alert.no-inputs-found": "Անօրինական պարգև. մուտքեր չեն գտնվել:",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Պարգևները հաջողությամբ պահվեցին"
 }

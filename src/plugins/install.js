@@ -14,6 +14,7 @@ const meta = require('../meta');
 const pubsub = require('../pubsub');
 const { paths, pluginNamePattern } = require('../constants');
 const pkgInstall = require('../cli/package-install');
+const cache = require('../cache');
 
 const packageManager = pkgInstall.getPackageManager();
 let packageManagerExecutable = packageManager;
@@ -42,20 +43,28 @@ if (process.platform === 'win32') {
 
 module.exports = function (Plugins) {
 	if (nconf.get('isPrimary')) {
-		pubsub.on('plugins:toggleInstall', (data) => {
+		pubsub.on('plugins:toggleInstall', async (data) => {
 			if (data.hostname !== os.hostname()) {
-				toggleInstall(data.id, data.version);
+				try {
+					await toggleInstall(data.id, data.version, data.type);
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			}
 		});
 
-		pubsub.on('plugins:upgrade', (data) => {
+		pubsub.on('plugins:upgrade', async (data) => {
 			if (data.hostname !== os.hostname()) {
-				upgrade(data.id, data.version);
+				try {
+					await upgrade(data.id, data.version);
+				} catch (err) {
+					winston.error(err.stack);
+				}
 			}
 		});
 	}
 
-	Plugins.toggleActive = async function (id) {
+	Plugins.toggleActive = async function (id, active) {
 		if (nconf.get('plugins:active')) {
 			winston.error('Cannot activate plugins while plugin state is set in the configuration (config.json, environmental variables or terminal arguments), please modify the configuration instead');
 			throw new Error('[[error:plugins-set-in-configuration]]');
@@ -63,17 +72,21 @@ module.exports = function (Plugins) {
 		if (!pluginNamePattern.test(id)) {
 			throw new Error('[[error:invalid-plugin-id]]');
 		}
-		const isActive = await Plugins.isActive(id);
-		if (isActive) {
+		if (typeof active === 'string') {
+			active = active === '1';
+		}
+		const isActivating = active ?? !await Plugins.isActive(id);
+		if (!isActivating) {
 			await db.sortedSetRemove('plugins:active', id);
 		} else {
 			const count = await db.sortedSetCard('plugins:active');
 			await db.sortedSetAdd('plugins:active', count, id);
 		}
+		cache.set(`plugin:isActive:${id}`, isActivating);
 		meta.reloadRequired = true;
-		const hook = isActive ? 'deactivate' : 'activate';
+		const hook = isActivating ? 'activate' : 'deactivate';
 		Plugins.hooks.fire(`action:plugin.${hook}`, { id: id });
-		return { id: id, active: !isActive };
+		return { id: id, active: isActivating };
 	};
 
 	Plugins.checkWhitelist = async function (id, version) {
@@ -96,45 +109,84 @@ module.exports = function (Plugins) {
 		return body;
 	};
 
-	Plugins.toggleInstall = async function (id, version) {
-		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
-		return await toggleInstall(id, version);
+	Plugins.toggleInstall = async function (id, version, type) {
+		if (!pluginNamePattern.test(id)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
+		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id, version, type });
+		return await toggleInstall(id, version, type);
 	};
 
 	const runPackageManagerCommandAsync = util.promisify(runPackageManagerCommand);
 
-	async function toggleInstall(id, version) {
+	async function toggleInstall(id, version, type) {
 		const [installed, active] = await Promise.all([
 			Plugins.isInstalled(id),
 			Plugins.isActive(id),
 		]);
-		const type = installed ? 'uninstall' : 'install';
+		if (type && type !== 'install' && type !== 'uninstall') {
+			throw new Error('[[error:invalid-data]]');
+		}
+		type = type ?? (installed ? 'uninstall' : 'install');
 		if (active && !nconf.get('plugins:active')) {
 			await Plugins.toggleActive(id);
 		}
+
 		await runPackageManagerCommandAsync(type, id, version || 'latest');
 		const pluginData = await Plugins.get(id);
-		Plugins.hooks.fire(`action:plugin.${type}`, { id: id, version: version });
+		Plugins.hooks.fire(`action:plugin.${type}`, { id, version });
 		return pluginData;
 	}
 
 	function runPackageManagerCommand(command, pkgName, version, callback) {
-		cproc.execFile(packageManagerExecutable, [
+		if (!pluginNamePattern.test(pkgName)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
+		const args = [
 			packageManagerCommands[packageManager][command],
 			pkgName + (command === 'install' && version ? `@${version}` : ''),
 			'--save',
-		], (err, stdout) => {
-			if (err) {
-				return callback(err);
-			}
+			'--ignore-scripts',
+		];
 
-			winston.verbose(`[plugins/${command}] ${stdout}`);
-			callback();
-		});
+		if (process.platform === 'win32') {
+			const child = cproc.spawn(packageManagerExecutable, args, { shell: true });
+			let stdout = '';
+			let stderr = '';
+
+			child.stdout.on('data', (data) => {
+				stdout += data;
+			});
+			child.stderr.on('data', (data) => {
+				stderr += data;
+			});
+
+			child.on('close', (code) => {
+				if (code !== 0) {
+					const err = new Error(stderr || `Process exited with code ${code}`);
+					return callback(err);
+				}
+				winston.verbose(`[plugins/${command}] ${stdout}`);
+				callback();
+			});
+			child.on('error', callback);
+		} else {
+			cproc.execFile(packageManagerExecutable, args, (err, stdout) => {
+				if (err) {
+					return callback(err);
+				}
+
+				winston.verbose(`[plugins/${command}] ${stdout}`);
+				callback();
+			});
+		}
 	}
 
 
 	Plugins.upgrade = async function (id, version) {
+		if (!pluginNamePattern.test(id)) {
+			throw new Error('[[error:invalid-plugin-id]]');
+		}
 		pubsub.publish('plugins:upgrade', { hostname: os.hostname(), id: id, version: version });
 		return await upgrade(id, version);
 	};
@@ -170,7 +222,13 @@ module.exports = function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);
 		}
-		return await db.isSortedSetMember('plugins:active', id);
+		const cached = cache.get(`plugin:isActive:${id}`);
+		if (cached !== undefined) {
+			return cached;
+		}
+		const isActive = await db.isSortedSetMember('plugins:active', id);
+		cache.set(`plugin:isActive:${id}`, isActive);
+		return isActive;
 	};
 
 	Plugins.getActive = async function () {

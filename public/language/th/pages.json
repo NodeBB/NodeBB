@@ -20,6 +20,7 @@
     "users/sort-posts": "ผู้ใช้ที่โพสต์เยอะที่สุด",
     "users/sort-reputation": "ผู้ใช้ที่มีชื่อเสียงมากที่สุด",
     "users/banned": "ผู้ใช้ที่ถูกแบน",
+    "users/muted": "Muted Users",
     "users/most-flags": "ผู้ใช้ที่ถูกรายงานมากที่สุด",
     "users/search": "ค้นหาผู้ใช้",
     "notifications": "การแจ้งเตือน",

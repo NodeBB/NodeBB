@@ -6,14 +6,13 @@
  */
 
 require('../../require-main');
+require('../../nodebb-global');
 
 const path = require('path');
 const nconf = require('nconf');
-const url = require('url');
-const util = require('util');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
-global.env = process.env.NODE_ENV || 'production';
+
 if (!process.env.hasOwnProperty('CI')) {
 	process.env.CI = 'true';
 }
@@ -38,21 +37,29 @@ try {
 }
 
 nconf.file({ file: path.join(__dirname, '../../config.json') });
+const base_dir = path.join(__dirname, '../../');
 nconf.defaults({
-	base_dir: path.join(__dirname, '../..'),
+	base_dir: base_dir,
 	themes_path: path.join(__dirname, '../../node_modules'),
-	upload_path: 'test/uploads',
+	upload_path: path.resolve(base_dir, 'test/uploads'),
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
 });
 
-const urlObject = url.parse(nconf.get('url'));
+const urlObject = new URL(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
 nconf.set('asset_base_url', `${relativePath}/assets`);
-nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
 nconf.set('upload_url', '/assets/uploads');
-nconf.set('url_parsed', urlObject);
+nconf.set('url_parsed', {
+	href: urlObject.href,
+	origin: urlObject.origin,
+	protocol: urlObject.protocol,
+	host: urlObject.host,
+	hostname: urlObject.hostname,
+	port: urlObject.port,
+	pathname: urlObject.pathname,
+});
 nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 nconf.set('secure', urlObject.protocol === 'https:');
 nconf.set('use_port', !!urlObject.port);
@@ -125,7 +132,7 @@ if (testDbConfig.database === productionDbConfig.database &&
 nconf.set(dbType, testDbConfig);
 
 winston.info('database config %s', dbType, testDbConfig);
-winston.info(`environment ${global.env}`);
+winston.info(`environment ${process.env.NODE_ENV}`);
 
 const db = require('../../src/database');
 
@@ -134,18 +141,16 @@ module.exports = db;
 before(async function () {
 	this.timeout(30000);
 
-	// Parse out the relative_url and other goodies from the configured URL
-	const urlObject = url.parse(nconf.get('url'));
-
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
-	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony/templates'));
+	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-harmony', 'theme.json'));
 	nconf.set('bcrypt_rounds', 1);
 	nconf.set('socket.io:origins', '*:*');
 	nconf.set('version', packageInfo.version);
 	nconf.set('runJobs', false);
 	nconf.set('jobsDisabled', false);
 	nconf.set('acpPluginInstallDisabled', false);
+	nconf.set('trust_proxy', true);
 
 
 	await db.init();
@@ -179,6 +184,11 @@ before(async function () {
 			await setupMockDefaults();
 		});
 	});
+	// Attach a global afterAll that waits for pending minifier requests
+	// (e.g., from harmony theme's buildSkins scheduled via setTimeout)
+	this.test.parent.afterAll(async () => {
+		await require('../../src/meta/minifier').killAll();
+	});
 });
 
 async function setupMockDefaults() {
@@ -196,17 +206,15 @@ async function setupMockDefaults() {
 	meta.config.activitypubProbeTimeout = 30000;
 	meta.config.postQueue = 0;
 
-	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').getOrCreate().reset();
-	require('../../src/cache').reset();
-	require('../../src/middleware/uploads').clearCache();
+	require('../../src/cache/tracker').resetAll();
+	require('../../src/middleware/uploads').clearCache(); // lazily created; explicit clear still req'd.
 	// privileges must be given after cache reset
 	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();
 
 	await meta.themes.set({
 		type: 'local',
-		id: 'nodebb-theme-persona',
+		id: 'nodebb-theme-harmony',
 	});
 
 	const fs = require('fs');
@@ -259,6 +267,7 @@ async function enableDefaultPlugins() {
 		'nodebb-plugin-dbsearch',
 		'nodebb-widget-essentials',
 		'nodebb-plugin-composer-default',
+		'nodebb-rewards-essentials',
 	].concat(testPlugins);
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);

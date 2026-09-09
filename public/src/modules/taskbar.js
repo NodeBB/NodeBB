@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('taskbar', ['translator', 'hooks'], function (translator, hooks) {
+define('taskbar', ['translator', 'hooks', 'helpers'], function (translator, hooks, helpers) {
 	const taskbar = {};
 	let noTaskbar = false;
 	taskbar.init = function () {
@@ -176,16 +176,17 @@ define('taskbar', ['translator', 'hooks'], function (translator, hooks) {
 			return callback();
 		}
 		translator.translate(data.options.title, function (taskTitle) {
-			const title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
+			const title = helpers.escape(taskTitle || 'NodeBB Task');
+			const image = data.options.image ? helpers.escape(data.options.image) : '';
+			const icon = data.options.icon ? helpers.escape(data.options.icon) : '';
 
-			const taskbarEl = $('<li></li>')
+			const taskbarEl = $(`<li title="${title}"></li>`)
 				.addClass(data.options.className)
-				.html('<a href="#"' + (data.options.image ? ' style="background-image: url(\'' + data.options.image.replace(/&#x2F;/g, '/') + '\'); background-size: cover;"' : '') + '>' +
-					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
-					'<span aria-label="' + title + '" component="taskbar/title">' + title + '</span>' +
+				.html('<a href="#"' + (image ? ` style="background-image: url('${image}'); background-size: cover;"` : '') + '>' +
+					(icon ? `<i class="fa ${icon}"></i> ` : '') +
+					`<span aria-label="${title}" component="taskbar/title">${title}</span>` +
 					'</a>')
 				.attr({
-					title: title,
 					'data-module': data.module,
 					'data-uuid': data.uuid,
 				})

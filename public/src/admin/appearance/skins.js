@@ -94,34 +94,28 @@ define('admin/appearance/skins', [
 		});
 	};
 
-	function highlightSelectedTheme(themeId) {
-		translator.translate('[[admin/appearance/skins:select-skin]]  ||  [[admin/appearance/skins:current-skin]]', function (text) {
-			text = text.split('  ||  ');
-			const select = text[0];
-			const current = text[1];
+	async function highlightSelectedTheme(themeId) {
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]').each(function () {
+				if ($(this).parents('[data-theme]').attr('data-theme')) {
+					$(this)
+						.translateText('[[admin/appearance/skins:select-skin]]')
+						.removeClass('btn-success')
+						.addClass('btn-primary');
+				}
+			});
 
-			$('[data-theme]')
-				.removeClass('selected')
-				.find('[data-action="use"]').each(function () {
-					if ($(this).parents('[data-theme]').attr('data-theme')) {
-						$(this)
-							.html(select)
-							.removeClass('btn-success')
-							.addClass('btn-primary');
-					}
-				});
+		if (!themeId) {
+			return;
+		}
 
-			if (!themeId) {
-				return;
-			}
-
-			$('[data-theme="' + themeId + '"]')
-				.addClass('selected')
-				.find('[data-action="use"]')
-				.html(current)
-				.removeClass('btn-primary')
-				.addClass('btn-success');
-		});
+		$(`[data-theme="${themeId}"]`)
+			.addClass('selected')
+			.find('[data-action="use"]')
+			.translateText('[[admin/appearance/skins:current-skin]]')
+			.removeClass('btn-primary')
+			.addClass('btn-success');
 	}
 
 	return Skins;

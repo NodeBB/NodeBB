@@ -1,9 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Hozzászólás gyorsítótár",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
 	"percent-full": "%1% Tele",
 	"post-cache-size": "Hozzászólás gyorsítótáras mérete",
 	"items-in-cache": "Elemek a gyorsítótárban"

@@ -10,15 +10,19 @@
 	"user": "Felhasználó",
 	"when": "Amikor",
 	"category": "Kategória",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "Cím",
 	"content": "Tartalom",
 	"posted": "Bejegyzés létrehozva",
 	"reply-to": "Válasz neki \"%1\"",
+	"edit": "Edit",
 	"content-editable": "Kattints a tartalomra, hogy szerkeszthesd",
 	"category-editable": "Kattints a kategóriára, hogy szerkeszthesd",
 	"title-editable": "Kattints a címre, hogy szerkeszthesd",
 	"reply": "Válasz",
 	"topic": "Témakör",
+	"crosspost": "Crosspost",
 	"accept": "Elfogad",
 	"reject": "Elutasít",
 	"remove": "Eltávolítás",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "El szeretné távolítani %1 kijelölt bejegyzést?",
 	"bulk-accept-success": "%1 bejegyzés elfogadva",
 	"bulk-reject-success": "%1 bejegyzés elutasítva",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

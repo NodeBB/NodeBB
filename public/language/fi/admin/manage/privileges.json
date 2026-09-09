@@ -1,5 +1,5 @@
 {
-	"manage-privileges": "Manage Privileges",
+	"manage-privileges": "Hallitse oikeuksia",
 	"discard-changes": "Discard changes",
 	"global": "Global",
 	"admin": "Admin",
@@ -29,6 +29,7 @@
 	"access-topics": "Access Topics",
 	"create-topics": "Luo aiheita",
 	"reply-to-topics": "Reply to Topics",
+	"crosspost-topics": "Cross-post Topics",
 	"schedule-topics": "Ajoita aiheita",
 	"tag-topics": "Merkitse aiheita",
 	"edit-posts": "Edit Posts",

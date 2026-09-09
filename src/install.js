@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const url = require('url');
 const path = require('path');
 const prompt = require('prompt');
 const winston = require('winston');
@@ -204,6 +203,10 @@ async function completeConfigSetup(config) {
 		config.saas_plan = install.values.saas_plan;
 	}
 
+	if (install.values && install.values.hasOwnProperty('trust_proxy')) {
+		config.trust_proxy = install.values.trust_proxy;
+	}
+
 	nconf.overrides(config);
 	const db = require('./database');
 	await db.init();
@@ -217,18 +220,16 @@ async function completeConfigSetup(config) {
 	}
 
 	// If port is explicitly passed via install vars, use it. Otherwise, glean from url if set.
-	const urlObj = url.parse(config.url);
+	const urlObj = new URL(config.url);
 	if (urlObj.port && (!install.values || !install.values.hasOwnProperty('port'))) {
 		config.port = urlObj.port;
 	}
 
-	// Remove trailing slash from non-subfolder installs
-	if (urlObj.path === '/') {
-		urlObj.path = '';
-		urlObj.pathname = '';
+	config.url = urlObj.toString();
+	// Remove trailing slash from URL
+	if (config.url.endsWith('/')) {
+		config.url = config.url.slice(0, -1);
 	}
-
-	config.url = url.format(urlObj);
 
 	// ref: https://github.com/indexzero/nconf/issues/300
 	delete config.type;
@@ -247,6 +248,12 @@ async function setupDefaultConfigs() {
 
 	await meta.configs.setOnEmpty(defaults);
 	await meta.configs.init();
+
+	const db = require('./database');
+	await db.sortedSetAdd('blocklists', [Date.now(), Date.now()], [
+		'https://about.iftas.org/wp-content/uploads/2025/10/iftas-dni-latest.csv',
+		'https://about.iftas.org/wp-content/uploads/2025/10/iftas-abandoned-unmanaged-latest.csv',
+	]);
 }
 
 async function enableDefaultTheme() {
@@ -310,7 +317,7 @@ async function createAdmin() {
 	const Groups = require('./groups');
 	let password;
 
-	winston.warn('No administrators have been detected, running initial user setup\n');
+	winston.warn('No administrator account found — creating one now\n');
 
 	let questions = [{
 		name: 'username',
@@ -366,6 +373,8 @@ async function createAdmin() {
 			username: results.username,
 			password: results.password,
 			email: results.email,
+		}, {
+			emailVerification: 'verify',
 		});
 		await Groups.join('administrators', adminUid);
 		await Groups.show('administrators');
@@ -436,7 +445,7 @@ async function giveGlobalPrivileges() {
 	]), 'Global Moderators');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
-	await privileges.global.give(['groups:view:users'], 'fediverse');
+	await privileges.global.give(['groups:view:users', 'groups:chat'], 'fediverse');
 }
 
 async function giveWorldPrivileges() {

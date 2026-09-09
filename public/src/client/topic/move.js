@@ -2,8 +2,8 @@
 
 
 define('forum/topic/move', [
-	'categorySelector', 'alerts', 'hooks', 'api',
-], function (categorySelector, alerts, hooks, api) {
+	'categorySelector', 'alerts', 'hooks', 'api', 'bootstrap',
+], function (categorySelector, alerts, hooks, api, bootstrap) {
 	const Move = {};
 	let modal;
 	let selectedCategory;
@@ -31,11 +31,17 @@ define('forum/topic/move', [
 			const dropdownEl = modal.find('[component="category-selector"]');
 			dropdownEl.addClass('dropup');
 
+			const privs = ajaxify.data && ajaxify.data.privileges;
+			const isAdminOrMod = !!(privs && privs.isAdminOrMod) || app.user.isAdmin || app.user.isGlobalMod;
 			categorySelector.init(dropdownEl, {
 				onSelect: onCategorySelected,
-				privilege: 'moderate',
+				privilege: isAdminOrMod ? 'moderate' : 'topics:create',
 				localOnly: true,
+				disabledCids: Move.currentCid ? [Move.currentCid] : [],
 			});
+
+			const dropdown = new bootstrap.Dropdown(dropdownEl.find('button'));
+			dropdown.show();
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);
 			modal.find('#move_topic_cancel').on('click', closeMoveModal);

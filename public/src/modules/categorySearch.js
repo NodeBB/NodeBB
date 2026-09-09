@@ -43,12 +43,23 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 					renderList(categoriesList);
 				}
 			}
+			const searchInput = searchEl.find('input').val('');
+			searchInput.on('keydown', function (ev) {
+				if (ev.key === 'ArrowDown') {
+					const firstItem = el.find('[component="category/list"] li[data-cid]:first a');
+					if (firstItem.length) {
+						firstItem.focus();
+						ev.stopPropagation();
+						ev.preventDefault();
+					}
+				}
+			});
 
 			searchEl.on('click', function (ev) {
 				ev.preventDefault();
 				ev.stopPropagation();
 			});
-			searchEl.find('input').val('').on('keyup', utils.debounce(doSearch, 300));
+			searchInput.on('keyup', utils.debounce(doSearch, 300));
 			doSearch();
 		});
 
@@ -64,7 +75,7 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 			}
 
 			searchEl.off('click');
-			searchEl.find('input').off('keyup');
+			searchEl.find('input').off('keyup keydown');
 		});
 
 		function loadList(search, callback) {
@@ -88,8 +99,12 @@ define('categorySearch', ['alerts', 'bootstrap', 'api'], function (alerts, boots
 
 		function renderList(categories) {
 			const selectedCids = options.selectedCids.map(String);
+			const disabledCids = (options.disabledCids || []).map(String);
 			categories.forEach(function (c) {
 				c.selected = selectedCids.includes(String(c.cid));
+				if (disabledCids.includes(String(c.cid))) {
+					c.disabledClass = true;
+				}
 			});
 			app.parseAndTranslate(options.template, {
 				categoryItems: categories.slice(0, 200),

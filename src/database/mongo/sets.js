@@ -94,43 +94,30 @@ module.exports = function (module) {
 	};
 
 	module.setRemove = async function (key, value) {
-		if (!Array.isArray(value)) {
-			value = [value];
-		}
-
-		value = value.map(v => helpers.valueToString(v));
-
-		const coll = module.client.collection('objects');
-		await coll.updateMany({
-			_key: Array.isArray(key) ? { $in: key } : key,
-		}, {
-			$pullAll: { members: value },
-		});
-
-		await coll.deleteMany({
-			_key: Array.isArray(key) ? { $in: key } : key,
-			members: { $size: 0 },
-		});
+		await bulkSetRemove(key, value);
 	};
 
 	module.setsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		value = helpers.valueToString(value);
-
-		const coll = module.client.collection('objects');
-		await coll.updateMany({
-			_key: { $in: keys },
-		}, {
-			$pull: { members: value },
-		});
-
-		await coll.deleteMany({
-			_key: { $in: keys },
-			members: { $size: 0 },
-		});
+		await bulkSetRemove(keys, value);
 	};
+
+	async function bulkSetRemove(key, values) {
+		const isKeyArray = Array.isArray(key);
+		if (!key || (isKeyArray && !key.length)) return;
+
+		const filterKey = isKeyArray ? { $in: key } : key;
+		const update = Array.isArray(values) ?
+			{ $pullAll: { members: values.map(helpers.valueToString) } } :
+			{ $pull: { members: helpers.valueToString(values) } };
+
+		await module.client.collection('objects').bulkWrite([
+			{ updateMany: { filter: { _key: filterKey }, update: update } },
+			{ deleteMany: { filter: { _key: filterKey, members: [] } } },
+		], { ordered: true });
+	}
 
 	module.isSetMember = async function (key, value) {
 		if (!key) {
@@ -141,8 +128,9 @@ module.exports = function (module) {
 		const item = await module.client.collection('objects').findOne({
 			_key: key, members: value,
 		}, {
-			projection: { _id: 0, members: 0 },
+			projection: { _id: 0, _key: 1 },
 		});
+
 		return item !== null && item !== undefined;
 	};
 
@@ -150,15 +138,31 @@ module.exports = function (module) {
 		if (!key || !Array.isArray(values) || !values.length) {
 			return [];
 		}
-		values = values.map(v => helpers.valueToString(v));
+		const stringValues = values.map(v => helpers.valueToString(v));
 
-		const result = await module.client.collection('objects').findOne({
-			_key: key,
-		}, {
-			projection: { _id: 0, _key: 0 },
-		});
-		const membersSet = new Set(result && Array.isArray(result.members) ? result.members : []);
-		return values.map(v => membersSet.has(v));
+		const pipeline = [
+			{
+				$match: {
+					_key: key,
+					members: { $in: stringValues, $exists: true }, // Trigger the partial index
+				},
+			},
+			{
+				$project: {
+					_id: 0,
+					results: {
+						$map: {
+							input: stringValues,
+							as: 'val',
+							in: { $in: ['$$val', '$members'] },
+						},
+					},
+				},
+			},
+		];
+
+		const [doc] = await module.client.collection('objects').aggregate(pipeline).toArray();
+		return doc ? doc.results : values.map(() => false);
 	};
 
 	module.isMemberOfSets = async function (sets, value) {
@@ -170,15 +174,11 @@ module.exports = function (module) {
 		const result = await module.client.collection('objects').find({
 			_key: { $in: sets }, members: value,
 		}, {
-			projection: { _id: 0, members: 0 },
+			projection: { _id: 0, _key: 1 },
 		}).toArray();
 
-		const map = {};
-		result.forEach((item) => {
-			map[item._key] = true;
-		});
-
-		return sets.map(set => !!map[set]);
+		const foundMembers = new Set(result.map(item => item._key));
+		return sets.map(set => foundMembers.has(set));
 	};
 
 	module.getSetMembers = async function (key) {
@@ -189,7 +189,7 @@ module.exports = function (module) {
 		const data = await module.client.collection('objects').findOne({
 			_key: key,
 		}, {
-			projection: { _id: 0, _key: 0 },
+			projection: { _id: 0, members: 1 },
 		});
 		return data ? data.members : [];
 	};
@@ -204,7 +204,7 @@ module.exports = function (module) {
 			projection: { _id: 0 },
 		}).toArray();
 
-		const sets = {};
+		const sets = Object.create(null);
 		data.forEach((set) => {
 			sets[set._key] = set.members || [];
 		});

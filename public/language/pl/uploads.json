@@ -5,5 +5,7 @@
     "maximum-file-size": "Maksymalnie %1 kb",
     "no-uploads-found": "Nie znaleziono przesłanych plików",
     "public-uploads-info": "Przesłane pliki są ogólnodostępne, a zatem widoczne dla wszystkich gości.",
-    "private-uploads-info": "Przesłane pliki są prywatne, a zatem widoczne tylko dla zalogowanych użytkowników."
+    "private-uploads-info": "Przesłane pliki są prywatne, a zatem widoczne tylko dla zalogowanych użytkowników.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

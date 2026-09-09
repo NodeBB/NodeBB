@@ -12,6 +12,6 @@
 	"disable": "Atspējot",
 
 	"alert.delete-success": "Veiksmīgi izdzēsta balva",
-	"alert.no-inputs-found": "Nederīga balva - nav ievažu!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Balva veiksmīgi saglabāta"
 }

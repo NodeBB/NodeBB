@@ -55,12 +55,13 @@ Helpers.mocks.group = (override = {}) => {
 		type: 'Group',
 		...override,
 	});
+	const { hostname } = new URL(id);
 
 	activitypub._cache.set(`0;${id}`, actor);
-	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@example.org`, {
+	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@${hostname}`, {
 		actorUri: id,
 		username: id,
-		hostname: 'example.org',
+		hostname,
 	});
 
 	return { id, actor };
@@ -75,9 +76,9 @@ Helpers.mocks.note = (override = {}) => {
 		url: id,
 		type: 'Note',
 		to: ['https://www.w3.org/ns/activitystreams#Public'],
-		cc: ['https://example.org/user/foobar/followers'],
+		cc: [`${Helpers.mocks._baseUrl}/user/foobar/followers`],
 		inReplyTo: null,
-		attributedTo: 'https://example.org/user/foobar',
+		attributedTo: `${Helpers.mocks._baseUrl}/user/foobar`,
 		name: utils.generateUUID(),
 		content: `<p>${utils.generateUUID()}</p>`,
 		published: new Date().toISOString(),
@@ -95,20 +96,40 @@ Helpers.mocks.note = (override = {}) => {
 	return { id, note };
 };
 
-Helpers.mocks.create = (object) => {
-	// object is optional, will generate a public note if undefined
+Helpers.mocks.create = (input = {}) => {
+	let object;
+	let actor = 'https://example.org/user/foobar';
+	let override = {};
+
+	// Support both old API (positional note object) and new API (override object with actor/object keys)
+	if (input && typeof input === 'object' && input.type === 'Note') {
+		// Old API: first argument is the note object
+		object = input;
+	} else {
+		// New API: override object
+		override = input;
+		object = override.object;
+		actor = override.actor || actor;
+		delete override.actor;
+		delete override.object;
+	}
+
+	if (!object) {
+		object = Helpers.mocks.note().note;
+	}
+
 	const uuid = utils.generateUUID();
 	const id = `${Helpers.mocks._baseUrl}/activity/${uuid}`;
 
-	object = object || Helpers.mocks.note().note;
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: 'Create',
 		to: ['https://www.w3.org/ns/activitystreams#Public'],
-		cc: ['https://example.org/user/foobar/followers'],
-		actor: 'https://example.org/user/foobar',
+		cc: [`${actor}/followers`],
+		actor,
 		object,
+		...override,
 	};
 
 	activitypub._cache.set(`0;${id}`, activity);
@@ -124,6 +145,31 @@ Helpers.mocks.accept = (actor, object) => {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: 'Accept',
+		to: ['https://www.w3.org/ns/activitystreams#Public'],
+		actor,
+		object,
+	};
+
+	return { activity };
+};
+
+Helpers.mocks.undo = (override = {}) => {
+	let actor = override.actor;
+	let object = override.object;
+	if (!actor) {
+		({ id: actor } = Helpers.mocks.person());
+	}
+	if (!object) {
+		({ id: object } = Helpers.mocks.note());
+	}
+
+	const uuid = utils.generateUUID();
+	const id = `${Helpers.mocks._baseUrl}/undo/${uuid}`;
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id,
+		type: 'Undo',
 		to: ['https://www.w3.org/ns/activitystreams#Public'],
 		actor,
 		object,

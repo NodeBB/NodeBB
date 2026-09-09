@@ -544,7 +544,7 @@ define('settings', ['hooks', 'alerts'], function (hooks, alerts) {
 							title: '[[admin/admin:changes-not-saved]]',
 							message: `[[admin/admin:changes-not-saved-message, ${err.message}]]`,
 							type: 'error',
-							timeout: 2500,
+							timeout: 5000,
 						});
 					} else {
 						const saveBtn = document.getElementById('save');

@@ -14,6 +14,7 @@ define('autocomplete', [
 		const { input, onSelect } = acParams;
 		app.loadJQueryUI(function () {
 			input.autocomplete({
+				position: getMenuPosition(),
 				...acParams,
 				open: function () {
 					$(this).autocomplete('widget').css('z-index', 100005);
@@ -45,10 +46,9 @@ define('autocomplete', [
 
 					if (result && result.users) {
 						const names = result.users.map(function (user) {
-							const username = $('<div></div>').html(user.username).text();
 							return user && {
-								label: username,
-								value: username,
+								label: user.username,
+								value: user.username,
 								user: {
 									uid: user.uid,
 									name: user.username,
@@ -77,14 +77,14 @@ define('autocomplete', [
 			input,
 			onSelect,
 			source: (request, response) => {
-				socket.emit('groups.search', {
+				api.get('/groups', {
 					query: request.term,
-				}, function (err, results) {
+				}, function (err, result) {
 					if (err) {
 						return alerts.error(err);
 					}
-					if (results && results.length) {
-						const names = results.map(function (group) {
+					if (result && result.groups.length) {
+						const names = result.groups.map(function (group) {
 							return group && {
 								label: group.name,
 								value: group.name,
@@ -121,6 +121,17 @@ define('autocomplete', [
 		});
 	};
 
+	// jquery-ui defaults to anchoring the menu on the left edge of the input,
+	// which is the wrong edge in rtl
+	function getMenuPosition() {
+		const edge = document.querySelector('html').getAttribute('data-dir') === 'rtl' ? 'right' : 'left';
+		return {
+			my: `${edge} top`,
+			at: `${edge} bottom`,
+			collision: 'none',
+		};
+	}
+
 	function handleOnSelect(input, onselect, event, ui) {
 		onselect = onselect || function () { };
 		const e = jQuery.Event('keypress');
@@ -138,7 +149,7 @@ define('autocomplete', [
 		if (!targetEl) {
 			return;
 		}
-		var editor;
+		let editor;
 		if (targetEl.nodeName === 'TEXTAREA' || targetEl.nodeName === 'INPUT') {
 			editor = new TextareaEditor(targetEl);
 		} else if (targetEl.nodeName === 'DIV' && targetEl.getAttribute('contenteditable') === 'true') {
@@ -150,7 +161,7 @@ define('autocomplete', [
 		// yuku-t/textcomplete inherits directionality from target element itself
 		targetEl.setAttribute('dir', document.querySelector('html').getAttribute('data-dir'));
 
-		var textcomplete = new Textcomplete(editor, strategies, {
+		const textcomplete = new Textcomplete(editor, strategies, {
 			dropdown: options,
 		});
 		textcomplete.on('rendered', function () {

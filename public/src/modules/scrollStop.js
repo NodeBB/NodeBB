@@ -10,9 +10,9 @@
 */
 
 define('scrollStop', function () {
-	const Module = {};
+	const ScrollStop = {};
 
-	Module.apply = function (element) {
+	ScrollStop.apply = function (element) {
 		$(element).on('mousewheel', function (e) {
 			const scrollTop = this.scrollTop;
 			const scrollHeight = this.scrollHeight;
@@ -27,5 +27,5 @@ define('scrollStop', function () {
 		});
 	};
 
-	return Module;
+	return ScrollStop;
 });

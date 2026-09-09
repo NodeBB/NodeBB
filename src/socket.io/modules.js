@@ -151,23 +151,10 @@ SocketModules.chats.sortPublicRooms = async function (socket, data) {
 	await api.chats.sortPublicRooms(socket, data);
 };
 
-SocketModules.chats.searchMembers = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/users?query=');
-
-	if (!data || !data.roomId) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	// parameter renamed; backwards compatibility
-	data.query = data.username;
-	delete data.username;
-	return await api.search.roomUsers(socket, data);
-};
-
 SocketModules.chats.toggleOwner = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/owners/:uid');
 
-	if (!data || !data.uid || !data.roomId) {
+	if (!data || !data.uid || !utils.isNumber(data.roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -177,30 +164,17 @@ SocketModules.chats.toggleOwner = async (socket, data) => {
 SocketModules.chats.setNotificationSetting = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'PUT/DELETE /api/v3/chats/:roomId/watch');
 
-	if (!data || !utils.isNumber(data.value) || !data.roomId) {
+	if (!data || !utils.isNumber(data.value) || !utils.isNumber(data.roomId)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
 	await api.chats.watch(socket, data);
 };
 
-SocketModules.chats.searchMessages = async (socket, data) => {
-	sockets.warnDeprecated(socket, 'GET /api/v3/search/chats/:roomId/messages');
-
-	if (!data || !utils.isNumber(data.roomId) || !data.content) {
-		throw new Error('[[error:invalid-data]]');
-	}
-
-	// parameter renamed; backwards compatibility
-	data.query = data.content;
-	delete data.content;
-	return await api.search.roomMessages(socket, data);
-};
-
 SocketModules.chats.loadPinnedMessages = async (socket, data) => {
 	sockets.warnDeprecated(socket, 'GET /api/v3/chats/:roomId/messages/pinned');
 
-	if (!data || !data.roomId || !utils.isNumber(data.start)) {
+	if (!data || !utils.isNumber(data.roomId) || !utils.isNumber(data.start)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 

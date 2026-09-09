@@ -9,5 +9,7 @@
 	"settings": "설정",
 	"cookie-domain": "세션 쿠키 도메인",
 	"max-user-sessions": "사용자 당 최대 활성 세션 수",
-	"blank-default": "기본값을 사용하려면 비워 두세요"
+	"blank-default": "기본값을 사용하려면 비워 두세요",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }

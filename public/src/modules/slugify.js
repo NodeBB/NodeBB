@@ -1,16 +1,15 @@
 'use strict';
 
-/* global XRegExp */
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
-		define('slugify', ['xregexp'], factory);
+		define('slugify', factory);
 	} else if (typeof exports === 'object') {
-		module.exports = factory(require('xregexp'));
+		module.exports = factory();
 	} else {
-		window.slugify = factory(XRegExp);
+		window.slugify = factory();
 	}
-}(function (XRegExp) {
-	const invalidUnicodeChars = XRegExp('[^\\p{L}\\s\\d\\-_@.]', 'g');
+}(function () {
+	const invalidUnicodeChars = /[^\p{L}\s\d\-_@.]/gu;
 	const invalidLatinChars = /[^\w\s\d\-_@.]/g;
 	const trimRegex = /^\s+|\s+$/g;
 	const collapseWhitespace = /\s+/g;
@@ -28,13 +27,16 @@
 		if (isLatin.test(str)) {
 			str = str.replace(invalidLatinChars, '-');
 		} else {
-			str = XRegExp.replace(str, invalidUnicodeChars, '-');
+			str = str.replace(invalidUnicodeChars, '-');
 		}
 		str = !preserveCase ? str.toLocaleLowerCase() : str;
 		str = str.replace(collapseWhitespace, '-');
 		str = str.replace(collapseDash, '-');
 		str = str.replace(trimTrailingDash, '');
 		str = str.replace(trimLeadingDash, '');
+		if (str === '.' || str === '..') {
+			return '';
+		}
 		return str;
 	};
 }));

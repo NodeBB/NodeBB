@@ -40,6 +40,16 @@ social.getPostSharing = async function () {
 			name: 'LinkedIn',
 			class: 'fa-brands fa-linkedin',
 		},
+		{
+			id: 'mastodon',
+			name: 'Mastodon',
+			class: 'fa-brands fa-mastodon',
+		},
+		{
+			id: 'email',
+			name: 'Email',
+			class: 'fa-regular fa-envelope',
+		},
 	];
 	networks = await plugins.hooks.fire('filter:social.posts', networks);
 	networks.forEach((network) => {

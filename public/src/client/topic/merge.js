@@ -143,7 +143,7 @@ define('forum/topic/merge', ['search', 'alerts', 'api'], function (search, alert
 				);
 			});
 		} else {
-			modal.find('.topics-section').translateHtml('[[error:no-topics-selected]]');
+			modal.find('.topics-section').translateText('[[error:no-topics-selected]]');
 			modal.find('.merge-main-topic-select').html('');
 		}
 	}

@@ -11,6 +11,14 @@ define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/s
 	};
 
 	function handleModerationNote() {
+		const noteList = $('[component="account/moderation-note/list"]');
+
+		function adjustTextareaHeight(textarea) {
+			textarea.css({
+				height: textarea.prop('scrollHeight') + 'px',
+			});
+		}
+
 		$('[component="account/save-moderation-note"]').on('click', function () {
 			const noteEl = $('[component="account/moderation-note"]');
 			const note = noteEl.val();
@@ -24,23 +32,33 @@ define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/s
 				noteEl.val('');
 
 				app.parseAndTranslate('account/info', 'moderationNotes', { moderationNotes: notes }, function (html) {
-					$('[component="account/moderation-note/list"]').prepend(html);
+					noteList.prepend(html);
 					html.find('.timeago').timeago();
 				});
 			});
 		});
 
+		noteList.on('click', '[component="account/moderation-note/delete"]', async function () {
+			const parent = $(this).parents('[data-id]');
+			socket.emit('user.deleteModerationNote', {
+				uid: ajaxify.data.uid,
+				id: parent.attr('data-id'),
+			}).then(() => {
+				parent.remove();
+			}).catch(alerts.error);
+		});
 
-		$('[component="account/moderation-note/edit"]').on('click', function () {
+		noteList.on('click', '[component="account/moderation-note/edit"]', function () {
 			const parent = $(this).parents('[data-id]');
 			const contentArea = parent.find('[component="account/moderation-note/content-area"]');
 			const editArea = parent.find('[component="account/moderation-note/edit-area"]');
 			contentArea.addClass('hidden');
 			editArea.removeClass('hidden');
+			adjustTextareaHeight(editArea.find('textarea'));
 			editArea.find('textarea').trigger('focus').putCursorAtEnd();
 		});
 
-		$('[component="account/moderation-note/save-edit"]').on('click', function () {
+		noteList.on('click', '[component="account/moderation-note/save-edit"]', function () {
 			const parent = $(this).parents('[data-id]');
 			const contentArea = parent.find('[component="account/moderation-note/content-area"]');
 			const editArea = parent.find('[component="account/moderation-note/edit-area"]');
@@ -63,19 +81,12 @@ define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/s
 			});
 		});
 
-		$('[component="account/moderation-note/cancel-edit"]').on('click', function () {
+		noteList.on('click', '[component="account/moderation-note/cancel-edit"]', function () {
 			const parent = $(this).parents('[data-id]');
 			const contentArea = parent.find('[component="account/moderation-note/content-area"]');
 			const editArea = parent.find('[component="account/moderation-note/edit-area"]');
 			contentArea.removeClass('hidden');
 			editArea.addClass('hidden');
-		});
-
-		$('[component="account/moderation-note/edit-area"] textarea').each((i, el) => {
-			const $el = $(el);
-			$el.css({
-				height: $el.prop('scrollHeight') + 'px',
-			}).parent().addClass('hidden');
 		});
 	}
 

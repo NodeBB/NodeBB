@@ -1,0 +1,22 @@
+{
+	"display.create": "Tạo & Trả lời",
+	"display.like": "Ủng hộ",
+	"display.dislike": "Phản đối",
+	"display.follow": "Theo Dõi",
+	"display.object": "Xem",
+	"title": "Đăng Ký Xử Lý Web Xã Hội Mở",
+	"description": "Nhập xử lý Web xã hội mở của bạn để đăng ký Ý Định Hoạt Động. Điều này sẽ cho phép bạn chia sẻ nội dung từ diễn đàn này lên hồ sơ xã hội của bạn.",
+	"handle-label": "Xử Lý Web Xã Hội Mở",
+	"handle-placeholder": "username@example.com",
+	"register-button": "Xử Lý Đăng Ký",
+	"registered-handles": "Các Xử Lý Đã Đăng Ký",
+	"no-handles": "Không có xử lý nào được đăng ký.",
+	"intents-label": "Ý Định Được Hỗ Trợ",
+	"register-error": "Không thể đăng ký xử lý. Vui lòng kiểm tra định dạng đăng ký và thử lại.",
+	"invalid-handle": "Vui lòng nhập xử lý hợp lệ ở định dạng @username@domain.com",
+	"trigger-title": "%1 qua Web Xã Hội Mở",
+	"trigger-description": "Vui lòng đăng nhập vào tài khoản diễn đàn của bạn hoặc chọn một xử lý Web Xã Hội Mở để hoàn thành hành động này",
+	"trigger-your-handles": "Xử Lý Đăng Ký Của Bạn",
+	"trigger-yes": "Có, sử dụng cái này",
+	"trigger-no-matching": "Không có xử lý đã đăng ký nào hỗ trợ mục đích này. Đăng ký một xử lý mới hoặc đăng nhập."
+}

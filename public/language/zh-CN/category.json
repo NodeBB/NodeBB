@@ -1,9 +1,9 @@
 {
     "category": "版块",
     "subcategories": "子版块",
-    "uncategorized": "未分类的",
-    "uncategorized.description": "不严格符合任何现有版块的主题",
-    "handle.description": "此版块可通过社交网络公开平台使用用户名 %1 进行关注",
+    "uncategorized": "世界",
+    "uncategorized.description": "本论坛之外的主题。此处表达的观点和意见可能不代表本论坛及其成员的立场。",
+    "handle.description": "此版块可通过开放社交网络使用标识符 %1 关注",
     "new-topic-button": "发表主题",
     "guest-login-post": "登录以发布",
     "no-topics": "<strong>此版块下尚无主题。</strong><br />何不尝试发布一个？",
@@ -26,5 +26,10 @@
     "notwatching.message": "您未订阅此版块及其所有子版块的更新",
     "ignoring.message": "您正在忽略此版块及其所有子版块的更新",
     "watched-categories": "已关注的版块",
-    "x-more-categories": "还有 %1 个版块"
+    "x-more-categories": "还有 %1 个版块",
+    "view-original": "查看原文",
+    "first-run.welcome": "欢迎来到您全新的 NodeBB 论坛！",
+    "first-run.description": "您的论坛已准备就绪。请登录以自定义版块、设置等内容。",
+    "first-run.admin-panel": "您可以通过管理员面板来管理您的论坛",
+    "first-run.admin-panel-desc": "可通过侧边栏中的齿轮图标访问"
 }

@@ -1,6 +1,6 @@
 {
 	"state": "Stav",
-	"report": "Report",
+	"report": "Hlášení",
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Hurá, žádné označení.",
@@ -9,8 +9,8 @@
 	"update": "Aktualizovat",
 	"updated": "Aktualizováno",
 	"resolved": "Resolved",
-	"report-added": "Added",
-	"report-rescinded": "Rescinded",
+	"report-added": "Přidáno",
+	"report-rescinded": "Zrušeno",
 	"target-purged": "Obsah, na který se toto označení vztahuje, byl vymazán a již není k dispozici.",
 	"target-aboutme-empty": "This user has no &quot;About Me&quot; set.",
 
@@ -84,18 +84,18 @@
 	"modal-reason-offensive": "Urážlivé",
 	"modal-reason-other": "Jiné (popište níže)",
 	"modal-reason-custom": "Důvod ohlášení tohoto obsahu…",
-	"modal-notify-remote": "Forward this report to %1",
+	"modal-notify-remote": "Přeposlat toto hlášení na %1",
 	"modal-submit": "Předat hlášení",
 	"modal-submit-success": "Obsah byl označen pro moderaci.",
 
-	"modal-confirm-rescind": "Rescind Report?",
+	"modal-confirm-rescind": "Zrušit hlášení?",
 
 	"bulk-actions": "Bulk Actions",
 	"bulk-resolve": "Resolve Flag(s)",
-	"confirm-purge": "Are you sure you want to permanently delete these flags?",
-	"purge-cancelled": "Flag Purge Cancelled",
-	"bulk-purge": "Purge Flag(s)",
+	"confirm-purge": "Opravdu chcete trvale smazat tato označení?",
+	"purge-cancelled": "Mazání označení zrušeno",
+	"bulk-purge": "Odstranit označení",
 	"bulk-success": "%1 flags updated",
-	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "Označeno <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."
 }

@@ -1,8 +1,6 @@
 
 'use strict';
 
-const validator = require('validator');
-
 const meta = require('../meta');
 const db = require('../database');
 const activitypub = require('../activitypub');
@@ -21,6 +19,8 @@ module.exports = function (User) {
 		categoryWatchState: 'notwatching',
 	});
 
+	const validNotificationTypeValues = ['none', 'notification', 'email', 'notificationemail'];
+
 	User.getSettings = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
 			const isSpider = parseInt(uid, 10) === -1;
@@ -28,7 +28,7 @@ module.exports = function (User) {
 		}
 		let settings = await db.getObject(`user:${uid}:settings`);
 		settings = settings || {};
-		settings.uid = uid;
+		settings.uid = parseInt(uid, 10);
 		return await onSettingsLoaded(uid, settings);
 	};
 
@@ -48,17 +48,23 @@ module.exports = function (User) {
 	};
 
 	async function onSettingsLoaded(uid, settings) {
-		const data = await plugins.hooks.fire('filter:user.getSettings', { uid: uid, settings: settings });
+		const data = await plugins.hooks.fire('filter:user.getSettings', { uid, settings });
 		settings = data.settings;
 
 		const defaultTopicsPerPage = meta.config.topicsPerPage;
 		const defaultPostsPerPage = meta.config.postsPerPage;
 
-		settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1;
-		settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1;
+		settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1 && !meta.config.hideEmail;
+		settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1 && !meta.config.hideFullname;
 		settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
 		settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 		settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
+		settings.unreadCutoff = Math.max(1, Math.min(
+			Math.max(meta.config.unreadCutoff, 14),
+			settings.unreadCutoff ?
+				parseInt(settings.unreadCutoff, 10) :
+				meta.config.unreadCutoff,
+		));
 		settings.topicsPerPage = Math.max(1, Math.min(
 			meta.config.maxTopicsPerPage,
 			settings.topicsPerPage ?
@@ -81,24 +87,28 @@ module.exports = function (User) {
 		settings.disableIncomingChats = parseInt(getSetting(settings, 'disableIncomingChats', 0), 10) === 1;
 		settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 		settings.updateUrlWithPostIndex = parseInt(getSetting(settings, 'updateUrlWithPostIndex', 1), 10) === 1;
-		settings.bootswatchSkin = validator.escape(String(settings.bootswatchSkin || ''));
-		settings.homePageRoute = validator.escape(String(settings.homePageRoute || '')).replace(/&#x2F;/g, '/');
+		settings.bootswatchSkin = settings.bootswatchSkin || '';
+		settings.homePageRoute = settings.homePageRoute || '';
 		settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 		settings.categoryWatchState = getSetting(settings, 'categoryWatchState', 'notwatching');
+		settings.hideReadNotifications = parseInt(getSetting(settings, 'hideReadNotifications', 0), 10) === 1;
 
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
 			settings[notificationType] = getSetting(settings, notificationType, 'notification');
+			if (!validNotificationTypeValues.includes(settings[notificationType])) {
+				settings[notificationType] = 'notification';
+			}
 		});
 
-		settings.chatAllowList = parseJSONSetting(settings.chatAllowList || '[]', []).map(String);
-		settings.chatDenyList = parseJSONSetting(settings.chatDenyList || '[]', []).map(String);
+		settings.chatAllowList = parseJSONArray(settings.chatAllowList || '[]', []);
+		settings.chatDenyList = parseJSONArray(settings.chatDenyList || '[]', []);
 		return settings;
 	}
 
-	function parseJSONSetting(value, defaultValue) {
+	function parseJSONArray(value, defaultValue) {
 		try {
-			return JSON.parse(value);
+			return JSON.parse(value).map(String);
 		} catch (err) {
 			return defaultValue;
 		}
@@ -116,31 +126,8 @@ module.exports = function (User) {
 	}
 
 	User.saveSettings = async function (uid, data) {
-		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
-		if (
-			!data.postsPerPage ||
-			parseInt(data.postsPerPage, 10) <= 1 ||
-			parseInt(data.postsPerPage, 10) > maxPostsPerPage
-		) {
-			throw new Error(`[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
-		}
+		await validateSettings(data);
 
-		const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
-		if (
-			!data.topicsPerPage ||
-			parseInt(data.topicsPerPage, 10) <= 1 ||
-			parseInt(data.topicsPerPage, 10) > maxTopicsPerPage
-		) {
-			throw new Error(`[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
-		}
-
-		const languageCodes = await languages.listCodes();
-		if (data.userLang && !languageCodes.includes(data.userLang)) {
-			throw new Error('[[error:invalid-language]]');
-		}
-		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
-			throw new Error('[[error:invalid-language]]');
-		}
 		data.userLang = data.userLang || meta.config.defaultLang;
 
 		plugins.hooks.fire('action:user.saveSettings', { uid: uid, settings: data });
@@ -148,12 +135,13 @@ module.exports = function (User) {
 		const settings = {
 			showemail: data.showemail,
 			showfullname: data.showfullname,
+			unreadCutoff: data.unreadCutoff,
 			openOutgoingLinksInNewTab: data.openOutgoingLinksInNewTab,
 			dailyDigestFreq: data.dailyDigestFreq || 'off',
 			usePagination: data.usePagination,
-			topicsPerPage: Math.min(data.topicsPerPage, parseInt(maxTopicsPerPage, 10) || 20),
-			postsPerPage: Math.min(data.postsPerPage, parseInt(maxPostsPerPage, 10) || 20),
-			userLang: data.userLang || meta.config.defaultLang,
+			topicsPerPage: data.topicsPerPage,
+			postsPerPage: data.postsPerPage,
+			userLang: data.userLang,
 			acpLang: data.acpLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
@@ -163,6 +151,7 @@ module.exports = function (User) {
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			upvoteNotifFreq: data.upvoteNotifFreq,
+			hideReadNotifications: data.hideReadNotifications,
 			bootswatchSkin: data.bootswatchSkin,
 			categoryWatchState: data.categoryWatchState,
 			categoryTopicSort: data.categoryTopicSort,
@@ -170,20 +159,67 @@ module.exports = function (User) {
 			chatAllowList: data.chatAllowList,
 			chatDenyList: data.chatDenyList,
 		};
+
 		const notificationTypes = await notifications.getAllNotificationTypes();
 		notificationTypes.forEach((notificationType) => {
-			if (data[notificationType]) {
+			if (Object.hasOwn(data, notificationType) && validNotificationTypeValues.includes(data[notificationType])) {
 				settings[notificationType] = data[notificationType];
 			}
 		});
-		const result = await plugins.hooks.fire('filter:user.saveSettings', { uid: uid, settings: settings, data: data });
+		const result = await plugins.hooks.fire('filter:user.saveSettings', { uid, settings, data });
 		await db.setObject(`user:${uid}:settings`, result.settings);
 		await User.updateDigestSetting(uid, data.dailyDigestFreq);
 		return await User.getSettings(uid);
 	};
 
+	function validateMinMax(value, min, max, errorMessage) {
+		const parsed = parseInt(value, 10);
+		if (!value || parsed < min || parsed > max) {
+			throw new Error(errorMessage);
+		}
+	}
+
+	async function validateSettings(data) {
+		const maxUnreadCutoff = Math.max(meta.config.unreadCutoff, 14);
+		validateMinMax(data.unreadCutoff, 1, maxUnreadCutoff, `[[error:invalid-unread-cutoff, ${maxUnreadCutoff}]]`);
+
+		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
+		validateMinMax(data.postsPerPage, 2, maxPostsPerPage, `[[error:invalid-pagination-value, 2, ${maxPostsPerPage}]]`);
+
+		const maxTopicsPerPage = meta.config.maxTopicsPerPage || 20;
+		validateMinMax(data.topicsPerPage, 2, maxTopicsPerPage, `[[error:invalid-pagination-value, 2, ${maxTopicsPerPage}]]`);
+
+		const languageCodes = await languages.listCodes();
+		if (data.userLang && !languageCodes.includes(data.userLang)) {
+			throw new Error('[[error:invalid-language]]');
+		}
+		if (data.acpLang && !languageCodes.includes(data.acpLang)) {
+			throw new Error('[[error:invalid-language]]');
+		}
+
+		try {
+			if (Object.hasOwn(data, 'chatAllowList') && !Array.isArray(JSON.parse(data.chatAllowList))) {
+				throw new Error('[[error:invalid-chat-allow-list]]');
+			}
+			if (Object.hasOwn(data, 'chatDenyList') && !Array.isArray(JSON.parse(data.chatDenyList))) {
+				throw new Error('[[error:invalid-chat-deny-list]]');
+			}
+		} catch (err) {
+			throw new Error('[[error:invalid-data]]');
+		}
+
+		const notificationTypes = await notifications.getAllNotificationTypes();
+		notificationTypes.forEach((notificationType) => {
+			if (Object.hasOwn(data, notificationType) && !validNotificationTypeValues.includes(data[notificationType])) {
+				throw new Error('[[error:invalid-notification-type]]');
+			}
+		});
+	}
+
 	User.updateDigestSetting = async function (uid, dailyDigestFreq) {
-		await db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid);
+		await db.sortedSetsRemove([
+			'digest:day:uids', 'digest:week:uids', 'digest:biweek:uids', 'digest:month:uids',
+		], uid);
 		if (['day', 'week', 'biweek', 'month'].includes(dailyDigestFreq)) {
 			await db.sortedSetAdd(`digest:${dailyDigestFreq}:uids`, Date.now(), uid);
 		}

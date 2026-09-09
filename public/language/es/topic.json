@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">referenced</a> this topic on %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">forked</a> this topic %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">forked</a> this topic on %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Haz click aquí para volver a tu último mensaje leído en este tema",
     "flag-post": "Flag this post",
     "flag-user": "Flag this user",
@@ -90,6 +92,8 @@
     "watch.title": "Serás notificado cuando haya nuevas respuestas en este tema",
     "unwatch.title": "Dejar de seguir este tema",
     "share-this-post": "Compartir este mensaje",
+    "share-mail-subject": "Check out this post on \"%1\"",
+    "share-mail-body": "I thought you might be interested in this post: %1",
     "watching": "Siguiendo",
     "not-watching": "No siguiendo",
     "ignoring": "Ignorando",
@@ -180,6 +184,7 @@
     "composer.replying-to": "En respuesta a %1",
     "composer.new-topic": "Nuevo tema",
     "composer.editing-in": "Editing post in %1",
+    "composer.untitled-topic": "Untitled Topic",
     "composer.uploading": "subiendo...",
     "composer.thumb-url-label": "Agrega una URL de miniatura para el hilo",
     "composer.thumb-title": "Agregar miniatura a este tema",
@@ -222,6 +227,7 @@
     "no-more-next-post": "You don't have more posts in this topic",
     "open-composer": "Abrir editor",
     "post-quick-reply": "Quick reply",
+    "post-quick-create": "Quick post",
     "navigator.index": "Post %1 of %2",
     "navigator.unread": "%1 unread",
     "upvote-post": "Votar positivo",
@@ -230,5 +236,8 @@
     "unread-posts-link": "Enlace a entradas sin leer",
     "thumb-image": "Imagen miniatura del tema",
     "announcers": "Comparte",
-    "announcers-x": "Comparte (%1)"
+    "announcers-x": "Comparte (%1)",
+    "guest-cta.title": "¡Hola! Parece que estás interesado en este tema pero aún no tienes una cuenta.",
+    "guest-cta.message": "¿Te cansas de tener que ver las mismas publicaciones en cada visita? Al registrarte, siempre volverás al punto exacto donde estabas y podrás elegir recibir notificaciones de nuevas respuestas (por correo electrónico o notificaciones push). También podrás guardar marcadores y votar positivamente las publicaciones para mostrar tu aprecio a otros miembros de la comunidad.",
+    "guest-cta.closing": "Con tu ayuda, esta publicación podría ser aún mejor 💗"
 }

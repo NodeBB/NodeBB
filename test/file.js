@@ -1,5 +1,6 @@
 'use strict';
 
+const db = require('./mocks/databasemock');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
@@ -118,5 +119,62 @@ describe('file', () => {
 		assert.equal(file.typeToExtension('image/png'), '.png');
 		assert.equal(file.typeToExtension(''), '');
 		done();
+	});
+
+	describe('file.isPathInside', () => {
+		const uploadPath = nconf.get('upload_path');
+
+		it('should return true for valid paths inside the base directory', () => {
+			const validPaths = [
+				// Standard absolute paths
+				path.join(uploadPath, 'test.png'),
+				path.join(uploadPath, 'files/test.png'),
+
+				// Standard relative paths
+				'test.png',
+				'files/test.png',
+
+				// Current directory edge cases
+				'',
+				'.',
+
+				// Paths with redundant dot-segments that still resolve inside
+				'files/../test.png',
+				path.join(uploadPath, 'files/../test.png'),
+			];
+
+			for (const p of validPaths) {
+				assert.strictEqual(file.isPathInside(uploadPath, p), true, `Failed on valid path: ${p}`);
+			}
+		});
+
+		it('should return false for traversal attempts and paths outside the base directory', () => {
+			const invalidPaths = [
+				// The Sibling Directory Bypass
+				'../uploads-secret',
+				'../uploads-secret/test.png',
+				`${uploadPath}-secret`,
+
+				// Standard Path Traversal
+				'../',
+				'..',
+				'../../etc/passwd',
+
+				// Sneaky Traversal (redundant slashes)
+				'..//..//etc/passwd',
+				'files/../../etc/passwd',
+
+				// Absolute Path Injection (escaping the base entirely)
+				'/etc/passwd',
+				'/root/secret.txt',
+
+				// Absolute path guaranteed to work on current OS (Windows/Linux)
+				path.resolve('/etc/passwd'),
+			];
+
+			for (const p of invalidPaths) {
+				assert.strictEqual(file.isPathInside(uploadPath, p), false, `Failed on invalid path: ${p}`);
+			}
+		});
 	});
 });

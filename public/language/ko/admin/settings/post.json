@@ -27,6 +27,7 @@
 	"restrictions.post-length": "게시물 길이",
 	"restrictions.days-until-stale": "더 이상 토픽을 활성 상태로 간주하지 않는 일 수",
 	"restrictions.stale-help": "토픽이 \"stale\"로 간주되면 해당 토픽에 답글을 작성하려는 사용자에게 경고가 표시됩니다. (0으로 설정하여 비활성화)",
+	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
 	"timestamp": "타임스탬프",
 	"timestamp.cut-off": "날짜 절사 (일)",
 	"timestamp.cut-off-help": "날짜 및 시간은 상대적인 방식(예: \"3시간 전\"/\"5일 전\")으로 표시되며 여러 언어로 현지화됩니다. 일정 기간이 지나면 이 텍스트를 현지화된 날짜 자체로 전환하여 표시할 수 있습니다(예: 2016년 11월 5일 15:30).<br /><em>(기본값: <code>30</code>, 즉 한 달). 날짜를 항상 표시하려면 0으로 설정하고, 상대적인 시간을 항상 표시하려면 비워 둡니다.</em>",

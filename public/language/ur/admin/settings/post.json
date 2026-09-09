@@ -27,6 +27,7 @@
 	"restrictions.post-length": "پوسٹس کی لمبائی",
 	"restrictions.days-until-stale": "وہ دنوں کی تعداد جس کے بعد موضوع پرانا سمجھا جاتا ہے",
 	"restrictions.stale-help": "اگر کوئی موضوع 'پرانا' قرار دیا گیا ہو، تو اس میں لکھنے کی کوشش کرنے والے صارفین کو تنبیہی پیغام ملے گا (0 = غیر فعال)",
+	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
 	"timestamp": "وقت",
 	"timestamp.cut-off": "تاریخ کے بعد استعمال کریں (دنوں میں)",
 	"timestamp.cut-off-help": "تاریخیں اور اوقات نسبتاً دکھائے جائیں گے (مثال کے طور پر '3 گھنٹے پہلے' یا '5 دن پہلے')، اور متعدد زبانوں میں ترجمہ کیے جائیں گے۔ ایک خاص وقت کے بعد، یہ متن صارف کی زبان کے مطابق تاریخ اور وقت دکھانا شروع کر دے گا (مثال کے طور پر '5 نومبر 2016 15:30')۔<br /><em>(طے شدہ: <code>30</code>، یعنی ایک ماہ)۔ اگر 0 سیٹ کیا گیا تو ہمیشہ تاریخیں دکھائی جائیں گی، اور اگر فیلڈ خالی چھوڑا گیا تو وقت ہمیشہ نسبتاً ہوگا۔</em>",

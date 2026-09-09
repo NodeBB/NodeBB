@@ -28,10 +28,18 @@ Actors.application = async function (req, res) {
 		url: `${nconf.get('url')}/actor`,
 		inbox: `${nconf.get('url')}/inbox`,
 		outbox: `${nconf.get('url')}/outbox`,
+		attributedTo: `${nconf.get('url')}/actor/admins`,
 
 		type: 'Application',
 		name,
 		preferredUsername: nconf.get('url_parsed').hostname,
+
+		implements: [
+			{
+				href: 'https://w3id.org/fep/baf5',
+				name: 'FEP-baf5: Administrator Collection',
+			},
+		],
 
 		publicKey: {
 			id: `${nconf.get('url')}/actor#key`,
@@ -42,13 +50,14 @@ Actors.application = async function (req, res) {
 };
 
 Actors.user = async function (req, res) {
-	// todo: view:users priv gate
+	// Privilege-gated at the router-level
 	const payload = await activitypub.mocks.actors.user(req.params.uid);
 
 	res.status(200).json(payload);
 };
 
 Actors.userBySlug = async function (req, res) {
+	// Privilege-gated at the router-level
 	const { uid } = res.locals;
 	req.params.uid = uid;
 	delete req.params.userslug;
@@ -68,7 +77,13 @@ Actors.note = async function (req, res, next) {
 		return res.set('Location', req.params.pid).sendStatus(308);
 	}
 
-	const post = (await posts.getPostSummaryByPids([req.params.pid], req.uid, {
+	const cacheKey = `/post/${req.params.pid}`;
+	const cached = activitypub.serveCache.get(cacheKey);
+	if (cached) {
+		return res.status(200).json(cached);
+	}
+
+	const post = (await posts.getPostSummaryByPids([req.params.pid], activitypub._constants.uid, {
 		parse: false,
 		extraFields: ['edited'],
 	})).pop();
@@ -77,10 +92,11 @@ Actors.note = async function (req, res, next) {
 	}
 
 	const payload = await activitypub.mocks.notes.public(post);
-	const { to, cc } = await activitypub.buildRecipients(payload, { pid: post.pid, uid: post.user.uid });
+	const { to, cc } = await activitypub.buildRecipients(payload, { pid: post.pid, uid: post.user.uid, targets: false });
 	payload.to = to;
 	payload.cc = cc;
 
+	activitypub.serveCache.set(cacheKey, payload);
 	res.status(200).json(payload);
 };
 
@@ -92,6 +108,12 @@ Actors.replies = async function (req, res, next) {
 	}
 
 	const page = parseInt(req.query.page, 10);
+	const cacheKey = `/post/${req.params.pid}/replies${page ? `?page=${page}` : ''}`;
+	const cached = activitypub.serveCache.get(cacheKey);
+	if (cached) {
+		return res.status(200).json(cached);
+	}
+
 	let replies;
 	try {
 		replies = await activitypub.helpers.generateCollection({
@@ -116,6 +138,7 @@ Actors.replies = async function (req, res, next) {
 		...replies,
 	};
 
+	activitypub.serveCache.set(cacheKey, object);
 	res.status(200).json(object);
 };
 
@@ -127,10 +150,14 @@ Actors.topic = async function (req, res, next) {
 
 	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
-	const { cid, titleRaw: name, mainPid, slug, timestamp } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp']);
+	const { cid, title: name, mainPid, slug, timestamp, deleted } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp', 'deleted']);
 	try {
 		if (timestamp > Date.now()) { // Scheduled topic, no response
 			return next();
+		}
+
+		if (deleted) { // Soft-deleted topic, no response
+			return res.sendStatus(404);
 		}
 
 		let collection;
@@ -150,10 +177,10 @@ Actors.topic = async function (req, res, next) {
 		} catch (e) {
 			return next(); // invalid page; 404
 		}
-		pids.push(mainPid);
-		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 
 		// Generate digest for ETag
+		pids.push(mainPid);
+		pids = pids.map(pid => (utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid));
 		const digest = activitypub.helpers.generateDigest(new Set(pids));
 		const ifNoneMatch = (req.get('If-None-Match') || '').split(',').map((tag) => {
 			tag = tag.trim();
@@ -169,11 +196,11 @@ Actors.topic = async function (req, res, next) {
 		res.set('ETag', digest);
 
 		// Add OP to collection on first (or only) page
+		collection.totalItems += 1; // account for mainPid
 		if (page || collection.totalItems < perPage) {
 			collection.orderedItems = collection.orderedItems || [];
 			if (!page || page === 1) {
 				collection.orderedItems.unshift(mainPid);
-				collection.totalItems += 1;
 			}
 		}
 

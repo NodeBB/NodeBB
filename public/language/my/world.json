@@ -1,0 +1,29 @@
+{
+	"name": "အမည်",
+	"latest": "နောက်ဆုံး",
+	"latest-local": "ဒေသခံနောက်ဆုံး",
+	"latest-all": "အားလုံးနောက်ဆုံး",
+	"popular-day": "ယနေ့လူကြိုက်များ",
+	"popular-week": "ယခုအပတ်လူကြိုက်များ",
+	"popular-month": "ယခုလလူကြိုက်များ",
+	"popular-year": "ယခုနှစ်လူကြိုက်များ",
+	"popular-alltime": "အချိန်တိုင်းလူကြိုက်များ",
+	"recent": "လတ်တလော",
+	"help": "အကူအညီ",
+
+	"help.title": "ခေါင်းစဉ်",
+	"help.intro": "နိဒါန်း",
+	"help.fediverse": "Fediverse",
+	"help.build": "တည်ဆောက်မှု",
+	"help.federating": "ဖက်ဒရိတ်လုပ်ခြင်း",
+	"help.next-generation": "နောက်မျိုးဆက်",
+
+	"onboard.title": "ခေါင်းစဉ်",
+	"onboard.what": "ဘာလဲ",
+	"onboard.why": "ဘာကြောင့်လဲ",
+	"onboard.how": "ဘယ်လိုလဲ",
+
+	"category-search": "အမျိုးအစား ရှာဖွေရန်",
+	"see-more": "ပိုကြည့်ပါ",
+	"see-less": "အတိုချုံ့ပါ"
+}

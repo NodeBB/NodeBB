@@ -5,10 +5,11 @@ module.exports = function (opts) {
 	const os = require('os');
 
 	const pubsub = require('../pubsub');
+	const tracker = require('./tracker');
 
 	// lru-cache@7 deprecations
 	const winston = require('winston');
-	const chalk = require('chalk');
+	const chalk = require('chalk').default;
 
 	// sometimes we kept passing in `length` with no corresponding `maxSize`.
 	// This is now enforced in v7; drop superfluous property
@@ -162,5 +163,6 @@ module.exports = function (opts) {
 		return lruCache.peek(key);
 	};
 
+	tracker.addCache(opts.name, cache);
 	return cache;
 };

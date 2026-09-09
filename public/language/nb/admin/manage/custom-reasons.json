@@ -1,0 +1,16 @@
+{
+	"title": "Administrer egendefinerte grunner",
+	"create-reason": "Opprett grunn",
+	"edit-reason": "Rediger grunn",
+	"reasons-help": "Grunner er forhåndsdefinerte forklaringer som brukes når brukere utestenges eller dempes, eller når innlegg i innleggskøen avvises.",
+	"reason-title": "Tittel",
+	"reason-type": "Type",
+	"reason-body": "Innhold",
+	"reason-all": "Alle",
+	"reason-ban": "Utestenging",
+	"reason-mute": "Demping",
+	"reason-post-queue": "Innleggskø",
+	"reason-type-help": "Typen handling denne grunnen gjelder for. Hvis «Alle» er valgt, blir denne grunnen tilgjengelig for alle handlingstyper.",
+	"custom-reasons-saved": "Egendefinerte grunner er lagret",
+	"delete-reason-confirm-x": "Er du sikker på at du vil slette den egendefinerte grunnen med tittelen <strong>%1</strong>?"
+}

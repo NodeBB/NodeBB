@@ -30,7 +30,7 @@ module.exports = function (Categories) {
 		}
 		const keys = cids.map(cid => `cid:${cid}:uid:watch:state`);
 		const [userSettings, states] = await Promise.all([
-			user.getSettings(uid),
+			utils.isNumber(uid) ? user.getSettings(uid) : { categoryWatchState: 0 },
 			db.sortedSetsScore(keys, uid),
 		]);
 

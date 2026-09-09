@@ -3,7 +3,7 @@
 
 	<div class="row border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center">
 		<div class="col-12 px-0 mb-1 mb-md-0 d-flex justify-content-between align-items-center">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/categories:analytics.title, {name}]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/manage/categories:analytics.title", txEscape(name))}}</h4>
 			<!-- IMPORT admin/partials/category/selector-dropdown-right.tpl -->
 		</div>
 	</div>
@@ -15,10 +15,10 @@
 			<div class="card">
 				<div class="card-body">
 					<div class="position-relative" style="aspect-ratio: 2;">
-						<canvas id="pageviews:hourly"></canvas>
+						<canvas id="pageviews:hourly" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.pageviews-hourly]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.pageviews-hourly")}}</small></div>
 			</div>
 		</div>
 		<div class="col-sm-6 text-center">
@@ -28,7 +28,7 @@
 						<canvas id="pageviews:daily" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.pageviews-daily]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.pageviews-daily")}}</small></div>
 			</div>
 		</div>
 	</div>
@@ -40,7 +40,7 @@
 						<canvas id="topics:daily" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.topics-daily]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.topics-daily")}}</small></div>
 			</div>
 		</div>
 		<div class="col-sm-6 text-center">
@@ -50,7 +50,7 @@
 						<canvas id="posts:daily" height="250"></canvas>
 					</div>
 				</div>
-				<div class="card-footer"><small>[[admin/manage/categories:analytics.posts-daily]]</div>
+				<div class="card-footer"><small>{{tx("admin/manage/categories:analytics.posts-daily")}}</small></div>
 			</div>
 		</div>
 	</div>

@@ -2,15 +2,15 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 
 const db = require('../database');
 const groups = require('../groups');
 const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const translator = require('../translator');
 const utils = require('../utils');
+const activitypub = require('../activitypub');
+const cacheTracker = require('../cache/tracker');
 
 const helpers = module.exports;
 
@@ -77,8 +77,13 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 
 	const groupKeys = cids.map(cid => `cid:${cid}:privileges:groups:${privilege}`);
 
+	// Remote ActivityPub actors (URIs) are treated as the fediverse pseudo-user
+	if (activitypub.helpers.isUri(uidOrGroupName)) {
+		return await isSystemGroupAllowedToCids(privilege, -2, cids);
+	}
+
 	// Group handling
-	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
+	if (!utils.isNumber(uidOrGroupName) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
 	}
 
@@ -93,6 +98,11 @@ async function isAllowedToCids(privilege, uidOrGroupName, cids) {
 
 async function isAllowedToPrivileges(privileges, uidOrGroupName, cid) {
 	const groupKeys = privileges.map(privilege => `cid:${cid}:privileges:groups:${privilege}`);
+	// Remote ActivityPub actors (URIs) are treated as the fediverse pseudo-user
+	if (activitypub.helpers.isUri(uidOrGroupName)) {
+		return await isSystemGroupAllowedToPrivileges(privileges, -2, cid);
+	}
+
 	// Group handling
 	if (isNaN(parseInt(uidOrGroupName, 10)) && (uidOrGroupName || '').length) {
 		return await checkIfAllowedGroup(uidOrGroupName, groupKeys);
@@ -158,7 +168,7 @@ helpers.getUserPrivileges = async function (cid, userPrivileges) {
 helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	const [memberSets, allGroupNames] = await Promise.all([
 		groups.getMembersOfGroups(groupPrivileges.map(privilege => `cid:${cid}:privileges:${privilege}`)),
-		groups.getGroups('groups:createtime', 0, -1),
+		groups.getAllGroupNames('groups:createtime'),
 	]);
 
 	const uniqueGroups = _.uniq(_.flatten(memberSets));
@@ -188,8 +198,7 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 			types[key] = getType(key);
 		}
 		return {
-			name: validator.escape(member),
-			nameEscaped: translator.escape(validator.escape(member)),
+			name: member,
 			privileges: memberPrivs,
 			types: types,
 			isPrivate: groupData[index] && !!groupData[index].private,
@@ -198,6 +207,109 @@ helpers.getGroupPrivileges = async function (cid, groupPrivileges) {
 	});
 	return memberData;
 };
+
+// Aggregate group privileges across multiple categories. For each group/privilege the
+// resulting state is `true` (granted in every cid), `false` (granted in none), or the
+// string 'mixed' (granted in some but not all).
+helpers.getGroupPrivilegesAll = async function (cids, groupPrivileges) {
+	if (!cids.length) {
+		return [];
+	}
+	const keys = [];
+	groupPrivileges.forEach((privilege) => {
+		cids.forEach((cid) => {
+			keys.push(`cid:${cid}:privileges:${privilege}`);
+		});
+	});
+	const [memberSets, allGroupNames] = await Promise.all([
+		groups.getMembersOfGroups(keys),
+		groups.getAllGroupNames('groups:createtime'),
+	]);
+
+	const uniqueGroups = _.uniq(_.flatten(memberSets));
+	let groupNames = allGroupNames.filter(groupName => !groupName.includes(':privileges:') && uniqueGroups.includes(groupName));
+
+	groupNames = groups.ephemeralGroups.concat(groupNames);
+	moveToFront(groupNames, groups.BANNED_USERS);
+	moveToFront(groupNames, 'Global Moderators');
+	moveToFront(groupNames, 'unverified-users');
+	moveToFront(groupNames, 'verified-users');
+	moveToFront(groupNames, 'registered-users');
+
+	const adminIndex = groupNames.indexOf('administrators');
+	if (adminIndex !== -1) {
+		groupNames.splice(adminIndex, 1);
+	}
+
+	const numCids = cids.length;
+	const groupData = await groups.getGroupsFields(groupNames, ['private', 'system']);
+	const memberData = groupNames.map((member, index) => {
+		const memberPrivs = {};
+		for (let x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
+			memberPrivs[groupPrivileges[x]] = aggregateState(memberSets, x, numCids, member);
+		}
+		const types = {};
+		for (const [key] of Object.entries(memberPrivs)) {
+			types[key] = getType(key);
+		}
+		return {
+			name: member,
+			privileges: memberPrivs,
+			types: types,
+			isPrivate: groupData[index] && !!groupData[index].private,
+			isSystem: groupData[index] && !!groupData[index].system,
+		};
+	});
+	return memberData;
+};
+
+// Aggregate user privileges across multiple categories (see getGroupPrivilegesAll).
+helpers.getUserPrivilegesAll = async function (cids, userPrivileges) {
+	if (!cids.length) {
+		return [];
+	}
+	const keys = [];
+	userPrivileges.forEach((privilege) => {
+		cids.forEach((cid) => {
+			keys.push(`cid:${cid}:privileges:${privilege}`);
+		});
+	});
+	let memberSets = await groups.getMembersOfGroups(keys);
+	memberSets = memberSets.map(set => set.map(uid => parseInt(uid, 10)));
+
+	const members = _.uniq(_.flatten(memberSets));
+	const memberData = await user.getUsersFields(members, ['picture', 'username', 'banned']);
+	const numCids = cids.length;
+
+	memberData.forEach((member) => {
+		member.privileges = {};
+		for (let x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
+			member.privileges[userPrivileges[x]] = aggregateState(memberSets, x, numCids, parseInt(member.uid, 10));
+		}
+		const types = {};
+		for (const [key] of Object.entries(member.privileges)) {
+			types[key] = getType(key);
+		}
+		member.types = types;
+	});
+
+	return memberData;
+};
+
+// memberSets is ordered [priv0/cid0, priv0/cid1, ..., priv1/cid0, ...]. For privilege
+// index `privIndex`, count how many of the `numCids` consecutive sets contain `member`.
+function aggregateState(memberSets, privIndex, numCids, member) {
+	let count = 0;
+	for (let c = 0; c < numCids; c += 1) {
+		if (memberSets[(privIndex * numCids) + c].includes(member)) {
+			count += 1;
+		}
+	}
+	if (count === 0) {
+		return false;
+	}
+	return count === numCids ? true : 'mixed';
+}
 
 
 function getType(privilege) {
@@ -228,6 +340,10 @@ helpers.giveOrRescind = async function (method, privileges, cids, members) {
 		});
 		/* eslint-disable no-await-in-loop */
 		await method(groupKeys, member);
+	}
+
+	if (privileges.some(priv => priv === 'groups:topics:crosspost' || priv === 'topics:crosspost')) {
+		cacheTracker.resetCache('crosspost');
 	}
 };
 

@@ -30,3 +30,5 @@ post:
                 $ref: ../../components/schemas/Status.yaml#/Status
               response:
                 $ref: ../../components/schemas/admin/tokenObject.yaml#/TokenObject
+    '401':
+      $ref: ../../components/responses/401.yaml#/401

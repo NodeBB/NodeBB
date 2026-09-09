@@ -8,7 +8,7 @@ nconf.argv().env({
 
 const fs = require('fs');
 const path = require('path');
-const json2csvAsync = require('json2csv').parseAsync;
+const { AsyncParser } = require('@json2csv/node');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
@@ -47,7 +47,8 @@ process.on('message', async (msg) => {
 
 		const fields = payload.length ? Object.keys(payload[0]) : [];
 		const opts = { fields };
-		const csv = await json2csvAsync(payload, opts);
+		const json2csvAsync = new AsyncParser(opts);
+		const csv = await json2csvAsync.parse(payload).promise();
 		await fs.promises.writeFile(filePath, csv);
 
 		await db.close();

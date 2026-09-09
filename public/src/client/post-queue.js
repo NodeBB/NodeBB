@@ -2,35 +2,118 @@
 
 
 define('forum/post-queue', [
-	'categoryFilter', 'categorySelector', 'api', 'alerts', 'bootbox',
-	'accounts/moderate', 'accounts/delete',
+	'categoryFilter', 'categorySelector', 'api', 'alerts',
+	'translator', 'modals', 'accounts/moderate', 'accounts/delete',
+	'autocomplete', 'uploader', 'benchpress', 'helpers',
 ], function (
-	categoryFilter, categorySelector, api, alerts, bootbox,
-	AccountModerate, AccountsDelete
+	categoryFilter, categorySelector, api, alerts,
+	translator, modals, AccountModerate, AccountsDelete,
+	autocomplete, uploader, Benchpress, helpers
 ) {
 	const PostQueue = {};
 
 	PostQueue.init = function () {
-		$('[data-bs-toggle="tooltip"]').tooltip();
+		$('#content [data-bs-toggle="tooltip"]').tooltip();
 
 		categoryFilter.init($('[component="category/dropdown"]'), {
 			privilege: 'moderate',
 		});
+
+		createTagsInput();
 
 		handleActions();
 		handleBulkActions();
 		handleContentEdit('[data-action="editContent"]', '.post-content-editable', 'textarea', '.post-content');
 		handleContentEdit('[data-action="editTitle"]', '.topic-title-editable', 'input', '.topic-title');
 
-		$('.posts-list').on('click', '.topic-category[data-editable]', function (e) {
-			handleCategoryChange(this);
-			e.stopPropagation();
-			e.preventDefault();
-		});
-
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 		showLinksInPosts();
 	};
+
+	function replaceRelativeUploadPath(url) {
+		return url
+			.replace(new RegExp(`^${config.relative_path}`), '')
+			.replace(new RegExp(`^${config.upload_url}`), '');
+	}
+
+	function getThumbUrls(thumbList) {
+		return thumbList.find('img').map((i, img) => $(img).attr('src')).get();
+	}
+
+	function handleThumbUpload(postEl) {
+		const id = postEl.getAttribute('data-id');
+		const $postEl = $(postEl);
+		const thumbList = $postEl.find('.thumb-list');
+
+		uploader.show({
+			title: '[[topic:composer.thumb-title]]',
+			method: 'put',
+			route: config.relative_path + `/api/topic/thumb/upload`,
+		}, function (url) {
+			const currentThumbs = getThumbUrls(thumbList);
+			currentThumbs.push(url);
+			saveAndUpdateThumbs(id, currentThumbs, thumbList);
+		});
+	}
+
+	function removeThumb(removeBtn) {
+		const postEl = removeBtn.closest('[data-id]');
+		const id = postEl.attr('data-id');
+		removeBtn.parent().remove();
+		const thumbList = postEl.find('.thumb-list');
+		const currentThumbs = getThumbUrls(thumbList);
+		saveAndUpdateThumbs(id, currentThumbs, thumbList);
+	}
+
+	function saveAndUpdateThumbs(id, currentThumbs, thumbList) {
+		api.put(`/posts/queue/${id}`, {
+			// remove relative path and upload url from the thumbs before saving
+			thumbs: currentThumbs.map(replaceRelativeUploadPath),
+		}).then(function () {
+			app.parseAndTranslate('post-queue', 'posts', {
+				posts: [{
+					type: 'topic',
+					data: {
+						thumbs: currentThumbs,
+					},
+				}],
+			}, function (html) {
+				thumbList.html(html.find('.thumb-list').html());
+			});
+		}).catch(alerts.error);
+	}
+
+	function createTagsInput() {
+		ajaxify.data.posts.forEach(function (postData) {
+			const postEl = $(`[data-id="${postData.id}"]`);
+			const tagContainer = postEl.find('.topic-tags-editable');
+			const tagEl = tagContainer.find('input');
+
+			tagEl.tagsinput({
+				tagClass: 'badge rounded-1 fw-normal',
+				confirmKeys: [13, 44],
+				trimValue: true,
+			});
+			const tagsinput = tagContainer.find('.bootstrap-tagsinput');
+			tagsinput.addClass('tag-list');
+			const inputEls = tagsinput.find('input');
+
+			inputEls.each((index, input) => {
+				const $input = $(input);
+				autocomplete.tag($input, function () {
+					const e = jQuery.Event('keypress');
+					e.which = 13;
+					setTimeout(() => input.trigger(e), 100);
+				});
+			});
+			const tags = postData.data.tags || [];
+			if (tags && tags.length) {
+				tags.forEach(function (tag) {
+					tagEl.tagsinput('add', tag);
+				});
+			}
+		});
+	}
 
 	function showLinksInPosts() {
 		$('.posts-list [data-id]').each((idx, el) => {
@@ -39,16 +122,16 @@ define('forum/post-queue', [
 			const linkList = linkContainer.find('[component="post-queue/link-container/list"]');
 			const linksInPost = $el.find('.post-content a');
 			linksInPost.each((idx, link) => {
-				const href = $(link).attr('href');
+				const href = helpers.escape($(link).attr('href'));
 				linkList.append(`<li><a href="${href}">${href}</a></li>`);
 			});
 			linkContainer.toggleClass('hidden', !linksInPost.length);
 		});
 	}
 
-	function confirmReject(msg) {
+	function confirmModal(msg) {
 		return new Promise((resolve) => {
-			bootbox.confirm(msg, resolve);
+			modals.confirm(msg, resolve);
 		});
 	}
 
@@ -85,34 +168,91 @@ define('forum/post-queue', [
 		});
 	}
 
-	function handleCategoryChange(categoryEl) {
-		const $this = $(categoryEl);
-		const id = $this.parents('[data-id]').attr('data-id');
+	function handleCategoryChange(categoryEl, { apiParam = 'cid', isCrosspost } = {}) {
+		const postEl = categoryEl.closest('[data-id]');
+		const id = postEl.getAttribute('data-id');
+		const crosspostSection = isCrosspost ? postEl.querySelector('[data-crosspost]') : null;
+
 		categorySelector.modal({
+			localOnly: true,
+			openOnLoad: true,
 			onSubmit: function (selectedCategory) {
 				Promise.all([
 					api.get(`/categories/${selectedCategory.cid}`, {}),
 					api.put(`/posts/queue/${id}`, {
-						cid: selectedCategory.cid,
+						[apiParam]: selectedCategory.cid,
 					}),
 				]).then(function (result) {
 					const category = result[0];
+					const postData = {};
+					if (isCrosspost) {
+						postData.crosspostCategory = category;
+						postData.type = 'crosspost';
+					} else {
+						postData.category = category;
+					}
 					app.parseAndTranslate('post-queue', 'posts', {
-						posts: [{
-							category: category,
-						}],
+						posts: [postData],
 					}, function (html) {
-						if ($this.find('.category-text').length) {
-							$this.find('.category-text').text(html.find('.topic-category .category-text').text());
+						if (crosspostSection) {
+							const newCrosspost = html.find('[data-crosspost]')[0];
+							if (newCrosspost) {
+								crosspostSection.outerHTML = newCrosspost.outerHTML;
+							}
 						} else {
-							// for backwards compatibility, remove in 1.16.0
-							$this.replaceWith(html.find('.topic-category'));
+							const newCategory = html.find('.topic-category')[0];
+							if (newCategory) {
+								categoryEl.replaceWith(newCategory);
+							}
 						}
 					});
 				}).catch(alerts.error);
 			},
 		});
-		return false;
+	}
+
+	function handleTagChange(postEl) {
+		const id = postEl.getAttribute('data-id');
+		const tagList = postEl.querySelector('.tag-list');
+		const tagEl = postEl.querySelector('.topic-tags-editable');
+
+		tagList.classList.add('hidden');
+		tagEl.classList.remove('hidden');
+
+		const input = tagEl.querySelector('.bootstrap-tagsinput input');
+		if (!input) return;
+
+		input.focus();
+		function focusOut() {
+			setTimeout(() => {
+				if (tagEl.contains(document.activeElement)) {
+					// focus is still inside the tag edit area, do not save yet
+					return;
+				}
+
+				const modifiedTags = $(tagEl).find('.tags').tagsinput('items');
+				api.put(`/posts/queue/${id}`, {
+					tags: modifiedTags,
+				}).then(function () {
+					app.parseAndTranslate('post-queue', 'posts', {
+						posts: [{
+							type: 'topic',
+							data: {
+								tags: modifiedTags,
+							},
+						}],
+					}, function (html) {
+						tagList.innerHTML = html.find('.tag-list').html();
+						tagList.classList.remove('hidden');
+						tagEl.classList.add('hidden');
+					});
+				}).catch(alerts.error)
+					.finally(() => {
+						document.removeEventListener('focusout', focusOut);
+					});
+			}, 100);
+		}
+		document.addEventListener('focusout', focusOut);
 	}
 
 	function handleActions() {
@@ -124,9 +264,35 @@ define('forum/post-queue', [
 					const action = subselector.getAttribute('data-action');
 					const uid = subselector.closest('[data-uid]').getAttribute('data-uid');
 					switch (action) {
+						case 'editTitle':
+						case 'editContent':
+							// handled in handleContentEdit
+							break;
 						case 'editCategory': {
-							const categoryEl = e.target.closest('[data-id]').querySelector('.topic-category');
-							handleCategoryChange(categoryEl);
+							const postEl = e.target.closest('[data-id]');
+							const isCrosspost = e.target.closest('[data-crosspost]');
+							const categoryEl = isCrosspost ?
+								postEl.querySelector('[data-crosspost] .topic-category') :
+								postEl.querySelector('.topic-category');
+							const apiParam = isCrosspost ? 'crosspostCid' : 'cid';
+							handleCategoryChange(categoryEl, { apiParam, isCrosspost: !!isCrosspost });
+							break;
+						}
+
+						case 'editTags': {
+							const postEl = e.target.closest('[data-id]');
+							handleTagChange(postEl);
+							break;
+						}
+
+						case 'uploadThumb': {
+							const postEl = e.target.closest('[data-id]');
+							handleThumbUpload(postEl);
+							break;
+						}
+
+						case 'removeThumb': {
+							removeThumb($(subselector));
 							break;
 						}
 
@@ -158,70 +324,124 @@ define('forum/post-queue', [
 							AccountsDelete.purge(uid, ajaxify.go.bind(null, 'post-queue'));
 							break;
 
-						default:
-							handleQueueActions.call(e.target);
+						case 'accept':
+							handleAccept(subselector);
 							break;
+
+						case 'reject':
+							handleReject(subselector);
+							break;
+
+						case 'notify':
+							handleNotify(subselector);
+							break;
+
+						default:
+							throw new Error(`Unknown action: ${action}`);
 					}
 				}
 			});
 		}
 	}
 
-	async function handleQueueActions() {
-		// accept, reject, notify
-
-		const parent = $(this).parents('[data-id]');
-		const action = $(this).attr('data-action');
+	function handleAccept(btn) {
+		const parent = $(btn).parents('[data-id]');
 		const id = parent.attr('data-id');
-		const listContainer = parent.get(0).parentNode;
+		doAction('accept', id).then(() => removePostQueueElement(parent)).catch(alerts.error);
+	}
 
-		if ((!['accept', 'reject', 'notify'].includes(action)) ||
-			(action === 'reject' && !await confirmReject(ajaxify.data.canAccept ? '[[post-queue:confirm-reject]]' : '[[post-queue:confirm-remove]]'))) {
+	async function handleReject(btn) {
+		const parent = $(btn).parents('[data-id]');
+		const id = parent.attr('data-id');
+		let message;
+		if (ajaxify.data.canAccept) {
+			message = await getMessage('[[post-queue:confirm-reject]]');
+			if (message === false) {
+				return;
+			}
+		} else if (!await confirmModal('[[post-queue:confirm-remove]]')) {
+			return;
+		}
+		doAction('reject', id, message).then(() => removePostQueueElement(parent)).catch(alerts.error);
+	}
+
+	function removePostQueueElement(parent) {
+		const listContainer = parent.get(0).parentNode;
+		parent.remove();
+		if (listContainer.childElementCount === 0) {
+			if (ajaxify.data.singlePost) {
+				ajaxify.go('/post-queue' + window.location.search);
+			} else {
+				ajaxify.refresh();
+			}
+		}
+	}
+
+	async function handleNotify(btn) {
+		const parent = $(btn).parents('[data-id]');
+		const id = parent.attr('data-id');
+		const message = await getMessage('[[post-queue:notify-user]]');
+		if (message === false) {
 			return;
 		}
 
-		doAction(action, id).then(function () {
-			if (action === 'accept' || action === 'reject') {
-				parent.remove();
-			}
-
-			if (listContainer.childElementCount === 0) {
-				if (ajaxify.data.singlePost) {
-					ajaxify.go('/post-queue' + window.location.search);
-				} else {
-					ajaxify.refresh();
-				}
-			}
-		}).catch(alerts.error);
-
-		return false;
+		doAction('notify', id, message).catch(alerts.error);
 	}
 
-	async function doAction(action, id) {
-		function getMessage() {
-			return new Promise((resolve) => {
-				const modal = bootbox.dialog({
-					title: '[[post-queue:notify-user]]',
-					message: '<textarea class="form-control"></textarea>',
-					buttons: {
-						OK: {
-							label: '[[modules:bootbox.send]]',
-							callback: function () {
-								const val = modal.find('textarea').val();
-								if (val) {
-									resolve(val);
-								}
-							},
-						},
-					},
-				});
-			});
-		}
+	async function getMessage(title) {
+		let done;
+		const userInputPromise = new Promise((resolve) => {
+			let resolved = false;
+			done = (value) => {
+				if (resolved) {
+					return;
+				}
+				resolved = true;
+				resolve(value);
+			};
+		});
 
+		const reasons = ajaxify.data.customReasons || [];
+		const html = await Benchpress.render('partials/custom-reason', { reasons });
+		const modal = await modals.dialog({
+			title: title,
+			message: `<form class="form">${html}</form>`,
+			show: true,
+			onEscape: true,
+			buttons: {
+				close: {
+					label: '[[global:close]]',
+					className: 'btn-link',
+					callback: function () {
+						done(false);
+					},
+				},
+				submit: {
+					label: '[[modules:bootbox.confirm]]',
+					callback: function () {
+						done(modal.find('[name="reason"]').val());
+					},
+				},
+			},
+		});
+
+		modal.on('hidden.bs.modal', () => {
+			done(false);
+		});
+		modal.find('[data-key]').on('click', function () {
+			const reason = reasons.find(r => String(r.key) === $(this).attr('data-key'));
+			if (reason && reason.body) {
+				modal.find('[name="reason"]').val(reason.body);
+			}
+		});
+		return userInputPromise;
+	}
+
+	async function doAction(action, id, message = '') {
 		const actionsMap = {
 			accept: () => api.post(`/posts/queue/${id}`, {}),
-			reject: () => api.del(`/posts/queue/${id}`, {}),
-			notify: async () => api.post(`/posts/queue/${id}/notify`, { message: await getMessage() }),
+			reject: () => api.del(`/posts/queue/${id}?message=${encodeURIComponent(message)}`, {}),
+			notify: () => api.post(`/posts/queue/${id}/notify`, { message }),
 		};
 		if (actionsMap[action]) {
 			const result = actionsMap[action]();
@@ -244,7 +464,7 @@ define('forum/post-queue', [
 			const translationString = ajaxify.data.canAccept ?
 				`${bulkAction}-confirm` :
 				`${bulkAction.replace(/^reject/, 'remove')}-confirm`;
-			if (!ids.length || (showConfirm && !(await confirmReject(`[[post-queue:${translationString}, ${ids.length}]]`)))) {
+			if (!ids.length || (showConfirm && !(await confirmModal(`[[post-queue:${translationString}, ${ids.length}]]`)))) {
 				return;
 			}
 			const action = bulkAction.split('-')[0];

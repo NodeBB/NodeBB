@@ -1,12 +1,17 @@
 'use strict';
 
-const validator = require('validator');
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const plugins = require('../plugins');
 const utils = require('../utils');
-const translator = require('../translator');
+const coverPhoto = require('../coverPhoto');
+const slugify = require('../slugify');
+
+const relative_path = nconf.get('relative_path');
+
+const prependRelativePath = url => url.startsWith('http') ? url : relative_path + url;
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
@@ -34,7 +39,7 @@ module.exports = function (Groups) {
 			});
 		}
 
-		groupData.forEach(group => modifyGroup(group, fields));
+		await modifyGroups(groupData, fields);
 
 		const results = await plugins.hooks.fire('filter:groups.get', { groups: groupData });
 		return results.groups;
@@ -61,48 +66,89 @@ module.exports = function (Groups) {
 
 	Groups.setGroupField = async function (groupName, field, value) {
 		await db.setObjectField(`group:${groupName}`, field, value);
-		plugins.hooks.fire('action:group.set', { field: field, value: value, type: 'set' });
+		plugins.hooks.fire('action:group.set', { groupName, field, value, type: 'set' });
 	};
+
+	Groups.setGroupFields = async function (groupName, data) {
+		await db.setObject(`group:${groupName}`, data);
+		for (const [field, value] of Object.entries(data)) {
+			plugins.hooks.fire('action:group.set', { groupName, field, value, type: 'set' });
+		}
+	};
+
+	async function modifyGroups(groups, fields) {
+		await Promise.all(groups.map(async (group) => {
+			if (group) {
+				const hasField = utils.createFieldChecker(fields);
+
+				if (hasField('private')) {
+					// Default to private if not set, as groups are private by default
+					group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
+				}
+
+				db.parseIntFields(group, intFields, fields);
+
+				if (hasField('name')) {
+					group.nameEncoded = encodeURIComponent(group.name);
+					group.displayName = String(group.name);
+				}
+
+				if (hasField('description')) {
+					group.description = String(group.description || '');
+					if (hasField('descriptionParsed')) {
+						group.descriptionParsed = await plugins.hooks.fire('filter:parse.raw', group.description);
+					}
+				}
+
+				if (hasField('userTitle')) {
+					group.userTitle = String(group.userTitle || '');
+				}
+
+				if (hasField('slug') && group.name && !group.slug) {
+					group.slug = slugify(group.name);
+				}
+
+				if (hasField('labelColor')) {
+					group.labelColor = validator.isHexColor(String(group.labelColor), { requireHash: true }) ?
+						group.labelColor : '#000000';
+				}
+
+				if (hasField('textColor')) {
+					group.textColor = validator.isHexColor(String(group.textColor), { requireHash: true }) ?
+						group.textColor : '#ffffff';
+				}
+
+				if (hasField('icon')) {
+					group.icon = String(group.icon || '');
+				}
+
+				if (hasField('createtime')) {
+					group.createtimeISO = utils.toISOString(group.createtime);
+				}
+
+				if (hasField('memberPostCids')) {
+					group.memberPostCids = group.memberPostCids || '';
+					group.memberPostCidsArray = group.memberPostCids.split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
+				}
+
+				if (hasField('cover:thumb:url')) {
+					group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
+
+					group['cover:thumb:url'] = group['cover:thumb:url'] ?
+						prependRelativePath(group['cover:thumb:url']) :
+						coverPhoto.getDefaultGroupCover(group.name);
+				}
+
+				if (hasField('cover:url')) {
+					group['cover:url'] = group['cover:url'] ?
+						prependRelativePath(group['cover:url']) :
+						coverPhoto.getDefaultGroupCover(group.name);
+				}
+
+				if (hasField('cover:position')) {
+					group['cover:position'] = String(group['cover:position'] || '50% 50%');
+				}
+			}
+		}));
+	}
 };
-
-function modifyGroup(group, fields) {
-	if (group) {
-		db.parseIntFields(group, intFields, fields);
-
-		escapeGroupData(group);
-		group.userTitleEnabled = ([null, undefined].includes(group.userTitleEnabled)) ? 1 : group.userTitleEnabled;
-		group.labelColor = validator.escape(String(group.labelColor || '#000000'));
-		group.textColor = validator.escape(String(group.textColor || '#ffffff'));
-		group.icon = validator.escape(String(group.icon || ''));
-		group.createtimeISO = utils.toISOString(group.createtime);
-		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
-		group.memberPostCids = group.memberPostCids || '';
-		group.memberPostCidsArray = group.memberPostCids.split(',').map(cid => parseInt(cid, 10)).filter(Boolean);
-
-		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
-
-		if (group['cover:url']) {
-			group['cover:url'] = group['cover:url'].startsWith('http') ? group['cover:url'] : (nconf.get('relative_path') + group['cover:url']);
-		} else {
-			group['cover:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
-		}
-
-		if (group['cover:thumb:url']) {
-			group['cover:thumb:url'] = group['cover:thumb:url'].startsWith('http') ? group['cover:thumb:url'] : (nconf.get('relative_path') + group['cover:thumb:url']);
-		} else {
-			group['cover:thumb:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
-		}
-
-		group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
-	}
-}
-
-function escapeGroupData(group) {
-	if (group) {
-		group.nameEncoded = encodeURIComponent(group.name);
-		group.displayName = validator.escape(String(group.name));
-		group.description = validator.escape(String(group.description || ''));
-		group.userTitle = validator.escape(String(group.userTitle || ''));
-		group.userTitleEscaped = translator.escape(group.userTitle);
-	}
-}

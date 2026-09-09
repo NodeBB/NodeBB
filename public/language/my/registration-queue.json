@@ -1,0 +1,22 @@
+{
+	"queue": "စစ်ဆေးမှုတန်း",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "အမည်",
+	"list.email": "အီးမေးလ်",
+	"list.ip": "IP",
+	"list.time": "အချိန်",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "ဖိတ်ကြားမှုများ",
+	"invitations.description": "ဖိတ်ကြားမှု ဖော်ပြချက်",
+	"invitations.inviter-username": "ဖိတ်ကြားသူ အမည်",
+	"invitations.invitee-email": "ဖိတ်ကြားခံ အီးမေးလ်",
+	"invitations.invitee-username": "ဖိတ်ကြားခံ အမည်",
+
+	"invitations.confirm-delete": "ဖျက်ရန် အတည်ပြုပါ"
+}

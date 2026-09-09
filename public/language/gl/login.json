@@ -8,5 +8,6 @@
     "login-successful": "Sesión iniciada con éxito!",
     "dont-have-account": "Aínda non tes conta?",
     "logged-out-due-to-inactivity": "Debido a inactividade fuches desconectado do Panel de Control de Administradores",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

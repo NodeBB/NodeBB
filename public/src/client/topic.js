@@ -15,13 +15,15 @@ define('forum/topic', [
 	'hooks',
 	'api',
 	'alerts',
-	'bootbox',
+	'modals',
+	'benchpress',
 	'clipboard',
+	'modules/intents',
 ], function (
 	infinitescroll, threadTools, postTools,
 	events, posts, navigator, sort, quickreply,
 	components, storage, hooks, api, alerts,
-	bootbox, clipboard
+	modals, Benchpress, clipboard, intents
 ) {
 	const Topic = {};
 	let tid = '0';
@@ -74,6 +76,8 @@ define('forum/topic', [
 		$(window).on('scroll', utils.debounce(updateTopicTitle, 250));
 
 		handleTopicSearch();
+
+		intents.addHandlers();
 
 		hooks.fire('action:topic.loaded', ajaxify.data);
 	};
@@ -153,7 +157,7 @@ define('forum/topic', [
 		updateUserBookmark(postIndex);
 		if (navigator.shouldScrollToPost(postIndex)) {
 			return navigator.scrollToPostIndex(postIndex - 1, true, 0);
-		} else if (bookmark && (
+		} else if (bookmark && parseInt(bookmark, 10) > postIndex && (
 			!config.usePagination ||
 			(config.usePagination && ajaxify.data.pagination.currentPage === 1)
 		) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
@@ -188,22 +192,53 @@ define('forum/topic', [
 				thumbs.forEach((t, i) => {
 					t.selected = i === clickedThumbIndex;
 				});
-				const html = await app.parseAndTranslate('modals/topic-thumbs-view', {
+				const html = await Benchpress.render('modals/topic-thumbs-view', {
 					src: clickedThumb.href,
 					thumbs: thumbs,
 				});
 
-				const modal = bootbox.dialog({
+				const modal = await modals.dialog({
 					size: 'lg',
 					onEscape: true,
 					backdrop: true,
 					message: html,
 				});
+				function selectThumbByIndex(index) {
+					const thumbEls = modal.find('[component="topic/thumb/select"]');
+					if (thumbEls.length) {
+						const normalizedIndex = (((index % thumbEls.length) + thumbEls.length) % thumbEls.length);
+						const selectedThumb = thumbEls.eq(normalizedIndex);
+						thumbEls.removeClass('border-primary');
+						selectedThumb.addClass('border-primary');
+						const newSrc = selectedThumb.find('img').attr('src');
+						modal.find('[component="topic/thumb/current"]')
+							.attr('src', newSrc)
+							.parent().attr('href', newSrc);
+					}
+				}
+
 				modal.on('click', '[component="topic/thumb/select"]', function () {
-					$('[component="topic/thumb/select"]').removeClass('border-primary');
-					$(this).addClass('border-primary');
-					$('[component="topic/thumb/current"]')
-						.attr('src', $(this).find('img').attr('src'));
+					const thumbEls = modal.find('[component="topic/thumb/select"]');
+					selectThumbByIndex(thumbEls.index(this));
+				});
+
+				const keydownEventName = `keydown.topic-thumbs-${Date.now()}`;
+				const onThumbKeydown = function (ev) {
+					if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') {
+						return;
+					}
+
+					ev.preventDefault();
+					const thumbEls = modal.find('[component="topic/thumb/select"]');
+					const selectedIndex = thumbEls.index(thumbEls.filter('.border-primary').first());
+					const currentIndex = selectedIndex >= 0 ? selectedIndex : 0;
+					const direction = ev.key === 'ArrowRight' ? 1 : -1;
+					selectThumbByIndex(currentIndex + direction);
+				};
+
+				$(document).on(keydownEventName, onThumbKeydown);
+				modal.on('hidden.bs.modal', function () {
+					$(document).off(keydownEventName, onThumbKeydown);
 				});
 			}
 		});
@@ -221,7 +256,7 @@ define('forum/topic', [
 			const toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
 			const collapsed = !blockQuote.hasClass('uncollapsed');
-			toggle.toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
+			toggle.find('i').toggleClass('fa-angle-down', collapsed).toggleClass('fa-angle-up', !collapsed);
 		});
 	}
 
@@ -270,15 +305,16 @@ define('forum/topic', [
 		hooks.registerPage('action:posts.edited', addCopyCodeButton);
 	}
 
-	function addParentHandler() {
-		function gotoPost(event, toPid) {
-			const toPost = $('[component="topic"]>[component="post"][data-pid="' + toPid + '"]');
-			if (toPost.length) {
-				event.preventDefault();
-				navigator.scrollToIndex(toPost.attr('data-index'), true);
-				return false;
-			}
+	function gotoPost(event, toPid) {
+		const toPost = $(`[component="topic"]>[component="post"][data-pid="${toPid}"]`);
+		if (toPost.length) {
+			event.preventDefault();
+			navigator.scrollToIndex(toPost.attr('data-index'), true);
+			return false;
 		}
+	}
+
+	function addParentHandler() {
 		components.get('topic').on('click', '[component="post/parent"]', function (e) {
 			const parentEl = $(this);
 			const contentEl = parentEl.find('[component="post/parent/content"]');
@@ -307,6 +343,10 @@ define('forum/topic', [
 			require(['forum/topic/replies'], function (replies) {
 				replies.init(btn);
 			});
+		});
+
+		$('[component="topic"]').on('click', '[component="post/replies"] .post-header a.timeago', function (e) {
+			return gotoPost(e, $(this).parents('[data-pid]').attr('data-pid'));
 		});
 	}
 
@@ -413,7 +453,7 @@ define('forum/topic', [
 			anchorEl.addEventListener('click', async () => {
 				const { crossposts } = ajaxify.data;
 				const html = await app.parseAndTranslate('modals/crossposts', { crossposts });
-				bootbox.dialog({
+				modals.dialog({
 					onEscape: true,
 					backdrop: true,
 					title: '[[global:crossposts]]',
@@ -425,18 +465,24 @@ define('forum/topic', [
 
 	function setupQuickReply() {
 		if (config.enableQuickReply || (config.theme && config.theme.enableQuickReply)) {
-			quickreply.init();
+			quickreply.init({
+				route: `/topics/${ajaxify.data.tid}`,
+				body: {
+					tid: ajaxify.data.tid,
+				},
+			});
 		}
 	}
 
 	function updateTopicTitle() {
 		const span = components.get('navbar/title').find('span');
-		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
-			span.html(ajaxify.data.title).removeClass('hidden');
-		} else if ($(window).scrollTop() <= 50 && !span.hasClass('hidden')) {
-			span.html('').addClass('hidden');
+		const scrollTop = $(window).scrollTop();
+		if (scrollTop > 50 && span.hasClass('hidden')) {
+			span.text(ajaxify.data.title).removeClass('hidden');
+		} else if (scrollTop <= 50 && !span.hasClass('hidden')) {
+			span.text('').addClass('hidden');
 		}
-		if ($(window).scrollTop() > 300) {
+		if (scrollTop > 300) {
 			alerts.remove('bookmark');
 		}
 	}
@@ -478,6 +524,7 @@ define('forum/topic', [
 
 		if (
 			ajaxify.data.postcount > ajaxify.data.bookmarkThreshold &&
+			index > ajaxify.data.bookmarkThreshold &&
 			(
 				!currentBookmark ||
 				parseInt(index, 10) > parseInt(currentBookmark, 10) ||

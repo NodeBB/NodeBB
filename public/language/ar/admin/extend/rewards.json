@@ -12,6 +12,6 @@
 	"disable": "عطّل",
 
 	"alert.delete-success": "المكافآت المحذوفة بنجاح",
-	"alert.no-inputs-found": "مكافأة غير قانونية - لم يتم العثور على مدخلات!",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "المكافآت المحفوظة بنجاح"
 }

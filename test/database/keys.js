@@ -44,6 +44,12 @@ describe('Key methods', () => {
 		assert.deepStrictEqual(await db.mget(null), []);
 	});
 
+	it('should return 0 if value of key is 0', async () => {
+		await db.set('zeroKey', 0);
+		const value = await db.mget(['zeroKey']);
+		assert.strictEqual(String(value[0]), '0');
+	});
+
 	it('should return true if key exist', (done) => {
 		db.exists('testKey', function (err, exists) {
 			assert.ifError(err);
@@ -85,6 +91,27 @@ describe('Key methods', () => {
 			assert(data.includes('ip:123:uid'));
 			assert(data.includes('ip:124:uid'));
 			assert(data.includes('ip:1:uid'));
+		});
+
+		it('should scan keys for specific glob pattern', async () => {
+			const keys = [
+				'tid:00000b86-a333-45ee-ba88-17e78aa6c814:recipients',
+				'tid:00001fa5-61e1-4ba5-ac22-572ab98eb76f:recipients',
+				'tid:00002ce3-203d-4b14-a201-b3d021f462a5:recipients',
+				'other:123:stuff',
+				'tid:999:sender',
+			];
+			await db.sortedSetAddBulk(keys.map(key => [key, 1, 'a']));
+
+			const data = await db.scan({ match: 'tid:*:recipients' });
+
+			assert.equal(data.length, 3, 'Should have found exactly 3 recipient keys');
+			assert(data.includes('tid:00000b86-a333-45ee-ba88-17e78aa6c814:recipients'));
+			assert(data.includes('tid:00001fa5-61e1-4ba5-ac22-572ab98eb76f:recipients'));
+			assert(data.includes('tid:00002ce3-203d-4b14-a201-b3d021f462a5:recipients'));
+
+			assert(!data.includes('other:123:stuff'), 'Should not include unrelated keys');
+			assert(!data.includes('tid:999:sender'), 'Should not include sender keys');
 		});
 	});
 

@@ -5,6 +5,7 @@
 	"disable-rss-feeds": "Вимкнути RSS-стрічки",
 	"disable-sitemap-xml": "Вимкнути Sitemap.xml",
 	"sitemap-topics": "Кількість тем для показу в мапі сайту",
+	"sitemap-cache-duration-hours": "Sitemap Cache Duration (hours)",
 	"clear-sitemap-cache": "Очистити кеш мапи сайту",
 	"view-sitemap": "Переглянути мапу сайту"
 }

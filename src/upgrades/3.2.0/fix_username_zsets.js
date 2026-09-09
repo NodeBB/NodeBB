@@ -11,9 +11,28 @@ module.exports = {
 	method: async function () {
 		const { progress } = this;
 
-		await db.deleteAll(['username:uid', 'username:sorted']);
+		const [userNameUid, usernameSorted, usersJoindate] = await db.sortedSetsCard([
+			'username:uid', 'username:sorted', 'users:joindate',
+		]);
+		progress.total = userNameUid + usernameSorted + usersJoindate;
+
+		await batch.processSortedSet('username:uid', async (usernames) => {
+			await db.sortedSetRemove('username:uid', usernames);
+			progress.incr(usernames.length);
+		}, {
+			batch: 500,
+			alwaysStartAt: 0,
+		});
+
+		await batch.processSortedSet('username:sorted', async (usernames) => {
+			await db.sortedSetRemove('username:sorted', usernames);
+			progress.incr(usernames.length);
+		}, {
+			batch: 500,
+			alwaysStartAt: 0,
+		});
+
 		await batch.processSortedSet('users:joindate', async (uids) => {
-			progress.incr(uids.length);
 			const usersData = await db.getObjects(uids.map(uid => `user:${uid}`));
 			const bulkAdd = [];
 			usersData.forEach((userData) => {
@@ -23,9 +42,9 @@ module.exports = {
 				}
 			});
 			await db.sortedSetAddBulk(bulkAdd);
+			progress.incr(uids.length);
 		}, {
 			batch: 500,
-			progress: progress,
 		});
 	},
 };

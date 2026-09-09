@@ -1,0 +1,26 @@
+get:
+  tags:
+    - notifications
+  summary: list notifications
+  description: This operation returns two lists of notifications — read and unread.
+  responses:
+    '200':
+      description: notifications successfully listed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  read:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/NotificationObject.yaml#/NotificationObject
+                  unread:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/NotificationObject.yaml#/NotificationObject

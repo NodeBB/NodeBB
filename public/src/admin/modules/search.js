@@ -3,6 +3,8 @@
 define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, alerts) {
 	const search = {};
 
+	let dict;
+
 	function find(dict, term) {
 		const html = dict.filter(function (elem) {
 			return elem.translations.toLowerCase().includes(term);
@@ -49,24 +51,26 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 		if (!app.user.privileges['admin:settings']) {
 			return;
 		}
-
-		socket.emit('admin.getSearchDict', {}, function (err, dict) {
-			if (err) {
-				alerts.error(err);
-				throw err;
-			}
-			setupACPSearch(dict);
-		});
+		setupACPSearch();
 	};
 
-	function setupACPSearch(dict) {
+	function setupACPSearch() {
 		const searchEls = $('[component="acp/search"]');
 		searchEls.each((index, searchEl) => {
-			setupSearch(dict, $(searchEl));
+			setupSearch($(searchEl));
 		});
 	}
 
-	function setupSearch(dict, searchEl) {
+	async function lazyLoadDict() {
+		try {
+			dict = dict || await socket.emit('admin.getSearchDict', {});
+		} catch (err) {
+			alerts.error(err);
+			dict = [];
+		}
+	}
+
+	function setupSearch(searchEl) {
 		const dropdown = searchEl.find('.dropdown');
 		const menu = searchEl.find('.dropdown-menu');
 		const input = searchEl.find('input');
@@ -74,7 +78,7 @@ define('admin/modules/search', ['mousetrap', 'alerts'], function (mousetrap, ale
 		if (!config.searchEnabled) {
 			menu.addClass('search-disabled');
 		}
-
+		input.on('focus', lazyLoadDict);
 		input.on('keyup', function () {
 			dropdown.addClass('open');
 		});

@@ -1,30 +1,30 @@
 'use strict';
 
 define('chat', [
-	'components', 'taskbar', 'translator', 'hooks', 'bootbox', 'alerts', 'api', 'scrollStop',
-], function (components, taskbar, translator, hooks, bootbox, alerts, api, scrollStop) {
-	const module = {};
+	'components', 'taskbar', 'translator', 'hooks', 'modals', 'alerts', 'api', 'scrollStop', 'resizable', 'helpers',
+], function (components, taskbar, translator, hooks, modals, alerts, api, scrollStop, resizable, helpers) {
+	const Chat = {};
 
-	module.openChat = function (roomId, uid) {
+	Chat.openChat = function (roomId, uid) {
 		if (!app.user.uid) {
 			return alerts.error('[[error:not-logged-in]]');
 		}
 
-		function loadAndCenter(chatModal) {
-			module.load(chatModal.attr('data-uuid'));
-			module.center(chatModal);
-			module.focusInput(chatModal);
+		function loadAndPosition(chatModal) {
+			Chat.load(chatModal.attr('data-uuid'));
+			Chat.position(chatModal);
+			Chat.focusInput(chatModal);
 		}
 		hooks.fire('filter:chat.openChat', {
 			modal: true,
 			roomId: roomId,
 			uid: uid,
 		}).then((hookData) => {
-			if (!hookData.modal) {
+			if (!hookData.modal || utils.isMobile()) {
 				return ajaxify.go(`/chats/${roomId}`);
 			}
-			if (module.modalExists(roomId)) {
-				loadAndCenter(module.getModal(roomId));
+			if (Chat.modalExists(roomId)) {
+				loadAndPosition(Chat.getModal(roomId));
 			} else {
 				api.get(`/chats/${roomId}`, {
 					uid: uid || app.user.uid,
@@ -34,19 +34,19 @@ define('chat', [
 					});
 					roomData.uid = uid || app.user.uid;
 					roomData.isSelf = true;
-					module.createModal(roomData, loadAndCenter);
+					Chat.createModal(roomData, loadAndPosition);
 				}).catch(alerts.error);
 			}
 		});
 	};
 
-	module.newChat = function (touid, callback) {
+	Chat.newChat = function (touid, callback) {
 		function createChat() {
 			api.post(`/chats`, {
 				uids: [touid],
 			}).then(({ roomId }) => {
 				if (!ajaxify.data.template.chats) {
-					module.openChat(roomId);
+					Chat.openChat(roomId);
 				} else {
 					ajaxify.go('chats/' + roomId);
 				}
@@ -74,7 +74,7 @@ define('chat', [
 				return createChat();
 			}
 
-			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+			modals.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
 				if (ok) {
 					createChat();
 				}
@@ -82,7 +82,7 @@ define('chat', [
 		}).catch(alerts.error);
 	};
 
-	module.loadChatsDropdown = function (chatsListEl) {
+	Chat.loadChatsDropdown = function (chatsListEl) {
 		api.get('/chats', {
 			uid: app.user.uid,
 			after: 0,
@@ -114,7 +114,7 @@ define('chat', [
 					}
 					const roomId = $(this).attr('data-roomid');
 					if (!ajaxify.currentPage.match(/^chats\//)) {
-						module.openChat(roomId);
+						Chat.openChat(roomId);
 					} else {
 						ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
 					}
@@ -129,7 +129,7 @@ define('chat', [
 						const roomId = el.getAttribute('data-roomid');
 						await api.del(`/chats/${roomId}/state`);
 						if (ajaxify.data.template.chats) {
-							module.markChatElUnread($(el), false);
+							Chat.markChatElUnread($(el), false);
 						}
 					}));
 				});
@@ -145,32 +145,32 @@ define('chat', [
 
 		e.stopPropagation();
 		const chatEl = e.target.closest('[data-roomid]');
-		module.toggleReadState(chatEl);
+		Chat.toggleReadState(chatEl);
 	}
 
-	module.toggleReadState = function (chatEl) {
+	Chat.toggleReadState = function (chatEl) {
 		const state = !chatEl.classList.contains('unread'); // this is the new state
 		const roomId = chatEl.getAttribute('data-roomid');
 		api[state ? 'put' : 'del'](`/chats/${roomId}/state`, {}).catch((err) => {
 			alerts.error(err);
 
 			// Revert on failure
-			module.markChatElUnread($(chatEl), !state);
+			Chat.markChatElUnread($(chatEl), !state);
 		});
 
 		// Immediate feedback
-		module.markChatElUnread($(chatEl), state);
+		Chat.markChatElUnread($(chatEl), state);
 	};
 
-	module.isFromBlockedUser = function (fromUid) {
-		return app.user.blocks.includes(parseInt(fromUid, 10));
+	Chat.isFromBlockedUser = function (fromUid) {
+		return app.user.blocks.includes(String(fromUid));
 	};
 
-	module.isLookingAtRoom = function (roomId) {
+	Chat.isLookingAtRoom = function (roomId) {
 		return ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10);
 	};
 
-	module.markChatElUnread = function (roomEl, unread) {
+	Chat.markChatElUnread = function (roomEl, unread) {
 		if (roomEl.length > 0) {
 			roomEl.toggleClass('unread', unread);
 			const markEl = roomEl.find('.mark-read');
@@ -181,26 +181,25 @@ define('chat', [
 		}
 	};
 
-	module.onChatMessageReceived = function (data) {
-		if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
+	Chat.onChatMessageReceived = function (data) {
+		if (Chat.isFromBlockedUser(data.fromUid)) {
 			return;
 		}
-		if (module.modalExists(data.roomId)) {
-			const modal = module.getModal(data.roomId);
+		if (Chat.modalExists(data.roomId)) {
+			const modal = Chat.getModal(data.roomId);
 			const newMessage = parseInt(modal.attr('new-message'), 10) === 1;
 			data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 			if (!newMessage) {
 				modal.attr('new-message', data.self === 0 ? 1 : 0);
 			}
 			data.message.self = data.self;
-			data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-			data.message.timestampISO = utils.toISOString(data.message.timestamp);
+			data.message.timestampISO = utils.toISOString(Math.min(Date.now(), data.message.timestamp));
 			addMessageToModal(data);
 		}
 	};
 
 	function addMessageToModal(data) {
-		const modal = module.getModal(data.roomId);
+		const modal = Chat.getModal(data.roomId);
 		const username = data.message.fromUser.username;
 		const isSelf = data.self === 1;
 		require(['forum/chats/messages'], function (ChatsMessages) {
@@ -215,7 +214,7 @@ define('chat', [
 					ChatsMessages.scrollToBottomAfterImageLoad(modal.find('[component="chat/message/content"]'));
 				}
 			} else if (!ajaxify.data.template.chats) {
-				module.toggleNew(modal.attr('data-uuid'), true, true);
+				Chat.toggleNew(modal.attr('data-uuid'), true, true);
 			}
 
 			if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
@@ -229,38 +228,40 @@ define('chat', [
 		});
 	}
 
-	module.onRoomRename = function (data) {
-		const modal = module.getModal(data.roomId);
+	Chat.onRoomRename = function (data) {
+		const modal = Chat.getModal(data.roomId);
 		const titleEl = modal.find('[component="chat/room/name"]');
 		const icon = titleEl.attr('data-icon');
-		if (titleEl.length) {
-			titleEl.html(
-				data.newName ?
-					`<i class="fa ${icon} text-muted"></i> ${data.newName}` :
-					data.chatWithMessage
-			);
-		}
-
-		const newTitle = $('<div></div>').html(data.newName).text();
+		Chat.updateRoomName(titleEl, icon, data.newName, data.chatWithMessage);
 		taskbar.update('chat', modal.attr('data-uuid'), {
-			title: newTitle,
+			title: helpers.escape(data.newName),
 		});
 		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));
 	};
 
-	module.onUserTyping = function (data) {
-		if (data.uid === app.user.uid || module.isFromBlockedUser(data.uid)) {
-			return;
-		}
-		const modal = module.getModal(data.roomId);
-		if (modal.length) {
-			module.updateTypingUserList(modal, data);
+	Chat.updateRoomName = function (titleEl, icon, newName, chatWithMessage) {
+		if (titleEl.length) {
+			titleEl.translateHtml(
+				newName ?
+					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(newName)}` :
+					chatWithMessage
+			);
 		}
 	};
 
-	module.updateTypingUserList = async function (container, { uid, username, typing }) {
+	Chat.onUserTyping = function (data) {
+		if (data.uid === app.user.uid || Chat.isFromBlockedUser(data.uid)) {
+			return;
+		}
+		const modal = Chat.getModal(data.roomId);
+		if (modal.length) {
+			Chat.updateTypingUserList(modal, data);
+		}
+	};
+
+	Chat.updateTypingUserList = async function (container, { uid, username, typing }) {
 		const typingEl = container.find(`[component="chat/composer/typing"]`);
 		const typingUsersList = typingEl.find('[component="chat/composer/typing/users"]');
 		const userEl = typingUsersList.find(`[data-uid="${uid}"]`);
@@ -275,28 +276,43 @@ define('chat', [
 
 		const usernames = [];
 		typingUsersList.children().each((i, el) => {
-			usernames.push($(el).text());
+			usernames.push(translator.escape($(el).text()));
 		});
 
+		const totalTyping = usernames.length;
 		const typingTextEl = typingEl.find('[component="chat/composer/typing/text"]');
-		const count = usernames.length > 3 ? 'n' : usernames.length;
-		if (count) {
-			const key = `modules:chat.user-typing-${count}`;
-			const compiled = translator.compile.apply(null, [key, ...usernames]);
-			typingTextEl.html(await translator.translate(compiled));
+		if (totalTyping) {
+			const key = `modules:chat.user-typing-${totalTyping > 3 ? 'n' : totalTyping}`;
+			const args = [];
+			if (totalTyping > 3) {
+				args.push(usernames[0], usernames[1], totalTyping - 2);
+			} else {
+				args.push(...usernames);
+			}
+			typingTextEl.html(await translator.translateKey(key, args));
 		}
 		typingTextEl.toggleClass('hidden', !usernames.length);
 	};
 
-	module.getModal = function (roomId) {
+	Chat.getModal = function (roomId) {
 		return $('#chat-modal-' + roomId);
 	};
 
-	module.modalExists = function (roomId) {
+	function bringModalToFront(chatModal) {
+		const chatModals = $('.chat-modal');
+		if (chatModals.length <= 1) {
+			return;
+		}
+		chatModals.css('zIndex', '');
+		const zIndex = parseInt(chatModal.css('zIndex'), 10) || 1055;
+		chatModal.css('zIndex', zIndex + 1);
+	}
+
+	Chat.modalExists = function (roomId) {
 		return $('#chat-modal-' + roomId).length !== 0;
 	};
 
-	module.initWidget = function (roomId, chatModal) {
+	Chat.initWidget = function (roomId, chatModal) {
 		require(['forum/chats', 'forum/chats/messages'], function (Chats, ChatsMessages) {
 			socket.emit('modules.chats.enter', roomId);
 			api.del(`/chats/${roomId}/state`, {});
@@ -328,6 +344,7 @@ define('chat', [
 			Chats.addTextareaResizeHandler(chatModal);
 			Chats.addTypingHandler(chatModal, roomId);
 			Chats.addIPHandler(chatModal);
+			Chats.addCopyTextLinkHandler(chatModal);
 			Chats.addTooltipHandler(chatModal);
 			Chats.addUploadHandler({
 				dragDropAreaEl: chatModal.find('.modal-content'),
@@ -345,15 +362,15 @@ define('chat', [
 		});
 	};
 
-	module.createModal = function (data, callback) {
+	Chat.createModal = function (data, callback) {
 		callback = callback || function () {};
 		require([
 			'forum/chats', 'forum/chats/messages', 'forum/chats/message-search',
 		], function (Chats, ChatsMessages, messageSearch) {
 			app.parseAndTranslate('chat', data, function (chatModal) {
 				const roomId = data.roomId;
-				if (module.modalExists(roomId)) {
-					return callback(module.getModal(data.roomId));
+				if (Chat.modalExists(roomId)) {
+					return callback(Chat.getModal(data.roomId));
 				}
 				const uuid = utils.generateUUID();
 				let dragged = false;
@@ -363,35 +380,40 @@ define('chat', [
 				chatModal.attr('data-uuid', uuid);
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
+				bringModalToFront(chatModal);
 				chatModal.find('.timeago').timeago();
 				chatModal.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
 
 				scrollStop.apply(chatModal.find('[component="chat/messages"] .chat-content'));
 
-				module.center(chatModal);
+				Chat.position(chatModal);
 
 				makeModalResizeableDraggable(chatModal, uuid);
 
 				chatModal.find('#chat-close-btn').on('click', function () {
-					module.close(uuid);
+					Chat.close(uuid);
 				});
 
 				function gotoChats() {
-					const text = components.get('chat/input').val();
+					const text = chatModal.find('[component="chat/input"]').val();
 					$(window).one('action:ajaxify.end', function () {
-						components.get('chat/input').val(text);
+						components.get('chat/main-wrapper').find('[component="chat/input"]').val(text);
 					});
 
 					ajaxify.go(`user/${app.user.userslug}/chats/${roomId}`);
-					module.close(uuid);
+					Chat.close(uuid);
 				}
 
 				chatModal.find('.modal-header').on('dblclick', gotoChats);
 				chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
 				chatModal.find('button[data-action="minimize"]').on('click', function () {
 					const uuid = chatModal.attr('data-uuid');
-					module.minimize(uuid);
+					Chat.minimize(uuid);
+				});
+
+				chatModal.on('mousedown', function () {
+					bringModalToFront(chatModal);
 				});
 
 				chatModal.on('mouseup', function () {
@@ -418,7 +440,7 @@ define('chat', [
 				Chats.addActionHandlers(chatModal.find('[component="chat/message/window"]'), roomId);
 				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'));
 				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
-				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));
+				Chats.addDeleteHandler(roomId, chatModal.find('[component="chat/controls"] [data-action="delete"]'));
 				Chats.addSendHandlers(roomId, chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 				Chats.addManageHandler(roomId, chatModal.find('[data-action="manage"]'));
 
@@ -431,6 +453,7 @@ define('chat', [
 				Chats.addTextareaResizeHandler(chatModal);
 				Chats.addTypingHandler(chatModal, roomId);
 				Chats.addIPHandler(chatModal);
+				Chats.addCopyTextLinkHandler(chatModal);
 				Chats.addTooltipHandler(chatModal);
 				Chats.addUploadHandler({
 					dragDropAreaEl: chatModal.find('.modal-content'),
@@ -463,28 +486,29 @@ define('chat', [
 	};
 
 	function makeModalResizeableDraggable(chatModal, uuid) {
-		app.loadJQueryUI(function () {
-			chatModal.find('.modal-content').resizable({
-				handles: 'n, e, s, w, se',
-				minHeight: 250,
-				minWidth: 400,
-			});
+		resizable.init(chatModal.find('.modal-content'), {
+			minWidth: 400,
+			minHeight: 250,
+			handles: 'n, e, s, w, se, sw',
+		});
 
-			chatModal.find('.modal-content').on('resize', function (event, ui) {
-				if (ui.originalSize.height === ui.size.height) {
-					return;
-				}
+		chatModal.find('.modal-content').on('resize', function (event) {
+			const detail = event.originalEvent ? event.originalEvent.detail : event.detail;
+			if (!detail || detail.originalSize.height === detail.size.height) {
+				return;
+			}
 
-				chatModal.find('.modal-body').css('height', module.calculateChatListHeight(chatModal));
-			});
+			chatModal.find('.modal-body').css('height', Chat.calculateChatListHeight(chatModal));
+		});
 
+		app.loadJQueryUI(() => {
 			chatModal.draggable({
 				start: function () {
 					taskbar.updateActive(uuid);
 					chatModal.css({ bottom: 'auto', right: 'auto' });
 				},
 				stop: function () {
-					module.focusInput(chatModal);
+					Chat.focusInput(chatModal);
 				},
 				distance: 10,
 				handle: '.modal-header',
@@ -492,44 +516,57 @@ define('chat', [
 		});
 	}
 
-	module.focusInput = function (chatModal) {
+	Chat.focusInput = function (chatModal) {
 		setTimeout(function () {
 			chatModal.find('[component="chat/input"]').focus();
 		}, 20);
 	};
 
-	module.close = function (uuid) {
+	Chat.close = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', uuid);
 
 		if (chatModal.attr('data-mobile')) {
-			module.disableMobileBehaviour(chatModal);
+			Chat.disableMobileBehaviour(chatModal);
 		}
-		const roomId = chatModal.attr('data-roomid');
+
 		require(['forum/chats'], function (chats) {
-			chats.destroyAutoComplete(roomId);
+			chats.destroyAutoComplete(chatModal.find('[component="chat/input"]'));
 		});
-		socket.emit('modules.chats.leave', roomId);
+
+		Chat.leaveSocketRoom(chatModal.attr('data-roomid'));
 		hooks.fire('action:chat.closed', {
 			uuid: uuid,
 			modal: chatModal,
 		});
 	};
 
-	module.center = function (chatModal) {
-		const center = chatModal.attr('data-center');
-		if (!center || center === 'false') {
-			return;
+	Chat.leaveSocketRoom = function (roomId) {
+		if (!roomId) return;
+		const isLookingAtRoom = ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10);
+		const isModalOpen = Chat.modalExists(roomId);
+		if (isLookingAtRoom !== isModalOpen) {
+			socket.emit('modules.chats.leave', roomId);
 		}
+	};
+
+	Chat.position = function (chatModal) {
 		let hideAfter = false;
 		if (chatModal.hasClass('hide')) {
 			chatModal.removeClass('hide');
 			hideAfter = true;
 		}
-		chatModal.css('left', Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px');
-		chatModal.css('top', Math.max(0, ($(window).height() / 2) - ($(chatModal).outerHeight() / 2)) + 'px');
+		const $window = $(window);
+		const $chatContent = chatModal.find('.modal-content');
+		const width = $chatContent.outerWidth(true);
+		const height = $chatContent.outerHeight(true);
+		const isRtl = $('html').attr('data-dir') === 'rtl';
+
+		chatModal.css(isRtl ? 'right' : 'left', Math.max(0, ($window.width() - width)) + 'px');
+		chatModal.css('top', Math.max(0, ($window.height() - height)) + 'px');
 
 		if (hideAfter) {
 			chatModal.addClass('hide');
@@ -537,30 +574,31 @@ define('chat', [
 		return chatModal;
 	};
 
-	module.load = function (uuid) {
+	Chat.load = function (uuid) {
 		require(['forum/chats/messages'], function (ChatsMessages) {
 			const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
 			chatModal.removeClass('hide');
+			bringModalToFront(chatModal);
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottomAfterImageLoad(chatModal.find('.chat-content'));
-			module.focusInput(chatModal);
+			Chat.focusInput(chatModal);
 			const roomId = chatModal.attr('data-roomid');
 			api.del(`/chats/${roomId}/state`, {});
 			socket.emit('modules.chats.enter', roomId);
 			const env = utils.findBootstrapEnvironment();
 			if (env === 'xs' || env === 'sm') {
-				module.enableMobileBehaviour(chatModal);
+				Chat.enableMobileBehaviour(chatModal);
 			}
 		});
 	};
 
-	module.enableMobileBehaviour = function (modalEl) {
+	Chat.enableMobileBehaviour = function (modalEl) {
 		app.toggleNavbar(false);
 		modalEl.attr('data-mobile', '1');
 		const messagesEl = modalEl.find('.modal-body');
-		messagesEl.css('height', module.calculateChatListHeight(modalEl));
+		messagesEl.css('height', Chat.calculateChatListHeight(modalEl));
 		function resize() {
-			messagesEl.css('height', module.calculateChatListHeight(modalEl));
+			messagesEl.css('height', Chat.calculateChatListHeight(modalEl));
 			require(['forum/chats/messages'], function (ChatsMessages) {
 				ChatsMessages.scrollToBottom(modalEl.find('.chat-content'));
 			});
@@ -568,22 +606,23 @@ define('chat', [
 
 		$(window).on('resize', resize);
 		$(window).one('action:ajaxify.start', function () {
-			module.close(modalEl.attr('data-uuid'));
+			Chat.close(modalEl.attr('data-uuid'));
 			$(window).off('resize', resize);
 		});
 	};
 
-	module.disableMobileBehaviour = function () {
+	Chat.disableMobileBehaviour = function () {
 		app.toggleNavbar(true);
 	};
 
-	module.calculateChatListHeight = function (modalEl) {
+	Chat.calculateChatListHeight = function (modalEl) {
 		// Formula: modal height minus header height. Simple(tm).
 		return modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight();
 	};
 
-	module.minimize = function (uuid) {
+	Chat.minimize = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('hide');
 		chatModal.addClass('hide');
 		taskbar.minimize('chat', uuid);
 		hooks.fire('action:chat.minimized', {
@@ -592,7 +631,7 @@ define('chat', [
 		});
 	};
 
-	module.toggleNew = taskbar.toggleNew;
+	Chat.toggleNew = taskbar.toggleNew;
 
-	return module;
+	return Chat;
 });

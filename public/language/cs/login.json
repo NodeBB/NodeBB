@@ -8,5 +8,6 @@
     "login-successful": "Přihlášení proběhlo úspěšně!",
     "dont-have-account": "Nemáte účet?",
     "logged-out-due-to-inactivity": "Z důvodu nečinnosti jste byl odhlášen z ovládacího panelu administrátora",
-    "caps-lock-enabled": "Máte zapnutý Caps Lock"
+    "caps-lock-enabled": "Máte zapnutý Caps Lock",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

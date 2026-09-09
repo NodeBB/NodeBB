@@ -15,12 +15,15 @@ module.exports = function (Topics) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return [];
 		}
-		let uid = options;
-		let { teaserPost } = meta.config;
-		if (typeof options === 'object') {
-			uid = options.uid;
-			teaserPost = options.teaserPost || meta.config.teaserPost;
+		if (typeof options !== 'object' || options === null) {
+			options = { uid: options };
 		}
+
+		const {
+			uid,
+			teaserPost = meta.config.teaserPost,
+			teaserParseType = 'plaintext',
+		} = options;
 
 		const counts = [];
 		const teaserPids = [];
@@ -43,10 +46,10 @@ module.exports = function (Topics) {
 		});
 
 		const [allPostData, callerSettings] = await Promise.all([
-			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content', 'sourceContent']),
+			posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content', 'sourceContent', 'deleted']),
 			user.getSettings(uid),
 		]);
-		let postData = allPostData.filter(post => post && post.pid);
+		let postData = allPostData.filter(post => post && post.pid && !post.deleted);
 		postData = await handleBlocks(uid, postData);
 		postData = postData.filter(Boolean);
 		const uids = _.uniq(postData.map(post => post.uid));
@@ -68,7 +71,7 @@ module.exports = function (Topics) {
 			post.timestampISO = utils.toISOString(post.timestamp);
 			tidToPost[post.tid] = post;
 		});
-		await Promise.all(postData.map(p => posts.parsePost(p, 'plaintext')));
+		await Promise.all(postData.map(p => posts.parsePost(p, teaserParseType)));
 
 		const teasers = topics.map((topic, index) => {
 			if (!topic) {
@@ -77,10 +80,10 @@ module.exports = function (Topics) {
 			if (tidToPost[topic.tid]) {
 				tidToPost[topic.tid].index = calcTeaserIndex(teaserPost, counts[index], sortNewToOld);
 			}
-			return tidToPost[topic.tid];
+			return tidToPost[topic.tid] || null;
 		});
 
-		const result = await plugins.hooks.fire('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.hooks.fire('filter:teasers.get', { teasers, uid });
 		return result.teasers;
 	};
 
@@ -102,7 +105,7 @@ module.exports = function (Topics) {
 		}
 
 		return await Promise.all(teasers.map(async (postData) => {
-			if (blockedUids.includes(parseInt(postData.uid, 10))) {
+			if (blockedUids.includes(String(postData.uid))) {
 				return await getPreviousNonBlockedPost(postData, blockedUids);
 			}
 			return postData;
@@ -110,7 +113,7 @@ module.exports = function (Topics) {
 	}
 
 	async function getPreviousNonBlockedPost(postData, blockedUids) {
-		let isBlocked = false;
+		let isBlocked;
 		let prevPost = postData;
 		const postsPerIteration = 5;
 		let start = 0;
@@ -118,7 +121,7 @@ module.exports = function (Topics) {
 		let checkedAllReplies = false;
 
 		function checkBlocked(post) {
-			const isPostBlocked = blockedUids.includes(parseInt(post.uid, 10));
+			const isPostBlocked = blockedUids.includes(String(post.uid));
 			prevPost = !isPostBlocked ? post : prevPost;
 			return isPostBlocked;
 		}

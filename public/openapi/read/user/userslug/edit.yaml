@@ -23,8 +23,6 @@ get:
                     type: number
                   maximumAboutMeLength:
                     type: number
-                  maximumProfileImageSize:
-                    type: number
                   allowProfilePicture:
                     type: boolean
                   allowCoverPicture:
@@ -41,8 +39,6 @@ get:
                     type: boolean
                   allowSignature:
                     type: boolean
-                  profileImageDimension:
-                    type: number
                   defaultAvatar:
                     type: string
                   sso:

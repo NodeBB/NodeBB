@@ -12,12 +12,16 @@ require('timeago');
 const Benchpress = require('benchpressjs');
 
 Benchpress.setGlobal('config', config);
+Benchpress.setGlobal('_i18n', window._i18n);
+
+// Register template helpers synchronously so that any client-side render
+// (e.g. an ajaxify navigation triggered before app.load finishes) has them.
+// Without `tx`, every `{{tx(...)}}` in a template renders as an empty string.
+require('./modules/helpers').register();
 
 require('./sockets');
 require('./overrides');
 require('./ajaxify');
-
-app = window.app || {};
 
 Object.defineProperty(app, 'isFocused', {
 	get() {
@@ -35,12 +39,6 @@ app.onDomReady = function () {
 		app.load();
 	});
 };
-
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', ajaxify.parseData);
-} else {
-	ajaxify.parseData();
-}
 
 (function () {
 	let appLoaded = false;
@@ -103,16 +101,14 @@ if (document.readyState === 'loading') {
 
 		require([
 			'taskbar',
-			'helpers',
 			'forum/pagination',
 			'messages',
 			'search',
 			'forum/header',
 			'hooks',
-		], function (taskbar, helpers, pagination, messages, search, header, hooks) {
+		], function (taskbar, pagination, messages, search, header, hooks) {
 			header.prepareDOM();
 			taskbar.init();
-			helpers.register();
 			pagination.init();
 			search.init();
 			overrides.overrideTimeago();
@@ -230,7 +226,7 @@ if (document.readyState === 'loading') {
 	app.createStatusTooltips = function () {
 		if (!isTouchDevice) {
 			$('body').tooltip({
-				selector: '.fa-circle.status',
+				selector: '[component="user/status"], [component="user/locality"]',
 				placement: 'top',
 				container: '#content',
 				animation: false,
@@ -267,14 +263,9 @@ if (document.readyState === 'loading') {
 		if (!el.length) {
 			return;
 		}
-
-		require(['translator'], function (translator) {
-			translator.translate('[[global:' + status + ']]', function (translated) {
-				el.removeClass('online offline dnd away')
-					.addClass(status)
-					.attr('data-new-title', translated);
-			});
-		});
+		el.removeClass('online offline dnd away')
+			.addClass(status)
+			.translateAttr('data-new-title', `[[global:${status}]]`);
 	};
 
 	app.newTopic = function (params) {
@@ -307,8 +298,8 @@ if (document.readyState === 'loading') {
 
 		const [hooks, api] = await app.require(['hooks', 'api']);
 		params.title = (ajaxify.data.template.topic ?
-			ajaxify.data.titleRaw :
-			(await api.get(`/topics/${params.tid}`)).titleRaw);
+			ajaxify.data.title :
+			(await api.get(`/topics/${params.tid}`)).title);
 
 		hooks.fire('action:composer.post.new', params);
 	};
@@ -320,7 +311,6 @@ if (document.readyState === 'loading') {
 		require([
 			'jquery-ui/widgets/autocomplete',
 			'jquery-ui/widgets/sortable',
-			'jquery-ui/widgets/resizable',
 			'jquery-ui/widgets/draggable',
 		], function () {
 			callback();
@@ -334,15 +324,19 @@ if (document.readyState === 'loading') {
 			blockName = undefined;
 		}
 
-		return new Promise((resolve, reject) => {
-			require(['translator', 'benchpress'], function (translator, Benchpress) {
-				Benchpress.render(template, data, blockName)
-					.then(rendered => translator.translate(rendered))
-					.then(translated => translator.unescape(translated))
-					.then(resolve, reject);
-			});
-		}).then((html) => {
-			html = $(html);
+		return Benchpress.render(template, data, blockName).then((html) => {
+			try {
+				html = $(html);
+			} catch (err) {
+				// handle cases where the template parsed has multiple elements at the root level
+				// this breaks the jquery selector so we wrap it in a div
+				if (err.message.startsWith('Syntax error, unrecognized expression')) {
+					html = $(`<div>${html}</div>`);
+				} else {
+					throw err;
+				}
+			}
+
 			if (callback && typeof callback === 'function') {
 				setTimeout(callback, 0, html);
 			}
@@ -352,8 +346,7 @@ if (document.readyState === 'loading') {
 	};
 
 	function registerServiceWorker() {
-		// Do not register for Safari browsers
-		if (!config.useragent.isSafari && 'serviceWorker' in navigator) {
+		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register(config.relative_path + '/service-worker.js', { scope: config.relative_path + '/' })
 				.then(function () {
 					navigator.serviceWorker.addEventListener('message', (event) => {

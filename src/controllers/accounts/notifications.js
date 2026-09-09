@@ -61,6 +61,7 @@ notificationsController.get = async function (req, res, next) {
 	const data = await user.notifications.getAllWithCounts(req.uid, selectedFilter.filter);
 	let notifications = await user.notifications.getNotifications(data.nids, req.uid);
 
+	const unreadNids = notifications.filter(n => n && n.nid && !n.read).map(n => n.nid);
 	allFilters.forEach((filterData) => {
 		if (filterData && filterData.filter) {
 			filterData.count = data.counts[filterData.filter] || 0;
@@ -72,6 +73,7 @@ notificationsController.get = async function (req, res, next) {
 
 	res.render('notifications', {
 		notifications: notifications,
+		unreadNids,
 		pagination: pagination.create(page, pageCount, req.query),
 		filters: allFilters,
 		regularFilters: regularFilters,

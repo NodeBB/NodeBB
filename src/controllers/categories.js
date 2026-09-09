@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const _ = require('lodash');
 
 const categories = require('../categories');
+const db = require('../database');
 const meta = require('../meta');
 const pagination = require('../pagination');
 const helpers = require('./helpers');
@@ -42,6 +43,7 @@ categoriesController.list = async function (req, res) {
 		selectCategoryLabel: '[[pages:categories]]',
 		categories: tree,
 		pagination: pagination.create(page, pageCount, req.query),
+		firstRun: !(await db.getObjectField('global', 'loginCount')),
 	};
 
 	data.categories.forEach((category) => {
@@ -59,6 +61,13 @@ categoriesController.list = async function (req, res) {
 			content: '[[pages:categories]]',
 		});
 	}
+
+	helpers.addLinkTags({
+		url: 'categories',
+		res: res,
+		tags: [],
+		page: page,
+	});
 
 	res.render('categories', data);
 };

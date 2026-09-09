@@ -1,6 +1,5 @@
 'use strict';
 
-const validator = require('validator');
 const nconf = require('nconf');
 
 const meta = require('../meta');
@@ -13,9 +12,10 @@ const privileges = require('../privileges');
 const groupsController = module.exports;
 
 const url = nconf.get('url');
+const validSorts = ['alpha', 'count', 'date'];
 
 groupsController.list = async function (req, res) {
-	const sort = req.query.sort || 'alpha';
+	const sort = validSorts.includes(req.query.sort) ? req.query.sort : 'alpha';
 	const page = parseInt(req.query.page, 10) || 1;
 	const [allowGroupCreation, [groupData, pageCount]] = await Promise.all([
 		privileges.global.can('group:create', req.uid),
@@ -32,7 +32,7 @@ groupsController.list = async function (req, res) {
 	res.render('groups/list', {
 		groups: groupData,
 		allowGroupCreation: allowGroupCreation,
-		sort: validator.escape(String(sort)),
+		sort: sort,
 		pagination: pagination.create(page, pageCount, req.query),
 		title: '[[pages:groups]]',
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]),
@@ -151,7 +151,7 @@ groupsController.members = async function (req, res, next) {
 
 	const breadcrumbs = helpers.buildBreadcrumbs([
 		{ text: '[[pages:groups]]', url: '/groups' },
-		{ text: validator.escape(String(groupName)), url: `/groups/${req.params.slug}` },
+		{ text: groupName, url: `/groups/${req.params.slug}` },
 		{ text: '[[groups:details.members]]' },
 	]);
 

@@ -55,7 +55,7 @@
 	"select-category": "Izberi kategorijo",
 	"set-parent-category": "Nastavi nadrejeno kategorijo",
 
-	"privileges.description": "V tem razdelku lahko konfigurirate pravice za nadzor dostopa za dele spletnega mesta. Privilegiji se lahko podelijo uporabniku ali skupini. V spodnjem spustnem meniju izberite področje učinka.",
+	"privileges.description": "You can configure the access control privileges for portions of the site in this section. Privileges can be granted on a per-user or a per-group basis.",
 	"privileges.category-selector": "Konfiguriranje privilegijev za",
 	"privileges.warning": "<strong>Opomba</strong>: Nastavitve privilegijev pričnejo učinkovati takoj. Po prilagoditvi teh nastavitev kategorije ni potrebno shraniti.",
 	"privileges.section-viewing": "Pravice ogleda",

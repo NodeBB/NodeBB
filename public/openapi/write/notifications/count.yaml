@@ -1,0 +1,20 @@
+get:
+  tags:
+    - notifications
+  summary: get unread notification count
+  description: This operation returns the calling user's unread notifications count
+  responses:
+    '200':
+      description: unread notifications count successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  unread:
+                    type: number

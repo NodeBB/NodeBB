@@ -2,7 +2,6 @@
 
 
 const nconf = require('nconf');
-const validator = require('validator');
 const qs = require('querystring');
 
 const db = require('../database');
@@ -14,7 +13,6 @@ const activitypub = require('../activitypub');
 const pagination = require('../pagination');
 const helpers = require('./helpers');
 const utils = require('../utils');
-const translator = require('../translator');
 const analytics = require('../analytics');
 
 const categoryController = module.exports;
@@ -75,7 +73,7 @@ categoryController.get = async function (req, res, next) {
 
 	if (categoryFields.link) {
 		await db.incrObjectField(`category:${cid}`, 'timesClicked');
-		return helpers.redirect(res, validator.unescape(categoryFields.link));
+		return helpers.redirect(res, categoryFields.link);
 	}
 
 	if (!userSettings.usePagination) {
@@ -90,7 +88,8 @@ categoryController.get = async function (req, res, next) {
 	const start = ((currentPage - 1) * userSettings.topicsPerPage) + topicIndex;
 	const stop = start + userSettings.topicsPerPage - 1;
 
-	const sort = validSorts.includes(req.query.sort) ? req.query.sort : userSettings.categoryTopicSort;
+	const selectedSort = String(req.query.sort || userSettings.categoryTopicSort);
+	const sort = validSorts.includes(selectedSort) ? selectedSort : meta.config.categoryTopicSort;
 
 	const categoryData = await categories.getCategoryById({
 		uid: req.uid,
@@ -115,7 +114,7 @@ categoryController.get = async function (req, res, next) {
 		return next();
 	}
 
-	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
+	await categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 	categoryData.tagWhitelist = categories.filterTagWhitelist(categoryData.tagWhitelist, userPrivileges.isAdminOrMod);
 
 	const allCategories = [];
@@ -140,16 +139,16 @@ categoryController.get = async function (req, res, next) {
 		});
 	}
 
-	categoryData.title = translator.escape(categoryData.name);
+	categoryData.title = categoryData.name;
 	categoryData.selectCategoryLabel = '[[category:subcategories]]';
-	categoryData.description = translator.escape(categoryData.description);
 	categoryData.privileges = userPrivileges;
 	categoryData.showSelect = userPrivileges.editable;
 	categoryData.showTopicTools = userPrivileges.editable;
 	categoryData.topicIndex = topicIndex;
 	categoryData.selectedTag = tagData.selectedTag;
 	categoryData.selectedTags = tagData.selectedTags;
-	categoryData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
+	categoryData.sortOption = sort;
+	categoryData.sortOptionLabel = `[[topic:${sort.replace(/_/g, '-')}]]`;
 
 	if (utils.isNumber(categoryData.cid) && !meta.config['feeds:disableRSS']) {
 		categoryData.rssFeedUrl = `${url}/category/${categoryData.cid}.rss`;
@@ -208,17 +207,17 @@ function addTags(categoryData, res, currentPage) {
 		{
 			name: 'title',
 			content: categoryData.name,
-			noEscape: true,
+			translate: true,
 		},
 		{
 			property: 'og:title',
 			content: categoryData.name,
-			noEscape: true,
+			translate: true,
 		},
 		{
 			name: 'description',
 			content: categoryData.description,
-			noEscape: true,
+			translate: true,
 		},
 		{
 			property: 'og:type',
@@ -228,14 +227,12 @@ function addTags(categoryData, res, currentPage) {
 
 	if (categoryData.backgroundImage) {
 		let { backgroundImage } = categoryData;
-		backgroundImage = utils.decodeHTMLEntities(backgroundImage);
 		if (!backgroundImage.startsWith('http')) {
 			backgroundImage = url + backgroundImage.replace(new RegExp(`^${nconf.get('relative_path')}`), '');
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
 			content: backgroundImage,
-			noEscape: true,
 		});
 	}
 
@@ -248,7 +245,6 @@ function addTags(categoryData, res, currentPage) {
 		{
 			rel: 'canonical',
 			href: `${url}/category/${categoryData.slug}${page}`,
-			noEscape: true,
 		},
 	];
 

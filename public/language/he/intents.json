@@ -1,0 +1,22 @@
+{
+	"display.create": "צור והגב",
+	"display.like": "הצבעה בעד",
+	"display.dislike": "הצבעה נגד",
+	"display.follow": "עקוב",
+	"display.object": "צפייה",
+	"title": "הרשמה לידיות רשת חברתית הפתוחה",
+	"description": "הזינו את ידית רשת חברתית הפתוחה שלכם כדי להירשם ל-Activity Intents. זה יאפשר לכם לשתף תוכן מהפורום הזה לפרופיל החברתי שלכם.",
+	"handle-label": "פתיחת ידית רשת חברתית הפתוחה",
+	"handle-placeholder": "username@example.com",
+	"register-button": "הרשמה לידית",
+	"registered-handles": "ידיות רשומות",
+	"no-handles": "עדיין לא נרשמו ידיות.",
+	"intents-label": "מופעים נתמכים",
+	"register-error": "רישום הידית נכשל. אנא בדקו את פורמט הידית ונסו שוב.",
+	"invalid-handle": "אנא הזינו נקודת אחיזה חוקית בפורמט @username@domain.com",
+	"trigger-title": "%1 דרך רשת חברתית פתוחה",
+	"trigger-description": "אנא היכנסו לחשבון הפורום שלכם, או בחרו בנקודת אחיזה של רשת חברתית הפתוחה כדי להשלים פעולה זו",
+	"trigger-your-handles": "הידיות הרשומות שלכם",
+	"trigger-yes": "כן, השתמש בזה",
+	"trigger-no-matching": "אין ידיות רשומות שתומכות במופע זה. רשמו ידית חדשה או התחברו."
+}

@@ -10,15 +10,19 @@
 	"user": "Bruker",
 	"when": "Når",
 	"category": "Kategori",
+	"crosspost-to": "Krysspubliser til",
+	"tags": "Emneknagger",
 	"title": "Tittel",
 	"content": "Innhold",
 	"posted": "Postet",
 	"reply-to": "Svar til \"%1\"",
+	"edit": "Rediger",
 	"content-editable": "Klikk på innhold for å redigere",
 	"category-editable": "Klikk på kategori for å redigere",
 	"title-editable": "Klikk på tittel for å redigere",
 	"reply": "Svar",
 	"topic": "Emne",
+	"crosspost": "Krysspubliser",
 	"accept": "Godkjenn",
 	"reject": "Avvis",
 	"remove": "Fjern",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Vil du fjerne %1 valgte innlegg?",
 	"bulk-accept-success": "%1 innlegg godkjent",
 	"bulk-reject-success": "%1 innlegg avvist",
-	"links-in-this-post": "Lenker i dette innlegget"
+	"links-in-this-post": "Lenker i dette innlegget",
+	"thumbs-in-this-post": "Miniatyrbilder i dette innlegget"
 }

@@ -122,7 +122,10 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 							object: note,
 						}));
 
-						await activitypub.inbox.update({ body: activity });
+						assert.rejects(
+							activitypub.inbox.update({ body: activity }),
+							{ message: '[[error:no-privileges]]' },
+						);
 
 						const postData = await posts.getPostData(note.id);
 						assert.strictEqual(postData.content, oldContent);
@@ -154,7 +157,10 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 
 					it('should ignore remote deletion of said note', async () => {
 						({ activity } = helpers.mocks.delete({ object: note }));
-						await activitypub.inbox.delete({ body: activity });
+						assert.rejects(
+							activitypub.inbox.delete({ body: activity }),
+							{ message: '[[error:no-privileges]]' },
+						);
 
 						const exists = await posts.exists(note.id);
 						assert.strictEqual(exists, true);

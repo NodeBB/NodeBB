@@ -1,8 +1,8 @@
 'use strict';
 
 define('forum/flags/detail', [
-	'components', 'translator', 'benchpress', 'accounts/moderate', 'accounts/delete', 'api', 'bootbox', 'alerts',
-], function (components, translator, Benchpress, AccountModerate, AccountsDelete, api, bootbox, alerts) {
+	'components', 'benchpress', 'accounts/moderate', 'accounts/delete', 'api', 'modals', 'alerts',
+], function (components, Benchpress, AccountModerate, AccountsDelete, api, modals, alerts) {
 	const Detail = {};
 
 	Detail.init = function () {
@@ -43,7 +43,7 @@ define('forum/flags/detail', [
 						value = ajaxify.data.notes[index].content;
 					}
 
-					bootbox.prompt({
+					modals.prompt({
 						title: `[[flags:${datetime ? 'edit' : 'add'}-note]]`,
 						inputType: 'textarea',
 						rows: 3,
@@ -81,7 +81,7 @@ define('forum/flags/detail', [
 
 				case 'delete-note': {
 					const datetime = parseInt(this.closest('[data-datetime]').getAttribute('data-datetime'), 10);
-					bootbox.confirm('[[flags:delete-note-confirm]]', function (ok) {
+					modals.confirm('[[flags:delete-note-confirm]]', function (ok) {
 						if (ok) {
 							api.del(`/flags/${ajaxify.data.flagId}/notes/${datetime}`, {}).then((payload) => {
 								alerts.success('[[flags:note-deleted]]');
@@ -139,7 +139,7 @@ define('forum/flags/detail', [
 					break;
 
 				case 'delete-flag': {
-					bootbox.confirm('[[flags:delete-flag-confirm]]', function (ok) {
+					modals.confirm('[[flags:delete-flag-confirm]]', function (ok) {
 						if (ok) {
 							api.del(`/flags/${ajaxify.data.flagId}`, {}).then(() => {
 								alerts.success('[[flags:flag-deleted]]');
@@ -154,14 +154,12 @@ define('forum/flags/detail', [
 	};
 
 	function postAction(action, method, path) {
-		translator.translate('[[topic:post-' + action + '-confirm]]', function (msg) {
-			bootbox.confirm(msg, function (confirm) {
-				if (!confirm) {
-					return;
-				}
+		modals.confirm(`[[topic:post-${action}-confirm]]`, function (confirm) {
+			if (!confirm) {
+				return;
+			}
 
-				method(path).then(ajaxify.refresh).catch(alerts.error);
-			});
+			method(path).then(ajaxify.refresh).catch(alerts.error);
 		});
 	}
 

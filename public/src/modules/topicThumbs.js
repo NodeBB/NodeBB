@@ -1,8 +1,8 @@
 'use strict';
 
 define('topicThumbs', [
-	'api', 'bootbox', 'alerts', 'uploader', 'benchpress', 'translator', 'jquery-ui/widgets/sortable',
-], function (api, bootbox, alerts, uploader, Benchpress, translator) {
+	'api', 'modals', 'alerts', 'uploader', 'benchpress', 'translator', 'jquery-ui/widgets/sortable',
+], function (api, modals, alerts, uploader, Benchpress, translator) {
 	const Thumbs = {};
 
 	Thumbs.get = id => api.get(`/topics/${id}/thumbs`, { thumbsOnly: 1 });
@@ -41,33 +41,36 @@ define('topicThumbs', [
 		const thumbs = postData.thumbs || [];
 
 		return new Promise((resolve) => {
-			Benchpress.render('modals/topic-thumbs', { thumbs }).then((html) => {
+			Benchpress.render('modals/topic-thumbs', { thumbs }).then(async (html) => {
 				if (modal) {
 					translator.translate(html, function (translated) {
 						modal.find('.bootbox-body').html(translated);
 						Thumbs.modal.handleSort({ modal, thumbs });
 					});
 				} else {
-					modal = bootbox.dialog({
+					modal = await modals.dialog({
 						title: '[[modules:thumbs.modal.title]]',
 						message: html,
 						onEscape: true,
 						backdrop: true,
 						buttons: {
 							add: {
-								label: '<i class="fa fa-plus"></i> [[modules:thumbs.modal.add]]',
+								label: '[[modules:thumbs.modal.add]]',
 								className: 'btn-success',
 								callback: () => {
 									Thumbs.upload().then((thumbUrl) => {
+										const newUrl = thumbUrl
+											.replace(new RegExp(`^${config.relative_path}`), '')
+											.replace(new RegExp(`^${config.upload_url}`), '');
+
 										postData.thumbs.push(
-											thumbUrl.replace(new RegExp(`^${config.upload_url}`), '')
+											newUrl,
 										);
 
 										Thumbs.modal.open({ ...payload, modal });
-										require(['composer'], (composer) => {
-											composer.updateThumbCount(id, $(`[component="composer"][data-uuid="${id}"]`));
-											resolve();
-										});
+
+										$(window).trigger('action:composer.thumbs.updateCount', { uuid: id });
+										resolve();
 									});
 									return false;
 								},
@@ -90,7 +93,7 @@ define('topicThumbs', [
 		const { id: uuid } = payload;
 		modalEl.addEventListener('click', (ev) => {
 			if (ev.target.closest('button[data-action="remove"]')) {
-				bootbox.confirm('[[modules:thumbs.modal.confirm-remove]]', (ok) => {
+				modals.confirm('[[modules:thumbs.modal.confirm-remove]]', (ok) => {
 					if (!ok) {
 						return;
 					}
@@ -99,9 +102,7 @@ define('topicThumbs', [
 					if (postData && postData.thumbs && postData.thumbs.includes(path)) {
 						postData.thumbs = postData.thumbs.filter(thumb => thumb !== path);
 						Thumbs.modal.open(payload);
-						require(['composer'], (composer) => {
-							composer.updateThumbCount(uuid, $(`[component="composer"][data-uuid="${uuid}"]`));
-						});
+						$(window).trigger('action:composer.thumbs.updateCount', { uuid });
 					}
 				});
 			}

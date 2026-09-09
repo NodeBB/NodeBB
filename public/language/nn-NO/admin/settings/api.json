@@ -4,7 +4,8 @@
 	"lead-text": "Administrer API-token og tilgangsinnstillingar her.",
 	"intro": "API-token kan brukast for å få tilgang til forumets API. Ver forsiktig med deling av token.",
 	"warning": "Merk: For å sikre kommunikasjon, bør HTTPS vere aktivert.",
-	"docs": "Les dokumentasjonen for meir informasjon om API-konfigurasjon.",
+	"docs": "Klikk her for å opne Read API-spesifikasjonen",
+	"docs.write": "Klikk her for å opne Write API-spesifikasjonen",
 
 	"require-https": "Krev HTTPS",
 	"require-https-caveat": "Dette alternativet sikrar at all API-kommunikasjon går over HTTPS. Dette bør vere aktivert for å sikre dataene dine.",
@@ -25,5 +26,10 @@
 	"roll": "Roter",
 
 	"delete-confirm": "Er du sikker på at du vil slette dette tokenet?",
-	"roll-confirm": "Er du sikker på at du vil rotere dette tokenet?"
+	"roll-confirm": "Er du sikker på at du vil rotere dette tokenet?",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

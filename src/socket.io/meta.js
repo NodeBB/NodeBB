@@ -50,7 +50,17 @@ SocketMeta.rooms.enter = async function (socket, data) {
 
 	if (data.enter && data.enter.startsWith('topic_')) {
 		const tid = data.enter.split('_').pop();
-		if (!await privileges.topics.can('topics:read', tid, socket.uid)) {
+		const [topicData, topicPrivileges] = await Promise.all([
+			topics.getTopicFields(tid, ['deleted', 'scheduled']),
+			privileges.topics.get(tid, socket.uid),
+		]);
+		const canEnter = topicData &&
+			!topicPrivileges.disabled &&
+			topicPrivileges['topics:read'] &&
+			(!topicData.scheduled || topicPrivileges.view_scheduled) &&
+			(topicData.scheduled || !topicData.deleted || topicPrivileges.view_deleted);
+
+		if (!canEnter) {
 			throw new Error('[[error:no-privileges]]');
 		}
 	}

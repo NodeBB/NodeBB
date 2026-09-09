@@ -18,7 +18,7 @@
 	"description": "Site Description",
 	"keywords": "Ключові слова сайту",
 	"keywords-placeholder": "Ключові слова, що описують вашу спільноту, розділені комами",
-	"logo-and-icons": "Site Logo & Icons",
+	"logo-and-icons": "Media & Branding",
 	"logo.image": "Зображення",
 	"logo.image-placeholder": "Шлях до логотипу для відображення в шапці форуму",
 	"logo.upload": "Завантажити",
@@ -35,6 +35,8 @@
 	"touch-icon.help": "Recommended size and format: 512x512, PNG format only. If no touch icon is specified, NodeBB will fall back to using the favicon.",
 	"maskable-icon": "Maskable (Homescreen) Icon",
 	"maskable-icon.help": "Recommended size and format: 512x512, PNG format only. If no maskable icon is specified, NodeBB will fall back to the Touch Icon.",
+	"screenshot": "Screenshot",
+	"screenshot.help": "Recommended size and format: between 320px and 3480px, JPG and PNG format only. If no screenshot is specified, NodeBB will fall back to a generic screenshot",
 	"outgoing-links": "Зовнішні посилання",
 	"outgoing-links.warning-page": "Використовувати сторінку попередження про зовнішній перехід",
 	"search": "Search",
@@ -59,5 +61,8 @@
 	"auto-detect": "Автоматично визначати мову для гостей",
 	"default-language-help": "Мова за замовчуванням задає мову для всіх користувачів, що відвідують форум.<br /> Кожен користувач може перевизначити мову в своїх налаштуваннях акаунта.",
 	"post-sharing": "Поширення постів",
-	"info-plugins-additional": "Плагіни можуть доповнювати набір доступних мереж для поширення постів"
+	"info-plugins-additional": "Плагіни можуть доповнювати набір доступних мереж для поширення постів",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

@@ -1,0 +1,22 @@
+{
+	"queue": "Jono",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Nimi",
+	"list.email": "Sähköpostiosoite",
+	"list.ip": "IP-osoite",
+	"list.time": "Aika",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Kutsut",
+	"invitations.description": "",
+	"invitations.inviter-username": "Kutsujan käyttäjätunnus",
+	"invitations.invitee-email": "Kutsujan sähköpostiosoite",
+	"invitations.invitee-username": "Kutsujan käyttäjätunnus (jos rekisteröity)",
+
+	"invitations.confirm-delete": "Haluatko varmasti poistaa kutsun?"
+}

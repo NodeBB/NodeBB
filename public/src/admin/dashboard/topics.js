@@ -1,6 +1,8 @@
 'use strict';
 
-define('admin/dashboard/topics', ['admin/modules/dashboard-line-graph', 'hooks'], (graph, hooks) => {
+define('admin/dashboard/topics', [
+	'admin/modules/dashboard-line-graph', 'hooks', 'admin/modules/fullscreen',
+], (graph, hooks, { setupFullscreen }) => {
 	const ACP = {};
 
 	ACP.init = () => {
@@ -10,6 +12,7 @@ define('admin/dashboard/topics', ['admin/modules/dashboard-line-graph', 'hooks']
 		}).then(() => {
 			hooks.onPage('action:admin.dashboard.updateGraph', ACP.updateTable);
 		});
+		setupFullscreen($('#expand-analytics'), $('#analytics-panel'));
 	};
 
 	ACP.updateTable = () => {
@@ -21,6 +24,7 @@ define('admin/dashboard/topics', ['admin/modules/dashboard-line-graph', 'hooks']
 							const tbodyEl = document.querySelector('.topics-list tbody');
 							tbodyEl.innerHTML = '';
 							tbodyEl.append(...html.map((idx, el) => el));
+							html.find('.timeago').timeago();
 						});
 					});
 				}

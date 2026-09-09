@@ -98,7 +98,10 @@ Auth.reloadRoutes = async function (params) {
 					opts.state = req.session.ssoState;
 				}
 				if (req.query.next) {
-					req.session.next = req.query.next;
+					const next = helpers.normalizeReturnToPath(req.query.next);
+					if (next) {
+						req.session.next = next;
+					}
 				}
 
 				// Allow SSO plugins to override/append options (for use in passport prototype authorizationParams)
@@ -113,7 +116,7 @@ Auth.reloadRoutes = async function (params) {
 				return next();
 			}
 
-			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
+			next((!req.session.ssoState || req.query.state !== req.session.ssoState) ? new Error('[[error:csrf-invalid]]') : null);
 		}, (req, res, next) => {
 			// Trigger registration interstitial checks
 			req.session.registration = req.session.registration || {};
@@ -121,7 +124,7 @@ Auth.reloadRoutes = async function (params) {
 			// passport seems to remove `req.session.returnTo` after it redirects
 			req.session.registration.returnTo = req.session.next || req.session.returnTo;
 
-			passport.authenticate(strategy.name, (err, user) => {
+			passport.authenticate(strategy.name, (err, user, info) => {
 				if (err) {
 					if (req.session && req.session.registration) {
 						delete req.session.registration;
@@ -133,7 +136,10 @@ Auth.reloadRoutes = async function (params) {
 					if (req.session && req.session.registration) {
 						delete req.session.registration;
 					}
-					return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
+					if (info && info.message) {
+						return helpers.redirect(res, `/?register=${encodeURIComponent(info.message)}`);
+					}
+					return helpers.redirect(res, strategy.failureUrl || '/login');
 				}
 
 				res.locals.user = user;
@@ -149,7 +155,7 @@ Auth.reloadRoutes = async function (params) {
 					return next(err);
 				}
 
-				helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
+				helpers.redirect(res, strategy.successUrl || '/');
 			});
 		});
 	});

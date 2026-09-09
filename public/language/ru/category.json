@@ -1,8 +1,8 @@
 {
     "category": "Категория",
     "subcategories": "Подкатегории",
-    "uncategorized": "Без рубрики",
-    "uncategorized.description": "Темы, которые не вписываются строго ни в одну из существующих категорий",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "За этой категорией можно следить из открытой социальной сети, используя идентификатор %1",
     "new-topic-button": "Создать тему",
     "guest-login-post": "Авторизуйтесь, чтобы написать сообщение",
@@ -26,5 +26,10 @@
     "notwatching.message": "Вы более не отслеживаете обновления этой категории, включая все подкатегории",
     "ignoring.message": "Вы игнорируете обновления этой категории, включая все подкатегории",
     "watched-categories": "Отслеживаемые категории",
-    "x-more-categories": "Еще %1 категорий"
+    "x-more-categories": "Еще %1 категорий",
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

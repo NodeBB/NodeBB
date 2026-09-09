@@ -1,10 +1,10 @@
 'use strict';
 
 const nconf = require('nconf');
-const validator = require('validator');
+const winston = require('winston');
 const querystring = require('querystring');
 const _ = require('lodash');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const translator = require('../translator');
 const user = require('../user');
@@ -23,8 +23,10 @@ const url = nconf.get('url');
 helpers.noScriptErrors = async function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		if (typeof error === 'string') {
+			winston.error(`${new Error(error).stack}`);
 			return res.status(httpStatus).send(error);
 		}
+		winston.error(`${new Error(JSON.stringify(error)).stack}`);
 		return res.status(httpStatus).json(error);
 	}
 	const middleware = require('../middleware');
@@ -179,8 +181,86 @@ helpers.redirect = function (res, url, permanent) {
 	if (res.locals.isAPI) {
 		res.set('X-Redirect', encodeURIComponent(url)).status(200).json(url);
 	} else {
+		// Reject unsafe redirect URLs — fall back to home page
+		if (!helpers.normalizeReturnToPath(url)) {
+			winston.warn(`[security] Unsafe redirect attempted: ${url}`);
+			url = '/';
+		}
 		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}
+};
+
+helpers.normalizeReturnToPath = function (pathCandidate, { allowApi = true } = {}) {
+	if (typeof pathCandidate !== 'string') {
+		return '';
+	}
+
+	const raw = pathCandidate.trim();
+	let decoded;
+	let configuredUrl;
+	try {
+		decoded = decodeURIComponent(raw);
+		configuredUrl = new URL(nconf.get('url'));
+	} catch {
+		return '';
+	}
+
+	const rawIsAbsolute = /^[a-z][a-z\d+.-]*:/i.test(raw);
+	const decodedIsAbsolute = /^[a-z][a-z\d+.-]*:/i.test(decoded);
+	const rawPathCandidate = raw.split(/[?#]/, 1)[0];
+	const decodedPathCandidate = decoded.split(/[?#]/, 1)[0];
+	const hasControlCharacter = Array.from(decoded).some((character) => {
+		const codePoint = character.codePointAt(0);
+		return codePoint < 32 || codePoint === 127;
+	});
+	if (
+		!raw || raw.startsWith('//') || decoded.startsWith('//') ||
+		hasControlCharacter ||
+		rawPathCandidate.includes('\\') || decodedPathCandidate.includes('\\') ||
+		(!raw.startsWith('/') && !rawIsAbsolute) ||
+		(!decoded.startsWith('/') && !decodedIsAbsolute)
+	) {
+		return '';
+	}
+
+	let parsed;
+	let decodedParsed;
+	try {
+		parsed = new URL(raw, configuredUrl.origin);
+		decodedParsed = new URL(decoded, configuredUrl.origin);
+	} catch {
+		return '';
+	}
+
+	if (
+		parsed.origin !== configuredUrl.origin || decodedParsed.origin !== configuredUrl.origin ||
+		parsed.username || parsed.password || decodedParsed.username || decodedParsed.password
+	) {
+		return '';
+	}
+
+	const relativePath = nconf.get('relative_path') || '';
+	const isWithinRelativePath = pathname => !relativePath ||
+		pathname === relativePath || pathname.startsWith(`${relativePath}/`);
+	if (rawIsAbsolute && !isWithinRelativePath(parsed.pathname)) {
+		return '';
+	}
+	if (decodedIsAbsolute && !isWithinRelativePath(decodedParsed.pathname)) {
+		return '';
+	}
+
+	const stripRelativePath = pathname => relativePath && isWithinRelativePath(pathname) ?
+		(pathname.slice(relativePath.length) || '/') : pathname;
+	const pathname = stripRelativePath(parsed.pathname);
+	const decodedPathname = stripRelativePath(decodedParsed.pathname);
+	if (pathname.startsWith('//') || decodedPathname.startsWith('//')) {
+		return '';
+	}
+	if (!allowApi && (/^\/api(?:\/|$)/i.test(pathname) || /^\/api(?:\/|$)/i.test(decodedPathname))) {
+		return '';
+	}
+
+	return `${pathname}${parsed.search}${parsed.hash}`;
 };
 
 function prependRelativePath(url) {
@@ -194,9 +274,10 @@ helpers.buildCategoryBreadcrumbs = async function (cid) {
 	while (parseInt(cid, 10)) {
 		/* eslint-disable no-await-in-loop */
 		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
+
 		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
-				text: String(data.name),
+				text: data.name,
 				url: `${url}/category/${data.slug}`,
 				cid: cid,
 			});
@@ -238,14 +319,30 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	return breadcrumbs;
 };
 
-helpers.buildTitle = function (pageTitle) {
-	pageTitle = pageTitle || '';
+helpers.buildTitle = async function (pageTitle, userLang, template) {
+	pageTitle = String(pageTitle || '');
+	const translateTitle = template !== 'topic';
+
+	const browserTitle = String(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	const [titleTranslated, browserTitleTranslated] = await Promise.all([
+		translateTitle ? translator.translateKey(pageTitle, [], userLang) : pageTitle,
+		translator.translateKey(browserTitle, [], userLang),
+	], userLang);
+
 	const titleLayout = meta.config.titleLayout || `${pageTitle ? '{pageTitle} | ' : ''}{browserTitle}`;
+	let title = titleLayout
+		.replace('{pageTitle}', () => titleTranslated)
+		.replace('{browserTitle}', () => browserTitleTranslated);
 
-	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
+	// The browser tab has no dir attribute, so it picks the title's direction from
+	// its first strongly-directional character. An RTL user viewing a page whose
+	// title starts with a Latin string (e.g. a username) would otherwise get an
+	// LTR title. Prefix a right-to-left mark to keep the direction stable.
+	if (translator.languageDirection(userLang) === 'rtl' && !title.startsWith('\u200F')) {
+		title = `\u200F${title}`;
+	}
 
-	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
-	return title;
+	return utils.decodeHTMLEntities(title);
 };
 
 helpers.getCategories = async function (set, uid, privilege, selectedCid) {
@@ -263,7 +360,7 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 		helpers.getVisibleCategories({
 			cids, uid, states, privilege, showLinks: false,
 		}),
-		helpers.getSelectedCategory(selectedCid),
+		helpers.getSelectedCategory(selectedCid, uid),
 	]);
 
 	const categoriesData = categories.buildForSelectCategories(visibleCategories, ['disabledClass']);
@@ -334,28 +431,40 @@ helpers.getVisibleCategories = async function (params) {
 	});
 };
 
-helpers.getSelectedCategory = async function (cids) {
+helpers.getSelectedCategory = async function (cids, uid) {
 	if (cids && !Array.isArray(cids)) {
 		cids = [cids];
 	}
+	if (uid === undefined) {
+		const als = require('../als');
+		const store = als.getStore();
+		const e = new Error('').stack.split('\n')[3].trim();
+		if (store) {
+			winston.warn(`helpers.getSelectedCategory called without uid, getting it from async local storage. This is not recommended and may break in future versions. Pass in a uid explicitly. Called ${e}`);
+		} else {
+			winston.warn(`helpers.getSelectedCategory called without uid and no async local storage found, falling back to uid:0. Pass in a uid explicitly. Called ${e}`);
+		}
+		uid = store && store.uid ? store.uid : 0;
+	}
+
 	cids = cids && cids.map(cid => parseInt(cid, 10));
-	let selectedCategories = await categories.getCategoriesData(cids);
+	if (cids && cids.length) {
+		cids = await privileges.categories.filterCids('find', cids, uid);
+	}
+	const selectedCategories = await categories.getCategoriesData(cids);
+	let selectedCategory = null;
 	const selectedCids = selectedCategories.map(c => c && c.cid).filter(Boolean);
 	if (selectedCategories.length > 1) {
-		selectedCategories = {
+		selectedCategory = {
 			icon: 'fa-plus',
 			name: '[[unread:multiple-categories-selected]]',
 			bgColor: '#ddd',
 		};
 	} else if (selectedCategories.length === 1 && selectedCategories[0]) {
-		selectedCategories = selectedCategories[0];
-	} else {
-		selectedCategories = null;
+		selectedCategory = selectedCategories[0];
 	}
-	return {
-		selectedCids: selectedCids,
-		selectedCategory: selectedCategories,
-	};
+
+	return { selectedCids, selectedCategory };
 };
 
 helpers.getSelectedTag = function (tags) {
@@ -367,7 +476,7 @@ helpers.getSelectedTag = function (tags) {
 	let selectedTag = null;
 	if (tagData.length) {
 		selectedTag = {
-			label: validator.escape(tagData.join(', ')),
+			label: tagData.join(', '),
 		};
 	}
 	return {
@@ -393,7 +502,7 @@ helpers.setCategoryTeaser = function (category) {
 	if (Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 		const post = category.posts[0];
 		category.teaser = {
-			url: `${nconf.get('relative_path')}/post/${post.pid}`,
+			url: `${nconf.get('relative_path')}/post/${encodeURIComponent(post.pid)}`,
 			timestampISO: post.timestampISO,
 			pid: post.pid,
 			tid: post.tid,
@@ -419,6 +528,10 @@ helpers.getHomePageRoutes = async function (uid) {
 		{
 			route: 'categories',
 			name: 'Categories',
+		},
+		{
+			route: 'world',
+			name: 'World',
 		},
 		{
 			route: 'unread',
@@ -506,11 +619,11 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 
 		const returnPayload = await helpers.generateError(statusCode, message, res);
 		returnPayload.response = response;
-
-		if (global.env === 'development') {
-			returnPayload.stack = payload.stack;
+		if (process.env.NODE_ENV === 'development') {
+			const stack = payload instanceof Error ? payload.stack : new Error(String(payload)).stack;
+			returnPayload.stack = stack;
 			process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
-			process.stdout.write(payload.stack);
+			process.stdout.write(stack);
 		}
 		res.status(statusCode).json(returnPayload);
 	} else {
@@ -543,8 +656,8 @@ async function generateBannedResponse(res) {
 helpers.generateError = async (statusCode, message, res) => {
 	async function translateMessage(message) {
 		const { req } = res;
-		const settings = req.query.lang ? null : await user.getSettings(req.uid);
-		const language = String(req.query.lang || settings.userLang || meta.config.defaultLang);
+		const settings = req?.query?.lang ? null : await user.getSettings(req.uid);
+		const language = String(req?.query?.lang || settings.userLang || meta.config.defaultLang);
 		return await translator.translate(message, language);
 	}
 	if (message && message.startsWith('[[')) {
@@ -598,6 +711,28 @@ helpers.generateError = async (statusCode, message, res) => {
 	}
 
 	return payload;
+};
+
+helpers.validateParameters = function (query, fields, validation) {
+	// Parse query string params for filters, eliminate non-valid filters
+	const valid = fields.reduce((memo, field) => {
+		if (query.hasOwnProperty(field) && Object.hasOwn(validation, field)) {
+			const val = query[field];
+			const validationRule = validation[field];
+			if (Array.isArray(validationRule) && validationRule.includes(val)) {
+				memo[field] = val;
+			} else if (validationRule === 'number') {
+				if (Array.isArray(val)) {
+					memo[field] = val.filter(utils.isNumber);
+				} else if (utils.isNumber(val)) {
+					memo[field] = val;
+				}
+			}
+		}
+
+		return memo;
+	}, {});
+	return valid;
 };
 
 require('../promisify')(helpers);

@@ -60,8 +60,8 @@ describe('minifier', () => {
 	});
 
 	const styles = [
-		'@import "./1";',
-		'@import "./2.scss";',
+		'@use "./1" as file1;',
+		'@use "./2.scss" as file2;',
 	].join('\n');
 	const paths = [
 		path.resolve(__dirname, './files'),
@@ -87,7 +87,12 @@ describe('Build', () => {
 	const build = require('../src/meta/build');
 
 	before(async () => {
-		await fs.promises.rm(path.join(__dirname, '../build/public'), { recursive: true, force: true });
+		await fs.promises.rm(path.join(__dirname, '../build/public'), {
+			recursive: true,
+			force: true,
+			maxRetries: 5,
+			retryDelay: 100,
+		});
 		await db.sortedSetAdd('plugins:active', Date.now(), 'nodebb-plugin-markdown');
 	});
 

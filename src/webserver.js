@@ -2,15 +2,10 @@
 'use strict';
 
 const fs = require('fs');
-const util = require('util');
 const path = require('path');
 const nconf = require('nconf');
 const express = require('express');
-const chalk = require('chalk');
-
-const app = express();
-app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
-let server;
+const chalk = require('chalk').default;
 const winston = require('winston');
 const flash = require('connect-flash');
 const bodyParser = require('body-parser');
@@ -35,9 +30,33 @@ const topicEvents = require('./topics/events');
 const privileges = require('./privileges');
 const routes = require('./routes');
 const auth = require('./routes/authentication');
-
 const helpers = require('./helpers');
+const user = require('./user');
+const languages = require('./languages');
+const als = require('./als');
 
+const app = express();
+
+app.renderAsync = async (tpl, data) => {
+	if (!Object.hasOwn(data, '_i18n')) {
+		const store = als.getStore();
+		if (!store) {
+			const stack = new Error().stack.split('\n')[2];
+			winston.warn(`[app.renderAsync] No ALS store found, unable to determine user language for template rendering, using default language instead. Template: ${tpl}\n${stack}`);
+		}
+		const uid = store?.uid || 0;
+		const { userLang, acpLang } = await user.getSettings(uid);
+		data._i18n = languages.getFull(tpl.startsWith('admin/') ? acpLang : userLang);
+	}
+	return new Promise((resolve, reject) => {
+		app.render(tpl, data, (err, html) => {
+			if (err) return reject(err);
+			resolve(html);
+		});
+	});
+};
+
+let server;
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
@@ -136,7 +155,7 @@ function setupExpressApp(app) {
 	});
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
-	app.set('json spaces', global.env === 'development' ? 4 : 0);
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
 
 	// https://github.com/NodeBB/NodeBB/issues/13918
 	const qs = require('qs');
@@ -147,7 +166,7 @@ function setupExpressApp(app) {
 
 	app.enable('view cache');
 
-	if (global.env !== 'development') {
+	if (process.env.NODE_ENV !== 'development') {
 		app.enable('cache');
 		app.enable('minification');
 	}
@@ -215,11 +234,13 @@ function setupHelmet(app) {
 	};
 
 	if (meta.config['hsts-enabled']) {
-		options.hsts = {
+		options.strictTransportSecurity = {
 			maxAge: Math.max(0, meta.config['hsts-maxage']),
 			includeSubDomains: !!meta.config['hsts-subdomains'],
 			preload: !!meta.config['hsts-preload'],
 		};
+	} else {
+		options.strictTransportSecurity = false;
 	}
 
 	try {
@@ -233,7 +254,7 @@ function setupHelmet(app) {
 function setupFavicon(app) {
 	let faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
 	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
-	if (!faviconPath.startsWith(nconf.get('upload_path'))) {
+	if (!file.isPathInside(nconf.get('upload_path'), faviconPath)) {
 		faviconPath = path.join(nconf.get('base_dir'), 'public', 'favicon.ico');
 	}
 	if (file.existsSync(faviconPath)) {
@@ -254,6 +275,10 @@ function configureBodyParser(app) {
 			'application/ld+json',
 			'application/activity+json',
 		],
+		limit: '1mb',
+		verify: (req, res, buf) => {
+			req.rawBody = buf;
+		},
 		...nconf.get('bodyParser:json'),
 	};
 	app.use(bodyParser.json(jsonOpts));
@@ -289,11 +314,13 @@ async function listen() {
 	port = parseInt(port, 10);
 
 	let trust_proxy = nconf.get('trust_proxy');
-	if (trust_proxy == null && ![80, 443].includes(port)) {
-		trust_proxy = true;
+	if (trust_proxy == null) {
+		trust_proxy = false;
+		winston.warn("[startup] 'trust_proxy' is not configured, so Express proxy trust is disabled by default. Set 'trust_proxy' in config.json only when NodeBB is behind a reverse proxy that strips or overwrites X-Forwarded-For from untrusted clients.");
 	}
-	if (trust_proxy) {
-		winston.info(`🤝 Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
+	if (trust_proxy != null) {
+		const trustProxyPrefix = trust_proxy ? '🤝' : '❌';
+		winston.info(`${trustProxyPrefix} Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
 		app.set('trust proxy', trust_proxy);
 	}
 

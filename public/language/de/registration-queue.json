@@ -1,0 +1,22 @@
+{
+	"queue": "Warteschlange",
+	"no-users-in-queue": "Es befinden sich keine Benutzer in der Registrierungswarteschlange.",
+	"description": "Um diese Funktion zu aktivieren, geh zu <a href=\"%1\">Einstellungen &rarr; Benutzer &rarr; User Benutzerregistrierung</a> und stelle den <strong> Registrierungstyp</strong> auf „Genehmigung durch den Administrator“ ein.",
+	"reject-all": "Alle ablehnen",
+	"reject-all-confirm": "Möchtest du alle Registrierungsanfragen ablehnen?",
+	"list.name": "Name",
+	"list.email": "E-Mail",
+	"list.ip": "IP",
+	"list.time": "Zeit",
+	"list.username-spam": "<div class=&quot;text-start&quot;>Häufigkeit: %1<br/>Erscheint: %2<br/>Vertrauen: %3</div>",
+	"list.email-spam": "<div class=&quot;text-start&quot;>Häufigkeit: %1<br/>Erscheint: %2<br/>Vertrauen: %3</div>",
+	"list.ip-spam": "<div class=&quot;text-start&quot;>Häufigkeit: %1<br/>Erscheint: %2<br/>Vertrauen: %3</div>",
+
+	"invitations": "Einladungen",
+	"invitations.description": "Nachfolgend findest du eine vollständige Liste der gesendeten Einladungen. Verwende Strg-F, um die Liste nach E-Mail oder Benutzername zu durchsuchen. Der Benutzername wird rechts neben den E-Mails für Benutzer angezeigt, die ihre Einladungen eingelöst haben.",
+	"invitations.inviter-username": "Nutzername des Einladenden",
+	"invitations.invitee-email": "E-Mail des Eingeladenen",
+	"invitations.invitee-username": "Benutzername des Eingeladenen (falls registriert)",
+
+	"invitations.confirm-delete": "Möchtest du diese Einladung wirklich löschen?"
+}

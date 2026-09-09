@@ -17,7 +17,7 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 			const password = $('#password').val();
 			errorEl.addClass('hidden').find('p').text('');
 			if (!username || !password) {
-				errorEl.find('p').translateText('[[error:invalid-username-or-password]]');
+				errorEl.find('p').translateText(!username ? '[[error:username-required]]' : '[[error:password-required]]');
 				errorEl.removeClass('hidden');
 				return;
 			}
@@ -94,6 +94,12 @@ define('forum/login', ['hooks', 'translator', 'jquery-form'], function (hooks, t
 			$('#content #username').focus();
 		}
 		$('#content #noscript').val('false');
+
+		$('#ap-register-handle-btn').on('click', function () {
+			require(['modules/intents'], (intents) => {
+				intents.register();
+			});
+		});
 	};
 
 	Login.capsLockCheck = (inputEl, warningEl) => {

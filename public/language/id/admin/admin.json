@@ -1,6 +1,16 @@
 {
 	"alert.confirm-rebuild-and-restart": "Anda yakin ingin membangun ulang dan mulai ulang NodeBB?",
 	"alert.confirm-restart": "Anda yakin ingin mulai ulang NodeBB?",
+	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
+	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
+	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB is restarting.",
+	"restarting.success.message": "NodeBB has restarted successfully.",
+
 
 	"acp-title": "%1 | Kontrol Panel Admin NodeBB",
 	"settings-header-contents": "Konten",

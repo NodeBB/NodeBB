@@ -1,0 +1,97 @@
+post:
+  tags:
+    - admin
+  summary: add core domain
+  description: This operation adds a domain to the core blocklist
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            domain:
+              type: string
+              description: The domain to add
+              example: example.org
+            severity:
+              type: string
+              description: The severity level for this domain
+              enum:
+                - suspend
+                - silence
+                - filter
+              default: suspend
+  responses:
+    '200':
+      description: domain successfully added
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  domains:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        domain:
+                          type: string
+                        severity:
+                          type: string
+                  count:
+                    type: number
+    '400':
+      description: invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/Error.yaml#/Error
+
+delete:
+  tags:
+    - admin
+  summary: remove core domain
+  description: This operation removes a domain from the core blocklist
+  parameters:
+    - in: query
+      name: domain
+      schema:
+        type: string
+      required: true
+      example: example.org
+  responses:
+    '200':
+      description: domain successfully removed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  domains:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        domain:
+                          type: string
+                        severity:
+                          type: string
+                  count:
+                    type: number
+    '400':
+      description: invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../../../../components/schemas/Error.yaml#/Error

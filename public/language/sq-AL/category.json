@@ -1,8 +1,8 @@
 {
     "category": "Kategoria",
     "subcategories": "Nënkategoritë",
-    "uncategorized": "Uncategorized",
-    "uncategorized.description": "Topics that do not strictly fit in with any existing categories",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "This category can be followed from the open social web via the handle %1",
     "new-topic-button": "Temë e re",
     "guest-login-post": "Hyr për të postuar",
@@ -26,5 +26,10 @@
     "notwatching.message": "Tani nuk je duke ndjekur përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
     "ignoring.message": "Tani je duke injoruar përditësimet nga kjo kategori dhe të gjitha nënkategoritë e saj.",
     "watched-categories": "Kategoritë që keni ndjekur",
-    "x-more-categories": "%1 më shumë kategori"
+    "x-more-categories": "%1 më shumë kategori",
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

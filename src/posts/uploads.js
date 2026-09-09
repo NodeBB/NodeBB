@@ -5,10 +5,9 @@ const fs = require('fs').promises;
 const crypto = require('crypto');
 const path = require('path');
 const winston = require('winston');
-const mime = require('mime');
+const mime = require('mime').default;
 const validator = require('validator');
-const cronJob = require('cron').CronJob;
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const db = require('../database');
 const image = require('../image');
@@ -16,32 +15,44 @@ const user = require('../user');
 const topics = require('../topics');
 const file = require('../file');
 const meta = require('../meta');
+const cron = require('../cron');
 
 module.exports = function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-	const pathPrefix = path.join(nconf.get('upload_path'));
+	const upload_path = nconf.get('upload_path');
 	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
 
-	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
-	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
-		const fullPath = _getFullPath(filePath);
-		return fullPath.startsWith(pathPrefix) && await file.exists(fullPath) ? filePath : false;
-	}))).filter(Boolean);
+	const _getFullPath = relativePath => path.join(upload_path, relativePath);
+	const _filterValidPaths = async function (filePaths) {
+		return (await Promise.all(filePaths.map(async (filePath) => {
+			const fullPath = _getFullPath(filePath);
+			const valid = file.isPathInside(upload_path, fullPath) && await file.exists(fullPath);
+			return valid ? filePath : false;
+		}))).filter(Boolean);
+	};
 
-	const runJobs = nconf.get('runJobs');
-	if (runJobs) {
-		new cronJob('0 2 * * 0', async () => {
-			const orphans = await Posts.uploads.cleanOrphans();
-			if (orphans.length) {
-				winston.info(`[posts/uploads] Deleting ${orphans.length} orphaned uploads...`);
-				orphans.forEach((relPath) => {
-					process.stdout.write(`${chalk.red('  - ')} ${relPath}`);
-				});
-			}
-		}, null, true);
-	}
+	Posts.uploads.startJobs = async function () {
+		const runJobs = nconf.get('runJobs');
+		if (!runJobs) {
+			return;
+		}
+
+		await cron.addJob({
+			name: 'posts:uploads:cleanupOrphans',
+			cronTime: '0 2 * * 0',
+			onTick: async () => {
+				const orphans = await Posts.uploads.cleanOrphans();
+				if (orphans.length) {
+					winston.info(`[posts/uploads] Deleting ${orphans.length} orphaned uploads...`);
+					orphans.forEach((relPath) => {
+						process.stdout.write(`${chalk.red('  - ')} ${relPath}`);
+					});
+				}
+			},
+		});
+	};
 
 	Posts.uploads.sync = async function (pid) {
 		// Scans a post's content and updates sorted set of uploads

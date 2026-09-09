@@ -1,6 +1,16 @@
 {
 	"alert.confirm-rebuild-and-restart": "您確定要部署並重啟 NodeBB 嗎？",
 	"alert.confirm-restart": "您確定要重啟 NodeBB 嗎？",
+	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
+	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
+	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB is restarting.",
+	"restarting.success.message": "NodeBB has restarted successfully.",
+
 
 	"acp-title": "%1 | NodeBB 管理控制台",
 	"settings-header-contents": "内容",

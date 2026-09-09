@@ -41,7 +41,8 @@ UserEmail.remove = async function (uid, sessionId) {
 			['email:sorted', `${email.toLowerCase()}:${uid}`],
 		]),
 		user.email.expireValidation(uid),
-		sessionId ? user.auth.revokeAllSessions(uid, sessionId) : Promise.resolve(),
+		user.reset.cleanByUid(uid),
+		user.auth.revokeAllSessions(uid, sessionId),
 		events.log({
 			targetUid: uid,
 			type: 'email-change',

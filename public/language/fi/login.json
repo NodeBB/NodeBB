@@ -8,5 +8,6 @@
     "login-successful": "Olet onnistuneesti kirjautunut sisään!",
     "dont-have-account": "Ei käyttäjätunnusta?",
     "logged-out-due-to-inactivity": "Sinut on kirjattu ulos hallintapaneelista liian pitkän toimettomuuden takia.",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

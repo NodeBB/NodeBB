@@ -1,0 +1,55 @@
+get:
+  tags:
+    - admin
+  summary: view blocklist
+  description: This operation retrieves the domains in a specific blocklist
+  parameters:
+    - name: url
+      in: path
+      required: true
+      schema:
+        type: string
+      example: https%3A%2F%2Fexample.org%2Fblocklist
+  responses:
+    '200':
+      description: blocklist successfully retrieved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  domains:
+                    type: array
+                    items:
+                      type: string
+                  count:
+                    type: number
+delete:
+  tags:
+    - admin
+  summary: delete blocklist
+  description: This operation removes a previously-added blocklist
+  parameters:
+    - in: path
+      name: url
+      schema:
+        type: string
+      required: true
+      example: https%3A%2F%2Fexample.org%2Fblocklist
+  responses:
+    '200':
+      description: blocklist successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/admin/blocklists.yaml#/BlocklistArray

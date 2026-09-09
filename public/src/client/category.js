@@ -10,7 +10,8 @@ define('forum/category', [
 	'alerts',
 	'api',
 	'clipboard',
-], function (infinitescroll, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard) {
+	'modules/intents',
+], function (infinitescroll, navigator, topicList, sort, categorySelector, hooks, alerts, api, clipboard, intents) {
 	const Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -51,6 +52,8 @@ define('forum/category', [
 		});
 
 		new clipboard('[data-clipboard-text]');
+
+		intents.addHandlers();
 
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
@@ -107,7 +110,7 @@ define('forum/category', [
 				ajaxify.data.nextSubCategoryStart += ajaxify.data.subCategoriesPerPage;
 				ajaxify.data.subCategoriesLeft -= data.length;
 				btn.toggleClass('hidden', ajaxify.data.subCategoriesLeft <= 0)
-					.translateText('[[category:x-more-categories, ' + ajaxify.data.subCategoriesLeft + ']]');
+					.translateText(`[[category:x-more-categories, ${ajaxify.data.subCategoriesLeft}]]`);
 			});
 
 			return false;
@@ -115,14 +118,20 @@ define('forum/category', [
 	}
 
 	function handleDescription() {
-		const fadeEl = document.querySelector('.description.clamp-fade-4');
-		if (!fadeEl) {
-			return;
-		}
-
-		fadeEl.addEventListener('click', () => {
-			const state = fadeEl.classList.contains('line-clamp-4');
-			fadeEl.classList.toggle('line-clamp-4', !state);
+		const fadeEl = $(`.description[class*="clamp-fade-"]`);
+		fadeEl.on('click', function () {
+			const $this = $(this);
+			let clampClass = $this.data('clampClass');
+			if (!clampClass) {
+				const match = $this.attr('class').match(/line-clamp-(\S+)/);
+				if (match && match[1]) {
+					clampClass = `line-clamp-${match[1]}`;
+					fadeEl.data('clampClass', clampClass);
+				}
+			}
+			if (clampClass) {
+				fadeEl.toggleClass(clampClass);
+			}
 		});
 	}
 

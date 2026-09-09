@@ -8,5 +8,6 @@
     "confirm-delete": "Bu dosyayı silmek istediğinden emin misin?",
     "filecount": "%1 dosya",
     "new-folder": "Yeni Dosya",
-    "name-new-folder": "Yeni klasör için bir ad girin"
+    "name-new-folder": "Yeni klasör için bir ad girin",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

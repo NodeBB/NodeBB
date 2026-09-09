@@ -96,19 +96,11 @@ body.page-user-chats {
 	.page-user-chats.chat-loaded  {
 		padding-bottom: 4.75rem;
 	}
-}
-
-@include media-breakpoint-down(md) {
-	.page-user-chats.chat-loaded  {
-		padding-bottom: initial;
+	.page-user-chats.chat-loaded .bottombar {
+		display: none!important;
 	}
 	[component="chat/nav-wrapper"] {
 		width: 100%;
-	}
-
-
-	.page-user-chats.chat-loaded .bottombar {
-		display: none!important;
 	}
 
 	[component="chat/nav-wrapper"][data-loaded="1"] {
@@ -120,13 +112,13 @@ body.page-user-chats {
 	}
 }
 
+@include media-breakpoint-down(md) {
+	.page-user-chats.chat-loaded  {
+		padding-bottom: initial;
+	}
+}
+
 .chat-modal {
-	left: auto;
-	top: auto;
-	bottom: 0px;
-	right: 2rem;
-	width: auto!important;
-	height: auto!important;
 	[component="chat/user/list/btn"], [component="chat/pinned/messages/btn"] {
 		display: none!important;
 	}

@@ -8,5 +8,6 @@
     "confirm-delete": "Vil du virkelig slette denne filen?",
     "filecount": "%1 filer",
     "new-folder": "Ny mappe",
-    "name-new-folder": "Skriv inn et navn for den nye mappen"
+    "name-new-folder": "Skriv inn et navn for den nye mappen",
+    "unsafe-file-warning": "Advarsel: Ikke last opp filer du ikke stoler på. Filer med bestemte filtyper blir lastet ned som vedlegg for å hindre XSS-angrep, men skadelige filer kan fortsatt gjøre skade hvis de åpnes på datamaskinen din."
 }

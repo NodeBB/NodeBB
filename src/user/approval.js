@@ -1,8 +1,6 @@
 'use strict';
 
-const validator = require('validator');
 const winston = require('winston');
-const cronJob = require('cron').CronJob;
 
 const db = require('../database');
 const meta = require('../meta');
@@ -12,15 +10,27 @@ const groups = require('../groups');
 const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
+const tx = require('../translator');
 
 module.exports = function (User) {
-	new cronJob('0 * * * *', (async () => {
-		try {
-			await User.autoApprove();
-		} catch (err) {
-			winston.error(err.stack);
+	User.createOrQueue = async function (req, userData, opts = {}) {
+		User.checkUsernameLength(userData.username);
+		const queue = await User.shouldQueueUser(req.ip);
+		const result = await plugins.hooks.fire('filter:register.shouldQueue', { req, userData, queue });
+
+		// prevent picture if reputation required
+		if (Object.hasOwn(userData, 'picture') && (!meta.config['reputation:disabled'] && meta.config['min:rep:profile-picture'] > 0)) {
+			delete userData.picture;
 		}
-	}), null, true);
+
+		if (result.queue) {
+			await User.addToApprovalQueue({ ...userData, ip: req.ip, _opts: JSON.stringify(opts) });
+			return { queued: true, message: await getRegistrationQueuedMessage() };
+		}
+
+		const uid = await User.create(userData, opts);
+		return { queued: false, uid };
+	};
 
 	User.addToApprovalQueue = async function (userData) {
 		userData.username = userData.username.trim();
@@ -31,9 +41,12 @@ module.exports = function (User) {
 			username: userData.username,
 			email: userData.email,
 			ip: userData.ip,
-			hashedPassword: hashedPassword,
+			_opts: userData._opts || '{}',
 		};
-		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data: data, userData: userData });
+		if (hashedPassword) {
+			data.hashedPassword = hashedPassword;
+		}
+		const results = await plugins.hooks.fire('filter:user.addToApprovalQueue', { data, userData });
 		await db.setObject(`registration:queue:name:${userData.username}`, results.data);
 		await db.sortedSetAdd('registration:queue', Date.now(), userData.username);
 		await sendNotificationToAdmins(userData.username);
@@ -56,9 +69,9 @@ module.exports = function (User) {
 	async function sendNotificationToAdmins(username) {
 		const notifObj = await notifications.create({
 			type: 'new-register',
-			bodyShort: `[[notifications:new-register, ${username}]]`,
+			bodyShort: tx.compile('notifications:new-register', tx.escape(username)),
 			nid: `new-register:${username}`,
-			path: '/admin/manage/registration',
+			path: '/registration-queue',
 			mergeId: 'new-register',
 		});
 		await notifications.pushGroup(notifObj, 'administrators');
@@ -69,17 +82,21 @@ module.exports = function (User) {
 		if (!userData) {
 			throw new Error('[[error:invalid-data]]');
 		}
+		const opts = parseCreateOptions(userData);
 		const creation_time = await db.sortedSetScore('registration:queue', username);
-		const uid = await User.create(userData);
-		await User.setUserFields(uid, {
-			password: userData.hashedPassword,
-			'password:shaWrapped': 1,
-		});
+		const uid = await User.create(userData, opts);
+		if (userData.hashedPassword) {
+			await User.setUserFields(uid, {
+				password: userData.hashedPassword,
+				'password:shaWrapped': 1,
+			});
+		}
 		await removeFromQueue(username);
-		await markNotificationRead(username);
+		await rescindNotification(username);
 		await plugins.hooks.fire('filter:register.complete', { uid: uid });
 		await emailer.send('registration_accepted', uid, {
 			username: username,
+			email: userData.email,
 			subject: `[[email:welcome-to, ${meta.config.title || meta.config.browserTitle || 'NodeBB'}]]`,
 			template: 'registration_accepted',
 			uid: uid,
@@ -90,16 +107,26 @@ module.exports = function (User) {
 		return uid;
 	};
 
-	async function markNotificationRead(username) {
-		const nid = `new-register:${username}`;
+	function parseCreateOptions(userData) {
+		try {
+			const opts = JSON.parse(userData._opts || '{}');
+			delete userData._opts;
+			return opts;
+		} catch (err) {
+			winston.error(`[user.acceptRegistration] Failed to parse create options for queued user ${userData.username}: ${err.stack}`);
+			return {};
+		}
+	}
+
+	async function rescindNotification(username) {
+		await notifications.rescind(`new-register:${username}`);
 		const uids = await groups.getMembers('administrators', 0, -1);
-		const promises = uids.map(uid => notifications.markRead(nid, uid));
-		await Promise.all(promises);
+		uids.forEach(uid => User.notifications.pushCount(uid));
 	}
 
 	User.rejectRegistration = async function (username) {
 		await removeFromQueue(username);
-		await markNotificationRead(username);
+		await rescindNotification(username);
 	};
 
 	async function removeFromQueue(username) {
@@ -120,14 +147,26 @@ module.exports = function (User) {
 		return false;
 	};
 
+	async function getRegistrationQueuedMessage() {
+		let message = '[[register:registration-added-to-queue]]';
+		if (meta.config.showAverageApprovalTime) {
+			const average_time = await db.getObjectField('registration:queue:approval:times', 'average');
+			if (average_time > 0) {
+				message += ` [[register:registration-queue-average-time, ${Math.floor(average_time / 60)}, ${Math.floor(average_time % 60)}]]`;
+			}
+		}
+		if (meta.config.autoApproveTime > 0) {
+			message += ` [[register:registration-queue-auto-approve-time, ${meta.config.autoApproveTime}]]`;
+		}
+		return message;
+	};
+
 	User.getRegistrationQueue = async function (start, stop) {
 		const data = await db.getSortedSetRevRangeWithScores('registration:queue', start, stop);
 		const keys = data.filter(Boolean).map(user => `registration:queue:name:${user.value}`);
 		let users = await db.getObjects(keys);
 		users = users.filter(Boolean).map((user, index) => {
 			user.timestampISO = utils.toISOString(data[index].score);
-			user.email = validator.escape(String(user.email));
-			user.usernameEscaped = validator.escape(String(user.username));
 			delete user.hashedPassword;
 			return user;
 		});

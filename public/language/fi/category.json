@@ -1,13 +1,13 @@
 {
     "category": "Kategoria",
     "subcategories": "Alikategoria",
-    "uncategorized": "Kategoroimattomat",
-    "uncategorized.description": "Aiheet jotka eivät suoraan sovi minkään kategorian alle.",
-    "handle.description": "This category can be followed from the open social web via the handle %1",
+    "uncategorized": "World",
+    "uncategorized.description": "Tämän foorumin ulkopuolisia aiheita. Tässä esitetyt näkemykset ja mielipiteet eivät välttämättä vastaa tämän foorumin ja sen jäsenten näkemyksiä.",
+    "handle.description": "Tätä kategoriaa voi seurata avoimessa sosiaalisessa verkossa tunnisteella %1",
     "new-topic-button": "Uusi aihe",
     "guest-login-post": "Kirjaudu sisään julkastaksesi",
     "no-topics": "<strong>Kategoriassa ei ole aiheita.</strong><br />Jospa aloittaisit sellaisen?",
-    "no-followers": "Nobody on this website is tracking or watching this category. Track or watch this category in order to begin receiving updates.",
+    "no-followers": "Kukaan tällä verkkosivustolla ei seuraa tai tarkkaile tätä kategoriaa. Seuraa tai tarkkaile tätä kategoriaa aloittaaksesi päivitysten vastaanottamisen.",
     "browsing": "selaamassa",
     "no-replies": "Kukaan ei ole vastannut",
     "no-new-posts": "Ei uusia viestejä",
@@ -26,5 +26,10 @@
     "notwatching.message": "Et seuraa kategorian etkä sen alikategorioiden päivityksiä",
     "ignoring.message": "Ohitat kaikki päivitykset tästä kategoriasta ja kaikista alikategorioista",
     "watched-categories": "Seuratut kategoriat",
-    "x-more-categories": "%1 more categories"
+    "x-more-categories": "%1 more categories",
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

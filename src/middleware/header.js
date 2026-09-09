@@ -19,7 +19,7 @@ middleware.buildHeaderAsync = async (req, res) => {
 };
 
 async function doBuildHeader(req, res) {
-	res.locals.renderHeader = true;
+	res.locals.renderHeaderType = 'client';
 	res.locals.isAPI = false;
 	if (req.method === 'GET') {
 		await require('./index').applyCSRFasync(req, res);

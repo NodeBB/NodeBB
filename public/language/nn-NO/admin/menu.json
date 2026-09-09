@@ -13,6 +13,7 @@
 	"manage/tags": "Emneord",
 	"manage/users": "Brukarar",
 	"manage/admins-mods": "Administratorar og moderatorar",
+	"manage/api": "API Access",
 	"manage/registration": "Registrering",
 	"manage/flagged-content": "Rapportert innhald",
 	"manage/post-queue": "Innleggskø",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "%1 Innstillingar",
 
+	"section-federation": "Føderering",
+	"federation/general": "Generelt",
+	"federation/content": "Innhald",
+	"federation/rules": "Kategorisering",
+	"federation/relays": "Relays/Vidaresendingstenester",
+	"federation/pruning": "Lagring",
+	"federation/safety": "Tillit og tryggleik",
+	"federation/analytics": "Statistikk",
+	"federation/errors": "Feil",
+
 	"section-appearance": "Utseende",
 	"appearance/themes": "Tema",
 	"appearance/skins": "Utsjånad",
@@ -70,6 +81,7 @@
 	"advanced/logs": "Loggar",
 	"advanced/errors": "Feil",
 	"advanced/cache": "Cache",
+	"advanced/jobs": "Oppgåver",
 	"development/logger": "Loggførar",
 	"development/info": "Informasjon",
 

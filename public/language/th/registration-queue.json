@@ -1,0 +1,22 @@
+{
+	"queue": "คิว",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "ชื่อ",
+	"list.email": "อีเมล",
+	"list.ip": "IP",
+	"list.time": "เวลา",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "การเชิญ",
+	"invitations.description": "<br>ด้านล่างนี้เป็นรายการคำเชิญที่ส่งแล้ว ใช้ ctrl-f เพื่อค้นหาผ่านรายการทางอีเมลหรือชื่อผู้ใช้ <br>ชื่อผู้ใช้จะปรากฏทางด้านขวาของอีเมลสำหรับผู้ใช้ที่รับคำเชิญแล้ว",
+	"invitations.inviter-username": "ผู้เชิญผู้ใช้งานนี้",
+	"invitations.invitee-email": "อีเมลที่เชิญ",
+	"invitations.invitee-username": "ชื่อผู้ได้รับเชิญ (ถ้าลงทะเบียน)",
+
+	"invitations.confirm-delete": "คุณแน่ใจหรือไม่ว่าต้องการลบคำเชิญนี้"
+}

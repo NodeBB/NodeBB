@@ -1,7 +1,6 @@
 'use strict';
 
 const helpers = module.exports;
-const utils = require('../../utils');
 
 helpers.noop = function () {};
 
@@ -50,20 +49,3 @@ helpers.valueToString = function (value) {
 	return String(value);
 };
 
-helpers.buildMatchQuery = function (match) {
-	let _match = match;
-	if (match.startsWith('*')) {
-		_match = _match.substring(1);
-	}
-	if (match.endsWith('*')) {
-		_match = _match.substring(0, _match.length - 1);
-	}
-	_match = utils.escapeRegexChars(_match);
-	if (!match.startsWith('*')) {
-		_match = `^${_match}`;
-	}
-	if (!match.endsWith('*')) {
-		_match += '$';
-	}
-	return _match;
-};

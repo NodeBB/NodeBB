@@ -1,0 +1,36 @@
+get:
+  tags:
+    - intents
+  summary: Query supported intents for a handle
+  description: This operation queries a handle to determine which ActivityPub intents it supports. The handle is resolved via WebFinger and the ActivityPub actor is fetched to extract supported intent endpoints.
+  parameters:
+    - in: path
+      name: handle
+      required: true
+      schema:
+        type: string
+      description: The ActivityPub handle to query, in the format @username@domain or username@domain
+      example: foobar%40example.org
+  responses:
+    '200':
+      description: Intent query successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  intents:
+                    type: array
+                    items:
+                      type: object
+                      description: Map of supported intent names to their ActivityPub endpoint templates
+                      additionalProperties:
+                        type: string
+                        example: 'https://example.org/ap?resource={object}'
+    '429':
+      description: Rate limit exceeded

@@ -18,10 +18,6 @@ define('admin/extend/rewards', [
 		conditions = ajaxify.data.conditions;
 		conditionals = ajaxify.data.conditionals;
 
-		$('[data-selected]').each(function () {
-			select($(this));
-		});
-
 		$('#active')
 			.on('change', '[data-selected]', function () {
 				update($(this));
@@ -57,15 +53,18 @@ define('admin/extend/rewards', [
 		$('#new').on('click', newReward);
 		$('#save').on('click', saveRewards);
 
-		populateInputs();
+		Promise.all(
+			$('[data-selected]').toArray().map(el => select($(el)))
+		).then(populateInputs);
 	};
 
 	function select(el) {
 		el.val(el.attr('data-selected'));
 		switch (el.attr('name')) {
 			case 'rid':
-				selectReward(el);
-				break;
+				return selectReward(el);
+			default:
+				return Promise.resolve();
 		}
 	}
 
@@ -73,16 +72,16 @@ define('admin/extend/rewards', [
 		el.attr('data-selected', el.val());
 		switch (el.attr('name')) {
 			case 'rid':
-				selectReward(el);
-				break;
+				return selectReward(el);
+			default:
+				return Promise.resolve();
 		}
 	}
 
-	function selectReward(el) {
+	async function selectReward(el) {
 		const parent = el.parents('[data-rid]');
 		const div = parent.find('.inputs');
 		let inputs;
-		let html = '';
 
 		const selectedReward = available.find(reward => reward.rid === el.attr('data-selected'));
 		if (selectedReward) {
@@ -91,25 +90,9 @@ define('admin/extend/rewards', [
 		}
 
 		if (!inputs) {
-			return alerts.error('[[admin/extend/rewards:alert.no-inputs-found]] ' + el.attr('data-selected'));
+			return alerts.error(`[[admin/extend/rewards:alert.no-inputs-found, ${el.attr('data-selected')}`);
 		}
-
-		inputs.forEach(function (input) {
-			html += `<label class="form-label text-nowrap" for="${input.name}">${input.label}<br />`;
-			switch (input.type) {
-				case 'select':
-					html += `<select class="form-select form-select-sm" name="${input.name}" >`;
-					input.values.forEach(function (value) {
-						html += `<option value="${value.value}">${value.name}</option>`;
-					});
-					break;
-				case 'text':
-					html += `<input type="text" class="form-control form-control-sm" name="${input.name}"  />`;
-					break;
-			}
-			html += '</label>';
-		});
-
+		const html = await app.parseAndTranslate('admin/partials/rewards/inputs', { inputs });
 		div.html(html);
 	}
 

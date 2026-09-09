@@ -1,6 +1,8 @@
 'use strict';
 
+
 const api = require('../../api');
+const messaging = require('../../messaging');
 const helpers = require('../helpers');
 
 const Chats = module.exports;
@@ -22,6 +24,17 @@ Chats.list = async (req, res) => {
 
 	const { rooms, nextStart } = await api.chats.list(req, { start, stop, uid });
 	helpers.formatApiResponse(200, res, { rooms, nextStart });
+};
+
+Chats.search = async (req, res) => {
+	const { query } = req.query;
+
+	if (!query) {
+		return Chats.list(req, res);
+	}
+
+	const rooms = await messaging.searchRecentChats(req.uid, req.uid, query);
+	helpers.formatApiResponse(200, res, rooms);
 };
 
 Chats.create = async (req, res) => {

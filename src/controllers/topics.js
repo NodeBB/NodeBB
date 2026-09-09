@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 const path = require('path');
+const winston = require('winston');
 const qs = require('querystring');
 const validator = require('validator');
 
@@ -15,10 +16,19 @@ const helpers = require('./helpers');
 const pagination = require('../pagination');
 const utils = require('../utils');
 const analytics = require('../analytics');
+const activitypub = require('../activitypub');
+const translator = require('../translator');
+const cacheCreate = require('../cache/lru');
+const crosspostCache = cacheCreate({
+	name: 'crosspost',
+	max: 500,
+	ttl: 3600000,
+});
 
 const topicsController = module.exports;
 
 const url = nconf.get('url');
+const base_url = nconf.get('base_url');
 const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 const validSorts = ['oldest_to_newest', 'newest_to_oldest', 'most_votes'];
@@ -57,7 +67,11 @@ topicsController.get = async function getTopic(req, res, next) {
 		return next();
 	}
 
-	if (!userPrivileges['topics:read'] || (!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted)) {
+	if (
+		!userPrivileges['topics:read'] ||
+		(!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted) ||
+		await shouldHideTopicFromGuest(req.uid, tid, topicData.cid)
+	) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -73,7 +87,9 @@ topicsController.get = async function getTopic(req, res, next) {
 		return helpers.redirect(res, `/topic/${tid}/${req.params.slug}${postIndex > topicData.postcount ? `/${topicData.postcount}` : ''}${generateQueryString(req.query)}`);
 	}
 	postIndex = Math.max(1, postIndex);
-	const sort = validSorts.includes(req.query.sort) ? req.query.sort : settings.topicPostSort;
+	const selectedSort = String(req.query.sort || settings.topicPostSort);
+	const sort = validSorts.includes(selectedSort) ? selectedSort : meta.config.topicPostSort;
+
 	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
 
@@ -111,7 +127,8 @@ topicsController.get = async function getTopic(req, res, next) {
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	topicData.privateUploads = meta.config.privateUploads === 1;
 	topicData.showPostPreviewsOnHover = meta.config.showPostPreviewsOnHover === 1;
-	topicData.sortOptionLabel = `[[topic:${validator.escape(String(sort)).replace(/_/g, '-')}]]`;
+	topicData.sortOption = sort;
+	topicData.sortOptionLabel = `[[topic:${sort.replace(/_/g, '-')}]]`;
 	if (!meta.config['feeds:disableRSS']) {
 		topicData.rssFeedUrl = `${relative_path}/topic/${topicData.tid}.rss`;
 		if (req.loggedIn) {
@@ -124,11 +141,12 @@ topicsController.get = async function getTopic(req, res, next) {
 		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
 	);
 
-	const [author, crossposts] = await Promise.all([
+	const [author, crossposts, canCrosspost] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
-		topics.crossposts.get(topicData.tid),
+		topics.crossposts.get(topicData.tid, req.uid),
+		loadCrosspostPrivilege(req, topicData.cid),
 		buildBreadcrumbs(topicData),
-		addOldCategory(topicData, userPrivileges),
+		addOldCategory(topicData, userPrivileges, settings.userLang),
 		addTags(topicData, req, res, currentPage, postAtIndex),
 		topics.increaseViewCount(req, tid),
 		markAsRead(req, tid),
@@ -137,21 +155,40 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	topicData.author = author;
 	topicData.crossposts = crossposts;
+	topicData.canCrosspost = canCrosspost;
+
+	// not awaited on purpose so topic loading is not blocked
+	topics.crossposts.syncCrosspostedTopicCids(crossposts, topicData)
+		.catch(err => winston.error(err.stack));
+
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
 		res.locals.linkTags.push(rel);
 	});
 
-	if (meta.config.activitypubEnabled && postAtIndex) {
-		// Include link header for richer parsing
-		const { pid } = postAtIndex;
-		const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
-		res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
+	if (meta.config.activitypubEnabled) {
+		if (postAtIndex) {
+			// Include link header for richer parsing
+			const { pid } = postAtIndex;
+			const href = utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid;
+			res.set('Link', `<${href}>; rel="alternate"; type="application/activity+json"`);
+		}
+
+		if (req.uid > 0 && !utils.isNumber(topicData.mainPid)) {
+			// not awaited on purpose so topic loading is not blocked
+			activitypub.notes.backfill(topicData.mainPid);
+		}
 	}
 
 	res.render('topic', topicData);
 };
+
+async function shouldHideTopicFromGuest(uid, tid, cid) {
+	if (uid > 0 || cid !== -1) return false;
+	const uids = await topics.getUids(tid);
+	return !uids.some(uid => utils.isNumber(uid));
+}
 
 function generateQueryString(query) {
 	const qString = qs.stringify(query);
@@ -188,6 +225,17 @@ async function markAsRead(req, tid) {
 	}
 }
 
+async function loadCrosspostPrivilege(req, excludeCid) {
+	excludeCid = String(excludeCid || '');
+	let cidsUserCanCrosspost = crosspostCache.get(`uid:${req.uid}`);
+	if (cidsUserCanCrosspost === undefined) {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		cidsUserCanCrosspost = await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
+		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost);
+	}
+	return cidsUserCanCrosspost.some(cid => cid !== excludeCid);
+}
+
 async function buildBreadcrumbs(topicData) {
 	const breadcrumbs = [
 		{
@@ -196,32 +244,23 @@ async function buildBreadcrumbs(topicData) {
 			cid: topicData.category.cid,
 		},
 		{
-			text: topicData.title,
+			text: translator.escape(topicData.title),
 		},
 	];
 	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid);
 	topicData.breadcrumbs = parentCrumbs.concat(breadcrumbs);
 }
 
-async function addOldCategory(topicData, userPrivileges) {
+async function addOldCategory(topicData, userPrivileges, userLang) {
 	if (userPrivileges.isAdminOrMod && topicData.oldCid) {
 		topicData.oldCategory = await categories.getCategoryFields(
 			topicData.oldCid, ['cid', 'name', 'icon', 'bgColor', 'color', 'slug']
 		);
+		topicData.oldCategory.name = await translator.translate(topicData.oldCategory.name, userLang);
 	}
 }
 
 async function addTags(topicData, req, res, currentPage, postAtIndex) {
-	let description = '';
-	if (postAtIndex && postAtIndex.content) {
-		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content)).trim();
-	}
-
-	if (description.length > 160) {
-		description = `${description.slice(0, 157)}...`;
-	}
-	description = description.replace(/\n/g, ' ').trim();
-
 	let mainPost = topicData.posts.find(p => parseInt(p.index, 10) === 0);
 	if (!mainPost) {
 		mainPost = await posts.getPostData(topicData.mainPid);
@@ -230,11 +269,11 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	res.locals.metaTags = [
 		{
 			name: 'title',
-			content: topicData.titleRaw,
+			content: topicData.title,
 		},
 		{
 			property: 'og:title',
-			content: topicData.titleRaw,
+			content: topicData.title,
 		},
 		{
 			property: 'og:type',
@@ -254,7 +293,15 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		},
 	];
 
-	if (description && description.length) {
+	if (!utils.isNumber(topicData.tid)) {
+		res.locals.metaTags.push({
+			name: 'robots',
+			content: 'noindex',
+		});
+	}
+
+	const description = getDescriptionFromPost(postAtIndex);
+	if (description) {
 		res.locals.metaTags.push(
 			{
 				name: 'description',
@@ -274,7 +321,6 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 		{
 			rel: 'canonical',
 			href: `${url}/topic/${topicData.slug}${page}`,
-			noEscape: true,
 		},
 	];
 
@@ -310,6 +356,18 @@ async function addTags(topicData, req, res, currentPage, postAtIndex) {
 	}
 }
 
+function getDescriptionFromPost(post) {
+	let description = '';
+	if (post && post.content) {
+		description = utils.stripHTMLTags(utils.decodeHTMLEntities(post.content)).trim();
+		if (description.length > 160) {
+			description = `${description.slice(0, 157)}...`;
+		}
+		description = description.replace(/\n/g, ' ').trim();
+	}
+	return description;
+}
+
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.filter(Boolean);
@@ -338,18 +396,21 @@ function addOGImageTag(res, image) {
 	}
 
 	if (!imageUrl.startsWith('http')) {
-		// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
-		imageUrl = url + path.posix.join(upload_url, imageUrl);
+		if (imageUrl.startsWith(`${relative_path}${upload_url}`)) {
+			// (https://domain.com) + imageUrl (which starts with /relative_path/upload_url)
+			imageUrl = base_url + imageUrl;
+		} else {
+			// (https://domain.com/forum) + (/assets/uploads) + (/files/imagePath)
+			imageUrl = url + path.posix.join(upload_url, imageUrl);
+		}
 	}
 
 	res.locals.metaTags.push({
 		property: 'og:image',
 		content: imageUrl,
-		noEscape: true,
 	}, {
 		property: 'og:image:url',
 		content: imageUrl,
-		noEscape: true,
 	});
 
 	if (isObject && image.width && image.height) {
@@ -394,15 +455,11 @@ topicsController.pagination = async function (req, res, next) {
 	if (!topic) {
 		return next();
 	}
-	const [userPrivileges, settings] = await Promise.all([
-		privileges.topics.get(tid, req.uid),
-		user.getSettings(req.uid),
-	]);
-
-	if (!userPrivileges.read || !privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
+	if (!await privileges.topics.canRead(tid, req.uid)) {
 		return helpers.notAllowed(req, res);
 	}
 
+	const settings = await user.getSettings(req.uid);
 	const postCount = topic.postcount;
 	const pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 

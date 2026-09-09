@@ -2,7 +2,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const nconf = require('nconf');
 
 const db = require('../database');
@@ -14,7 +13,7 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const privileges = require('../privileges');
 
-const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/(\\d+)(?:\\/\\w+)?`, 'g');
+const backlinkRegex = new RegExp(`(?:${nconf.get('url').replace('/', '\\/')}|\b|\\s)\\/topic\\/([a-fA-F0-9-]+)(?=\\/|$|\\s)`, 'g');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = async function (postData) {
@@ -146,7 +145,7 @@ module.exports = function (Topics) {
 
 				// Username override for guests, if enabled
 				if (meta.config.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
-					postObj.user.username = validator.escape(String(postObj.handle));
+					postObj.user.username = String(postObj.handle);
 					postObj.user.displayname = postObj.user.username;
 				}
 			}
@@ -172,7 +171,6 @@ module.exports = function (Topics) {
 					(post.selfPost && !topicData.locked && !post.deleted) ||
 					(post.selfPost && post.deleted && parseInt(post.deleterUid, 10) === parseInt(topicPrivileges.uid, 10)) ||
 					((loggedIn || topicData.postSharing.length) && !post.deleted);
-				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
 				posts.modifyPostByPrivilege(post, topicPrivileges);
 			}
@@ -192,7 +190,7 @@ module.exports = function (Topics) {
 		const pidToPrivs = _.zipObject(parentPids, postPrivileges);
 
 		parentPids = parentPids.filter(p => pidToPrivs[p]['topics:read']);
-		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'sourceContent', 'deleted']);
+		const parentPosts = await posts.getPostsFields(parentPids, ['uid', 'pid', 'timestamp', 'content', 'sourceContent', 'deleted', 'uploads']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 		const userData = await user.getUsersFields(parentUids, ['username', 'userslug', 'picture']);
 
@@ -201,7 +199,7 @@ module.exports = function (Topics) {
 		await Promise.all(parentPosts.map(async (parentPost) => {
 			const postPrivs = pidToPrivs[parentPost.pid];
 			if (parentPost.deleted && String(parentPost.uid) !== String(callerUid, 10) && !postPrivs['posts:view_deleted']) {
-				parentPost.content = `<p>[[topic:post-is-deleted]]</p>`;
+				posts.clearDeletedPostContent(parentPost);
 				return;
 			}
 			const foundPost = postData.find(p => String(p.pid) === String(parentPost.pid));
@@ -252,7 +250,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getLatestUndeletedReply = async function (tid) {
-		let isDeleted = false;
+		let isDeleted;
 		let index = 0;
 		do {
 			/* eslint-disable no-await-in-loop */
@@ -447,29 +445,27 @@ module.exports = function (Topics) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-
-		let { content } = postData;
+		let { pid, uid, content } = postData;
 		// ignore lines that start with `>`
 		content = (content || '').split('\n').filter(line => !line.trim().startsWith('>')).join('\n');
 		// Scan post content for topic links
 		const matches = [...content.matchAll(backlinkRegex)];
-		if (!matches) {
-			return 0;
-		}
 
-		const { pid, uid, tid } = postData;
-		let add = _.uniq(matches.map(match => match[1]).map(tid => parseInt(tid, 10)));
+		let add = _.uniq(matches.map(match => match[1]));
 
-		const now = Date.now();
-		const topicsExist = await Topics.exists(add);
-		const current = (await db.getSortedSetMembers(`pid:${pid}:backlinks`)).map(tid => parseInt(tid, 10));
+		const [topicsExist, current] = await Promise.all([
+			Topics.exists(add),
+			db.getSortedSetMembers(`pid:${pid}:backlinks`),
+		]);
 		const remove = current.filter(tid => !add.includes(tid));
-		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && tid !== _tid);
+		const postTid = String(postData.tid);
+		add = add.filter((_tid, idx) => topicsExist[idx] && !current.includes(_tid) && postTid !== _tid);
 
 		// Remove old backlinks
 		await db.sortedSetRemove(`pid:${pid}:backlinks`, remove);
 
 		// Add new backlinks
+		const now = Date.now();
 		await db.sortedSetAdd(`pid:${pid}:backlinks`, add.map(() => now), add);
 		await Promise.all(add.map(async (tid) => {
 			await Topics.events.log(tid, {
@@ -479,6 +475,6 @@ module.exports = function (Topics) {
 			});
 		}));
 
-		return add.length + (current - remove);
+		return add.length + (current.length - remove.length);
 	};
 };

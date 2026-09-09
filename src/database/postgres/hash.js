@@ -3,6 +3,10 @@
 module.exports = function (module) {
 	const helpers = require('./helpers');
 
+	const cache = require('../cache').create('postgres');
+
+	module.objectCache = cache;
+
 	module.setObject = async function (key, data) {
 		if (!key || !data) {
 			return;
@@ -42,6 +46,8 @@ module.exports = function (module) {
 				});
 			}
 		});
+
+		cache.del(key);
 	};
 
 	module.setObjectBulk = async function (...args) {
@@ -78,6 +84,8 @@ module.exports = function (module) {
 			DO UPDATE SET "data" = "legacy_hash"."data" || EXCLUDED.data`,
 				values: [keys, dataStrings],
 			});
+
+			cache.del(keys);
 		});
 	};
 
@@ -101,6 +109,8 @@ module.exports = function (module) {
 	DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
 					values: [key, field, valueString],
 				});
+
+				cache.del(key);
 			}
 		});
 	};
@@ -109,52 +119,23 @@ module.exports = function (module) {
 		if (!key) {
 			return null;
 		}
-		if (fields.length) {
-			return await module.getObjectFields(key, fields);
-		}
-		const res = await module.pool.query({
-			name: 'getObject',
-			text: `
-SELECT h."data"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT
- LIMIT 1`,
-			values: [key],
-		});
 
-		return res.rows.length ? res.rows[0].data : null;
+		const data = await module.getObjects([key], fields);
+		return data && data.length ? data[0] : null;
 	};
 
 	module.getObjects = async function (keys, fields = []) {
-		if (!Array.isArray(keys) || !keys.length) {
-			return [];
-		}
-		if (fields.length) {
-			return await module.getObjectsFields(keys, fields);
-		}
-		const res = await module.pool.query({
-			name: 'getObjects',
-			text: `
-SELECT h."data"
-  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
-  LEFT OUTER JOIN "legacy_object_live" o
-               ON o."_key" = k."_key"
-  LEFT OUTER JOIN "legacy_hash" h
-               ON o."_key" = h."_key"
-              AND o."type" = h."type"
- ORDER BY k.i ASC`,
-			values: [keys],
-		});
-
-		return res.rows.map(row => row.data);
+		return await module.getObjectsFields(keys, fields);
 	};
 
 	module.getObjectField = async function (key, field) {
 		if (!key || !field) {
 			return null;
+		}
+		const cachedData = {};
+		cache.getUnCachedKeys([key], cachedData);
+		if (cachedData[key]) {
+			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
 
 		const res = await module.pool.query({
@@ -177,34 +158,8 @@ SELECT h."data"->>$2::TEXT f
 		if (!key) {
 			return null;
 		}
-		if (!Array.isArray(fields) || !fields.length) {
-			return await module.getObject(key);
-		}
-		const res = await module.pool.query({
-			name: 'getObjectFields',
-			text: `
-SELECT (SELECT jsonb_object_agg(f, d."value")
-          FROM UNNEST($2::TEXT[]) f
-          LEFT OUTER JOIN jsonb_each(h."data") d
-                       ON d."key" = f) d
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT`,
-			values: [key, fields],
-		});
-
-		if (res.rows.length) {
-			return res.rows[0].d;
-		}
-
-		const obj = {};
-		fields.forEach((f) => {
-			obj[f] = null;
-		});
-
-		return obj;
+		const data = await module.getObjectsFields([key], fields);
+		return data ? data[0] : null;
 	};
 
 	module.getObjectsFields = async function (keys, fields) {
@@ -212,27 +167,42 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 			return [];
 		}
 
-		if (!Array.isArray(fields) || !fields.length) {
-			return await module.getObjects(keys);
-		}
-		const res = await module.pool.query({
-			name: 'getObjectsFields',
-			text: `
-SELECT (SELECT jsonb_object_agg(f, d."value")
-          FROM UNNEST($2::TEXT[]) f
-          LEFT OUTER JOIN jsonb_each(h."data") d
-                       ON d."key" = f) d
-  FROM UNNEST($1::text[]) WITH ORDINALITY k("_key", i)
+		const cachedData = {};
+		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
+
+		if (unCachedKeys.length) {
+			const res = await module.pool.query({
+				name: 'getObjectsFields',
+				text: `
+SELECT h."data"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
   LEFT OUTER JOIN "legacy_object_live" o
                ON o."_key" = k."_key"
   LEFT OUTER JOIN "legacy_hash" h
                ON o."_key" = h."_key"
               AND o."type" = h."type"
  ORDER BY k.i ASC`,
-			values: [keys, fields],
-		});
+				values: [unCachedKeys],
+			});
+			const data = res.rows.map(row => row.data);
 
-		return res.rows.map(row => row.d);
+			unCachedKeys.forEach((key, i) => {
+				cachedData[key] = data[i] || null;
+				cache.set(key, cachedData[key]);
+			});
+		}
+
+		if (!Array.isArray(fields) || !fields.length) {
+			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+		}
+		return keys.map((key) => {
+			const item = cachedData[key] || {};
+			const result = {};
+			fields.forEach((field) => {
+				result[field] = item[field] !== undefined ? item[field] : null;
+			});
+			return result;
+		});
 	};
 
 	module.getObjectKeys = async function (key) {
@@ -326,6 +296,8 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 				values: [key, fields],
 			});
 		}
+
+		cache.del(key);
 	};
 
 	module.incrObjectField = async function (key, field) {
@@ -369,6 +341,8 @@ DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb
 RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 				values: [key, field, value],
 			});
+
+			cache.del(key);
 			return Array.isArray(key) ? res.rows.map(r => parseFloat(r.v)) : parseFloat(res.rows[0].v);
 		});
 	};
@@ -405,6 +379,8 @@ DO UPDATE SET "data" = (
 );`,
 				values: [keys, dataStrings],
 			});
+
+			cache.del(keys);
 		});
 	};
 };

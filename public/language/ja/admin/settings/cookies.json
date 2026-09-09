@@ -1,13 +1,15 @@
 {
-	"eu-consent": "EU承諾",
+	"eu-consent": "EU 同意",
 	"consent.enabled": "有効",
 	"consent.message": "通知メッセージ",
-	"consent.acceptance": "メッセージを受け取る",
+	"consent.acceptance": "同意メッセージ",
 	"consent.link-text": "ポリシーリンクテキスト",
-	"consent.link-url": "Policy Link URL",
+	"consent.link-url": "ポリシーリンクURL",
 	"consent.blank-localised-default": "空白のままにして、NodeBBのローカライズされたデフォルトを使用する",
 	"settings": "設定",
 	"cookie-domain": "セッションCookieドメイン",
-	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "デフォルトの場合は空白のまま"
+	"max-user-sessions": "1ユーザーあたりの最大アクティブセッション数",
+	"blank-default": "デフォルトの場合は空白のまま",
+	"revoke-all-sessions": "すべてのセッションを無効にする",
+	"revoke-all-sessions-desc": "すべてのセッションが削除され、ログアウトされます。再度ログインが必要になります。"
 }

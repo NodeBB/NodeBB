@@ -4,7 +4,8 @@
 	"lead-text": "Từ trang này, bạn có thể cấu hình quyền truy cập vào API Viết trong NodeBB.",
 	"intro": "Mặc định, API Viết xác thực người dùng dựa trên cookie phiên của họ, nhưng NodeBB cũng hỗ trợ xác thực Bearer thông qua mã truy cập được tạo qua trang này.",
 	"warning": "<strong>Lời khuyên</strong> — coi mã thông báo như mật khẩu. Nếu chúng bị rò rỉ, tài khoản của bạn sẽ được coi là bị xâm phạm.",
-	"docs": "Nhấp vào đây để truy cập thông số kỹ thuật API đầy đủ",
+	"docs": "Nhấp vào đây để truy cập thông số kỹ thuật API Đọc.",
+	"docs.write": "Nhấp vào đây để truy cập thông số kỹ thuật của API Ghi.",
 
 	"require-https": "Chỉ yêu cầu sử dụng API qua HTTPS",
 	"require-https-caveat": "<strong>Ghi chú</strong>: Một số cài đặt liên quan đến bộ cân bằng tải có thể ủy quyền các yêu cầu của họ tới NodeBB bằng HTTP, trong trường hợp đó tùy chọn này vẫn bị vô hiệu hóa.",
@@ -25,5 +26,10 @@
 	"roll": "Cuộn",
 
 	"delete-confirm": "Bạn có chắc muốn xóa token này không? Nó không thể phục hồi.",
-	"roll-confirm": "Bạn có chắc muốn tạo lại token này không? Token cũ sẽ bị thu hồi ngay và không thể phục hồi được."
+	"roll-confirm": "Bạn có chắc muốn tạo lại token này không? Token cũ sẽ bị thu hồi ngay và không thể phục hồi được.",
+	"token-once-title": "Sao Chép Token Ngay",
+	"token-once-warning": "Token này chỉ hiển thị một lần. Hãy lưu trữ mã này một cách an toàn trước khi đóng hộp thoại này.",
+	"copy-token": "Sao chép",
+	"token-copied": "Đã sao chép token vào bảng nhớ tạm",
+	"token-copy-failed": "Không thể sao chép token. Hãy sao chép thủ công."
 }

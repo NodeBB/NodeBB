@@ -10,8 +10,6 @@
 	"max-chat-room-name-length": "Söhbət otağı adlarının maksimum uzunluğu",
 	"max-room-size": "Söhbət otaqlarında maksimum istifadəçi sayı",
 	"delay": "Söhbət mesajları arasındakı vaxt (ms)",
-	"notification-delay": "Söhbət mesajları üçün bildiriş gecikməsi",
-	"notification-delay-help": "Bu vaxt arasında göndərilən əlavə mesajlar toplanır və istifadəçiyə hər gecikmə müddətində bir dəfə bildiriş göndərilir. Gecikməni söndürmək üçün bunu 0-a qoyun.",
 	"restrictions.seconds-edit-after": "Söhbət mesajının redaktə oluna biləcəyi saniyələrin sayı.",
 	"restrictions.seconds-delete-after": "Söhbət mesajının silinə biləcəyi saniyələrin sayı."
 }

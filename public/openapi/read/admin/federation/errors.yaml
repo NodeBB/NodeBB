@@ -1,0 +1,29 @@
+get:
+  tags:
+    - admin
+  summary: Get federation error data
+  responses:
+    "200":
+      description: Error data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        body:
+                          type: string
+                        stack:
+                          type: string
+                        hostname:
+                          type: string
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

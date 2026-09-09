@@ -1,6 +1,16 @@
 {
 	"alert.confirm-rebuild-and-restart": "האם אתם בטוחים שברצונכם לבנות ולהפעיל מחדש את NodeBB?",
 	"alert.confirm-restart": "האם אתם בטוחים שברצונכם להפעיל מחדש את NodeBB?",
+	"rebuilding.title": "בניה מחדש... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "בונה מחדש נכסי חזית (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> הצליח",
+	"rebuilding.success.message": "NodeBB נבנה מחדש והופעל מחדש בהצלחה.",
+	"build.complete": "הבניה הושלמה!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "מפעיל מחדש... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB מופעל מחדש.",
+	"restarting.success.message": "NodeBB הופעל מחדש בהצלחה.",
+
 
 	"acp-title": "%1 | לוח בקרה למנהלי הפורום NodeBB",
 	"settings-header-contents": "תוכן",

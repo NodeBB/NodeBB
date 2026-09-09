@@ -12,6 +12,6 @@
 	"disable": "Wyłącz",
 
 	"alert.delete-success": "Pomyślnie usunięto nagrodę",
-	"alert.no-inputs-found": "Niepoprawnie dodana nagroda ",
+	"alert.no-inputs-found": "Illegal reward - no inputs found! %1",
 	"alert.save-success": "Pomyślnie zapisano nagrody"
 }

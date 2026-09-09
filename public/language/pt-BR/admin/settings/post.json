@@ -27,6 +27,7 @@
 	"restrictions.post-length": "Post Length",
 	"restrictions.days-until-stale": "Dias para que o tópico seja considerado antigo",
 	"restrictions.stale-help": "If a topic is considered \"stale\", then a warning will be shown to users who attempt to reply to that topic. (set to 0 to disable)",
+	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
 	"timestamp": "Timestamp",
 	"timestamp.cut-off": "Data de corte (em dias)",
 	"timestamp.cut-off-help": "Datas &amp; horários serão exibidos de uma forma relativa (por exemplo: \"3 horas atrás\" / \"5 dias atrás\"), e de acordo com os mais diversos\n\t\t\t\t\tidiomas. Após um certo ponto, este texto pode ser trocado para mostrar a própria data local\n\t\t\t\t\t(por exemplo: 5 Nov 2016 15:30).<br /><em>(Padrão: <code>30</code>, ou um mês). Defina como 0 para sempre mostrar datas, deixe em branco para sempre mostrar horários relativos.</em>",

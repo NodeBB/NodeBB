@@ -38,6 +38,7 @@ Controller.webfinger = async (req, res) => {
 			return res.sendStatus(404);
 		}
 
+		res.set('Access-Control-Allow-Origin', '*');
 		res.status(200).json(response);
 	} catch (e) {
 		res.sendStatus(404);
@@ -80,11 +81,35 @@ async function profile(uid, response) {
 	];
 
 	if (meta.config.activitypubEnabled) {
-		response.links.push({
-			rel: 'self',
-			type: 'application/activity+json',
-			href: `${nconf.get('url')}/uid/${uid}`, // actor
-		});
+		response.links.push(
+			{
+				rel: 'self',
+				type: 'application/activity+json',
+				href: `${nconf.get('url')}/uid/${uid}`, // actor
+			},
+
+			// Activity Intents
+			{
+				'rel': 'https://w3id.org/fep/3b86/Object',
+				'template': `${nconf.get('url')}/ap?resource={object}`,
+			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Create',
+				'template': `${nconf.get('url')}/intents/create?toPid={inReplyTo}&cid={audience}`,
+			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Like',
+				'template': `${nconf.get('url')}/intents/like?pid={object}`,
+			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Dislike',
+				'template': `${nconf.get('url')}/intents/dislike?pid={object}`,
+			},
+			{
+				'rel': 'https://w3id.org/fep/3b86/Follow',
+				'template': `${nconf.get('url')}/intents/follow?uid={object}`,
+			},
+		);
 	}
 
 	return response;

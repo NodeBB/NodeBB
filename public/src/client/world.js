@@ -1,17 +1,81 @@
 'use strict';
 
-define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 'bootbox'], function (topicList, search, sort, hooks, alerts, api, bootbox) {
+define('forum/world', [
+	'forum/infinitescroll', 'search', 'sort', 'hooks',
+	'alerts', 'api', 'modals', 'helpers', 'forum/category/tools',
+	'translator', 'quickreply', 'handleBack', 'imagesloaded',
+	'forum/topic/votes',
+	'modules/intents',
+], function (infinitescroll, search, sort, hooks,
+	alerts, api, modals, helpers, categoryTools,
+	translator, quickreply, handleBack, imagesLoaded, votes, intents) {
 	const World = {};
 
 	World.init = function () {
 		app.enterRoom('world');
-		topicList.init('world');
+		quickreply.init({
+			route: '/topics',
+			body: {
+				cid: config.activitypub.worldDefaultCid || ajaxify.data.cid,
+			},
+		});
 
 		sort.handleSort('categoryTopicSort', 'world');
-
-		handleIgnoreWatch(-1);
+		handleImages();
+		handleButtons();
 		handleHelp();
-		handleCategories();
+		handleShowMoreButtons();
+
+		categoryTools.init($('#world-feed'));
+		socket.on('event:new_post', onNewPost);
+		$(window).one('action:ajaxify.start', function () {
+			categoryTools.removeListeners();
+			socket.removeListener('event:new_post', onNewPost);
+		});
+
+		// Add label to sort
+		const sortLabelEl = document.getElementById('sort-label');
+		const sortOptionsEl = document.getElementById('sort-options');
+		if (sortLabelEl && sortOptionsEl) {
+			const params = new URLSearchParams(window.location.search);
+			switch(params.get('sort')) {
+				case 'popular': {
+					translator.translate(`[[world:popular-${params.get('term')}]]`, function (translated) {
+						sortLabelEl.innerText = translated;
+					});
+					break;
+				}
+
+				default: {
+					let suffix = '';
+					if (params.get('all') === '1') {
+						suffix = '-all';
+					} else if (params.get('local') === '1') {
+						suffix = '-local';
+					}
+					translator.translate(`[[world:latest${suffix}]]`, function (translated) {
+						sortLabelEl.innerText = translated;
+					});
+					break;
+				}
+			}
+		}
+
+		handleBack.init((after, handleBackCb) => {
+			loadTopicsAfter(after, undefined, 1, (payload, callback) => {
+				app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
+					const listEl = document.getElementById('world-feed');
+					$(listEl).append(html);
+					imagesLoaded(listEl, () => {
+						html.find('.timeago').timeago();
+						handleImages();
+						handleShowMoreButtons();
+						callback();
+						handleBackCb();
+					});
+				});
+			});
+		}, { container: '#world-feed' });
 
 		search.enableQuickSearch({
 			searchElements: {
@@ -28,34 +92,95 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 			hideOnNoMatches: false,
 		});
 
+		if (!config.usePagination) {
+			infinitescroll.init((direction) => {
+				const posts = Array.from(document.querySelectorAll('[component="category/topic"]'));
+				if (!posts.length) {
+					return;
+				}
+
+				const afterEl = direction > 0 ? posts.pop() : posts.shift();
+				const index = (parseInt(afterEl.getAttribute('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
+				const after = afterEl.getAttribute('data-tid');
+				if (index < config.topicsPerPage) {
+					return;
+				}
+
+				loadTopicsAfter(index, after, direction, (payload, callback) => {
+					app.parseAndTranslate(ajaxify.data.template.name, 'posts', payload, function (html) {
+						const listEl = document.getElementById('world-feed');
+						$(listEl)[direction === -1 ? 'prepend' : 'append'](html);
+						html.find('.timeago').timeago();
+						handleImages();
+						handleShowMoreButtons();
+						callback();
+					});
+				});
+			});
+		}
+
+		ajaxify.data.categories.forEach(function (category) {
+			handleIgnoreWatch(category.cid);
+		});
+
+		intents.addHandlers();
+
 		hooks.fire('action:topics.loaded', { topics: ajaxify.data.topics });
 		hooks.fire('action:category.loaded', { cid: ajaxify.data.cid });
 	};
 
-	function handleIgnoreWatch(cid) {
-		$('[component="category/watching"], [component="category/tracking"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
-			const $this = $(this);
-			const state = $this.attr('data-state');
+	function calculateNextPage(after, direction) {
+		return Math.floor(after / config.topicsPerPage) + (direction > 0 ? 1 : 0);
+	}
 
-			api.put(`/categories/${cid}/watch`, { state }, (err) => {
+	function loadTopicsAfter(index, referenceTid, direction, callback) {
+		callback = callback || function () {};
+		const query = utils.params();
+		query.page = calculateNextPage(index, direction);
+		query[direction > 0 ? 'after' : 'before'] = referenceTid;
+		infinitescroll.loadMoreXhr(query, callback);
+	}
+
+	function handleButtons() {
+		const feedEl = $('#world-feed');
+
+		feedEl.on('click', '[data-action="bookmark"]', function () {
+			const $this = $(this);
+			const isBookmarked = $this.attr('data-bookmarked') === 'true';
+			const pid = $this.attr('data-pid');
+			const bookmarkCount = parseInt($this.attr('data-bookmarks'), 10);
+			const method = isBookmarked ? 'del' : 'put';
+
+			api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
 				if (err) {
 					return alerts.error(err);
 				}
-
-				$('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
-				$('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
-
-				$('[component="category/tracking/menu"]').toggleClass('hidden', state !== 'tracking');
-				$('[component="category/tracking/check"]').toggleClass('fa-check', state === 'tracking');
-
-				$('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
-				$('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');
-
-				$('[component="category/ignoring/menu"]').toggleClass('hidden', state !== 'ignoring');
-				$('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
-
-				alerts.success('[[category:' + state + '.message]]');
+				const type = isBookmarked ? 'unbookmark' : 'bookmark';
+				const newBookmarkCount = bookmarkCount + (isBookmarked ? -1 : 1);
+				$this.find('[component="bookmark-count"]').text(
+					helpers.humanReadableNumber(newBookmarkCount)
+				);
+				$this.attr('data-bookmarks', newBookmarkCount);
+				$this.attr('data-bookmarked', isBookmarked ? 'false' : 'true');
+				$this.find('i').toggleClass('fa text-primary', !isBookmarked)
+					.toggleClass('fa-regular text-muted', isBookmarked);
+				hooks.fire(`action:post.${type}`, { pid: pid });
 			});
+		});
+
+		feedEl.on('click', '[data-action="upvote"]', function (e) {
+			e.preventDefault();
+			votes.toggleVote($(this), 'upvoted', 1, 'i');
+			return false;
+		});
+
+		feedEl.on('click', '[data-action="reply"]', function () {
+			const $this = $(this);
+			const isMain = $this.attr('data-is-main') === 'true';
+			app.newReply({
+				tid: $this.attr('data-tid'),
+				pid: !isMain ? $this.attr('data-pid') : undefined,
+			}).catch(alerts.error);
 		});
 	}
 
@@ -74,7 +199,7 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 		];
 
 		trigger.addEventListener('click', () => {
-			bootbox.dialog({
+			modals.dialog({
 				title: '[[world:help.title]]',
 				message: content.join('\n'),
 				size: 'large',
@@ -82,37 +207,86 @@ define('forum/world', ['topicList', 'search', 'sort', 'hooks', 'alerts', 'api', 
 		});
 	}
 
-	function handleCategories() {
-		// const optionsEl = document.getElementById('category-options');
-		// const dropdownEl = optionsEl.querySelector('ul');
-		const showEl = document.getElementById('show-categories');
-		const hideEl = document.getElementById('hide-categories');
-		const categoriesEl = document.querySelector('.categories-list');
-		if (![showEl, hideEl, categoriesEl].every(Boolean)) {
+	function handleIgnoreWatch(cid) {
+		const category = $('[data-cid="' + cid + '"]');
+		category.find(
+			'[component="category/watching"], [component="category/tracking"], [component="category/ignoring"], [component="category/notwatching"]'
+		).on('click', async (e) => {
+			const state = e.currentTarget.getAttribute('data-state');
+			const { uid } = ajaxify.data;
+
+			const { modified } = await api.put(`/categories/${encodeURIComponent(cid)}/watch`, { state, uid });
+			updateDropdowns(modified, state);
+			alerts.success('[[category:' + state + '.message]]');
+		});
+	}
+
+	function handleImages() {
+		$('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
+	}
+
+	function handleShowMoreButtons() {
+		const feedEl = document.getElementById('world-feed');
+		if (!feedEl) {
 			return;
 		}
 
-		const update = () => {
-			showEl.classList.toggle('hidden', visibility);
-			hideEl.classList.toggle('hidden', !visibility);
-			categoriesEl.classList.toggle('hidden', !visibility);
-			localStorage.setItem('world:show-categories', visibility);
-		};
+		feedEl.querySelectorAll('[component="post/content"]').forEach((el) => {
+			const initted = el.getAttribute('data-showmore');
+			if (parseInt(initted, 10) === 1) {
+				return;
+			}
 
-		let visibility = localStorage.getItem('world:show-categories');
-		console.log('got value', visibility);
-		visibility = visibility ? visibility === 'true' : true; // localStorage values are strings
-		update();
-
-		showEl.addEventListener('click', () => {
-			visibility = true;
-			update();
+			if (el.clientHeight < el.scrollHeight - 1) {
+				el.parentNode.querySelector('[component="show/more"]').classList.remove('hidden');
+				el.classList.toggle('clamp-fade-6', true);
+			}
+			el.setAttribute('data-showmore', '1');
 		});
 
-		hideEl.addEventListener('click', () => {
-			visibility = false;
-			update();
+		if (parseInt(feedEl.getAttribute('data-showmore'), 10) !== 1) {
+			feedEl.addEventListener('click', (e) => {
+				const subselector = e.target.closest('[component="show/more"]');
+				if (subselector) {
+					const postContent = subselector.closest('.post-body').querySelector('[component="post/content"]');
+					const isShowingMore = parseInt(subselector.getAttribute('ismore'), 10) === 1;
+					postContent.classList.toggle('line-clamp-6', isShowingMore);
+					postContent.classList.toggle('clamp-fade-6', isShowingMore);
+					$(subselector).translateText(isShowingMore ? '[[world:see-more]]' : '[[world:see-less]]');
+					subselector.setAttribute('ismore', isShowingMore ? 0 : 1);
+				}
+			});
+			feedEl.setAttribute('data-showmore', '1');
+		}
+	}
+
+	function updateDropdowns(modified_cids, state) {
+		modified_cids.forEach(function (cid) {
+			const category = $('[data-cid="' + cid + '"]');
+			category.find('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
+			category.find('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
+
+			category.find('[component="category/tracking/menu"]').toggleClass('hidden', state !== 'tracking');
+			category.find('[component="category/tracking/check"]').toggleClass('fa-check', state === 'tracking');
+
+			category.find('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
+			category.find('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');
+
+			category.find('[component="category/ignoring/menu"]').toggleClass('hidden', state !== 'ignoring');
+			category.find('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
 		});
+	}
+
+	async function onNewPost({ posts }) {
+		const feedEl = document.getElementById('world-feed');
+		const html = await app.parseAndTranslate('world', 'posts', { posts });
+		if (!feedEl || !html) {
+			return;
+		}
+
+		feedEl.prepend(...html);
+		handleImages();
+		handleShowMoreButtons();
 	}
 
 	return World;

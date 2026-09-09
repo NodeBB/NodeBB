@@ -51,6 +51,7 @@ export default defineConfig([
 				beforeEach: 'readonly',
 				after: 'readonly',
 				afterEach: 'readonly',
+				nodebb: 'readonly',
 			},
 		},
 		rules: {
@@ -60,6 +61,19 @@ export default defineConfig([
 		}
 	},
 	...publicConfig,
-	...serverConfig
+	...serverConfig,
+	{
+		rules: {
+			'preserve-caught-error': 'off'
+		}
+	},
+	{
+		files: [
+			'nodebb-global.js',
+		],
+		languageOptions: {
+			sourceType: 'module',
+		}
+	}
 ]);
 

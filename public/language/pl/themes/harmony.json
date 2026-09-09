@@ -1,6 +1,8 @@
 {
 	"theme-name": "Styl Harmony",
 	"skins": "Skórki",
+	"light": "Jasny",
+	"dark": "Ciemny",
 	"collapse": "Zwiń",
 	"expand": "Rozwiń",
 	"sidebar-toggle": "Przełącz panele boczne",

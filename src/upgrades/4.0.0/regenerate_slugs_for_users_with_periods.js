@@ -13,17 +13,22 @@ module.exports = {
 
 		await batch.processSortedSet('users:joindate', async (uids) => {
 			const data = await user.getUsersFields(uids, ['username', 'userslug']);
-			await Promise.all(data.map(async ({ uid, username, userslug }) => {
+			const bulkSet = [];
+			const bulkAdd = [];
+			const bulkRemove = [];
+			data.forEach(({ uid, username, userslug }) => {
 				if (username.includes('.') && userslug !== slugify(username)) {
 					const value = slugify(username);
-					await Promise.all([
-						db.sortedSetRemove('userslug:uid', userslug),
-						user.setUserField(uid, 'userslug', value),
-						db.sortedSetAdd('userslug:uid', uid, value),
-					]);
+					bulkSet.push([`user:${uid}`, { userslug: value }]);
+					bulkAdd.push([`userslug:uid`, uid, value]);
+					bulkRemove.push(userslug);
 				}
-			}));
-
+			});
+			await Promise.all([
+				db.sortedSetRemove('userslug:uid', bulkRemove),
+				db.sortedSetAddBulk(bulkAdd),
+				db.setObjectBulk(bulkSet),
+			]);
 			progress.incr(uids.length);
 		}, {
 			batch: 500,

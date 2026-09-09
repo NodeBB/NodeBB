@@ -47,6 +47,24 @@ delete:
       required: true
       description: uid of the user to unmute
       example: 2
+    - name: reason
+      in: query
+      schema:
+        type: string
+        nullable: true
+      description: Reason for the unmute
+      example: Reason for the unmute
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            reason:
+              type: string
+              nullable: true
+              description: Reason for the unmute
+              example: Reason for the unmute
   responses:
     '200':
       description: successfully unmuted user

@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const validator = require('validator');
 const nconf = require('nconf');
 const db = require('../database');
 const user = require('../user');
@@ -11,7 +10,7 @@ const plugins = require('../plugins');
 const meta = require('../meta');
 const activitypub = require('../activitypub');
 const utils = require('../utils');
-const translator = require('../translator');
+const tx = require('../translator');
 const cache = require('../cache');
 
 const relative_path = nconf.get('relative_path');
@@ -171,6 +170,22 @@ Messaging.getPublicRooms = async (callerUid, uid) => {
 	return roomData;
 };
 
+async function getUsers(roomIds, exceptUid) {
+	const arrayOfUids = await Promise.all(
+		roomIds.map(roomId => Messaging.getUidsInRoomFromSet(`chat:room:${roomId}:uids:online`, 0, 9, true))
+	);
+	const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
+		_uid => _uid && parseInt(_uid, 10) !== parseInt(exceptUid, 10)
+	);
+	const uidToUser = _.zipObject(
+		uniqUids,
+		await user.getUsersFields(uniqUids, [
+			'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
+		])
+	);
+	return arrayOfUids.map(uids => uids.map(uid => uidToUser[uid]));
+}
+
 Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
 	if (!ok) {
@@ -179,31 +194,87 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 
 	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, start, stop);
 
-	async function getUsers(roomIds) {
-		const arrayOfUids = await Promise.all(
-			roomIds.map(roomId => Messaging.getUidsInRoom(roomId, 0, 9))
-		);
-		const uniqUids = _.uniq(_.flatten(arrayOfUids)).filter(
-			_uid => _uid && parseInt(_uid, 10) !== parseInt(uid, 10)
-		);
-		const uidToUser = _.zipObject(
-			uniqUids,
-			await user.getUsersFields(uniqUids, [
-				'uid', 'username', 'userslug', 'picture', 'status', 'lastonline',
-			])
-		);
-		return arrayOfUids.map(uids => uids.map(uid => uidToUser[uid]));
-	}
-
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, roomIds),
-		users: getUsers(roomIds),
+		inRoom: Messaging.isUserInRoom(uid, roomIds),
+		users: getUsers(roomIds, uid),
 		teasers: Messaging.getTeasers(uid, roomIds),
-		settings: user.getSettings(uid),
 	});
 
+	results.roomData = await modifyChatRooms(uid, results);
+
+	const ref = { rooms: results.roomData, nextStart: stop + 1 };
+	return await plugins.hooks.fire('filter:messaging.getRecentChats', {
+		rooms: ref.rooms,
+		nextStart: ref.nextStart,
+		uid: uid,
+		callerUid: callerUid,
+	});
+};
+
+Messaging.searchRecentChats = async (callerUid, uid, query) => {
+	const ok = await canGet('filter:messaging.canGetRecentChats', callerUid, uid);
+	if (!ok) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const roomIds = await db.getSortedSetRevRange(`uid:${uid}:chat:rooms`, 0, -1);
+
+	// First pass loads only what the query is actually matched against, so the
+	// expensive hydration (teasers, unread counts, membership, ...) can be limited
+	// to the rooms that matched instead of running over the user's entire chat list.
+	const [names, users] = await Promise.all([
+		Messaging.getRoomsData(roomIds, ['roomName']),
+		getUsers(roomIds, uid),
+	]);
+
+	const lowerQuery = String(query).toLowerCase();
+	const matchedIndices = roomIds.reduce((matched, roomId, idx) => {
+		const roomName = names[idx] && names[idx].roomName;
+		const titleMatch = roomName && roomName.toLowerCase().includes(lowerQuery);
+
+		const usernameMatch = !titleMatch && (users[idx] || []).some(user => user && (
+			(user.displayname && user.displayname.toLowerCase().includes(lowerQuery)) ||
+			(user.username && user.username.toLowerCase().includes(lowerQuery))
+		));
+
+		if (titleMatch || usernameMatch) {
+			matched.push(idx);
+		}
+		return matched;
+	}, []);
+
+	const matchedRoomIds = matchedIndices.map(idx => roomIds[idx]);
+	const results = await utils.promiseParallel({
+		roomData: Messaging.getRoomsData(matchedRoomIds),
+		unread: db.isSortedSetMembers(`uid:${uid}:chat:rooms:unread`, matchedRoomIds),
+		inRoom: Messaging.isUserInRoom(uid, matchedRoomIds),
+		teasers: Messaging.getTeasers(uid, matchedRoomIds),
+	});
+	// reuse the user lists already fetched for matching, kept aligned with roomData
+	results.users = matchedIndices.map(idx => users[idx]);
+
+	results.roomData = await modifyChatRooms(uid, results);
+
+	return await plugins.hooks.fire('filter:messaging.searchRecentChats', {
+		rooms: results.roomData,
+		uid: uid,
+		callerUid: callerUid,
+	});
+};
+
+async function modifyChatRooms(uid, results) {
+	const danglingRoomIds = [];
 	await Promise.all(results.roomData.map(async (room, index) => {
+		// Hide rooms the viewer cannot actually open, mirroring Messaging.loadRoom's
+		// visibility check. A private room the viewer is no longer a member of would
+		// otherwise show up as an empty/unenterable entry in the chat list.
+		if (room && !room.public && results.inRoom && !results.inRoom[index]) {
+			danglingRoomIds.push(room.roomId);
+			results.roomData[index] = null;
+			return;
+		}
 		if (room) {
 			room.users = results.users[index];
 			room.groupChat = room.users.length > 2;
@@ -218,55 +289,71 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 			room.users = room.users.filter(user => user && (parseInt(user.uid, 10) || activitypub.helpers.isUri(user.uid)));
 			room.lastUser = room.users[0];
 			room.usernames = Messaging.generateUsernames(room, uid);
-			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, results.settings.userLang);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
 		}
 	}));
 
-	results.roomData = results.roomData.filter(Boolean);
-	const ref = { rooms: results.roomData, nextStart: stop + 1 };
-	return await plugins.hooks.fire('filter:messaging.getRecentChats', {
-		rooms: ref.rooms,
-		nextStart: ref.nextStart,
-		uid: uid,
-		callerUid: callerUid,
-	});
-};
+	// Self-heal: drop dangling room references from the user's list so they don't
+	// keep showing up. These arise when the room set and membership set drift apart.
+	if (danglingRoomIds.length) {
+		await db.sortedSetRemove([
+			`uid:${uid}:chat:rooms`,
+			`uid:${uid}:chat:rooms:unread`,
+		], danglingRoomIds);
+	}
+
+	return results.roomData.filter(Boolean);
+}
 
 Messaging.generateUsernames = function (room, excludeUid) {
 	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
 	const usernames = users.map(u => u.displayname);
 	if (users.length > 3) {
-		return translator.compile(
+		return tx.compile(
 			'modules:chat.usernames-and-x-others',
-			usernames.slice(0, 2).join(', '),
+			usernames.slice(0, 2).map(name => tx.escape(utils.escapeHTML(name))).join(', '),
 			room.userCount - 2
 		);
 	}
 	return usernames.join(', ');
 };
 
-Messaging.generateChatWithMessage = async function (room, callerUid, userLang) {
-	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== callerUid);
-	const usernames = users.map(u => (utils.isNumber(u.uid) ?
-		`<a href="${relative_path}/uid/${u.uid}">${u.displayname}</a>` :
-		`<a href="${relative_path}/user/${u.username}">${u.displayname}</a>`));
-	let compiled = '';
+Messaging.generateChatWithMessage = async function (room, callerUid) {
+	let users = room.users.filter(u => u && String(u.uid) !== String(callerUid));
 	if (!users.length) {
 		return '[[modules:chat.no-users-in-room]]';
 	}
-	if (users.length > 3) {
-		compiled = translator.compile(
+	const moreThan3 = users.length > 3;
+	users = moreThan3 ? users.slice(0, 2) : users;
+	const userData = users.map((u) => {
+		const href = utils.isNumber(u.uid) ?
+			`${relative_path}/uid/${u.uid}` :
+			`${relative_path}/user/${u.username}`;
+
+		return {
+			href,
+			displayname: String(u.displayname),
+		};
+	});
+
+	let compiled;
+	const txArgs = [];
+	userData.forEach((userData) =>{
+		txArgs.push(userData.href, tx.escape(utils.escapeHTML(userData.displayname)));
+	});
+	if (moreThan3) {
+		txArgs.push(room.userCount - 2);
+		compiled = tx.compile(
 			'modules:chat.chat-with-usernames-and-x-others',
-			usernames.slice(0, 2).join(', '),
-			room.userCount - 2
+			...txArgs
 		);
 	} else {
-		compiled = translator.compile(
-			'modules:chat.chat-with-usernames',
-			usernames.join(', '),
+		compiled = tx.compile(
+			`modules:chat.chat-with-usernames-${userData.length}`,
+			...txArgs
 		);
 	}
-	return utils.decodeHTMLEntities(await translator.translate(compiled, userLang));
+	return compiled;
 };
 
 Messaging.getTeaser = async (uid, roomId) => {
@@ -283,7 +370,7 @@ Messaging.getTeasers = async (uid, roomIds) => {
 		user.blocks.list(uid),
 	]);
 	const uids = _.uniq(
-		teasers.map(t => t && t.fromuid).filter(uid => uid && !blockedUids.includes(uid))
+		teasers.map(t => t && t.fromuid).filter(uid => uid && !blockedUids.includes(String(uid)))
 	);
 
 	const userMap = _.zipObject(
@@ -301,37 +388,36 @@ Messaging.getTeasers = async (uid, roomIds) => {
 		if (userMap[teaser.fromuid]) {
 			teaser.user = userMap[teaser.fromuid];
 		}
-		teaser.content = validator.escape(
-			String(utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content)))
-		);
-		teaser.roomId = roomId;
+		teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
+		teaser.roomId = parseInt(roomId, 10);
 		const payload = await plugins.hooks.fire('filter:messaging.getTeaser', { teaser: teaser });
 		return payload.teaser;
 	}));
 };
 
 Messaging.getLatestUndeletedMessage = async (uid, roomId) => {
-	let done = false;
-	let latestMid = null;
+	// Walk backwards in batches; one message at a time meant two round trips per
+	// deleted/system message, and this runs once per room in the chat list.
+	const batchSize = 10;
 	let index = 0;
-	let mids;
+	let done = false;
 
 	while (!done) {
 		/* eslint-disable no-await-in-loop */
-		mids = await getMessageIds(roomId, uid, index, index);
-		if (mids.length) {
-			const states = await Messaging.getMessageFields(mids[0], ['deleted', 'system']);
-			done = !states.deleted && !states.system;
-			if (done) {
-				latestMid = mids[0];
-			}
-			index += 1;
-		} else {
-			done = true;
+		const mids = await getMessageIds(roomId, uid, index, index + batchSize - 1);
+		if (!mids.length) {
+			return null;
 		}
+		const states = await Messaging.getMessagesFields(mids, ['deleted', 'system']);
+		const matchIndex = states.findIndex(state => state && !state.deleted && !state.system);
+		if (matchIndex !== -1) {
+			return mids[matchIndex];
+		}
+		index += mids.length;
+		done = mids.length < batchSize; // short read means we hit the start of the room
 	}
 
-	return latestMid;
+	return null;
 };
 
 Messaging.canMessageUser = async (uid, toUid) => {
@@ -342,12 +428,10 @@ Messaging.canMessageUser = async (uid, toUid) => {
 	if (parseInt(uid, 10) === parseInt(toUid, 10)) {
 		throw new Error('[[error:cant-chat-with-yourself]]');
 	}
-	const [exists, isTargetPrivileged, canChat, canChatWithPrivileged] = await Promise.all([
+	const [exists, isTargetPrivileged, [canChat, canChatWithPrivileged]] = await Promise.all([
 		user.exists(toUid),
 		user.isPrivileged(toUid),
-		privileges.global.can('chat', uid),
-		privileges.global.can('chat:privileged', uid),
-		checkReputation(uid),
+		privileges.global.can(['chat', 'chat:privileged'], uid),
 	]);
 
 	if (!exists) {
@@ -356,6 +440,11 @@ Messaging.canMessageUser = async (uid, toUid) => {
 
 	if (!canChat && !(canChatWithPrivileged && isTargetPrivileged)) {
 		throw new Error('[[error:no-privileges]]');
+	}
+
+	// only check reputation when messaging regular users
+	if (!isTargetPrivileged) {
+		await checkReputation(uid);
 	}
 
 	const [settings, isAdmin, isModerator, isBlocked] = await Promise.all([
@@ -391,12 +480,13 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 	if (meta.config.disableChat || uid <= 0) {
 		throw new Error('[[error:chat-disabled]]');
 	}
-
+	if (!utils.isNumber(roomId)) {
+		throw new Error('[[error:invalid-data]]');
+	}
 	const [roomData, inRoom, canChat] = await Promise.all([
 		Messaging.getRoomData(roomId),
 		Messaging.isUserInRoom(uid, roomId),
 		privileges.global.can(['chat', 'chat:privileged'], uid),
-		checkReputation(uid),
 		user.checkMuted(uid),
 	]);
 	if (!roomData) {

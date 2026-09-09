@@ -3,9 +3,9 @@
 const path = require('path');
 const fs = require('fs/promises');
 const nconf = require('nconf');
-const winston = require('winston');
 const { default: satori } = require('satori');
 const sharp = require('sharp');
+const wawoff2 = require('wawoff2');
 
 const utils = require('../utils');
 
@@ -33,24 +33,26 @@ Icons.get = async (cid) => {
 };
 
 Icons.flush = async (cid) => {
-	winston.verbose(`[categories/icons] Flushing ${cid}.`);
 	const paths = Icons._constants.extensions.map(extension => path.resolve(nconf.get('upload_path'), 'category', `category-${cid}-icon.${extension}`));
 
 	await Promise.all(paths.map((async path => await fs.rm(path, { force: true }))));
 };
 
 Icons.regenerate = async (cid) => {
-	winston.verbose(`[categories/icons] Regenerating ${cid}.`);
 	const { icon, color, bgColor } = await categories.getCategoryData(cid);
 
 	const fontPaths = new Map(Object.entries({
-		regular: path.join(utils.getFontawesomePath(), 'webfonts/fa-regular-400.ttf'),
-		solid: path.join(utils.getFontawesomePath(), 'webfonts/fa-solid-900.ttf'),
+		regular: path.join(utils.getFontawesomePath(), 'webfonts/fa-regular-400.woff2'),
+		solid: path.join(utils.getFontawesomePath(), 'webfonts/fa-solid-900.woff2'),
 	}));
-	const fontBuffers = new Map(Object.entries({
-		regular: await fs.readFile(fontPaths.get('regular')),
-		solid: await fs.readFile(fontPaths.get('solid')),
-	}));
+
+	const fontBuffers = new Map();
+
+	const regularWoff2 = await fs.readFile(fontPaths.get('regular'));
+	const solidWoff2 = await fs.readFile(fontPaths.get('solid'));
+
+	fontBuffers.set('regular', Buffer.from(await wawoff2.decompress(regularWoff2)));
+	fontBuffers.set('solid', Buffer.from(await wawoff2.decompress(solidWoff2)));
 
 	// Retrieve unicode codepoint (hex) and weight
 	let metadata = await fs.readFile(path.join(utils.getFontawesomePath(), 'metadata/icon-families.json'), 'utf-8');
@@ -82,12 +84,12 @@ Icons.regenerate = async (cid) => {
 		width: 128,
 		height: 128,
 		fonts: [{
-			name: 'Font Awesome 6 Free',
+			name: 'Font Awesome 7 Free',
 			data: fontBuffers.get('regular'),
 			weight: 400,
 			style: 'normal',
 		}, {
-			name: 'Font Awesome 6 Free',
+			name: 'Font Awesome 7 Free',
 			data: fontBuffers.get('solid'),
 			weight: 900,
 			style: 'normal',

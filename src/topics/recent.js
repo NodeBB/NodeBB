@@ -61,13 +61,18 @@ module.exports = function (Topics) {
 	Topics.updateLastPostTime = async function (tid, lastposttime) {
 		await Topics.setTopicField(tid, 'lastposttime', lastposttime);
 		const topicData = await Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned']);
+		const crossposts = await Topics.crossposts.get(tid);
+		const crosspostCids = crossposts.map(({ cid }) => cid);
+		const cids = [topicData.cid, ...crosspostCids];
 
-		await db.sortedSetAdd(`cid:${topicData.cid}:tids:lastposttime`, lastposttime, tid);
+		await db.sortedSetsAdd(cids.map(cid => `cid:${cid}:tids:lastposttime`), lastposttime, tid);
 
 		await Topics.updateRecent(tid, lastposttime);
 
 		if (!topicData.pinned) {
-			await db.sortedSetAdd(`cid:${topicData.cid}:tids`, lastposttime, tid);
+			// crossposted categories are bumped too, otherwise the topic is stuck at
+			// the position it had when it was crossposted and sinks as others are replied to
+			await db.sortedSetsAdd(cids.map(cid => `cid:${cid}:tids`), lastposttime, tid);
 		}
 	};
 

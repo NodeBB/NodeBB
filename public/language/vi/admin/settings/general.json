@@ -18,7 +18,7 @@
 	"description": "Mô Tả Trang",
 	"keywords": "Từ Khóa Trang",
 	"keywords-placeholder": "Các từ khóa mô tả cộng đồng của bạn, được phân tách bằng dấu phẩy",
-	"logo-and-icons": "Lô-gô & Biểu Tượng Trang",
+	"logo-and-icons": "Truyền Thông & Thương Hiệu",
 	"logo.image": "Ảnh",
 	"logo.image-placeholder": "Đường dẫn đến biểu trưng để hiển thị phần đầu diễn đàn",
 	"logo.upload": "Tải lên",
@@ -35,6 +35,8 @@
 	"touch-icon.help": "Kích cỡ và định dạng được đề xuất: 512x512, chỉ định dạng PNG. Nếu không có biểu tượng cảm ứng nào, NodeBB sẽ quay trở lại sử dụng favicon.",
 	"maskable-icon": "Biểu tượng có thể che được (Màn Hình Trang Chủ)",
 	"maskable-icon.help": "Kích thước và định dạng nên là: 512x512, chỉ định dạng PNG. Nếu không có biểu tượng có thể che được nào được chỉ định, NodeBB sẽ trở lại Biểu Tượng Chạm.",
+	"screenshot": "Ảnh chụp màn hình",
+	"screenshot.help": "Kích thước và định dạng được đề xuất: từ 320px đến 3480px, chỉ định dạng JPG và PNG. Nếu không chỉ định ảnh chụp màn hình, NodeBB sẽ sử dụng ảnh chụp màn hình mặc định.",
 	"outgoing-links": "Liên Kết Đi",
 	"outgoing-links.warning-page": "Sử Dụng Trang Cảnh Báo Liên Kết Đi",
 	"search": "Tìm kiếm",
@@ -59,5 +61,8 @@
 	"auto-detect": "Tự Phát Hiện Cài Đặt Ngôn Ngữ Cho Khách",
 	"default-language-help": "Ngôn ngữ mặc định là cài đặt ngôn ngữ cho tất cả người dùng diễn đàn của bạn. <br />Người dùng cá nhân có thể thay đổi ngôn ngữ họ thích trong cài đặt tài khoản",
 	"post-sharing": "Chia Sẻ Bài Đăng",
-	"info-plugins-additional": "Plugin có thể thêm các mạng bổ sung để chia sẻ bài đăng."
+	"info-plugins-additional": "Plugin có thể thêm các mạng bổ sung để chia sẻ bài đăng.",
+	"privacy": "Riêng tư",
+	"log-ips": "Ghi nhật ký địa chỉ IP",
+	"log-ips-help": "Khi được bật, địa chỉ IP của tất cả khách truy cập sẽ được lưu trữ trong một bộ được sắp xếp cho mục đích phân tích. Điều này được sử dụng để tính toán số lượng khách truy cập."
 }

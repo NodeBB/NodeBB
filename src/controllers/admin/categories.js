@@ -7,7 +7,6 @@ const user = require('../../user');
 const categories = require('../../categories');
 const analytics = require('../../analytics');
 const plugins = require('../../plugins');
-const translator = require('../../translator');
 const meta = require('../../meta');
 const activitypub = require('../../activitypub');
 const helpers = require('../helpers');
@@ -21,7 +20,7 @@ categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, selectedData] = await Promise.all([
 		categories.getCategories([req.params.category_id]),
 		categories.getParents([req.params.category_id]),
-		helpers.getSelectedCategory(req.params.category_id),
+		helpers.getSelectedCategory(req.params.category_id, req.uid),
 	]);
 
 	const category = categoryData[0];
@@ -37,8 +36,6 @@ categoriesController.get = async function (req, res, next) {
 		category: category,
 		customClasses: [],
 	});
-	data.category.name = translator.escape(String(data.category.name));
-	data.category.description = translator.escape(String(data.category.description));
 
 	res.render('admin/manage/category', {
 		category: data.category,
@@ -52,7 +49,7 @@ categoriesController.getAll = async function (req, res) {
 	const rootCid = parseInt(req.query.cid, 10) || 0;
 	const rootChildren = await categories.getAllCidsFromSet(`cid:${rootCid}:children`);
 	async function getRootAndChildren() {
-		const childCids = _.flatten(await Promise.all(rootChildren.map(cid => categories.getChildrenCids(cid))));
+		const childCids = _.flatten(await Promise.all(rootChildren.map(categories.getChildrenCids)));
 		return [rootCid].concat(rootChildren.concat(childCids));
 	}
 
@@ -145,26 +142,25 @@ async function buildBreadcrumbs(categoryData, url) {
 categoriesController.buildBreadCrumbs = buildBreadcrumbs;
 
 categoriesController.getAnalytics = async function (req, res) {
-	const [name, analyticsData, selectedData] = await Promise.all([
-		categories.getCategoryField(req.params.category_id, 'name'),
+	const [analyticsData, { selectedCategory }] = await Promise.all([
 		analytics.getCategoryAnalytics(req.params.category_id),
-		helpers.getSelectedCategory(req.params.category_id),
+		helpers.getSelectedCategory(req.params.category_id, req.uid),
 	]);
+
 	res.render('admin/manage/category-analytics', {
-		name: name,
+		name: selectedCategory?.name || '',
 		analytics: analyticsData,
-		selectedCategory: selectedData.selectedCategory,
+		selectedCategory: selectedCategory,
 	});
 };
 
 categoriesController.getFederation = async function (req, res) {
-	const cid = req.params.category_id;
-	let [_following, pending, followers, name, { selectedCategory }] = await Promise.all([
+	const cid = parseInt(req.params.category_id, 10);
+	let [_following, pending, followers, { selectedCategory }] = await Promise.all([
 		db.getSortedSetMembers(`cid:${cid}:following`),
 		db.getSortedSetMembers(`followRequests:cid.${cid}`),
 		activitypub.notes.getCategoryFollowers(cid),
-		categories.getCategoryField(cid, 'name'),
-		helpers.getSelectedCategory(cid),
+		helpers.getSelectedCategory(cid, req.uid),
 	]);
 
 	const following = [..._following, ...pending].map(entry => ({
@@ -178,7 +174,7 @@ categoriesController.getFederation = async function (req, res) {
 	res.render('admin/manage/category-federation', {
 		cid: cid,
 		enabled: meta.config.activitypubEnabled,
-		name,
+		name: selectedCategory?.name || '',
 		selectedCategory,
 		following,
 		followers,
@@ -202,13 +198,14 @@ categoriesController.addRemote = async function (req, res) {
 		return res.sendStatus(404);
 	}
 
-	const score = await db.sortedSetCard('cid:0:children');
-	const order = score + 1; // order is 1-based lol
+	const lastItem = await db.getSortedSetRevRangeWithScores('cid:0:children', 0, 0);
+	const order = lastItem.length ? lastItem[0].score + 1 : 1;
 	await Promise.all([
 		db.sortedSetAdd('cid:0:children', order, id),
 		categories.setCategoryField(id, 'order', order),
 	]);
 	cache.del('cid:0:children');
+	cache.del('cid:0:children:all');
 
 	res.sendStatus(200);
 };
@@ -231,7 +228,7 @@ categoriesController.removeRemote = async function (req, res) {
 
 	const parentCid = await categories.getCategoryField(req.params.cid, 'parentCid');
 	await db.sortedSetRemove(`cid:${parentCid || 0}:children`, req.params.cid);
-	cache.del(`cid:${parentCid || 0}:children`);
-
+	await categories.clearParentCategoryCache(parentCid || 0);
+	await categories.setCategoryField(req.params.cid, 'parentCid', 0);
 	res.sendStatus(200);
 };

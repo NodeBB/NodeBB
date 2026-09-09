@@ -1,7 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const packageInstall = require('./package-install');
 const { upgradePlugins } = require('./upgrade-plugins');

@@ -1,0 +1,22 @@
+{
+	"queue": "Növbə",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Adı",
+	"list.email": "E-poçt",
+	"list.ip": "IP",
+	"list.time": "Zaman",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Dəvətlər",
+	"invitations.description": "Aşağıda göndərilən dəvətlərin tam siyahısı verilmişdir. Siyahıda e-poçt və ya istifadəçi adı ilə axtarış etmək üçün ctrl-f düymələrindən istifadə edin. <br><br>İstifadəçi adı dəvətnamələrini istifadə etmiş istifadəçilər üçün e-poçtların sağında göstəriləcək.",
+	"invitations.inviter-username": "Dəvət edənin istifadəçi adı",
+	"invitations.invitee-email": "Dəvət olunanın E-poçtu",
+	"invitations.invitee-username": "Dəvət edən istifadəçi adı (qeydiyyatdan keçmişdirsə)",
+
+	"invitations.confirm-delete": "Bu dəvəti silmək istədiyinizə əminsiniz?"
+}

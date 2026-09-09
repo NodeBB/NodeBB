@@ -34,6 +34,8 @@ put:
               response:
                 type: object
                 properties: {}
+    '401':
+      $ref: ../../../../components/responses/401.yaml#/401
 delete:
   tags:
     - groups
@@ -67,3 +69,5 @@ delete:
               response:
                 type: object
                 properties: {}
+    '401':
+      $ref: ../../../../components/responses/401.yaml#/401

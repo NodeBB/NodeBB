@@ -6,10 +6,11 @@ define('admin/manage/category', [
 	'categorySelector',
 	'benchpress',
 	'api',
-	'bootbox',
+	'modals',
+	'translator',
 	'alerts',
 	'admin/settings',
-], function (uploader, iconSelect, categorySelector, Benchpress, api, bootbox, alerts, settings) {
+], function (uploader, iconSelect, categorySelector, Benchpress, api, modals, translator, alerts, settings) {
 	const Category = {};
 	let updateHash = {};
 
@@ -91,14 +92,13 @@ define('admin/manage/category', [
 			return false;
 		});
 
-		$('.purge').on('click', function (e) {
+		$('.purge').on('click', async function (e) {
 			e.preventDefault();
-
 			Benchpress.render('admin/partials/categories/purge', {
 				name: ajaxify.data.category.name,
 				topic_count: ajaxify.data.category.topic_count,
-			}).then(function (html) {
-				const modal = bootbox.dialog({
+			}).then(async function (html) {
+				const modal = await modals.dialog({
 					title: '[[admin/manage/categories:purge]]',
 					message: html,
 					size: 'large',
@@ -150,9 +150,9 @@ define('admin/manage/category', [
 		});
 
 		$('.copy-settings').on('click', function () {
-			Benchpress.render('admin/partials/categories/copy-settings', {}).then(function (html) {
+			Benchpress.render('admin/partials/categories/copy-settings', {}).then(async (html) => {
 				let selectedCid;
-				const modal = bootbox.dialog({
+				const modal = await modals.dialog({
 					title: '[[modules:composer.select-category]]',
 					message: html,
 					buttons: {
@@ -160,7 +160,7 @@ define('admin/manage/category', [
 							label: '[[modules:bootbox.confirm]]',
 							className: 'btn-primary',
 							callback: function () {
-								if (!selectedCid || parseInt(selectedCid, 10) === parseInt(ajaxify.data.category.cid, 10)) {
+								if (!selectedCid || String(selectedCid) === String(ajaxify.data.category.cid)) {
 									return;
 								}
 
@@ -206,7 +206,7 @@ define('admin/manage/category', [
 				params: { cid: cid },
 			}, function (imageUrlOnServer) {
 				$('#category-image').val(imageUrlOnServer);
-				previewEl.css('background-image', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
+				previewEl.css('background-image', `url(${imageUrlOnServer}?v=${Date.now()})`);
 
 				modified($('#category-image'));
 			});
@@ -236,7 +236,9 @@ define('admin/manage/category', [
 				disabled: disabled ? 0 : 1,
 			}).then(() => {
 				$this.find('.label').translateText(
-					!disabled ? '[[admin/manage/categories:enable]]' : '[[admin/manage/categories:disable]]'
+					!disabled ?
+						'[[admin/manage/categories:enable]]' :
+						'[[admin/manage/categories:disable]]'
 				);
 				$this.find('i')
 					.toggleClass(['fa-check', 'text-success'], !disabled)

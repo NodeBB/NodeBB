@@ -13,6 +13,7 @@ const topics = require('../topics');
 const privileges = require('../privileges');
 const privilegeHelpers = require('../privileges/helpers');
 const plugins = require('../plugins');
+const utils = require('../utils');
 const helpers = require('./helpers');
 const auth = require('../routes/authentication');
 const writeRouter = require('../routes/write');
@@ -69,8 +70,9 @@ module.exports = function (middleware) {
 			} else if (user.hasOwnProperty('master') && user.master === true) {
 				// If the token received was a master token, a _uid must also be present for all calls
 				const body = req.body || {};
-				if (body.hasOwnProperty('_uid') || req.query.hasOwnProperty('_uid')) {
-					user.uid = body._uid || req.query._uid;
+				const query = req.query || {};
+				if (body.hasOwnProperty('_uid') || query.hasOwnProperty('_uid')) {
+					user.uid = body._uid || query._uid;
 					delete user.master;
 					return await finishLogin(req, user);
 				}
@@ -198,7 +200,8 @@ module.exports = function (middleware) {
 	});
 
 	middleware.redirectToAccountIfLoggedIn = helpers.try(async (req, res, next) => {
-		if (req.session.forceLogin || req.uid <= 0) {
+		const isLoginPage = req.path === '/login' || req.path === '/api/login';
+		if ((isLoginPage && req.session.forceLogin) || req.uid <= 0) {
 			return next();
 		}
 		const userslug = await user.getUserField(req.uid, 'userslug');
@@ -206,8 +209,8 @@ module.exports = function (middleware) {
 	});
 
 	middleware.redirectUidToUserslug = helpers.try(async (req, res, next) => {
-		const uid = parseInt(req.params.uid, 10);
-		if (uid <= 0) {
+		const uid = utils.isNumber(req.params.uid) ? parseInt(req.params.uid, 10) : req.params.uid;
+		if (utils.isNumber(uid) && uid <= 0) {
 			return next();
 		}
 		const [canView, userslug] = await Promise.all([
@@ -219,7 +222,7 @@ module.exports = function (middleware) {
 			return next();
 		}
 		const path = req.url.replace(/^\/api/, '')
-			.replace(`/uid/${uid}`, () => `/user/${userslug}`);
+			.replace(`/uid/${encodeURIComponent(uid)}`, () => `/user/${userslug}`);
 		controllers.helpers.redirect(res, path, true);
 	});
 
@@ -236,6 +239,10 @@ module.exports = function (middleware) {
 		if (req.loggedIn) {
 			const canLoginIfBanned = await user.bans.canLoginIfBanned(req.uid);
 			if (!canLoginIfBanned) {
+				// Token-authenticated requests get an error response instead of a redirect
+				if (req.headers.hasOwnProperty('authorization')) {
+					return controllers.helpers.notAllowed(req, res, '[[error:user-banned]]');
+				}
 				req.logout(() => {
 					res.redirect('/');
 				});
@@ -343,11 +350,23 @@ module.exports = function (middleware) {
 			return false; // not a category or topic url, no check required
 		}
 
-		const [registeredAllowed, verifiedAllowed] = await Promise.all([
+		const [[registeredAllowed], [verifiedAllowed]] = await Promise.all([
 			privilegeHelpers.isAllowedTo([privilege], 'registered-users', cid),
 			privilegeHelpers.isAllowedTo([privilege], 'verified-users', cid),
 		]);
 
-		return !registeredAllowed.pop() && verifiedAllowed.pop();
+		return !registeredAllowed && verifiedAllowed;
 	}
+
+	middleware.noIndexRemoteUser = function (req, res, next) {
+		res.locals.metaTags = res.locals.metaTags || [];
+		const isLocal = res.locals.uid > 0;
+		if (!isLocal) {
+			res.locals.metaTags.push({
+				name: 'robots',
+				content: 'noindex',
+			});
+		}
+		next();
+	};
 };

@@ -4,7 +4,8 @@
 	"lead-text": "Auf dieser Seite kanst Du den Zugriff auf die Write-API in NodeBB konfigurieren.",
 	"intro": "Standardmäßig authentifiziert die Write-API Benutzer basierend auf ihrem Sitzungscookie, aber NodeBB unterstützt auch die Bearer-Authentifizierung über Token, die über diese Seite generiert werden.",
 	"warning": "<strong>Hinweis</strong> — Behandle Tokens wie Passwörter. Wenn diese geleakt werden, sollte Dein Account als kompromittiert behandelt werden.",
-	"docs": "Klicke hier, um auf die vollständige API-Spezifikation zuzugreifen",
+	"docs": "Klicke hier, um die Read-API-Spezifikation aufzurufen",
+	"docs.write": "Klicke hier, um die Write-API-Spezifikation aufzurufen",
 
 	"require-https": "API-Nutzung nur über HTTPS möglich",
 	"require-https-caveat": "<strong>Hinweis</strong>: Einige Installationen mit Load Balancern können ihre Anfragen über HTTP an NodeBB weiterleiten, in diesem Fall sollte diese Option deaktiviert bleiben.",
@@ -25,5 +26,10 @@
 	"roll": "Würfeln",
 
 	"delete-confirm": "Bist Du Dir sicher, dass Du diesen Token löschen willst? Dieser kann nicht wiederhergestellt werden.",
-	"roll-confirm": "Bist Du Dir sicher, dass Du diesen Token neu generieren willst? Der alte Token verliert sofort seine Gültigkeit und kann nicht wiederhergestellt werden."
+	"roll-confirm": "Bist Du Dir sicher, dass Du diesen Token neu generieren willst? Der alte Token verliert sofort seine Gültigkeit und kann nicht wiederhergestellt werden.",
+	"token-once-title": "Token jetzt kopieren",
+	"token-once-warning": "Dieses Token wird nur einmal angezeigt. Speichere es sicher, bevor du diesen Dialog schließt.",
+	"copy-token": "Kopieren",
+	"token-copied": "Token wurde in die Zwischenablage kopiert.",
+	"token-copy-failed": "Das Token konnte nicht kopiert werden. Bitte kopiere es manuell."
 }

@@ -20,6 +20,7 @@
     "users/sort-posts": "Корисници са највише порука",
     "users/sort-reputation": "Корисници са највећим угледом",
     "users/banned": "Забрањени корисници",
+    "users/muted": "Muted Users",
     "users/most-flags": "Корисници најчешће означени заставицом",
     "users/search": "Претрага корисника",
     "notifications": "Обавештења",

@@ -11,10 +11,12 @@ define('forum/account/tags', [
 
 		const tagEl = $('[component="tags/watch"]');
 		tagEl.tagsinput({
-			tagClass: 'badge text-bg-info',
+			tagClass: 'badge rounded-1',
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});
+		const tagsinput = tagEl.siblings('.bootstrap-tagsinput');
+		tagsinput.addClass('tag-list');
 		const input = tagEl.siblings('.bootstrap-tagsinput').find('input');
 		input.translateAttr('aria-label', '[[aria:user-watched-tags]]');
 		autocomplete.tag(input);

@@ -8,5 +8,6 @@
     "login-successful": "Դուք բարեհաջող մուտք գործեցիք։",
     "dont-have-account": "Չունե՞ք հաշիվ։",
     "logged-out-due-to-inactivity": "Դուք դուրս եք գրվել ադմինիստրատորի ղեկավարման վահանակից՝ ակտիվություն չցուցաբերելու պատճառով",
-    "caps-lock-enabled": "Caps Lock-ը միացված է"
+    "caps-lock-enabled": "Caps Lock-ը միացված է",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

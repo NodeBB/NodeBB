@@ -1,7 +1,7 @@
 {
     "success": "成功しました",
     "topic-post": "投稿に成功しました",
-    "post-queued": "Your post is queued for approval. You will get a notification when it is accepted or rejected.",
+    "post-queued": "投稿は承認待ちのキューに入りました。承認または拒否されると通知が届きます。",
     "authentication-successful": "認証に成功しました",
     "settings-saved": "設定を保存しました。"
 }

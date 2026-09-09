@@ -1,0 +1,22 @@
+{
+	"queue": "File d'attente",
+	"no-users-in-queue": "There are no users in the registration queue.",
+	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"reject-all": "",
+	"reject-all-confirm": "",
+	"list.name": "Nom",
+	"list.email": "E-mail",
+	"list.ip": "IP",
+	"list.time": "Date",
+	"list.username-spam": "",
+	"list.email-spam": "",
+	"list.ip-spam": "",
+
+	"invitations": "Invitations",
+	"invitations.description": "Ci-dessous se trouve une liste complète des invitations envoyées. Utilisez CTRL + F pour rechercher un e-mail ou nom d'utilisateur dans la liste. <br>\n<br>Le nom d'utilisateur sera affiché à droite des e-mails pour les utilisateurs qui ont accepté leur invitation.",
+	"invitations.inviter-username": "Nom d’utilisateur de l’invité",
+	"invitations.invitee-email": "E-mail de l'invité",
+	"invitations.invitee-username": "Nom d'utilisateur de l'invité (si inscrit)",
+
+	"invitations.confirm-delete": "Êtes-vous sûr de vouloir supprimer l'invitation ?"
+}

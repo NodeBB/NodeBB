@@ -6,7 +6,6 @@ const helpers = require('../helpers');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
-const file = require('../../file');
 const accountHelpers = require('./helpers');
 
 const editController = module.exports;
@@ -19,8 +18,6 @@ editController.get = async function (req, res, next) {
 	const {
 		username,
 		userslug,
-		isSelf,
-		reputation,
 		groups: _groups,
 		groupTitleArray,
 		allowMultipleBadges,
@@ -35,12 +32,10 @@ editController.get = async function (req, res, next) {
 	userData.customUserFields = customUserFields;
 	userData.maximumSignatureLength = meta.config.maximumSignatureLength;
 	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
-	userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
-	userData.allowAboutMe = !isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:aboutme'];
-	userData.allowSignature = canUseSignature && (!isSelf || !!meta.config['reputation:disabled'] || reputation >= meta.config['min:rep:signature']);
-	userData.profileImageDimension = meta.config.profileImageDimension;
+	userData.allowAboutMe = accountHelpers.meetsMinReputation(userData, 'min:rep:aboutme');
+	userData.allowSignature = canUseSignature && accountHelpers.meetsMinReputation(userData, 'min:rep:signature');
 	userData.defaultAvatar = user.getDefaultAvatar();
 
 	userData.groups = _groups.filter(g => g && g.userTitleEnabled && !groups.isPrivilegeGroup(g.name) && g.name !== 'registered-users');
@@ -97,6 +92,11 @@ editController.email = async function (req, res, next) {
 	const targetUid = await user.getUidByUserslug(req.params.userslug);
 	if (!targetUid || req.uid !== parseInt(targetUid, 10)) {
 		return next();
+	}
+
+	const isAdmin = await privileges.admin.can('admin:users', req.uid);
+	if (meta.config['email:disableEdit'] && !isAdmin) {
+		return helpers.notAllowed(req, res);
 	}
 
 	req.session.returnTo = `/uid/${targetUid}`;
@@ -164,7 +164,5 @@ editController.uploadPicture = async function (req, res, next) {
 		}]);
 	} catch (err) {
 		next(err);
-	} finally {
-		await file.delete(userPhoto.path);
 	}
 };

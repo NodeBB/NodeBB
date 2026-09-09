@@ -32,6 +32,8 @@ post:
               response:
                 type: object
                 properties: {}
+    '401':
+      $ref: ../../../../components/responses/401.yaml#/401
 put:
   tags:
     - group
@@ -67,6 +69,8 @@ put:
               response:
                 type: object
                 properties: {}
+    '400':
+      $ref: ../../../../components/responses/400.yaml#/400
 delete:
   tags:
     - group

@@ -1,0 +1,9 @@
+{
+	"jobs": "Jobbar",
+	"job-name": "Jobbnamn",
+	"schedule": "Tidsplan",
+	"next-run": "Neste køyring",
+	"last-duration": "Tid for siste køyring",
+	"running": "Køyrer",
+	"active": "Aktiv"
+}

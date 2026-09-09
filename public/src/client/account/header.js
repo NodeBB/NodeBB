@@ -10,17 +10,15 @@ define('forum/account/header', [
 	'accounts/moderate',
 	'accounts/picture',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
 ], function (coverPhoto, pictureCropper, components, translator,
-	AccountsDelete, AccountsModerate, AccountsPicture, api, bootbox, alerts) {
+	AccountsDelete, AccountsModerate, AccountsPicture, api, modals, alerts) {
 	const AccountHeader = {};
 	let isAdminOrSelfOrGlobalMod;
 
 	AccountHeader.init = function () {
 		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
-
-		selectActivePill();
 
 		handleImageChange();
 
@@ -61,17 +59,6 @@ define('forum/account/header', [
 		components.get('account/unblock').on('click', () => toggleBlockAccount('unblock'));
 	};
 
-	function selectActivePill() {
-		$('.account-sub-links li a').removeClass('active').each(function () {
-			const href = $(this).attr('href');
-
-			if (decodeURIComponent(href) === decodeURIComponent(window.location.pathname)) {
-				$(this).addClass('active');
-				return false;
-			}
-		});
-	}
-
 	function handleImageChange() {
 		$('[component="profile/change/picture"]').on('click', function () {
 			AccountsPicture.openChangeModal();
@@ -109,6 +96,19 @@ define('forum/account/header', [
 	}
 
 	function toggleFollow(type) {
+		if (!app.user.uid) {
+			let objectId;
+			if (utils.isNumber(ajaxify.data.uid)) {
+				objectId = config.url + '/user/' + ajaxify.data.uid;
+			} else {
+				objectId = ajaxify.data.userslug;
+			}
+			import('modules/intents').then(({ trigger }) => {
+				trigger('follow', { object: objectId });
+			});
+			return false;
+		}
+
 		const target = isFinite(ajaxify.data.uid) ? ajaxify.data.uid : encodeURIComponent(ajaxify.data.userslug);
 		api[type === 'follow' ? 'put' : 'del']('/users/' + target + '/follow', undefined, function (err) {
 			if (err) {
@@ -134,7 +134,7 @@ define('forum/account/header', [
 	function rescindAccountFlag() {
 		const flagId = $(this).data('flag-id');
 		require(['flags'], function (flags) {
-			bootbox.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
+			modals.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -161,21 +161,19 @@ define('forum/account/header', [
 	}
 
 	function removeCover() {
-		translator.translate('[[user:remove-cover-picture-confirm]]', function (translated) {
-			bootbox.confirm(translated, function (confirm) {
-				if (!confirm) {
-					return;
-				}
+		modals.confirm('[[user:remove-cover-picture-confirm]]', function (confirm) {
+			if (!confirm) {
+				return;
+			}
 
-				socket.emit('user.removeCover', {
-					uid: ajaxify.data.uid,
-				}, function (err) {
-					if (!err) {
-						ajaxify.refresh();
-					} else {
-						alerts.error(err);
-					}
-				});
+			socket.emit('user.removeCover', {
+				uid: ajaxify.data.uid,
+			}, function (err) {
+				if (!err) {
+					ajaxify.refresh();
+				} else {
+					alerts.error(err);
+				}
 			});
 		});
 	}

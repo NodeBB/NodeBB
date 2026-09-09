@@ -2,10 +2,10 @@
 
 
 define('admin/manage/tags', [
-	'bootbox',
+	'modals',
 	'alerts',
 	'admin/modules/selectable',
-], function (bootbox, alerts, selectable) {
+], function (modals, alerts, selectable) {
 	const Tags = {};
 
 	Tags.init = function () {
@@ -79,13 +79,13 @@ define('admin/manage/tags', [
 	}
 
 	function handleRename() {
-		$('#rename').on('click', function () {
+		$('#rename').on('click', async function () {
 			const tagsToModify = $('.tag-row.ui-selected');
 			if (!tagsToModify.length) {
 				return;
 			}
 
-			const modal = bootbox.dialog({
+			const modal = await modals.dialog({
 				title: '[[admin/manage/tags:alerts.editing]]',
 				message: $('.rename-modal').html(),
 				buttons: {
@@ -123,7 +123,7 @@ define('admin/manage/tags', [
 				return;
 			}
 
-			bootbox.confirm('[[admin/manage/tags:alerts.confirm-delete]]', function (confirm) {
+			modals.confirm('[[admin/manage/tags:alerts.confirm-delete]]', function (confirm) {
 				if (!confirm) {
 					return;
 				}

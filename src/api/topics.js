@@ -33,29 +33,22 @@ topicsAPI._checkThumbPrivileges = async function ({ tid, uid }) {
 };
 
 topicsAPI.get = async function (caller, data) {
-	const [userPrivileges, topic] = await Promise.all([
-		privileges.topics.get(data.tid, caller.uid),
-		topics.getTopicData(data.tid),
-	]);
-	if (
-		!topic ||
-		!userPrivileges.read ||
-		!userPrivileges['topics:read'] ||
-		!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)
-	) {
+	const canReadTopic = await privileges.topics.canRead(data.tid, caller.uid);
+	if (!canReadTopic) {
 		return null;
 	}
-
-	return topic;
+	return await topics.getTopicData(data.tid);
 };
 
 topicsAPI.create = async function (caller, data) {
-	if (!data) {
+	if (!data || (!Number.isInteger(data.cid) && typeof data.cid !== 'string')) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
 	const payload = { ...data };
 	delete payload.tid;
+	delete payload.pid;
+	delete payload.generatedTitle;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
@@ -80,7 +73,9 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
 	if (!isScheduling) {
-		await activitypub.out.create.note(caller.uid, result.postData.pid);
+		setImmediate(() => {
+			activitypub.out.create.note(caller.uid, result.postData.pid);
+		});
 	}
 
 	return result.topicData;
@@ -116,7 +111,9 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
-	await activitypub.out.create.note(caller.uid, postData);
+	setImmediate(() => {
+		activitypub.out.create.note(caller.uid, postData);
+	});
 
 	return postData;
 };
@@ -178,7 +175,7 @@ topicsAPI.unfollow = async function (caller, data) {
 };
 
 topicsAPI.updateTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -189,7 +186,7 @@ topicsAPI.updateTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.addTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -202,7 +199,7 @@ topicsAPI.addTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.deleteTags = async (caller, { tid }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -247,7 +244,8 @@ topicsAPI.reorderThumbs = async (caller, { tid, path, order }) => {
 };
 
 topicsAPI.getEvents = async (caller, { tid }) => {
-	if (!await privileges.topics.can('topics:read', tid, caller.uid)) {
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
+	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -255,7 +253,8 @@ topicsAPI.getEvents = async (caller, { tid }) => {
 };
 
 topicsAPI.deleteEvent = async (caller, { tid, eventId }) => {
-	if (!await privileges.topics.isAdminOrMod(tid, caller.uid)) {
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
+	if (!canRead || !await privileges.topics.isAdminOrMod(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -293,25 +292,48 @@ topicsAPI.bump = async (caller, { tid }) => {
 };
 
 topicsAPI.move = async (caller, { tid, cid }) => {
-	const canMove = await privileges.categories.isAdminOrMod(cid, caller.uid);
-	if (!canMove) {
-		throw new Error('[[error:no-privileges]]');
-	}
-
 	const tids = Array.isArray(tid) ? tid : [tid];
-	const uids = await user.getUidsFromSet('users:online', 0, -1);
-	const cids = [parseInt(cid, 10)];
+	const [isAdmin, isModOfDestination, [canCreate, canRead], uids] = await Promise.all([
+		privileges.users.isAdministrator(caller.uid),
+		privileges.users.isModerator(caller.uid, cid),
+		privileges.categories.can(['topics:create', 'topics:read'], cid, caller.uid),
+		user.getUidsFromSet('users:online', 0, -1),
+	]);
+
+	let maxOwnerPosts = parseInt(meta.config.movingTopicsMaxPosts, 10);
+	if (Number.isNaN(maxOwnerPosts)) {
+		maxOwnerPosts = 5;
+	}
+	const canCreateAndReadDestination = canCreate && canRead;
+	const updateCids = [parseInt(cid, 10)];
 
 	await batch.processArray(tids, async (tids) => {
-		await Promise.all(tids.map(async (tid) => {
-			const canMove = await privileges.topics.isAdminOrMod(tid, caller.uid);
-			if (!canMove) {
-				throw new Error('[[error:no-privileges]]');
+		const topicsData = await topics.getTopicsFields(tids, ['tid', 'cid', 'uid', 'mainPid', 'slug', 'deleted', 'locked', 'postcount']);
+		const cids = topicsData.map(t => t && t.cid);
+		const isModOfTopicCid = await privileges.users.isModerator(caller.uid, cids);
+
+		await Promise.all(tids.map(async (tid, index) => {
+			const topicData = topicsData[index];
+			if (!topicData || !topicData.uid || !topicData.cid) {
+				return;
 			}
-			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'slug', 'deleted']);
+			const isModOfSourceAndDestination = isModOfDestination && isModOfTopicCid[index];
+			if (!isAdmin && !isModOfSourceAndDestination) {
+				const isOwnerOfTopic = parseInt(topicData.uid, 10) === parseInt(caller.uid, 10);
+				const canReadSource = await privileges.topics.can('topics:read', tid, caller.uid);
+				if (
+					!isOwnerOfTopic || !canCreateAndReadDestination ||
+					!canReadSource || topicData.locked || topicData.deleted
+				) {
+					throw new Error('[[error:no-privileges]]');
+				}
+				if (maxOwnerPosts > 0 && topicData.postcount > maxOwnerPosts) {
+					throw new Error(`[[error:cant-move-topic-too-many-posts, ${maxOwnerPosts}]]`);
+				}
+			}
 			topicData.toCid = cid;
-			if (!cids.includes(topicData.cid)) {
-				cids.push(topicData.cid);
+			if (!updateCids.includes(topicData.cid)) {
+				updateCids.push(topicData.cid);
 			}
 			await topics.tools.move(tid, {
 				cid,
@@ -323,14 +345,16 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			if (!topicData.deleted) {
 				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
 
-				if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
-					activitypub.out.remove.context(caller.uid, tid); // 7888-style
-					activitypub.out.delete.note(caller.uid, topicData.mainPid); // 1b12-style
-				} else {
-					activitypub.out.move.context(caller.uid, tid);
-					activitypub.out.announce.topic(tid);
-				}
-				activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+				setImmediate(() => {
+					if (utils.isNumber(cid) && parseInt(cid, 10) === -1) {
+						activitypub.out.remove.context(caller.uid, tid); // 7888-style
+						activitypub.out.delete.note(caller.uid, topicData.mainPid); // 1b12-style
+					} else {
+						activitypub.out.move.context(caller.uid, tid);
+						activitypub.out.announce.topic(tid);
+					}
+					activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+				});
 			}
 
 			await events.log({
@@ -344,5 +368,5 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 		}));
 	}, { batch: 10 });
 
-	await categories.onTopicsMoved(cids);
+	await categories.onTopicsMoved(updateCids);
 };

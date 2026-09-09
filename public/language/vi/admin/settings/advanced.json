@@ -33,7 +33,7 @@
 	"traffic.enable": "Bật Quản Lý Lưu Lượng",
 	"traffic.event-lag": "Ngưỡng Trễ Vòng Lặp Sự Kiện (mili-giây)",
 	"traffic.event-lag-help": "Giảm giá trị này sẽ giảm thời gian chờ tải trang, nhưng cũng sẽ hiển thị thông báo \"tải quá mức\" cho nhiều người dùng hơn. (Yêu cầu khởi động lại)",
-	"traffic.lag-check-interval": "Khoảng thời gian kiểm tra (mili giây)",
+	"traffic.lag-check-interval": "Chu kỳ kiểm tra (mili giây)",
 	"traffic.lag-check-interval-help": "Việc hạ thấp giá trị này khiến NodeBB trở nên nhạy cảm hơn với tải đột biến, nhưng cũng có thể khiến kiểm tra trở nên quá nhạy. (Yêu cầu khởi động lại)",
 
 	"sockets.settings": "Cài Đặt WebSocket",

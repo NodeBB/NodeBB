@@ -5,7 +5,7 @@ const path = require('path');
 const winston = require('winston');
 const semver = require('semver');
 const nconf = require('nconf');
-const chalk = require('chalk');
+const chalk = require('chalk').default;
 
 const request = require('../request');
 const user = require('../user');
@@ -78,12 +78,12 @@ Plugins.init = async function (nbbApp, nbbMiddleware) {
 		middleware = nbbMiddleware;
 	}
 
-	if (global.env === 'development') {
+	if (process.env.NODE_ENV === 'development') {
 		winston.verbose('[plugins] Initializing plugins system');
 	}
 
 	await Plugins.reload();
-	if (global.env === 'development') {
+	if (process.env.NODE_ENV === 'development') {
 		winston.info('[plugins] Plugins OK');
 	}
 

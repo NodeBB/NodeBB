@@ -1,7 +1,14 @@
 {
 	"name": "Verda",
-	"popular": "Populære emne",
-	"recent": "Alle emne",
+	"latest": "Siste",
+	"latest-local": "Siste (lokal)",
+	"latest-all": "Siste (alle)",
+	"popular-day": "Populært (dag)",
+	"popular-week": "Populært (veke)",
+	"popular-month": "Populært (månad)",
+	"popular-year": "Populært (år)",
+	"popular-alltime": "Populært (heile perioden)",
+	"recent": "Alle",
 	"help": "Hjelp",
 
 	"help.title": "Kva er denne sida?",
@@ -11,11 +18,12 @@
 	"help.federating": "På same måte, dersom brukarar frå utsida av dette forumet begynner å følge <em>deg</em>, vil innlegga dine òg begynne å visast på desse appane og nettsidene.",
 	"help.next-generation": "Dette er den neste generasjonen av sosiale medium, begynn å bidra i dag!",
 
-	"onboard.title": "Ditt vindauge til fødiverset...",
-	"onboard.what": "Dette er din personlege kategori som berre består av innhald funne utanfor dette forumet. Om noko blir vist på denne sida, avheng av om du følger dei, eller om innlegget blei delt av nokon du følger.",
-	"onboard.why": "Det skjer mykje utanfor dette forumet, og ikkje alt er relevant for interessene dine. Difor er det å følge folk den beste måten å signalisere at du ønskjer å sjå meir frå nokon.",
-	"onboard.how": "I mellomtida kan du klikke på snarvegsknappane øvst for å sjå kva anna dette forumet inneheld, og begynne å oppdage nytt innhald!",
+	"onboard.title": "Ei verd av innhald rett framfor deg&hellip;",
+	"onboard.what": "Tenk på dette som ein global oppdagingsstraum. Han samlar interessante diskusjonar frå heile nettet og andre fellesskap på éin stad.",
+	"onboard.why": "Du kan utforske det som er populært akkurat no, men denne straumen fungerer best når du gjer han til din eigen. Ved å opprette ein konto kan du følge bestemte skaparar og tema, filtrere bort støyen og berre sjå det som er relevant for deg.",
+	"onboard.how": "Klar for å kome i gang? Opprett ein konto for å begynne å følge andre, få varsel når nokon svarar deg, og lagre favorittane dine.",
 
-	"show-categories": "Show categories",
-	"hide-categories": "Hide categories"
+	"category-search": "Finn kategori",
+	"see-more": "Sjå meir",
+	"see-less": "Sjå mindre"
 }

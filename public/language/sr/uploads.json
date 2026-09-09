@@ -5,5 +5,7 @@
     "maximum-file-size": "Највише %1 kb",
     "no-uploads-found": "Нема пронађених отпремања",
     "public-uploads-info": "Отпремања су јавна, сви посетиоци их могу видети.",
-    "private-uploads-info": "Отпремања си приватна, само пријављени корисници их могу видети."
+    "private-uploads-info": "Отпремања си приватна, само пријављени корисници их могу видети.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

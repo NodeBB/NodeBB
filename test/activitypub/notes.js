@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
+const util = require('util');
 
 const db = require('../mocks/databasemock');
 const meta = require('../../src/meta');
@@ -15,6 +16,7 @@ const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
 const helpers = require('./helpers');
+const wait = util.promisify(setTimeout);
 
 describe('Notes', () => {
 	before(async () => {
@@ -247,6 +249,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: 'Guaranteed to be more than 500 characters.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. In vel convallis felis. Phasellus porta erat a elit dignissim efficitur. Sed at sollicitudin erat, finibus sodales ante. Nunc ullamcorper, urna a pulvinar tempor, nunc risus venenatis nunc, id aliquam purus dui ut ante. Nulla sit amet risus sem. Praesent sit amet justo finibus, laoreet odio nec, varius diam. Nullam congue rhoncus lorem, eu accumsan leo aliquam sit amet. Suspendisse fringilla nec libero a tincidunt. Phasellus sapien justo, lacinia ac enim sit amet, pellentesque fermentum neque. Proin sit amet felis vitae libero aliquam pharetra at id nisi. Donec vitae mauris est. Sed hendrerit nisi et nibh auctor hendrerit. Praesent feugiat tortor a dignissim sagittis. Cras sit amet ante justo. Cras consectetur magna vitae volutpat placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae',
 					});
+					await wait(50);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
@@ -293,14 +296,15 @@ describe('Notes', () => {
 						tid,
 						content: utils.generateUUID(),
 					});
+					await wait(50);
 
 					const key = Array.from(activitypub._sent.keys())[0];
 					activity = activitypub._sent.get(key);
 				});
 
-				it('should federate out an activity with object of type "Note"', () => {
+				it('should federate out an activity with object of type "Article"', () => {
 					assert(activity.payload && activity.payload.object && activity.payload.object.type);
-					assert.strictEqual(activity.payload.object.type, 'Note');
+					assert.strictEqual(activity.payload.object.type, 'Article');
 				});
 			});
 		});
@@ -324,6 +328,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
 					});
+					await wait(50);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
@@ -384,423 +389,6 @@ describe('Notes', () => {
 		});
 	});
 
-	describe('Inbox handling', () => {
-		describe('helper self-check', () => {
-			it('should generate a Like activity', () => {
-				const object = utils.generateUUID();
-				const { id: actor } = helpers.mocks.person();
-				const { activity } = helpers.mocks.like({
-					object,
-					actor,
-				});
-
-				assert.deepStrictEqual(activity, {
-					'@context': 'https://www.w3.org/ns/activitystreams',
-					id: `${helpers.mocks._baseUrl}/like/${encodeURIComponent(object)}`,
-					type: 'Like',
-					actor,
-					object,
-				});
-			});
-
-			it('should generate an Announce activity wrapping a Like activity', () => {
-				const object = utils.generateUUID();
-				const { id: actor } = helpers.mocks.person();
-				const { activity: like } = helpers.mocks.like({
-					object,
-					actor,
-				});
-				const { id: gActor } = helpers.mocks.group();
-				const { activity } = helpers.mocks.announce({
-					actor: gActor,
-					object: like,
-				});
-
-				assert.deepStrictEqual(activity, {
-					'@context': 'https://www.w3.org/ns/activitystreams',
-					id: `${helpers.mocks._baseUrl}/announce/${encodeURIComponent(like.id)}`,
-					type: 'Announce',
-					to: [ 'https://www.w3.org/ns/activitystreams#Public' ],
-					cc: [
-						`${gActor}/followers`,
-					],
-					actor: gActor,
-					object: like,
-				});
-			});
-		});
-
-		describe('Create', () => {
-			let uid;
-			let cid;
-
-			before(async () => {
-				uid = await user.create({ username: utils.generateUUID() });
-			});
-
-			describe('(Note)', () => {
-				it('should create a new topic in cid -1', async () => {
-					const { note, id } = helpers.mocks.note();
-					const { activity } = helpers.mocks.create(note);
-
-					await db.sortedSetAdd(`followersRemote:${note.attributedTo}`, Date.now(), uid);
-					await activitypub.inbox.create({ body: activity });
-
-					assert(await posts.exists(id));
-
-					const cid = await posts.getCidByPid(id);
-					assert.strictEqual(cid, -1);
-				});
-
-				it('should not append to the tids_read sorted set', async () => {
-					const { note, id } = helpers.mocks.note();
-					const { activity } = helpers.mocks.create(note);
-
-					await db.sortedSetAdd(`followersRemote:${note.attributedTo}`, Date.now(), uid);
-					await activitypub.inbox.create({ body: activity });
-
-					const exists = await db.exists(`uid:${note.attributedTo}:tids_read`);
-					assert(!exists);
-				});
-
-				it('should create a new topic in a remote category if addressed (category same-origin)', async () => {
-					const { id: remoteCid } = helpers.mocks.group();
-					const { note, id } = helpers.mocks.note({
-						audience: [remoteCid],
-					});
-					const { activity } = helpers.mocks.create(note);
-
-					await activitypub.inbox.create({ body: activity });
-
-					assert(await posts.exists(id));
-
-					const cid = await posts.getCidByPid(id);
-					assert.strictEqual(cid, remoteCid);
-				});
-
-				it('should create a new topic in cid -1 if a non-same origin remote category is addressed', async function () {
-					const { id: remoteCid } = helpers.mocks.group({
-						id: `https://example.com/${utils.generateUUID()}`,
-					});
-					const { note, id } = helpers.mocks.note({
-						audience: [remoteCid],
-					});
-					const { activity } = helpers.mocks.create(note);
-					try {
-						await activitypub.inbox.create({ body: activity });
-					} catch (err) {
-						assert(false);
-					}
-
-					assert(await posts.exists(id));
-					const cid = await posts.getCidByPid(id);
-					assert.strictEqual(cid, -1);
-				});
-			});
-
-			describe('(Like)', () => {
-				let pid;
-				let voterUid;
-
-				before(async () => {
-					({ cid } = await categories.create({ name: utils.generateUUID() }));
-					const { postData } = await topics.post({
-						uid,
-						cid,
-						title: utils.generateUUID(),
-						content: utils.generateUUID(),
-					});
-					pid = postData.pid;
-					const object = await activitypub.mocks.notes.public(postData);
-					const { activity } = helpers.mocks.like({ object });
-					voterUid = activity.actor;
-					await activitypub.inbox.like({ body: activity });
-				});
-
-				it('should increment a like for the post', async () => {
-					const voted = await posts.hasVoted(pid, voterUid);
-					const count = await posts.getPostField(pid, 'upvotes');
-					assert(voted);
-					assert.strictEqual(count, 1);
-				});
-
-				it('should not append to the uid upvotes zset', async () => {
-					const exists = await db.exists(`uid:${voterUid}:upvote`);
-					assert(!exists);
-				});
-			});
-		});
-
-		describe('Announce', () => {
-			let cid;
-
-			before(async () => {
-				({ cid } = await categories.create({ name: utils.generateUUID() }));
-			});
-
-			describe('(Create)', () => {
-				it('should create a new topic in a remote category if addressed', async () => {
-					const { id: remoteCid } = helpers.mocks.group();
-					const { id, note } = helpers.mocks.note({
-						audience: [remoteCid],
-					});
-					let { activity } = helpers.mocks.create(note);
-					({ activity } = helpers.mocks.announce({ actor: remoteCid, object: activity }));
-
-					await activitypub.inbox.announce({ body: activity });
-
-					assert(await posts.exists(id));
-
-					const cid = await posts.getCidByPid(id);
-					assert.strictEqual(cid, remoteCid);
-				});
-			});
-
-			describe('(Create) or (Note) referencing local post', () => {
-				let uid;
-				let topicData;
-				let postData;
-				let localNote;
-				let announces = 0;
-
-				before(async () => {
-					uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-					({ topicData, postData } = await topics.post({
-						cid,
-						uid,
-						title: utils.generateUUID(),
-						content: utils.generateUUID(),
-					}));
-					localNote = await activitypub.mocks.notes.public(postData);
-				});
-
-				it('should increment announces counter when a remote user shares', async () => {
-					const { id } = helpers.mocks.person();
-					const { activity } = helpers.mocks.announce({
-						actor: id,
-						object: localNote,
-						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
-					});
-
-					await activitypub.inbox.announce({ body: activity });
-					announces += 1;
-
-					const count = await posts.getPostField(topicData.mainPid, 'announces');
-					assert.strictEqual(count, announces);
-				});
-
-				it('should contain the remote user announcer id in the post announces zset', async () => {
-					const { id } = helpers.mocks.person();
-					const { activity } = helpers.mocks.announce({
-						actor: id,
-						object: localNote,
-						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
-					});
-
-					await activitypub.inbox.announce({ body: activity });
-					announces += 1;
-
-					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
-					assert(exists);
-				});
-
-				it('should NOT increment announces counter when a remote category shares', async () => {
-					const { id } = helpers.mocks.group();
-					const { activity } = helpers.mocks.announce({
-						actor: id,
-						object: localNote,
-						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
-					});
-
-					await activitypub.inbox.announce({ body: activity });
-
-					const count = await posts.getPostField(topicData.mainPid, 'announces');
-					assert.strictEqual(count, announces);
-				});
-
-				it('should NOT contain the remote category announcer id in the post announces zset', async () => {
-					const { id } = helpers.mocks.group();
-					const { activity } = helpers.mocks.announce({
-						actor: id,
-						object: localNote,
-						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
-					});
-
-					await activitypub.inbox.announce({ body: activity });
-
-					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
-					assert(!exists);
-				});
-			});
-
-			describe('(Note)', () => {
-				it('should create a new topic in cid -1 if category not addressed', async () => {
-					const { note } = helpers.mocks.note();
-					await activitypub.actors.assert([note.attributedTo]);
-					const { activity } = helpers.mocks.announce({
-						object: note,
-					});
-					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-					await db.sortedSetAdd(`followersRemote:${activity.actor}`, Date.now(), uid);
-
-					const beforeCount = await db.sortedSetCard(`cid:-1:tids`);
-					await activitypub.inbox.announce({ body: activity });
-					const count = await db.sortedSetCard(`cid:-1:tids`);
-
-					assert.strictEqual(count, beforeCount + 1);
-				});
-
-				it('should create a new topic in local category', async () => {
-					const { note } = helpers.mocks.note({
-						cc: [`${nconf.get('url')}/category/${cid}`],
-					});
-					await activitypub.actors.assert([note.attributedTo]);
-					const { activity } = helpers.mocks.announce({
-						object: note,
-					});
-					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-					await db.sortedSetAdd(`followersRemote:${activity.actor}`, Date.now(), uid);
-
-					const beforeCount = await db.sortedSetCard(`cid:${cid}:tids`);
-					await activitypub.inbox.announce({ body: activity });
-					const count = await db.sortedSetCard(`cid:${cid}:tids`);
-
-					assert.strictEqual(count, beforeCount + 1);
-				});
-			});
-
-			describe('(Like)', () => {
-				it('should upvote a local post', async () => {
-					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-					const { postData } = await topics.post({
-						cid,
-						uid,
-						title: utils.generateUUID(),
-						content: utils.generateUUID(),
-					});
-
-					const { activity: like } = helpers.mocks.like({
-						object: `${nconf.get('url')}/post/${postData.pid}`,
-					});
-					const { activity } = helpers.mocks.announce({
-						object: like,
-					});
-
-					let { upvotes } = await posts.getPostFields(postData.pid, 'upvotes');
-					assert.strictEqual(upvotes, 0);
-
-					await activitypub.inbox.announce({ body: activity });
-					({ upvotes } = await posts.getPostFields(postData.pid, 'upvotes'));
-					assert.strictEqual(upvotes, 1);
-				});
-
-				it('should upvote an asserted remote post', async () => {
-					const { id } = helpers.mocks.note();
-					await activitypub.notes.assert(0, id, { skipChecks: true });
-					const { activity: like } = helpers.mocks.like({
-						object: id,
-					});
-					const { activity } = helpers.mocks.announce({
-						object: like,
-					});
-
-					let { upvotes } = await posts.getPostFields(id, 'upvotes');
-					assert.strictEqual(upvotes, 0);
-
-					await activitypub.inbox.announce({ body: activity });
-
-					({ upvotes } = await posts.getPostFields(id, 'upvotes'));
-					assert.strictEqual(upvotes, 1);
-				});
-			});
-
-			describe('(Update)', () => {
-				it('should update a note\'s content', async () => {
-					const { id: actor } = helpers.mocks.person();
-					const { id, note } = helpers.mocks.note({ attributedTo: actor });
-					await activitypub.notes.assert(0, id, { skipChecks: true });
-					note.content = utils.generateUUID();
-					const { activity: update } = helpers.mocks.update({ object: note });
-					const { activity } = helpers.mocks.announce({ object: update });
-
-					await activitypub.inbox.announce({ body: activity });
-
-					const content = await posts.getPostField(id, 'content');
-					assert.strictEqual(content, note.content);
-				});
-			});
-		});
-	});
-
-	describe('Inbox Synchronization', () => {
-		let cid;
-		let uid;
-		let topicData;
-
-		before(async () => {
-			({ cid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
-		});
-
-		beforeEach(async () => {
-			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-			({ topicData } = await topics.post({
-				cid,
-				uid,
-				title: utils.generateUUID(),
-				content: utils.generateUUID(),
-			}));
-		});
-
-		it('should add a topic to a user\'s inbox if user is a recipient in OP', async () => {
-			await db.setAdd(`post:${topicData.mainPid}:recipients`, [uid]);
-			await activitypub.notes.syncUserInboxes(topicData.tid);
-			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
-
-			assert.strictEqual(inboxed, true);
-		});
-
-		it('should add a topic to a user\'s inbox if a user is a recipient in a reply', async () => {
-			const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
-			const { pid } = await topics.reply({
-				tid: topicData.tid,
-				uid,
-				content: utils.generateUUID(),
-			});
-			await db.setAdd(`post:${pid}:recipients`, [uid]);
-			await activitypub.notes.syncUserInboxes(topicData.tid);
-			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
-
-			assert.strictEqual(inboxed, true);
-		});
-
-		it('should maintain a list of recipients at the topic level', async () => {
-			await db.setAdd(`post:${topicData.mainPid}:recipients`, [uid]);
-			await activitypub.notes.syncUserInboxes(topicData.tid);
-			const [isRecipient, count] = await Promise.all([
-				db.isSetMember(`tid:${topicData.tid}:recipients`, uid),
-				db.setCount(`tid:${topicData.tid}:recipients`),
-			]);
-
-			assert(isRecipient);
-			assert.strictEqual(count, 1);
-		});
-
-		it('should add topic to a user\'s inbox if it is explicitly passed in as an argument', async () => {
-			await activitypub.notes.syncUserInboxes(topicData.tid, uid);
-			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
-
-			assert.strictEqual(inboxed, true);
-		});
-
-		it('should remove a topic from a user\'s inbox if that user is no longer a recipient in any contained posts', async () => {
-			await activitypub.notes.syncUserInboxes(topicData.tid, uid);
-			await activitypub.notes.syncUserInboxes(topicData.tid);
-			const inboxed = await db.isSortedSetMember(`uid:${uid}:inbox`, topicData.tid);
-
-			assert.strictEqual(inboxed, false);
-		});
-	});
-
 	describe('Deletion', () => {
 		let cid;
 		let uid;
@@ -832,6 +420,605 @@ describe('Notes', () => {
 
 			const inboxed = await db.isSetMember(`post:${pid}:recipients`, uid);
 			assert(!inboxed);
+		});
+	});
+
+	describe('Blocklist severity 3 (filter)', () => {
+		/**
+		 * Clear the post queue between tests.
+		 */
+		async function clearQueue() {
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		}
+
+		/**
+		 * Mock instances.isAllowed to return a specific severity for a domain.
+		 */
+		function mockBlockedDomain(domain, severity) {
+			activitypub.instances.isAllowed = async (hostname) => {
+				if (hostname === domain) {
+					return {
+						allowed: severity > 2,
+						severity,
+						listUrl: 'https://example.org/blocklist.csv',
+					};
+				}
+				return activitypub.instances._originalIsAllowed(hostname);
+			};
+		}
+
+		before(async () => {
+			activitypub.instances._originalIsAllowed = activitypub.instances.isAllowed;
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			if (activitypub.instances._originalIsAllowed) {
+				activitypub.instances.isAllowed = activitypub.instances._originalIsAllowed;
+			}
+		});
+
+		beforeEach(async () => {
+			await clearQueue();
+		});
+
+		describe('!hasTid — new topic', () => {
+			beforeEach(function () {
+				mockBlockedDomain('blocked.example.org', 3);
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://blocked.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should queue the main post instead of creating it', async () => {
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert.strictEqual(assertion.tid, null);
+				assert.strictEqual(assertion.queued, 1);
+				assert.strictEqual(assertion.count, undefined);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+
+			it('should queue parent and drop replies when hasTid is false', async () => {
+				const { id: parentId } = helpers.mocks.note();
+				const { id: replyId } = helpers.mocks.note({
+					inReplyTo: parentId,
+				});
+
+				// Assert the parent with severity 3 — should queue and return tid: null
+				const parentAssertion = await activitypub.notes.assert(0, parentId, {
+					skipChecks: true,
+				});
+
+				assert(parentAssertion);
+				assert.strictEqual(parentAssertion.tid, null);
+				assert.strictEqual(parentAssertion.queued, 1);
+
+				// Assert the reply with severity 3 — parent has no tid, so hasTid is false
+				const replyAssertion = await activitypub.notes.assert(0, replyId, {
+					skipChecks: true,
+				});
+
+				assert(replyAssertion);
+				assert.strictEqual(replyAssertion.tid, null);
+				assert.strictEqual(replyAssertion.queued, 1);
+
+				// Verify neither post was created as a real topic/reply
+				assert.strictEqual(await posts.exists(parentId), false);
+				assert.strictEqual(await posts.exists(replyId), false);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+		});
+
+		describe('hasTid — existing topic', () => {
+			let tid;
+			let mainPid;
+			let cid;
+
+			before(async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				const { topicData, postData } = await topics.post({
+					cid,
+					uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				tid = topicData.tid;
+				mainPid = postData.pid;
+			});
+
+			beforeEach(function () {
+				mockBlockedDomain('blocked.example.org', 3);
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://blocked.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should queue replies when severity is 3', async () => {
+				const { id: replyId } = helpers.mocks.note({
+					inReplyTo: mainPid,
+				});
+				const assertion = await activitypub.notes.assert(0, replyId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert.strictEqual(assertion.tid, tid);
+				assert.strictEqual(assertion.queued, 1);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 1);
+			});
+
+			it('should queue multiple replies', async () => {
+				const { id: id1 } = helpers.mocks.note({
+					inReplyTo: mainPid,
+				});
+				const { id: id2 } = helpers.mocks.note({
+					inReplyTo: mainPid,
+				});
+
+				const assertion1 = await activitypub.notes.assert(0, id1, {
+					skipChecks: true,
+				});
+				const assertion2 = await activitypub.notes.assert(0, id2, {
+					skipChecks: true,
+				});
+
+				assert(assertion1);
+				assert(assertion2);
+				assert.strictEqual(assertion1.tid, tid);
+				assert.strictEqual(assertion1.queued, 1);
+				assert.strictEqual(assertion2.tid, tid);
+				assert.strictEqual(assertion2.queued, 1);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 2);
+			});
+		});
+
+		describe('null case', () => {
+			beforeEach(function () {
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://allowed.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should NOT queue posts when domain is not blocked', async () => {
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid);
+				assert.strictEqual(assertion.queued, 0);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+		});
+
+		describe('Severity 1 and 2', () => {
+			beforeEach(function () {
+				this._baseUrl = helpers.mocks._baseUrl;
+				helpers.mocks._baseUrl = 'https://blocked.example.org';
+			});
+
+			afterEach(function () {
+				helpers.mocks._baseUrl = this._baseUrl;
+			});
+
+			it('should NOT queue posts with severity 1 (suspend)', async () => {
+				mockBlockedDomain('blocked.example.org', 1);
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(!assertion);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+
+			it('should NOT queue posts with severity 2 (silence)', async () => {
+				mockBlockedDomain('blocked.example.org', 2);
+				const { id: noteId } = helpers.mocks.note();
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(!assertion);
+
+				const queueCount = await db.sortedSetCard('post:queue');
+				assert.strictEqual(queueCount, 0);
+			});
+		});
+	});
+
+	describe('getParentChain', () => {
+		it('should retrieve a two-note chain via inReplyTo', async () => {
+			const { id: parentId } = helpers.mocks.note();
+			const { id: childId } = helpers.mocks.note({ inReplyTo: parentId });
+
+			const chain = await activitypub.notes.getParentChain(0, childId);
+
+			assert(chain instanceof Set);
+			assert.strictEqual(chain.size, 2);
+
+			const pids = Array.from(chain).map((n) => n.pid);
+			assert(pids.includes(parentId));
+			assert(pids.includes(childId));
+		});
+
+		it('should stop at configured depth', async () => {
+			meta.config.activitypubParentTraversalDepth = 30;
+
+			const noteIds = [];
+			let previousId = null;
+			for (let i = 0; i < 55; i += 1) {
+				const noteData = previousId ? { inReplyTo: previousId } : {};
+				const { id } = helpers.mocks.note(noteData);
+				noteIds.push(id);
+				previousId = id;
+			}
+
+			const chain = await activitypub.notes.getParentChain(0, noteIds[noteIds.length - 1]);
+
+			assert(chain instanceof Set);
+			assert(chain.size <= 30);
+
+			delete meta.config.activitypubParentTraversalDepth;
+		});
+
+		it('should use default depth of 50 when not configured', async () => {
+			delete meta.config.activitypubParentTraversalDepth;
+
+			const noteIds = [];
+			let previousId = null;
+			for (let i = 0; i < 55; i += 1) {
+				const noteData = previousId ? { inReplyTo: previousId } : {};
+				const { id } = helpers.mocks.note(noteData);
+				noteIds.push(id);
+				previousId = id;
+			}
+
+			const chain = await activitypub.notes.getParentChain(0, noteIds[noteIds.length - 1]);
+
+			assert(chain instanceof Set);
+			assert(chain.size <= 50);
+		});
+	});
+
+	describe('Announce from remote category after initial assertion', () => {
+		let remoteCid;
+		let noteId;
+		let note;
+
+		before(async () => {
+			// Create a remote group actor on a different origin than the note
+			({ id: remoteCid } = helpers.mocks.group({
+				id: `https://other.example.org/group/${utils.generateUUID()}`,
+			}));
+			await activitypub.actors.assertGroup([remoteCid]);
+		});
+
+		it('should move topic to announce-er category (currently ignores announce cid)', async () => {
+			// Step 1: Assert a note addressed to the remote category in cc
+			// Origin mismatch → topic should end up in cid -1
+			note = helpers.mocks.note({
+				cc: [remoteCid],
+			});
+			noteId = note.id;
+
+			const assertion = await activitypub.notes.assert(0, noteId, { skipChecks: true });
+			assert(assertion);
+			assert(assertion.tid);
+
+			// Verify topic is in cid -1 (uncategorized)
+			const topicData = await topics.getTopicData(assertion.tid);
+			assert.strictEqual(topicData.cid, -1);
+
+			// Step 2: Announce from the same remote category
+			// Build an Announce(Create(Note)) that inbox.announce will process
+			const createActivity = helpers.mocks.create(note.note);
+			const { activity: announceActivity } = helpers.mocks.announce({
+				actor: remoteCid,
+				object: createActivity.activity,
+			});
+
+			await activitypub.inbox.announce({ body: announceActivity });
+
+			// Step 3: Verify the topic was moved to the remote category
+			const updatedTopic = await topics.getTopicData(assertion.tid);
+			assert.strictEqual(
+				parseInt(updatedTopic.cid, 10),
+				parseInt(remoteCid, 10),
+				'Topic should be moved to the announce-er category',
+			);
+		});
+	});
+
+	describe('auto-categorization with queue rule', () => {
+		let remoteCid;
+		let targetCid;
+		let rid;
+		const tagName = utils.generateUUID().slice(0, 8);
+
+		before(async () => {
+			// Create a remote group actor
+			({ id: remoteCid } = helpers.mocks.group());
+			// Create a local target category
+			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			// Add a hashtag-type auto-categorization rule with filter (queue) enabled
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, 1);
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			if (rid) {
+				await activitypub.rules.delete(rid);
+			}
+		});
+
+		beforeEach(async () => {
+			// Clear the queue
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		});
+
+		it('should queue as crosspost when auto-categorization rule matches with filter=true', async () => {
+			const { id: noteId } = helpers.mocks.note({
+				audience: [remoteCid],
+				tag: [
+					{ type: 'Hashtag', name: `#${tagName}` },
+				],
+			});
+			const assertion = await activitypub.notes.assert(0, noteId, {
+				skipChecks: true,
+			});
+
+			assert(assertion);
+			assert.strictEqual(assertion.queued, 0); // topic in remote category parsed normally
+			assert(assertion.tid);
+
+			// Verify queue entry has crosspostCid
+			const queueIds = await db.getSortedSetMembers('post:queue');
+			assert.strictEqual(queueIds.length, 1);
+
+			const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+			assert.strictEqual(queueData.type, 'crosspost');
+			const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+			assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			assert.strictEqual(parsedData.tid, assertion.tid);
+		});
+	});
+
+	describe('auto-categorization age cutoff', () => {
+		let remoteCid;
+		let targetCid;
+		let rid;
+		const tagName = utils.generateUUID().slice(0, 8);
+
+		before(async () => {
+			// Create a remote group actor
+			({ id: remoteCid } = helpers.mocks.group());
+			// Create a local target category
+			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			// Add a hashtag-type auto-categorization rule with filter (queue=true)
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, 1);
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			delete meta.config.activitypubRulesCutoffDays;
+			if (rid) {
+				await activitypub.rules.delete(rid);
+			}
+		});
+
+		beforeEach(async () => {
+			// Clear the queue
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		});
+
+		describe('cutoff disabled (0)', () => {
+			beforeEach(() => {
+				meta.config.activitypubRulesCutoffDays = 0;
+			});
+
+			afterEach(() => {
+				delete meta.config.activitypubRulesCutoffDays;
+			});
+
+			it('should queue crosspost for old posts when cutoff is 0', async () => {
+				// Create a very old post (365 days ago)
+				const publishedDate = new Date(Date.now() - (365 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify crosspost was queued despite post age
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+
+				const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+				assert.strictEqual(queueData.type, 'crosspost');
+				const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+				assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			});
+		});
+
+		describe('cutoff enabled', () => {
+			const cutoffDays = 30;
+
+			beforeEach(() => {
+				meta.config.activitypubRulesCutoffDays = cutoffDays;
+			});
+
+			afterEach(() => {
+				delete meta.config.activitypubRulesCutoffDays;
+			});
+
+			it('should queue crosspost for recent posts when within cutoff', async () => {
+				// Create a recent post (1 day old)
+				const publishedDate = new Date(Date.now() - (1 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+
+				const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+				assert.strictEqual(queueData.type, 'crosspost');
+				const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+				assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			});
+
+			it('should queue crosspost for posts at the cutoff boundary', async () => {
+				// Create a post just under the cutoff (29 days old, leaving room for test timing)
+				const publishedDate = new Date(Date.now() - ((cutoffDays - 1) * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+
+				// Verify crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for posts older than cutoff', async () => {
+				// Create a post older than cutoff (31 days old)
+				const publishedDate = new Date(Date.now() - ((cutoffDays + 1) * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should still be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for very old posts (60 days)', async () => {
+				// Create a post older than cutoff (60 days old)
+				const publishedDate = new Date(Date.now() - (60 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for very old posts (1 year)', async () => {
+				// Create a very old post (365 days old)
+				const publishedDate = new Date(Date.now() - (365 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should still be created');
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
 		});
 	});
 });

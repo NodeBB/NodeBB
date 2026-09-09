@@ -1,7 +1,6 @@
 'use strict';
 
 const async = require('async');
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('../database');
@@ -24,13 +23,8 @@ module.exports = function (Posts) {
 		const groupsMap = await getGroupsMap(userData);
 
 		userData.forEach((userData, index) => {
-			userData.signature = validator.escape(String(userData.signature || ''));
-			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
+			userData.fullname = userSettings[index].showfullname ? userData.fullname || '' : undefined;
 			userData.selectedGroups = [];
-
-			if (meta.config.hideFullname) {
-				userData.fullname = undefined;
-			}
 		});
 
 		const result = await Promise.all(userData.map(async (userData) => {
@@ -58,7 +52,7 @@ module.exports = function (Posts) {
 
 	Posts.overrideGuestHandle = function (postData, handle) {
 		if (meta.config.allowGuestHandles && postData && postData.user && parseInt(postData.uid, 10) === 0 && handle) {
-			postData.user.username = validator.escape(String(handle));
+			postData.user.username = String(handle);
 			if (postData.user.hasOwnProperty('fullname')) {
 				postData.user.fullname = postData.user.username;
 			}
@@ -105,7 +99,7 @@ module.exports = function (Posts) {
 			'uid', 'username', 'fullname', 'userslug',
 			'reputation', 'postcount', 'topiccount', 'picture',
 			'signature', 'banned', 'banned:expire', 'status',
-			'lastonline', 'groupTitle', 'mutedUntil',
+			'lastonline', 'groupTitle', 'muted', 'mutedUntil',
 		];
 		const result = await plugins.hooks.fire('filter:posts.addUserFields', {
 			fields: fields,
@@ -150,6 +144,7 @@ module.exports = function (Posts) {
 
 		const bulkRemove = [];
 		const bulkAdd = [];
+		const bulkIncr = [];
 		let repChange = 0;
 		const postsByUser = {};
 		postData.forEach((post, i) => {
@@ -164,6 +159,11 @@ module.exports = function (Posts) {
 			if (post.votes > 0 || post.votes < 0) {
 				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votes`, post.votes, post.pid]);
 			}
+
+			bulkIncr.push(
+				[`uid:${post.uid}:cids`, -1, post.cid],
+				[`uid:${toUid}:cids`, 1, post.cid],
+			);
 			postsByUser[post.uid] = postsByUser[post.uid] || [];
 			postsByUser[post.uid].push(post);
 		});
@@ -172,6 +172,7 @@ module.exports = function (Posts) {
 			db.setObjectField(pids.map(pid => `post:${pid}`), 'uid', toUid),
 			db.sortedSetRemoveBulk(bulkRemove),
 			db.sortedSetAddBulk(bulkAdd),
+			db.sortedSetIncrByBulk(bulkIncr),
 			user.incrementUserReputationBy(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
 			updateTopicPosters(postData, toUid),

@@ -77,8 +77,15 @@ delete:
       required: true
       description: a valid topic id
       example: 1
+    - in: query
+      name: cid
+      schema:
+        type: integer
+      required: false
+      description: Category ID of the crosspost to remove (alternative to request body)
+      example: 1
   requestBody:
-    required: true
+    required: false
     content:
       application/json:
         schema:

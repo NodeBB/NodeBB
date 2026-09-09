@@ -6,10 +6,8 @@ const Benchpress = require('benchpressjs');
 
 const plugins = require('../plugins');
 const groups = require('../groups');
-const translator = require('../translator');
 const db = require('../database');
 const apiController = require('../controllers/api');
-const meta = require('../meta');
 
 const widgets = module.exports;
 
@@ -27,7 +25,9 @@ widgets.render = async function (uid, options) {
 		config = await apiController.loadConfig(options.req);
 	}
 
-	const widgetData = await Promise.all(locations.map(location => renderLocation(location, data, uid, options, config)));
+	const widgetData = await Promise.all(
+		locations.map(location => renderLocation(location, data, uid, options, config))
+	);
 
 	const returnData = {};
 	locations.forEach((location, i) => {
@@ -85,11 +85,8 @@ async function renderWidget(widget, uid, options, config, location) {
 				title: widget.data.title,
 				body: html,
 				template: data.templateData && data.templateData.template,
+				_i18n: options?.res?.locals?._i18n,
 			});
-		}
-
-		if (html) {
-			html = await translator.translate(html, config.userLang || meta.config.defaultLang || 'en-GB');
 		}
 
 		return { html };

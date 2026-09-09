@@ -76,8 +76,12 @@ put:
                           description: A six-character hexadecimal colour code assigned to the user. This value is used in conjunction with `icon:text` for the user's auto-generated icon
                           example: '#9c27b0'
                         banned:
-                          type: number
+                          type: boolean
                           description: A Boolean representing whether a user is banned or not
+                          example: 0
+                        banned_until:
+                          type: number
+                          description: A UNIX timestamp representing the moment a ban will be lifted
                           example: 0
                         banned_until_readable:
                           type: string

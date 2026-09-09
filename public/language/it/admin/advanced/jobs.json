@@ -1,0 +1,9 @@
+{
+	"jobs": "Lavori",
+	"job-name": "Nome del lavoro",
+	"schedule": "Programma",
+	"next-run": "Prossima esecuzione",
+	"last-duration": "Ultima durata",
+	"running": "In esecuzione",
+	"active": "Attivo"
+}

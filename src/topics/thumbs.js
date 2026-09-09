@@ -4,10 +4,11 @@
 const _ = require('lodash');
 const nconf = require('nconf');
 const path = require('path');
-const mime = require('mime');
+const mime = require('mime').default;
 const plugins = require('../plugins');
 const posts = require('../posts');
 const meta = require('../meta');
+const file = require('../file');
 
 const topics = module.parent.exports;
 const Thumbs = module.exports;
@@ -20,7 +21,7 @@ Thumbs.exists = async function (tid, path) {
 	return thumbs.includes(path);
 };
 
-Thumbs.load = async function (topicData) {
+Thumbs.load = async function (topicData, options = {}) {
 	const mainPids = topicData.filter(Boolean).map(t => t.mainPid);
 	const mainPostData = await posts.getPostsFields(mainPids, ['attachments', 'uploads']);
 	const hasUploads = mainPostData.map(p => Array.isArray(p.uploads) && p.uploads.length > 0);
@@ -33,9 +34,15 @@ Thumbs.load = async function (topicData) {
 
 	const topicsWithThumbs = topicData.filter((tid, idx) => hasThumbs[idx]);
 	const tidsWithThumbs = topicsWithThumbs.map(t => t.tid);
-	const thumbs = await loadFromTopicData(topicsWithThumbs, {
-		thumbsOnly: meta.config.showPostUploadsAsThumbnails !== 1,
-	});
+	const thumbsOnly = Object.hasOwn(options, 'thumbsOnly') ?
+		options.thumbsOnly :
+		meta.config.showPostUploadsAsThumbnails !== 1;
+	let thumbs = await loadFromTopicData(topicsWithThumbs, { thumbsOnly });
+	if (meta.config.privateUploads && parseInt(options.uid, 10) <= 0) {
+		thumbs = thumbs.map((thumbSet) => {
+			return thumbSet.filter(thumb => thumb && !thumb.url.startsWith(upload_url));
+		});
+	}
 
 	const tidToThumbs = _.zipObject(tidsWithThumbs, thumbs);
 	return topicData.map(t => (t && t.tid ? (tidToThumbs[t.tid] || []) : []));
@@ -44,13 +51,22 @@ Thumbs.load = async function (topicData) {
 async function loadFromTopicData(topicData, options = {}) {
 	const tids = topicData.map(t => t && t.tid);
 	const thumbs = topicData.map(t => t && Array.isArray(t.thumbs) ? t.thumbs : []);
+	const mainPids = topicData.map(t => t.mainPid);
+
+	const mainPidAttachments = await posts.attachments.get(mainPids);
+	// Add attachments to thumb sets
+	mainPidAttachments.forEach((attachments, idx) => {
+		attachments = attachments.filter(
+			attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
+		);
+
+		if (attachments.length) {
+			thumbs[idx].push(...attachments.map(attachment => attachment.url));
+		}
+	});
 
 	if (!options.thumbsOnly) {
-		const mainPids = topicData.map(t => t.mainPid);
-		const [mainPidUploads, mainPidAttachments] = await Promise.all([
-			posts.uploads.list(mainPids),
-			posts.attachments.get(mainPids),
-		]);
+		const mainPidUploads = await posts.uploads.list(mainPids);
 
 		// Add uploaded media to thumb sets
 		mainPidUploads.forEach((uploads, idx) => {
@@ -61,17 +77,6 @@ async function loadFromTopicData(topicData, options = {}) {
 
 			if (uploads.length) {
 				thumbs[idx].push(...uploads);
-			}
-		});
-
-		// Add attachments to thumb sets
-		mainPidAttachments.forEach((attachments, idx) => {
-			attachments = attachments.filter(
-				attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
-			);
-
-			if (attachments.length) {
-				thumbs[idx].push(...attachments.map(attachment => attachment.url));
 			}
 		});
 	}
@@ -172,7 +177,7 @@ Thumbs.filterThumbs = function (thumbs) {
 		}
 		// ensure it is in upload path
 		const fullPath = path.join(upload_path, thumb);
-		return fullPath.startsWith(upload_path);
+		return file.isPathInside(upload_path, fullPath);
 	});
 	return thumbs;
 };

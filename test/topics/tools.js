@@ -6,8 +6,11 @@ const db = require('../mocks/databasemock');
 
 const user = require('../../src/user');
 const categories = require('../../src/categories');
+const groups = require('../../src/groups');
 const topics = require('../../src/topics');
 const utils = require('../../src/utils');
+const api = require('../../src/api');
+const privileges = require('../../src/privileges');
 
 describe('Topic tools', () => {
 	describe('Topic moving', () => {
@@ -60,6 +63,124 @@ describe('Topic tools', () => {
 			assert(Array.isArray(tids));
 			assert.deepStrictEqual(tids, []);
 		});
+
+		it('should only allow topic moving if user is a moderator of the source and destination category', async () => {
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const uid2 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			await assert.rejects(
+				api.topics.move({ uid: uid2 }, {
+					cid: cid2,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// making moderator on destination
+			await privileges.categories.give(['moderate'], cid2, [uid2]);
+			await assert.rejects(
+				api.topics.move({ uid: uid2 }, {
+					cid: cid2,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// making moderator on source
+			await privileges.categories.give(['moderate'], cid1, [uid2]);
+			await api.topics.move({ uid: uid2 }, {
+				cid: cid2,
+				tid: topicData.tid,
+			});
+			assert.strictEqual(
+				String(await topics.getTopicField(topicData.tid, 'cid')),
+				String(cid2)
+			);
+		});
+
+		it('should allow topic moving if user is a the owner of the topic', async () => {
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+
+			await api.topics.move({ uid: uid1 }, {
+				cid: cid2,
+				tid: topicData.tid,
+			});
+
+			assert.strictEqual(
+				String(await topics.getTopicField(topicData.tid, 'cid')),
+				String(cid2)
+			);
+		});
+
+		it('should disallow topic moving if user does not have privs in destination category', async () => {
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			await privileges.categories.rescind(['groups:topics:create'], cid2, 'registered-users');
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: cid1,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+
+			await assert.rejects(
+				api.topics.move({ uid: uid1 }, {
+					cid: cid2,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
+		it('should disallow topic moving if owner lost topics:read on source category', async () => {
+			const { cid: restrictedCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			const { cid: destCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+			const uid1 = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const { topicData } = await topics.post({
+				uid: uid1,
+				cid: restrictedCid,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+
+			// Owner can move before read is revoked
+			await api.topics.move({ uid: uid1 }, {
+				cid: destCid,
+				tid: topicData.tid,
+			});
+			assert.strictEqual(String(await topics.getTopicField(topicData.tid, 'cid')), String(destCid));
+
+			// Move back to restricted category
+			await api.topics.move({ uid: uid1 }, {
+				cid: restrictedCid,
+				tid: topicData.tid,
+			});
+
+			// Revoke topics:read from source category for registered-users
+			await privileges.categories.rescind(['groups:topics:read'], restrictedCid, 'registered-users');
+
+			// Owner should no longer be able to move the topic out
+			await assert.rejects(
+				api.topics.move({ uid: uid1 }, {
+					cid: destCid,
+					tid: topicData.tid,
+				}),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// Restore privilege for test isolation
+			await privileges.categories.give(['groups:topics:read'], restrictedCid, 'registered-users');
+		});
 	});
 
 	describe('with remote categories', () => {
@@ -68,7 +189,7 @@ describe('Topic tools', () => {
 		let tid1;
 		let tid2;
 
-		before(async () => {
+		before(async function () {
 			const helpers = require('../activitypub/helpers');
 			({ id: remoteCid } = helpers.mocks.group());
 			({ cid: localCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
@@ -84,23 +205,26 @@ describe('Topic tools', () => {
 				content: utils.generateUUID(),
 			});
 			tid2 = topicData.tid;
+
+			this.adminUid = await user.create({ username: utils.generateUUID() });
+			await groups.join('administrators', this.adminUid);
 		});
 
-		it('should throw when attempting to move a topic from a remote category', async () => {
+		it('should throw when attempting to move a topic from a remote category', async function () {
 			await assert.rejects(
 				topics.tools.move(tid1, {
 					cid: localCid,
-					uid: 'system',
+					uid: this.adminUid,
 				}),
 				{ message: '[[error:no-topic]]' }
 			);
 		});
 
-		it('should throw when attempting to move a topic to a remote category', async () => {
+		it('should throw when attempting to move a topic to a remote category', async function () {
 			await assert.rejects(
 				topics.tools.move(tid2, {
 					cid: remoteCid,
-					uid: 'system',
+					uid: this.adminUid,
 				}),
 				{ message: '[[error:cant-move-topic-to-from-remote-categories]]' }
 			);

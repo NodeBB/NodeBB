@@ -9,5 +9,6 @@
     "no-moderators": "중재자 없음",
     "add-administrator": "관리자 추가",
     "add-global-moderator": "전역 중재자 추가",
-    "add-moderator": "중재자 추가"
+    "add-moderator": "중재자 추가",
+    "disabled": "Disabled"
 }

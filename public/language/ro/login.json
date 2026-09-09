@@ -8,5 +8,6 @@
     "login-successful": "Te-ai autentificat cu succes!",
     "dont-have-account": "Nu ai un cont?",
     "logged-out-due-to-inactivity": "Ai fost deconectat din panoul de administrare din cauza inactivității",
-    "caps-lock-enabled": "Caps Lock is enabled"
+    "caps-lock-enabled": "Caps Lock is enabled",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

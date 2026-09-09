@@ -1,11 +1,9 @@
 'use strict';
 
-const _ = require('lodash');
 const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
 const util = require('util');
-const validator = require('validator');
 const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 const db = require('../database');
@@ -16,6 +14,7 @@ const ratelimit = require('../middleware/ratelimit');
 const blacklist = require('../meta/blacklist');
 const als = require('../als');
 const apiHelpers = require('../api/helpers');
+const socketIp = require('./utils/ip');
 
 const Namespaces = Object.create(null);
 
@@ -73,17 +72,21 @@ Sockets.init = async function (server) {
 		winston.info(`[socket.io] Restricting access to origin: ${origins}`);
 	}
 
-	io.listen(server, opts);
+	const eio = io.listen(server, opts);
+	if (process.env.NODE_ENV === 'development') {
+		if (eio?.engine?.on) {
+			eio.engine.on('connection_error', (err) => {
+				winston.error(`[socket.io] Connection error: [${err.code}]-${err.message}`);
+			});
+		}
+	}
 	Sockets.server = io;
 };
 
 function onConnection(socket) {
 	socket.uid = socket.request.uid;
-	socket.data.uid = socket.uid; // socket.data is shared between nodes via fetchSockets
-	socket.ip = (
-		socket.request.headers['x-forwarded-for'] ||
-		socket.request.connection.remoteAddress || ''
-	).split(',')[0];
+	socket.data.uid = String(socket.uid); // socket.data is shared between nodes via fetchSockets
+	socket.ip = socketIp.getClientIp(socket.request);
 	socket.request.ip = socket.ip;
 	logger.io_one(socket, socket.uid);
 
@@ -163,8 +166,7 @@ async function onMessage(socket, payload) {
 		}
 
 		if (typeof event !== 'string') {
-			const escapedName = validator.escape(typeof event);
-			return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
+			return callback({ message: `[[error:invalid-event, ${typeof event}]]` });
 		}
 
 		const parts = event.split('.');
@@ -180,8 +182,7 @@ async function onMessage(socket, payload) {
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn(`[socket.io] Unrecognized message: ${event}`);
 			}
-			const escapedName = validator.escape(String(event));
-			return callback({ message: `[[error:invalid-event, ${escapedName}]]` });
+			return callback({ message: `[[error:invalid-event, ${event}]]` });
 		}
 
 		socket.previousEvents = socket.previousEvents || [];
@@ -238,8 +239,7 @@ async function checkMaintenance(socket) {
 	if (isAdmin) {
 		return;
 	}
-	const validator = require('validator');
-	throw new Error(`[[pages:maintenance.text, ${validator.escape(String(meta.config.title || 'NodeBB'))}]]`);
+	throw new Error(`[[pages:maintenance.text, ${meta.config.title || 'NodeBB'}]]`);
 }
 
 async function validateSession(socket, errorMsg) {
@@ -311,16 +311,16 @@ Sockets.getUidsInRoom = async function (room) {
 		return [];
 	}
 	const ioRoom = Sockets.server.in(room);
-	const uids = [];
+	const uids = new Set();
 	if (ioRoom) {
 		const sockets = await ioRoom.fetchSockets();
 		for (const s of sockets) {
 			if (s && s.data && s.data.uid > 0) {
-				uids.push(s.data.uid);
+				uids.add(s.data.uid);
 			}
 		}
 	}
-	return _.uniq(uids);
+	return [...uids];
 };
 
 Sockets.warnDeprecated = (socket, replacement) => {

@@ -4,8 +4,8 @@ const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 
-const request = require('../src/request');
 const db = require('./mocks/databasemock');
+const request = require('../src/request');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const user = require('../src/user');
@@ -239,12 +239,6 @@ describe('Admin Controllers', () => {
 		assert.strictEqual(response.statusCode, 200);
 		assert(body);
 		assert.strictEqual(body.users.length, 0);
-	});
-
-	it('should load /admin/manage/registration', async () => {
-		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/registration`, { jar: jar });
-		assert.equal(response.statusCode, 200);
-		assert(body);
 	});
 
 	it('should 404 if users is not privileged', async () => {
@@ -629,6 +623,7 @@ describe('Admin Controllers', () => {
 					'uploadfavicon',
 					'uploadTouchIcon',
 					'uploadMaskableIcon',
+					'uploadScreenshot',
 					'uploadlogo',
 					'uploadOgImage',
 					'uploadDefaultAvatar',
@@ -643,7 +638,7 @@ describe('Admin Controllers', () => {
 
 					await privileges.admin.give([privileges.admin.routeMap[route]], uid);
 					({ response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts));
-					assert.strictEqual(res.statusCode, 200);
+					assert.strictEqual(res.statusCode, 200, `${route} returned ${res.statusCode} instead of 200`);
 
 					await privileges.admin.rescind([privileges.admin.routeMap[route]], uid);
 				}

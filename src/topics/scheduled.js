@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const winston = require('winston');
-const { CronJob } = require('cron');
 
 const db = require('../database');
 const posts = require('../posts');
@@ -13,18 +12,17 @@ const groups = require('../groups');
 const user = require('../user');
 const activitypub = require('../activitypub');
 const plugins = require('../plugins');
+const cron = require('../cron');
 
 const Scheduled = module.exports;
 
-Scheduled.startJobs = function () {
+Scheduled.startJobs = async function () {
 	winston.verbose('[scheduled topics] Starting jobs.');
-	new CronJob('*/1 * * * *', async () => {
-		try {
-			await Scheduled.handleExpired();
-		} catch (err) {
-			winston.error(err.stack);
-		}
-	}, null, true);
+	await cron.addJob({
+		name: 'topics:publish:scheduled',
+		cronTime: '*/1 * * * *',
+		onTick: Scheduled.handleExpired,
+	});
 };
 
 Scheduled.handleExpired = async function () {
@@ -47,18 +45,18 @@ async function postTids(tids) {
 
 	// Restore first to be not filtered for being deleted
 	// Restoring handles "updateRecentTid"
-	await Promise.all([].concat(
-		topicsData.map(topicData => topics.restore(topicData.tid)),
-		topicsData.map(topicData => topics.updateLastPostTimeFromLastPid(topicData.tid))
-	));
+	await Promise.all(topicsData.map(t => topics.restore(t.tid)));
+	await Promise.all(topicsData.map(t => topics.updateLastPostTimeFromLastPid(t.tid)));
 
-	await Promise.all([].concat(
+	await Promise.all([
 		sendNotifications(uids, topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(topicsData),
-		federatePosts(uids, topicsData),
-		...topicsData.map(topicData => unpin(topicData.tid, topicData)),
-	));
+	]);
+	await Promise.all(topicsData.map(topicData => unpin(topicData.tid, topicData)));
+	federatePosts(uids, topicsData).catch(
+		err => winston.error(`[scheduled topics] Error federating posts: ${err.message}`)
+	);
 }
 
 // topics/tools.js#pin/unpin would block non-admins/mods, thus the local versions
@@ -100,8 +98,8 @@ Scheduled.reschedule = async function ({ cid, tid, timestamp, uid }) {
 	}
 };
 
-function unpin(tid, topicData) {
-	return [
+async function unpin(tid, topicData) {
+	await Promise.all([
 		topics.setTopicField(tid, 'pinned', 0),
 		topics.deleteTopicField(tid, 'pinExpiry'),
 		db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid),
@@ -112,7 +110,7 @@ function unpin(tid, topicData) {
 			[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 			[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
 		]),
-	];
+	]);
 }
 
 async function sendNotifications(uids, topicsData) {
@@ -122,6 +120,7 @@ async function sendNotifications(uids, topicsData) {
 	let postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	topicsData = topicsData.filter((t, i) => t && postsData[i]);
 	postsData = postsData.filter(Boolean);
+	postsData = await Promise.all(postsData.map(p => posts.parsePost(p)));
 	postsData.forEach((postData, idx) => {
 		if (postData) {
 			postData.user = uidToUserData[topicsData[idx].uid];
@@ -171,12 +170,11 @@ async function updateGroupPosts(topicsData) {
 	}));
 }
 
-function federatePosts(uids, topicData) {
-	topicData.forEach(({ mainPid: pid }, idx) => {
+async function federatePosts(uids, topicData) {
+	await Promise.all(topicData.map(async ({mainPid: pid}, idx) => {
 		const uid = uids[idx];
-
-		activitypub.out.create.note(uid, pid);
-	});
+		await activitypub.out.create.note(uid, pid);
+	}));
 }
 
 async function shiftPostTimes(tid, timestamp) {

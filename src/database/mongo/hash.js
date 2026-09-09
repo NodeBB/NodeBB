@@ -240,7 +240,22 @@ module.exports = function (module) {
 			key.forEach((key) => {
 				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
-			await bulk.execute();
+
+			try {
+				await bulk.execute();
+			} catch (err) {
+				// retry failed e11000 operations
+				if (err.code === 11000 || (err.writeErrors && err.writeErrors.some(e => e.code === 11000))) {
+					const failedIndices = err.writeErrors.filter(e => e.code === 11000).map(e => e.index);
+					const retryData = failedIndices.map(idx => key[idx]);
+					await Promise.all(retryData.map(
+						key => module.incrObjectFieldBy(key, field, value)
+					));
+				} else {
+					throw err;
+				}
+			}
+
 			cache.del(key);
 			const result = await module.getObjectsFields(key, [field]);
 			return result.map(data => data && data[field]);
@@ -284,7 +299,18 @@ module.exports = function (module) {
 			}
 			bulk.find({ _key: item[0] }).upsert().update({ $inc: increment });
 		});
-		await bulk.execute();
+		try {
+			await bulk.execute();
+		} catch (err) {
+			// retry failed e11000 operations
+			if (err.code === 11000 || (err.writeErrors && err.writeErrors.some(e => e.code === 11000))) {
+				const failedIndices = err.writeErrors.filter(e => e.code === 11000).map(e => e.index);
+				const retryData = failedIndices.map(idx => data[idx]);
+				await module.incrObjectFieldByBulk(retryData);
+			} else {
+				throw err;
+			}
+		}
 		cache.del(data.map(item => item[0]));
 	};
 };

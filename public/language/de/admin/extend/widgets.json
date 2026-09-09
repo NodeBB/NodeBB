@@ -13,7 +13,7 @@
 	"container.card-header": "Karten-Kopfzeile",
 	"container.card-body": "Karten-Körper",
 	"container.title": "Titel",
-	"container.body": "Body",
+	"container.body": "Körper",
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Möchtest Du dieses Widget wirklich löschen?",

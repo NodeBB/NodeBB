@@ -16,14 +16,17 @@ const categories = require('../src/categories');
 const privileges = require('../src/privileges');
 const user = require('../src/user');
 const groups = require('../src/groups');
+const plugins = require('../src/plugins');
 const socketPosts = require('../src/socket.io/posts');
 const apiPosts = require('../src/api/posts');
 const apiTopics = require('../src/api/topics');
+const websockets = require('../src/socket.io');
 const meta = require('../src/meta');
 const file = require('../src/file');
 const helpers = require('./helpers');
 const utils = require('../src/utils');
 const request = require('../src/request');
+const translator = require('../src/translator');
 
 describe('Post\'s', () => {
 	let voterUid;
@@ -137,13 +140,13 @@ describe('Post\'s', () => {
 			await privileges.categories.rescind(['groups:posts:upvote', 'groups:posts:downvote'], cid, 'registered-users');
 			let err;
 			try {
-				await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+				await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid });
 			} catch (_err) {
 				err = _err;
 			}
 			assert.equal(err.message, '[[error:no-privileges]]');
 			try {
-				await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid });
 			} catch (_err) {
 				err = _err;
 			}
@@ -152,7 +155,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should upvote a post', async () => {
-			const result = await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			const result = await apiPosts.upvote({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(result.post.upvotes, 1);
 			assert.equal(result.post.downvotes, 0);
 			assert.equal(result.post.votes, 1);
@@ -199,7 +202,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should unvote a post', async () => {
-			const result = await apiPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			const result = await apiPosts.unvote({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(result.post.upvotes, 0);
 			assert.equal(result.post.downvotes, 0);
 			assert.equal(result.post.votes, 0);
@@ -210,7 +213,7 @@ describe('Post\'s', () => {
 		});
 
 		it('should downvote a post', async () => {
-			const result = await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' });
+			const result = await apiPosts.downvote({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(result.post.upvotes, 0);
 			assert.equal(result.post.downvotes, 1);
 			assert.equal(result.post.votes, -1);
@@ -238,7 +241,7 @@ describe('Post\'s', () => {
 				content: 'raw content',
 			});
 			try {
-				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid });
 			} catch (_err) {
 				err = _err;
 			}
@@ -256,7 +259,7 @@ describe('Post\'s', () => {
 				content: 'raw content',
 			});
 			try {
-				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid, room_id: 'topic_1' });
+				await apiPosts.downvote({ uid: voterUid }, { pid: p1.pid });
 			} catch (_err) {
 				err = _err;
 			}
@@ -267,17 +270,42 @@ describe('Post\'s', () => {
 
 	describe('bookmarking', () => {
 		it('should bookmark a post', async () => {
-			const data = await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` });
+			const data = await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(data.isBookmarked, true);
 			const hasBookmarked = await posts.hasBookmarked(postData.pid, voterUid);
 			assert.equal(hasBookmarked, true);
 		});
 
 		it('should unbookmark a post', async () => {
-			const data = await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: `topic_${postData.tid}` });
+			const data = await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid });
 			assert.equal(data.isBookmarked, false);
 			const hasBookmarked = await posts.hasBookmarked([postData.pid], voterUid);
 			assert.equal(hasBookmarked[0], false);
+		});
+
+		it('should fail to bookmark/unbookmark a post the user can not read', async () => {
+			const { cid } = await categories.create({ name: 'Test Category'});
+			const { postData } = await topics.post({
+				uid: voteeUid,
+				cid: cid,
+				title: 'topic to bookmark',
+				content: 'A post to bookmark',
+			});
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
+			await assert.rejects(
+				apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			await assert.rejects(
+				apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// should work after giving topics:read
+			await privileges.categories.give(['groups:topics:read'], cid, 'registered-users');
+			await apiPosts.bookmark({ uid: voterUid }, { pid: postData.pid });
+			await apiPosts.unbookmark({ uid: voterUid }, { pid: postData.pid });
 		});
 	});
 
@@ -298,6 +326,14 @@ describe('Post\'s', () => {
 				assert(data.posts.display_move_tools);
 				done();
 			});
+		});
+
+		it('should not allow guests to load post tools without topics:read privilege', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'guests');
+			await assert.rejects(socketPosts.loadPostTools({ uid: 0 }, { pid: postData.pid }), {
+				message: '[[error:no-privileges]]',
+			});
+			await privileges.categories.give(['groups:topics:read'], cid, 'guests');
 		});
 	});
 
@@ -384,7 +420,10 @@ describe('Post\'s', () => {
 		let pid;
 		let replyPid;
 		let tid;
-		before((done) => {
+		before(function (done) {
+			this.minimumTitleLength = meta.config.minimumTitleLength;
+			meta.config.minimumTitleLength = 3;
+
 			topics.post({
 				uid: voterUid,
 				cid: cid,
@@ -406,6 +445,10 @@ describe('Post\'s', () => {
 					privileges.categories.give(['groups:posts:edit'], cid, 'registered-users', done);
 				});
 			});
+		});
+
+		after(function () {
+			meta.config.minimumTitleLength = this.minimumTitleLength;
 		});
 
 		it('should error if user is not logged in', async () => {
@@ -562,6 +605,16 @@ describe('Post\'s', () => {
 				err = _err;
 			}
 			assert.strictEqual(err.message, '[[error:no-privileges]]');
+		});
+
+		it('should not allow registered-users group to view diffs if they do not have the topics:read privilege', async () => {
+			await privileges.categories.rescind(['groups:topics:read'], cid, 'registered-users');
+			await assert.rejects(
+				apiPosts.getDiffs({ uid: voterUid }, { pid: 1 }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			await privileges.categories.give(['groups:topics:read'], cid, 'registered-users');
 		});
 
 		it('should allow registered-users group to view diffs', async () => {
@@ -729,8 +782,8 @@ describe('Post\'s', () => {
 		});
 
 		it('should store post content in cache', (done) => {
-			const oldValue = global.env;
-			global.env = 'production';
+			const oldValue = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'production';
 			const postData = {
 				pid: 9999,
 				content: 'some post content',
@@ -739,7 +792,7 @@ describe('Post\'s', () => {
 				assert.ifError(err);
 				posts.parsePost(postData, (err) => {
 					assert.ifError(err);
-					global.env = oldValue;
+					process.env.NODE_ENV = oldValue;
 					done();
 				});
 			});
@@ -779,7 +832,7 @@ describe('Post\'s', () => {
 		});
 	});
 
-	describe('socket methods', () => {
+	describe('socket/api methods', () => {
 		let pid;
 		before((done) => {
 			topics.reply({
@@ -819,7 +872,7 @@ describe('Post\'s', () => {
 
 		it('should fail to get raw post because post is deleted', async () => {
 			await posts.setPostField(pid, 'deleted', 1);
-			const content = await apiPosts.getRaw({ uid: voterUid }, { pid });
+			const content = await apiPosts.getRaw({ uid: voteeUid }, { pid });
 			assert.strictEqual(content, null);
 		});
 
@@ -866,6 +919,32 @@ describe('Post\'s', () => {
 			assert(utils.isNumber(timestamp));
 		});
 
+		it('should get post summary and timestamp by index with sort', async () => {
+			const result = await topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic for sorted navigation',
+				content: 'main post',
+			});
+			await apiTopics.reply({ uid: voterUid }, { tid: result.topicData.tid, content: 'first reply' });
+			await sleep(5);
+			const lastReply = await apiTopics.reply({ uid: voterUid }, { tid: result.topicData.tid, content: 'second reply' });
+
+			const timestamp = await socketPosts.getPostTimestampByIndex({ uid: voterUid }, {
+				index: 1,
+				tid: result.topicData.tid,
+				sort: 'newest_to_oldest',
+			});
+			assert.strictEqual(timestamp, lastReply.timestamp);
+
+			const summary = await socketPosts.getPostSummaryByIndex({ uid: voterUid }, {
+				index: 1,
+				tid: result.topicData.tid,
+				sort: 'newest_to_oldest',
+			});
+			assert.strictEqual(summary.pid, lastReply.pid);
+		});
+
 		it('should get post timestamp by index', async () => {
 			const summary = await socketPosts.getPostSummaryByPid({ uid: voterUid }, {
 				pid: pid,
@@ -873,13 +952,8 @@ describe('Post\'s', () => {
 			assert(summary);
 		});
 
-		it('should get post category', async () => {
-			const postCid = await socketPosts.getCategory({ uid: voterUid }, pid);
-			assert.equal(cid, postCid);
-		});
-
 		it('should get pid index', async () => {
-			const index = await socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest_to_newest' });
+			const index = await socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, topicPostSort: 'oldest_to_newest' });
 			assert.equal(index, 4);
 		});
 
@@ -898,6 +972,43 @@ describe('Post\'s', () => {
 			const index = await apiPosts.getIndex({ uid: voterUid }, { pid: postData.pid, sort: 'newest_to_oldest' });
 			assert.equal(index, 1);
 		});
+
+		describe('deleted topic posts', () => {
+			let tid;
+			let pidInDeletedTopic;
+			before(async () => {
+				const { topicData } = await topics.post({
+					uid: globalModUid,
+					cid,
+					title: 'just a topic for deleted tests',
+					content: `post content in deleted topic`,
+					deleted: 1,
+				});
+				tid = topicData.tid;
+				pidInDeletedTopic = topicData.mainPid;
+			});
+
+			it('should not get post if the topic is deleted', async () => {
+				const results = await Promise.all([
+					apiPosts.get({ uid: voterUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getIndex({ uid: voterUid }, { pid: pidInDeletedTopic, sort: 'oldest_to_newest' }),
+					apiPosts.getRaw({ uid: voterUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getSummary({ uid: voterUid }, { pid: pidInDeletedTopic }),
+				]);
+				assert.deepStrictEqual(results, [null, null, null, null]);
+			});
+
+			it('should get post if called by globalMod', async () => {
+				const results = await Promise.all([
+					apiPosts.get({ uid: globalModUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getIndex({ uid: globalModUid }, { pid: pidInDeletedTopic, sort: 'oldest_to_newest' }),
+					apiPosts.getRaw({ uid: globalModUid }, { pid: pidInDeletedTopic }),
+					apiPosts.getSummary({ uid: globalModUid }, { pid: pidInDeletedTopic }),
+				]);
+				assert(results.every(result => result !== null));
+			});
+		});
+
 	});
 
 	describe('filterPidsByCid', () => {
@@ -983,6 +1094,7 @@ describe('Post\'s', () => {
 			assert.equal(posts[0].data.content, 'queued topic content');
 			assert.equal(posts[1].type, 'reply');
 			assert.equal(posts[1].data.content, 'this is a queued reply');
+			assert(!Object.hasOwn(posts[0].data, 'req'));
 		});
 
 		it('should error if data is invalid', async () => {
@@ -1070,6 +1182,18 @@ describe('Post\'s', () => {
 			assert.strictEqual(postData[0].data.content, 'the moved queued post');
 			assert.strictEqual(postData[0].data.tid, result2.tid);
 		});
+
+		it('should not translate queued topic title & content', async () => {
+			const text = '[[global:403.login, javascript:alert(document.domain)]]';
+			const result = await apiTopics.create({ uid: uid }, {
+				cid: cid,
+				title: text,
+				content: text,
+			});
+			const { body } = await request.get(`${nconf.get('url')}/post-queue/${result.id}`, { jar });
+			// should not contain the translated message
+			assert(body.indexOf('Perhaps you should') === -1);
+		});
 	});
 
 	describe('post editors', () => {
@@ -1114,11 +1238,16 @@ describe('Post\'s', () => {
 		it('should add another user to post editors', async () => {
 			const ownerUid = await user.create({ username: 'owner user' });
 			const editorUid = await user.create({ username: 'editor user' });
+			const oldValue = meta.config.trackIpPerPost;
+			meta.config.trackIpPerPost = 1;
 			const topic = await topics.post({
 				uid: ownerUid,
 				cid,
 				title: 'just a topic for multi editor testing',
 				content: `Some text here for the OP`,
+				req: {
+					ip: '127.0.0.1',
+				},
 			});
 			const { pid } = topic.postData;
 			await socketPosts.saveEditors({ uid: ownerUid }, {
@@ -1126,8 +1255,207 @@ describe('Post\'s', () => {
 				uids: [editorUid],
 			});
 
-			const userData = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
-			assert.strictEqual(userData[0].username, 'editor user');
+			const { users } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.strictEqual(users[0].username, 'editor user');
+
+			const result = await apiPosts.edit({ uid: editorUid }, { pid, content: 'edited by editor' });
+			assert.strictEqual(Object.hasOwn(result, 'ip'), false);
+			const content = await posts.getPostField(pid, 'content');
+			assert.strictEqual(content, 'edited by editor');
+
+			meta.config.trackIpPerPost = oldValue;
+		});
+
+		it('should allow members of an editor group to edit the post', async () => {
+			const ownerUid = await user.create({ username: 'group owner user' });
+			const memberUid = await user.create({ username: 'group editor user' });
+			const outsiderUid = await user.create({ username: 'not a group member' });
+			await groups.create({ name: 'editors-test-group' });
+			await groups.join('editors-test-group', memberUid);
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group editor testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-test-group'],
+			});
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, ['editors-test-group']);
+			assert(await db.isSortedSetMember('group:editors-test-group:editor:pids', pid));
+
+			await apiPosts.edit({ uid: memberUid }, { pid, content: 'edited by group member' });
+			assert.strictEqual(await posts.getPostField(pid, 'content'), 'edited by group member');
+
+			const canEdit = await privileges.posts.canEdit(pid, outsiderUid);
+			assert.strictEqual(canEdit.flag, false);
+		});
+
+		it('should keep group editors working when the group is renamed', async () => {
+			const ownerUid = await user.create({ username: 'rename owner user' });
+			const memberUid = await user.create({ username: 'rename editor user' });
+			await groups.create({ name: 'editors-rename-group' });
+			await groups.join('editors-rename-group', memberUid);
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group rename testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-rename-group'],
+			});
+
+			await groups.update('editors-rename-group', { name: 'editors-renamed-group' });
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, ['editors-renamed-group']);
+			assert(await db.isSortedSetMember('group:editors-renamed-group:editor:pids', pid));
+			assert(!await db.exists('group:editors-rename-group:editor:pids'));
+
+			const canEdit = await privileges.posts.canEdit(pid, memberUid);
+			assert.strictEqual(canEdit.flag, true);
+		});
+
+		it('should remove group from post editors when the group is deleted', async () => {
+			const ownerUid = await user.create({ username: 'delete owner user' });
+			await groups.create({ name: 'editors-delete-group' });
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group delete testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-delete-group'],
+			});
+
+			await groups.destroy('editors-delete-group');
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, []);
+			assert(!await db.exists('group:editors-delete-group:editor:pids'));
+		});
+
+		it('should clean up editor groups when the post is purged', async () => {
+			const ownerUid = await user.create({ username: 'purge owner user' });
+			await groups.create({ name: 'editors-purge-group' });
+
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group purge testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['editors-purge-group'],
+			});
+
+			await posts.purge([pid], ownerUid);
+
+			assert(!await db.exists(`pid:${pid}:editors:groups`));
+			assert(!await db.isSortedSetMember('group:editors-purge-group:editor:pids', pid));
+		});
+
+		it('should not save privilege or non-existent groups as editors', async () => {
+			const ownerUid = await user.create({ username: 'filter owner user' });
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic for group filter testing',
+				content: 'Some text here for the OP',
+			});
+			const { pid } = topic.postData;
+			await socketPosts.saveEditors({ uid: ownerUid }, {
+				pid: pid,
+				uids: [],
+				groups: ['cid:0:privileges:admin:admincp', 'guests', 'does-not-exist-group'],
+			});
+
+			const { groups: groupNames } = await socketPosts.getEditors({ uid: ownerUid }, { pid: pid });
+			assert.deepStrictEqual(groupNames, []);
+		});
+	});
+
+	describe('editing posts in locked topics', () => {
+		let ownerUid;
+		let pid;
+
+		before(async () => {
+			ownerUid = await user.create({ username: 'locked topic owner' });
+			const topic = await topics.post({
+				uid: ownerUid,
+				cid,
+				title: 'a topic that gets locked',
+				content: 'Some text here for the OP',
+			});
+			pid = topic.postData.pid;
+			await topics.setTopicField(topic.topicData.tid, 'locked', 1);
+		});
+
+		it('should not allow the owner to edit a post in a locked topic', async () => {
+			const { flag, message } = await privileges.posts.canEdit(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
+		});
+
+		it('should let a plugin grant edit access by unsetting isLocked', async () => {
+			const method = (data) => {
+				assert.strictEqual(data.isLocked, true);
+				data.isLocked = false;
+				return data;
+			};
+			plugins.hooks.register('test-edit-locked', {
+				hook: 'filter:privileges.posts.edit',
+				method: method,
+			});
+			try {
+				const { flag } = await privileges.posts.canEdit(pid, ownerUid);
+				assert.strictEqual(flag, true);
+			} finally {
+				plugins.hooks.unregister('test-edit-locked', 'filter:privileges.posts.edit', method);
+			}
+		});
+
+		it('should not allow the owner to delete a post in a locked topic', async () => {
+			const { flag, message } = await privileges.posts.canDelete(pid, ownerUid);
+			assert.strictEqual(flag, false);
+			assert.strictEqual(message, '[[error:topic-locked]]');
+		});
+
+		it('should let a plugin grant delete access by unsetting isLocked', async () => {
+			const method = (data) => {
+				assert.strictEqual(data.isLocked, true);
+				data.isLocked = false;
+				return data;
+			};
+			plugins.hooks.register('test-delete-locked', {
+				hook: 'filter:privileges.posts.delete',
+				method: method,
+			});
+			try {
+				const { flag } = await privileges.posts.canDelete(pid, ownerUid);
+				assert.strictEqual(flag, true);
+			} finally {
+				plugins.hooks.unregister('test-delete-locked', 'filter:privileges.posts.delete', method);
+			}
 		});
 	});
 
@@ -1145,12 +1473,10 @@ describe('Post\'s', () => {
 
 		describe('.syncBacklinks()', () => {
 			it('should error on invalid data', async () => {
-				try {
-					await topics.syncBacklinks();
-				} catch (e) {
-					assert(e);
-					assert.strictEqual(e.message, '[[error:invalid-data]]');
-				}
+				await assert.rejects(
+					topics.syncBacklinks(),
+					{ message: '[[error:invalid-data]]' },
+				);
 			});
 
 			it('should do nothing if the post does not contain a link to a topic', async () => {
@@ -1185,9 +1511,7 @@ describe('Post\'s', () => {
 				const backlinks = await db.getSortedSetMembers('pid:2:backlinks');
 
 				assert.strictEqual(count, 0);
-				assert(events);
 				assert.strictEqual(events.length, 1);
-				assert(backlinks);
 				assert.strictEqual(backlinks.length, 0);
 			});
 
@@ -1210,6 +1534,17 @@ describe('Post\'s', () => {
 
 				assert.strictEqual(count, 0);
 				assert(backlinks);
+				assert.strictEqual(backlinks.length, 0);
+			});
+
+			it('should not create a wrong backlink to topic/1 with AP topic url', async () => {
+				const { postData } = await topics.post({
+					uid: 1,
+					cid,
+					title: 'Topic backlink testing - topic 2',
+					content: `testing ${nconf.get('url')}/topic/1aef954c-d0dc-45cf-acf2-e3a59f6cc134/foo`,
+				});
+				const backlinks = await db.getSortedSetMembers(`pid:${postData.pid}:backlinks`);
 				assert.strictEqual(backlinks.length, 0);
 			});
 		});
@@ -1258,6 +1593,63 @@ describe('Post\'s', () => {
 				assert.strictEqual(events.length, 0);
 			});
 		});
+	});
+});
+
+describe('Post edit broadcasts', () => {
+	let ownerUid;
+	let moderatorUid;
+	let cid;
+
+	before(async () => {
+		ownerUid = await user.create({ username: `edit-owner-${utils.generateUUID()}` });
+		moderatorUid = await user.create({ username: `edit-moderator-${utils.generateUUID()}` });
+		({ cid } = await categories.create({ name: `edit-race-${utils.generateUUID()}` }));
+		await groups.join('Global Moderators', moderatorUid);
+	});
+
+	it('should not broadcast an edit to the topic room after a concurrent deletion', async () => {
+		const { postData } = await topics.post({
+			uid: ownerUid,
+			cid,
+			title: 'Concurrent edit and delete',
+			content: 'Original post content',
+		});
+		const emitted = [];
+		const originalIn = websockets.in;
+		const originalGetPostData = posts.getPostData;
+		let intercept = true;
+
+		websockets.in = room => ({
+			emit: (event) => {
+				emitted.push({ room: String(room), event });
+			},
+		});
+		posts.getPostData = async (pid) => {
+			const data = await originalGetPostData(pid);
+			if (intercept && String(pid) === String(postData.pid)) {
+				intercept = false;
+				const staleData = { ...data, deleted: 0 };
+				await posts.delete(postData.pid, moderatorUid);
+				return staleData;
+			}
+			return data;
+		};
+
+		try {
+			await apiPosts.edit({ uid: ownerUid }, {
+				pid: postData.pid,
+				title: 'Edited after concurrent deletion',
+				content: 'This must stay out of the topic room',
+			});
+		} finally {
+			posts.getPostData = originalGetPostData;
+			websockets.in = originalIn;
+		}
+
+		assert.strictEqual(parseInt(await posts.getPostField(postData.pid, 'deleted'), 10), 1);
+		assert.strictEqual(emitted.some(item => item.room === `topic_${postData.tid}`), false);
+		assert.strictEqual(emitted.some(item => item.room.startsWith('uid_')), true);
 	});
 });
 

@@ -8,5 +8,6 @@
     "confirm-delete": "Biztosan törölni szeretnéd ezt a fájlt?",
     "filecount": "%1 fájl",
     "new-folder": "Új Mappa",
-    "name-new-folder": "Adjon nevet az új mappának"
+    "name-new-folder": "Adjon nevet az új mappának",
+    "unsafe-file-warning": "Warning: Do not upload files that you do not trust. Files with certain extensions will be downloaded as attachments to prevent XSS attacks, but it is still possible for malicious files to cause harm if opened on your computer."
 }

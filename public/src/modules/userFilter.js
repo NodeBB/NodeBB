@@ -57,7 +57,7 @@ define('userFilter', ['api', 'hooks', 'slugify', 'benchpress'], function (api, h
 				}
 			}
 			if (!result.users.length) {
-				el.find('[component="user/filter/results"]').translateHtml(
+				el.find('[component="user/filter/results"]').translateText(
 					'[[users:no-users-found]]'
 				);
 				return;

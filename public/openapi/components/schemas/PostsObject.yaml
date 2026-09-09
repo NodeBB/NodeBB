@@ -8,7 +8,7 @@ PostsObject:
         description: Optional properties that may or may not be present (except for `pid`, which is always present, and is only here as a hack to pass validation)
         properties:
           pid:
-            type: number
+            type: [number, string]
             description: A post identifier
           attachments:
             type: array

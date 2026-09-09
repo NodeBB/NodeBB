@@ -9,5 +9,7 @@
 	"settings": "Configuraciones.",
 	"cookie-domain": "Dominio de cookie de sesión",
 	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "Dejar en blanco para valores por defecto"
+	"blank-default": "Dejar en blanco para valores por defecto",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }

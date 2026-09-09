@@ -1,6 +1,16 @@
 {
 	"alert.confirm-rebuild-and-restart": "آیا شما مطمئن هستید که می خواهید NodeBB را بازسازی و مجدداً راه اندازی کنید؟",
 	"alert.confirm-restart": "آیا از راه اندازی مجدد نود‌بی‌بی مطمئن هستید؟",
+	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
+	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
+	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+
+	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB is restarting.",
+	"restarting.success.message": "NodeBB has restarted successfully.",
+
 
 	"acp-title": "%1 | کنترل پنل مدیر کل نود‌بی‌بی",
 	"settings-header-contents": "محتوا",

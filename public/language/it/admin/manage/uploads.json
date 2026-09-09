@@ -8,5 +8,6 @@
     "confirm-delete": "Vuoi davvero cancellare questo file?",
     "filecount": "%1 file",
     "new-folder": "Nuova cartella",
-    "name-new-folder": "Inserisci un nome per la nuova cartella"
+    "name-new-folder": "Inserisci un nome per la nuova cartella",
+    "unsafe-file-warning": "Attenzione: non caricare file di cui non ti fidi. I file con determinate estensioni verranno scaricati come allegati per prevenire attacchi XSS, ma i file dannosi potrebbero comunque causare danni se aperti sul tuo computer."
 }

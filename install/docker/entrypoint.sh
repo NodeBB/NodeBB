@@ -53,12 +53,14 @@ copy_or_link_files() {
       ;;
   esac
 
-  # Check if source and destination files are the same
-  if [ "$(realpath "$src_dir/package.json")" != "$(realpath "$dest_dir/package.json")" ] || [ "$OVERRIDE_UPDATE_LOCK" = true ]; then
+  # Only seed the persisted files if they don't exist yet. Overwriting them would discard
+  # plugins installed at runtime (`npm install <plugin> --save`); `nodebb upgrade` merges in
+  # new base dependencies via packageInstall.updatePackageFile() while preserving plugins.
+  if [ ! -f "$dest_dir/package.json" ] || [ "$OVERRIDE_UPDATE_LOCK" = true ]; then
     cp "$src_dir/package.json" "$dest_dir/package.json"
   fi
 
-  if [ "$(realpath "$src_dir/$lock_file")" != "$(realpath "$dest_dir/$lock_file")" ] || [ "$OVERRIDE_UPDATE_LOCK" = true ]; then
+  if [ ! -f "$dest_dir/$lock_file" ] || [ "$OVERRIDE_UPDATE_LOCK" = true ]; then
     cp "$src_dir/$lock_file" "$dest_dir/$lock_file"
   fi
 

@@ -4,7 +4,8 @@
 	"lead-text": "Fra denne siden kan du konfigurere tilgang til Write API i NodeBB.",
 	"intro": "Som standard autentiserer Write API brukere basert på deres øktinformasjonskapsel, men NodeBB støtter også Bearer-autentisering via tokens generert fra denne siden.",
 	"warning": "<strong>Vær oppmerksom</strong> — behandle tokens som passord. Hvis de lekker, bør kontoen din anses som kompromittert.",
-	"docs": "Klikk her for å få tilgang til den fullstendige API-spesifikasjonen",
+	"docs": "Klikk her for å åpne Read API-spesifikasjonen",
+	"docs.write": "Klikk her for å åpne Write API-spesifikasjonen",
 
 	"require-https": "Krev API-bruk kun via HTTPS",
 	"require-https-caveat": "<strong>Merk</strong>: Noen installasjoner med lastbalanserere kan videresende forespørslene sine til NodeBB via HTTP, i så fall bør dette alternativet forbli deaktivert.",
@@ -25,5 +26,10 @@
 	"roll": "Regenerer",
 
 	"delete-confirm": "Er du sikker på at du vil slette dette tokenet? Det vil ikke kunne gjenopprettes.",
-	"roll-confirm": "Er du sikker på at du vil regenerere dette tokenet? Det gamle tokenet vil umiddelbart bli tilbakekalt og kan ikke gjenopprettes."
+	"roll-confirm": "Er du sikker på at du vil regenerere dette tokenet? Det gamle tokenet vil umiddelbart bli tilbakekalt og kan ikke gjenopprettes.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

@@ -4,7 +4,13 @@ const db = require('../database');
 
 module.exports = function (Messaging) {
 	Messaging.pinMessage = async (mid, roomId) => {
-		const isMessageInRoom = await db.isSortedSetMember(`chat:room:${roomId}:mids`, mid);
+		const [isMessageInRoom, isSystem] = await Promise.all([
+			db.isSortedSetMember(`chat:room:${roomId}:mids`, mid),
+			Messaging.getMessageField(mid, 'system'),
+		]);
+		if (isSystem) {
+			throw new Error('[[error:invalid-mid]]');
+		}
 		if (isMessageInRoom) {
 			await db.sortedSetAdd(`chat:room:${roomId}:mids:pinned`, Date.now(), mid);
 			await Messaging.setMessageFields(mid, { pinned: 1 });

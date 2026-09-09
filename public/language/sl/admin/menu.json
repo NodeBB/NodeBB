@@ -13,6 +13,7 @@
 	"manage/tags": "Oznake",
 	"manage/users": "Uporabniki",
 	"manage/admins-mods": "Skrbniki in moderatorji",
+	"manage/api": "API Access",
 	"manage/registration": "Čakalna vrsta registracij",
 	"manage/flagged-content": "Flagged Content",
 	"manage/post-queue": "Čakalna vrsta objav",
@@ -48,6 +49,16 @@
 
 	"settings.page-title": "%1 nastavitve",
 
+	"section-federation": "Federation",
+	"federation/general": "General",
+	"federation/content": "Content",
+	"federation/rules": "Categorization",
+	"federation/relays": "Relays",
+	"federation/pruning": "Storage",
+	"federation/safety": "Trust & Safety",
+	"federation/analytics": "Analytics",
+	"federation/errors": "Errors",
+
 	"section-appearance": "Videz",
 	"appearance/themes": "Teme",
 	"appearance/skins": "Preobleke",
@@ -70,6 +81,7 @@
 	"advanced/logs": "Prijave",
 	"advanced/errors": "Napake",
 	"advanced/cache": "Predpomnilnik",
+	"advanced/jobs": "Jobs",
 	"development/logger": "Logger",
 	"development/info": "Info",
 

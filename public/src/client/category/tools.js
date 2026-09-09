@@ -7,13 +7,18 @@ define('forum/category/tools', [
 	'forum/topic/threadTools',
 	'components',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-], function (topicSelect, threadTools, components, api, bootbox, alerts) {
+	'bootstrap',
+], function (topicSelect, threadTools, components, api, modals, alerts, bootstrap) {
 	const CategoryTools = {};
 
-	CategoryTools.init = function () {
-		topicSelect.init(updateDropdownOptions);
+	CategoryTools.init = function (containerEl) {
+		topicSelect.init(updateDropdownOptions, () => {
+			const toggleEl = document.querySelector('.thread-tools button');
+			const dropdown = new bootstrap.Dropdown(toggleEl);
+			dropdown.show();
+		}, containerEl);
 
 		handlePinnedTopicSort();
 
@@ -84,8 +89,6 @@ define('forum/category/tools', [
 				}
 				move.init(tids, null, onCommandComplete);
 			});
-
-			return false;
 		});
 
 		components.get('topic/move-all').on('click', function () {
@@ -161,7 +164,7 @@ define('forum/category/tools', [
 			case 'delete':
 			case 'restore':
 			case 'purge':
-				bootbox.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
+				modals.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
 				break;
 
 			case 'pin':

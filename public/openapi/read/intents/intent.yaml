@@ -1,0 +1,101 @@
+get:
+  tags:
+    - intents
+  summary: Handle ActivityPub intent redirect
+  description: This operation resolves a local or remote resource (post, category, or user) based on the intent type. For authenticated users it renders a loading page; the `/api/intents/:intent` endpoint returns the resolved payload as JSON.
+  parameters:
+    - in: path
+      name: intent
+      required: true
+      schema:
+        type: string
+        enum:
+          - create
+          - like
+          - dislike
+          - follow
+      description: The type of ActivityPub intent to handle
+      example: create
+    - in: query
+      name: toPid
+      schema:
+        type: string
+      description: Post ID to reply to; accepts a local numeric post ID or a remote ActivityPub URI
+      example: '3'
+    - in: query
+      name: cid
+      schema:
+        type: string
+      description: Category ID to post in; accepts a local numeric category ID or a remote ActivityPub URI
+      example: '1'
+    - in: query
+      name: pid
+      schema:
+        type: string
+      description: Post ID to like or dislike; accepts a local numeric post ID or a remote ActivityPub URI
+      example: '456'
+    - in: query
+      name: uid
+      schema:
+        type: string
+      description: User ID to follow; accepts a local numeric user ID or a remote ActivityPub actor URI
+      example: '789'
+  responses:
+    '200':
+      description: Intent payload resolved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              intent:
+                type: string
+                description: The resolved intent type
+                example: create
+              toPid:
+                oneOf:
+                  - type: integer
+                    description: Local post ID
+                    example: 123
+                  - type: string
+                    description: Remote ActivityPub URI
+                    example: 'https://example.org/post/456'
+                description: The post ID to reply to
+              tid:
+                type: integer
+                description: The topic ID associated with the post
+                example: 789
+              cid:
+                oneOf:
+                  - type: integer
+                    description: Local category ID
+                    example: 1
+                  - type: string
+                    description: Remote ActivityPub URI
+                    example: 'https://example.org/category/2'
+                description: The category ID to post in
+              pid:
+                oneOf:
+                  - type: integer
+                    description: Local post ID
+                    example: 456
+                  - type: string
+                    description: Remote ActivityPub URI
+                    example: 'https://example.org/post/789'
+                description: The post ID to like or dislike
+              uid:
+                oneOf:
+                  - type: integer
+                    description: Local user ID
+                    example: 12
+                  - type: string
+                    description: Remote ActivityPub actor URI
+                    example: 'https://example.org/users/foobar'
+                description: The user ID to follow
+    '302':
+      description: Redirect to login page (unauthenticated user)
+      headers:
+        Location:
+          schema:
+            type: string
+            example: '/login'

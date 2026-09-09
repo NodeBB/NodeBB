@@ -1,12 +1,12 @@
 'use strict';
 
 
-define('forum/pagination', ['bootbox'], function (bootbox) {
+define('forum/pagination', ['modals'], function (modals) {
 	const pagination = {};
 
 	pagination.init = function () {
 		$('body').on('click', '[component="pagination/select-page"]', function () {
-			bootbox.prompt('[[global:enter-page-number]]', function (pageNum) {
+			modals.prompt('[[global:enter-page-number]]', function (pageNum) {
 				pagination.loadPage(pageNum);
 			});
 			return false;

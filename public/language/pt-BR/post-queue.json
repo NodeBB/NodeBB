@@ -10,15 +10,19 @@
 	"user": "Usuário",
 	"when": "When",
 	"category": "Categoria",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "Título",
 	"content": "Conteúdo",
 	"posted": "Postado",
 	"reply-to": "Resposta para \"%1\"",
+	"edit": "Edit",
 	"content-editable": "Clique no conteúdo para editar",
 	"category-editable": "Clique na categoria para editar",
 	"title-editable": "Clique no título para editar",
 	"reply": "Responder",
 	"topic": "Tópico",
+	"crosspost": "Crosspost",
 	"accept": "Aceitar",
 	"reject": "Rejeitar",
 	"remove": "Remove",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Do you want to remove %1 selected posts?",
 	"bulk-accept-success": "%1 posts accepted",
 	"bulk-reject-success": "%1 posts rejected",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

@@ -10,15 +10,19 @@
 	"user": "Utilisateur",
 	"when": "Quand",
 	"category": "Catégorie",
+	"crosspost-to": "Publication croisée vers",
+	"tags": "Mots-clés",
 	"title": "Titre",
 	"content": "Contenu",
 	"posted": "Posté",
 	"reply-to": "Répondre à \"%1\"",
+	"edit": "Modifier",
 	"content-editable": "Cliquer sur le contenu pour modifier",
 	"category-editable": "Cliquer sur la catégorie pour modifier",
 	"title-editable": "Cliquer sur le titre pour modifier",
 	"reply": "Répondre",
 	"topic": "Sujet",
+	"crosspost": "Publication croisée",
 	"accept": "Accepter",
 	"reject": "Refuser",
 	"remove": "Enlever",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "Voulez-vous supprimer %1 messages sélectionnés ?",
 	"bulk-accept-success": "%1 messages acceptés",
 	"bulk-reject-success": "%1 messages rejetés",
-	"links-in-this-post": "Liens dans ce post"
+	"links-in-this-post": "Liens dans ce post",
+	"thumbs-in-this-post": "Vignettes dans ce message"
 }

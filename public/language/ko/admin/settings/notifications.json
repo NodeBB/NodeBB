@@ -3,5 +3,11 @@
 	"welcome-notification": "환영 알림",
 	"welcome-notification-link": "환영 알림 링크",
 	"welcome-notification-uid": "환영 알림 사용자 (UID)",
-	"post-queue-notification-uid": "게시 대기 사용자 (UID)"
+	"post-queue-notification-uid": "게시 대기 사용자 (UID)",
+	"notification-uid-help": "If set, the notification sent comes from that user. Otherwise, it will be a system notification.",
+	"notification-delay": "Delay for sending notification emails (seconds)",
+	"notification-delay-help": "If the user has read the notification within this time, the email will not be sent.<br/>Default: 60 seconds.",
+	"tinycon.settings": "Tinycon",
+	"tinycon.notification-color": "Notification Colour",
+	"tinycon.notification-background": "Notification Background"
 }

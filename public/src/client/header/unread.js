@@ -5,7 +5,8 @@ define('forum/header/unread', ['hooks'], function (hooks) {
 	const watchStates = {
 		ignoring: 1,
 		notwatching: 2,
-		watching: 3,
+		tracking: 3,
+		watching: 4,
 	};
 
 	unread.initUnreadTopics = function () {
@@ -15,7 +16,9 @@ define('forum/header/unread', ['hooks'], function (hooks) {
 			if (data && data.posts && data.posts.length && unreadTopics) {
 				const post = data.posts[0];
 				if (parseInt(post.uid, 10) === parseInt(app.user.uid, 10) ||
-					(!post.topic.isFollowing && post.categoryWatchState !== watchStates.watching)
+					(!post.topic.isFollowing &&
+						post.categoryWatchState !== watchStates.watching &&
+						post.categoryWatchState !== watchStates.tracking)
 				) {
 					return;
 				}
@@ -95,7 +98,7 @@ define('forum/header/unread', ['hooks'], function (hooks) {
 		// harmony uses BS5 absolute positioned element
 		navLink.find('[component="navigation/count"]')
 			.toggleClass('hidden', count <= 0)
-			.text(count);
+			.text(countText);
 
 		if (navLink.length) {
 			// persona mobile menu uses data-content

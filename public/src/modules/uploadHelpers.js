@@ -65,8 +65,23 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 		const postContainer = options.container;
 		const drop = options.container.find('.imagedrop');
 
+		function onDocumentDragLeave(e) {
+			// relatedTarget is null when the drag left the window or was cancelled with esc
+			if (!e.originalEvent.relatedTarget) {
+				hideDrop();
+			}
+		}
+
+		function hideDrop() {
+			drop.hide();
+			drop.off('dragleave', hideDrop);
+			$(document)
+				.off('dragend drop', hideDrop)
+				.off('dragleave', onDocumentDragLeave);
+		}
+
 		postContainer.on('dragenter', function onDragEnter() {
-			if (draggingDocument) {
+			if (draggingDocument || drop.is(':visible')) {
 				return;
 			}
 			drop.css('top', '0px');
@@ -74,10 +89,12 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			drop.css('line-height', postContainer.height() + 'px');
 			drop.show();
 
-			drop.on('dragleave', function () {
-				drop.hide();
-				drop.off('dragleave');
-			});
+			drop.on('dragleave', hideDrop);
+			// the drag can end without dragleave/drop ever firing on the overlay
+			// (cancelled with esc, or dropped outside of it), leaving it stuck open
+			$(document)
+				.on('dragend drop', hideDrop)
+				.on('dragleave', onDocumentDragLeave);
 		});
 
 		drop.on('drop', function onDragDrop(e) {
@@ -88,7 +105,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				let formData;
 				if (window.FormData) {
 					formData = new FormData();
-					for (var i = 0; i < files.length; ++i) {
+					for (let i = 0; i < files.length; ++i) {
 						formData.append('files[]', files[i], files[i].name);
 					}
 				}
@@ -98,7 +115,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				});
 			}
 
-			drop.hide();
+			hideDrop();
 			return false;
 		});
 
@@ -112,8 +129,8 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 			.on('dragstart', function () {
 				draggingDocument = true;
 			})
-			.off('dragend')
-			.on('dragend, mouseup', function () {
+			.off('dragend mouseup')
+			.on('dragend mouseup', function () {
 				draggingDocument = false;
 			});
 
@@ -123,25 +140,47 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 
 	uploadHelpers.handlePaste = function (options) {
 		const container = options.container;
-		container.on('paste', function (event) {
+		container.on('paste', async function (event) {
 			const items = (event.clipboardData || event.originalEvent.clipboardData || {}).items;
 			const files = [];
 			const fileNames = [];
-			let formData = null;
-			if (window.FormData) {
-				formData = new FormData();
-			}
-			[].forEach.call(items, function (item) {
-				const file = item.getAsFile();
-				if (file) {
-					const fileName = utils.generateUUID() + '-' + file.name;
-					if (formData) {
-						formData.append('files[]', file, fileName);
-					}
-					files.push(file);
-					fileNames.push(fileName);
+			const formData = window.FormData ? new FormData() : null;
+
+			function addFile(file, fileName) {
+				files.push(file);
+				fileNames.push(fileName);
+				if (formData) {
+					formData.append('files[]', file, fileName);
 				}
-			});
+			}
+			const { convertPastedImageTo } = config;
+			for (const item of items) {
+				const file = item.getAsFile();
+				if (!file) continue;
+				try {
+					if (convertPastedImageTo && file.type.match(/image./) && file.type !== convertPastedImageTo) {
+						// eslint-disable-next-line no-await-in-loop
+						const convertedBlob = await convertImage(file, convertPastedImageTo, 0.9);
+						const ext = convertedBlob.type.split('/')[1];
+						const uploadName = `${utils.generateUUID()}-image.${ext}`;
+
+						// The uuid only has to keep the upload from colliding with others in
+						// the upload folder, so keep a readable name on the file itself, it is
+						// what the composer labels the image with
+						const baseName = (file.name || 'image').replace(/\.[^.]+$/, '');
+						const convertedFile = new File([convertedBlob], `${baseName}.${ext}`, {
+							type: convertedBlob.type,
+						});
+						addFile(convertedFile, uploadName);
+					} else {
+						const fileName = utils.generateUUID() + '-' + file.name;
+						addFile(file, fileName);
+					}
+				} catch (err) {
+					alerts.error(err);
+					console.error(err);
+				}
+			}
 
 			if (files.length) {
 				options.callback({
@@ -197,7 +236,7 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 				success: function (res) {
 					const uploads = res.response.images;
 					if (uploads && uploads.length) {
-						for (var i = 0; i < uploads.length; ++i) {
+						for (let i = 0; i < uploads.length; ++i) {
 							uploads[i].filename = files[i].name;
 							uploads[i].isImage = /image./.test(files[i].type);
 						}
@@ -216,6 +255,35 @@ define('uploadHelpers', ['alerts'], function (alerts) {
 
 		options.uploadForm.submit();
 	};
+
+	function convertImage(file, mime, quality = 0.9) {
+		return new Promise((resolve, reject) => {
+			const img = new Image();
+			const reader = new FileReader();
+
+			reader.onload = e => {
+				img.onload = () => {
+					const canvas = document.createElement('canvas');
+					canvas.width = img.width;
+					canvas.height = img.height;
+
+					const ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0);
+
+					canvas.toBlob(blob => {
+						if (!blob) return reject(new Error('Conversion failed'));
+						resolve(blob);
+					}, mime, quality);
+				};
+
+				img.onerror = reject;
+				img.src = e.target.result;
+			};
+
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
 
 	return uploadHelpers;
 });

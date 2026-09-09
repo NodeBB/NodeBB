@@ -1,9 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Post Cache",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
 	"percent-full": "%1% Full",
 	"post-cache-size": "Post Cache Size",
 	"items-in-cache": "Items in Cache"

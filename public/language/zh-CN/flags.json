@@ -96,6 +96,6 @@
 	"purge-cancelled": "已取消清除举报",
 	"bulk-purge": "清除举报",
 	"bulk-success": "已更新%1个举报",
-	"flagged-timeago": "标记<span class=\"timeago\" title=\"%1\"></span>",
+	"flagged-timeago": "举报于 <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "【自动举报】收到 %1 个踩"
 }

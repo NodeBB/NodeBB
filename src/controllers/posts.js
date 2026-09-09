@@ -27,6 +27,10 @@ postsController.redirectToPost = async function (req, res, next) {
 		}
 	}
 
+	if (!req.loggedIn && meta.config.activitypubEnabled && !res.locals.isAPI && !utils.isNumber(pid)) {
+		return helpers.redirect(res, `/outgoing?url=${encodeURIComponent(pid)}`);
+	}
+
 	const [canRead, path] = await Promise.all([
 		privileges.posts.can('topics:read', pid, req.uid),
 		posts.generatePostPath(pid, req.uid),

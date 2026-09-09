@@ -2,8 +2,8 @@
 
 
 define('forum/chats/message-search', [
-	'components', 'alerts', 'forum/chats/messages',
-], function (components, alerts, messages) {
+	'components', 'alerts', 'forum/chats/messages', 'api',
+], function (components, alerts, messages, api) {
 	const messageSearch = {};
 	let roomId = 0;
 	let searchInputEl;
@@ -63,10 +63,8 @@ define('forum/chats/message-search', [
 			return;
 		}
 		clearEl.removeClass('hidden');
-		socket.emit('modules.chats.searchMessages', {
-			content: query,
-			roomId: roomId,
-		}).then(displayResults)
+		api.get(`/search/chats/${roomId}/messages`, { query })
+			.then(displayResults)
 			.catch(alerts.error);
 	}
 

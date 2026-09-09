@@ -3,7 +3,6 @@
 const fs = require('fs');
 const nconf = require('nconf');
 const winston = require('winston');
-const validator = require('validator');
 const path = require('path');
 const translator = require('../translator');
 const plugins = require('../plugins');
@@ -30,7 +29,7 @@ exports.handleURIErrors = async function handleURIErrors(err, req, res, next) {
 				});
 			} else {
 				await middleware.buildHeaderAsync(req, res);
-				res.status(400).render('400', { error: validator.escape(String(err.message)) });
+				res.status(400).render('400', { error: err.message });
 			}
 		}
 	} else {
@@ -85,11 +84,11 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 			return helpers.formatApiResponse(status, res, err);
 		}
 
-		winston.error(`${req.method} ${req.originalUrl}\n${err.stack}`);
+		winston.error(`${req.method} ${req.originalUrl}${err.stack ? `\n${err.stack}` : ''}`);
 		res.status(status || 500);
 		const data = {
-			path: validator.escape(path),
-			error: validator.escape(String(err.message)),
+			path: path,
+			error: err.message,
 			bodyClass: middlewareHelpers.buildBodyClass(req, res),
 		};
 		if (res.locals.isAPI) {
@@ -105,6 +104,8 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 			data.cases[err.code](err, req, res, defaultHandler);
 		} else if (err.message && err.message.startsWith('[[error:no-') && err.message !== '[[error:no-privileges]]') {
 			notFoundHandler();
+		} else if (err.message === '[[error:no-privileges]]') {
+			await helpers.notAllowed(req, res, err.message);
 		} else if (err.message && err.message.startsWith('Failed to lookup view')) {
 			notBuiltHandler();
 		} else {

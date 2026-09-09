@@ -3,9 +3,9 @@
 define('admin/manage/groups', [
 	'slugify',
 	'api',
-	'bootbox',
+	'modals',
 	'alerts',
-], function (slugify, api, bootbox, alerts) {
+], function (slugify, api, modals, alerts) {
 	const Groups = {};
 
 	Groups.init = function () {
@@ -21,7 +21,7 @@ define('admin/manage/groups', [
 
 			switch (action) {
 				case 'delete':
-					bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
+					modals.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 						if (confirm) {
 							api.del(`/groups/${slugify(groupName)}`, {}).then(ajaxify.refresh).catch(alerts.error);
 						}

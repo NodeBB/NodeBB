@@ -39,7 +39,9 @@ module.exports = function (Messaging) {
 			});
 
 			if (!isPublic && utils.isNumber(messages[0].fromuid)) {
-				activitypub.out.update.privateNote(messages[0].fromuid, messages[0]);
+				setImmediate(() => {
+					activitypub.out.update.privateNote(messages[0].fromuid, messages[0]);
+				});
 			}
 		}
 
@@ -100,6 +102,9 @@ module.exports = function (Messaging) {
 	Messaging.canDelete = async (messageId, uid) => await canEditDelete(messageId, uid, 'delete');
 
 	Messaging.canPin = async (roomId, uid) => {
+		if (Array.isArray(roomId)) {
+			throw new Error('[[error:invalid-data]]');
+		}
 		const [isAdmin, isGlobalMod, inRoom, isRoomOwner] = await Promise.all([
 			user.isAdministrator(uid),
 			user.isGlobalModerator(uid),

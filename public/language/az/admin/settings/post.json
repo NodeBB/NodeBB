@@ -27,6 +27,7 @@
 	"restrictions.post-length": "Yazının uzunluğu",
 	"restrictions.days-until-stale": "Mövzunun köhnəlmiş sayılmasına qədər olan günlər",
 	"restrictions.stale-help": "Mövzu \"köhnə\" hesab edilərsə, həmin mövzuya cavab verməyə cəhd edən istifadəçilərə xəbərdarlıq göstərilir. (deaktiv etmək üçün 0-a təyin edin)",
+	"restrictions.move-own-topic-max-posts": "Maximum number of posts in a topic after which users are disallowed to move their own topic (set to 0 to disable)",
 	"timestamp": "Timestamp",
 	"timestamp.cut-off": "Kəsilmə tarixi (günlərlə)",
 	"timestamp.cut-off-help": "Tarixlər &amp; vaxtlar nisbi şəkildə göstəriləcək (məsələn, \"3 saat əvvəl\" / \"5 gün əvvəl\") və müxtəlif vaxtlarda lokallaşdırılacaq\n\t\t\t\t\tdillər. Müəyyən bir nöqtədən sonra bu mətn lokallaşdırılmış tarixin özünü göstərmək üçün dəyişdirilə bilər\n\t\t\t\t\t(məsələn, 5 noyabr 2016-cı il 15:30).<br /><em>(Defolt: <code>30</code> və ya bir ay). Tarixləri həmişə göstərmək üçün 0-a təyin edin, həmişə nisbi vaxtları göstərmək üçün boş buraxın.</em>",

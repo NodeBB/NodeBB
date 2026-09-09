@@ -1,7 +1,6 @@
 
 'use strict';
 
-const validator = require('validator');
 const _ = require('lodash');
 
 const db = require('./database');
@@ -9,6 +8,7 @@ const batch = require('./batch');
 const user = require('./user');
 const utils = require('./utils');
 const plugins = require('./plugins');
+const meta = require('./meta');
 
 const events = module.exports;
 
@@ -77,6 +77,8 @@ events.types = [
 	'getUsersCSV',
 	'getGroupCSV',
 	'chat-room-deleted',
+	'token-add',
+	'token-delete',
 	// To add new types from plugins, just Array.push() to this array
 ];
 
@@ -95,6 +97,10 @@ events.log = async function (data) {
 	if (data.hasOwnProperty('uid') && data.uid) {
 		setKeys.push(`events:time:uid:${data.uid}`);
 	}
+	if (!meta.config.logIPs) {
+		delete data.ip;
+	}
+
 	await Promise.all([
 		db.sortedSetsAdd(setKeys, data.timestamp, eid),
 		db.setObject(`event:${eid}`, data),
@@ -119,7 +125,7 @@ events.getEvents = async function (options) {
 	const from = options.hasOwnProperty('from') ? options.from : '-inf';
 	const to = options.hasOwnProperty('to') ? options.to : '+inf';
 	const { filter, start, stop, uids } = options;
-	let eids = [];
+	let eids;
 
 	if (Array.isArray(uids)) {
 		if (filter === '') {
@@ -201,11 +207,6 @@ events.getEventsByEventIds = async (eids) => {
 	await addUserData(eventsData, 'uid', 'user');
 	await addUserData(eventsData, 'targetUid', 'targetUser');
 	eventsData.forEach((event) => {
-		Object.keys(event).forEach((key) => {
-			if (typeof event[key] === 'string') {
-				event[key] = validator.escape(String(event[key] || ''));
-			}
-		});
 		const e = utils.merge(event);
 		e.eid = undefined;
 		e.uid = undefined;

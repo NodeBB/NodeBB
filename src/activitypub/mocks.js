@@ -1,13 +1,16 @@
 'use strict';
 
+const crypto = require('crypto');
 const nconf = require('nconf');
-const mime = require('mime');
+const mime = require('mime').default;
 const path = require('path');
-const validator = require('validator');
 const sanitize = require('sanitize-html');
 const tokenizer = require('sbd');
 
+const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
+
 const db = require('../database');
+const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -20,8 +23,6 @@ const translator = require('../translator');
 const utils = require('../utils');
 
 const accountHelpers = require('../controllers/accounts/helpers');
-
-const isEmojiShortcode = /^:[\w]+:$/;
 
 const activitypub = module.parent.exports;
 const Mocks = module.exports;
@@ -43,9 +44,61 @@ const sanitizeConfig = {
 	},
 };
 
+Mocks._buildAttachments = (attachment, source) => {
+	attachment = attachment.map(({ mediaType, url, width, height }) => {
+		let type;
+
+		switch (true) {
+			case mediaType && mediaType.startsWith('image'): {
+				type = 'Image';
+				break;
+			}
+
+			default: {
+				type = 'Link';
+				break;
+			}
+		}
+
+		const payload = { type, mediaType, url };
+
+		if (width || height) {
+			payload.width = width;
+			payload.height = height;
+		}
+
+		return payload;
+	});
+
+	// Retrieve alt text from content (if found)
+	if (source?.content && source?.mediaType === 'text/markdown') {
+		const mdImageRegex = /!\[(.+?)\]\(([^\\)]+)\)/g;
+		const found = new Map();
+		let current = mdImageRegex.exec(source.content);
+		while (current !== null) {
+			const [, alt, src] = current;
+			found.set(src.replace('-resized', ''), alt);
+			current = mdImageRegex.exec(source.content);
+		}
+
+		attachment = attachment.map((entry) => {
+			if (found.has(entry.url)) {
+				entry.name = found.get(entry.url);
+			}
+
+			return entry;
+		});
+	}
+
+	// 'image' seems to be used as the preview image in lemmy/piefed, use the first one.
+	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
+
+	return { attachment, image };
+};
+
 Mocks._normalize = async (object) => {
 	// Normalized incoming AP objects into expected types for easier mocking
-	let { type, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
+	let { id, type, uuid, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
 
 	switch (true) { // non-string attributedTo handling
 		case Array.isArray(attributedTo): {
@@ -68,9 +121,13 @@ Mocks._normalize = async (object) => {
 			break;
 		}
 
-		case typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
+		case attributedTo && typeof attributedTo === 'object' && attributedTo.hasOwnProperty('id'): {
 			attributedTo = attributedTo.id;
 		}
+	}
+
+	if (!activitypub.helpers.isUri(attributedTo)) {
+		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
 	let sourceContent = source && source.mediaType === 'text/markdown' ? source.content : undefined;
@@ -114,26 +171,16 @@ Mocks._normalize = async (object) => {
 	if (url) { // Handle url array
 		if (Array.isArray(url)) {
 			// Special handling for Video type (from PeerTube specifically)
-			if (type === 'Video') {
-				const stream = url.reduce((memo, { type, mediaType, tag }) => {
-					if (!memo) {
-						if (type === 'Link' && mediaType === 'application/x-mpegURL') {
-							memo = tag.reduce((memo, { type, mediaType, href, width, height }) => {
-								if (!memo && (type === 'Link' && mediaType === 'video/mp4')) {
-									memo = { mediaType, href, width, height };
-								}
-
-								return memo;
-							}, null);
-						}
-					}
-
-					return memo;
-				}, null);
-
-				if (stream) {
+			if (type === 'Video' && !!uuid) {
+				try {
+					const { protocol, hostname } = new URL(id);
 					attachment = attachment || [];
-					attachment.push(stream);
+					attachment.push({
+						mediaType: 'text/plain',
+						href: `${protocol}//${hostname}/videos/embed/${uuid}`,
+					});
+				} catch (e) {
+					// noop
 				}
 			}
 
@@ -195,17 +242,7 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-		summary = summary || '';
-		// Replace emoji in summary
-		if (tag && Array.isArray(tag)) {
-			tag
-				.filter(tag => tag.type === 'Emoji' &&
-					isEmojiShortcode.test(tag.name) &&
-					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
-				.forEach((tag) => {
-					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
-				});
-		}
+		summary = activitypub.helpers.renderEmoji(summary || '', tag);
 
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
@@ -257,7 +294,7 @@ Mocks.profile = async (actors) => {
 			followerCount,
 			followingCount,
 
-			url,
+			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
@@ -308,25 +345,14 @@ Mocks.category = async (actors) => {
 
 		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
 
-		// Replace emoji in summary
-		if (tag && Array.isArray(tag)) {
-			tag
-				.filter(tag => tag.type === 'Emoji' &&
-					isEmojiShortcode.test(tag.name) &&
-					tag.icon && tag.icon.mediaType && tag.icon.mediaType.startsWith('image/'))
-				.forEach((tag) => {
-					summary = summary.replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
-				});
-		}
-
 		const payload = {
 			cid,
 			name,
 			handle: `${preferredUsername}@${hostname}`,
 			slug: `${preferredUsername}@${hostname}`,
 			description: summary,
-			descriptionParsed: posts.sanitize(summary),
-			icon: backgroundImage ? 'fa-none' : 'fa-comments',
+			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
+			icon: backgroundImage ? 'fa-nbb-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,
 			backgroundImage,
@@ -335,7 +361,7 @@ Mocks.category = async (actors) => {
 			// followerCount,
 			// followingCount,
 
-			url,
+			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
@@ -413,10 +439,13 @@ Mocks.post = async (objects) => {
 Mocks.message = async (object) => {
 	object = await Mocks._normalize(object);
 
+	let content = object.sourceContent || object.content;
+	content = activitypub.helpers.renderEmoji(content, object.tag);
+
 	const message = {
 		mid: object.id,
 		uid: object.attributedTo,
-		content: object.sourceContent || object.content,
+		content,
 
 		_activitypub: {
 			attachment: object.attachment,
@@ -436,27 +465,40 @@ Mocks.actors.user = async (uid) => {
 
 	let aboutmeParsed = '';
 	if (aboutme) {
-		aboutme = validator.escape(String(aboutme || ''));
 		aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', aboutme);
-		aboutmeParsed = translator.escape(aboutmeParsed);
 	}
 
 	if (picture) {
+		picture = utils.decodeHTMLEntities(picture);
 		const imagePath = await user.getLocalAvatarPath(uid);
-		picture = {
-			type: 'Image',
-			mediaType: mime.getType(imagePath),
-			url: `${nconf.get('url')}${picture}`,
-		};
+		// Absolute (remote/SSO) avatars are used as-is; relative paths get the forum url prefixed
+		// (string concat, so subfolder installs keep their relative_path). new URL validates the
+		// result and unsets the field on malformed values.
+		const url = /^https?:\/\//i.test(picture) ? picture : `${nconf.get('url')}${picture}`;
+		try {
+			picture = {
+				type: 'Image',
+				mediaType: mime.getType(imagePath),
+				url: new URL(url).href,
+			};
+		} catch {
+			picture = undefined;
+		}
 	}
 
 	if (cover) {
+		cover = utils.decodeHTMLEntities(cover);
 		const imagePath = await user.getLocalCoverPath(uid);
-		cover = {
-			type: 'Image',
-			mediaType: mime.getType(imagePath),
-			url: `${nconf.get('url')}${cover}`,
-		};
+		const url = /^https?:\/\//i.test(cover) ? cover : `${nconf.get('url')}${cover}`;
+		try {
+			cover = {
+				type: 'Image',
+				mediaType: mime.getType(imagePath),
+				url: new URL(url).href,
+			};
+		} catch {
+			cover = undefined;
+		}
 	}
 
 	const attachment = [];
@@ -578,6 +620,7 @@ Mocks.actors.category = async (cid) => {
 		type: 'Group',
 		name: utils.decodeHTMLEntities(name),
 		preferredUsername,
+		attributedTo: `${nconf.get('url')}/category/${cid}/moderators`,
 		summary: utils.decodeHTMLEntities(summary),
 		// image, // todo once categories have cover photos
 		icon,
@@ -621,19 +664,19 @@ Mocks.notes.public = async (post) => {
 	let tag = null;
 	let followersUrl;
 
-	let name = null;
-	({ titleRaw: name } = await topics.getTopicFields(post.tid, ['title']));
+	let { title: name, generatedTitle } = await topics.getTopicFields(post.tid, ['title', 'generatedTitle']);
+	if (generatedTitle) {
+		name = null;
+	}
 
 	if (post.toPid) { // direct reply
 		inReplyTo = utils.isNumber(post.toPid) ? `${nconf.get('url')}/post/${post.toPid}` : post.toPid;
-		name = `Re: ${name}`;
 
 		const parentId = await posts.getPostField(post.toPid, 'uid');
 		followersUrl = await user.getUserField(parentId, 'followersUrl');
 		to.add(utils.isNumber(parentId) ? `${nconf.get('url')}/uid/${parentId}` : parentId);
 	} else if (!post.isMainPost) { // reply to OP
 		inReplyTo = utils.isNumber(post.topic.mainPid) ? `${nconf.get('url')}/post/${post.topic.mainPid}` : post.topic.mainPid;
-		name = `Re: ${name}`;
 
 		to.add(utils.isNumber(post.topic.uid) ? `${nconf.get('url')}/uid/${post.topic.uid}` : post.topic.uid);
 		followersUrl = await user.getUserField(post.topic.uid, 'followersUrl');
@@ -674,7 +717,7 @@ Mocks.notes.public = async (post) => {
 		};
 	}
 	if (mentionsEnabled) {
-		const mentions = require.main.require('nodebb-plugin-mentions');
+		const mentions = nodebb.require('nodebb-plugin-mentions');
 		const matches = await mentions.getMatches(content);
 
 		if (matches.size) {
@@ -682,7 +725,9 @@ Mocks.notes.public = async (post) => {
 			tag.push(...Array.from(matches).map(({ type, id: href, slug: name }) => {
 				if (utils.isNumber(href)) { // local ref
 					name = name.toLowerCase(); // local slugs are always lowercase
-					href = `${nconf.get('url')}/${type === 'uid' ? 'user' : `category/${href}`}/${name.slice(1)}`;
+					href = type === 'uid' ?
+						`${nconf.get('url')}/uid/${href}` :
+						`${nconf.get('url')}/category/${href}`;
 					name = `${name}@${nconf.get('url_parsed').hostname}`;
 				}
 
@@ -706,49 +751,25 @@ Mocks.notes.public = async (post) => {
 	}
 
 	let attachment = await posts.attachments.get(post.pid) || [];
-	const normalizeAttachment = attachment => attachment.map(({ mediaType, url, width, height }) => {
-		let type;
-
-		switch (true) {
-			case mediaType && mediaType.startsWith('image'): {
-				type = 'Image';
-				break;
-			}
-
-			default: {
-				type = 'Link';
-				break;
-			}
-		}
-
-		const payload = { type, mediaType, url };
-
-		if (width || height) {
-			payload.width = width;
-			payload.height = height;
-		}
-
-		return payload;
-	});
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
-	const plaintext = posts.sanitizePlaintext(content);
-	const isArticle = post.pid === post.topic.mainPid && plaintext.length > 500;
-	const noteAttachment = isArticle ? [...attachment] : null;
-	const [uploads, thumbs] = await Promise.all([
-		posts.uploads.listWithSizes(post.pid),
-		topics.getTopicField(post.tid, 'thumbs'),
-	]);
-	const isThumb = uploads.map(u => Array.isArray(thumbs) ? thumbs.includes(u.name) : false);
+	const isArticle = post.pid === post.topic.mainPid && !generatedTitle;
 
-	uploads.forEach(({ name, width, height }, idx) => {
-		const mediaType = mime.getType(name);
-		const url = `${nconf.get('url') + nconf.get('upload_url')}/${name}`;
-		(noteAttachment || attachment).push({ mediaType, url, width, height });
-		if (isThumb[idx] && noteAttachment) {
+	if (post.isMainPost) {
+		const thumbs = await topics.thumbs.get(post.tid);
+		thumbs.forEach(({ name, path }) => {
+			const mediaType = mime.getType(name);
+			const url = `${nconf.get('url') + nconf.get('upload_url')}${path}`;
+			attachment.push({ mediaType, url });
+		});
+	} else {
+		const uploads = await posts.uploads.listWithSizes(post.pid);
+		uploads.forEach(({ name, width, height }) => {
+			const mediaType = mime.getType(name);
+			const url = `${nconf.get('url') + nconf.get('upload_url')}${name}`;
 			attachment.push({ mediaType, url, width, height });
-		}
-	});
+		});
+	}
 
 	// Inspect post content for external imagery as well
 	let match = posts.imgRegex.exec(post.content);
@@ -757,40 +778,57 @@ Mocks.notes.public = async (post) => {
 			const { hostname, pathname, href: url } = new URL(match[1]);
 			if (hostname !== nconf.get('url_parsed').hostname) {
 				const mediaType = mime.getType(pathname);
-				(noteAttachment || attachment).push({ mediaType, url });
+				attachment.push({ mediaType, url });
 			}
 		}
 		match = posts.imgRegex.exec(post.content);
 	}
 
-	attachment = normalizeAttachment(attachment);
+	const { attachment: normalizedAttachment, image } = Mocks._buildAttachments(attachment, source);
+	attachment = normalizedAttachment;
 	let preview;
 	let summary = null;
+	let sensitive = null;
 	if (isArticle) {
+		// Preview is not adopted by anybody, so is left commented-out for now
 		preview = {
 			type: 'Note',
 			attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 			content: post.content,
 			published,
-			attachment: normalizeAttachment(noteAttachment),
+			attachment,
 		};
 
-		const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
-		// Append sentences to summary until it contains just under 500 characters of content
-		const limit = 500;
-		let remaining = limit;
-		summary = sentences.reduce((memo, sentence) => {
-			const clean = sanitize(sentence, {
-				allowedTags: [],
-				allowedAttributes: {},
-			});
-			remaining = remaining - clean.length;
-			if (remaining > 0) {
-				memo += ` ${sentence}`;
-			}
+		if (post.content.includes(meta.config.activitypubBreakString)) {
+			const index = post.content.indexOf(meta.config.activitypubBreakString);
+			summary = post.content.slice(0, index + meta.config.activitypubBreakString.length);
+		} else {
+			const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
+			// Append sentences to summary until until just under configured character limit
+			const limit = meta.config.activitypubSummaryLimit;
+			let remaining = limit;
+			let finished = false;
+			summary = sentences.reduce((memo, sentence, index) => {
+				if (finished) {
+					return memo;
+				}
 
-			return memo;
-		}, '');
+				const clean = sanitize(sentence, {
+					allowedTags: [],
+					allowedAttributes: {},
+				});
+				remaining = remaining - clean.length;
+				if (remaining > 0) {
+					memo += `${index > 0 ? ' ' : ''}${sentence}`;
+				} else { // There was more but summary generation is complete
+					finished = true;
+					memo += ' [...]';
+				}
+
+				return memo;
+			}, '');
+			sensitive = false;
+		}
 
 		// Final sanitization to clean up tags
 		summary = posts.sanitize(summary);
@@ -799,10 +837,6 @@ Mocks.notes.public = async (post) => {
 	let context = await posts.getPostField(post.pid, 'context');
 	context = context || `${nconf.get('url')}/topic/${post.topic.tid}`;
 
-	/**
-	 * audience is exposed as part of 1b12 but is now ignored by Lemmy.
-	 * Remove this and most references to audience in 2026.
-	 */
 	let audience = utils.isNumber(post.category.cid) ? // default
 		`${nconf.get('url')}/category/${post.category.cid}` : post.category.cid;
 	if (inReplyTo) {
@@ -813,26 +847,39 @@ Mocks.notes.public = async (post) => {
 	}
 	to.add(audience);
 
+	// Sneak in a mention for the remote category (so Mastodon users address distributor)
+	if (!audience.startsWith(nconf.get('url'))) {
+		const slug = await categories.getCategoryField(audience, 'slug');
+		tag = tag || [];
+		tag.push({
+			type: 'Mention',
+			href: audience,
+			name: `@${slug}`,
+		});
+	}
+
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
 		type: isArticle ? 'Article' : 'Note',
 		to: Array.from(to),
 		cc: Array.from(cc),
-		inReplyTo,
+		...(inReplyTo && { inReplyTo }),
+		...(name && { name }),
 		published,
-		updated,
+		...(updated && { updated }),
 		url: id,
 		attributedTo: `${nconf.get('url')}/uid/${post.user.uid}`,
 		context,
 		audience,
-		summary,
-		name,
+		...(summary && { summary }),
+		...(sensitive && { sensitive }),
 		preview,
 		content: post.content,
 		source,
 		tag,
 		attachment,
+		image,
 		replies: `${id}/replies`,
 	};
 
@@ -859,8 +906,8 @@ Mocks.notes.private = async ({ messageObj }) => {
 	const published = messageObj.timestampISO;
 	const updated = messageObj.edited ? messageObj.editedISO : undefined;
 
-	const content = await messaging.getMessageField(messageObj.mid, 'content');
-	messageObj.content = content; // re-send raw content into parsePost
+	const rawContent = await messaging.getMessageField(messageObj.mid, 'content');
+	messageObj.content = rawContent; // re-send raw content into parsePost
 	const parsed = await posts.parsePost(messageObj, 'activitypub.note');
 	messageObj.content = sanitize(parsed.content, sanitizeConfig);
 	messageObj.content = posts.relativeToAbsolute(messageObj.content, posts.urlRegex);
@@ -869,7 +916,9 @@ Mocks.notes.private = async ({ messageObj }) => {
 	let source;
 	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
 	if (markdownEnabled) {
-		let { content } = messageObj;
+		const _messageObj = { ...messageObj };
+		_messageObj.content = rawContent;
+		let { content } = await posts.parsePost(_messageObj, 'markdown');
 		content = posts.relativeToAbsolute(content, posts.mdImageUrlRegex);
 
 		source = {
@@ -904,6 +953,36 @@ Mocks.notes.private = async ({ messageObj }) => {
 		}
 	}
 
+	// Build attachments from image URLs found in content
+	const imageUrls = [];
+	let match = posts.imgRegex.exec(messageObj.content);
+	while (match !== null) {
+		if (match[1]) {
+			const { pathname, href: url } = new URL(match[1]);
+			imageUrls.push({ pathname, url });
+		}
+		match = posts.imgRegex.exec(messageObj.content);
+	}
+
+	const sizeObjs = await Promise.all(imageUrls.map(({ pathname }) => {
+		return db.getObject(`upload:${md5(pathname)}`);
+	}));
+
+	let attachment = imageUrls.map(({ pathname, url }, idx) => {
+		const mediaType = mime.getType(pathname);
+		const sizeObj = sizeObjs[idx];
+
+		const entry = { mediaType, url };
+		if (sizeObj?.width || sizeObj?.height) {
+			entry.width = sizeObj.width;
+			entry.height = sizeObj.height;
+		}
+		return entry;
+	});
+
+	const { attachment: normalizedAttachment, image } = Mocks._buildAttachments(attachment, source);
+	attachment = normalizedAttachment;
+
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
@@ -922,7 +1001,8 @@ Mocks.notes.private = async ({ messageObj }) => {
 		content: messageObj.content,
 		source,
 		tag,
-		// attachment: [], // todo
+		attachment,
+		image,
 		// replies: `${id}/replies`, // todo
 	};
 
@@ -960,6 +1040,66 @@ Mocks.activities.create = async (pid, uid, post) => {
 	};
 
 	return { activity, targets };
+};
+
+Mocks.activities.like = async (pid, uid) => {
+	const authorUid = await posts.getPostField(pid, 'uid');
+
+	return {
+		id: `${nconf.get('url')}/uid/${uid}#activity/like/${encodeURIComponent(pid)}`,
+		type: 'Like',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to: [activitypub._constants.publicAddress],
+		cc: [authorUid],
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+};
+
+Mocks.activities.dislike = async (pid, uid) => {
+	const authorUid = await posts.getPostField(pid, 'uid');
+
+	return {
+		id: `${nconf.get('url')}/uid/${uid}#activity/dislike/${encodeURIComponent(pid)}`,
+		type: 'Dislike',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		to: [activitypub._constants.publicAddress],
+		cc: [authorUid],
+		object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+	};
+};
+
+Mocks.activities.announce = async (tid, uid, overrideCid) => {
+	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+	const announceCid = overrideCid || cid;
+	const authorUid = await posts.getPostField(pid, 'uid'); // author
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		id: pid,
+		to: [activitypub._constants.publicAddress],
+	}, uid ? { uid } : { cid: announceCid });
+	if (!utils.isNumber(authorUid)) {
+		cc.push(authorUid);
+		targets.add(authorUid);
+	}
+
+	const payload = uid ? {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/uid/${uid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+	} : {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${announceCid}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${announceCid}`,
+	};
+
+	return {
+		activity: {
+			...payload,
+			to,
+			cc,
+			object: utils.isNumber(pid) ? `${nconf.get('url')}/post/${pid}` : pid,
+		},
+		targets,
+	};
 };
 
 Mocks.tombstone = async properties => ({

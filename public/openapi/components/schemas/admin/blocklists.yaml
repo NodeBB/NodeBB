@@ -1,0 +1,14 @@
+BlocklistObject:
+  type: object
+  properties:
+    url:
+      type: string
+      description: The blocklist URL
+      example: https://example.org/blocklist
+    count:
+      type: number
+      description: The number of blocked domains on the list
+BlocklistArray:
+  type: array
+  items:
+    $ref: '#/BlocklistObject'

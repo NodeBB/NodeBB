@@ -2,7 +2,7 @@
 
 const crypto = require('crypto');
 const _ = require('lodash');
-const mime = require('mime');
+const mime = require('mime').default;
 
 const db = require('../database');
 

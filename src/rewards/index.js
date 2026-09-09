@@ -1,29 +1,54 @@
 'use strict';
 
 const util = require('util');
+const winston = require('winston');
 
 const db = require('../database');
 const plugins = require('../plugins');
+const utils = require('../utils');
 
 const rewards = module.exports;
 
 rewards.checkConditionAndRewardUser = async function (params) {
-	const { uid, condition, method } = params;
-	const isActive = await isConditionActive(condition);
-	if (!isActive) {
-		return;
+	try {
+		const { uid, condition, method } = params;
+		if (!utils.isNumber(uid)) {
+			return;
+		}
+		const isActive = await isConditionActive(condition);
+		if (!isActive) {
+			return;
+		}
+		const ids = await getIDsByCondition(condition);
+		let rewardData = await getRewardDataByIDs(ids);
+		// filter disabled
+		rewardData = rewardData.filter(r => r && !(r.disabled === 'true' || r.disabled === true));
+
+		for (const reward of rewardData) {
+			const lockValue = `reward:lock:${uid}:${reward.id}`;
+			/* eslint-disable no-await-in-loop */
+			const count = await db.incrObjectField('locks', lockValue);
+			if (count > 1) {
+				winston.warn(`Reward lock already exists for uid ${uid} and reward ${reward.id}, skipping`);
+			} else {
+				try {
+					const canClaim = await isClaimable(uid, reward);
+					if (canClaim) {
+						const isEligible = await checkCondition(reward, method);
+						if (isEligible) {
+							await giveRewards(uid, [reward]);
+						}
+					}
+				} catch (err) {
+					winston.error(err.stack);
+				} finally {
+					await db.deleteObjectFields('locks', [lockValue]);
+				}
+			}
+		}
+	} catch (err) {
+		winston.error(err.stack);
 	}
-	const ids = await getIDsByCondition(condition);
-	let rewardData = await getRewardDataByIDs(ids);
-	// filter disabled
-	rewardData = rewardData.filter(r => r && !(r.disabled === 'true' || r.disabled === true));
-	rewardData = await filterCompletedRewards(uid, rewardData);
-	if (!rewardData || !rewardData.length) {
-		return;
-	}
-	const eligible = await Promise.all(rewardData.map(reward => checkCondition(reward, method)));
-	const eligibleRewards = rewardData.filter((reward, index) => eligible[index]);
-	await giveRewards(uid, eligibleRewards);
 };
 
 async function isConditionActive(condition) {
@@ -34,22 +59,14 @@ async function getIDsByCondition(condition) {
 	return await db.getSetMembers(`condition:${condition}:rewards`);
 }
 
-async function filterCompletedRewards(uid, rewards) {
-	const data = await db.getSortedSetRangeByScoreWithScores(`uid:${uid}:rewards`, 0, -1, 1, '+inf');
-	const userRewards = {};
+async function isClaimable(uid, reward) {
+	const timesClaimable = parseInt(reward.claimable, 10);
+	if (timesClaimable === 0) { // no limit on how many times a user can claim this reward
+		return true;
+	}
 
-	data.forEach((obj) => {
-		userRewards[obj.value] = parseInt(obj.score, 10);
-	});
-
-	return rewards.filter((reward) => {
-		if (!reward) {
-			return false;
-		}
-
-		const claimable = parseInt(reward.claimable, 10);
-		return claimable === 0 || (!userRewards[reward.id] || userRewards[reward.id] < reward.claimable);
-	});
+	const userClaims = await db.sortedSetScore(`uid:${uid}:rewards`, reward.id);
+	return !userClaims || userClaims < timesClaimable;
 }
 
 async function getRewardDataByIDs(ids) {
@@ -65,7 +82,9 @@ async function checkCondition(reward, method) {
 		method = util.promisify(method);
 	}
 	const value = await method();
-	const bool = await plugins.hooks.fire(`filter:rewards.checkConditional:${reward.conditional}`, { left: value, right: reward.value });
+	const bool = await plugins.hooks.fire(`filter:rewards.checkConditional:${reward.conditional}`, {
+		left: value, right: reward.value,
+	});
 	return bool;
 }
 

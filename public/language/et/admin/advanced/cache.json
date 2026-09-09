@@ -1,9 +1,5 @@
 {
 	"cache": "Cache",
-	"post-cache": "Postituste vahemälu",
-	"group-cache": "Group Cache",
-	"local-cache": "Local Cache",
-	"object-cache": "Object Cache",
 	"percent-full": "%1% Täis",
 	"post-cache-size": "Postituse vahemälu suurus",
 	"items-in-cache": "Esemed vahemälus"

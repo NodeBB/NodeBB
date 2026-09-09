@@ -1,0 +1,37 @@
+{
+	"widgets": "Widgets",
+	"available": "ရရှိနိုင်သော",
+	"explanation": "ရှင်းလင်းချက်",
+	"none-installed": "ထည့်သွင်းထားခြင်း မရှိပါ",
+	"clone-from": "မှ ပွားရန်",
+	"containers.available": "ရရှိနိုင်သော Containers",
+	"containers.explanation": "Containers ရှင်းလင်းချက်",
+	"containers.none": "Containers မရှိပါ",
+	"container.well": "Well",
+	"container.jumbotron": "Jumbotron",
+	"container.card": "Card",
+	"container.card-header": "Card Header",
+	"container.card-body": "Card Body",
+	"container.title": "ခေါင်းစဉ်",
+	"container.body": "ကိုယ်ထည်",
+	"container.alert": "သတိပေးချက်",
+
+	"alert.confirm-delete": "ဖျက်ရန် သေချာပါသလား?",
+	"alert.updated": "အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+	"alert.update-success": "အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+	"alert.clone-success": "ပွားပြီးပါပြီ",
+
+	"error.select-clone": "ပွားမည့်အရာကို ရွေးပါ",
+
+	"title": "ခေါင်းစဉ်",
+	"title.placeholder": "ခေါင်းစဉ် ထည့်ပါ...",
+	"container": "Container",
+	"container.placeholder": "Container ထည့်ပါ...",
+	"show-to-groups": "အုပ်စုများကို ပြရန်",
+	"hide-from-groups": "အုပ်စုများမှ ဖျောက်ရန်",
+	"start-date": "စတင်သည့်ရက်",
+	"end-date": "ပြီးဆုံးသည့်ရက်",
+	"hide-on-mobile": "ဖုန်းတွင် ဖျောက်ရန်",
+	"hide-drafts": "မူကြမ်းများကို ဖျောက်ရန်",
+	"show-drafts": "မူကြမ်းများကို ပြရန်"
+}

@@ -57,36 +57,46 @@ Blacklist.test = async function (clientIp) {
 	if (!clientIp) {
 		return;
 	}
-	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
+	const parts = clientIp.split(':');
+	if (parts.length === 2) {
+		clientIp = parts[0];
+	}
 
 	if (!validator.isIP(clientIp)) {
 		throw new Error('[[error:invalid-ip]]');
 	}
 
+	let addr;
+	try {
+		addr = ipaddr.parse(clientIp);
+		// Normalize IPv4-mapped IPv6 addresses (::ffff:x.x.x.x) to plain IPv4
+		if (addr.kind() === 'ipv6' && addr.isIPv4MappedAddress()) {
+			addr = addr.toIPv4Address();
+			clientIp = addr.toString();
+		}
+	} catch (err) {
+		winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
+		throw err;
+	}
+
 	const rules = Blacklist._rules;
-	function checkCidrRange(clientIP) {
+	function checkCidrRange(address) {
 		if (!rules.cidr.length) {
 			return false;
 		}
-		let addr;
-		try {
-			addr = ipaddr.parse(clientIP);
-		} catch (err) {
-			winston.error(`[meta/blacklist] Error parsing client IP : ${clientIp}`);
-			throw err;
-		}
+
 		return rules.cidr.some((subnet) => {
 			const cidr = ipaddr.parseCIDR(subnet);
-			if (addr.kind() !== cidr[0].kind()) {
+			if (address.kind() !== cidr[0].kind()) {
 				return false;
 			}
-			return addr.match(cidr);
+			return address.match(cidr);
 		});
 	}
 
 	if (rules.ipv4.includes(clientIp) ||
 		rules.ipv6.includes(clientIp) ||
-		checkCidrRange(clientIp)) {
+		checkCidrRange(addr)) {
 		const err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
 
@@ -144,7 +154,7 @@ Blacklist.validate = function (rules) {
 		}
 
 		if (!addr || whitelist.includes(rule)) {
-			invalid.push(validator.escape(rule));
+			invalid.push(rule);
 			return false;
 		}
 

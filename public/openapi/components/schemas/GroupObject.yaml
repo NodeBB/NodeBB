@@ -12,10 +12,10 @@ GroupFullObject:
       type: number
       description: UNIX timestamp of the group's creation
     userTitle:
-      type: number
+      type: string
       description: Label text for the user badge
     userTitleEscaped:
-      type: number
+      type: string
       description: Same as userTitle but with translation tokens escaped, used to display raw userTitle in group management
     userTitleEnabled:
       type: number
@@ -163,10 +163,10 @@ GroupDataObject:
       type: number
       description: UNIX timestamp of the group's creation
     userTitle:
-      type: number
+      type: string
       description: Label text for the user badge
     userTitleEscaped:
-      type: number
+      type: string
       description: Same as userTitle but with translation tokens escaped, used to display raw userTitle in group management
     userTitleEnabled:
       type: number

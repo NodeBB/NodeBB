@@ -130,9 +130,10 @@ describe('Search', () => {
 
 	it('should search for categories', async () => {
 		const socketCategories = require('../src/socket.io/categories');
-		let data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: 'baz', parentCid: 0 });
+		let data = await socketCategories.categorySearch({ uid: phoebeUid }, { search: 'baz', parentCid: 0 });
+		assert.strictEqual(data.length, 1);
 		assert.strictEqual(data[0].name, 'baz category');
-		data = await socketCategories.categorySearch({ uid: phoebeUid }, { query: '', parentCid: 0 });
+		data = await socketCategories.categorySearch({ uid: phoebeUid }, { search: '', parentCid: 0 });
 		assert.strictEqual(data.length, 5);
 	});
 

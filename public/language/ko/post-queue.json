@@ -10,15 +10,19 @@
 	"user": "사용자",
 	"when": "시간",
 	"category": "카테고리",
+	"crosspost-to": "Crosspost to",
+	"tags": "Tags",
 	"title": "제목",
 	"content": "내용",
 	"posted": "작성됨",
 	"reply-to": "\"%1\"에 대한 답글",
+	"edit": "Edit",
 	"content-editable": "편집하려면 내용을 클릭하세요",
 	"category-editable": "편집하려면 카테고리를 클릭하세요",
 	"title-editable": "편집하려면 제목을 클릭하세요",
 	"reply": "답글",
 	"topic": "토픽",
+	"crosspost": "Crosspost",
 	"accept": "승인",
 	"reject": "거부",
 	"remove": "제거",
@@ -39,5 +43,6 @@
 	"remove-selected-confirm": "선택된 %1개의 게시물을 제거하시겠습니까?",
 	"bulk-accept-success": "%1개의 게시물이 승인되었습니다.",
 	"bulk-reject-success": "%1개의 게시물이 거부되었습니다.",
-	"links-in-this-post": "Links in this post"
+	"links-in-this-post": "Links in this post",
+	"thumbs-in-this-post": "Thumbnails in this post"
 }

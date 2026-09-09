@@ -33,7 +33,7 @@ module.exports = function (Posts) {
 		if (data.toPid) {
 			postData.toPid = data.toPid;
 		}
-		if (data.ip && meta.config.trackIpPerPost) {
+		if (data.ip && meta.config.logIPs && meta.config.trackIpPerPost) {
 			postData.ip = data.ip;
 		}
 		if (data.handle && !parseInt(uid, 10)) {
@@ -48,22 +48,8 @@ module.exports = function (Posts) {
 			}
 
 			// Rewrite emoji references to inline image assets
-			if (_activitypub && _activitypub.tag && Array.isArray(_activitypub.tag)) {
-				_activitypub.tag
-					.filter(tag => tag.type === 'Emoji' &&
-								tag.icon && tag.icon.type === 'Image')
-					.forEach((tag) => {
-						if (!tag.name.startsWith(':')) {
-							tag.name = `:${tag.name}`;
-						}
-						if (!tag.name.endsWith(':')) {
-							tag.name = `${tag.name}:`;
-						}
-
-						const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
-						postData[property] = postData[property].replace(new RegExp(tag.name, 'g'), `<img class="not-responsive emoji" src="${tag.icon.url}" title="${tag.name}" />`);
-					});
-			}
+			const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
+			postData[property] = activitypub.helpers.renderEmoji(postData[property], _activitypub.tag);
 
 			hasAttachment = _activitypub && _activitypub.attachment && _activitypub.attachment.length;
 		}
@@ -73,10 +59,10 @@ module.exports = function (Posts) {
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
 		postData.cid = topicData.cid;
-
+		const isRemote = !utils.isNumber(pid);
 		await Promise.all([
-			db.sortedSetAdd('posts:pid', timestamp, postData.pid),
-			utils.isNumber(pid) ? db.incrObjectField('global', 'postCount') : null,
+			db.sortedSetAdd(!isRemote ? 'posts:pid' : 'postsRemote:pid', timestamp, postData.pid),
+			!isRemote ? db.incrObjectField('global', 'postCount') : null,
 			user.onNewPostMade(postData),
 			topics.onNewPostMade(postData),
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
@@ -96,6 +82,11 @@ module.exports = function (Posts) {
 		if (!postData.toPid) {
 			return;
 		}
+		const exists = await Posts.exists(postData.toPid);
+		if (!exists) {
+			return;
+		}
+
 		await Promise.all([
 			db.sortedSetAdd(`pid:${postData.toPid}:replies`, timestamp, postData.pid),
 			db.incrObjectField(`post:${postData.toPid}`, 'replies'),

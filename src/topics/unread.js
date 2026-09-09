@@ -11,7 +11,6 @@ const posts = require('../posts');
 const notifications = require('../notifications');
 const categories = require('../categories');
 const privileges = require('../privileges');
-const meta = require('../meta');
 const utils = require('../utils');
 const plugins = require('../plugins');
 
@@ -48,8 +47,9 @@ module.exports = function (Topics) {
 	};
 
 	Topics.unreadCutoff = async function (uid) {
-		const cutoff = Date.now() - (meta.config.unreadCutoff * 86400000);
-		const data = await plugins.hooks.fire('filter:topics.unreadCutoff', { uid: uid, cutoff: cutoff });
+		const { unreadCutoff } = await user.getSettings(uid);
+		const cutoff = Date.now() - (unreadCutoff * 86400000);
+		const data = await plugins.hooks.fire('filter:topics.unreadCutoff', { uid, cutoff });
 		return parseInt(data.cutoff, 10);
 	};
 
@@ -145,8 +145,19 @@ module.exports = function (Topics) {
 			.filter(t => !t.deleted);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
-		const categoryWatchState = await categories.getWatchState(topicCids, params.uid);
-		const userCidState = _.zipObject(topicCids, categoryWatchState);
+		let crosspostCids = await Topics.crossposts.get(tids, params.uid);
+		crosspostCids = crosspostCids.map((crossposts) => {
+			return crossposts.map(({ cid }) => cid);
+		});
+		const crosspostMap = crosspostCids.reduce((memo, cids, idx) => {
+			const tid = tids[idx];
+			memo.set(tid, cids);
+			return memo;
+		}, new Map());
+		const combinedCids = Array.from(new Set([...topicCids, ...crosspostCids.flat()]));
+
+		const categoryWatchState = await categories.getWatchState(combinedCids, params.uid);
+		const userCidState = _.zipObject(combinedCids, categoryWatchState);
 
 		const filterCids = params.cid && params.cid.map(cid => utils.isNumber(cid) ? parseInt(cid, 10) : cid);
 		const filterTags = params.tag && params.tag.map(tag => String(tag));
@@ -156,8 +167,12 @@ module.exports = function (Topics) {
 				(!filterCids || filterCids.includes(topic.cid)) &&
 				(!filterTags || filterTags.every(tag => topic.tags.find(topicTag => topicTag.value === tag))) &&
 				!blockedUids.includes(topic.uid)) {
-				if (isTopicsFollowed[topic.tid] ||
-					[categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[topic.cid])) {
+				if (isTopicsFollowed[topic.tid] || // 👈 follows tid directly, or its cid 👇
+					[categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[topic.cid]) ||
+					crosspostMap.get(topic.tid).some((cid) => { // user follows a crossposted cid
+						return [categories.watchStates.watching, categories.watchStates.tracking].includes(userCidState[cid]);
+					})
+				) {
 					tidsByFilter[''].push(topic.tid);
 					unreadCids.push(topic.cid);
 				}
@@ -259,7 +274,7 @@ module.exports = function (Topics) {
 				return hasUnblockedUnread;
 			}
 			let postData = await posts.getPostsFields(pidsSinceLastVisit, ['pid', 'uid']);
-			postData = postData.filter(post => !params.blockedUids.includes(parseInt(post.uid, 10)));
+			postData = postData.filter(post => !params.blockedUids.includes(String(post.uid)));
 
 			done = postData.length > 0;
 			hasUnblockedUnread = postData.length > 0;
@@ -326,7 +341,7 @@ module.exports = function (Topics) {
 
 	Topics.markAllRead = async function (uid) {
 		const tids = await Topics.getUnreadTids({ uid });
-		Topics.markTopicNotificationsRead(tids, uid);
+		await Topics.markTopicNotificationsRead(tids, uid);
 		await Topics.markAsRead(tids, uid);
 		await db.delete(`uid:${uid}:tids_unread`);
 	};
@@ -336,8 +351,10 @@ module.exports = function (Topics) {
 			return;
 		}
 		const nids = await user.notifications.getUnreadByField(uid, 'tid', tids);
-		await notifications.markReadMultiple(nids, uid);
-		user.notifications.pushCount(uid);
+		if (nids.length) {
+			await notifications.markReadMultiple(nids, uid);
+			await user.notifications.pushCount(uid);
+		}
 	};
 
 	Topics.markCategoryUnreadForAll = async function (/* tid */) {

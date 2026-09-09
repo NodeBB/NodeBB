@@ -1,8 +1,8 @@
 'use strict';
 
 define('navigator', [
-	'forum/pagination', 'components', 'hooks', 'alerts', 'translator', 'storage',
-], function (pagination, components, hooks, alerts, translator, storage) {
+	'forum/pagination', 'components', 'hooks', 'alerts', 'storage',
+], function (pagination, components, hooks, alerts, storage) {
 	const navigator = {};
 	let index = 0;
 	let count = 0;
@@ -201,6 +201,7 @@ define('navigator', [
 		return await socket.emit('posts.getPostTimestampByIndex', {
 			tid: ajaxify.data.tid,
 			index: index - 1,
+			sort: ajaxify.data.sortOption,
 		});
 	}
 
@@ -376,19 +377,21 @@ define('navigator', [
 		remaining = Math.min(remaining, ajaxify.data.postcount - index);
 
 		function toggleAnchor(text) {
-			anchorEl.innerText = text;
+			anchorEl.style.display = text ? 'inline' : 'none';
 			anchorEl.setAttribute('aria-disabled', text ? 'false' : 'true');
 			if (text) {
 				anchorEl.removeAttribute('tabindex');
+				$(anchorEl).translateText(text);
 			} else {
 				anchorEl.setAttribute('tabindex', -1);
+				anchorEl.innerText = '';
 			}
 		}
+		const anchorHeight = anchorEl.getBoundingClientRect().height;
 
-		if (remaining > 0 && (trackHeight - thumbBottom) >= thumbHeight) {
-			const text = await translator.translate(`[[topic:navigator.unread, ${remaining}]]`);
+		if (remaining > 0 && (trackHeight - thumbBottom) >= Math.min(16, anchorHeight)) {
 			anchorEl.href = `${config.relative_path}/topic/${ajaxify.data.slug}/${Math.min(index + 1, ajaxify.data.postcount)}`;
-			toggleAnchor(text);
+			toggleAnchor(`[[topic:navigator.unread, ${remaining}]]`);
 		} else {
 			anchorEl.href = ajaxify.data.url;
 			toggleAnchor('');
@@ -408,7 +411,11 @@ define('navigator', [
 		}
 		renderPostIndex = index;
 
-		const postData = await socket.emit('posts.getPostSummaryByIndex', { tid: ajaxify.data.tid, index: index - 1 });
+		const postData = await socket.emit('posts.getPostSummaryByIndex', {
+			tid: ajaxify.data.tid,
+			index: index - 1,
+			sort: ajaxify.data.sortOption,
+		});
 
 		const html = await app.parseAndTranslate('partials/topic/navigation-post', { post: postData });
 		paginationBlockEl
@@ -441,7 +448,11 @@ define('navigator', [
 	function generateUrl(index) {
 		const pathname = window.location.pathname.replace(config.relative_path, '');
 		const parts = pathname.split('/');
-		const newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		let newUrl = parts[1] + '/' + parts[2] + '/' + parts[3] + (index ? '/' + index : '');
+		const { sort } = utils.params();
+		if (sort) {
+			newUrl += `?sort=${encodeURIComponent(sort)}`;
+		}
 		const data = {
 			newUrl,
 			index,
@@ -563,7 +574,7 @@ define('navigator', [
 		if (config.usePagination) {
 			paginationTextEl.html(`<i class="fa fa-file"></i> ${ajaxify.data.pagination.currentPage} / ${ajaxify.data.pagination.pageCount}`);
 		} else {
-			paginationTextEl.translateHtml('[[global:pagination.out-of, ' + index + ', ' + count + ']]');
+			paginationTextEl.translateText(`[[global:pagination.out-of, ${index}, ${count}]]`);
 		}
 
 		const fraction = (index - 1) / (count - 1 || 1);
@@ -701,6 +712,13 @@ define('navigator', [
 		let done = false;
 
 		function animateScroll() {
+			function calculateScrollTop() {
+				if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
+					return scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
+				}
+				return scrollTo.offset().top - navbarHeight - topicHeaderHeight;
+			}
+
 			function reenableScroll() {
 				// Re-enable onScroll behaviour
 				setTimeout(() => { // fixes race condition from jQuery — onAnimateComplete called too quickly
@@ -727,12 +745,7 @@ define('navigator', [
 				}
 			}
 
-			let scrollTop = 0;
-			if (postHeight < viewportHeight - navbarHeight - topicHeaderHeight) {
-				scrollTop = scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2);
-			} else {
-				scrollTop = scrollTo.offset().top - navbarHeight - topicHeaderHeight;
-			}
+			const scrollTop = calculateScrollTop();
 
 			if (duration === 0) {
 				$(window).scrollTop(scrollTop);
@@ -742,7 +755,22 @@ define('navigator', [
 			}
 			$('html, body').animate({
 				scrollTop: scrollTop + 'px',
-			}, duration, onAnimateComplete);
+			}, {
+				duration,
+				step(value, tween) {
+					const previousScrollTop = tween.nodebbScrollTop === undefined ? scrollTop : tween.nodebbScrollTop;
+					const nextScrollTop = calculateScrollTop();
+					const delta = nextScrollTop - previousScrollTop;
+					if (delta) {
+						// Keep the tween aligned if content above the target changes height.
+						tween.start += delta;
+						tween.end += delta;
+						tween.now += delta;
+						tween.nodebbScrollTop = nextScrollTop;
+					}
+				},
+				complete: onAnimateComplete,
+			});
 		}
 
 		function highlightPost() {

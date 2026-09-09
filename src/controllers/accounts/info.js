@@ -15,22 +15,24 @@ infoController.get = async function (req, res) {
 
 	const payload = res.locals.userData;
 	const { username, userslug } = payload;
-	const [isPrivileged, history, sessions, usernames, emails] = await Promise.all([
+	const [isPrivileged, history, sessions, usernames, emails, invitedBy] = await Promise.all([
 		user.isPrivileged(req.uid),
 		user.getModerationHistory(res.locals.uid),
 		user.auth.getSessions(res.locals.uid, req.sessionID),
 		user.getHistory(`user:${res.locals.uid}:usernames`),
 		user.getHistory(`user:${res.locals.uid}:emails`),
+		getInvitedBy(res.locals.uid),
 	]);
 
 	const notes = await getNotes({ uid: res.locals.uid, isPrivileged }, start, stop);
 
-	payload.history = history;
 	payload.sessions = sessions;
 	payload.usernames = usernames;
 	payload.emails = emails;
+	payload.invitedBy = invitedBy;
 
 	if (isPrivileged) {
+		payload.history = history;
 		payload.moderationNotes = notes.notes;
 		const pageCount = Math.ceil(notes.count / itemsPerPage);
 		payload.pagination = pagination.create(page, pageCount, req.query);
@@ -51,3 +53,12 @@ async function getNotes({ uid, isPrivileged }, start, stop) {
 	]);
 	return { notes: notes, count: count };
 }
+
+async function getInvitedBy(uid) {
+	const invitedBy = await user.getUserField(uid, 'invitedBy');
+	if (!invitedBy) {
+		return null;
+	}
+	const inviterData = await user.getUserFields(invitedBy, ['uid', 'username', 'userslug', 'picture']);
+	return inviterData.userslug ? inviterData : null;
+};

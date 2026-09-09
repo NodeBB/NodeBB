@@ -88,54 +88,59 @@ async function getThemes(themePath) {
 Themes.set = async (data) => {
 	switch (data.type) {
 		case 'local': {
+			if (!themeNamePattern.test(data.id)) {
+				throw new Error('[[error:invalid-theme-id]]');
+			}
 			const current = await Meta.configs.get('theme:id');
+			if (current && current === data.id) {
+				return;
+			}
+
+			const themesPath = nconf.get('themes_path');
+			const pathToThemeJson = path.join(themesPath, data.id, 'theme.json');
+			if (!file.isPathInside(themesPath, pathToThemeJson)) {
+				throw new Error('[[error:invalid-theme-id]]');
+			}
+
+			let config = await fs.promises.readFile(pathToThemeJson, 'utf8');
+			config = JSON.parse(config);
+			const activePluginsConfig = nconf.get('plugins:active');
+			if (activePluginsConfig && !activePluginsConfig.includes(current)) {
+				// This prevents changing theme when configuration doesn't include it, but allows it otherwise
+				winston.error(`When defining active plugins in configuration, changing themes requires adding the theme '${data.id}' to the list of active plugins before updating it in the ACP`);
+				throw new Error('[[error:theme-not-set-in-configuration]]');
+			}
+
 			const score = await db.sortedSetScore('plugins:active', current);
 			await db.sortedSetRemove('plugins:active', current);
 			await db.sortedSetAdd('plugins:active', score || 0, data.id);
 
-			if (current !== data.id) {
-				const pathToThemeJson = path.join(nconf.get('themes_path'), data.id, 'theme.json');
-				if (!pathToThemeJson.startsWith(nconf.get('themes_path'))) {
-					throw new Error('[[error:invalid-theme-id]]');
-				}
+			// Re-set the themes path (for when NodeBB is reloaded)
+			Themes.setPath(config);
 
-				let config = await fs.promises.readFile(pathToThemeJson, 'utf8');
-				config = JSON.parse(config);
-				const activePluginsConfig = nconf.get('plugins:active');
-				if (!activePluginsConfig) {
-					const score = await db.sortedSetScore('plugins:active', current);
-					await db.sortedSetRemove('plugins:active', current);
-					await db.sortedSetAdd('plugins:active', score || 0, data.id);
-				} else if (!activePluginsConfig.includes(data.id)) {
-					// This prevents changing theme when configuration doesn't include it, but allows it otherwise
-					winston.error(`When defining active plugins in configuration, changing themes requires adding the theme '${data.id}' to the list of active plugins before updating it in the ACP`);
-					throw new Error('[[error:theme-not-set-in-configuration]]');
-				}
+			await Meta.configs.setMultiple({
+				'theme:type': data.type,
+				'theme:id': data.id,
+				'theme:staticDir': config.staticDir ? config.staticDir : '',
+				'theme:templates': config.templates ? config.templates : '',
+				'theme:src': '',
+				bootswatchSkin: '',
+			});
 
-				// Re-set the themes path (for when NodeBB is reloaded)
-				Themes.setPath(config);
+			await events.log({
+				type: 'theme-set',
+				uid: parseInt(data.uid, 10) || 0,
+				ip: data.ip || '127.0.0.1',
+				text: data.id,
+			});
 
-				await Meta.configs.setMultiple({
-					'theme:type': data.type,
-					'theme:id': data.id,
-					'theme:staticDir': config.staticDir ? config.staticDir : '',
-					'theme:templates': config.templates ? config.templates : '',
-					'theme:src': '',
-					bootswatchSkin: '',
-				});
-
-				await events.log({
-					type: 'theme-set',
-					uid: parseInt(data.uid, 10) || 0,
-					ip: data.ip || '127.0.0.1',
-					text: data.id,
-				});
-
-				Meta.reloadRequired = true;
-			}
+			Meta.reloadRequired = true;
 			break;
 		}
 		case 'bootswatch':
+			if (data.id && data.id !== '' && !Meta.css.supportedSkins.includes(data.id.toLowerCase())) {
+				throw new Error('[[error:invalid-skin-id]]');
+			}
 			await Meta.configs.setMultiple({
 				'theme:src': data.src,
 				bootswatchSkin: data.id.toLowerCase(),

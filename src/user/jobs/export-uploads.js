@@ -8,7 +8,7 @@ nconf.argv().env({
 
 const fs = require('fs');
 const path = require('path');
-const archiver = require('archiver');
+const { ZipArchive } = require('archiver');
 const winston = require('winston');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -33,7 +33,7 @@ process.on('message', async (msg) => {
 
 		const user = require('../index');
 
-		const archive = archiver('zip', {
+		const archive = new ZipArchive({
 			zlib: { level: 9 }, // Sets the compression level.
 		});
 

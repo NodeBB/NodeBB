@@ -49,7 +49,7 @@ describe('Categories', () => {
 			assert.ifError(err);
 
 			assert(categoryData);
-			assert.equal('Test Category &amp; NodeBB', categoryData.name);
+			assert.equal('Test Category & NodeBB', categoryData.name);
 			assert.equal(categoryObj.description, categoryData.description);
 			assert.strictEqual(categoryObj.disabled, 0);
 			done();
@@ -80,26 +80,36 @@ describe('Categories', () => {
 	it('should load a category route', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/category/${categoryObj.cid}/test-category`);
 		assert.equal(response.statusCode, 200);
-		assert.equal(body.name, 'Test Category &amp; NodeBB');
+		assert.equal(body.name, 'Test Category & NodeBB');
 		assert(body);
 	});
 
 	describe('Categories.getRecentTopicReplies', () => {
-		it('should not throw', (done) => {
-			Categories.getCategoryById({
+		it('should not throw', async () => {
+			const categoryData = await Categories.getCategoryById({
 				cid: categoryObj.cid,
 				set: `cid:${categoryObj.cid}:tids`,
 				reverse: true,
 				start: 0,
 				stop: -1,
 				uid: 0,
-			}, (err, categoryData) => {
-				assert.ifError(err);
-				Categories.getRecentTopicReplies(categoryData, 0, {}, (err) => {
-					assert.ifError(err);
-					done();
-				});
 			});
+
+			await Categories.getRecentTopicReplies([categoryData], 0, {});
+		});
+
+		it('should return posts in child category as teaser on parent category' , async () => {
+			const { cid: parentCid } = await Categories.create({ name: 'theparent' });
+			const { cid: childCid } = await Categories.create({ name: 'thechild', parentCid });
+			await Topics.post({ uid: posterUid, title: 'inparent', content: 'post in parent', cid: parentCid });
+			await Topics.post({ uid: posterUid, title: 'inchild', content: 'post in child', cid: childCid });
+			const categoryData = await Categories.getCategories([parentCid, childCid]);
+			Categories.getTree(categoryData, 0);
+
+			await Categories.getRecentTopicReplies(categoryData, 0, {}),
+			assert.strictEqual(String(categoryData[0].cid), String(parentCid));
+			assert.strictEqual(categoryData[0].posts[0].uid, posterUid);
+			assert.strictEqual(categoryData[0].posts[0].content, 'post in child');
 		});
 	});
 
@@ -187,13 +197,13 @@ describe('Categories', () => {
 				content: 'The content of test topic',
 				tags: ['nodebb'],
 			});
-			const data = await Topics.post({
+			await Topics.post({
 				uid: posterUid,
 				cid: categoryObj.cid,
 				title: 'will delete',
 				content: 'The content of deleted topic',
+				deleted: 1,
 			});
-			await Topics.delete(data.topicData.tid, adminUid);
 		});
 
 		it('should get recent replies in category', (done) => {
@@ -247,6 +257,7 @@ describe('Categories', () => {
 			assert.deepStrictEqual(
 				data.topics.map(t => t.title),
 				['[[topic:topic-is-deleted]]', 'Test Topic Title', 'Test Topic Title'],
+				JSON.stringify(data.topics, null, 2),
 			);
 		});
 
@@ -472,7 +483,30 @@ describe('Categories', () => {
 		it('should remove privilege', async () => {
 			await apiCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' });
 			const canDeleteTopics = await privileges.categories.can('topics:delete', categoryObj.cid, posterUid);
-			assert(!canDeleteTopics);
+			assert.strictEqual(canDeleteTopics, false);
+		});
+
+		it('should get an array of privileges for a category', async () => {
+			const privilegesArray = await privileges.categories.can(['topics:create', 'topics:delete'], categoryObj.cid, posterUid);
+			assert.deepStrictEqual(privilegesArray, [true, false]);
+		});
+
+		it('should return false cid is an array', async () => {
+			assert.deepStrictEqual(
+				await privileges.categories.can(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
+				[false, false]
+			);
+			assert.strictEqual(
+				await privileges.categories.can('topics:create', [categoryObj.cid], posterUid),
+				false
+			);
+		});
+
+		it('should error if both cid and privilege are arrays', async () => {
+			await assert.rejects(
+				privileges.categories.isUserAllowedTo(['topics:create', 'topics:delete'], [categoryObj.cid], posterUid),
+				{ message: '[[error:invalid-data]]' },
+			);
 		});
 
 		it('should get privilege settings', async () => {
@@ -676,6 +710,7 @@ describe('Categories', () => {
 					'topics:reply': false,
 					'topics:read': false,
 					'topics:create': false,
+					'topics:crosspost': false,
 					'topics:tag': false,
 					'topics:delete': false,
 					'topics:schedule': false,
@@ -730,6 +765,7 @@ describe('Categories', () => {
 					'groups:posts:downvote': true,
 					'groups:topics:delete': false,
 					'groups:topics:create': true,
+					'groups:topics:crosspost': true,
 					'groups:topics:reply': true,
 					'groups:topics:tag': true,
 					'groups:topics:schedule': false,
@@ -865,4 +901,18 @@ describe('Categories', () => {
 		assert.strictEqual(child1.cid, data.children[0].cid);
 		assert.strictEqual(child2.cid, data.children[0].children[0].cid);
 	});
+
+	it('should translate category name and description and escape them properly', async () => {
+		const category = await Categories.create({
+			name: '[[topic:merged-message, javascript:alert(origin), foobar]]',
+			description: '[[topic:forked-message, javascript:alert(origin), foobar]]',
+		});
+
+		const { response, body } = await request.get(`${nconf.get('url')}/category/${category.cid}/test-category`);
+		const debug = body.slice(0, 1000);
+		assert(body.includes('<title>This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt; | NodeBB</title>'), debug);
+		assert(body.includes('<meta name="title" content="This topic has been merged into &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'), debug);
+		assert(body.includes('<meta name="description" content="This topic was forked from &lt;a href&#x3D;&quot;&quot;&gt;foobar&lt;/a&gt;" />'), debug);
+	});
 });
+

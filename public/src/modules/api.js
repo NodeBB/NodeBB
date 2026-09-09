@@ -1,7 +1,9 @@
 'use strict';
 
 import { fire as fireHook } from 'hooks';
-import { confirm } from 'bootbox';
+import { confirm } from 'modals';
+import * as translator from 'translator';
+import * as storage from 'storage';
 
 const baseUrl = config.relative_path + '/api/v3';
 
@@ -9,6 +11,11 @@ async function call(options, callback) {
 	options.url = options.url.startsWith('/api') ?
 		config.relative_path + options.url :
 		baseUrl + options.url;
+
+	options.headers = options.headers || {};
+	if (!options.headers['x-return-to']) {
+		options.headers['x-return-to'] = `${window.location.pathname.slice(config.relative_path.length)}${window.location.search}`;
+	}
 
 	if (typeof callback === 'function') {
 		xhr(options).then(result => callback(null, result), err => callback(err));
@@ -19,10 +26,12 @@ async function call(options, callback) {
 		const result = await xhr(options);
 		return result;
 	} catch (err) {
-		if (err.message === 'A valid login session was not found. Please log in and try again.') {
+		if (err.message === await translator.translate('[[error:api.401]]', config.userLang)) {
 			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
-			return confirm('[[error:api.reauth-required]]', (ok) => {
+			const message = await translator.translate('[[error:api.reauth-required]]', config.userLang);
+			confirm(message, (ok) => {
 				if (ok) {
+					storage.setItem('location-hash', window.location.hash);
 					ajaxify.go(url);
 				}
 			});
@@ -79,7 +88,12 @@ async function xhr(options) {
 
 	if (!res.ok) {
 		if (response) {
-			throw new Error(isJSON ? response.status.message : response);
+			const jsonError = isJSON && (response.status?.message || response.error || '');
+			const fallbackError = typeof response === 'string' ? response : (res.statusText || `[[error:api.${res.status}]]`);
+			throw new Error(isJSON && jsonError ?
+				jsonError :
+				fallbackError
+			);
 		}
 		throw new Error(res.statusText);
 	}
@@ -102,46 +116,31 @@ export function head(route, data, onSuccess) {
 	}, onSuccess);
 }
 
-export function post(route, data, onSuccess) {
-	return call({
-		url: route,
-		method: 'POST',
-		data,
-		headers: {
-			'x-csrf-token': config.csrf_token,
-		},
-	}, onSuccess);
+export function post(route, data, headers, onSuccess) {
+	return callWithHeaders('POST', route, data, headers, onSuccess);
 }
 
-export function patch(route, data, onSuccess) {
-	return call({
-		url: route,
-		method: 'PATCH',
-		data,
-		headers: {
-			'x-csrf-token': config.csrf_token,
-		},
-	}, onSuccess);
+export function patch(route, data, headers, onSuccess) {
+	return callWithHeaders('PATCH', route, data, headers, onSuccess);
 }
 
-export function put(route, data, onSuccess) {
-	return call({
-		url: route,
-		method: 'PUT',
-		data,
-		headers: {
-			'x-csrf-token': config.csrf_token,
-		},
-	}, onSuccess);
+export function put(route, data, headers, onSuccess) {
+	return callWithHeaders('PUT', route, data, headers, onSuccess);
 }
 
-export function del(route, data, onSuccess) {
+export function del(route, data, headers, onSuccess) {
+	return callWithHeaders('DELETE', route, data, headers, onSuccess);
+}
+
+function callWithHeaders(method, route, data, headers, onSuccess) {
+	typeof headers === 'function' && (onSuccess = headers, headers = {});
 	return call({
 		url: route,
-		method: 'DELETE',
+		method,
 		data,
 		headers: {
 			'x-csrf-token': config.csrf_token,
+			...headers,
 		},
 	}, onSuccess);
 }

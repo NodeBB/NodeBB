@@ -3,13 +3,13 @@
 		{{{ if selectedGroup }}}
 		<span class="fw-semibold">{selectedGroup.displayName}</span>
 		{{{ else }}}
-		<span class="fw-semibold">[[groups:all-groups]]</span>
+		<span class="fw-semibold">{{tx("groups:all-groups")}}</span>
 		{{{ end }}} <span class="caret text-primary opacity-75"></span>
 	</button>
 	<ul class="dropdown-menu p-1 text-sm" role="menu">
 		<li role="presentation" class="user {{{ if !selectedGroup}}}selected{{{end}}}">
 			<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="{config.relative_path}/{allGroupsUrl}">
-				<div class="flex-grow-1">[[groups:all-groups]]</div>
+				<div class="flex-grow-1">{{tx("groups:all-groups")}}</div>
 				<i class="flex-shrink-0 fa fa-fw {{{ if !selectedGroup }}}fa-check{{{ end }}}"></i>
 			</a>
 		</li>

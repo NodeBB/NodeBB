@@ -1,0 +1,18 @@
+{
+	"skins": "Skins",
+	"bootswatch-skins": "Bootswatch Skins",
+	"custom-skins": "စိတ်ကြိုက် Skins",
+	"add-skin": "Skin ထည့်ရန်",
+	"save-custom-skins": "သိမ်းဆည်းရန်",
+	"save-custom-skins-success": "သိမ်းဆည်းပြီးပါပြီ",
+	"custom-skin-name": "Skin အမည်",
+	"custom-skin-variables": "Skin Variables",
+	"loading": "လုပ်ဆောင်နေသည်...",
+	"homepage": "ပင်မစာမျက်နှာ",
+	"select-skin": "Skin ရွေးချယ်ရန်",
+	"revert-skin": "မူလအတိုင်း ပြန်ထားရန်",
+	"current-skin": "လက်ရှိ Skin",
+	"skin-updated": "Skin အသစ်တင်ပြီးပါပြီ",
+	"applied-success": "အသုံးပြုပြီးပါပြီ",
+	"revert-success": "မူလအတိုင်း ပြန်လည်ထားရှိပြီးပါပြီ"
+}

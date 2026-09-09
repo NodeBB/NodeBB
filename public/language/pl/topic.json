@@ -69,6 +69,8 @@
     "user-referenced-topic-on": "%1 <a href=\"%2\">odniósł się</a> do tego tematu dnia %3",
     "user-forked-topic-ago": "%1 <a href=\"%2\">rozdzielił</a> ten temat %3",
     "user-forked-topic-on": "%1 <a href=\"%2\">rozdzielił</a> ten temat dnia %3",
+    "user-crossposted-topic-ago": "%1 crossposted this topic to %2 %3",
+    "user-crossposted-topic-on": "%1 crossposted this topicto %2 on %3",
     "bookmark-instructions": "Kliknij tutaj, by powrócić do ostatniego przeczytanego postu w tym temacie.",
     "flag-post": "Zgłoś ten post",
     "flag-user": "Zgłoś tego użytkownika",
@@ -90,6 +92,8 @@
     "watch.title": "Otrzymuj powiadomienia o nowych odpowiedziach w tym temacie",
     "unwatch.title": "Przestań obserwować ten temat",
     "share-this-post": "Udostępnij",
+    "share-mail-subject": "Sprawdź ten post na \"%1\"",
+    "share-mail-body": "Może Cię zainteresować post: %1",
     "watching": "Obserwuj",
     "not-watching": "Nie obserwuj",
     "ignoring": "Ignoruj",
@@ -180,6 +184,7 @@
     "composer.replying-to": "Odpowiedź na %1",
     "composer.new-topic": "Nowy temat",
     "composer.editing-in": "Edytowanie posta w %1",
+    "composer.untitled-topic": "Nienazwany Temat",
     "composer.uploading": "wysyłanie...",
     "composer.thumb-url-label": "Wklej adres miniaturki tematu",
     "composer.thumb-title": "Dodaj miniaturkę do tego tematu",
@@ -222,6 +227,7 @@
     "no-more-next-post": "Nie masz więcej postów w tym temacie",
     "open-composer": "Otwórz okno pisania",
     "post-quick-reply": "Szybka odpowiedź",
+    "post-quick-create": "Quick post",
     "navigator.index": "Post %1 z %2",
     "navigator.unread": "%1 nieprzeczytanych",
     "upvote-post": "Podoba się",
@@ -230,5 +236,8 @@
     "unread-posts-link": "Link nieprzeczytanych postów",
     "thumb-image": "Obraz miniaturki tematu",
     "announcers": "Udostępnień",
-    "announcers-x": "Udostępnień (%1)"
+    "announcers-x": "Udostępnień (%1)",
+    "guest-cta.title": "Cześć! Wygląda na to, że jesteś zainteresowany tą rozmową, ale nie masz jeszcze konta.",
+    "guest-cta.message": "Masz dość przewijania tych samych postów za każdą wizytą? Po zarejestrowaniu konta zawsze wrócisz dokładnie do tego samego miejsca, w którym byłeś wcześniej, możesz wtedy również wybrać opcję otrzymywania powiadomień nowych odpowiedziach (e-mailem lub powiadomieniem push). Będziesz też mógł zapisywać zakładki i głosować na posty, aby okazać uznanie innym członkom społeczności.",
+    "guest-cta.closing": "Z Twoją pomocą tez post mógłby być nawet lepszy 💗"
 }

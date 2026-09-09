@@ -12,6 +12,7 @@ import {
 import * as categoryFilter from '../../modules/categoryFilter';
 import * as userFilter from '../../modules/userFilter';
 import * as autocomplete from '../../modules/autocomplete';
+import * as modals from '../../modules/modals';
 import * as api from '../../modules/api';
 import * as alerts from '../../modules/alerts';
 import * as components from '../../modules/components';
@@ -214,7 +215,7 @@ export function handleBulkActions() {
 			let confirmed;
 			if (action === 'bulk-purge') {
 				confirmed = new Promise((resolve, reject) => {
-					bootbox.confirm('[[flags:confirm-purge]]', (confirmed) => {
+					modals.confirm('[[flags:confirm-purge]]', (confirmed) => {
 						if (confirmed) {
 							resolve();
 						} else {

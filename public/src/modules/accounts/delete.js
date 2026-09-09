@@ -1,6 +1,6 @@
 'use strict';
 
-define('accounts/delete', ['api', 'bootbox', 'alerts'], function (api, bootbox, alerts) {
+define('accounts/delete', ['api', 'modals', 'alerts'], function (api, modals, alerts) {
 	const Delete = {};
 
 	Delete.account = function (uid, callback) {
@@ -34,7 +34,7 @@ define('accounts/delete', ['api', 'bootbox', 'alerts'], function (api, bootbox, 
 	};
 
 	function executeAction(uid, confirmText, path, successText, callback) {
-		bootbox.confirm(confirmText, function (confirm) {
+		modals.confirm(confirmText, function (confirm) {
 			if (!confirm) {
 				return;
 			}

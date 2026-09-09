@@ -20,6 +20,7 @@
     "users/sort-posts": "게시물이 가장 많은 사용자",
     "users/sort-reputation": "평판이 가장 높은 사용자",
     "users/banned": "차단한 사용자",
+    "users/muted": "Muted Users",
     "users/most-flags": "가장 많은 신고를 받은 사용자",
     "users/search": "사용자 검색",
     "notifications": "알림",

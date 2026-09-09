@@ -11,6 +11,7 @@ const sleep = util.promisify(setTimeout);
 
 const db = require('./mocks/databasemock');
 const file = require('../src/file');
+const activitypub = require('../src/activitypub');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
 const categories = require('../src/categories');
@@ -24,6 +25,8 @@ const socketTopics = require('../src/socket.io/topics');
 const apiTopics = require('../src/api/topics');
 const apiPosts = require('../src/api/posts');
 const request = require('../src/request');
+
+const wait = util.promisify(setTimeout);
 
 describe('Topic\'s', () => {
 	let topic;
@@ -100,13 +103,6 @@ describe('Topic\'s', () => {
 			});
 		});
 
-		it('should fail to create new topic with empty title', (done) => {
-			topics.post({ uid: fooUid, title: '', content: topic.content, cid: topic.categoryId }, (err) => {
-				assert.ok(err);
-				done();
-			});
-		});
-
 		it('should fail to create new topic with empty content', (done) => {
 			topics.post({ uid: fooUid, title: topic.title, content: '', cid: topic.categoryId }, (err) => {
 				assert.ok(err);
@@ -165,6 +161,43 @@ describe('Topic\'s', () => {
 				jar: jar,
 			});
 			assert.strictEqual(result.body.status.message, 'You do not have enough privileges for this action.');
+		});
+
+		it('should fail to post a topic as guest with invalid cid', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			const jar = request.jar();
+			const result1 = await helpers.request('post', '/api/v3/topics', {
+				body: {
+					title: 'just a title',
+					cid: [categoryObj.cid],
+					content: 'content for the main post',
+				},
+				jar: jar,
+			});
+			assert.strictEqual(result1.body.status.message, 'Invalid Data');
+
+			const result2 = await helpers.request('post', '/api/v3/topics', {
+				body: {
+					title: 'just a title',
+					cid: { cid: categoryObj.cid },
+					content: 'content for the main post',
+				},
+				jar: jar,
+			});
+			assert.strictEqual(result2.body.status.message, 'Invalid Data');
+
+			const result3 = await helpers.request('post', '/api/v3/topics', {
+				body: {
+					title: 'just a title',
+					cid: 0,
+					content: 'content for the main post',
+				},
+				jar: jar,
+			});
+			assert.strictEqual(result3.body.status.message, 'Category does not exist');
 		});
 
 		it('should post a topic as guest if guest group has privileges', async () => {
@@ -235,6 +268,27 @@ describe('Topic\'s', () => {
 			assert.strictEqual(replyResult.body.response.user.username, 'guest124');
 			assert.strictEqual(replyResult.body.response.user.displayname, 'guest124');
 			meta.config.allowGuestHandles = oldValue;
+		});
+
+		describe('without a title', () => {
+			before(function () {
+				this.payload = {
+					uid: topic.userId,
+					// title: '',
+					content: topic.content,
+					cid: topic.categoryId,
+				};
+			});
+
+			it('should create a new topic', async function () {
+				this.result = await topics.post(this.payload);
+				assert(this.result);
+			});
+
+			it('should contain a generated title', function () {
+				assert.strictEqual(this.result.title, this.result.content);
+				assert(this.result.topicData.generatedTitle);
+			});
 		});
 	});
 
@@ -574,22 +628,6 @@ describe('Topic\'s', () => {
 		});
 	});
 
-	describe('Title escaping', () => {
-		it('should properly escape topic title', (done) => {
-			const title = '"<script>alert(\'ok1\');</script> new topic test';
-			const titleEscaped = validator.escape(title);
-			topics.post({ uid: topic.userId, title: title, content: topic.content, cid: topic.categoryId }, (err, result) => {
-				assert.ifError(err);
-				topics.getTopicData(result.topicData.tid, (err, topicData) => {
-					assert.ifError(err);
-					assert.strictEqual(topicData.titleRaw, title);
-					assert.strictEqual(topicData.title, titleEscaped);
-					done();
-				});
-			});
-		});
-	});
-
 	describe('tools/delete/restore/purge', () => {
 		let newTopic;
 		let followerUid;
@@ -768,6 +806,44 @@ describe('Topic\'s', () => {
 			assert.strictEqual(false, isMember);
 		});
 
+		it('should update global & category topic/post counters when topic is purged', async () => {
+			const category = await categories.create({
+				name: 'Category for purge count test',
+			});
+			const { topicCount, postCount } = await db.getObject('global');
+
+			const cid = category.cid;
+			const topic1 = await topics.post({
+				uid: adminUid,
+				title: 'topic for purge count test',
+				content: 'topic content',
+				cid,
+			});
+			await topics.post({
+				uid: adminUid,
+				title: 'topic for purge count test',
+				content: 'topic content',
+				cid,
+			});
+			const tid1 = topic1.topicData.tid;
+			await topics.reply({ uid: adminUid, content: 'reply 1', tid: tid1 });
+			await topics.reply({ uid: adminUid, content: 'reply 2', tid: tid1 });
+			await topics.reply({ uid: adminUid, content: 'reply 3', tid: tid1 });
+			let categoryData = await categories.getCategoriesFields([cid], ['topic_count', 'post_count']);
+			assert.strictEqual(categoryData[0].topic_count, 2);
+			assert.strictEqual(categoryData[0].post_count, 5);
+
+			await apiTopics.purge({ uid: adminUid }, { tids: [tid1], cid: categoryObj.cid });
+
+			categoryData = await categories.getCategoriesFields([cid], ['topic_count', 'post_count']);
+			assert.strictEqual(categoryData[0].topic_count, 1);
+			assert.strictEqual(categoryData[0].post_count, 1);
+
+			const afterPurge = await db.getObject('global');
+			assert.strictEqual(parseInt(afterPurge.topicCount, 10), parseInt(topicCount, 10) + 1);
+			assert.strictEqual(parseInt(afterPurge.postCount, 10), parseInt(postCount, 10) + 1);
+		});
+
 		it('should not allow user to restore their topic if it was deleted by an admin', async () => {
 			const result = await topics.post({
 				uid: fooUid,
@@ -888,15 +964,10 @@ describe('Topic\'s', () => {
 			});
 
 			const { topics: topicsData } = results;
-			let topic;
-			let i;
-			for (i = 0; i < topicsData.length; i += 1) {
-				if (topicsData[i].tid === parseInt(newTid, 10)) {
-					assert.equal(false, topicsData[i].unread, 'ignored topic was marked as unread in recent list');
-					return;
-				}
-			}
-			assert.ok(topic, 'topic didn\'t appear in the recent list');
+
+			const topic = topicsData.find(topic => topic.tid === parseInt(newTid, 10));
+			assert(topic, 'ignored topic didn\'t appear in the recent list');
+			assert.strictEqual(topic.unread, false, 'ignored topic was marked as unread in recent list');
 		});
 
 		it('should appear as unread again when marked as following', async () => {
@@ -1126,6 +1197,25 @@ describe('Topic\'s', () => {
 				currentPage: 1,
 				pageCount: 1,
 			});
+		});
+
+		it('should not translate the title of a topic in meta tags even if it is a translation key', async () => {
+			const { topicData } = await topics.post({
+				uid: topic.userId,
+				title: '[[topic:deleted]]',
+				content: 'topic content',
+				cid: topic.categoryId,
+			});
+
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
+			assert.equal(response.statusCode, 200);
+			assert.strictEqual(body._header.tags.meta.find(t => t.name === 'title').content, '[[topic:deleted]]');
+			assert.strictEqual(body._header.tags.meta.find(t => t.property === 'og:title').content, '[[topic:deleted]]');
+
+			const { body: body2 } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
+			const debug = body2.slice(0, 1000);
+			assert(body2.includes('<meta property="og:title" content="[[topic:deleted]]" />'), debug);
+			assert(body2.includes('<meta name="title" content="[[topic:deleted]]" />'), debug);
 		});
 	});
 
@@ -1373,10 +1463,25 @@ describe('Topic\'s', () => {
 
 		it('should not return topic as unread if topic is deleted', async () => {
 			const uid = await User.create({ username: 'regularJoe' });
-			const result = await topics.post({ uid: adminUid, title: 'deleted unread', content: 'not unread', cid: categoryObj.cid });
-			await topics.delete(result.topicData.tid, adminUid);
+			const result = await topics.post({
+				uid: adminUid,
+				title: 'deleted unread',
+				content: 'not unread',
+				cid: categoryObj.cid,
+				deleted: 1,
+			});
+
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
-			assert(!unreadTids.includes(result.topicData.tid), JSON.stringify({ unreadTids, tid: result.topicData.tid }));
+
+			await sleep(2000);
+			const [_unreadTids, topicData] = await Promise.all([
+				topics.getUnreadTids({ cid: 0, uid: uid }),
+				topics.getTopicData(result.topicData.tid),
+			]);
+			assert(
+				!unreadTids.includes(result.topicData.tid),
+				JSON.stringify({ unreadTids, _unreadTids, topic: topicData })
+			);
 		});
 	});
 
@@ -1442,11 +1547,11 @@ describe('Topic\'s', () => {
 				assert.equal(data.matchCount, 5);
 				assert.equal(data.pageCount, 1);
 				const tagData = [
-					{ value: 'nodebb', valueEscaped: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
-					{ value: 'node & c++', valueEscaped: 'node &amp; c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&amp;-c++' },
-					{ value: 'node icon', valueEscaped: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
-					{ value: 'nodejs', valueEscaped: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
-					{ value: 'nosql', valueEscaped: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
+					{ value: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
+					{ value: 'node & c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&-c++' },
+					{ value: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
+					{ value: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
+					{ value: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -1585,15 +1690,20 @@ describe('Topic\'s', () => {
 			assert.deepStrictEqual(tags, ['deleteme1', 'deleteme3']);
 		});
 
-		it('should delete tag', (done) => {
-			topics.deleteTag('javascript', (err) => {
-				assert.ifError(err);
-				db.getObject('tag:javascript', (err, data) => {
-					assert.ifError(err);
-					assert(!data);
-					done();
-				});
-			});
+		it('should delete tag', async () => {
+			await topics.deleteTag('javascript');
+			const data = await db.getObject('tag:javascript');
+			assert(!data);
+		});
+
+		it('should properly remove tags from topic hash when removing all tags of a topic', async () => {
+			const result1 = await topics.post({ uid: adminUid, tags: ['tag1', 'tag2', 'tag3', 'tag4', 'tag5'], title: 'many tags much wow', content: 'topic 1 content', cid: topic.categoryId });
+			const result2 = await topics.post({ uid: adminUid, tags: ['best1', 'tag2', 'best2', 'tag3', 'best3'], title: 'many tags much wow', content: 'topic 1 content', cid: topic.categoryId });
+			await topics.deleteTags(['tag1', 'tag2', 'tag3', 'tag4', 'tag5']);
+			const topicData1 = await topics.getTopicData(result1.topicData.tid);
+			const topicData2 = await topics.getTopicData(result2.topicData.tid);
+			assert.deepStrictEqual(topicData1.tags.map(t => t.value), []);
+			assert.deepStrictEqual(topicData2.tags.map(t => t.value), ['best1', 'best2', 'best3']);
 		});
 
 		it('should delete category tag as well', async () => {
@@ -1694,17 +1804,17 @@ describe('Topic\'s', () => {
 			await topics.post({ uid: adminUid, tags: ['cattag1'], title: title, content: 'topic 1 content', cid: cid });
 			let result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 3, valueEscaped: 'cattag1', valueEncoded: 'cattag1', class: 'cattag1' },
-				{ value: 'cattag2', score: 2, valueEscaped: 'cattag2', valueEncoded: 'cattag2', class: 'cattag2' },
-				{ value: 'cattag3', score: 1, valueEscaped: 'cattag3', valueEncoded: 'cattag3', class: 'cattag3' },
+				{ value: 'cattag1', score: 3, valueEncoded: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 2, valueEncoded: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag3', score: 1, valueEncoded: 'cattag3', class: 'cattag3' },
 			]);
 
 			// after purging values should update properly
 			await topics.purge(postResult.topicData.tid, adminUid);
 			result = await topics.getCategoryTagsData(cid, 0, -1);
 			assert.deepStrictEqual(result, [
-				{ value: 'cattag1', score: 2, valueEscaped: 'cattag1', valueEncoded: 'cattag1', class: 'cattag1' },
-				{ value: 'cattag2', score: 1, valueEscaped: 'cattag2', valueEncoded: 'cattag2', class: 'cattag2' },
+				{ value: 'cattag1', score: 2, valueEncoded: 'cattag1', class: 'cattag1' },
+				{ value: 'cattag2', score: 1, valueEncoded: 'cattag2', class: 'cattag2' },
 			]);
 		});
 
@@ -1723,11 +1833,11 @@ describe('Topic\'s', () => {
 			let result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			let result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 2, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 2, valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 1, valueEncoded: 'movedtag2', class: 'movedtag2' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 1, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag2', score: 1, valueEncoded: 'movedtag2', class: 'movedtag2' },
 			]);
 
 			// after moving values should update properly
@@ -1736,11 +1846,11 @@ describe('Topic\'s', () => {
 			result1 = await topics.getCategoryTagsData(cid1, 0, -1);
 			result2 = await topics.getCategoryTagsData(cid2, 0, -1);
 			assert.deepStrictEqual(result1, [
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag1', score: 1, valueEncoded: 'movedtag1', class: 'movedtag1' },
 			]);
 			assert.deepStrictEqual(result2, [
-				{ value: 'movedtag2', score: 2, valueEscaped: 'movedtag2', valueEncoded: 'movedtag2', class: 'movedtag2' },
-				{ value: 'movedtag1', score: 1, valueEscaped: 'movedtag1', valueEncoded: 'movedtag1', class: 'movedtag1' },
+				{ value: 'movedtag2', score: 2, valueEncoded: 'movedtag2', class: 'movedtag2' },
+				{ value: 'movedtag1', score: 1, valueEncoded: 'movedtag1', class: 'movedtag1' },
 			]);
 		});
 
@@ -2038,6 +2148,24 @@ describe('Topic\'s', () => {
 			assert.equal(teaser.content, 'content 2');
 			await User.blocks.remove(blockedUid, adminUid);
 		});
+
+		it('should not show deleted posts as teasers', async () => {
+			const { topicData } = await topics.post({
+				uid: adminUid,
+				title: 'topic with deleted posts',
+				content: 'content 1',
+				cid: categoryObj.cid,
+			});
+			const { pid } = await topics.reply({ uid: adminUid, content: 'reply 1 content', tid: topicData.tid });
+			await posts.delete(pid, adminUid);
+			await posts.delete(topicData.mainPid);
+			const teasers = await topics.getTeasers([topicData], {
+				uid: 0, // call as guest
+				teaserPost: 'last-post',
+			});
+			console.log({ teasers });
+			assert.deepStrictEqual(teasers[0], null);
+		});
 	});
 
 	describe('tag privilege', () => {
@@ -2260,6 +2388,19 @@ describe('Topic\'s', () => {
 			assert.strictEqual(data.topics[0].title, 'old replied');
 			assert.strictEqual(data.topics[1].title, 'most recent replied');
 		});
+
+		it('should not expose the author signature', async () => {
+			await User.setUserField(topic.userId, 'signature', 'some signature');
+			const data = await topics.getSortedTopics({
+				cids: [category.cid],
+				uid: topic.userId,
+				start: 0,
+				stop: -1,
+				sort: 'recent',
+			});
+			assert(data.topics[0].user);
+			assert.strictEqual(data.topics[0].user.signature, undefined);
+		});
 	});
 
 	describe('scheduled topics', () => {
@@ -2295,7 +2436,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should create a scheduled topic as pinned, deleted, included in "topics:scheduled" zset and with a timestamp in future', async () => {
-			topicData = (await topics.post(topic)).topicData;
+			topicData = (await topics.post({ ...topic })).topicData;
 			topicData = await topics.getTopicData(topicData.tid);
 
 			assert(topicData.pinned);
@@ -2313,6 +2454,84 @@ describe('Topic\'s', () => {
 			assert.deepStrictEqual(isMember, [false, false, false]);
 		});
 
+		it('should send an ActivityPub Create activity for a non-scheduled topic with remote followers', async () => {
+			const helpers = require('./activitypub/helpers');
+			const { id: remoteActor } = helpers.mocks.person();
+			const { activity: followActivity } = helpers.mocks.follow({
+				actor: remoteActor,
+				object: {
+					id: `${nconf.get('url')}/uid/${adminUid}`,
+				},
+			});
+			await activitypub.inbox.follow({ body: followActivity });
+			activitypub._sent.clear();
+
+			const normalTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Normal Topic With AP',
+				content: 'This topic should be federated',
+			};
+			await apiTopics.create({ uid: adminUid }, normalTopic);
+			await wait(50);
+			assert.strictEqual(activitypub._sent.size, 1);
+			const sent = Array.from(activitypub._sent.values()).pop();
+			assert.strictEqual(sent.payload.type, 'Create');
+			assert(sent.targets.includes(remoteActor));
+		});
+
+		it('should not send out any ActivityPub activities for a scheduled topic', async () => {
+			const helpers = require('./activitypub/helpers');
+			const { id: remoteActor } = helpers.mocks.person();
+			const { activity: followActivity } = helpers.mocks.follow({
+				actor: remoteActor,
+				object: {
+					id: `${nconf.get('url')}/uid/${adminUid}`,
+				},
+			});
+			await activitypub.inbox.follow({ body: followActivity });
+			activitypub._sent.clear();
+
+			const scheduledTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Scheduled Topic No AP',
+				content: 'This topic should not be federated',
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+			await apiTopics.create({ uid: adminUid }, scheduledTopic);
+			await wait(50);
+			assert.strictEqual(activitypub._sent.size, 0);
+		});
+
+		it('should not send out any ActivityPub activities when editing a post in a scheduled topic', async () => {
+			const helpers = require('./activitypub/helpers');
+			const { id: remoteActor } = helpers.mocks.person();
+			const { activity: followActivity } = helpers.mocks.follow({
+				actor: remoteActor,
+				object: {
+					id: `${nconf.get('url')}/uid/${adminUid}`,
+				},
+			});
+			await activitypub.inbox.follow({ body: followActivity });
+			activitypub._sent.clear();
+
+			const scheduledTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Scheduled Topic For Edit Test',
+				content: 'Original content',
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+			const result = await apiTopics.create({ uid: adminUid }, scheduledTopic);
+			await sleep(50);
+			activitypub._sent.clear();
+
+			await apiPosts.edit({ uid: adminUid }, { pid: result.mainPid, content: 'Edited scheduled content', timestamp: new Date(Date.now() + 86400000).getTime() });
+			await sleep(50);
+			assert.strictEqual(activitypub._sent.size, 0);
+		});
+
 		it('should update poster\'s lastposttime with "action time"', async () => {
 			// src/user/posts.js:56
 			const data = await User.getUsersFields([adminUid], ['lastposttime']);
@@ -2323,6 +2542,18 @@ describe('Topic\'s', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			assert.strictEqual(response.statusCode, 404);
 			assert(body);
+		});
+
+		it('should prevent user from joining topic socket.io room if it is scheduled', async () => {
+			const socketMeta = require('../src/socket.io/meta');
+			await assert.rejects(
+				socketMeta.rooms.enter({ uid: fooUid }, { enter: `topic_${topicData.tid}` }),
+				{ message: '[[error:no-privileges]]' }
+			);
+
+			// admin can still join
+			await socketMeta.rooms.enter({ uid: adminUid, join: () => {} }, { enter: `topic_${topicData.tid}` });
+			await socketMeta.rooms.leaveCurrent({ uid: adminUid, leave: () => {} });
 		});
 
 		it('should load topic for a privileged user', async () => {
@@ -2430,7 +2661,7 @@ describe('Topic\'s', () => {
 			await topics.scheduled.handleExpired();
 
 			topicData = await topics.getTopicData(topicData.tid);
-			assert(!topicData.pinned);
+			assert(!topicData.pinned, JSON.stringify(topicData, null, 2));
 			assert(!topicData.deleted);
 			// Should remove from topics:scheduled upon publishing
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
@@ -2452,7 +2683,7 @@ describe('Topic\'s', () => {
 		});
 
 		it('should allow to purge a scheduled topic', async () => {
-			topicData = (await topics.post(topic)).topicData;
+			const { topicData } = await topics.post({ ...topic });
 			const { response } = await request.delete(`${nconf.get('url')}/api/v3/topics/${topicData.tid}`, adminApiOpts);
 			assert.strictEqual(response.statusCode, 200);
 		});
@@ -2460,6 +2691,33 @@ describe('Topic\'s', () => {
 		it('should remove from topics:scheduled on purge', async () => {
 			const score = await db.sortedSetScore('topics:scheduled', topicData.tid);
 			assert(!score);
+		});
+
+		it('should sanitize HTML in scheduled topic notification bodyLong', async () => {
+			const followerUid = await User.create({ username: 'xss_follower' });
+			await User.follow(followerUid, adminUid);
+			const maliciousContent = '<script>alert("xss")</script><img onerror=alert(1) src=x><b>Bold</b>';
+			const maliciousTopic = {
+				uid: adminUid,
+				cid: categoryObj.cid,
+				title: 'Malicious Scheduled Topic',
+				content: maliciousContent,
+				timestamp: new Date(Date.now() + 86400000).getTime(),
+			};
+			const result = await topics.post(maliciousTopic);
+
+			// Publish the scheduled topic
+			mockdate.set(result.topicData.timestamp);
+			await topics.scheduled.handleExpired();
+			mockdate.reset();
+
+			// Check that the notification bodyLong is sanitized
+			const notifKey = `notifications:tid:${result.topicData.tid}:uid:${adminUid}`;
+			const notif = await db.getObject(notifKey);
+			assert(notif, 'Notification should exist');
+			assert(!notif.bodyLong.includes('<script>'), 'bodyLong should not contain script tags');
+			assert(!notif.bodyLong.includes('onerror'), 'bodyLong should not contain onerror attributes');
+			assert(notif.bodyLong.includes('Bold'), 'bodyLong should still contain allowed tags like <b>');
 		});
 
 		it('should properly update timestamp in cid:<cid>:pids after editing and posting immediately', async () => {

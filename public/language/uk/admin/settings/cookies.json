@@ -9,5 +9,7 @@
 	"settings": "Налаштування",
 	"cookie-domain": "Домен куки сесії",
 	"max-user-sessions": "Max active sessions per user",
-	"blank-default": "Залишити пустим для налаштувань за замовченням"
+	"blank-default": "Залишити пустим для налаштувань за замовченням",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }

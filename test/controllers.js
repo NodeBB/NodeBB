@@ -39,9 +39,9 @@ describe('Controllers', () => {
 		});
 		cid = category.cid;
 
-		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true });
-		await user.setUserField(fooUid, 'email', 'foo@test.com');
-		await user.email.confirmByUid(fooUid);
+		fooUid = await user.create({ username: 'foo', password: 'barbar', gdpr_consent: true, email: 'foo@test.com' }, {
+			emailVerification: 'verify',
+		});
 
 		adminUid = await user.create({ username: 'admin', password: 'barbar', gdpr_consent: true });
 		await groups.join('administrators', adminUid);
@@ -153,6 +153,20 @@ describe('Controllers', () => {
 			assert(body);
 		});
 
+		it('should 403 if route requires privileges', async () => {
+			const uid = await user.create({ username: 'testuser1', password: 'password' });
+			const { jar } = await helpers.loginUser('testuser1', 'password');
+			await api.users.updateSettings({ uid }, {
+				uid,
+				settings: {
+					homePageRoute: 'custom',
+					homePageCustom: 'api/admin/advanced/database',
+				},
+			});
+			const { response, body } = await request.get(nconf.get('url'), { jar });
+			assert.equal(response.statusCode, 403);
+		});
+
 		it('api should work with hook', async () => {
 			await meta.configs.set('homePageRoute', 'mycustompage');
 			const { response, body } = await request.get(`${nconf.get('url')}/api`);
@@ -199,7 +213,7 @@ describe('Controllers', () => {
 			{ it: 'should load recent rss feed', url: `/recent.rss` },
 			{ it: 'should load top rss feed', url: `/top.rss` },
 			{ it: 'should load popular rss feed', url: `/popular.rss` },
-			{ it: 'should load popular rss feed with term', url: `/popular/day.rss` },
+			{ it: 'should load popular rss feed with term', url: `/popular/daily.rss` },
 			{ it: 'should load recent posts rss feed', url: `/recentposts.rss` },
 			{ it: 'should load category recent posts rss feed', url: `/category/1/recentposts.rss` },
 			{ it: 'should load user topics rss feed', url: `/user/foo/topics.rss` },
@@ -211,6 +225,7 @@ describe('Controllers', () => {
 			{ it: 'should load sitemap/categories.xml', url: `/sitemap/categories.xml` },
 			{ it: 'should load sitemap/topics.1.xml', url: `/sitemap/topics.1.xml` },
 			{ it: 'should load theme screenshot', url: `/css/previews/nodebb-theme-harmony` },
+			{ it: 'should error loading theme screenshot', url: `/css/previews/..%2Fnode_modules%2Fnodebb-theme-persona`, status: 500 },
 			{ it: 'should load users page', url: `/users` },
 			{ it: 'should load users page section', url: `/users?section=online` },
 			{ it: 'should load groups page', url: `/groups` },
@@ -232,6 +247,14 @@ describe('Controllers', () => {
 				}
 			});
 		});
+	});
+
+	it('should properly escape outgoing url query params', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/outgoing?url=https://foo.com%3Fbest=%5B%5Btopic:merged-message,%20javascript:alert(origin)%5D%5D`);
+		assert.equal(response.statusCode, 200);
+
+		assert(body.includes('<a href="https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]"'));
+		assert(body.includes('https://foo.com?best&#x3D;[[topic:merged-message, javascript:alert(origin)]]'));
 	});
 
 	it('should load /register/complete', async () => {
@@ -395,9 +418,9 @@ describe('Controllers', () => {
 			it('should remove current email (only allowed if email not required)', async () => {
 				meta.config.requireEmailAddress = 0;
 
-				const uid = await user.create({ username: 'interstiuser5' });
-				await user.setUserField(uid, 'email', 'interstiuser5@nodebb.org');
-				await user.email.confirmByUid(uid);
+				const uid = await user.create({
+					username: 'interstiuser5', email: 'interstiuser5@nodebb.org',
+				}, { emailVerification: 'verify' });
 
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -418,9 +441,11 @@ describe('Controllers', () => {
 			it('should require a password (if one is set) for email change', async () => {
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-					const uid = await user.create({ username, password });
-					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
-					await user.email.confirmByUid(uid);
+					const uid = await user.create({
+						username, password, email: `${username}@nodebb.org`,
+					}, {
+						emailVerification: 'verify',
+					});
 
 					const result = await user.interstitials.email({
 						userData: { uid: uid, updateEmail: true },
@@ -441,9 +466,11 @@ describe('Controllers', () => {
 
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-					const uid = await user.create({ username, password });
-					await user.setUserField(uid, 'email', `${username}@nodebb.org`);
-					await user.email.confirmByUid(uid);
+					const uid = await user.create({
+						username, password, email: `${username}@nodebb.org`,
+					}, {
+						emailVerification: 'verify',
+					});
 
 					const result = await user.interstitials.email({
 						userData: { uid: uid, updateEmail: true },
@@ -463,9 +490,11 @@ describe('Controllers', () => {
 
 			it('should successfully issue validation request if the correct password is passed in', async () => {
 				const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];
-				const uid = await user.create({ username, password });
-				await user.setUserField(uid, 'email', `${username}@nodebb.org`);
-				await user.email.confirmByUid(uid);
+				const uid = await user.create({
+					username, password, email: `${username}@nodebb.org`,
+				}, {
+					emailVerification: 'verify',
+				});
 
 				const result = await user.interstitials.email({
 					userData: { uid: uid, updateEmail: true },
@@ -485,6 +514,93 @@ describe('Controllers', () => {
 				const userData = await user.getUserData(uid);
 				assert.strictEqual(userData.email, `${username}@nodebb.com`);
 				assert.strictEqual(userData['email:confirmed'], 1);
+			});
+
+			describe('when email:disableEdit is enabled', () => {
+				afterEach(() => {
+					meta.config['email:disableEdit'] = 0;
+				});
+
+				async function getCallback(uid) {
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: uid, session: { id: 0 } },
+						interstitials: [],
+					});
+					return result.interstitials[0].callback;
+				}
+
+				it('should not allow a regular user to change their email', async () => {
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username, email: `${username}@nodebb.org` }, {
+						emailVerification: 'verify',
+					});
+					const callback = await getCallback(uid);
+					meta.config['email:disableEdit'] = 1;
+
+					await assert.rejects(callback({ uid }, {
+						email: `${username}@nodebb.com`,
+					}), { message: '[[error:no-privileges]]' });
+
+					const userData = await user.getUserData(uid);
+					assert.strictEqual(userData.email, `${username}@nodebb.org`);
+				});
+
+				it('should not allow a regular user to clear their email', async () => {
+					meta.config.requireEmailAddress = 0;
+
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username, email: `${username}@nodebb.org` }, {
+						emailVerification: 'verify',
+					});
+					const callback = await getCallback(uid);
+					meta.config['email:disableEdit'] = 1;
+
+					await assert.rejects(callback({ uid }, {
+						email: '',
+					}), { message: '[[error:no-privileges]]' });
+
+					const userData = await user.getUserData(uid);
+					assert.strictEqual(userData.email, `${username}@nodebb.org`);
+
+					meta.config.requireEmailAddress = 1;
+				});
+
+				it('should still allow a user without an email to set one', async () => {
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username });
+					const callback = await getCallback(uid);
+					meta.config['email:disableEdit'] = 1;
+
+					await callback({ uid }, { email: `${username}@nodebb.org` });
+
+					const pending = await user.email.isValidationPending(uid, `${username}@nodebb.org`);
+					assert.strictEqual(pending, true);
+				});
+
+				it('should still allow an admin to change a user\'s email', async () => {
+					const username = utils.generateUUID().slice(0, 10);
+					const uid = await user.create({ username, email: `${username}@nodebb.org` }, {
+						emailVerification: 'verify',
+					});
+					const adminUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					await groups.join('administrators', adminUid);
+					meta.config['email:disableEdit'] = 1;
+
+					const result = await user.interstitials.email({
+						userData: { uid: uid, updateEmail: true },
+						req: { uid: adminUid, session: { id: 0 } },
+						interstitials: [],
+					});
+					await result.interstitials[0].callback({ uid }, {
+						email: `${username}@nodebb.com`,
+					});
+
+					const pending = await user.email.isValidationPending(uid, `${username}@nodebb.com`);
+					assert.strictEqual(pending, true);
+
+					await groups.leave('administrators', adminUid);
+				});
 			});
 
 			describe('blocking access for unconfirmed emails', () => {
@@ -619,12 +735,11 @@ describe('Controllers', () => {
 		describe('abort behaviour', () => {
 			let jar;
 			let token;
+			const username = utils.generateUUID().slice(0, 10);
+			const password = utils.generateUUID();
 
 			beforeEach(async () => {
-				jar = (await helpers.registerUser({
-					username: utils.generateUUID().slice(0, 10),
-					password: utils.generateUUID(),
-				})).jar;
+				jar = (await helpers.registerUser({ username, password })).jar;
 				token = await helpers.getCsrfToken(jar);
 			});
 
@@ -658,7 +773,21 @@ describe('Controllers', () => {
 					},
 				});
 
-				// Start email change flow
+				// this gets blocked by requirePageReAuth
+				await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
+
+				// reautheticate to get past requirePageReAuth
+				await request.post(`${nconf.get('url')}/login`, {
+					jar,
+					headers: {
+						'x-csrf-token': token,
+					},
+					body: {
+						username: username,
+						password: password,
+					},
+				});
+				// Start email change flow, this
 				await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
 
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
@@ -705,9 +834,9 @@ describe('Controllers', () => {
 
 	it('should error if guests do not have search privilege', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/users?query=bar&section=sort-posts`);
-		assert.equal(response.statusCode, 500);
+		assert.equal(response.statusCode, 403);
 		assert(body);
-		assert.equal(body.error, '[[error:no-privileges]]');
+		assert.equal(body.status.code, 'forbidden');
 	});
 
 	it('should load users search page', async () => {
@@ -981,6 +1110,11 @@ describe('Controllers', () => {
 		});
 
 		describe('/me/*', () => {
+			let jar;
+			before(async () => {
+				jar = (await helpers.loginUser('foo', 'barbar')).jar;
+			});
+
 			it('should redirect to user profile', async () => {
 				const { response, body } = await request.get(`${nconf.get('url')}/me`, { jar });
 				assert.equal(response.statusCode, 200);
@@ -1116,12 +1250,14 @@ describe('Controllers', () => {
 		});
 
 		describe('user data export routes', () => {
+			let jar;
 			before(async () => {
 				const types = ['profile', 'uploads', 'posts'];
 				await Promise.all(types.map(async (type) => {
 					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
 				}));
 				await sleep(10000);
+				jar = (await helpers.loginUser('foo', 'barbar')).jar;
 			});
 
 			it('should export users posts', async () => {
@@ -1165,7 +1301,7 @@ describe('Controllers', () => {
 			assert.equal(response.statusCode, 200);
 			assert(body);
 			const notif = body.notifications[0];
-			assert.equal(notif.bodyShort, '<strong>test1</strong> has posted a reply to: <strong>test2</strong>');
+			assert.equal(notif.bodyShort, '<strong>test1</strong> posted a reply in <strong>test2</strong>');
 			assert.equal(notif.bodyLong, notifData.bodyLong);
 			assert.equal(notif.pid, notifData.pid);
 			assert.equal(notif.path, nconf.get('relative_path') + notifData.path);
@@ -1272,11 +1408,20 @@ describe('Controllers', () => {
 		});
 
 		it('should parse about me', async () => {
-			await user.setUserFields(fooUid, { picture: '/path/to/picture', aboutme: 'hi i am a bot' });
+			await user.setUserFields(fooUid, {
+				picture: '/assets/uploads/path/to/picture',
+				aboutme: 'hi i am a bot [[topic:moved-from]]<script>alert("xss")</script>',
+			});
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo`);
 			assert.equal(response.statusCode, 200);
-			assert.equal(body.aboutme, 'hi i am a bot');
-			assert.equal(body.picture, '/path/to/picture');
+			// should be unescaped in api
+			assert.equal(body.aboutmeParsed, 'hi i am a bot [[topic:moved-from]]');
+			assert.equal(body.picture, '/assets/uploads/path/to/picture');
+
+			const { response: response2, body: body2 } = await request.get(`${nconf.get('url')}/user/foo`);
+			// should not be translated in html
+			assert(body2.includes('hi i am a bot [[topic:moved-from]]'));
+			assert(!body2.includes('Moved from'));
 		});
 
 		it('should not return reputation if reputation is disabled', async () => {
@@ -1320,16 +1465,15 @@ describe('Controllers', () => {
 			await groups.leave('administrators', fooUid);
 		});
 
-		it('should render edit/password', async () => {
+		it('should render edit/password and get 401', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/api/user/foo/edit/password`, { jar });
-			assert.equal(response.statusCode, 200);
+			assert.equal(response.statusCode, 401);
 		});
 
 		it('should render edit/email', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/email`, { jar });
-
-			assert.strictEqual(response.statusCode, 200);
-			assert.strictEqual(body, '/register/complete');
+			assert.strictEqual(response.statusCode, 401);
+			assert.strictEqual(body.status.code, 'not-authorised');
 
 			await request.post(`${nconf.get('url')}/register/abort`, {
 				jar,
@@ -1340,8 +1484,43 @@ describe('Controllers', () => {
 		});
 
 		it('should render edit/username', async () => {
-			const { response } = await request.get(`${nconf.get('url')}/api/user/foo/edit/username`, { jar });
+			const { jar } = await helpers.loginUser('foo', 'barbar');
+			const { response, body } = await request.get(`${nconf.get('url')}/api/user/foo/edit/username`, { jar });
 			assert.equal(response.statusCode, 200);
+		});
+
+		it('should not render edit/email if email:disableEdit is enabled', async () => {
+			// The route sits behind requirePageReAuth, so the controller is called directly here
+			const editController = require('../src/controllers/accounts/edit');
+			meta.config['email:disableEdit'] = 1;
+
+			let statusCode;
+			const req = {
+				uid: fooUid,
+				loggedIn: true,
+				path: '/user/foo/edit/email',
+				originalUrl: '/api/user/foo/edit/email',
+				params: { userslug: 'foo' },
+				session: {},
+			};
+			const res = {
+				locals: { isAPI: true },
+				status: function (code) {
+					statusCode = code;
+					return this;
+				},
+				json: function () {
+					return this;
+				},
+			};
+			await editController.email(req, res, () => {
+				assert(false, 'next() should not have been called');
+			});
+
+			assert.strictEqual(statusCode, 403);
+			assert.strictEqual(req.session.registration, undefined);
+
+			meta.config['email:disableEdit'] = 0;
 		});
 	});
 
@@ -1407,24 +1586,23 @@ describe('Controllers', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 			assert.equal(response.statusCode, 200);
 			assert.ok(body.cookies);
-			assert.equal(translator.escape('[[global:cookies.message]]'), body.cookies.message);
-			assert.equal(translator.escape('[[global:cookies.accept]]'), body.cookies.dismiss);
-			assert.equal(translator.escape('[[global:cookies.learn-more]]'), body.cookies.link);
+			assert.equal('[[global:cookies.message]]', body.cookies.message);
+			assert.equal('[[global:cookies.accept]]', body.cookies.dismiss);
+			assert.equal('[[global:cookies.learn-more]]', body.cookies.link);
 		});
 
 		it('response should be parseable when entries have apostrophes', async () => {
 			await meta.configs.set('cookieConsentMessage', 'Julian\'s Message');
 			const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 			assert.equal(response.statusCode, 200);
-			assert.equal('Julian&#x27;s Message', body.cookies.message);
+			assert.equal(body.cookies.message, 'Julian\'s Message');
 		});
 	});
 
 	describe('handle errors', () => {
 		const plugins = require('../src/plugins');
-		after((done) => {
-			plugins.loadedHooks['filter:router.page'] = undefined;
-			done();
+		after(() => {
+			delete plugins.loadedHooks['response:router.page'];
 		});
 
 		it('should handle topic malformed uri', async () => {
@@ -1860,15 +2038,15 @@ describe('Controllers', () => {
 
 			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'guests');
 			let { response, body } = await request.get(`${nconf.get('url')}/api/compose?tid=${result.topicData.tid}`);
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 403);
 			assert(!body.title);
 
 			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?cid=${cid}`));
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 403);
 			assert(!body.title);
 
 			({ response, body } = await request.get(`${nconf.get('url')}/api/compose?pid=${result.postData.pid}`));
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 403);
 			assert(!body.title);
 
 			await privileges.categories.give(['groups:topics:read'], category.cid, 'guests');
@@ -1942,6 +2120,45 @@ describe('Controllers', () => {
 				assert.strictEqual(response.statusCode, 200);
 				assert(['subject', 'aliases', 'links'].every(prop => body.hasOwnProperty(prop)));
 				assert(body.subject, `acct:${username}@${nconf.get('url_parsed').host}`);
+			});
+		});
+	});
+
+	describe('controllers helpers' , () => {
+		const controllerHelpers = require('../src/controllers/helpers');
+		it('should filter cids with no find privilege', async () => {
+			const category1 = await categories.create({ name: 'category1' });
+			const category2 = await categories.create({ name: 'category2' });
+			await privileges.categories.rescind(['groups:find'], category1.cid, 'registered-users');
+			const { selectedCids, selectedCategory } = await controllerHelpers.getSelectedCategory([
+				category1.cid, category2.cid,
+			], fooUid);
+			assert.deepStrictEqual(selectedCids, [category2.cid]);
+			assert.strictEqual(selectedCategory.cid, category2.cid);
+		});
+
+		describe('.buildTitle()', () => {
+			it('should not prefix a right-to-left mark for ltr languages', async () => {
+				const title = await controllerHelpers.buildTitle('shishko', 'en-GB', 'chats');
+				assert(!title.startsWith('\u200F'));
+				assert(title.startsWith('shishko | '));
+			});
+
+			it('should prefix a right-to-left mark for rtl languages', async () => {
+				const title = await controllerHelpers.buildTitle('shishko', 'he', 'chats');
+				assert(title.startsWith('\u200Fshishko | '));
+			});
+
+			it('should not double the right-to-left mark if the layout already has one', async () => {
+				const oldLayout = meta.config.titleLayout;
+				meta.config.titleLayout = '\u200F{pageTitle} | {browserTitle}';
+				try {
+					const title = await controllerHelpers.buildTitle('shishko', 'he', 'chats');
+					assert(title.startsWith('\u200Fshishko | '));
+					assert(!title.startsWith('\u200F\u200F'));
+				} finally {
+					meta.config.titleLayout = oldLayout;
+				}
 			});
 		});
 	});

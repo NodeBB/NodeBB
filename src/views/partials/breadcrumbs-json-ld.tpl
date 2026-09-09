@@ -1,0 +1,1 @@
+<script type="application/ld+json">{{breadCrumbsToJSONLD(breadcrumbs)}}</script>

@@ -1,8 +1,8 @@
 {
     "category": "Kateqoriya",
     "subcategories": "Alt kateqoriyalar",
-    "uncategorized": "Kateqoriyasız",
-    "uncategorized.description": "Mövcud kateqoriyalara tam uyğun gəlməyən mövzular",
+    "uncategorized": "World",
+    "uncategorized.description": "Topics from outside of this forum. Views and opinions represented here may not reflect those of this forum and its members.",
     "handle.description": "Bu kateqoriya açıq sosial şəbəkədən %1 idarəsi vasitəsilə izlənilə bilər",
     "new-topic-button": "Yeni mövzu",
     "guest-login-post": "Yazmaq üçün daxil ol",
@@ -26,5 +26,10 @@
     "notwatching.message": "Siz bu kateqoriyadan və bütün altkateqoriyalardan olan yeniləmələri izləmirsiniz",
     "ignoring.message": "İndi bu kateqoriyadan və bütün alt kateqoriyalardan olan yeniləmələrə iqnor qoymursunuz",
     "watched-categories": "İzlənilən kateqoriyalar",
-    "x-more-categories": "daha %1 kateqoriya"
+    "x-more-categories": "daha %1 kateqoriya",
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

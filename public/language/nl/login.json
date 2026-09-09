@@ -8,5 +8,6 @@
     "login-successful": "Je bent succesvol ingelogd!",
     "dont-have-account": "Geen gebruikersaccount?",
     "logged-out-due-to-inactivity": "Je bent uitgelogd van het admin control panel vanwege inactiviteit.",
-    "caps-lock-enabled": "Caps Lock staat aan"
+    "caps-lock-enabled": "Caps Lock staat aan",
+    "manage-social-web-handles": "Manage Open Social Web Handles"
 }

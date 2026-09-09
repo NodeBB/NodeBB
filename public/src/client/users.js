@@ -75,6 +75,9 @@ define('forum/users', [
 		if (activeSection === 'banned') {
 			filters.push('banned');
 		}
+		if (activeSection === 'muted') {
+			filters.push('muted');
+		}
 		if (activeSection === 'flagged') {
 			filters.push('flagged');
 		}

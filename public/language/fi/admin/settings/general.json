@@ -18,7 +18,7 @@
 	"description": "Site Description",
 	"keywords": "Sivuston avainsanat",
 	"keywords-placeholder": "Yhteisöäsi kuvaavat avainsanat pilkuin eroteltuina.",
-	"logo-and-icons": "Sivuston logo ja kuvakkeet",
+	"logo-and-icons": "Media & Branding",
 	"logo.image": "Kuva",
 	"logo.image-placeholder": "Foorumin otsakkeessa näytettävän logon sijainti.",
 	"logo.upload": "Lataa",
@@ -35,6 +35,8 @@
 	"touch-icon.help": "Recommended size and format: 512x512, PNG format only. If no touch icon is specified, NodeBB will fall back to using the favicon.",
 	"maskable-icon": "Peitetttävä (aloitussivun) kuvake",
 	"maskable-icon.help": "Recommended size and format: 512x512, PNG format only. If no maskable icon is specified, NodeBB will fall back to the Touch Icon.",
+	"screenshot": "Screenshot",
+	"screenshot.help": "Recommended size and format: between 320px and 3480px, JPG and PNG format only. If no screenshot is specified, NodeBB will fall back to a generic screenshot",
 	"outgoing-links": "Outgoing Links",
 	"outgoing-links.warning-page": "Use Outgoing Links Warning Page",
 	"search": "Search",
@@ -59,5 +61,8 @@
 	"auto-detect": "Tunnista vieraiden kieliasetus automaattisesti",
 	"default-language-help": "Oletuskieli määrittää kaikkien keskustelualueesi kävijöiden oletusarvoiset kieliasetukset. <br />Yksittäiset käyttäjät voivat korvata oletuskielen tiliasetuksistaan.",
 	"post-sharing": "Viestin jakaminen",
-	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

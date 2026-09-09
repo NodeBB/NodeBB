@@ -4,9 +4,10 @@ module.exports = function (opts) {
 	const { TTLCache } = require('@isaacs/ttlcache');
 	const os = require('os');
 	const winston = require('winston');
-	const chalk = require('chalk');
+	const chalk = require('chalk').default;
 
 	const pubsub = require('../pubsub');
+	const tracker = require('./tracker');
 
 	const ttlCache = new TTLCache(opts);
 	if (!opts.name) {
@@ -137,5 +138,6 @@ module.exports = function (opts) {
 		return ttlCache.get(key, { updateAgeOnGet: false });
 	};
 
+	tracker.addCache(opts.name, cache);
 	return cache;
 };

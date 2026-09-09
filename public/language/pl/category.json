@@ -1,8 +1,8 @@
 {
     "category": "Kategoria",
     "subcategories": "Podkategorie",
-    "uncategorized": "Nieokreślone",
-    "uncategorized.description": "Wątki, które nie do końca pasują do istniejących kategorii",
+    "uncategorized": "Świat",
+    "uncategorized.description": "Tematy spoza tego forum. Poglądy i opinie przedstawione tutaj mogą nie odzwierciedlać tych, które reprezentują członkowie tego forum.",
     "handle.description": "Tę kategorię można śledzić za pośrednictwem %1",
     "new-topic-button": "Nowy temat",
     "guest-login-post": "Zaloguj się, aby napisać post",
@@ -26,5 +26,10 @@
     "notwatching.message": "Nie obserwujesz aktualizacji w tej kategorii i jej podkategoriach",
     "ignoring.message": "Ignorujesz teraz aktualizacje w tej kategorii i jej podkategoriach",
     "watched-categories": "Obserwowane kategorie",
-    "x-more-categories": "%1 więcej kategorii"
+    "x-more-categories": "%1 więcej kategorii",
+    "view-original": "View Original",
+    "first-run.welcome": "Welcome to your new NodeBB forum!",
+    "first-run.description": "Your forum is ready to go. Log in to customize your categories, settings, and more.",
+    "first-run.admin-panel": "You can manage your forum via the Admin Panel",
+    "first-run.admin-panel-desc": "accessible through the gear icon in the sidebar"
 }

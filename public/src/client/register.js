@@ -2,8 +2,8 @@
 
 
 define('forum/register', [
-	'translator', 'slugify', 'api', 'bootbox', 'forum/login', 'zxcvbn', 'jquery-form',
-], function (translator, slugify, api, bootbox, Login, zxcvbn) {
+	'translator', 'slugify', 'api', 'modals', 'forum/login', 'zxcvbn', 'jquery-form',
+], function (translator, slugify, api, modals, Login, zxcvbn) {
 	const Register = {};
 	let validationError = false;
 	const successIcon = '';
@@ -13,8 +13,6 @@ define('forum/register', [
 		const password = $('#password');
 		const password_confirm = $('#password-confirm');
 		const register = $('#register');
-
-		handleLanguageOverride();
 
 		$('#content #noscript').val('false');
 
@@ -89,10 +87,8 @@ define('forum/register', [
 
 							window.location.href = pathname + '?' + qs;
 						} else if (data.message) {
-							translator.translate(data.message, function (msg) {
-								bootbox.alert(msg);
-								ajaxify.go('/');
-							});
+							modals.alert(data.message);
+							ajaxify.go('/');
 						}
 					},
 					error: function (data) {
@@ -112,6 +108,12 @@ define('forum/register', [
 
 		// Set initial focus
 		$('#username').trigger('focus');
+
+		$('#ap-register-handle-btn').on('click', function () {
+			require(['modules/intents'], (intents) => {
+				intents.register();
+			});
+		});
 	};
 
 	function validateUsername(username, callback) {
@@ -121,12 +123,13 @@ define('forum/register', [
 		username_notify.text('');
 		const usernameInput = $('#username');
 		const userslug = slugify(username);
-		if (username.length < ajaxify.data.minimumUsernameLength || userslug.length < ajaxify.data.minimumUsernameLength) {
-			showError(usernameInput, username_notify, '[[error:username-too-short]]');
-		} else if (username.length > ajaxify.data.maximumUsernameLength) {
-			showError(usernameInput, username_notify, '[[error:username-too-long]]');
-		} else if (!utils.isUserNameValid(username) || !userslug) {
+		const { minimumUsernameLength, maximumUsernameLength } = ajaxify.data;
+		if (!utils.isUserNameValid(username) || !utils.isSlugValid(userslug)) {
 			showError(usernameInput, username_notify, '[[error:invalid-username]]');
+		} else if (username.length < minimumUsernameLength || userslug.length < minimumUsernameLength) {
+			showError(usernameInput, username_notify, '[[error:username-too-short]]');
+		} else if (username.length > maximumUsernameLength) {
+			showError(usernameInput, username_notify, '[[error:username-too-long]]');
 		} else {
 			Promise.allSettled([
 				api.head(`/users/bySlug/${userslug}`, {}),
@@ -203,15 +206,6 @@ define('forum/register', [
 				.addClass('register-success');
 			element.show();
 		});
-	}
-
-	function handleLanguageOverride() {
-		if (!app.user.uid && config.defaultLang !== config.userLang) {
-			const formEl = $('[component="register/local"]');
-			const langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
-
-			formEl.append(langEl);
-		}
 	}
 
 	return Register;

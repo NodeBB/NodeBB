@@ -9,13 +9,16 @@ const meta = require('../meta');
 const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
-const translator = require('../translator');
+const tx = require('../translator');
 const topics = require('../topics');
+const posts = require('../posts');
 const user = require('./index');
 
 const UserNotifications = module.exports;
 
 UserNotifications.get = async function (uid) {
+	const { hideReadNotifications } = await user.getSettings(uid);
+
 	if (parseInt(uid, 10) <= 0) {
 		return { read: [], unread: [] };
 	}
@@ -23,7 +26,7 @@ UserNotifications.get = async function (uid) {
 	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 49);
 	unread = unread.filter(Boolean);
 	let read = [];
-	if (unread.length < 50) {
+	if (!hideReadNotifications && unread.length < 50) {
 		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 49 - unread.length);
 	}
 
@@ -96,14 +99,23 @@ async function getNotificationsFromSet(set, uid, start, stop) {
 	return await UserNotifications.getNotifications(nids, uid);
 }
 
+UserNotifications.ownsNids = async function (nids, uid) {
+	const [isInRead, isInUnread] = await Promise.all([
+		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+		db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
+	]);
+	return nids.map((nid, index) => (isInRead[index] || isInUnread[index]));
+};
+
 UserNotifications.getNotifications = async function (nids, uid) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return [];
 	}
 
-	const [notifObjs, hasRead, userSettings] = await Promise.all([
+	const [notifObjs, isRead, isUnread, userSettings] = await Promise.all([
 		notifications.getMultiple(nids),
 		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+		db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
 		user.getSettings(uid),
 	]);
 
@@ -113,18 +125,24 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			deletedNids.push(nids[index]);
 		}
 		if (notification) {
-			notification.read = hasRead[index];
+			notification.read = isRead[index];
 			notification.readClass = !notification.read ? 'unread' : '';
 		}
-
-		return notification;
+		const isUsersNotification = isRead[index] || isUnread[index];
+		return notification && isUsersNotification;
 	});
 
 	await deleteUserNids(deletedNids, uid);
 	notificationData = await notifications.merge(notificationData);
 	await Promise.all(notificationData.map(async (n) => {
-		if (n && n.bodyShort) {
-			n.bodyShort = await translator.translate(n.bodyShort, userSettings.userLang);
+		if (n?.bodyShort) {
+			n.bodyShort = posts.sanitize(await tx.translate(n.bodyShort, userSettings.userLang));
+		}
+		if (n?.bodyLong) {
+			if (n.txBodyLong) {
+				n.bodyLong = await tx.translate(n.bodyLong, userSettings.userLang);
+			}
+			n.bodyLong = posts.sanitize(n.bodyLong);
 		}
 	}));
 
@@ -201,18 +219,19 @@ UserNotifications.deleteAll = async function (uid) {
 
 UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicData, postData) {
 	try {
-		const [allFollowers, title] = await Promise.all([
+		const [displayname, allFollowers, title] = await Promise.all([
+			user.getNotificationDisplayname(uid),
 			db.getSortedSetRange(`followers:${uid}`, 0, -1),
-			topics.getTopicField(topicData.tid, 'title'),
+			topics.getNotificationTitle(topicData.tid, 'title'),
 		]);
-		const followers = await privileges.categories.filterUids('read', topicData.cid, allFollowers);
+		const followers = await privileges.categories.filterUids('topics:read', topicData.cid, allFollowers);
 		if (!followers.length) {
 			return;
 		}
 
 		const notifObj = await notifications.create({
 			type: 'new-topic',
-			bodyShort: translator.compile('notifications:user-posted-topic', postData.user.displayname, title),
+			bodyShort: tx.compile('notifications:user-posted-topic', displayname, title),
 			bodyLong: postData.content,
 			pid: postData.pid,
 			path: `/post/${postData.pid}`,
@@ -245,17 +264,20 @@ UserNotifications.sendWelcomeNotification = async function (uid) {
 
 UserNotifications.sendNameChangeNotification = async function (uid, username) {
 	const notifObj = await notifications.create({
-		bodyShort: `[[user:username-taken-workaround, ${username}]]`,
+		bodyShort: tx.compile('user:username-taken-workaround', tx.escape(username)),
 		image: 'brand:logo',
 		nid: `username_taken:${uid}`,
-		datetime: Date.now(),
 	});
 
-	await notifications.push(notifObj, uid);
+	await notifications.push(notifObj, [uid]);
 };
 
 UserNotifications.pushCount = async function (uid) {
-	const websockets = require('../socket.io');
-	const count = await UserNotifications.getUnreadCount(uid);
-	websockets.in(`uid_${uid}`).emit('event:notifications.updateCount', count);
+	try {
+		const websockets = require('../socket.io');
+		const count = await UserNotifications.getUnreadCount(uid);
+		websockets.in(`uid_${uid}`).emit('event:notifications.updateCount', count);
+	} catch (err) {
+		winston.error(err.stack);
+	}
 };

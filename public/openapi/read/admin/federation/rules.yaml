@@ -1,0 +1,21 @@
+get:
+  tags:
+    - admin
+  summary: Get federation settings pertaining to auto-categorization rules
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  rules:
+                    $ref: ../../../components/schemas/admin/rules.yaml#/RulesArray
+                  hideSave:
+                    type: boolean
+                    description: A flag to instruct the template engine to hide the save button
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

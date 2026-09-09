@@ -1,0 +1,20 @@
+{
+	"manage-tags": "တက်ဂ်များ စီမံရန်",
+	"none": "မရှိ",
+	"bg-color": "နောက်ခံအရောင်",
+	"text-color": "စာသားအရောင်",
+	"description": "ဖော်ပြချက်",
+	"create": "ဖန်တီးရန်",
+	"add-tag": "တက်ဂ်ထည့်ရန်",
+	"modify": "ပြင်ဆင်ရန်",
+	"rename": "အမည်ပြောင်းရန်",
+	"delete": "ဖျက်ရန်",
+	"search": "ရှာဖွေရန်",
+	"settings": "ဆက်တင်များ",
+	"name": "အမည်",
+
+	"alerts.editing": "တည်းဖြတ်နေသည်",
+	"alerts.confirm-delete": "ဖျက်ရန် အတည်ပြုပါ",
+	"alerts.update-success": "အပ်ဒိတ် အောင်မြင်",
+	"reset-colors": "အရောင်များ ပြန်သတ်မှတ်ရန်"
+}
