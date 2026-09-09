@@ -141,7 +141,15 @@ usersAPI.updateSettings = async function (caller, data) {
 		chatDenyList: '[]',
 	};
 	// load raw settings without parsing values to booleans
-	const current = await db.getObject(`user:${data.uid}:settings`);
+	const current = await db.getObject(`user:${data.uid}:settings`) || {};
+
+	if (Object.hasOwn(current, 'postsPerPage')) {
+		current.postsPerPage = Math.max(2, Math.min(parseInt(current.postsPerPage, 10), meta.config.maxPostsPerPage));
+	}
+	if (Object.hasOwn(current, 'topicsPerPage')) {
+		current.topicsPerPage = Math.max(2, Math.min(parseInt(current.topicsPerPage, 10), meta.config.maxTopicsPerPage));
+	}
+
 	const payload = { ...defaults, ...current, ...data.settings };
 	delete payload.uid;
 
