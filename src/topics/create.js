@@ -182,18 +182,9 @@ module.exports = function (Topics) {
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
 		if (!topicData.scheduled && !topicData.deleted) {
-			setImmediate(async () => {
-				try {
-					if (utils.isNumber(uid)) {
-						// New topic notifications only sent for local-to-local follows only
-						await user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
-					}
-
-					await Topics.notifyTagFollowers(postData, uid);
-					await categories.notifyCategoryFollowers(postData, uid);
-				} catch (err) {
-					winston.error(err.stack);
-				}
+			setImmediate(() => {
+				user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData)
+					.catch(err => winston.error(err.stack));
 			});
 		}
 

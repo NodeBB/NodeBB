@@ -11,6 +11,8 @@ const privileges = require('../privileges');
 const plugins = require('../plugins');
 const tx = require('../translator');
 const posts = require('../posts');
+const categories = require('../categories');
+const utils = require('../utils');
 const user = require('./index');
 
 const UserNotifications = module.exports;
@@ -222,27 +224,87 @@ UserNotifications.deleteAll = async function (uid) {
 
 UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicData, postData) {
 	try {
-		const [displayname, allFollowers] = await Promise.all([
+		const { tid, cid, title, tags } = topicData;
+		let [displayname, userFollowers, tagFollowers, categoryFollowers] = await Promise.all([
 			user.getNotificationDisplayname(uid),
-			db.getSortedSetRange(`followers:${uid}`, 0, -1),
+			// New topic notifications only sent for local-to-local follows only
+			utils.isNumber(uid) ? db.getSortedSetRange(`followers:${uid}`, 0, -1) : [],
+			db.getSortedSetRange(tags.map(tag => `tag:${tag.value}:followers`), 0, -1),
+			db.getSortedSetRangeByScore(
+				`cid:${topicData.cid}:uid:watch:state`, 0, -1,
+				categories.watchStates.watching,
+				categories.watchStates.watching
+			),
 		]);
-		const followers = await privileges.categories.filterUids('topics:read', topicData.cid, allFollowers);
-		if (!followers.length) {
-			return;
+
+		const userFollowersSet = new Set(userFollowers);
+		tagFollowers = _.uniq(tagFollowers).filter(_uid => !userFollowersSet.has(_uid) && _uid !== String(uid));
+		categoryFollowers = categoryFollowers.filter(_uid => !userFollowersSet.has(_uid) && _uid !== String(uid));
+
+		[userFollowers, tagFollowers, categoryFollowers] = await Promise.all([
+			privileges.categories.filterUids('topics:read', cid, userFollowers),
+			privileges.categories.filterUids('topics:read', cid, tagFollowers),
+			privileges.categories.filterUids('topics:read', cid, categoryFollowers),
+		]);
+
+		function createNotification(data) {
+			return notifications.create({
+				bodyLong: postData.content,
+				pid: postData.pid,
+				path: `/post/${encodeURIComponent(postData.pid)}`,
+				tid: tid,
+				from: uid,
+				...data,
+			});
 		}
 
-		const notifObj = await notifications.create({
-			type: 'new-topic',
-			bodyShort: tx.compile('notifications:user-posted-topic', displayname, tx.escape(topicData.title)),
-			bodyLong: postData.content,
-			pid: postData.pid,
-			path: `/post/${postData.pid}`,
-			nid: `tid:${postData.tid}:uid:${uid}`,
-			tid: postData.tid,
-			from: uid,
-		});
+		async function sendUserNotification() {
+			const notifObj = await createNotification({
+				type: 'new-topic',
+				nid: `tid:${tid}:uid:${uid}`,
+				bodyShort: tx.compile('notifications:user-posted-topic', displayname, tx.escape(title)),
+			});
 
-		await notifications.push(notifObj, followers);
+			await notifications.push(notifObj, userFollowers);
+		}
+
+		async function sendTagNotification() {
+			const notifBase = 'notifications:user-posted-topic-with-tag';
+			let suffix = '';
+			let tagArgs = tags.map(tag => tx.escape(tag.value));
+			if (tagArgs.length === 2) {
+				suffix = '-dual';
+			} else if (tagArgs.length === 3) {
+				suffix = '-triple';
+			} else if (tagArgs.length > 3) {
+				suffix = '-multiple';
+				tagArgs = [tagArgs.join(', ')];
+			}
+
+			const notification = await createNotification({
+				type: 'new-topic-with-tag',
+				nid: `new_topic:tags:${tagArgs.join('.')}:tid:${tid}:uid:${uid}`,
+				bodyShort: tx.compile(`${notifBase}${suffix}`, displayname, tx.escape(title), ...tagArgs),
+			});
+			await notifications.push(notification, tagFollowers);
+		}
+
+		async function sendCategoryNotification() {
+			const categoryName = await categories.getCategoryField(cid, 'name');
+			const notifBase = 'notifications:user-posted-topic-in-category';
+			const notification = await createNotification({
+				type: 'new-topic-in-category',
+				nid: `new_topic:tid:${tid}:uid:${uid}`,
+				bodyShort: tx.compile(notifBase, displayname, tx.escape(title), categoryName),
+			});
+			await notifications.push(notification, categoryFollowers);
+		}
+
+		await Promise.all([
+			userFollowers.length && sendUserNotification(),
+			tagFollowers.length && sendTagNotification(),
+			categoryFollowers.length && sendCategoryNotification(),
+		]);
 	} catch (err) {
 		winston.error(err.stack);
 	}

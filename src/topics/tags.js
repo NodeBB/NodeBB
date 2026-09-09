@@ -9,9 +9,6 @@ const meta = require('../meta');
 const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
-const privileges = require('../privileges');
-const notifications = require('../notifications');
-const tx = require('../translator');
 const utils = require('../utils');
 const batch = require('../batch');
 const cache = require('../cache');
@@ -605,50 +602,5 @@ module.exports = function (Topics) {
 			[`uid:${uid}:followed_tags`, tag],
 		]);
 		plugins.hooks.fire('action:tags.unfollow', { tag, uid });
-	};
-
-	Topics.notifyTagFollowers = async function (postData, exceptUid) {
-		const { tags, title } = postData.topic;
-		if (!tags.length) {
-			return;
-		}
-
-		const [followersOfPoster, allFollowers, displayname] = await Promise.all([
-			db.getSortedSetRange(`followers:${exceptUid}`, 0, -1),
-			db.getSortedSetRange(tags.map(tag => `tag:${tag.value}:followers`), 0, -1),
-			user.getNotificationDisplayname(exceptUid),
-		]);
-		const followerSet = new Set(followersOfPoster);
-		// filter out followers of the poster since they get a notification already
-		let followers = _.uniq(allFollowers).filter(uid => !followerSet.has(uid) && uid !== String(exceptUid));
-		followers = await privileges.topics.filterUids('topics:read', postData.topic.tid, followers);
-		if (!followers.length) {
-			return;
-		}
-
-		const notifBase = 'notifications:user-posted-topic-with-tag';
-		let suffix = '';
-		let tagArgs = tags.map(tag => tx.escape(tag.value));
-		if (tagArgs.length === 2) {
-			suffix = '-dual';
-		} else if (tagArgs.length === 3) {
-			suffix = '-triple';
-		} else if (tagArgs.length > 3) {
-			suffix = '-multiple';
-			tagArgs = [tagArgs.join(', ')];
-		}
-		const bodyShort = tx.compile(`${notifBase}${suffix}`, displayname, tx.escape(title), ...tagArgs);
-
-		const notification = await notifications.create({
-			type: 'new-topic-with-tag',
-			nid: `new_topic:tags:${tagArgs.join('.')}:tid:${postData.topic.tid}:uid:${exceptUid}`,
-			bodyShort: bodyShort,
-			bodyLong: postData.content,
-			pid: postData.pid,
-			path: `/post/${encodeURIComponent(postData.pid)}`,
-			tid: postData.topic.tid,
-			from: exceptUid,
-		});
-		notifications.push(notification, followers);
 	};
 };

@@ -7,7 +7,6 @@ const db = require('../database');
 const posts = require('../posts');
 const socketHelpers = require('../socket.io/helpers');
 const topics = require('./index');
-const categories = require('../categories');
 const groups = require('../groups');
 const user = require('../user');
 const activitypub = require('../activitypub');
@@ -130,10 +129,6 @@ async function sendNotifications(uids, topicsData) {
 
 	await Promise.all(topicsData.map(
 		(t, idx) => user.notifications.sendTopicNotificationToFollowers(t.uid, t, postsData[idx])
-	).concat(
-		postsData.map(p => topics.notifyTagFollowers(p, p.uid))
-	).concat(
-		postsData.map(p => categories.notifyCategoryFollowers(p, p.uid))
 	).concat(
 		topicsData.map(
 			(t, idx) => socketHelpers.notifyNew(t.uid, 'newTopic', { posts: [postsData[idx]], topic: t })
