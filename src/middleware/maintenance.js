@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const nconf = require('nconf');
 const meta = require('../meta');
 const user = require('../user');
@@ -14,9 +13,10 @@ module.exports = function (middleware) {
 			return next();
 		}
 
-		const hooksAsync = util.promisify(middleware.pluginHooks);
-		await hooksAsync(req, res);
-
+		await middleware.pluginHooks(req, res, () => {});
+		if (res.headersSent) {
+			return;
+		}
 		const url = req.url.replace(nconf.get('relative_path'), '');
 		if (url.startsWith('/login') || url.startsWith('/api/login')) {
 			return next();
