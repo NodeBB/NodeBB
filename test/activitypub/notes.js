@@ -74,6 +74,101 @@ describe('Notes', () => {
 				assert(exists);
 			});
 
+			describe('Content warnings', () => {
+				it('should store contentWarning for Note with summary and sensitive: true', async () => {
+					const cwText = 'Spoiler: major plot twist';
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: cwText,
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, cwText);
+				});
+
+				it('should use contentWarning as topic title to prevent content leaks', async () => {
+					const cwText = 'Trigger warning: graphic content';
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: cwText,
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const topicTitle = await topics.getTopicField(assertion.tid, 'title');
+					assert.strictEqual(topicTitle, cwText);
+
+					const generatedTitle = await topics.getTopicField(assertion.tid, 'generatedTitle');
+					assert.strictEqual(generatedTitle, 1);
+				});
+
+				it('should NOT store contentWarning for Note with summary but no sensitive', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: 'Some summary text',
+						sensitive: false,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+
+				it('should NOT store contentWarning for Note with sensitive but no summary', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: 'remove',
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+
+				it('should NOT store contentWarning for Article with summary and sensitive: true', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Article',
+						summary: 'Article preview text',
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+
+				it('should NOT store contentWarning for Note without summary or sensitive', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: 'remove',
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+			});
+
 			describe('Category-specific behaviours', () => {
 				it('should slot newly created topic in local category if addressed', async () => {
 					const { cid } = await categories.create({ name: utils.generateUUID() });

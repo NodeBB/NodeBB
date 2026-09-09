@@ -442,7 +442,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
-			to, cc, audience, attachment, tag, image,
+			to, cc, audience, attachment, tag, image, summary, sensitive,
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -469,6 +469,8 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
+			// Store contentWarning only for Note + sensitive + summary (Fediverse CW convention)
+			...(object.type === 'Note' && sensitive && summary && { contentWarning: summary }),
 			_activitypub: { to, cc, audience, attachment, tag, url, image },
 		};
 
