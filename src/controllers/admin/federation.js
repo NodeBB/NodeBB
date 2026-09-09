@@ -136,10 +136,6 @@ federationController.hashtags = async function (req, res) {
 	const relay = await activitypub.hashtags.getRelay();
 	const relayOptions = activitypub.hashtags.getRelayOptions();
 
-	hashtags.forEach((h) => {
-		h.stateClass = h.state === 'pending' ? 'warning' : (h.state === 'active' ? 'success' : 'danger');
-	});
-
 	res.render('admin/federation/hashtags', {
 		title: '[[admin/menu:federation/hashtags]]',
 		hashtags,
