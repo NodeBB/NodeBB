@@ -17,7 +17,13 @@ get:
       content:
         application/json:
           schema:
-            type: array
+            type: object
             description: The type of response is dependent on the database used. Please examine the output.
-            properties: {}
+            properties:
+              cache:
+                type: object
+                description: Dump of the underlying LRU/TTL cache contents
+              invalidationVersions:
+                type: object
+                description: Dump of cache invalidation version tracking
             additionalProperties: true
