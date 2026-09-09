@@ -90,6 +90,7 @@ ActivityPub.blocklists = require('./blocklists');
 ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
+ActivityPub.hashtags = require('./hashtags');
 ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
 ActivityPub.analytics = require('./analytics');

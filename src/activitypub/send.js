@@ -35,7 +35,7 @@ SendPool.init = function (activityPub) {
 
 SendPool.handleResult = async function (queueId, result) {
 	if (result.success) {
-		// Success — fire analytics and remove from Redis
+		// Success, fire analytics and remove from Redis
 		try {
 			await SendPool._activityPub.analytics.send({
 				type: result.payloadType,
@@ -129,7 +129,7 @@ SendPool.drainLoop = async function () {
 			);
 
 			if (dueTasks.length === 0) {
-				// No tasks due — switch to idle mode
+				// No tasks due - switch to idle mode
 				SendPool._draining = false;
 				setTimeout(() => {
 					if (SendPool.pool > 0) {
@@ -183,6 +183,9 @@ SendPool.drainLoop = async function () {
 				SendPool.dispatch(task)
 					.then(async (result) => {
 						SendPool._inFlight.delete(task.queueId);
+						if (result.fallback) {
+							winston.warn(`[activitypub/send] RFC 9421 request failed (${result.fallback}); retrying with draft signature`);
+						}
 						if (result.success) {
 							await SendPool.handleResult(queueId, {
 								...task,
@@ -232,7 +235,7 @@ SendPool.drainLoop = async function () {
 SendPool.shutdown = function () {
 	SendPool._draining = false;
 
-	// Graceful shutdown — let workers finish current tasks
+	// Graceful shutdown, let workers finish current tasks
 	SendPool._pool.terminate(false, 10000).catch(() => {
 		winston.warn('[activitypub/send] Workers did not exit gracefully');
 	});

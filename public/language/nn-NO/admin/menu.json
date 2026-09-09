@@ -54,6 +54,7 @@
 	"federation/content": "Innhald",
 	"federation/rules": "Kategorisering",
 	"federation/relays": "Relays/Vidaresendingstenester",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "Lagring",
 	"federation/safety": "Tillit og tryggleik",
 	"federation/analytics": "Statistikk",

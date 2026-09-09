@@ -54,6 +54,7 @@
 	"federation/content": "Zawartość",
 	"federation/rules": "Categorization",
 	"federation/relays": "Relays",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "Pamięć",
 	"federation/safety": "Zaufanie i bezpieczeństwo",
 	"federation/analytics": "Analityka",

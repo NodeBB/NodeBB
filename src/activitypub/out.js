@@ -61,9 +61,10 @@ Out.follow = enabledCheck(async (type, id, actor) => {
 	const timestamp = Date.now();
 
 	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
+	const actorUri = activitypub.helpers.resolveActor(type, id);
 	try {
 		await activitypub.send(type, id, [actor], {
-			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
+			id: `${actorUri}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 			type: 'Follow',
 			to: [actor],
 			object: actor,
@@ -494,33 +495,35 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 	], actor);
 	const timestamp = timestamps[0] || timestamps[1];
 
+	const actorUri = activitypub.helpers.resolveActor(type, id);
 	const object = {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
+		id: `${actorUri}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Follow',
 		object: actor,
+		actor: actorUri,
 	};
-	if (type === 'uid') {
-		object.actor = `${nconf.get('url')}/uid/${id}`;
-	} else if (type === 'cid') {
-		object.actor = `${nconf.get('url')}/category/${id}`;
-	}
 
 	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
+		id: `${actorUri}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Undo',
 		to: [actor],
-		actor: object.actor,
+		actor: actorUri,
 		object,
 	});
 
 	if (type === 'uid') {
-		await Promise.all([
+		const syncPromises = [
 			db.sortedSetRemove(`followingRemote:${id}`, actor),
 			db.sortedSetRemove(`followRequests:uid.${id}`, actor),
 			db.sortedSetRemove(`followersRemote:${actor}`, id),
-			user.syncFollowCounts(id, true, false),
-			user.syncFollowCounts(actor, false, true),
-		]);
+		];
+		if (id > 0) {
+			syncPromises.push(
+				user.syncFollowCounts(id, true, false),
+				user.syncFollowCounts(actor, false, true),
+			);
+		}
+		await Promise.all(syncPromises);
 	} else if (type === 'cid') {
 		await Promise.all([
 			db.sortedSetRemove(`cid:${id}:following`, actor),

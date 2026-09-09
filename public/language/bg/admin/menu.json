@@ -54,6 +54,7 @@
 	"federation/content": "Съдържание",
 	"federation/rules": "Категоризиране",
 	"federation/relays": "Препредаватели",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "Съхранение",
 	"federation/safety": "Доверие и защита",
 	"federation/analytics": "Анализи",

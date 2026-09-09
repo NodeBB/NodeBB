@@ -840,12 +840,19 @@ inbox.isFollowed = async (actorId, uid) => {
 
 inbox.accept = async (req) => {
 	const { actor, object } = req.body;
-	const { type } = object;
+	let { type } = object;
 
-	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
 	if (object.id === `${nconf.get('url')}/actor`) {
-		return activitypub.relays.handshake(req.body);
-	} else if (!['user', 'category'].includes(localType)) {
+		// If the accepting actor is a known relay, handle as relay handshake
+		const isRelay = await db.isSortedSetMember('relays:createtime', actor);
+		if (isRelay) {
+			return activitypub.relays.handshake(req.body);
+		}
+		type = 'Follow'; // treat as Follow acceptance for hashtag/instance follows
+	}
+
+	const { type: localType, id } = await helpers.resolveLocalId(object.actor || object.id);
+	if (!['user', 'category', 'application'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -879,6 +886,20 @@ inbox.accept = async (req) => {
 				db.sortedSetAdd(`cid:${id}:following`, timestamp, actor),
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, `cid|${id}`), // for notes assertion checking
 			]);
+		} else if (localType === 'application') {
+			// Instance actor follow acceptance
+			if (!await db.isSortedSetMember('followRequests:uid.0', actor)) {
+				if (await db.isSortedSetMember('followingRemote:0', actor)) return; // already following
+				throw new Error('[[error:invalid-data]]'); // not following, not requested, so reject to hopefully stop retries
+			}
+			const timestamp = await db.sortedSetScore('followRequests:uid.0', actor);
+			await Promise.all([
+				db.sortedSetRemove('followRequests:uid.0', actor),
+				db.sortedSetAdd('followingRemote:0', timestamp, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, 0), // for followers backreference
+			]);
+			// Transition hashtag follow state to active
+			await activitypub.hashtags.updateState(actor, 'active');
 		}
 
 		activitypub.actors._followerCache.del(actor);
@@ -915,7 +936,16 @@ inbox.undo = async (req) => {
 		case 'Follow': {
 			switch (localType) {
 				case 'application': {
+					// Relay unfollow
 					await activitypub.relays.removeFollower(actor);
+					// Generic instance-actor unfollow
+					await Promise.all([
+						db.sortedSetRemove('followingRemote:0', actor),
+						db.sortedSetRemove('followRequests:uid.0', actor),
+						db.sortedSetRemove(`followersRemote:${actor}`, 0),
+					]);
+					// Transition hashtag follow state to error
+					await activitypub.hashtags.updateState(actor, 'error');
 					break;
 				}
 
@@ -1035,4 +1065,9 @@ inbox.reject = async (req) => {
 		db.sortedSetRemove('ap:retry:queue', queueId),
 		db.delete(`ap:retry:queue:${queueId}`),
 	]);
+
+	// Transition hashtag follow state to error if this is a rejected Follow from instance actor
+	if (type === 'Follow' && id === `${nconf.get('url')}/actor`) {
+		await activitypub.hashtags.updateState(actor, 'error');
+	}
 };
