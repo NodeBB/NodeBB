@@ -122,7 +122,7 @@ describe('Middlewares', () => {
 			assert(!Object.keys(response.headers).includes('cache-control'));
 		});
 
-		it('should be set to "private" on non-existent routes, for logged in users', async () => {
+		it('should be set to "private, no-cache" on non-existent routes, for logged in users', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/${utils.generateUUID()}`, {
 				jar,
 				headers: {
@@ -131,38 +131,42 @@ describe('Middlewares', () => {
 			});
 
 			assert.strictEqual(response.statusCode, 404);
-			assert(Object.keys(response.headers).includes('cache-control'));
-			assert.strictEqual(response.headers['cache-control'], 'private');
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be absent on regular routes, for guests', async () => {
+		it('should be set to "private, no-cache" on regular routes, for guests', async () => {
 			const { response } = await request.get(nconf.get('url'));
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(!Object.keys(response.headers).includes('cache-control'));
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be absent on api routes, for guests', async () => {
+		it('should be set to "private, no-cache" on api routes, for guests', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/api`);
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(!Object.keys(response.headers).includes('cache-control'));
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be set to "private" on regular routes, for logged-in users', async () => {
+		it('should be set to "private, no-cache" on the config route, for guests', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/config`);
+
+			assert.strictEqual(response.statusCode, 200);
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
+		});
+
+		it('should be set to "private, no-cache" on regular routes, for logged-in users', async () => {
 			const { response } = await request.get(nconf.get('url'), { jar });
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(Object.keys(response.headers).includes('cache-control'));
-			assert.strictEqual(response.headers['cache-control'], 'private');
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be set to "private" on api routes, for logged-in users', async () => {
+		it('should be set to "private, no-cache" on api routes, for logged-in users', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/api`, { jar });
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(Object.keys(response.headers).includes('cache-control'));
-			assert.strictEqual(response.headers['cache-control'], 'private');
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
 		it('should be set to "private" on apiv3 routes, for logged-in users', async () => {
