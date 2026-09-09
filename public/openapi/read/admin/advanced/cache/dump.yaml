@@ -21,9 +21,11 @@ get:
             description: The type of response is dependent on the database used. Please examine the output.
             properties:
               cache:
-                type: object
-                description: Dump of the underlying LRU/TTL cache contents
+                type: array
+                description: Dump of the underlying LRU/TTL cache contents (array of key/entry tuples)
+                items: {}
               invalidationVersions:
-                type: object
-                description: Dump of cache invalidation version tracking
+                type: array
+                description: Dump of cache invalidation version tracking (array of key/entry tuples)
+                items: {}
             additionalProperties: true
