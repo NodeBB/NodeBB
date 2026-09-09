@@ -301,8 +301,11 @@ Actors.assert = async (ids, options = {}) => {
 		} else if (Array.isArray(assertion)) {
 			return [...actors, ...assertion];
 		}
-
-		// otherwise, assertGroup returned true and output can be safely ignored.
+		// assertGroup returned true (all groups already present)
+		// if there are no regular actors, propagate true; otherwise return actors
+		if (!actors.length) {
+			return true;
+		}
 	}
 
 	return actors;
@@ -325,6 +328,9 @@ Actors.assertGroup = async (ids, options = {}) => {
 	});
 	if (!qualified || !qualified.ids) {
 		return qualified;
+	}
+	if (!ids.length) {
+		return true;
 	}
 
 	const { ids: idsArr } = qualified;

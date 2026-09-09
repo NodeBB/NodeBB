@@ -20,6 +20,7 @@ const helpers = require('./helpers');
 describe('as:Person (Actor asserton)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
+		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
 
 		// Prevent real outbound requests (serve objects from the AP cache)
@@ -223,6 +224,7 @@ describe('as:Person (Actor asserton)', () => {
 
 describe('as:Group', () => {
 	before(() => {
+		meta.config.activitypubAllowLoopback = 1;
 		helpers.mocks.mockRequests();
 	});
 

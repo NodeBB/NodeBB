@@ -1,11 +1,15 @@
 'use strict';
 
 
-define('forum/reset_code', ['alerts', 'zxcvbn'], function (alerts, zxcvbn) {
+define('forum/reset_code', ['alerts'], function (alerts) {
 	const ResetCode = {};
+	let zxcvbn = null;
 
 	ResetCode.init = function () {
 		const reset_code = ajaxify.data.code;
+		import('zxcvbn').then((module) => {
+			zxcvbn = module.default || module;
+		}).catch(() => {});
 
 		const resetEl = $('#reset');
 		const password = $('#password');

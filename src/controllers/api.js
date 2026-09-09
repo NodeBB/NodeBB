@@ -155,6 +155,7 @@ apiController.loadConfig = async function (req) {
 
 apiController.getConfig = async function (req, res) {
 	const config = await apiController.loadConfig(req);
+	res.set('cache-control', 'private, no-cache');
 	res.json(config);
 };
 
