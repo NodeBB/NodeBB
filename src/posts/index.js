@@ -59,7 +59,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 Posts.getPostSummariesFromSet = async function (set, uid, start, stop) {
 	let pids = await db.getSortedSetRevRange(set, start, stop);
 	pids = await privileges.posts.filter('topics:read', pids, uid);
-	const posts = await Posts.getPostSummaryByPids(pids, uid, { stripTags: false });
+	const posts = await Posts.getPostSummaryByPids(pids, uid, { stripTags: false, extraFields: ['contentWarning'] });
 	return { posts: posts, nextStart: stop + 1 };
 };
 
