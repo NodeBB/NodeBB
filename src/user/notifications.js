@@ -241,11 +241,14 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 		tagFollowers = _.uniq(tagFollowers).filter(_uid => !userFollowersSet.has(_uid) && _uid !== String(uid));
 		categoryFollowers = categoryFollowers.filter(_uid => !userFollowersSet.has(_uid) && _uid !== String(uid));
 
-		[userFollowers, tagFollowers, categoryFollowers] = await Promise.all([
-			privileges.categories.filterUids('topics:read', cid, userFollowers),
-			privileges.categories.filterUids('topics:read', cid, tagFollowers),
-			privileges.categories.filterUids('topics:read', cid, categoryFollowers),
-		]);
+		const uidsThatCanSeeTopic = new Set(
+			await privileges.categories.filterUids('topics:read', cid, [
+				...userFollowers, ...tagFollowers, ...categoryFollowers,
+			])
+		);
+		userFollowers = userFollowers.filter(_uid => uidsThatCanSeeTopic.has(_uid));
+		tagFollowers = tagFollowers.filter(_uid => uidsThatCanSeeTopic.has(_uid));
+		categoryFollowers = categoryFollowers.filter(_uid => uidsThatCanSeeTopic.has(_uid));
 
 		function createNotification(data) {
 			return notifications.create({
