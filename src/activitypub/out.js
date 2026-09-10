@@ -599,6 +599,10 @@ Out.undo.announce = enabledCheck(async (type, id, tid) => {
 	if (!utils.isNumber(id) || !['uid', 'cid'].includes(type)) {
 		throw new Error('[[error:invalid-data]]');
 	}
+	id = parseInt(id, 10);
+	if (id < 0) {
+		return; // skip pseudo-IDs like cid -1 (All Categories)
+	}
 
 	const exists = await Promise.all([
 		topics.exists(tid),
