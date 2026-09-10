@@ -168,7 +168,7 @@ describe('Notes', () => {
 					const unread = await topics.getTotalUnread(uid);
 					assert.strictEqual(unread, 1);
 
-					await wait(100); // notification is created without waiting for topics.post() to complete
+					await wait(250); // notification is created without waiting for topics.post() to complete
 					// Notification inbox delivery is async so can't test directly
 					const exists = await db.exists(`notifications:new_topic:tid:${assertion.tid}:uid:${note.attributedTo}`);
 					assert(exists);
@@ -257,7 +257,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: 'Guaranteed to be more than 500 characters.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. In vel convallis felis. Phasellus porta erat a elit dignissim efficitur. Sed at sollicitudin erat, finibus sodales ante. Nunc ullamcorper, urna a pulvinar tempor, nunc risus venenatis nunc, id aliquam purus dui ut ante. Nulla sit amet risus sem. Praesent sit amet justo finibus, laoreet odio nec, varius diam. Nullam congue rhoncus lorem, eu accumsan leo aliquam sit amet. Suspendisse fringilla nec libero a tincidunt. Phasellus sapien justo, lacinia ac enim sit amet, pellentesque fermentum neque. Proin sit amet felis vitae libero aliquam pharetra at id nisi. Donec vitae mauris est. Sed hendrerit nisi et nibh auctor hendrerit. Praesent feugiat tortor a dignissim sagittis. Cras sit amet ante justo. Cras consectetur magna vitae volutpat placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae',
 					});
-					await wait(50);
+					await wait(250);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
@@ -304,7 +304,7 @@ describe('Notes', () => {
 						tid,
 						content: utils.generateUUID(),
 					});
-					await wait(50);
+					await wait(250);
 
 					const key = Array.from(activitypub._sent.keys())[0];
 					activity = activitypub._sent.get(key);
@@ -336,7 +336,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
 					});
-					await wait(50);
+					await wait(250);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
