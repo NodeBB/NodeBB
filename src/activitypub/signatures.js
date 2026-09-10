@@ -2,7 +2,7 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const { createHash } = require('crypto');
+const { createHash, randomBytes } = require('crypto');
 const {
 	genDraftSignature,
 	genDraftSignatureHeader,
@@ -31,6 +31,16 @@ Signatures.calculateDigest = (body) => {
 	return `SHA-256=${hash}`;
 };
 
+// RFC 9530 Content-Digest used by the strict ActivityPub RFC 9421 profile.
+Signatures.calculateContentDigest = (body) => {
+	if (body === null || body === undefined) return null;
+	const bodyData = typeof body === 'string' || Buffer.isBuffer(body) ?
+		body :
+		JSON.stringify(body);
+
+	const hash = createHash('sha256').update(bodyData).digest('base64');
+	return `sha-256=:${hash}:`;
+};
 Signatures.sign = async ({ key, keyId }, url, method = 'GET', digest = null) => {
 	const parsedUrl = new URL(url);
 	const date = new Date().toUTCString();
@@ -78,49 +88,44 @@ Signatures.sign = async ({ key, keyId }, url, method = 'GET', digest = null) => 
 	}
 };
 
-Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = null) => {
+Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', body = null) => {
 	const parsedUrl = new URL(url);
 	const date = new Date().toUTCString();
 	const created = Math.floor(Date.now() / 1000);
+	const nonce = randomBytes(32)
+		.toString('base64')
+		.replace(/\+/g, '-')
+		.replace(/\//g, '_');
+	const contentType = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"';
+	const hasBody = body !== null && body !== undefined;
+	const contentDigest = hasBody ? Signatures.calculateContentDigest(body) : null;
 
-	// Headers required for signing
 	const headersToSign = {
 		date,
 		host: parsedUrl.host,
 	};
-
-	if (digest) {
-		headersToSign.digest = digest;
+	if (hasBody) {
+		headersToSign['content-digest'] = contentDigest;
+		headersToSign['content-type'] = contentType;
 	}
 
-	// Import private key early to determine algorithm for Signature-Input
 	const privateKey = await importPrivateKey(key, ['sign']);
-
-	// Determine signed components list
-	// @method + @target-uri (not @request-target) so that verifiers requiring
-	// those components explicitly (e.g. Mitra) can validate the signature
-	const components = ['@method', '@target-uri', 'host', 'date'];
-	if (digest) {
-		components.push('digest');
-	}
-
-	// Build Signature-Input header
-	// RFC 9421 Section 2.2: algorithm parameter is required
-	// Must use registered algorithm identifiers from RFC 9421 §6.2.2
 	const algorithm = getRfc9421AlgoString(privateKey);
-	const signatureInput = `sig1=("${components.join('" "')}");algorithm="${algorithm}";created=${created};keyid="${keyId}"`;
+	const components = hasBody ?
+		['@method', '@authority', '@target-uri', 'content-digest', 'content-type', 'date'] :
+		['@method', '@authority', '@target-uri', 'date'];
+
+	const signatureInput = `activitypub=("${components.join('" "')}");keyid="${keyId}";alg="${algorithm}";tag="activitypub";nonce="${nonce}";created=${created}`;
 	headersToSign['signature-input'] = signatureInput;
 
 	try {
-		// Build signature base
 		const base = new RFC9421SignatureBaseFactory({
 			method,
 			url: parsedUrl.href,
 			headers: headersToSign,
 		});
-		const signatureBase = base.generate('sig1');
+		const signatureBase = base.generate('activitypub');
 
-		// Sign
 		const signatureBuffer = await (await getWebcrypto()).subtle.sign(
 			getKeyAlgorithm(privateKey),
 			privateKey,
@@ -128,21 +133,20 @@ Signatures.signRfc9421 = async ({ key, keyId }, url, method = 'GET', digest = nu
 		);
 
 		const signature = Buffer.from(signatureBuffer).toString('base64');
-
 		return {
 			date,
-			...(digest && { digest }),
+			...(hasBody && {
+				'content-digest': contentDigest,
+				'content-type': contentType,
+			}),
 			'signature-input': signatureInput,
-			// RFC 9421 2.3: the Signature value is a structured-field byte
-			// sequence (":base64:" per RFC 8941/9651)
-			signature: `sig1=:${signature}:`,
+			signature: `activitypub=:${signature}:`,
 		};
 	} catch (err) {
 		winston.error(`[activitypub/signatures] Sign (RFC 9421) error: ${err.message}`);
 		throw err;
 	}
 };
-
 function getKeyAlgorithm(key) {
 	const { name, namedCurve } = key.algorithm;
 	if (name === 'RSASSA-PKCS1-v1_5' || name === 'RSA') {

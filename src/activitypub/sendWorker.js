@@ -75,14 +75,14 @@ async function send({ id, uri, payload, digest, key, keyId }) {
 			return { id, success: false, error: 'SSRF check failed — reserved IP address' };
 		}
 
-		// Sign with RFC 9421
-		const rfcHeaders = await Signatures.signRfc9421({ key, keyId }, uri, 'POST', digest);
+		// Prefer RFC 9421, then retain the legacy draft-signature fallback for
+		// peers that have not migrated yet.
+		const rfcHeaders = await Signatures.signRfc9421({ key, keyId }, uri, 'POST', payload);
 		const rfcResult = await attemptSend({ uri, headers: rfcHeaders, payload, userAgent });
 		if (rfcResult.success) {
 			return { id, success: true };
 		}
 
-		// Fall back to signing with the draft method if the RFC 9421 request failed
 		const draftHeaders = await Signatures.sign({ key, keyId }, uri, 'POST', digest);
 		const draftResult = await attemptSend({ uri, headers: draftHeaders, payload, userAgent });
 		if (draftResult.success) {

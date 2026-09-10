@@ -168,16 +168,24 @@ describe('http signature signing and verification', () => {
 			assert.strictEqual(verified, true);
 		});
 
-		it('should return true when an RFC 9421 signature with digest is passed in', async () => {
+		it('should return true when an RFC 9421 signature with content digest is passed in', async () => {
 			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 			const path = `/user/${username}/inbox`;
 			const payload = { foo: 'bar' };
+			const body = JSON.stringify(payload);
 			const keyData = await activitypub.getPrivateKey('uid', uid);
 			const hash = createHash('sha256');
-			hash.update(JSON.stringify(payload));
-			const checksum = `SHA-256=${hash.digest('base64')}`;
-			const { date, digest, 'signature-input': signatureInput, signature } =
-				await activitypub.signatures.signRfc9421(keyData, endpoint, 'POST', checksum);
+			hash.update(body);
+			const expectedContentDigest = `sha-256=:${hash.digest('base64')}:`;
+			const {
+				date,
+				'content-digest': contentDigest,
+				'content-type': contentType,
+				'signature-input': signatureInput,
+				signature,
+			} = await activitypub.signatures.signRfc9421(keyData, endpoint, 'POST', body);
+			assert.strictEqual(contentDigest, expectedContentDigest);
+			assert.strictEqual(contentType, 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
 			const { host } = nconf.get('url_parsed');
 			const req = {
 				...mockReqBase,
@@ -186,7 +194,14 @@ describe('http signature signing and verification', () => {
 					url: path,
 					path,
 					body: payload,
-					headers: { date, digest, 'signature-input': signatureInput, signature, host },
+					headers: {
+						date,
+						'content-digest': contentDigest,
+						'content-type': contentType,
+						'signature-input': signatureInput,
+						signature,
+						host,
+					},
 				},
 			};
 
@@ -229,46 +244,58 @@ describe('http signature signing and verification', () => {
 			uid = await user.create({ username });
 		});
 
-		it('should produce a structured-field byte sequence Signature header', async () => {
+		it('should produce an activitypub structured-field byte sequence Signature header', async () => {
 			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 			const keyData = await activitypub.getPrivateKey('uid', uid);
 			const { signature } = await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
 			// RFC 8941/9651 byte sequence: ":" + base64 + ":"
-			assert.match(signature, /^sig1=:[0-9A-Za-z+/]+={0,2}:$/);
+			assert.match(signature, /^activitypub=:[0-9A-Za-z+/]+={0,2}:$/);
 		});
 
-		it('should cover the @method and @target-uri components', async () => {
+		it('should cover the strict ActivityPub GET components', async () => {
 			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 			const keyData = await activitypub.getPrivateKey('uid', uid);
 			const { 'signature-input': signatureInput } =
 				await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
 			const componentIds = [...signatureInput.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
-			assert(componentIds.includes('@method'));
-			assert(componentIds.includes('@target-uri'));
+			assert.deepStrictEqual(componentIds.slice(0, 4), [
+				'@method',
+				'@authority',
+				'@target-uri',
+				'date',
+			]);
+			assert(signatureInput.includes('tag="activitypub"'));
+			assert(signatureInput.includes('alg="rsa-v1_5-sha256"'));
+			assert(/;nonce="[^"]+";created=\d+$/.test(signatureInput));
 		});
 
-		it('should produce a signature that verifies against an independent signature base reconstruction', async () => {
-			// Reconstructs the signature base by hand per RFC 9421 2.5 (matching
-			// independent implementations such as Mitra) instead of trusting the
-			// base factory on both sides
+		it('should produce a strict ActivityPub signature that verifies against an independent signature base reconstruction', async () => {
+			// Reconstruct the signature base by hand instead of trusting the same
+			// RFC9421SignatureBaseFactory on both sides of the test.
 			const endpoint = `${nconf.get('url')}/user/${username}/inbox`;
 			const keyData = await activitypub.getPrivateKey('uid', uid);
 			const { date, 'signature-input': signatureInput, signature } =
 				await activitypub.signatures.signRfc9421(keyData, endpoint, 'GET');
 			const { host } = nconf.get('url_parsed');
 
-			const paramsMatch = signatureInput.match(/^sig1=(\([^)]*\));algorithm="([^"]*)";created=(\d+);keyid="([^"]*)"$/);
+			const paramsMatch = signatureInput.match(
+				/^activitypub=(\([^)]*\));keyid="([^"]*)";alg="([^"]*)";tag="activitypub";nonce="([^"]+)";created=(\d+)$/
+			);
 			assert(paramsMatch, `unexpected Signature-Input format: ${signatureInput}`);
-			const [, componentsInnerList, algorithm, created, keyId] = paramsMatch;
+			const [, componentsInnerList, keyId, algorithm, nonce, created] = paramsMatch;
 			const componentIds = [...componentsInnerList.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+			assert.deepStrictEqual(componentIds, ['@method', '@authority', '@target-uri', 'date']);
+			assert.strictEqual(algorithm, 'rsa-v1_5-sha256');
 			const componentValues = {
 				'@method': 'GET',
+				'@authority': host,
 				'@target-uri': endpoint,
-				host,
 				date,
 			};
 			const lines = componentIds.map((id) => `"${id}": ${componentValues[id]}`);
-			lines.push(`"@signature-params": ${componentsInnerList};algorithm="${algorithm}";created=${created};keyid="${keyId}"`);
+			lines.push(
+				`"@signature-params": ${componentsInnerList};keyid="${keyId}";alg="${algorithm}";tag="activitypub";nonce="${nonce}";created=${created}`
+			);
 			const expectedBase = lines.join('\n');
 
 			const publicKeyPem = await activitypub.getPublicKey('uid', uid);
@@ -277,7 +304,7 @@ describe('http signature signing and verification', () => {
 			const verified = await webcrypto.subtle.verify(
 				{ name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
 				publicKey,
-				Buffer.from(signature.slice('sig1=:'.length, -1), 'base64'),
+				Buffer.from(signature.slice('activitypub=:'.length, -1), 'base64'),
 				new TextEncoder().encode(expectedBase),
 			);
 			assert.strictEqual(verified, true);

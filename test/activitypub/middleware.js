@@ -101,11 +101,13 @@ describe('middleware.verify', () => {
 		it('should call next() and set req.uid when an RFC 9421 signature is valid', async () => {
 			const path = `/user/${username}/inbox`;
 			const body = { foo: 'bar' };
+			const payload = JSON.stringify(body);
 			const endpoint = `${nconf.get('url')}${path}`;
 			const hash = createHash('sha256');
-			hash.update(JSON.stringify(body));
-			const checksum = `SHA-256=${hash.digest('base64')}`;
-			const signedHeaders = await activitypub.signatures.signRfc9421(keyData, endpoint, 'POST', checksum);
+			hash.update(payload);
+			const expectedContentDigest = `sha-256=:${hash.digest('base64')}:`;
+			const signedHeaders = await activitypub.signatures.signRfc9421(keyData, endpoint, 'POST', payload);
+			assert.strictEqual(signedHeaders['content-digest'], expectedContentDigest);
 			const req = buildReq('POST', path, signedHeaders);
 			req.body = body;
 			const res = buildRes();
