@@ -435,7 +435,7 @@ topicsController.teaser = async function (req, res, next) {
 	if (!pid) {
 		return res.status(404).json('not-found');
 	}
-	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false });
+	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false, extraFields: ['contentWarning'] });
 	if (!postData.length) {
 		return res.status(404).json('not-found');
 	}

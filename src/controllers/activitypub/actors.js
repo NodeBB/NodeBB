@@ -109,7 +109,7 @@ Actors.note = async function (req, res, next) {
 
 	const post = (await posts.getPostSummaryByPids([req.params.pid], activitypub._constants.uid, {
 		parse: false,
-		extraFields: ['edited'],
+		extraFields: ['edited', 'contentWarning'],
 	})).pop();
 	if (!post || post.timestamp > Date.now()) {
 		return next();
