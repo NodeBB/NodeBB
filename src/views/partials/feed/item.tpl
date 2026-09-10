@@ -1,5 +1,5 @@
 <li component="category/topic" data-tid="{./topic.tid}" class="shadow-sm mb-3 rounded-2 border posts-list-item  {{{ if ./deleted }}} deleted{{{ else }}}{{{ if ./topic.deleted }}} deleted{{{ end }}}{{{ end }}}{{{ if ./topic.scheduled }}} scheduled{{{ end }}}" data-pid="{./pid}" data-uid="{./uid}" data-index="{./index}">
-	{{{ if (!./contentWarning && showThumbs && ./topic.thumbs.length)}}}
+	{{{ if ((!./contentWarning && showThumbs) && ./topic.thumbs.length) }}}
 	<div class="p-1 position-relative">
 		<div class="overflow-hidden rounded-1" style="max-height: 300px;">
 			<a href="{config.relative_path}/topic/{./topic.slug}">
