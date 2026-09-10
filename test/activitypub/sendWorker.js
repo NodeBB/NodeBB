@@ -87,38 +87,63 @@ describe('sendWorker', () => {
 				req.on('end', async () => {
 					const raw = Buffer.concat(chunks);
 					const fullUrl = `http://127.0.0.1:${port}${req.url}`;
+					const signatureInput = String(req.headers['signature-input'] || '');
 					const entry = {
 						hasRfc: !!req.headers['signature-input'],
 						isDraft: typeof req.headers.signature === 'string' && req.headers.signature.includes('keyId="'),
-						digestOk: req.headers.digest === `SHA-256=${createHash('sha256').update(raw).digest('base64')}`,
+						contentDigestOk: req.headers['content-digest'] ===
+							`sha-256=:${createHash('sha256').update(raw).digest('base64')}:`,
+						legacyDigestOk: req.headers.digest ===
+							`SHA-256=${createHash('sha256').update(raw).digest('base64')}`,
+						strictProfile: signatureInput.startsWith(
+							'activitypub=("@method" "@authority" "@target-uri" "content-digest" "content-type" "date");'
+						) &&
+							signatureInput.includes(';alg="rsa-v1_5-sha256";tag="activitypub";nonce="') &&
+							/;created=\d+$/.test(signatureInput),
 					};
 					try {
 						if (entry.hasRfc) {
-							const base = new RFC9421SignatureBaseFactory({ method: req.method, url: fullUrl, headers: req.headers });
-							// Parse the Signature header as a strict RFC 8941/9651 dictionary
-							// (like Mitra's sfv parser) — the value must be a byte sequence
+							const base = new RFC9421SignatureBaseFactory({
+								method: req.method,
+								url: fullUrl,
+								headers: req.headers,
+							});
 							const sigDict = sfv.parseDictionary(String(req.headers.signature));
-							const sigItem = sigDict.get('sig1');
+							const sigItem = sigDict.get('activitypub');
 							if (!sigItem || !sfv.isByteSequence(sigItem[0])) {
-								throw new Error('Signature value is not a byte sequence');
+								throw new Error('Signature value is not an activitypub byte sequence');
 							}
 							const pub = await importPublicKey(pubPem, ['verify']);
 							entry.rfcValid = await webcrypto.subtle.verify(
 								{ name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
 								pub,
 								Buffer.from(sigItem[0].base64Value, 'base64'),
-								new TextEncoder().encode(base.generate('sig1')),
+								new TextEncoder().encode(base.generate('activitypub')),
 							);
 						} else if (entry.isDraft) {
-							const parsed = parseDraftRequest({ method: req.method, url: fullUrl, headers: req.headers });
+							const parsed = parseDraftRequest({
+								method: req.method,
+								url: fullUrl,
+								headers: req.headers,
+							});
 							entry.draftValid = await verifyDraftSignature(parsed.value, pubPem);
 						}
 					} catch (e) {
 						entry.verifyError = e.message;
 					}
 					requests.push(entry);
-					const accepted = (server.mode === 'rfc' && entry.hasRfc && entry.rfcValid === true) ||
-						(server.mode === 'draft' && entry.isDraft && entry.draftValid === true);
+					const accepted = (
+						server.mode === 'rfc' &&
+						entry.hasRfc &&
+						entry.strictProfile &&
+						entry.contentDigestOk &&
+						entry.rfcValid === true
+					) || (
+						server.mode === 'draft' &&
+						entry.isDraft &&
+						entry.legacyDigestOk &&
+						entry.draftValid === true
+					);
 					res.writeHead(accepted ? 202 : 401, { 'content-type': 'application/json' });
 					res.end(JSON.stringify({ accepted }));
 				});
@@ -149,7 +174,7 @@ describe('sendWorker', () => {
 		function task(mode) {
 			const payload = JSON.stringify({ id: 'https://nodebb.test/activities/1', type: 'Create' });
 			return {
-				id: `rfc-fallback-${mode}`,
+				id: `rfc-strict-${mode}`,
 				uri: `http://127.0.0.1:${port}/inbox`,
 				payload,
 				digest: `SHA-256=${createHash('sha256').update(payload).digest('base64')}`,
@@ -158,15 +183,17 @@ describe('sendWorker', () => {
 			};
 		}
 
-		it('should sign with RFC 9421 and not fall back when the server accepts it', async () => {
+		it('should sign once with the strict ActivityPub RFC 9421 profile when the server accepts it', async () => {
 			server.mode = 'rfc';
 			const result = await innerPool.exec('send', [task('rfc')], { timeout: 30000 });
 
 			assert.strictEqual(result.success, true);
 			assert.strictEqual(requests.length, 1);
-			assert(requests[0].hasRfc, 'request should carry a signature-input header');
-			assert.strictEqual(requests[0].rfcValid, true, 'RFC 9421 signature should verify');
-			assert.strictEqual(requests[0].digestOk, true, 'digest should match payload');
+			assert.strictEqual(requests[0].hasRfc, true);
+			assert.strictEqual(requests[0].isDraft, false);
+			assert.strictEqual(requests[0].strictProfile, true);
+			assert.strictEqual(requests[0].contentDigestOk, true);
+			assert.strictEqual(requests[0].rfcValid, true);
 		});
 
 		it('should fall back to a draft signature when the server rejects RFC 9421', async () => {
@@ -175,10 +202,14 @@ describe('sendWorker', () => {
 
 			assert.strictEqual(result.success, true);
 			assert.strictEqual(requests.length, 2);
-			assert(requests[0].hasRfc, 'first attempt should use RFC 9421');
-			assert(requests[1].isDraft, 'fallback attempt should use the draft signature');
-			assert.strictEqual(requests[1].draftValid, true, 'draft signature should verify');
-			assert.strictEqual(requests[1].digestOk, true, 'digest should match payload');
+			assert.strictEqual(requests[0].hasRfc, true);
+			assert.strictEqual(requests[0].isDraft, false);
+			assert.strictEqual(requests[0].strictProfile, true);
+			assert.strictEqual(requests[0].contentDigestOk, true);
+			assert.strictEqual(requests[0].rfcValid, true);
+			assert.strictEqual(requests[1].isDraft, true);
+			assert.strictEqual(requests[1].legacyDigestOk, true);
+			assert.strictEqual(requests[1].draftValid, true);
 		});
 
 		it('should fail when the server rejects both signature schemes', async () => {
@@ -187,7 +218,16 @@ describe('sendWorker', () => {
 
 			assert.strictEqual(result.success, false);
 			assert.strictEqual(requests.length, 2);
+			assert.strictEqual(requests[0].hasRfc, true);
+			assert.strictEqual(requests[0].isDraft, false);
+			assert.strictEqual(requests[0].strictProfile, true);
+			assert.strictEqual(requests[0].contentDigestOk, true);
+			assert.strictEqual(requests[0].rfcValid, true);
+			assert.strictEqual(requests[1].isDraft, true);
+			assert.strictEqual(requests[1].legacyDigestOk, true);
+			assert.strictEqual(requests[1].draftValid, true);
 			assert(result.error.includes('401'));
+			assert(result.fallback.includes('401'));
 		});
 	});
 
