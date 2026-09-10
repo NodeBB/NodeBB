@@ -65,7 +65,7 @@
         "connect-redis": "10.0.0",
         "cookie-parser": "1.4.7",
         "cron": "4.4.0",
-        "cronstrue": "3.25.0",
+        "cronstrue": "3.26.0",
         "cropperjs": "1.6.3",
         "csrf-sync": "4.2.1",
         "csv-parse": "7.0.2",
