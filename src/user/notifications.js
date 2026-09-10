@@ -233,7 +233,7 @@ UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicD
 			db.getSortedSetRangeByScore(
 				`cid:${topicData.cid}:uid:watch:state`, 0, -1,
 				categories.watchStates.watching,
-				categories.watchStates.watching
+				'+inf'
 			),
 		]);
 
