@@ -1,6 +1,7 @@
 
 'use strict';
 
+const nconf = require('nconf');
 const winston = require('winston');
 const _ = require('lodash');
 
@@ -95,8 +96,12 @@ async function deleteUserNids(nids, uid) {
 }
 
 async function getNotificationsFromSet(set, uid, start, stop) {
-	const nids = await db.getSortedSetRevRange(set, start, stop);
-	return await UserNotifications.getNotifications(nids, uid);
+	const isUnread = set.endsWith(':notifications:unread');
+	const requestedCount = stop - start + 1;
+	const nids = await db.getSortedSetRevRange(set, start, isUnread ? stop + 1 : stop);
+	return await UserNotifications.getNotifications(nids.slice(0, requestedCount), uid, {
+		relatedSet: isUnread && nids.length > requestedCount ? set : null,
+	});
 }
 
 UserNotifications.ownsNids = async function (nids, uid) {
@@ -107,7 +112,7 @@ UserNotifications.ownsNids = async function (nids, uid) {
 	return nids.map((nid, index) => (isInRead[index] || isInUnread[index]));
 };
 
-UserNotifications.getNotifications = async function (nids, uid) {
+UserNotifications.getNotifications = async function (nids, uid, options = {}) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return [];
 	}
@@ -133,7 +138,25 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	});
 
 	await deleteUserNids(deletedNids, uid);
+	let oldestRelated = [];
+	if (options.relatedSet) {
+		const mergeIds = _.uniq(notificationData.map(n => n && n.mergeId)).filter(
+			mergeId => String(mergeId || '').startsWith('notifications:user-posted-to|')
+		);
+		oldestRelated = await notifications.findOldestRelated(mergeIds, options.relatedSet);
+	}
 	notificationData = await notifications.merge(notificationData);
+	if (oldestRelated.length) {
+		const oldestByMergeId = new Map(oldestRelated.map(n => [String(n.mergeId), n]));
+		notificationData.forEach((notification) => {
+			const oldest = notification && !notification.read && oldestByMergeId.get(String(notification.mergeId));
+			if (oldest && oldest.path) {
+				notification.path = oldest.path.startsWith('http') ?
+					oldest.path : `${nconf.get('relative_path')}${oldest.path}`;
+				notification.pid = oldest.pid;
+			}
+		});
+	}
 	await Promise.all(notificationData.map(async (n) => {
 		if (n?.bodyShort) {
 			n.bodyShort = posts.sanitize(await tx.translate(n.bodyShort, userSettings.userLang));
