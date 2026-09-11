@@ -1017,7 +1017,11 @@ inbox.undo = async (req) => {
 				object.object = [object.object];
 			}
 			await Promise.all(object.object.map(async (subject) => {
-				const { type, id } = await activitypub.helpers.resolveLocalId(subject.id);
+				const subjectId = typeof subject === 'string' ? subject : subject?.id;
+				const { type, id } = await activitypub.helpers.resolveLocalId(subjectId);
+				if (!type || !id) {
+					return;
+				}
 				try {
 					await flags.rescindReport(type, id, actor);
 				} catch (e) {
@@ -1038,16 +1042,20 @@ inbox.flag = async (req) => {
 	}
 
 	await Promise.all(objects.map(async (subject, index) => {
+		const subjectId = typeof subject === 'string' ? subject : subject?.id;
 		let type, id;
 		try {
-			({ type, id } = await activitypub.helpers.resolveObjects(subject.id));
+			({ type, id } = await activitypub.helpers.resolveLocalId(subjectId));
+			if (!type || !id) {
+				throw new Error('[[error:invalid-data]]');
+			}
 		} catch (e) {
-			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subject.id}`);
+			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subjectId}`);
 			inbox._reject('Flag', objects[index], actor);
 			return;
 		}
 		try {
-			await flags.create(activitypub.helpers.mapToLocalType(type), id, actor, content);
+			await flags.create(type, id, actor, content);
 		} catch (e) {
 			inbox._reject('Flag', objects[index], actor);
 		}
