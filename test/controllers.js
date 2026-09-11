@@ -827,7 +827,7 @@ describe('Controllers', () => {
 				});
 
 				assert.strictEqual(response.statusCode, 302);
-				assert(response.headers.location.match(/\/uid\/\d+$/));
+				assert(response.headers.location.match(/\/uid\/\d+$/), JSON.stringify(response, null, 2));
 			});
 		});
 	});
