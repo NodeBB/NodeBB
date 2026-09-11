@@ -47,7 +47,15 @@ define('notifications', [
 
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
+					const listEl = notifList.get(0);
+					const prevFirstNotif = listEl.querySelector('[data-nid]');
+					const prevFirstNotifKey = prevFirstNotif && `${prevFirstNotif.getAttribute('data-nid')}:${prevFirstNotif.classList.contains('unread')}`;
 					notifList.html(html);
+					const firstNotif = listEl.querySelector('[data-nid]');
+					const firstNotifKey = firstNotif && `${firstNotif.getAttribute('data-nid')}:${firstNotif.classList.contains('unread')}`;
+					if (prevFirstNotifKey && prevFirstNotifKey !== firstNotifKey) {
+						listEl.scrollTop = 0;
+					}
 					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
 						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {

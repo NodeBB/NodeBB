@@ -106,8 +106,15 @@ define('chat', [
 				const html = await app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms });
 				const listEl = chatsListEl.get(0);
 
+				const prevFirstRoom = listEl.querySelector('[data-roomid]');
+				const prevFirstRoomKey = prevFirstRoom && `${prevFirstRoom.getAttribute('data-roomid')}:${prevFirstRoom.classList.contains('unread')}`;
 				chatsListEl.find('*').not('.navigation-link').remove();
 				chatsListEl.prepend(html);
+				const firstRoom = listEl.querySelector('[data-roomid]');
+				const firstRoomKey = firstRoom && `${firstRoom.getAttribute('data-roomid')}:${firstRoom.classList.contains('unread')}`;
+				if (prevFirstRoomKey && prevFirstRoomKey !== firstRoomKey) {
+					listEl.scrollTop = 0;
+				}
 				chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
 					if (['.user-link', '.mark-read'].some(className => ev.target.closest(className))) {
 						return;
