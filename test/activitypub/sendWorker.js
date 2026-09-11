@@ -26,14 +26,17 @@ describe('sendWorker', () => {
 
 	describe('send task', () => {
 		it('should emit a result on failed send', async () => {
+			// Use a private IP so the SSRF check rejects it immediately — a
+			// non-resolving hostname (.invalid/.example) triggers a real DNS lookup
+			// that times out at ~10s in CI containers.
 			const result = await pool.exec('send', [{
 				id: 'test-task-1',
-				uri: 'https://nonexistent.invalid/test',
+				uri: 'http://10.0.0.1/test',
 				payload: JSON.stringify({ type: 'Create' }),
 				digest: 'SHA-256=invalid',
 				key: '-----BEGIN PRIVATE KEY-----\nINVALID\n-----END PRIVATE KEY-----',
 				keyId: 'https://example.org/actor#key',
-			}], { timeout: 10000 });
+			}], { timeout: 5000 });
 			assert.strictEqual(result.success, false);
 		});
 

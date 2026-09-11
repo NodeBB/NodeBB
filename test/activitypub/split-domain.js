@@ -11,6 +11,27 @@ const activitypub = require('../../src/activitypub');
 
 const Helpers = module.exports;
 
+let originalGet;
+// Stub request.get so tests never perform real DNS/network lookups against
+// non-resolving .example domains (which time out at ~10s in CI containers).
+Helpers.stubRequest = () => {
+	if (originalGet) {
+		return;
+	}
+	originalGet = request.get;
+	request.get = async () => ({
+		body: {},
+		response: { statusCode: 404, headers: { 'content-type': 'application/jrd+json' } },
+	});
+};
+
+Helpers.restoreRequest = () => {
+	if (originalGet) {
+		request.get = originalGet;
+		originalGet = null;
+	}
+};
+
 Helpers.genSplitDomain = () => {
 	const username = `user_${utils.generateUUID().replace(/-/g, '').slice(0, 8)}`;
 	const domainA = `forum-${utils.generateUUID().replace(/-/g, '').slice(0, 6)}.example`;
@@ -76,7 +97,12 @@ Helpers.reset = () => {
 // ============================================================================
 
 describe('helpers.query strictness', () => {
-	beforeEach(Helpers.reset);
+	beforeEach(() => {
+		Helpers.reset();
+		Helpers.stubRequest();
+	});
+
+	afterEach(Helpers.restoreRequest);
 
 	it('strict query of same-domain subject returns payload with splitDomain: false', async () => {
 		const { domainA, username, actorUri } = Helpers.genSplitDomain();
@@ -116,7 +142,12 @@ describe('helpers.query strictness', () => {
 // ============================================================================
 
 describe('verifyActorWebfinger', () => {
-	beforeEach(Helpers.reset);
+	beforeEach(() => {
+		Helpers.reset();
+		Helpers.stubRequest();
+	});
+
+	afterEach(Helpers.restoreRequest);
 
 	it('returns split-domain verdict for fully verified actor', async () => {
 		const { domainA, domainB, username, actorUri } = Helpers.genSplitDomain();
@@ -246,7 +277,12 @@ describe('verifyActorWebfinger', () => {
 // ============================================================================
 
 describe('Actors.assert - hostname mismatch', () => {
-	beforeEach(Helpers.reset);
+	beforeEach(() => {
+		Helpers.reset();
+		Helpers.stubRequest();
+	});
+
+	afterEach(Helpers.restoreRequest);
 
 	it('rejects when queried hostname differs from actor.id hostname (gh#13352)', async () => {
 		const username = 'alice';
