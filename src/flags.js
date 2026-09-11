@@ -609,8 +609,12 @@ Flags.rescindReport = async (type, id, uid) => {
 	let reason;
 	reports.forEach((payload) => {
 		if (!reason) {
-			const [payloadUid, payloadReason] = payload.split(';');
-			if (parseInt(payloadUid, 10) === parseInt(uid, 10)) {
+			const [payloadUid, ...reasonParts] = payload.split(';');
+			const payloadReason = reasonParts.join(';');
+			const isMatch = utils.isNumber(uid) && utils.isNumber(payloadUid) ?
+				parseInt(payloadUid, 10) === parseInt(uid, 10) :
+				String(payloadUid) === String(uid);
+			if (isMatch) {
 				reason = payloadReason;
 			}
 		}
