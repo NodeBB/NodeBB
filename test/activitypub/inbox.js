@@ -191,7 +191,7 @@ describe('Inbox', () => {
 					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 				});
 
-				it('should not create a message when attributedTo is numeric', async () => {
+				it('should not create a message when attributedTo is numeric', async function () {
 					const { note } = helpers.mocks.note({
 						attributedTo: 1,
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -208,7 +208,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should not create a message when attributedTo is null', async () => {
+				it('should not create a message when attributedTo is null', async function () {
 					const { note } = helpers.mocks.note({
 						attributedTo: null,
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -225,7 +225,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should not create a message when attributedTo is boolean', async () => {
+				it('should not create a message when attributedTo is boolean', async function () {
 					const { note } = helpers.mocks.note({
 						attributedTo: true,
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -242,7 +242,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should not create a message when attributedTo is non-URI string', async () => {
+				it('should not create a message when attributedTo is non-URI string', async function () {
 					const { note } = helpers.mocks.note({
 						attributedTo: 'not-a-uri',
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -259,7 +259,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should not create a message when attributedTo is an array of non-URI values', async () => {
+				it('should not create a message when attributedTo is an array of non-URI values', async function () {
 					const { note } = helpers.mocks.note({
 						attributedTo: [1, 'not-a-uri'],
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -276,8 +276,39 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
+				it('should not create a message when attributedTo contains same-origin decoy and cross-origin author', async function () {
+					const { id: actor } = helpers.mocks.person();
+					const { id: decoy } = helpers.mocks.group();
+					const victim = `https://victim.example/${utils.generateUUID()}`;
+					helpers.mocks.person({ id: victim, preferredUsername: 'victim' });
+					activitypub.helpers._webfingerCache.set('victim@victim.example', {
+						actorUri: victim,
+						username: 'victim',
+						hostname: 'victim.example',
+					});
+					await activitypub.actors.assert([victim]);
+
+					const { note } = helpers.mocks.note({
+						attributedTo: [{ type: 'Group', id: decoy }, victim],
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+					const { activity } = helpers.mocks.create({
+						actor,
+						object: note,
+						to: [`${nconf.get('url')}/uid/${this.uid}`],
+						cc: [],
+					});
+
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				});
+
 				it('should accept a Create(Note) with valid URI attributedTo', async function () {
 					const { id: actor } = helpers.mocks.person();
+					await activitypub.actors.assert([actor]);
+					await messaging.canMessageUser(actor, this.uid);
 					const { note } = helpers.mocks.note({
 						attributedTo: actor,
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -346,6 +377,111 @@ describe('Inbox', () => {
 					const result = await activitypub.notes.assert(0, note, { skipChecks: true });
 					assert.notStrictEqual(result, null);
 				});
+			});
+
+			describe('Update', () => {
+				it('should reject an attributedTo array before updating a post', async () => {
+					const { id: actor } = helpers.mocks.person();
+					const { id: decoy } = helpers.mocks.group();
+					await activitypub.actors.assert([actor]);
+					const { id, note } = helpers.mocks.note({ attributedTo: actor });
+					await activitypub.notes.assert(0, note, { skipChecks: true });
+					const originalContent = await posts.getPostField(id, 'content');
+
+					note.attributedTo = [
+						{ type: 'Group', id: decoy },
+						`https://victim.example/${utils.generateUUID()}`,
+					];
+					note.content = `<p>${utils.generateUUID()}</p>`;
+					const { activity } = helpers.mocks.update({ actor, object: note });
+
+					const result = await activitypub.inbox.update({
+						body: activity,
+						res: { locals: {} },
+					});
+					assert.strictEqual(result, null);
+					assert.strictEqual(await posts.getPostField(id, 'content'), originalContent);
+				});
+			});
+		});
+
+		describe('private message chat policy', () => {
+			async function createPrivateMessage(uids) {
+				const { id: actor } = helpers.mocks.person();
+				await activitypub.actors.assert([actor]);
+				const to = uids.map(uid => `${nconf.get('url')}/uid/${uid}`);
+				const { note } = helpers.mocks.note({
+					attributedTo: actor,
+					to,
+					cc: [],
+				});
+				const { activity } = helpers.mocks.create({
+					actor,
+					object: note,
+					to,
+					cc: [],
+				});
+
+				return { actor, note, activity };
+			}
+
+			it('should not deliver to a user who blocked the remote sender', async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { actor, note, activity } = await createPrivateMessage([uid]);
+				await user.blocks.add(actor, uid);
+
+				try {
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				} finally {
+					await user.blocks.remove(actor, uid);
+				}
+			});
+
+			it('should not deliver to a user who disabled incoming chats', async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { note, activity } = await createPrivateMessage([uid]);
+				await user.setSetting(uid, 'disableIncomingChats', '1');
+
+				try {
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				} finally {
+					await user.setSetting(uid, 'disableIncomingChats', '0');
+				}
+			});
+
+			it('should not deliver to a user whose deny list contains the remote sender', async () => {
+				const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { actor, note, activity } = await createPrivateMessage([uid]);
+				await user.setSetting(uid, 'chatDenyList', JSON.stringify([actor]));
+
+				try {
+					const result = await activitypub.inbox.create({ body: activity });
+					assert.strictEqual(result, null);
+					assert.strictEqual(await messaging.messageExists(note.id), false);
+				} finally {
+					await user.setSetting(uid, 'chatDenyList', '[]');
+				}
+			});
+
+			it('should filter restricted users while delivering to allowed recipients', async () => {
+				const allowedUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const blockedUid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { actor, note, activity } = await createPrivateMessage([allowedUid, blockedUid]);
+				await user.blocks.add(actor, blockedUid);
+
+				try {
+					const result = await activitypub.inbox.create({ body: activity });
+					assert(result && result.roomId);
+					assert.strictEqual(await messaging.messageExists(note.id), true);
+					assert.strictEqual(await messaging.isUserInRoom(allowedUid, result.roomId), true);
+					assert.strictEqual(await messaging.isUserInRoom(blockedUid, result.roomId), false);
+				} finally {
+					await user.blocks.remove(actor, blockedUid);
+				}
 			});
 		});
 
