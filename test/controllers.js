@@ -760,17 +760,11 @@ describe('Controllers', () => {
 		});
 
 		describe('abort behaviour', () => {
-			let jar;
-			let token;
-			const username = utils.generateUUID().slice(0, 10);
-			const password = utils.generateUUID();
-
-			beforeEach(async () => {
-				jar = (await helpers.registerUser({ username, password })).jar;
-				token = await helpers.getCsrfToken(jar);
-			});
-
 			it('should terminate the session and send user back to index if interstitials remain', async () => {
+				const username = utils.generateUUID().slice(0, 10);
+				const password = utils.generateUUID();
+				const { jar } = await helpers.registerUser({ username, password });
+				const token = await helpers.getCsrfToken(jar);
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
 					jar,
 					maxRedirect: 0,
@@ -786,7 +780,12 @@ describe('Controllers', () => {
 			});
 
 			it('should preserve the session and send user back to user profile if no interstitials remain (e.g. GDPR OK + email change cancellation)', async () => {
-				// Submit GDPR consent
+				const username = utils.generateUUID().slice(0, 10);
+				const password = utils.generateUUID();
+				const { jar } = await helpers.registerUser({ username, password });
+				const token = await helpers.getCsrfToken(jar);
+
+				// Submit GDPR consent and TOS acceptance
 				await request.post(`${nconf.get('url')}/register/complete`, {
 					jar,
 					maxRedirect: 0,
@@ -797,6 +796,7 @@ describe('Controllers', () => {
 					body: {
 						gdpr_agree_data: 'on',
 						gdpr_agree_email: 'on',
+						'agree-terms': 'on',
 					},
 				});
 
@@ -827,7 +827,10 @@ describe('Controllers', () => {
 				});
 
 				assert.strictEqual(response.statusCode, 302);
-				assert(response.headers.location.match(/\/uid\/\d+$/), JSON.stringify(response, null, 2));
+				assert(response.headers.location.match(/\/uid\/\d+$/), JSON.stringify({
+					response,
+					tos: meta.config.termsOfUse,
+				}, null, 2));
 			});
 		});
 	});
