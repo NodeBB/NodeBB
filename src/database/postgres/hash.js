@@ -45,8 +45,8 @@ module.exports = function (module) {
 					values: [key, dataString],
 				});
 			}
-			cache.del(key);
 		});
+		cache.del(key);
 	};
 
 	module.setObjectBulk = async function (...args) {
@@ -59,18 +59,17 @@ module.exports = function (module) {
 			// conver old format to new format for backwards compatibility
 			data = args[0].map((key, i) => [key, args[1][i]]);
 		}
-		await module.transaction(async (client) => {
-			data = data.filter((item) => {
-				if (item[1].hasOwnProperty('')) {
-					delete item[1][''];
-				}
-				return !!Object.keys(item[1]).length;
-			});
-			const keys = data.map(item => item[0]);
-			if (!keys.length) {
-				return;
+		data = data.filter((item) => {
+			if (item[1].hasOwnProperty('')) {
+				delete item[1][''];
 			}
-
+			return !!Object.keys(item[1]).length;
+		});
+		const keys = data.map(item => item[0]);
+		if (!keys.length) {
+			return;
+		}
+		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectsType(client, keys, 'hash');
 			const dataStrings = data.map(item => JSON.stringify(item[1]));
 			await client.query({
@@ -83,35 +82,32 @@ module.exports = function (module) {
 			DO UPDATE SET "data" = "legacy_hash"."data" || EXCLUDED.data`,
 				values: [keys, dataStrings],
 			});
-
-			cache.del(keys);
 		});
+		cache.del(keys);
 	};
 
 	module.setObjectField = async function (key, field, value) {
 		if (!field) {
 			return;
 		}
-
+		if (Array.isArray(key)) {
+			return await module.setObject(key, { [field]: value });
+		}
 		await module.transaction(async (client) => {
-			if (Array.isArray(key)) {
-				await module.setObject(key, { [field]: value });
-			} else {
-				const valueString = JSON.stringify(value);
-				await helpers.ensureLegacyObjectType(client, key, 'hash');
-				await client.query({
-					name: 'setObjectField',
-					text: `
-	INSERT INTO "legacy_hash" ("_key", "data")
-	VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
-	ON CONFLICT ("_key")
-	DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
-					values: [key, field, valueString],
-				});
-
-				cache.del(key);
-			}
+			const valueString = JSON.stringify(value);
+			await helpers.ensureLegacyObjectType(client, key, 'hash');
+			await client.query({
+				name: 'setObjectField',
+				text: `
+			INSERT INTO "legacy_hash" ("_key", "data")
+			VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
+			ON CONFLICT ("_key")
+			DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
+				values: [key, field, valueString],
+			});
 		});
+
+		cache.del(key);
 	};
 
 	module.getObject = async function (key, fields = []) {
@@ -306,7 +302,7 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 			return null;
 		}
 
-		return await module.transaction(async (client) => {
+		const result = await module.transaction(async (client) => {
 			if (Array.isArray(key)) {
 				await helpers.ensureLegacyObjectsType(client, key, 'hash');
 			} else {
@@ -333,20 +329,22 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 				values: [key, field, value],
 			});
 
-			cache.del(key);
-			return Array.isArray(key) ? res.rows.map(r => parseFloat(r.v)) : parseFloat(res.rows[0].v);
+			return Array.isArray(key) ?
+				res.rows.map(r => parseFloat(r.v)) :
+				parseFloat(res.rows[0].v);
 		});
+		cache.del(key);
+		return result;
 	};
 
 	module.incrObjectFieldByBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-
+		const keys = data.map(item => item[0]);
 		await module.transaction(async (client) => {
 			await helpers.ensureLegacyObjectsType(client, data.map(item => item[0]), 'hash');
 
-			const keys = data.map(item => item[0]);
 			const dataStrings = data.map(item => JSON.stringify(item[1]));
 
 			await client.query({
@@ -370,8 +368,7 @@ DO UPDATE SET "data" = (
 );`,
 				values: [keys, dataStrings],
 			});
-
-			cache.del(keys);
 		});
+		cache.del(keys);
 	};
 };
