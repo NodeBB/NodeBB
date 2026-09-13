@@ -45,9 +45,8 @@ module.exports = function (module) {
 					values: [key, dataString],
 				});
 			}
+			cache.del(key);
 		});
-
-		cache.del(key);
 	};
 
 	module.setObjectBulk = async function (...args) {
