@@ -94,10 +94,10 @@ module.exports = function (module) {
 		}
 
 		await module.transaction(async (client) => {
-			const valueString = JSON.stringify(value);
 			if (Array.isArray(key)) {
 				await module.setObject(key, { [field]: value });
 			} else {
+				const valueString = JSON.stringify(value);
 				await helpers.ensureLegacyObjectType(client, key, 'hash');
 				await client.query({
 					name: 'setObjectField',
