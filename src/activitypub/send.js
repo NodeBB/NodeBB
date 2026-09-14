@@ -14,8 +14,8 @@ const SendPool = {
 SendPool._pool = workerpool.pool(
 	path.join(__dirname, 'sendWorker.js'),
 	{
-		minWorkers: 4,
-		maxWorkers: Math.min(os.availableParallelism() * 2, 64),
+		minWorkers: 2,
+		maxWorkers: Math.max(2, Math.min(os.availableParallelism(), 64)),
 		workerType: 'thread',
 		forkOpts: { silent: true },
 	},
