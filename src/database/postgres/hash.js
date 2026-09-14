@@ -343,7 +343,7 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 		}
 		const keys = data.map(item => item[0]);
 		await module.transaction(async (client) => {
-			await helpers.ensureLegacyObjectsType(client, data.map(item => item[0]), 'hash');
+			await helpers.ensureLegacyObjectsType(client, keys, 'hash');
 
 			const dataStrings = data.map(item => JSON.stringify(item[1]));
 
