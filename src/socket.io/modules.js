@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * v4 note — all methods here are deprecated and can be removed except for:
- *   - SocketModules.chats.(enter|leave)(Public)?  => related to socket.io rooms
- */
-
 const Messaging = require('../messaging');
 const user = require('../user');
 const groups = require('../groups');
