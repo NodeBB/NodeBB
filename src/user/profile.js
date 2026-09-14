@@ -84,7 +84,7 @@ module.exports = function (User) {
 		await isSignatureValid(callerUid, data);
 		isFullnameValid(data);
 		isBirthdayValid(data);
-		isGroupTitleValid(data);
+		await isGroupTitleValid(data);
 		await validateCustomFields(data);
 	}
 
@@ -255,7 +255,7 @@ module.exports = function (User) {
 		}
 	}
 
-	function isGroupTitleValid(data) {
+	async function isGroupTitleValid(data) {
 		function checkTitle(title) {
 			if (title === 'registered-users' || groups.isPrivilegeGroup(title)) {
 				throw new Error('[[error:invalid-group-title]]');
@@ -277,6 +277,12 @@ module.exports = function (User) {
 		}
 		if (!meta.config.allowMultipleBadges && groupTitles.length > 1) {
 			data.groupTitle = JSON.stringify(groupTitles[0]);
+			groupTitles = [groupTitles[0]];
+		}
+		// Ensure the user is actually a member of each selected group (prevents badge spoofing via the API)
+		const memberships = await groups.isMemberOfGroups(data.uid, groupTitles);
+		if (memberships.includes(false)) {
+			throw new Error('[[error:invalid-group-title]]');
 		}
 	}
 
