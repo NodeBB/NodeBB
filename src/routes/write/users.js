@@ -42,8 +42,8 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'delete', '/:uid/content', [...middlewares, middleware.assert.user], controllers.write.users.deleteContent);
 	setupApiRoute(router, 'delete', '/:uid/account', [...middlewares, middleware.assert.user], controllers.write.users.deleteAccount);
 
-	setupApiRoute(router, 'get', '/:uid/status', [], controllers.write.users.getStatus);
-	setupApiRoute(router, 'head', '/:uid/status/:status', [], controllers.write.users.checkStatus);
+	setupApiRoute(router, 'get', '/:uid/status', [middleware.assert.user, middleware.canViewUsers], controllers.write.users.getStatus);
+	setupApiRoute(router, 'head', '/:uid/status/:status', [middleware.assert.user, middleware.canViewUsers], controllers.write.users.checkStatus);
 
 	setupApiRoute(router, 'get', '/:uid/chat', [...middlewares], controllers.write.users.getPrivateRoomId);
 
