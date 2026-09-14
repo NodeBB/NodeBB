@@ -463,6 +463,47 @@ describe('socket.io', () => {
 		}).catch(err => assert.fail(err.message));
 	});
 
+	describe('chat enter/leave', () => {
+		const socketModules = require('../src/socket.io/modules');
+
+		it('should error for uid < 0', async () => {
+			const socket = { uid: 0 };
+			const error = { message: '[[error:not-allowed]]' };
+			await assert.rejects(socketModules.chats.enter(socket, [1]), error);
+			await assert.rejects(socketModules.chats.leave(socket, [1]), error);
+			await assert.rejects(socketModules.chats.enterPublic(socket, [1]), error);
+			await assert.rejects(socketModules.chats.leavePublic(socket, [1]), error);
+		});
+
+		it('should do nothing if roomIds is empty', async () => {
+			const socket = { uid: adminUid };
+			await socketModules.chats.enter(socket, []);
+			await socketModules.chats.leave(socket, []);
+			await socketModules.chats.enterPublic(socket, []);
+			await socketModules.chats.leavePublic(socket, []);
+		});
+
+		it('should call socket.join/leave', async () => {
+			let roomName = '';
+			const socket = {
+				uid: adminUid,
+				join: (rn) => { roomName = rn; },
+				leave: (rn) => { roomName = rn; },
+			};
+			await socketModules.chats.enter(socket, [1]);
+			assert.equal(roomName, 'chat_room_1');
+
+			await socketModules.chats.enterPublic(socket, [2]);
+			assert.equal(roomName, 'chat_room_public_2');
+
+			await socketModules.chats.leave(socket, 3); // non-array roomId works as well
+			assert.equal(roomName, 'chat_room_3');
+
+			await socketModules.chats.leavePublic(socket, 4);
+			assert.equal(roomName, 'chat_room_public_4');
+		});
+	});
+
 	describe('install/upgrade plugin', () => {
 		it('should install a plugin', function (done) {
 			this.timeout(0);
