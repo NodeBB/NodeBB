@@ -278,7 +278,11 @@ inbox.update = async (req) => {
 				}
 
 				case isMessage: {
-					const { roomId, deleted } = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
+					const { roomId, deleted, fromuid } = await messaging.getMessageFields(object.id, ['roomId', 'deleted', 'fromuid']);
+					// Only the message's author (the verified signer) may edit it.
+					if (fromuid !== actor) {
+						throw new Error('[[error:no-privileges]]');
+					}
 					await messaging.editMessage(actor, object.id, roomId, object.content);
 					if (deleted) {
 						await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
@@ -421,11 +425,18 @@ inbox.delete = async (req) => {
 		}
 
 		case isMessage: {
-			const deleted = await messaging.getMessageField(id, 'deleted');
+			const [deleted, fromuid] = await Promise.all([
+				messaging.getMessageField(id, 'deleted'),
+				messaging.getMessageField(id, 'fromuid'),
+			]);
 			if (deleted) {
 				return;
 			}
 
+			// Only the message's author (the verified signer) may delete it.
+			if (fromuid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			await api.chats.deleteMessage({ uid: actor }, { mid: id });
 			break;
 		}
