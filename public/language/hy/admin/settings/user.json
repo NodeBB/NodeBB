@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Միայն ադմինիստրատորի հրավեր",
 	"registration-type.disabled": "Գրանցում չկա",
 	"registration-type.help": "Նորմալ - Օգտատերերը կարող են գրանցվել \"գրանցվել\" էջից: Միայն հրավիրել - օգտատերերը կարող են հրավիրել ուրիշներին օգտատերերի էջից: Միայն ադմինիստրատորի հրավեր - Միայն ադմինիստրատորները կարող են հրավիրել ուրիշներին օգտատերերից և ադմինիստրատորի/կառավարման/օգտատերերի էջերից: Ոչ գրանցում - Օգտատիրոջ գրանցում չկա:",
-	"registration-approval-type.help": "Նորմալ - օգտարերերը գրանցվում են անմիջապես: Ադմինիստրատորի հաստատում - Օգտատերերի գրանցումները տեղադրվում են ադմինիստրատորների հաստատման հերթում: Ադմինիստրատորի հաստատում IP-ների համար - Նորմալ է նոր օգտատերերի համար, Ադմինիստրատորի հաստատում IP հասցեների համար, որոնք արդեն ունեն հաշիվ:",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "Ավտոմատ հաստատման ժամանակը",
 	"registration-queue-auto-approve-time-help": "Օգտագործողի ինքնաբերաբար հաստատումից ժամեր առաջ: 0 անջատելու համար:",
 	"registration-queue-show-average-time": "Ցույց տալ օգտատերերին միջին ժամանակը, որը հարկավոր է նոր օգտատիրոջը հաստատելու համար",

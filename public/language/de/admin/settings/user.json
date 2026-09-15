@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Nur Admin Einladungen",
 	"registration-type.disabled": "Keine Registrierung",
 	"registration-type.help": "Normal - Benutzer können sich auf der Seite /register registrieren<br/>\nNur einladen – Benutzer können andere über die <a href=\"%1/users\" target=\"_blank\">Benutzerseite</a> einladen.<br/>\nNur Administrator-Einladung – Nur Administratoren können andere von <a href=\"%1/users\" target=\"_blank\">Benutzer-</a> und <a href=\"%1/admin/manage/users\">Administrator-/Verwaltungs-/Benutzerseiten</a> einladen.<br/>\nKeine Registrierung - Keine Benutzerregistrierung.<br/>",
-	"registration-approval-type.help": "Normal - Benutzer werden sofort registriert.<br/>\nAdmin-Genehmigung – Benutzerregistrierungen werden in eine <a href=\"%1/admin/manage/registration\">Genehmigungswarteschlange</a> für Administratoren gestellt.<br/>\nAdmin-Genehmigung für IPs – Normal für neue Benutzer, Admin-Genehmigung für IP-Adressen, die bereits ein Konto haben.<br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "Automatische Genehmigungszeit",
 	"registration-queue-auto-approve-time-help": "Stunden, bevor der Benutzer automatisch genehmigt wird. 0 zum Deaktivieren.",
 	"registration-queue-show-average-time": "Zeigt die durchschnittliche Zeit, die Benutzer benötigen, um einen neuen Benutzer zu genehmigen",

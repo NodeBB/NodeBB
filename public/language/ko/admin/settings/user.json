@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "관리자 초대 전용",
 	"registration-type.disabled": "등록 불가",
 	"registration-type.help": "일반 - 사용자는 /register 페이지에서 등록할 수 있습니다.<br/>\n초대 전용 - 사용자는 <a href=\"%1/users\" target=\"_blank\">users</a> 페이지에서 다른 사용자를 초대할 수 있습니다.<br/>\n관리자 초대 전용 - 관리자만 <a href=\"%1/users\" target=\"_blank\">users</a> 및 <a href=\"%1/admin/manage/users\">admin/manage/users</a> 페이지에서 다른 사용자를 초대할 수 있습니다.<br/>\n등록 불가 - 사용자 등록 불가.<br/>",
-	"registration-approval-type.help": "일반 - 사용자는 즉시 등록됩니다.<br/>\n관리자 승인 - 사용자 등록은 관리자의 <a href=\"%1/admin/manage/registration\">승인 대기열</a>에 들어갑니다.<br/>\n관리자 승인해야하는 IP - 새 사용자에게는 일반적이며, 이미 계정에 대응하는 IP 주소가 있는 경우 관리자 승인이 필요합니다.<br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "자동 승인 시간",
 	"registration-queue-auto-approve-time-help": "사용자가 자동으로 승인되기까지 걸리는 시간(시간). 0으로 설정하면 자동 승인이 비활성화됩니다.",
 	"registration-queue-show-average-time": "새 사용자 승인 평균 시간 표시",
