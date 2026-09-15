@@ -138,6 +138,7 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 
 		let buffer;
 		try {
+			// eslint-disable-next-line no-await-in-loop
 			buffer = await response.arrayBuffer();
 		} catch (err) {
 			// undici throws TypeError when streaming size is exceeded; rethrow

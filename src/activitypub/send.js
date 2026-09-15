@@ -120,6 +120,7 @@ SendPool.drainLoop = async function () {
 	while (SendPool._draining) {
 		try {
 			// Get due tasks from Redis sorted set
+			// eslint-disable-next-line no-await-in-loop
 			const dueTasks = await db.getSortedSetRangeByScore(
 				'ap:retry:queue',
 				0,
@@ -139,7 +140,7 @@ SendPool.drainLoop = async function () {
 				return;
 			}
 
-			// Batch fetch task data to avoid await inside loop
+			// eslint-disable-next-line no-await-in-loop
 			const taskDataList = await Promise.all(
 				dueTasks.map(queueId => db.getObject(`ap:retry:queue:${queueId}`)),
 			);
@@ -159,6 +160,7 @@ SendPool.drainLoop = async function () {
 			const keyPromises = validTaskData.map(({ taskData }) => (
 				SendPool._activityPub.getPrivateKey(taskData.type, taskData.id)
 			));
+			// eslint-disable-next-line no-await-in-loop
 			const keyResults = await Promise.all(keyPromises);
 
 			// Dispatch each task to workerpool (auto-queues if busy)
