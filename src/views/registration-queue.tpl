@@ -62,7 +62,7 @@
 								<th class="hidden-xs">{{tx("registration-queue:list.ip")}}</th>
 								<th class="hidden-xs">{{tx("registration-queue:list.time")}}</th>
 								{{{ each customHeaders }}}
-								<th class="hidden-xs">{./label}</th>
+								<th class="hidden-xs">{{tx(./label)}}</th>
 								{{{ end }}}
 								<th></th>
 							</tr>
@@ -130,7 +130,7 @@
 										<button class="btn btn-light btn-sm" data-action="accept"><i class="fa fa-check text-success"></i></button>
 										<button class="btn btn-light btn-sm" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
 										{{{ each ./customActions }}}
-										<button id="{./id}" title="{./title}" class="btn btn-sm {./class}">
+										<button id="{./id}" title="{{tx(./title)}}" class="btn btn-sm {./class}">
 											<i class="fa {./icon}"></i>
 										</button>
 										{{{ end }}}
