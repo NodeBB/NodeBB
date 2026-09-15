@@ -120,7 +120,7 @@ describe('http signature signing and verification', () => {
 			};
 
 			const verified = await activitypub.verify(req);
-			assert.strictEqual(verified, true);
+			assert.strictEqual(verified, `${nconf.get('url')}/uid/${uid}#key`);
 		});
 
 		it('should return true when a digest is also passed in', async () => {
@@ -145,7 +145,7 @@ describe('http signature signing and verification', () => {
 			};
 
 			const verified = await activitypub.verify(req);
-			assert.strictEqual(verified, true);
+			assert.strictEqual(verified, `${nconf.get('url')}/uid/${uid}#key`);
 		});
 
 		it('should return true when a valid RFC 9421 signature is passed in', async () => {
@@ -165,7 +165,7 @@ describe('http signature signing and verification', () => {
 			};
 
 			const verified = await activitypub.verify(req);
-			assert.strictEqual(verified, true);
+			assert.strictEqual(verified, `${nconf.get('url')}/uid/${uid}#key`);
 		});
 
 		it('should return true when an RFC 9421 signature with content digest is passed in', async () => {
@@ -206,7 +206,7 @@ describe('http signature signing and verification', () => {
 			};
 
 			const verified = await activitypub.verify(req);
-			assert.strictEqual(verified, true);
+			assert.strictEqual(verified, `${nconf.get('url')}/uid/${uid}#key`);
 		});
 
 		it('should return false when an RFC 9421 signature does not verify', async () => {
@@ -362,7 +362,60 @@ describe('http signature signing and verification', () => {
 			};
 
 			const verified = await activitypub.signatures.verify(req, async () => pubPem);
-			assert.strictEqual(verified, true);
+			assert.strictEqual(verified, 'https://example.org/ec-actor#key');
+		});
+	});
+
+	describe('keyId parser mismatch (regression)', () => {
+		it('should return the verified keyId, not a value a naive re-parse extracts from a crafted header', async () => {
+			const { generateKeyPairSync } = require('crypto');
+			const {
+				genDraftSigningString, genDraftSignature, importPrivateKey,
+			} = require('@misskey-dev/node-http-message-signatures');
+
+			const attacker = generateKeyPairSync('ec', { namedCurve: 'P-256' });
+			const attackerPrivPem = attacker.privateKey.export({ format: 'pem', type: 'pkcs8' }).toString();
+			const attackerPubPem = attacker.publicKey.export({ format: 'pem', type: 'spki' }).toString();
+			const attackerKeyId = 'https://attacker.example/actor#main-key';
+			const victimKeyId = 'https://victim.example/actor#main-key';
+
+			const endpoint = `${nconf.get('url')}/uid/1/inbox`;
+			const url = new URL(endpoint);
+			const date = new Date().toUTCString();
+			const reqHeaders = { date, host: nconf.get('url_parsed').host };
+			const includeHeaders = ['(request-target)', 'host', 'date'];
+			const ALGO = 'ecdsa-p256-sha256';
+
+			// The attacker signs with THEIR key; the signing string uses the attacker keyId.
+			const signingString = genDraftSigningString(
+				{ method: 'GET', url: url.href, headers: reqHeaders },
+				includeHeaders,
+				{ keyId: attackerKeyId, algorithm: ALGO }
+			);
+			const privateKey = await importPrivateKey(attackerPrivPem, ['sign']);
+			const SIG = await genDraftSignature(privateKey, signingString);
+
+			// A crafted header whose quoted `foo` value contains a comma: a naive
+			// split(',')-based parser reports the VICTIM keyId (the comma-split tail
+			// that looks like a standalone keyId="..." param), while the spec-aware
+			// parser used for verification reports the ATTACKER keyId.
+			const header = `keyId="${attackerKeyId}",algorithm="${ALGO}",headers="${includeHeaders.join(' ')}",signature="${SIG}",foo="x,keyId="${victimKeyId}"`;
+
+			// Precondition: the two parsers actually disagree on this header.
+			assert.strictEqual(activitypub.signatures.getKeyId({ signature: header }), victimKeyId);
+
+			// The verified keyId MUST be the attacker's (the key that actually signed),
+			// so downstream identity (req.uid) cannot be spoofed to the victim.
+			const verified = await activitypub.signatures.verify(
+				{
+					method: 'GET',
+					url: '/uid/1/inbox',
+					path: '/uid/1/inbox',
+					headers: { ...reqHeaders, signature: header },
+				},
+				async (keyId) => (keyId === attackerKeyId ? attackerPubPem : null)
+			);
+			assert.strictEqual(verified, attackerKeyId);
 		});
 	});
 });

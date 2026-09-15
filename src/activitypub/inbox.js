@@ -240,11 +240,18 @@ inbox.update = async (req) => {
 			switch (true) {
 				case isNote: {
 					const cid = await posts.getCidByPid(object.id);
-					const [allowed, isDeleted] = await Promise.all([
+					const [allowed, isDeleted, postUid] = await Promise.all([
 						privileges.categories.can('posts:edit', cid, activitypub._constants.uid),
 						posts.getPostField(object.id, 'deleted'),
+						posts.getPostField(object.id, 'uid'),
 					]);
 					if (!allowed) {
+						throw new Error('[[error:no-privileges]]');
+					}
+					// Only the post's author (the verified signer) may edit it. The
+					// fediverse group's blanket posts:edit must not let one remote
+					// actor edit another's federated post.
+					if (postUid !== actor) {
 						throw new Error('[[error:no-privileges]]');
 					}
 					if (isDeleted) { // fediverse users can't edit deleted posts
@@ -380,6 +387,10 @@ inbox.delete = async (req) => {
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
+			// Only the post's author (the verified signer) may delete it.
+			if (uid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			await activitypub.feps.announce(id, req.body);
 			try {
 				await api.posts[method]({ uid }, { pid: id });
@@ -400,6 +411,10 @@ inbox.delete = async (req) => {
 				return;
 			}
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
+			// Only the topic's author (the verified signer) may delete it.
+			if (uid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
 			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
@@ -655,6 +670,14 @@ inbox.announce = async (req) => {
 
 			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
 			if (!allowed) {
+				throw new Error('[[error:no-privileges]]');
+			}
+
+			// Self-deletion requires the delete's actor to be the post's author; a
+			// group (moderator) announcer may delete on behalf of moderators.
+			const isGroupAnnouncer = await db.exists(`categoryRemote:${actor}`);
+			const postUid = await posts.getPostField(id, 'uid');
+			if (!isGroupAnnouncer && postUid !== object.actor) {
 				throw new Error('[[error:no-privileges]]');
 			}
 

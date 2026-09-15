@@ -603,7 +603,8 @@ describe('Inbox', () => {
 					});
 					await activitypub.notes.assert(0, id, { skipChecks: true });
 					note.content = utils.generateUUID();
-					const { activity: update } = helpers.mocks.update({ object: note });
+					// The Update's actor must be the note's author (the verified signer).
+					const { activity: update } = helpers.mocks.update({ object: note, actor });
 					const { activity } = helpers.mocks.announce({
 						actor: groupActor,
 						object: update,
@@ -613,6 +614,30 @@ describe('Inbox', () => {
 
 					const content = await posts.getPostField(id, 'content');
 					assert.strictEqual(content, note.content);
+				});
+
+				it('should NOT allow a non-author to update a note', async () => {
+					const { id: author } = helpers.mocks.person();
+					const { id: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(author);
+					const { id, note } = helpers.mocks.note({
+						attributedTo: author,
+						audience: groupActor,
+					});
+					await activitypub.notes.assert(0, id, { skipChecks: true });
+					const originalContent = await posts.getPostField(id, 'content');
+					note.content = utils.generateUUID();
+					// A different (non-author) actor attempts the update.
+					const { id: attacker } = helpers.mocks.person();
+					const { activity: update } = helpers.mocks.update({ object: note, actor: attacker });
+					const { activity } = helpers.mocks.announce({
+						actor: groupActor,
+						object: update,
+					});
+					await assert.rejects(activitypub.inbox.announce({ body: activity }), /no-privileges/);
+					// Content must be unchanged
+					const content = await posts.getPostField(id, 'content');
+					assert.strictEqual(content, originalContent);
 				});
 			});
 
@@ -648,6 +673,29 @@ describe('Inbox', () => {
 					const exists = await posts.exists(id);
 					const isDeleted = await posts.getPostField(id, 'deleted');
 					assert.strictEqual(isDeleted, 1);
+				});
+
+				it('should NOT allow a non-author to delete a post', async () => {
+					const { id: author } = helpers.mocks.person();
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { id } = helpers.mocks.note({
+						attributedTo: author,
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, id, { skipChecks: true });
+					const postUid = await posts.getPostField(id, 'uid');
+					assert.strictEqual(postUid, author);
+					// A different (non-author) actor attempts the delete.
+					const { id: attacker } = helpers.mocks.person();
+					const { activity: deleteActivity } = helpers.mocks.delete({ actor: attacker, object: id });
+					await assert.rejects(
+						activitypub.inbox.delete({ body: deleteActivity }),
+						/no-privileges/
+					);
+					// Post must NOT be deleted
+					const isDeleted = await posts.getPostField(id, 'deleted');
+					assert.notStrictEqual(isDeleted, 1);
 				});
 
 				it('should delete the topic if the post is the only post in the topic', async () => {

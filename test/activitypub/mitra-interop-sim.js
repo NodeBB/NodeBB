@@ -90,7 +90,7 @@ describe('Mitra-style incoming RFC 9421 request (interop simulation)', () => {
 		};
 
 		const verified = await signatures.verify(req, fetchPublicKeyFn);
-		assert.strictEqual(verified, true, 'NodeBB failed to verify a Mitra-style RFC 9421 request');
+		assert.strictEqual(verified, 'https://mitra.example/users/alice#main-key', 'NodeBB failed to verify a Mitra-style RFC 9421 request');
 	});
 
 	it('should verify a Mitra-style request whose created param is 4 minutes old (within clock skew)', async () => {
@@ -132,7 +132,7 @@ describe('Mitra-style incoming RFC 9421 request (interop simulation)', () => {
 		};
 
 		const verified = await signatures.verify(req, async () => pubPem);
-		assert.strictEqual(verified, true);
+		assert.strictEqual(verified, 'https://mitra.example/users/alice#main-key');
 	});
 
 	it('should verify when the signed @target-uri host differs from the configured URL (host mismatch)', async () => {
@@ -183,6 +183,6 @@ describe('Mitra-style incoming RFC 9421 request (interop simulation)', () => {
 		};
 
 		const verified = await signatures.verify(req, async () => pubPem);
-		assert.strictEqual(verified, true, 'verification failed despite a valid Host-header-based target URI');
+		assert.strictEqual(verified, 'https://mitra.example/users/alice#main-key', 'verification failed despite a valid Host-header-based target URI');
 	});
 });

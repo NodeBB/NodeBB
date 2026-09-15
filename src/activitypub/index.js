@@ -312,14 +312,14 @@ ActivityPub.sign = async ({ key, keyId }, url, digest) => {
 ActivityPub.verify = async (req) => {
 	ActivityPub.helpers.log('[activitypub/verify] Starting signature verification...');
 
-	const isValid = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
-	if (!isValid) {
+	const verified = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
+	if (!verified) {
 		ActivityPub.helpers.log('[activitypub/verify] Signature verification failed.');
 	} else {
 		ActivityPub.helpers.log('[activitypub/verify] Signature verification succeeded.');
 	}
 
-	return isValid;
+	return verified;
 };
 
 async function _checkFederationPolicy(hostname, url) {

@@ -255,12 +255,12 @@ Signatures.verify = async (req, fetchPublicKeyFn) => {
 
 		const rfcVerified = await tryVerifyRFC9421(req, fetchPublicKeyFn);
 		if (rfcVerified) {
-			return true;
+			return rfcVerified;
 		}
 
 		const draftVerified = await tryVerifyDraft(req, fetchPublicKeyFn);
 		if (draftVerified) {
-			return true;
+			return draftVerified;
 		}
 
 		return false;
@@ -369,7 +369,7 @@ async function tryVerifyDraft(req, fetchPublicKeyFn) {
 			msg => winston.warn(`[activitypub/signatures] verifyDraftSignature error: ${msg}`)
 		);
 
-		return !!result;
+		return result ? parsed.value.keyId : false;
 	} catch (err) {
 		winston.debug(`[activitypub/signatures] Draft verification failed: ${err.message}`);
 		return false;
@@ -449,7 +449,7 @@ async function tryVerifyRFC9421(req, fetchPublicKeyFn) {
 				publicKeyPem,
 			});
 			if (verified) {
-				return true;
+				return keyid;
 			}
 		}
 

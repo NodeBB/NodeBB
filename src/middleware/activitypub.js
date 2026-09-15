@@ -48,6 +48,9 @@ middleware.verify = async function (req, res, next) {
 
 	// Verifies the HTTP Signature if present (required for POST, optional for GET)
 	if (req.headers.hasOwnProperty('signature')) {
+		// `verified` is the keyId that passed cryptographic verification (or false).
+		// Caller identity MUST be derived from this value — never re-parse the raw
+		// Signature header, which can be crafted to disagree with the spec parser.
 		const verified = await activitypub.verify(req);
 		if (!verified) {
 			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
@@ -59,11 +62,9 @@ middleware.verify = async function (req, res, next) {
 			return next();
 		}
 
-		// Set calling user (keyId may be a draft `keyId` or RFC 9421 `keyid` parameter)
-		const keyId = activitypub.signatures.getKeyId(req.headers);
-		if (keyId) {
-			req.uid = keyId.replace(/#.*$/, '');
-		}
+		// Set calling user from the verified keyId (draft `keyId` or RFC 9421 `keyid`)
+		req.apKeyId = verified;
+		req.uid = verified.replace(/#.*$/, '');
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
 	} else if (req.method === 'POST') {
@@ -136,14 +137,22 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 		activitypub.helpers.log('[middleware/activitypub] Origin check passed.');
 	}
 
-	// Cross-check key ownership against received actor
+	// Cross-check key ownership against received actor.
+	// The keyId is the one that passed cryptographic verification (set on
+	// req.apKeyId by the verify middleware) — NOT a re-parse of the raw header.
+	if (!req.apKeyId) {
+		// A signed POST reaching this point without a verified keyId is anomalous.
+		activitypub.helpers.log('[middleware/activitypub] No verified keyId available for cross-check.');
+		return res.sendStatus(403);
+	}
+
 	await activitypub.actors.assert(actor);
 	let compare = await db.getObjectsFields([
 		`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
 	], ['id']);
 	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
 
-	const keyId = (activitypub.signatures.getKeyId(req.headers) || '').replace(/#[\w-]+$/, '');
+	const keyId = req.apKeyId.replace(/#[\w-]+$/, '');
 	if (compare !== keyId) {
 		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
