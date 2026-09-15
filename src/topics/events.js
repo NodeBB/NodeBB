@@ -235,6 +235,12 @@ async function modifyEvent({ uid, events }) {
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
 
+	// Remove event types hidden via acp settings
+	const hiddenTypes = meta.config.hiddenTopicEventTypes || [];
+	if (hiddenTypes.length) {
+		events = events.filter(event => !hiddenTypes.includes(event.type));
+	}
+
 	// Add user & metadata
 	events.forEach((event) => {
 		event.timestampISO = utils.toISOString(event.timestamp);

@@ -37,6 +37,16 @@
 					<p class="form-text">{{tx("admin/settings/post:backlinks.help")}}</p>
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label" for="hiddenTopicEventTypes">{{tx("admin/settings/post:topic-events.hidden")}}</label>
+					<select id="hiddenTopicEventTypes" class="form-select" multiple data-field="hiddenTopicEventTypes">
+						{{{ each topicEventTypes }}}
+						<option value="{@value}">{@value}</option>
+						{{{ end }}}
+					</select>
+					<p class="form-text">{{tx("admin/settings/post:topic-events.hidden-help")}}</p>
+				</div>
+
 				<div class="form-check form-switch mb-3">
 					<input id="trackIPPerPost" class="form-check-input" type="checkbox" data-field="trackIpPerPost">
 					<label for="trackIPPerPost" class="form-check-label">{{tx("admin/settings/post:ip-tracking.each-post")}}</label>
