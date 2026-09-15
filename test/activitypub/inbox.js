@@ -698,6 +698,80 @@ describe('Inbox', () => {
 					assert.notStrictEqual(isDeleted, 1);
 				});
 
+				it('should NOT allow a non-author to delete a topic via context', async () => {
+					// Regression: a remote Delete whose object resolves (via an
+					// attacker-served context) to a victim topic's OP must not purge
+					// that topic. The resolved post's author must be the verified signer.
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { postData } = await topics.post({
+						cid,
+						uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					// Attacker serves a context object on their own server whose
+					// orderedItems reference the victim topic's OP (local pid).
+					const contextUrl = `${helpers.mocks._baseUrl}/context/${utils.generateUUID()}`;
+					activitypub._cache.set(`0;${contextUrl}`, {
+						type: 'OrderedCollection',
+						orderedItems: [postData.pid],
+					});
+
+					const { id: attacker } = helpers.mocks.person();
+					// Tombstone => soft delete (regular users have topics:delete, not purge),
+					// which is what made the pre-fix canDelete pass for the victim's OP.
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: attacker,
+						object: { id: contextUrl, type: 'Tombstone' },
+					});
+
+					await assert.rejects(
+						activitypub.inbox.delete({ body: deleteActivity }),
+						/no-privileges/
+					);
+
+					// Topic must NOT be deleted
+					const topicDeleted = await topics.getTopicField(postData.tid, 'deleted');
+					assert.notStrictEqual(topicDeleted, 1);
+				});
+
+				it('should allow the author to delete their own topic via context', async () => {
+					const { id: author } = helpers.mocks.person();
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { id: noteId } = helpers.mocks.note({
+						attributedTo: author,
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, noteId, { skipChecks: true });
+
+					// Local post is keyed by the remote URL for federated notes
+					const localPid = await activitypub.helpers.resolveLocalId(noteId).then(r => r.id || noteId);
+					const tid = await posts.getPostField(localPid, 'tid');
+					assert(await topics.exists(tid));
+
+					// Author serves a context object referencing their own OP.
+					const contextUrl = `${helpers.mocks._baseUrl}/context/${utils.generateUUID()}`;
+					activitypub._cache.set(`0;${contextUrl}`, {
+						type: 'OrderedCollection',
+						orderedItems: [localPid],
+					});
+
+					// Tombstone => soft delete (fediverse has topics:delete, not purge)
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: author,
+						object: { id: contextUrl, type: 'Tombstone' },
+					});
+
+					await activitypub.inbox.delete({ body: deleteActivity });
+
+					const topicDeleted = await topics.getTopicField(tid, 'deleted');
+					assert.strictEqual(topicDeleted, 1);
+				});
+
 				it('should delete the topic if the post is the only post in the topic', async () => {
 					const { id: cid } = helpers.mocks.group();
 					await activitypub.actors.assertGroup(cid);
