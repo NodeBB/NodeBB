@@ -46,7 +46,7 @@ module.exports = {
 			}
 
 			await db.setObjectBulk(bulkSet);
-			progress.incr(bulkSet.length);
+			progress.incr(mids.length);
 		}, {
 			batch: 500,
 			progress,
