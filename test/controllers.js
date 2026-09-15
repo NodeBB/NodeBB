@@ -814,8 +814,9 @@ describe('Controllers', () => {
 						password: password,
 					},
 				});
-				// Start email change flow, this
-				await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
+				// Start email change flow, this sets req.session.registration.updateEmail = true
+				const result = await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
+				assert.strictEqual(result.response.statusCode, 200, JSON.stringify(result.response, null, 2));
 
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
 					jar,
