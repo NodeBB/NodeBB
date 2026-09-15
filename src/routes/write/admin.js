@@ -35,23 +35,24 @@ module.exports = function () {
 
 	setupApiRoute(router, 'get', '/groups', [...middlewares], controllers.write.admin.listGroups);
 
-	setupApiRoute(router, 'post', '/activitypub/rules', [...middlewares, middleware.checkRequired.bind(null, ['value', 'type'])], controllers.write.admin.activitypub.addRule);
-	setupApiRoute(router, 'delete', '/activitypub/rules/:rid', [...middlewares], controllers.write.admin.activitypub.deleteRule);
-	setupApiRoute(router, 'put', '/activitypub/rules/order', [...middlewares, middleware.checkRequired.bind(null, ['rids'])], controllers.write.admin.activitypub.reorderRules);
-	setupApiRoute(router, 'post', '/activitypub/relays', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addRelay);
-	setupApiRoute(router, 'delete', '/activitypub/relays/:url', [...middlewares], controllers.write.admin.activitypub.removeRelay);
-	setupApiRoute(router, 'post', '/activitypub/blocklists', [...middlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addBlocklist);
-	setupApiRoute(router, 'post', '/activitypub/blocklists/core', [...middlewares], controllers.write.admin.activitypub.addCoreDomain);
-	setupApiRoute(router, 'delete', '/activitypub/blocklists/core', [...middlewares], controllers.write.admin.activitypub.removeCoreDomain);
-	setupApiRoute(router, 'get', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.viewBlocklist);
-	setupApiRoute(router, 'delete', '/activitypub/blocklists/:url', [...middlewares], controllers.write.admin.activitypub.removeBlocklist);
-	setupApiRoute(router, 'post', '/activitypub/blocklists/:url/refresh', [...middlewares], controllers.write.admin.activitypub.refreshBlocklist);
+	const activitypubMiddlewares = [middleware.ensureLoggedIn, middleware.admin.checkSinglePrivilege('admin:settings')];
+	setupApiRoute(router, 'post', '/activitypub/rules', [...activitypubMiddlewares, middleware.checkRequired.bind(null, ['value', 'type'])], controllers.write.admin.activitypub.addRule);
+	setupApiRoute(router, 'delete', '/activitypub/rules/:rid', [...activitypubMiddlewares], controllers.write.admin.activitypub.deleteRule);
+	setupApiRoute(router, 'put', '/activitypub/rules/order', [...activitypubMiddlewares, middleware.checkRequired.bind(null, ['rids'])], controllers.write.admin.activitypub.reorderRules);
+	setupApiRoute(router, 'post', '/activitypub/relays', [...activitypubMiddlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addRelay);
+	setupApiRoute(router, 'delete', '/activitypub/relays/:url', [...activitypubMiddlewares], controllers.write.admin.activitypub.removeRelay);
+	setupApiRoute(router, 'post', '/activitypub/blocklists', [...activitypubMiddlewares, middleware.checkRequired.bind(null, ['url'])], controllers.write.admin.activitypub.addBlocklist);
+	setupApiRoute(router, 'post', '/activitypub/blocklists/core', [...activitypubMiddlewares], controllers.write.admin.activitypub.addCoreDomain);
+	setupApiRoute(router, 'delete', '/activitypub/blocklists/core', [...activitypubMiddlewares], controllers.write.admin.activitypub.removeCoreDomain);
+	setupApiRoute(router, 'get', '/activitypub/blocklists/:url', [...activitypubMiddlewares], controllers.write.admin.activitypub.viewBlocklist);
+	setupApiRoute(router, 'delete', '/activitypub/blocklists/:url', [...activitypubMiddlewares], controllers.write.admin.activitypub.removeBlocklist);
+	setupApiRoute(router, 'post', '/activitypub/blocklists/:url/refresh', [...activitypubMiddlewares], controllers.write.admin.activitypub.refreshBlocklist);
 
-	setupApiRoute(router, 'get', '/activitypub/hashtags', [...middlewares], controllers.write.admin.activitypub.getHashtags);
-	setupApiRoute(router, 'post', '/activitypub/hashtags', [...middlewares, middleware.checkRequired.bind(null, ['tag'])], controllers.write.admin.activitypub.addHashtag);
-	setupApiRoute(router, 'delete', '/activitypub/hashtags/:tag', [...middlewares], controllers.write.admin.activitypub.removeHashtag);
-	setupApiRoute(router, 'get', '/activitypub/hashtags/relay', [...middlewares], controllers.write.admin.activitypub.getHashtagRelay);
-	setupApiRoute(router, 'put', '/activitypub/hashtags/relay', [...middlewares, middleware.checkRequired.bind(null, ['host'])], controllers.write.admin.activitypub.setHashtagRelay);
+	setupApiRoute(router, 'get', '/activitypub/hashtags', [...activitypubMiddlewares], controllers.write.admin.activitypub.getHashtags);
+	setupApiRoute(router, 'post', '/activitypub/hashtags', [...activitypubMiddlewares, middleware.checkRequired.bind(null, ['tag'])], controllers.write.admin.activitypub.addHashtag);
+	setupApiRoute(router, 'delete', '/activitypub/hashtags/:tag', [...activitypubMiddlewares], controllers.write.admin.activitypub.removeHashtag);
+	setupApiRoute(router, 'get', '/activitypub/hashtags/relay', [...activitypubMiddlewares], controllers.write.admin.activitypub.getHashtagRelay);
+	setupApiRoute(router, 'put', '/activitypub/hashtags/relay', [...activitypubMiddlewares, middleware.checkRequired.bind(null, ['host'])], controllers.write.admin.activitypub.setHashtagRelay);
 
 	setupApiRoute(router, 'post', '/plugins/:pluginId', [...middlewares, requireAPIReAuth], controllers.write.admin.plugins.install);
 	setupApiRoute(router, 'delete', '/plugins/:pluginId', [...middlewares], controllers.write.admin.plugins.uninstall);
