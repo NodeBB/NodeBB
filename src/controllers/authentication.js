@@ -209,8 +209,8 @@ authenticationController.registerAbort = async (req, res) => {
 
 		const { interstitials } = await user.interstitials.get(req, req.session.registration);
 		if (!interstitials.length) {
-			delete req.session.registration;
 			winston.info(`[register/abort] no intersitials ${JSON.stringify({ uid: req.uid, session: req.session })}`);
+			delete req.session.registration;
 			return res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 		}
 		winston.info(`[register/abort] Found intersitials ${JSON.stringify({ uid: req.uid, session: req.session, interstitials })}`);
