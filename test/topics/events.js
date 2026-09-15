@@ -84,6 +84,17 @@ describe('Topic Events', () => {
 				assert(['id', 'icon', 'text', 'timestamp', 'timestampISO', 'type', 'quux'].every(key => event.hasOwnProperty(key)));
 			});
 		});
+
+		it('should not return events of a type hidden in the acp', async () => {
+			const oldValue = meta.config.hiddenTopicEventTypes;
+			meta.config.hiddenTopicEventTypes = ['foo'];
+			const events = await topics.events.get(topic.topicData.tid);
+			assert.strictEqual(events.length, 0);
+
+			meta.config.hiddenTopicEventTypes = oldValue;
+			const restored = await topics.events.get(topic.topicData.tid);
+			assert.strictEqual(restored.length, 1);
+		});
 	});
 
 	describe('.purge()', () => {

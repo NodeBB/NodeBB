@@ -17,6 +17,7 @@
     "movingTopicsMaxPosts": 5,
     "enablePostHistory": 1,
     "topicBacklinks": 1,
+    "hiddenTopicEventTypes": [],
     "postCacheSize": 20971520,
     "disableChat": 0,
     "chatEditDuration": 0,
