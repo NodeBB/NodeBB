@@ -9,6 +9,7 @@ const user = require('../user');
 const plugins = require('../plugins');
 const privileges = require('../privileges');
 const utils = require('../utils');
+const activitypub = require('../activitypub');
 
 
 module.exports = function (Topics) {
@@ -97,7 +98,8 @@ module.exports = function (Topics) {
 		if (!topicData || !topicData.cid) {
 			throw new Error('[[error:no-topic]]');
 		}
-		if (uid !== 'system' && !await privileges.categories.isAdminOrMod(topicData.cid, uid)) {
+		// Remote actor URIs are authorized via the same-origin check in the inbox
+		if (uid !== 'system' && !activitypub.helpers.isUri(uid) && !await privileges.categories.isAdminOrMod(topicData.cid, uid)) {
 			throw new Error('[[error:no-privileges]]');
 		}
 		await Topics.setTopicField(tid, 'locked', lock ? 1 : 0);

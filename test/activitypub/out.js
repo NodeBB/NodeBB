@@ -327,18 +327,21 @@ describe('Outbound activities module', () => {
 			activitypub._sent.clear();
 		});
 
-		it('should send a Lock activity when locking a topic', async function () {
+		it('should send a Lock activity wrapped in an Announce from the category actor', async function () {
 			await activitypub.out.lock(this.uid, this.tid);
 			await wait(50);
 
 			assert.strictEqual(activitypub._sent.size, 1);
 			const { payload } = Array.from(activitypub._sent).pop()[1];
 
-			assert.strictEqual(payload.type, 'Lock');
-			assert.strictEqual(payload.actor, `${nconf.get('url')}/uid/${this.uid}`);
-			assert.strictEqual(payload.object, `${nconf.get('url')}/topic/${this.tid}`);
-			assert.strictEqual(payload.audience, `${nconf.get('url')}/category/${this.cid}`);
-			assert(payload.id.includes(`/topic/${this.tid}#activity/lock/`));
+			assert.strictEqual(payload.type, 'Announce');
+			assert.strictEqual(payload.actor, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.type, 'Lock');
+			assert.strictEqual(payload.object.actor, `${nconf.get('url')}/uid/${this.uid}`);
+			// FEP 1b12: audience identifies the group the activity belongs to
+			assert.strictEqual(payload.object.audience, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.object, `${nconf.get('url')}/topic/${this.tid}`);
+			assert(payload.object.id.includes(`/topic/${this.tid}#activity/lock/`));
 		});
 
 		it('should include the category followers collection in cc', function () {
@@ -420,18 +423,21 @@ describe('Outbound activities module', () => {
 			activitypub._sent.clear();
 		});
 
-		it('should send an Unlock activity when unlocking a topic', async function () {
+		it('should send an Unlock activity wrapped in an Announce from the category actor', async function () {
 			await activitypub.out.unlock(this.uid, this.tid);
 			await wait(50);
 
 			assert.strictEqual(activitypub._sent.size, 1);
 			const { payload } = Array.from(activitypub._sent).pop()[1];
 
-			assert.strictEqual(payload.type, 'Unlock');
-			assert.strictEqual(payload.actor, `${nconf.get('url')}/uid/${this.uid}`);
-			assert.strictEqual(payload.object, `${nconf.get('url')}/topic/${this.tid}`);
-			assert.strictEqual(payload.audience, `${nconf.get('url')}/category/${this.cid}`);
-			assert(payload.id.includes(`/topic/${this.tid}#activity/unlock/`));
+			assert.strictEqual(payload.type, 'Announce');
+			assert.strictEqual(payload.actor, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.type, 'Unlock');
+			assert.strictEqual(payload.object.actor, `${nconf.get('url')}/uid/${this.uid}`);
+			// FEP 1b12: audience identifies the group the activity belongs to
+			assert.strictEqual(payload.object.audience, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.object, `${nconf.get('url')}/topic/${this.tid}`);
+			assert(payload.object.id.includes(`/topic/${this.tid}#activity/unlock/`));
 		});
 
 		it('should include the category followers collection in cc', function () {

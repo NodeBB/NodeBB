@@ -23,9 +23,69 @@ const helpers = require('./helpers');
 
 const inbox = module.exports;
 
-function publiclyAddressed(recipients) {
-	return activitypub._constants.acceptablePublicAddresses.some(address => recipients.includes(address));
-}
+inbox.helpers = {
+	publiclyAddressed: (recipients) => {
+		return activitypub._constants.acceptablePublicAddresses.some(address => recipients.includes(address));
+	},
+	assertSameOrigin: (actor, target) => {
+		// Asserts that an actor is same-origin with a target URL (a category for
+		// Lock/Unlock, the object itself for Delete). Throws on mismatch.
+		// Future work (FEP 1b12): once categories expose a moderators collection
+		// (Group `attributedTo`), remote moderators of local categories should be
+		// able to moderate topics within them, validated against that collection.
+		const actorHostname = new URL(actor).hostname;
+		const targetHostname = new URL(target).hostname;
+		if (actorHostname !== targetHostname) {
+			throw new Error('[[error:activitypub.origin-mismatch]]');
+		}
+	},
+	validateTopicModeration: async (req, action) => {
+		// Validates a remote moderation activity (Lock, Unlock, Delete).
+		const { actor } = req.body;
+		let { object } = req.body;
+
+		// object can be a URL string or an object with id
+		if (typeof object === 'object') {
+			if (!object.id) {
+				// Deletes must reference a resolvable object; Lock/Unlock drop
+				// unresolvable objects silently
+				if (action === 'delete') {
+					throw new Error('[[error:invalid-pid]]');
+				}
+				return;
+			}
+			object = object.id;
+		}
+
+		if (action === 'delete') {
+			// Deletions may target remote objects directly, so the origin check
+			// is against the object itself
+			inbox.helpers.assertSameOrigin(actor, object);
+			return { actor, id: object };
+		}
+
+
+		// Lock/Unlock additionally require the object to be a locally mirrored topic
+		// in a remote category (topics in local categories are managed locally and
+		// are dropped); the origin check is against that category.
+		const tid = await activitypub.helpers.resolveTopicId(object);
+		if (!tid) {
+			return; // not a local topic
+		}
+
+		const { cid } = await topics.getTopicFields(tid, ['cid']);
+
+		if (utils.isNumber(cid)) {
+			activitypub.helpers.log(`[activitypub/inbox/${action}] Topic ${tid} is in a local category. Dropping.`);
+			return;
+		}
+
+		// Check same-origin: actor must be from the same host as the topic's category
+		inbox.helpers.assertSameOrigin(actor, cid);
+
+		return { actor, id: object, tid, cid };
+	},
+};
 
 inbox._reject = function (type, object, target, senderType = 'uid', id = 0) {
 	activitypub.send(senderType, id, target, {
@@ -69,7 +129,7 @@ inbox.create = async (req) => {
 	}
 
 	// Alternative logic for non-public objects
-	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
+	const isPublic = inbox.helpers.publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 	if (!isPublic) {
 		return await activitypub.notes.assertPrivate(object);
 	}
@@ -180,24 +240,11 @@ inbox.move = async (req) => {
 };
 
 inbox.lock = async (req) => {
-	let { actor, object } = req.body;
-
-	// object can be a URL string or an object with id
-	if (typeof object === 'object' && object.id) {
-		object = object.id;
+	const resolved = await inbox.helpers.validateTopicModeration(req, 'lock');
+	if (!resolved) {
+		return;
 	}
-
-	// Check same-origin: actor must be from the same host as the topic
-	const actorHostname = new URL(actor).hostname;
-	const objectHostname = new URL(object).hostname;
-	if (actorHostname !== objectHostname) {
-		throw new Error('[[error:activitypub.origin-mismatch]]');
-	}
-
-	const tid = await activitypub.helpers.resolveTopicId(object);
-	if (!tid) {
-		return; // not a local topic
-	}
+	const { tid, actor } = resolved;
 
 	const isLocked = await topics.getTopicField(tid, 'locked');
 	if (isLocked) {
@@ -205,29 +252,16 @@ inbox.lock = async (req) => {
 		return;
 	}
 
-	activitypub.helpers.log(`[activitypub/inbox/lock] Locking topic ${tid}.`);
-	await topics.tools.lock(tid, 'system');
+	activitypub.helpers.log(`[activitypub/inbox/lock] Locking topic ${tid} via ${actor}.`);
+	await topics.tools.lock(tid, actor);
 };
 
 inbox.unlock = async (req) => {
-	let { actor, object } = req.body;
-
-	// object can be a URL string or an object with id
-	if (typeof object === 'object' && object.id) {
-		object = object.id;
+	const resolved = await inbox.helpers.validateTopicModeration(req, 'unlock');
+	if (!resolved) {
+		return;
 	}
-
-	// Check same-origin: actor must be from the same host as the topic
-	const actorHostname = new URL(actor).hostname;
-	const objectHostname = new URL(object).hostname;
-	if (actorHostname !== objectHostname) {
-		throw new Error('[[error:activitypub.origin-mismatch]]');
-	}
-
-	const tid = await activitypub.helpers.resolveTopicId(object);
-	if (!tid) {
-		return; // not a local topic
-	}
+	const { tid, actor } = resolved;
 
 	const isLocked = await topics.getTopicField(tid, 'locked');
 	if (!isLocked) {
@@ -235,8 +269,8 @@ inbox.unlock = async (req) => {
 		return;
 	}
 
-	activitypub.helpers.log(`[activitypub/inbox/unlock] Unlocking topic ${tid}.`);
-	await topics.tools.unlock(tid, 'system');
+	activitypub.helpers.log(`[activitypub/inbox/unlock] Unlocking topic ${tid} via ${actor}.`);
+	await topics.tools.unlock(tid, actor);
 };
 
 inbox.update = async (req) => {
@@ -255,7 +289,7 @@ inbox.update = async (req) => {
 		}
 	}
 
-	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
+	const isPublic = inbox.helpers.publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 
 	// Origin checking
 	const actorHostname = new URL(actor).hostname;
@@ -404,15 +438,8 @@ inbox.update = async (req) => {
 };
 
 inbox.delete = async (req) => {
-	const { actor, object } = req.body;
-	if (typeof object !== 'string') {
-		const { id } = object;
-		if (!id) {
-			throw new Error('[[error:invalid-pid]]');
-		}
-	}
-	const id = object.id || object;
-	let type = object.type || undefined;
+	const { actor, id } = await inbox.helpers.validateTopicModeration(req, 'delete');
+	let type = req.body.object.type || undefined;
 
 	// Deletes don't have their objects resolved automatically
 	let method = 'purge';
@@ -426,13 +453,6 @@ inbox.delete = async (req) => {
 		}
 	} catch (e) {
 		// probably 410/404
-	}
-
-	// Deletions must be made by an actor of the same origin
-	const actorHostname = new URL(actor).hostname;
-	const objectHostname = new URL(id).hostname;
-	if (actorHostname !== objectHostname) {
-		throw new Error('[[error:activitypub.origin-mismatch]]');
 	}
 
 	const [isNote, isContext, isMessage/* , isActor */] = await Promise.all([
@@ -657,19 +677,33 @@ inbox.announce = async (req) => {
 		activitypub._constants.acceptedPostTypes.includes(object.type);
 	if (!createish && cid) {
 		let id = object?.object?.id || object.object; // expecting object reference
-		const { id: localId } = await activitypub.helpers.resolveLocalId(id);
+		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
 		id = localId || id;
 
-		const exists = await posts.exists(id);
-		if (!exists) {
-			activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
-			return;
-		}
+		if (type === 'topic') {
+			const exists = await topics.exists(id);
+			if (!exists) {
+				activitypub.helpers.log(`[activitypub/inbox.announce] Topic (${id}) does not exist locally. Doing nothing.`);
+				return;
+			}
 
-		// Category actors can only publish activities concerning objects in said category
-		const _cid = await posts.getCidByPid(id);
-		if (_cid !== cid) {
-			return;
+			// Category actors can only publish activities concerning topics in said category
+			const _cid = await topics.getTopicField(id, 'cid');
+			if (_cid !== cid) {
+				return;
+			}
+		} else {
+			const exists = await posts.exists(id);
+			if (!exists) {
+				activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
+				return;
+			}
+
+			// Category actors can only publish activities concerning objects in said category
+			const _cid = await posts.getCidByPid(id);
+			if (_cid !== cid) {
+				return;
+			}
 		}
 	}
 
@@ -769,6 +803,35 @@ inbox.announce = async (req) => {
 				const tid = await posts.getPostField(id, 'tid');
 				await apiHelpers.doTopicAction('delete', 'event:topic_deleted', { uid }, { tids: [tid] });
 			}
+			break;
+		}
+
+		case object.type === 'Lock' || object.type === 'Unlock': {
+			if (!cid) {
+				return;
+			}
+
+			const id = object.object?.id || object.object; // expecting object reference
+			const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
+			if (type !== 'topic' || !localId) {
+				return;
+			}
+
+			// Same-origin: the locking actor must share origin with the announcing category
+			const announcerHostname = new URL(actor).hostname;
+			const actorHostname = new URL(object.actor).hostname;
+			if (announcerHostname !== actorHostname) {
+				throw new Error('[[error:activitypub.origin-mismatch]]');
+			}
+
+			const isLocked = await topics.getTopicField(localId, 'locked');
+			if ((object.type === 'Lock' && isLocked) || (object.type === 'Unlock' && !isLocked)) {
+				activitypub.helpers.log(`[activitypub/inbox/announce] Topic ${localId} is already ${object.type.toLowerCase()}ed. Doing nothing.`);
+				return;
+			}
+
+			activitypub.helpers.log(`[activitypub/inbox/announce] ${object.type}ing topic ${localId} via ${object.actor}.`);
+			await topics.tools[object.type.toLowerCase()](localId, object.actor);
 			break;
 		}
 
