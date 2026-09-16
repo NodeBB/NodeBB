@@ -151,7 +151,7 @@ async function onConnect(socket) {
 function deserializePayload(payload) {
 	if (!Array.isArray(payload) || !payload.length) {
 		winston.warn('[socket.io] Empty payload');
-		return {};
+		return { params: {}, callback: () => {} };
 	}
 	const params = typeof payload[0] === 'function' ? {} : payload[0];
 	const callback = typeof payload[payload.length - 1] === 'function' ? payload[payload.length - 1] : function () {};
