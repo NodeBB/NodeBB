@@ -177,16 +177,25 @@ module.exports = function (Messaging) {
 		]);
 	};
 
+	Messaging.isRoomMember = async (uid, roomIds) => {
+		const single = !Array.isArray(roomIds);
+		if (single) {
+			roomIds = [roomIds];
+		}
+		const isMembers = await db.isMemberOfSortedSets(
+			roomIds.map(id => `chat:room:${id}:uids`),
+			uid
+		);
+		return single ? isMembers.pop() : isMembers;
+	};
+
 	Messaging.isUserInRoom = async (uid, roomIds) => {
 		let single = false;
 		if (!Array.isArray(roomIds)) {
 			roomIds = [roomIds];
 			single = true;
 		}
-		const inRooms = await db.isMemberOfSortedSets(
-			roomIds.map(id => `chat:room:${id}:uids`),
-			uid
-		);
+		const inRooms = await Messaging.isRoomMember(uid, roomIds);
 
 		const data = await Promise.all(roomIds.map(async (roomId, idx) => {
 			const data = await plugins.hooks.fire('filter:messaging.isUserInRoom', {
@@ -284,6 +293,11 @@ module.exports = function (Messaging) {
 
 	async function addUidsToRoom(uids, roomId) {
 		const now = Date.now();
+		const isMembers = await db.isSortedSetMembers(`chat:room:${roomId}:uids`, uids);
+		uids = uids.filter((uid, index) => !isMembers[index]);
+		if (!uids.length) {
+			return;
+		}
 		const timestamps = uids.map(() => now);
 
 		await Promise.all([
@@ -406,14 +420,11 @@ module.exports = function (Messaging) {
 	}
 
 	Messaging.getAllUidsInRoomFromSet = async function (set) {
-		const cacheKey = `${set}:all`;
-		let uids = roomUidCache.get(cacheKey);
-		if (uids !== undefined) {
-			return uids;
-		}
-		uids = await Messaging.getUidsInRoomFromSet(set, 0, -1);
-		roomUidCache.set(cacheKey, uids);
-		return uids;
+		const uids = await roomUidCache.get(
+			`${set}:all`,
+			() => Messaging.getUidsInRoomFromSet(set, 0, -1)
+		);
+		return uids.slice();
 	};
 
 	Messaging.getUidsInRoomFromSet = async (set, start, stop, reverse = false) => db[

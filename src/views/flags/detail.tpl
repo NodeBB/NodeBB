@@ -3,10 +3,12 @@
 <div class="d-flex flex-column flex-md-row">
 	<div class="flex-shrink-0 d-flex flex-column gap-3 border-end-md text-sm mb-3 pe-4" style="flex-basis: 240px !important;">
 		<div class="d-grid gap-1">
+			{{{ if !type_bool.message }}}
 			<a class="btn btn-ghost btn-sm ff-secondary border d-flex gap-2 align-items-center" href="{config.relative_path}/{type_path}/{targetId}">
 				<i class="fa fa-fw fa-external-link text-primary"></i>
 				{{tx("flags:go-to-target")}}
 			</a>
+			{{{ end }}}
 
 			{{{ if target.uid }}}
 			<div class="dropdown dropend" data-uid="{target.uid}">
@@ -50,6 +52,10 @@
 			<a class="d-flex gap-2 align-items-center btn btn-sm btn-danger border border-secondary-subtle text-start" href="#" data-action="purge-post"><i class="fa fa-fw fa-trash"></i> {{tx("flags:purge-post")}}</a>
 			<a class="d-flex gap-2 align-items-center btn btn-sm btn-outline-success border border-secondary-subtle text-start" href="#" data-action="restore-post"><i class="fa fa-fw fa-reply"></i><i class="fa fa-fw fa-trash"></i> {{tx("flags:restore-post")}}</a>
 			{{{ end }}}
+			{{{ end }}}
+
+			{{{ if type_bool.message }}}
+			<a class="d-flex gap-2 align-items-center btn btn-sm btn-outline-danger border border-secondary-subtle text-start" href="#" data-action="delete-message"><i class="fa fa-fw fa-trash"></i> {{tx("flags:delete-message")}}</a>
 			{{{ end }}}
 		</div>
 
@@ -128,6 +134,15 @@
 					<a href="{config.relative_path}/user/{./target.userslug}">{target.username}</a>
 				</div>
 				<blockquote>{{{ if target.aboutme }}}{target.aboutme}{{{ else }}}<em>{{tx("flags:target-aboutme-empty")}}</em>{{{ end }}}</blockquote>
+				{{{ end }}}
+
+				{{{ if type_bool.message }}}
+				<div class="d-flex gap-2 align-items-center">
+					<a class="d-flex text-decoration-none" href="{config.relative_path}/user/{target.user.userslug}">{{buildAvatar(target.user, "16px", true)}}</a>
+					<a href="{config.relative_path}/user/{target.user.userslug}">{target.user.username}</a>
+					<span class="timeago text-muted" title="{target.timestampISO}"></span>
+				</div>
+				<blockquote>{{{ if target.txContent }}}{{tx(target.content)}}{{{ else }}}{target.content}{{{ end }}}</blockquote>
 				{{{ end }}}
 
 				{{{ if type_bool.empty }}}

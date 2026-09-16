@@ -1,0 +1,41 @@
+post:
+  tags:
+    - categories
+  summary: copy category privileges from another category
+  description: Copies category privileges from a source category to the target category.
+  parameters:
+    - in: path
+      name: cid
+      schema:
+        type: integer
+        minimum: 1
+      required: true
+      description: The target category id
+      example: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            fromCid:
+              type: integer
+              minimum: 1
+              description: The source category id
+              example: 1
+            group:
+              type: string
+              description: Copy only this group's privileges; omit to copy all users and groups
+              example: registered-users
+            filter:
+              type: string
+              description: Copy only privileges in this type, such as `viewing`, `posting`, or `moderation`; omit to copy every type
+              example: viewing
+          required:
+            - fromCid
+  responses:
+    '200':
+      description: Privileges successfully copied
+      content:
+        $ref: ../privileges.yaml#/get/responses/200/content

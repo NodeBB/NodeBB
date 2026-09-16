@@ -2,13 +2,17 @@
 
 
 define('forum/register', [
-	'translator', 'slugify', 'api', 'modals', 'forum/login', 'zxcvbn', 'jquery-form',
-], function (translator, slugify, api, modals, Login, zxcvbn) {
+	'translator', 'slugify', 'api', 'modals', 'forum/login', 'jquery-form',
+], function (translator, slugify, api, modals, Login) {
 	const Register = {};
 	let validationError = false;
 	const successIcon = '';
+	let zxcvbn = null;
 
 	Register.init = function () {
+		import('zxcvbn').then((module) => {
+			zxcvbn = module.default || module;
+		}).catch(() => {});
 		const username = $('#username');
 		const password = $('#password');
 		const password_confirm = $('#password-confirm');

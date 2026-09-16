@@ -151,6 +151,8 @@ async function shutdown(code) {
 		winston.info('[app] Web server closed to connections.');
 		await require('./analytics').writeLocalData();
 		winston.info('[app] Live analytics saved.');
+		require('./activitypub').shutdown();
+		winston.info('[app] ActivityPub send pool shut down.');
 		const db = require('./database');
 		await db.delete('locks');
 		await db.close();

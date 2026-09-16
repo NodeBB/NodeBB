@@ -1,5 +1,6 @@
 {
 	"notifications": "Obvestila",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Obvestilo o dobrodošlici",
 	"welcome-notification-link": "Povezava do obvestila o dobrodošlici",
 	"welcome-notification-uid": "Obvestilo o dobrodošlici za uporabnika (UID)",

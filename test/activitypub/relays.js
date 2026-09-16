@@ -47,8 +47,16 @@ describe('ActivityPub Relays', () => {
 		await db.sortedSetRemove('relays:createtime', actor2);
 	});
 
-	it('should broadcast to relay followers', async () => {
-		const payload = { type: 'Create', id: '123' };
+	it('should broadcast created objects to relay followers', async () => {
+		const object = {
+			id: `${nconf.get('url')}/post/123`,
+			type: 'Note',
+		};
+		const payload = {
+			id: `${object.id}#activity/create/123456`,
+			type: 'Create',
+			object,
+		};
 		const followers = ['https://f1.com/actor', 'https://f2.com/actor'];
 
 		// Mock activitypub.send
@@ -74,9 +82,11 @@ describe('ActivityPub Relays', () => {
 		const sentPayload = sentTo[0].payload;
 		assert.strictEqual(sentPayload.type, 'Announce');
 		assert.strictEqual(sentPayload.actor, `${nconf.get('url')}/actor`);
-		assert.deepStrictEqual(sentPayload.object, payload);
+		assert.deepStrictEqual(sentPayload.object, object);
+		assert.strictEqual(sentPayload.object.id, `${nconf.get('url')}/post/123`);
+		assert.ok(!sentPayload.object.id.includes('#activity/create/'));
 		assert.deepStrictEqual(sentPayload.to, ['https://www.w3.org/ns/activitystreams#Public']);
-		assert.ok(sentPayload.id.startsWith(`${nconf.get('url')}/post/123#activity/announce/relay/`));
+		assert.ok(sentPayload.id.startsWith(`${nconf.get('url')}/post/${encodeURIComponent(payload.id)}#activity/announce/relay/`));
 
 		// Cleanup
 		activitypub.send = originalSend;

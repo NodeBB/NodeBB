@@ -13,5 +13,6 @@
     "watching.description": "Notifiera mig vid nya ämnen",
     "not-watching.description": "Notifiera mig ej vid nya ämnen",
     "following-tag.message": "You will now be receiving notifications when somebody posts a topic with this tag.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "You will not receive notifications when somebody posts a topic with this tag."
 }

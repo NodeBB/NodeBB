@@ -6,6 +6,6 @@
     "no-uploads-found": "לא נמצאו העלאות!",
     "public-uploads-info": "העלאות הינם ציבוריות. כל מי שיש ברשותו קישור לקובץ יוכל לראות אותו.",
     "private-uploads-info": "העלאות הינם פרטיות. רק משתמשים מחוברים יוכלו לראותם.",
-    "delete-upload": "Delete Upload",
-    "delete-upload-confirm": "Are you sure you want to delete this upload?"
+    "delete-upload": "מחיקת העלאה",
+    "delete-upload-confirm": "האם אתה בטוח שברצונך למחוק את ההעלאה הזו?"
 }

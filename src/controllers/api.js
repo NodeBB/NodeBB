@@ -46,6 +46,7 @@ apiController.loadConfig = async function (req) {
 		maximumTagsPerTopic: meta.config.maximumTagsPerTopic || 5,
 		minimumTagLength: meta.config.minimumTagLength || 3,
 		maximumTagLength: meta.config.maximumTagLength || 15,
+		caseSensitiveTags: meta.config.caseSensitiveTags === 1,
 		undoTimeout: meta.config.undoTimeout || 0,
 		useOutgoingLinksPage: meta.config.useOutgoingLinksPage === 1,
 		outgoingLinksWhitelist: meta.config.useOutgoingLinksPage === 1 ? meta.config['outgoingLinks:whitelist'] : undefined,
@@ -143,6 +144,8 @@ apiController.loadConfig = async function (req) {
 		}
 	}
 	config.hideReadNotifications = settings.hideReadNotifications;
+	config['notificationType_new-reply'] = settings['notificationType_new-reply'];
+	config['notificationType_new-topic-with-tag'] = settings['notificationType_new-topic-with-tag'];
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;
@@ -152,6 +155,7 @@ apiController.loadConfig = async function (req) {
 
 apiController.getConfig = async function (req, res) {
 	const config = await apiController.loadConfig(req);
+	res.set('cache-control', 'private, no-cache');
 	res.json(config);
 };
 

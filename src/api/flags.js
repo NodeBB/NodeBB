@@ -11,12 +11,13 @@ flagsApi.create = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const { type, id, reason, notifyRemote } = data;
+	const { type, id, reason, notifyRemote, roomId } = data;
 
 	await flags.validate({
 		uid: caller.uid,
 		type: type,
 		id: id,
+		roomId: roomId,
 	});
 
 	const flagObj = await flags.create(type, id, caller.uid, reason, undefined, undefined, notifyRemote);

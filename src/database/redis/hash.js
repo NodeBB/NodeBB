@@ -99,10 +99,12 @@ module.exports = function (module) {
 		if (!key || !field) {
 			return null;
 		}
-		const cachedData = {};
-		cache.getUnCachedKeys([key], cachedData);
-		if (cachedData[key]) {
-			return Object.hasOwn(cachedData[key], field) ? cachedData[key][field] : null;
+		const cachedData = cache.get(key);
+		if (cachedData !== undefined) {
+			if (cachedData !== null && typeof cachedData === 'object') {
+				return Object.hasOwn(cachedData, field) ? cachedData[field] : null;
+			}
+			return null;
 		}
 		return await module.client.hGet(key, String(field));
 	};
@@ -120,36 +122,31 @@ module.exports = function (module) {
 			return [];
 		}
 
-		const cachedData = {};
-		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
-
-		let data = [];
-		if (unCachedKeys.length > 1) {
-			const batch = module.client.batch();
-			unCachedKeys.forEach(k => batch.hGetAll(k));
-			data = await helpers.execBatch(batch);
-		} else if (unCachedKeys.length === 1) {
-			data = [await module.client.hGetAll(unCachedKeys[0])];
-		}
+		let cachedData = await cache.getMany(keys, async (unCachedKeys) => {
+			let data = [];
+			if (unCachedKeys.length > 1) {
+				const batch = module.client.batch();
+				unCachedKeys.forEach(k => batch.hGetAll(k));
+				data = await helpers.execBatch(batch);
+			} else if (unCachedKeys.length === 1) {
+				data = [await module.client.hGetAll(unCachedKeys[0])];
+			}
+			return data;
+		});
 
 		// convert empty objects into null for back-compat with node_redis
-		data = data.map((elem) => {
+		cachedData = cachedData.map((elem) => {
 			if (!Object.keys(elem).length) {
 				return null;
 			}
 			return elem;
 		});
 
-		unCachedKeys.forEach((key, i) => {
-			cachedData[key] = data[i] || null;
-			cache.set(key, cachedData[key]);
-		});
-
 		if (!Array.isArray(fields) || !fields.length) {
-			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+			return cachedData.map(data => (data ? { ...data } : null));
 		}
-		return keys.map((key) => {
-			const item = cachedData[key] || {};
+		return cachedData.map((data) => {
+			const item = data || {};
 			const result = {};
 			fields.forEach((field) => {
 				result[field] = item[field] !== undefined ? item[field] : null;

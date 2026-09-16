@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "တစ်ရက်အတွင်း ပို့စ်များတွင် အလံပြနိုင်သည့် အများဆုံးအကြိမ်",
 	"flags.limit-user-flags-per-day": "နေ့စဉ် သုံးစွဲသူအလံ ကန့်သတ်ချက်",
 	"flags.limit-user-flags-per-day-help": "တစ်ရက်အတွင်း သုံးစွဲသူများကို အလံပြနိုင်သည့် အများဆုံးအကြိမ်",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "ဆန့်ကျင်မဲ အနည်းဆုံးရောက်လျှင် အလိုအလျောက်အလံတင်မည်",
 	"flags.auto-flag-on-downvote-threshold-help": "ဆန့်ကျင်မဲအနည်းဆုံးသို့ရောက်ပါက အလိုအလျောက်အလံတင်ရန် သတ်မှတ်ချက်",
 	"flags.auto-resolve-on-ban": "ပိတ်ပင်ပါက အလံများ အလိုအလျောက်ဖြေရှင်းမည်",

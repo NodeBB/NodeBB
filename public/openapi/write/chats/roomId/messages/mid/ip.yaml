@@ -33,3 +33,5 @@ get:
                 properties:
                   ip:
                     type: string
+                    nullable: true
+                    description: message IP address, or null if not available

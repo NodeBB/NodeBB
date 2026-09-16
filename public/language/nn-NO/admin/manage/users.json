@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Brukar-ID",
 	"search.username": "Søk etter brukarnamn",
 	"search.username-placeholder": "Brukarnamn",
+	"search.fullname": "By Full Name",
 	"search.email": "Søk etter e-post",
 	"search.email-placeholder": "E-post",
 	"search.ip": "Søk etter IP-adresse",

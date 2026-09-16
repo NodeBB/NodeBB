@@ -9,6 +9,7 @@ const util = require('util');
 const db = require('./mocks/databasemock');
 const request = require('../src/request');
 const api = require('../src/api');
+const apiController = require('../src/controllers/api');
 const categories = require('../src/categories');
 const topics = require('../src/topics');
 const posts = require('../src/posts');
@@ -61,6 +62,32 @@ describe('Controllers', () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/config`);
 		assert.equal(response.statusCode, 200);
 		assert(body.csrf_token);
+	});
+
+	it('should expose notification settings used by client-side subscription hints', async () => {
+		await Promise.all([
+			user.setSetting(fooUid, 'notificationType_new-reply', 'none'),
+			user.setSetting(fooUid, 'notificationType_new-topic-with-tag', 'none'),
+		]);
+
+		try {
+			const config = await apiController.loadConfig({
+				uid: fooUid,
+				loggedIn: true,
+				user: { uid: fooUid },
+				query: {},
+				headers: {},
+				body: {},
+				session: {},
+			});
+			assert.strictEqual(config['notificationType_new-reply'], 'none');
+			assert.strictEqual(config['notificationType_new-topic-with-tag'], 'none');
+		} finally {
+			await Promise.all([
+				user.setSetting(fooUid, 'notificationType_new-reply', 'notification'),
+				user.setSetting(fooUid, 'notificationType_new-topic-with-tag', 'notification'),
+			]);
+		}
 	});
 
 	it('should load /config with no csrf_token as spider', async () => {
@@ -733,17 +760,11 @@ describe('Controllers', () => {
 		});
 
 		describe('abort behaviour', () => {
-			let jar;
-			let token;
-			const username = utils.generateUUID().slice(0, 10);
-			const password = utils.generateUUID();
-
-			beforeEach(async () => {
-				jar = (await helpers.registerUser({ username, password })).jar;
-				token = await helpers.getCsrfToken(jar);
-			});
-
 			it('should terminate the session and send user back to index if interstitials remain', async () => {
+				const username = utils.generateUUID().slice(0, 10);
+				const password = utils.generateUUID();
+				const { jar } = await helpers.registerUser({ username, password });
+				const token = await helpers.getCsrfToken(jar);
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
 					jar,
 					maxRedirect: 0,
@@ -759,7 +780,12 @@ describe('Controllers', () => {
 			});
 
 			it('should preserve the session and send user back to user profile if no interstitials remain (e.g. GDPR OK + email change cancellation)', async () => {
-				// Submit GDPR consent
+				const username = utils.generateUUID().slice(0, 10);
+				const password = utils.generateUUID();
+				const { jar } = await helpers.registerUser({ username, password });
+				const token = await helpers.getCsrfToken(jar);
+
+				// Submit GDPR consent and TOS acceptance
 				await request.post(`${nconf.get('url')}/register/complete`, {
 					jar,
 					maxRedirect: 0,
@@ -770,6 +796,7 @@ describe('Controllers', () => {
 					body: {
 						gdpr_agree_data: 'on',
 						gdpr_agree_email: 'on',
+						'agree-terms': 'on',
 					},
 				});
 
@@ -787,8 +814,9 @@ describe('Controllers', () => {
 						password: password,
 					},
 				});
-				// Start email change flow, this
-				await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
+				// Start email change flow, this sets req.session.registration.updateEmail = true
+				const result = await request.get(`${nconf.get('url')}/me/edit/email`, { jar });
+				assert.strictEqual(result.response.statusCode, 200, JSON.stringify(result.response, null, 2));
 
 				const { response } = await request.post(`${nconf.get('url')}/register/abort`, {
 					jar,
@@ -800,7 +828,10 @@ describe('Controllers', () => {
 				});
 
 				assert.strictEqual(response.statusCode, 302);
-				assert(response.headers.location.match(/\/uid\/\d+$/));
+				assert(response.headers.location.match(/\/uid\/\d+$/), JSON.stringify({
+					response,
+					tos: meta.config.termsOfUse,
+				}, null, 2));
 			});
 		});
 	});
@@ -2135,6 +2166,31 @@ describe('Controllers', () => {
 			], fooUid);
 			assert.deepStrictEqual(selectedCids, [category2.cid]);
 			assert.strictEqual(selectedCategory.cid, category2.cid);
+		});
+
+		describe('.buildTitle()', () => {
+			it('should not prefix a right-to-left mark for ltr languages', async () => {
+				const title = await controllerHelpers.buildTitle('shishko', 'en-GB', 'chats');
+				assert(!title.startsWith('\u200F'));
+				assert(title.startsWith('shishko | '));
+			});
+
+			it('should prefix a right-to-left mark for rtl languages', async () => {
+				const title = await controllerHelpers.buildTitle('shishko', 'he', 'chats');
+				assert(title.startsWith('\u200Fshishko | '));
+			});
+
+			it('should not double the right-to-left mark if the layout already has one', async () => {
+				const oldLayout = meta.config.titleLayout;
+				meta.config.titleLayout = '\u200F{pageTitle} | {browserTitle}';
+				try {
+					const title = await controllerHelpers.buildTitle('shishko', 'he', 'chats');
+					assert(title.startsWith('\u200Fshishko | '));
+					assert(!title.startsWith('\u200F\u200F'));
+				} finally {
+					meta.config.titleLayout = oldLayout;
+				}
+			});
 		});
 	});
 

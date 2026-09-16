@@ -63,7 +63,7 @@ const templateToData = {
 		getTopics: async (sets, req, start, stop) => {
 			let pids = await db.getSortedSetRevRangeByScore(sets, start, stop - start + 1, '+inf', 1);
 			pids = await privileges.posts.filter('topics:read', pids, req.uid);
-			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
+			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false, extraFields: ['contentWarning'] });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},
 		getItemCount: async (sets) => {
@@ -82,7 +82,7 @@ const templateToData = {
 		getTopics: async (sets, req, start, stop) => {
 			let pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
 			pids = await privileges.posts.filter('topics:read', pids, req.uid);
-			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false });
+			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false, extraFields: ['contentWarning'] });
 			return { posts: postObjs, nextStart: stop + 1 };
 		},
 		getItemCount: async (sets) => {

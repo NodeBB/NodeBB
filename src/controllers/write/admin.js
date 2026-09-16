@@ -239,6 +239,54 @@ Admin.activitypub.removeCoreDomain = async (req, res) => {
 	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
 };
 
+Admin.activitypub.getHashtags = async (req, res) => {
+	const hashtags = await activitypub.hashtags.list();
+	const relay = await activitypub.hashtags.getRelay();
+	helpers.formatApiResponse(200, res, { hashtags, relay });
+};
+
+Admin.activitypub.addHashtag = async (req, res) => {
+	let { tag, cid } = req.body;
+
+	if (!tag || !tag.trim()) {
+		return helpers.formatApiResponse(400, res);
+	}
+	tag = tag.trim().toLowerCase();
+
+	if (cid) {
+		cid = parseInt(cid, 10);
+		const categories = require('../../categories');
+		const exists = await categories.exists(cid);
+		if (!exists) {
+			return helpers.formatApiResponse(400, res);
+		}
+	}
+
+	await activitypub.hashtags.follow(tag, cid);
+	helpers.formatApiResponse(200, res, await activitypub.hashtags.list());
+};
+
+Admin.activitypub.removeHashtag = async (req, res) => {
+	const { tag } = req.params;
+	await activitypub.hashtags.unfollow(tag);
+	helpers.formatApiResponse(200, res, await activitypub.hashtags.list());
+};
+
+Admin.activitypub.getHashtagRelay = async (req, res) => {
+	const relay = await activitypub.hashtags.getRelay();
+	helpers.formatApiResponse(200, res, { relay });
+};
+
+Admin.activitypub.setHashtagRelay = async (req, res) => {
+	const { host } = req.body;
+	if (!host || !host.trim()) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	await activitypub.hashtags.setRelay(host);
+	helpers.formatApiResponse(200, res, { relay: host });
+};
+
 Admin.plugins = {};
 
 Admin.plugins.install = async (req, res) => {

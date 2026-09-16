@@ -10,31 +10,29 @@ const notifications = require('../notifications');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const tx = require('../translator');
-const topics = require('../topics');
 const posts = require('../posts');
+const categories = require('../categories');
+const utils = require('../utils');
 const user = require('./index');
 
 const UserNotifications = module.exports;
 
 UserNotifications.get = async function (uid) {
-	const { hideReadNotifications } = await user.getSettings(uid);
-
 	if (parseInt(uid, 10) <= 0) {
 		return { read: [], unread: [] };
 	}
+	const { hideReadNotifications } = await user.getSettings(uid);
+	let [unreadNids, readNids] = await Promise.all([
+		db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 49),
+		hideReadNotifications ? [] : db.getSortedSetRevRange(`uid:${uid}:notifications:read`, 0, 49),
+	]);
+	readNids = readNids.slice(0, 50 - unreadNids.length);
+	const [unread, read] = await Promise.all([
+		UserNotifications.getNotifications(unreadNids, uid, unreadNids.map(() => false)),
+		UserNotifications.getNotifications(readNids, uid, readNids.map(() => true)),
+	]);
 
-	let unread = await getNotificationsFromSet(`uid:${uid}:notifications:unread`, uid, 0, 49);
-	unread = unread.filter(Boolean);
-	let read = [];
-	if (!hideReadNotifications && unread.length < 50) {
-		read = await getNotificationsFromSet(`uid:${uid}:notifications:read`, uid, 0, 49 - unread.length);
-	}
-
-	return await plugins.hooks.fire('filter:user.notifications.get', {
-		uid,
-		read: read.filter(Boolean),
-		unread: unread,
-	});
+	return await plugins.hooks.fire('filter:user.notifications.get', { uid, read, unread });
 };
 
 async function filterNotifications(nids, filter) {
@@ -54,12 +52,17 @@ UserNotifications.getAll = async function (uid, filter) {
 UserNotifications.getAllWithCounts = async function (uid, filter) {
 	const nids = await getAllNids(uid);
 	const keys = nids.map(nid => `notifications:${nid}`);
-	let notifications = await db.getObjectsFields(keys, ['nid', 'type']);
+	let notifications = await db.getObjectsFields(keys, ['nid', 'type', 'pid']);
+
+	const postNotifications = notifications.filter(n => n && n.pid);
+	const pids = _.uniq(postNotifications.map(n => String(n.pid)));
+	const visiblePids = new Set(await privileges.posts.filter('topics:read', pids, uid));
+	notifications = notifications.filter(n => !n.pid || visiblePids.has(String(n.pid)));
+
 	const counts = {};
 	notifications.forEach((n) => {
 		if (n && n.type) {
-			counts[n.type] = counts[n.type] || 0;
-			counts[n.type] += 1;
+			counts[n.type] = (counts[n.type] || 0) + 1;
 		}
 	});
 	if (filter) {
@@ -94,11 +97,6 @@ async function deleteUserNids(nids, uid) {
 	], nids);
 }
 
-async function getNotificationsFromSet(set, uid, start, stop) {
-	const nids = await db.getSortedSetRevRange(set, start, stop);
-	return await UserNotifications.getNotifications(nids, uid);
-}
-
 UserNotifications.ownsNids = async function (nids, uid) {
 	const [isInRead, isInUnread] = await Promise.all([
 		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
@@ -107,17 +105,21 @@ UserNotifications.ownsNids = async function (nids, uid) {
 	return nids.map((nid, index) => (isInRead[index] || isInUnread[index]));
 };
 
-UserNotifications.getNotifications = async function (nids, uid) {
+UserNotifications.getNotifications = async function (nids, uid, readState) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return [];
 	}
 
 	const [notifObjs, isRead, isUnread, userSettings] = await Promise.all([
 		notifications.getMultiple(nids),
-		db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
-		db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
+		readState ? readState : db.isSortedSetMembers(`uid:${uid}:notifications:read`, nids),
+		readState ? readState.map(r => !r) : db.isSortedSetMembers(`uid:${uid}:notifications:unread`, nids),
 		user.getSettings(uid),
 	]);
+
+	const postNotifications = notifObjs.filter(n => n && n.pid);
+	const pids = _.uniq(postNotifications.map(n => String(n.pid)));
+	const visiblePids = new Set(await privileges.posts.filter('topics:read', pids, uid));
 
 	const deletedNids = [];
 	let notificationData = notifObjs.filter((notification, index) => {
@@ -125,6 +127,9 @@ UserNotifications.getNotifications = async function (nids, uid) {
 			deletedNids.push(nids[index]);
 		}
 		if (notification) {
+			if (notification.pid && !visiblePids.has(String(notification.pid))) {
+				return false;
+			}
 			notification.read = isRead[index];
 			notification.readClass = !notification.read ? 'unread' : '';
 		}
@@ -165,7 +170,7 @@ UserNotifications.getUnreadInterval = async function (uid, interval) {
 	}
 	const min = Date.now() - times[interval];
 	const nids = await db.getSortedSetRevRangeByScore(`uid:${uid}:notifications:unread`, 0, 20, '+inf', min);
-	return await UserNotifications.getNotifications(nids, uid);
+	return await UserNotifications.getNotifications(nids, uid, nids.map(() => false));
 };
 
 UserNotifications.getDailyUnread = async function (uid) {
@@ -219,28 +224,90 @@ UserNotifications.deleteAll = async function (uid) {
 
 UserNotifications.sendTopicNotificationToFollowers = async function (uid, topicData, postData) {
 	try {
-		const [displayname, allFollowers, title] = await Promise.all([
+		const { tid, cid, title, tags } = topicData;
+		let [displayname, userFollowers, tagFollowers, categoryFollowers] = await Promise.all([
 			user.getNotificationDisplayname(uid),
-			db.getSortedSetRange(`followers:${uid}`, 0, -1),
-			topics.getNotificationTitle(topicData.tid, 'title'),
+			// New topic notifications only sent for local-to-local follows only
+			utils.isNumber(uid) ? db.getSortedSetRange(`followers:${uid}`, 0, -1) : [],
+			db.getSortedSetRange(tags.map(tag => `tag:${tag.value}:followers`), 0, -1),
+			db.getSortedSetRangeByScore(
+				`cid:${topicData.cid}:uid:watch:state`, 0, -1,
+				categories.watchStates.watching,
+				'+inf'
+			),
 		]);
-		const followers = await privileges.categories.filterUids('topics:read', topicData.cid, allFollowers);
-		if (!followers.length) {
-			return;
+
+		const userFollowersSet = new Set(userFollowers);
+		tagFollowers = _.uniq(tagFollowers).filter(_uid => !userFollowersSet.has(_uid) && _uid !== String(uid));
+		categoryFollowers = categoryFollowers.filter(_uid => !userFollowersSet.has(_uid) && _uid !== String(uid));
+
+		const uidsThatCanSeeTopic = new Set(
+			await privileges.categories.filterUids('topics:read', cid, [
+				...userFollowers, ...tagFollowers, ...categoryFollowers,
+			])
+		);
+		userFollowers = userFollowers.filter(_uid => uidsThatCanSeeTopic.has(_uid));
+		tagFollowers = tagFollowers.filter(_uid => uidsThatCanSeeTopic.has(_uid));
+		categoryFollowers = categoryFollowers.filter(_uid => uidsThatCanSeeTopic.has(_uid));
+
+		function createNotification(data) {
+			return notifications.create({
+				bodyLong: postData.content,
+				pid: postData.pid,
+				path: `/post/${encodeURIComponent(postData.pid)}`,
+				tid: tid,
+				from: uid,
+				...data,
+			});
 		}
 
-		const notifObj = await notifications.create({
-			type: 'new-topic',
-			bodyShort: tx.compile('notifications:user-posted-topic', displayname, title),
-			bodyLong: postData.content,
-			pid: postData.pid,
-			path: `/post/${postData.pid}`,
-			nid: `tid:${postData.tid}:uid:${uid}`,
-			tid: postData.tid,
-			from: uid,
-		});
+		async function sendUserNotification() {
+			const notifObj = await createNotification({
+				type: 'new-topic',
+				nid: `tid:${tid}:uid:${uid}`,
+				bodyShort: tx.compile('notifications:user-posted-topic', displayname, tx.escape(title)),
+			});
 
-		await notifications.push(notifObj, followers);
+			await notifications.push(notifObj, userFollowers);
+		}
+
+		async function sendTagNotification() {
+			const notifBase = 'notifications:user-posted-topic-with-tag';
+			let suffix = '';
+			let tagArgs = tags.map(tag => tx.escape(tag.value));
+			if (tagArgs.length === 2) {
+				suffix = '-dual';
+			} else if (tagArgs.length === 3) {
+				suffix = '-triple';
+			} else if (tagArgs.length > 3) {
+				suffix = '-multiple';
+				tagArgs = [tagArgs.join(', ')];
+			}
+
+			const notification = await createNotification({
+				type: 'new-topic-with-tag',
+				nid: `new_topic:tags:${tagArgs.join('.')}:tid:${tid}:uid:${uid}`,
+				bodyShort: tx.compile(`${notifBase}${suffix}`, displayname, tx.escape(title), ...tagArgs),
+			});
+			await notifications.push(notification, tagFollowers);
+		}
+
+		async function sendCategoryNotification() {
+			const categoryName = await categories.getCategoryField(cid, 'name');
+			const notifBase = 'notifications:user-posted-topic-in-category';
+			const notification = await createNotification({
+				type: 'new-topic-in-category',
+				nid: `new_topic:tid:${tid}:uid:${uid}`,
+				bodyShort: tx.compile(notifBase, displayname, tx.escape(title), categoryName),
+			});
+			await notifications.push(notification, categoryFollowers);
+		}
+
+		await Promise.all([
+			userFollowers.length && sendUserNotification(),
+			tagFollowers.length && sendTagNotification(),
+			categoryFollowers.length && sendCategoryNotification(),
+		]);
 	} catch (err) {
 		winston.error(err.stack);
 	}

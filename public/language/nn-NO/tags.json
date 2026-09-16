@@ -13,5 +13,6 @@
     "watching.description": "Varsle meg om nye innlegg",
     "not-watching.description": "Ikkje varsle meg om nye innlegg",
     "following-tag.message": "Du vil no motta varsel når nokon postar eit emne med dette emneordet.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Du vil ikkje motta varsel når nokon postar eit emne med dette emneordet."
 }

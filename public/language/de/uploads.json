@@ -6,6 +6,6 @@
     "no-uploads-found": "Keine Uploads gefunden",
     "public-uploads-info": "Uploads sind öffentlich, alle Besucher können diese sehen.",
     "private-uploads-info": "Uploads sind privat, nur eingeloggte Benutzer können diese sehen.",
-    "delete-upload": "Delete Upload",
-    "delete-upload-confirm": "Are you sure you want to delete this upload?"
+    "delete-upload": "Upload löschen",
+    "delete-upload-confirm": "Bist du sicher, dass du diesen Upload löschen möchtest?"
 }

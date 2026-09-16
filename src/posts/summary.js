@@ -34,7 +34,7 @@ module.exports = function (Posts) {
 		const tids = _.uniq(posts.map(p => p && p.tid));
 
 		const [users, topicsAndCategories] = await Promise.all([
-			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status']),
+			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'fullnameEmoji']),
 			getTopicAndCategories(tids),
 		]);
 

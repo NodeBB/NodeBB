@@ -106,8 +106,15 @@ define('chat', [
 				const html = await app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms });
 				const listEl = chatsListEl.get(0);
 
+				const prevFirstRoom = listEl.querySelector('[data-roomid]');
+				const prevFirstRoomKey = prevFirstRoom && `${prevFirstRoom.getAttribute('data-roomid')}:${prevFirstRoom.classList.contains('unread')}`;
 				chatsListEl.find('*').not('.navigation-link').remove();
 				chatsListEl.prepend(html);
+				const firstRoom = listEl.querySelector('[data-roomid]');
+				const firstRoomKey = firstRoom && `${firstRoom.getAttribute('data-roomid')}:${firstRoom.classList.contains('unread')}`;
+				if (prevFirstRoomKey && prevFirstRoomKey !== firstRoomKey) {
+					listEl.scrollTop = 0;
+				}
 				chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
 					if (['.user-link', '.mark-read'].some(className => ev.target.closest(className))) {
 						return;
@@ -193,8 +200,7 @@ define('chat', [
 				modal.attr('new-message', data.self === 0 ? 1 : 0);
 			}
 			data.message.self = data.self;
-			data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-			data.message.timestampISO = utils.toISOString(data.message.timestamp);
+			data.message.timestampISO = utils.toISOString(Math.min(Date.now(), data.message.timestamp));
 			addMessageToModal(data);
 		}
 	};

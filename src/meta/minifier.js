@@ -6,7 +6,6 @@ const async = require('async');
 const winston = require('winston');
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
-const clean = require('postcss-clean');
 const rtlcss = require('rtlcss');
 const sass = require('../utils').getSass();
 
@@ -224,6 +223,7 @@ actions.buildCSS = async function buildCSS(data) {
 			importers: [new sass.NodePackageImporter()],
 		};
 		if (data.minify) {
+			opts.style = 'compressed';
 			opts.silenceDeprecations = [
 				'legacy-js-api', 'color-functions',
 				'global-builtin', 'import', 'if-function',
@@ -243,11 +243,6 @@ actions.buildCSS = async function buildCSS(data) {
 			});
 		}
 		const postcssArgs = [autoprefixer];
-		if (data.minify) {
-			postcssArgs.push(clean({
-				processImportFrom: ['local'],
-			}));
-		}
 		return await postcss(postcssArgs).process(css, {
 			from: undefined,
 		});

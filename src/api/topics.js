@@ -289,6 +289,8 @@ topicsAPI.bump = async (caller, { tid }) => {
 
 	await topics.markAsUnreadForAll(tid);
 	topics.pushUnreadCount(caller.uid);
+
+	activitypub.out.announce.topic(tid, caller.uid);
 };
 
 topicsAPI.move = async (caller, { tid, cid }) => {
@@ -353,7 +355,9 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 						activitypub.out.move.context(caller.uid, tid);
 						activitypub.out.announce.topic(tid);
 					}
-					activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+					if (utils.isNumber(topicData.cid) && parseInt(topicData.cid, 10) > 0) {
+						activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+					}
 				});
 			}
 

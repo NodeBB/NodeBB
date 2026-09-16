@@ -43,8 +43,7 @@ define('forum/chats/events', [
 		}
 		data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 		data.message.self = data.self;
-		data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-		data.message.timestampISO = utils.toISOString(data.message.timestamp);
+		data.message.timestampISO = utils.toISOString(Math.min(Date.now(), data.message.timestamp));
 		const isMessageForCurrentRoom = parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10);
 
 		if (isMessageForCurrentRoom) {

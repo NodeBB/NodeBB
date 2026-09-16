@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Maximum number of public key fetch requests allowed per minute per IP. (Default: 256)",
 	"allowLoopback": "لوکل لوپ بیک پروسیسنگ کی اجازت دیں",
 	"allowLoopback-help": "صرف ڈیبگنگ کے لیے مفید۔ اسے غیر فعال رکھنا بہتر ہے۔",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
 	"parentTraversalDepth": "Parent traversal depth",
 	"parentTraversalDepth-help": "Maximum number of times to traverse up the reply chain when building context. (Default: 50)",
 
@@ -101,9 +103,29 @@
 	"analytics.term": "Time scale",
 	"analytics.hourly": "Hourly",
 	"analytics.daily": "Daily",
+	"analytics.activities-by-type": "Activities by Type",
+	"analytics.activities-by-type-empty": "No activities recorded yet.",
+	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
 	"errors.payload-gone": "The payload for this error no longer exists.",
 	"errors.hostname": "Hostname",
-	"errors.type": "Type"
+	"errors.type": "Type",
+
+	"hashtags": "Hashtags",
+	"hashtags.intro": "Follow global hashtag actors to receive content matching specific tags. The instance actor follows the relay's hashtag actor, which sends Announce activities for matching content. Use auto-categorization rules to route content to categories.",
+	"hashtags.relay-host": "Relay Host",
+	"hashtags.relay-host-help": "Choose the relay provider for hashtag actors.",
+	"hashtags.save-relay": "Save",
+	"hashtags.relay-change-warning": "Changing the relay host will unfollow all current hashtag actors and follow them on the new relay.",
+	"hashtags.follow": "Follow Hashtag",
+	"hashtags.modal.tag": "Hashtag",
+	"hashtags.modal.tag-help": "Enter the hashtag name without the # symbol (e.g., nodebb).",
+	"hashtags.modal.category": "Category",
+	"hashtags.modal.category-help": "Select a category to auto-route matching content.",
+	"hashtags.state-pending": "Pending",
+	"hashtags.state-active": "Active",
+	"hashtags.state-error": "Error",
+	"hashtags.table.tag": "Tag",
+	"hashtags.table.state": "State"
 }

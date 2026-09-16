@@ -13,5 +13,6 @@
     "watching.description": "새로운 토픽을 알림으로 받습니다.",
     "not-watching.description": "새로운 토픽 알림을 받지 않습니다.",
     "following-tag.message": "이제 이 태그가 포함된 토픽이 게시되면 알림을 받게 됩니다.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "이 태그가 포함된 토픽이 게시되면 알림을 받지 않습니다."
 }

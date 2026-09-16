@@ -8,6 +8,8 @@
     "max-per-topic": "Tunnisteiden aihekohtainen enimmäismäärä",
     "min-length": "Tunnisteen vähimmäispituus",
     "max-length": "Tunnisteen enimmäispituus",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Liittyvät aiheet",
     "max-related-topics": "Näytettävien liittyvien aiheiden enimmäismäärä (jos ulkoasuteema tukee)"
 }

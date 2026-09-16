@@ -13,5 +13,6 @@
     "watching.description": "Yeni mövzular haqqında mənə bildir.",
     "not-watching.description": "Yeni mövzular haqqında məlumat vermə.",
     "following-tag.message": "Kimsə bu teqlə mövzu göndərdikdə bildirişlər alacaqsınız.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Kimsə bu teqlə mövzu göndərdikdə bildirişlər almayacaqsınız."
 }

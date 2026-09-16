@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Za iskanje vnesite ID uporabnika",
 	"search.username": "Po imenu uporabnika",
 	"search.username-placeholder": "Za iskanje vnesite uporabniško ime",
+	"search.fullname": "By Full Name",
 	"search.email": "Po e-poštnem naslovu",
 	"search.email-placeholder": "Za iskanje vnesite e-poštni naslov",
 	"search.ip": "Po IP naslovu",

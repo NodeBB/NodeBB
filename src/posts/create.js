@@ -39,6 +39,9 @@ module.exports = function (Posts) {
 		if (data.handle && !parseInt(uid, 10)) {
 			postData.handle = data.handle;
 		}
+		if (data.contentWarning) {
+			postData.contentWarning = data.contentWarning;
+		}
 		if (_activitypub) {
 			if (_activitypub.url) {
 				postData.url = _activitypub.url;
@@ -49,12 +52,15 @@ module.exports = function (Posts) {
 
 			// Rewrite emoji references to inline image assets
 			const property = postData.sourceContent && !postData.content ? 'sourceContent' : 'content';
-			postData[property] = activitypub.helpers.renderEmoji(postData[property], _activitypub.tag);
+			postData[property] = await activitypub.helpers.renderEmoji(postData[property], _activitypub.tag);
 
 			hasAttachment = _activitypub && _activitypub.attachment && _activitypub.attachment.length;
 		}
 
 		({ post: postData } = await plugins.hooks.fire('filter:post.create', { post: postData, data: data }));
+
+		const uploads = await Posts.uploads.getUploadsForPost(postData, isMain);
+		postData.uploads = JSON.stringify(uploads);
 		await db.setObject(`post:${postData.pid}`, postData);
 
 		const topicData = await topics.getTopicFields(tid, ['cid', 'pinned']);
@@ -68,7 +74,8 @@ module.exports = function (Posts) {
 			categories.onNewPostMade(topicData.cid, topicData.pinned, postData),
 			groups.onNewPostMade(postData),
 			addReplyTo(postData, timestamp),
-			Posts.uploads.sync(pid),
+			Posts.uploads.saveUploadsToPid(uploads, postData.pid),
+			Posts.uploads.saveSize(uploads),
 			hasAttachment ? Posts.attachments.update(pid, _activitypub.attachment) : null,
 		]);
 

@@ -227,12 +227,10 @@ async function markAsRead(req, tid) {
 
 async function loadCrosspostPrivilege(req, excludeCid) {
 	excludeCid = String(excludeCid || '');
-	let cidsUserCanCrosspost = crosspostCache.get(`uid:${req.uid}`);
-	if (cidsUserCanCrosspost === undefined) {
+	const cidsUserCanCrosspost = await crosspostCache.get(`uid:${req.uid}`, async () => {
 		const cids = await categories.getAllCidsFromSet('categories:cid');
-		cidsUserCanCrosspost = await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
-		crosspostCache.set(`uid:${req.uid}`, cidsUserCanCrosspost);
-	}
+		return await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
+	});
 	return cidsUserCanCrosspost.some(cid => cid !== excludeCid);
 }
 
@@ -437,7 +435,7 @@ topicsController.teaser = async function (req, res, next) {
 	if (!pid) {
 		return res.status(404).json('not-found');
 	}
-	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false });
+	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false, extraFields: ['contentWarning'] });
 	if (!postData.length) {
 		return res.status(404).json('not-found');
 	}

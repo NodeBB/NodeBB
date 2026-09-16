@@ -482,6 +482,22 @@ describe('User', () => {
 			assert.equal(data.users[1].username, 'brian');
 			assert.equal(data.users[2].username, 'bzari');
 		});
+
+		it('should not sort users by email', async () => {
+			await User.create({ username: 'crian1', email: 'd@c.com' }, { emailVerification: 'verify' });
+			await User.create({ username: 'caris2', email: 'c@c.com' }, { emailVerification: 'verify' });
+			await User.create({ username: 'czari3', email: 'a@c.com' }, { emailVerification: 'verify' });
+			const data = await User.search({
+				uid: testUid,
+				query: 'c',
+				sortBy: 'email',
+				paginate: false,
+			});
+			// sorted by username
+			assert.equal(data.users[0].username, 'caris2');
+			assert.equal(data.users[1].username, 'crian1');
+			assert.equal(data.users[2].username, 'czari3');
+		});
 	});
 
 	describe('.delete()', () => {
@@ -738,6 +754,7 @@ describe('User', () => {
 
 		describe('.updateProfile()', () => {
 			let uid;
+			let group;
 
 			it('should update a user\'s profile', async () => {
 				uid = await User.create({
@@ -746,12 +763,15 @@ describe('User', () => {
 					emailVerification: 'verify',
 				});
 
+				group = await groups.create({ name: 'updateProfileGroup' });
+				await groups.join(group.name, uid);
+
 				const data = {
 					uid: uid,
 					username: 'updatedUserName',
 					email: 'updatedEmail@me.com',
 					fullname: 'updatedFullname',
-					groupTitle: 'testGroup',
+					groupTitle: group.name,
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
 					password: '123456',
@@ -801,6 +821,19 @@ describe('User', () => {
 			it('should also generate an email confirmation code for the changed email', async () => {
 				const confirmSent = await User.email.isValidationPending(uid, 'updatedemail@me.com');
 				assert.strictEqual(confirmSent, true);
+			});
+
+			it('should reject a groupTitle for a group the user is not a member of', async () => {
+				const otherGroup = await groups.create({ name: 'notAMemberGroup' });
+				await assert.rejects(
+					apiUser.update({ uid: uid }, { uid: uid, groupTitle: otherGroup.name }),
+					{ message: '[[error:invalid-group-title]]' },
+				);
+				await groups.destroy(otherGroup.name);
+			});
+
+			after(async () => {
+				await groups.destroy(group.name);
 			});
 		});
 

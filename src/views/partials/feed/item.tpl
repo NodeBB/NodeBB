@@ -1,5 +1,5 @@
 <li component="category/topic" data-tid="{./topic.tid}" class="shadow-sm mb-3 rounded-2 border posts-list-item  {{{ if ./deleted }}} deleted{{{ else }}}{{{ if ./topic.deleted }}} deleted{{{ end }}}{{{ end }}}{{{ if ./topic.scheduled }}} scheduled{{{ end }}}" data-pid="{./pid}" data-uid="{./uid}" data-index="{./index}">
-	{{{ if (showThumbs && ./topic.thumbs.length)}}}
+	{{{ if ((!./contentWarning && showThumbs) && ./topic.thumbs.length) }}}
 	<div class="p-1 position-relative">
 		<div class="overflow-hidden rounded-1" style="max-height: 300px;">
 			<a href="{config.relative_path}/topic/{./topic.slug}">
@@ -30,7 +30,7 @@
 					<div class="text-sm">
 						<div class="post-author d-flex align-items-center gap-1">
 							<a class="d-inline d-lg-none lh-1 text-decoration-none" href="{config.relative_path}/user/{./user.userslug}">{{buildAvatar(./user, "16px", true, "not-responsive")}}</a>
-							<a class="lh-normal fw-semibold text-nowrap" href="{config.relative_path}/user/{./user.userslug}">{{txDisplayname(./user)}}</a>
+							<a class="lh-normal fw-semibold text-nowrap" href="{config.relative_path}/user/{./user.userslug}">{{renderShortcodeEmoji(txDisplayname(./user), ./user.fullnameEmoji)}}</a>
 						</div>
 						<span class="timeago text-muted lh-normal" title="{./timestampISO}"></span>
 					</div>
@@ -48,7 +48,7 @@
 				<div>
 					{{{ if !./topic.generatedTitle }}}
 					<a class="lh-1 topic-title fw-semibold fs-5 text-reset line-clamp-2" href="{config.relative_path}/topic/{./topic.slug}">
-						{./topic.title}
+						{{renderShortcodeEmoji(./topic.title, ./topic.titleEmoji)}}
 					</a>
 					{{{ end }}}
 				</div>
@@ -56,7 +56,14 @@
 
 			<div component="post/content" class="content text-sm text-break position-relative line-clamp-6">
 				<a href="{config.relative_path}/post/{encodeURIComponent(./pid)}" class="stretched-link"></a>
+				{{{ if ./contentWarning }}}
+				<details class="content-warning">
+				<summary>{./contentWarning}</summary>
 				{{{ if ./txContent}}}{{tx(./content)}}{{{ else }}}{{./content}}{{{ end }}}
+				</details>
+				{{{ else }}}
+				{{{ if ./txContent}}}{{tx(./content)}}{{{ else }}}{{./content}}{{{ end }}}
+				{{{ end }}}
 			</div>
 			<button component="show/more" class="btn btn-link btn-sm fw-semibold hidden ff-secondary text-secondary ms-auto me-auto">{{tx("world:see-more")}}</button>
 			<hr class="my-2"/>

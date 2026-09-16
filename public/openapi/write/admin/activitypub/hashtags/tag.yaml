@@ -1,0 +1,24 @@
+delete:
+  tags:
+    - admin
+  summary: Unfollow a hashtag
+  description: Remove a followed hashtag and its auto-categorization rule
+  parameters:
+    - in: path
+      name: tag
+      schema:
+        type: string
+      required: true
+      example: nodebb
+  responses:
+    "200":
+      description: Hashtag unfollowed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                $ref: ../../../../components/schemas/admin/hashtags.yaml#/HashtagsArray

@@ -103,7 +103,12 @@ editController.email = async function (req, res, next) {
 	req.session.registration = req.session.registration || {};
 	req.session.registration.updateEmail = true;
 	req.session.registration.uid = targetUid;
-	helpers.redirect(res, '/register/complete');
+	req.session.save((err) => {
+		if (err) {
+			return next(err);
+		}
+		helpers.redirect(res, '/register/complete');
+	});
 };
 
 async function renderRoute(name, req, res) {

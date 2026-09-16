@@ -330,9 +330,17 @@ helpers.buildTitle = async function (pageTitle, userLang, template) {
 	], userLang);
 
 	const titleLayout = meta.config.titleLayout || `${pageTitle ? '{pageTitle} | ' : ''}{browserTitle}`;
-	const title = titleLayout
+	let title = titleLayout
 		.replace('{pageTitle}', () => titleTranslated)
 		.replace('{browserTitle}', () => browserTitleTranslated);
+
+	// The browser tab has no dir attribute, so it picks the title's direction from
+	// its first strongly-directional character. An RTL user viewing a page whose
+	// title starts with a Latin string (e.g. a username) would otherwise get an
+	// LTR title. Prefix a right-to-left mark to keep the direction stable.
+	if (translator.languageDirection(userLang) === 'rtl' && !title.startsWith('\u200F')) {
+		title = `\u200F${title}`;
+	}
 
 	return utils.decodeHTMLEntities(title);
 };

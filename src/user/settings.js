@@ -65,13 +65,13 @@ module.exports = function (User) {
 				parseInt(settings.unreadCutoff, 10) :
 				meta.config.unreadCutoff,
 		));
-		settings.topicsPerPage = Math.max(1, Math.min(
+		settings.topicsPerPage = Math.max(2, Math.min(
 			meta.config.maxTopicsPerPage,
 			settings.topicsPerPage ?
 				parseInt(settings.topicsPerPage, 10) :
 				defaultTopicsPerPage,
 		));
-		settings.postsPerPage = Math.max(1, Math.min(
+		settings.postsPerPage = Math.max(2, Math.min(
 			meta.config.maxPostsPerPage,
 			settings.postsPerPage ?
 				parseInt(settings.postsPerPage, 10) :

@@ -12,7 +12,7 @@
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regulärer Ausdruck",
 	"headers.acao-help": "Um den Zugriff zu allen Seiten zu verbieten, leer lassen.",
-	"headers.acao-regex-help": "Geben Sie einen regulären Ausdruck ein, um Seiten dynamisch zu erlauben. Um den Zugriff zu allen Seiten zu verbieten, leer lassen.",
+	"headers.acao-regex-help": "Gebe einen regulären Ausdruck ein, um Seiten dynamisch zu erlauben. Um den Zugriff zu allen Seiten zu verbieten, leer lassen.",
 	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
@@ -29,7 +29,7 @@
 	"hsts.preload": "Vorabladen von HSTS Header erlauben",
 	"hsts.help": "Wenn aktiviert, wird ein HSTS-Header für diese Seite gesetzt. Du kannst wählen, ob du Subdomains und Preloading-Flags in deinen Header aufnehmen möchtest. Im Zweifelsfall kannst du diese unmarkiert lassen.",
 	"traffic-management": "Traffic Management",
-	"traffic.help": "NodeBB verwendet ein Modul, das in Situationen mit hohem Datenverkehr automatisch Anfragen ablehnt. Sie können diese Einstellungen hier anpassen, obwohl die Standardeinstellungen ein guter Ausgangspunkt ist.",
+	"traffic.help": "NodeBB verwendet ein Modul, das in Situationen mit hohem Datenverkehr automatisch Anfragen ablehnt. Du kannst diese Einstellungen hier anpassen, obwohl die Standardeinstellungen ein guter Ausgangspunkt ist.",
 	"traffic.enable": "Traffic Management aktivieren",
 	"traffic.event-lag": "Eventschleifenverzögerungsschwelle (in Millisekunden)",
 	"traffic.event-lag-help": "Das Heruntersetzen dieses Werts reduziert die Ladezeiten, aber wird auch dafür sorgen, dass die \"Übermäßige Belastung\" nachricht öfter angezeigt wird. (Neustart erforderlich)",
@@ -43,5 +43,5 @@
 
 	"compression.settings": "Komprimierungseinstellungen",
 	"compression.enable": "Komprimierung einschalten",
-	"compression.help": "Diese Einstellung aktiviert die gzip-Komprimierung. Für eine produktive Website mit hohem Datenverkehr ist es am besten, die Komprimierung auf der Ebene des Reverse-Proxys zu implementieren. Sie können sie hier zu Testzwecken aktivieren."
+	"compression.help": "Diese Einstellung aktiviert die gzip-Komprimierung. Für eine produktive Website mit hohem Datenverkehr ist es am besten, die Komprimierung auf der Ebene des Reverse-Proxys zu implementieren. Du kannst sie hier zu Testzwecken aktivieren."
 }

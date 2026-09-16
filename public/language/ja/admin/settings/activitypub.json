@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "IPアドレスあたり1分間に許可される公開鍵取得リクエストの最大数。（デフォルト: 256）",
 	"allowLoopback": "ループバック処理を許可",
 	"allowLoopback-help": "デバッグ目的でのみ有用です。無効のままにしておくことをお勧めします。",
+	"allowSplitDomain": "Allow split-domain federation",
+	"allowSplitDomain-help": "Enable to allow actors whose WebFinger handle domain differs from their ActivityPub document domain. This is useful for instances that separate identity (WebFinger) from content hosting (ActivityPub). Note: the canonical (WebFinger) domain is the trust anchor — its WebFinger record must reference the actor document, and, when both sides publish a public key, the keys must match. Handles verified without a key match rely on the URL reference alone, so treat split-domain handles from domains with weak WebFinger hygiene with caution.",
 	"parentTraversalDepth": "返信チェーンのたどり深度",
 	"parentTraversalDepth-help": "コンテキストを構築する際に、返信チェーンを上方向にたどる最大回数。（デフォルト: 50）",
 
@@ -25,7 +27,7 @@
 	"rules": "カテゴリ分け",
 	"rules-intro": "ActivityPubで発見されたコンテンツは、特定のルール（ハッシュタグなど）に基づいて自動的にカテゴリ分けできます",
 	"rules.modal.title": "仕組み",
-	"rules.modal.instructions": "Any incoming content is checked against these categorization rules, and matching content is automatically cross-posted to the category of choice.<br /><br /><strong>N.B.</strong> Content that is already categorized (i.e. in a remote category) will still pass through these rules and may be cross-posted to additional categories.",
+	"rules.modal.instructions": "受信したすべてのコンテンツはこれらのカテゴリ分けルールと照合され、一致したコンテンツは指定したカテゴリへ自動的にクロスポストされます。<br /><br /><strong>注意:</strong> すでにカテゴリ分けされているコンテンツ（リモートカテゴリにあるものなど）もこれらのルールを通過し、追加のカテゴリへクロスポストされる場合があります。",
 	"rules.add": "新しいルールを追加",
 	"rules.help-hashtag": "この大文字小文字を区別しないハッシュタグを含むスレッドが一致します。<code>#</code>記号は入力しないでください",
 	"rules.help-user": "入力したユーザーが作成したスレッドが一致します。ハンドルまたは完全なIDを入力（例: <code>bob@example.org</code>または<code>https://example.org/users/bob</code>）。",
@@ -101,9 +103,29 @@
 	"analytics.term": "時間単位",
 	"analytics.hourly": "時間別",
 	"analytics.daily": "日別",
+	"analytics.activities-by-type": "Activities by Type",
+	"analytics.activities-by-type-empty": "No activities recorded yet.",
+	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
 	"errors.intro": "このインスタンスでは、過去 24 時間以内に次の %1 件のエラーが記録されました。",
 	"errors.payload-gone": "このエラーのペイロードは既に存在しません。",
 	"errors.hostname": "ホスト名",
-	"errors.type": "タイプ"
+	"errors.type": "タイプ",
+
+	"hashtags": "Hashtags",
+	"hashtags.intro": "Follow global hashtag actors to receive content matching specific tags. The instance actor follows the relay's hashtag actor, which sends Announce activities for matching content. Use auto-categorization rules to route content to categories.",
+	"hashtags.relay-host": "Relay Host",
+	"hashtags.relay-host-help": "Choose the relay provider for hashtag actors.",
+	"hashtags.save-relay": "Save",
+	"hashtags.relay-change-warning": "Changing the relay host will unfollow all current hashtag actors and follow them on the new relay.",
+	"hashtags.follow": "Follow Hashtag",
+	"hashtags.modal.tag": "Hashtag",
+	"hashtags.modal.tag-help": "Enter the hashtag name without the # symbol (e.g., nodebb).",
+	"hashtags.modal.category": "Category",
+	"hashtags.modal.category-help": "Select a category to auto-route matching content.",
+	"hashtags.state-pending": "Pending",
+	"hashtags.state-active": "Active",
+	"hashtags.state-error": "Error",
+	"hashtags.table.tag": "Tag",
+	"hashtags.table.state": "State"
 }

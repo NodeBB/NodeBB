@@ -26,6 +26,7 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/:cid/watch/:member', [...middlewares, middleware.assert.category], controllers.write.categories.setWatchState);
 
 	setupApiRoute(router, 'get', '/:cid/privileges', [...middlewares], controllers.write.categories.getPrivileges);
+	setupApiRoute(router, 'post', '/:cid/privileges/copy', [...middlewares, middleware.checkRequired.bind(null, ['fromCid'])], controllers.write.categories.copyPrivileges);
 	setupApiRoute(router, 'put', '/:cid/privileges/:privilege', [...middlewares, middleware.checkRequired.bind(null, ['member'])], controllers.write.categories.setPrivilege);
 	setupApiRoute(router, 'delete', '/:cid/privileges/:privilege', [...middlewares], controllers.write.categories.setPrivilege);
 	setupApiRoute(router, 'delete', '/:cid/privileges/:privilege/:member', [...middlewares], controllers.write.categories.setPrivilege);

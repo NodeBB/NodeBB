@@ -171,11 +171,16 @@ Relays.broadcast = async (payload) => {
 	const followers = await Relays.getFollowers();
 	if (followers.length === 0) return;
 
+	// Create activities use fragment identifiers derived from the created object.
+	// A fragment is not sent during HTTP dereference, so relay followers must be
+	// given the created object itself rather than the non-dereferenceable Create.
+	const object = payload.type === 'Create' && payload.object ? payload.object : payload;
+
 	await activitypub.send('uid', 0, followers, {
 		id: `${nconf.get('url')}/post/${encodeURIComponent(payload.id)}#activity/announce/relay/${Date.now()}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/actor`,
 		to: [activitypub._constants.publicAddress],
-		object: payload,
+		object,
 	});
 };

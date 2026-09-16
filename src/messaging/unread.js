@@ -3,6 +3,7 @@
 const db = require('../database');
 const utils = require('../utils');
 const io = require('../socket.io');
+const plugins = require('../plugins');
 
 module.exports = function (Messaging) {
 	Messaging.getUnreadCount = async (uid) => {
@@ -28,10 +29,22 @@ module.exports = function (Messaging) {
 			return;
 		}
 
+		const prevTimestamp = parseInt(
+			await db.getObjectField(`uid:${uid}:chat:rooms:read`, roomId), 10
+		) || 0;
+		const timestamp = Date.now();
+
 		await Promise.all([
 			db.sortedSetRemove(`uid:${uid}:chat:rooms:unread`, roomId),
-			db.setObjectField(`uid:${uid}:chat:rooms:read`, roomId, Date.now()),
+			db.setObjectField(`uid:${uid}:chat:rooms:read`, roomId, timestamp),
 		]);
+
+		plugins.hooks.fire('action:messaging.markRead', {
+			uid: uid,
+			roomId: roomId,
+			timestamp: timestamp,
+			prevTimestamp: prevTimestamp,
+		});
 	};
 
 	Messaging.hasRead = async (uids, roomId) => {

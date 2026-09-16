@@ -35,6 +35,7 @@
     "digest.subject": "Kopsavilkums par %1",
     "digest.title.day": "Your Daily Digest",
     "digest.title.week": "Your Weekly Digest",
+    "digest.title.biweek": "Your Bi-Weekly Digest",
     "digest.title.month": "Your Monthly Digest",
     "notif.chat.new-message-from-user": "New message from \"%1\"",
     "notif.chat.new-message-from-user-in-room": "New message from %1 in room %2",

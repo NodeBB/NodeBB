@@ -235,6 +235,13 @@ Mocks.profile = async (actors) => {
 			return null;
 		}
 
+		// For split-domain: use the canonical domain (domain A) for the handle
+		// instead of the actor's id hostname (domain B)
+		const canonicalHost = actor._canonicalHandle ?
+			actor._canonicalHandle.split('@').slice(1).join('@') :
+			hostname;
+		const canonicalHostname = canonicalHost;
+
 		let picture;
 		if (icon) {
 			picture = typeof icon === 'string' ? icon : icon.url;
@@ -242,7 +249,27 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-		summary = activitypub.helpers.renderEmoji(summary || '', tag);
+		summary = await activitypub.helpers.renderEmoji(summary || '', tag);
+
+		// Extract emoji metadata for fullname rendering
+		const nameEmoji = [];
+		const emojiTags = (tag || []).filter(tag => tag.type === 'Emoji');
+		for (const emojiTag of emojiTags) {
+			const { name: emojiName, icon } = emojiTag;
+			if (!emojiName || !icon?.url) continue;
+			let code = emojiName;
+			if (!code.startsWith(':')) code = `:${code}`;
+			if (!code.endsWith(':')) code = `${code}:`;
+			if (name && name.includes(code)) {
+				try {
+					const { hostname } = new URL(icon.url);
+					const clean = code.replace(/^:+|:+$/g, '');
+					nameEmoji.push({ code, hostname, clean });
+				} catch {
+					// skip invalid icon URLs
+				}
+			}
+		}
 
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
@@ -278,10 +305,11 @@ Mocks.profile = async (actors) => {
 
 		const payload = {
 			uid,
-			username: `${preferredUsername}@${hostname}`,
-			userslug: `${preferredUsername}@${hostname}`,
+			username: `${preferredUsername}@${canonicalHostname}`,
+			userslug: `${preferredUsername}@${canonicalHostname}`.toLowerCase(),
 			displayname: name,
 			fullname: name,
+			fullnameEmoji: nameEmoji.length ? JSON.stringify(nameEmoji) : undefined,
 			joindate: new Date(published).getTime() || Date.now(),
 			picture,
 			status: 'offline',
@@ -299,6 +327,9 @@ Mocks.profile = async (actors) => {
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
 			customFields: customFields && new URLSearchParams(customFields).toString(),
+
+			// Store the canonical webfinger handle for split-domain identity verification
+			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 
 		return payload;
@@ -334,6 +365,12 @@ Mocks.category = async (actors) => {
 			return null;
 		}
 
+		// For split-domain: use the canonical domain (domain A) for the handle
+		const canonicalHost = actor._canonicalHandle ?
+			actor._canonicalHandle.split('@').slice(1).join('@') :
+			hostname;
+		const canonicalHostname = canonicalHost;
+
 		// No support for category avatars yet ;(
 		// let picture;
 		// if (image) {
@@ -345,13 +382,15 @@ Mocks.category = async (actors) => {
 
 		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
 
+		const descriptionParsed = posts.sanitize(await activitypub.helpers.renderEmoji(summary || '', tag));
+
 		const payload = {
 			cid,
 			name,
-			handle: `${preferredUsername}@${hostname}`,
-			slug: `${preferredUsername}@${hostname}`,
+			handle: `${preferredUsername}@${canonicalHostname}`,
+			slug: `${preferredUsername}@${canonicalHostname}`,
 			description: summary,
-			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
+			descriptionParsed,
 			icon: backgroundImage ? 'fa-nbb-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,
@@ -369,6 +408,9 @@ Mocks.category = async (actors) => {
 			_activitypub: {
 				postingRestrictedToMods,
 			},
+
+			// Store the canonical webfinger handle for split-domain identity verification
+			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 
 		return payload;
@@ -400,7 +442,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
-			to, cc, audience, attachment, tag, image,
+			to, cc, audience, attachment, tag, image, summary, sensitive,
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -427,6 +469,8 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
+			// Store contentWarning only for Note + sensitive + summary (Fediverse CW convention)
+			...(object.type === 'Note' && sensitive && summary && { contentWarning: summary }),
 			_activitypub: { to, cc, audience, attachment, tag, url, image },
 		};
 
@@ -440,7 +484,7 @@ Mocks.message = async (object) => {
 	object = await Mocks._normalize(object);
 
 	let content = object.sourceContent || object.content;
-	content = activitypub.helpers.renderEmoji(content, object.tag);
+	content = await activitypub.helpers.renderEmoji(content, object.tag);
 
 	const message = {
 		mid: object.id,

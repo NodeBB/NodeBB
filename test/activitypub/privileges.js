@@ -21,6 +21,13 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		// await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('"fediverse" pseudo-user', () => {
@@ -43,7 +50,23 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 				}));
 				handle = await categories.getCategoryField(cid, 'handle');
 				const privsToRemove = await privileges.categories.getGroupPrivilegeList();
-				await privileges.categories.rescind(privsToRemove, cid, ['fediverse']);
+				await privileges.categories.rescind(privsToRemove, [cid, -1], ['fediverse']);
+			});
+
+			after(async () => {
+				// Restore fediverse world-level privileges (matches defaultPrivileges.slice(2) from install.js)
+				await privileges.categories.give([
+					'groups:topics:read',
+					'groups:topics:create',
+					'groups:topics:reply',
+					'groups:topics:tag',
+					'groups:posts:edit',
+					'groups:posts:history',
+					'groups:posts:delete',
+					'groups:posts:upvote',
+					'groups:posts:downvote',
+					'groups:topics:delete',
+				], -1, ['fediverse']);
 			});
 
 			describe('incoming requests', () => {
@@ -102,12 +125,12 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 							cc: [`${nconf.get('url')}/category/${cid}`],
 						}));
 						({ activity } = helpers.mocks.create(note));
-						await privileges.categories.give(['groups:topics:create'], cid, ['fediverse']);
+						await privileges.categories.give(['groups:topics:create'], [cid, -1], ['fediverse']);
 						await activitypub.inbox.create({ body: activity });
 					});
 
 					after(async () => {
-						await privileges.categories.rescind(['groups:topics:create'], cid, ['fediverse']);
+						await privileges.categories.rescind(['groups:topics:create'], [cid, -1], ['fediverse']);
 					});
 
 					it('should assert the note', async () => {
@@ -122,7 +145,7 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 							object: note,
 						}));
 
-						assert.rejects(
+						await assert.rejects(
 							activitypub.inbox.update({ body: activity }),
 							{ message: '[[error:no-privileges]]' },
 						);
@@ -142,12 +165,12 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 							cc: [`${nconf.get('url')}/category/${cid}`],
 						}));
 						({ activity } = helpers.mocks.create(note));
-						await privileges.categories.give(['groups:topics:create'], cid, ['fediverse']);
+						await privileges.categories.give(['groups:topics:create'], [cid, -1], ['fediverse']);
 						await activitypub.inbox.create({ body: activity });
 					});
 
 					after(async () => {
-						await privileges.categories.rescind(['groups:topics:create'], cid, ['fediverse']);
+						await privileges.categories.rescind(['groups:topics:create'], [cid, -1], ['fediverse']);
 					});
 
 					it('should assert the note', async () => {
@@ -157,7 +180,7 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 
 					it('should ignore remote deletion of said note', async () => {
 						({ activity } = helpers.mocks.delete({ object: note }));
-						assert.rejects(
+						await assert.rejects(
 							activitypub.inbox.delete({ body: activity }),
 							{ message: '[[error:no-privileges]]' },
 						);
@@ -215,6 +238,13 @@ describe('Privilege masking', () => {
 	before(async () => {
 		// Grant default fediverse privileges
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('control', () => {

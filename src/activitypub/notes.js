@@ -119,7 +119,17 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 		chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 		const mainPost = chain[0];
-		let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
+		let {
+			pid: mainPid,
+			tid,
+			uid: authorId,
+			timestamp,
+			title,
+			content,
+			sourceContent,
+			contentWarning,
+			_activitypub,
+		} = mainPost;
 		const hasTid = !!tid;
 
 		const authorBanned = await user.bans.isBanned(authorId);
@@ -206,8 +216,33 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 				generatedTitle = 1;
 			}
 
-			// Remove any custom emoji from title
-			title = activitypub.helpers.renderEmoji(title, _activitypub.tag, true);
+			if (contentWarning) {
+				title = contentWarning;
+				generatedTitle = 1;
+			}
+
+			// Extract emoji metadata for title rendering
+			const titleEmoji = [];
+			const emojiTags = (_activitypub.tag || []).filter(tag => tag.type === 'Emoji');
+			for (const tag of emojiTags) {
+				const { name, icon } = tag;
+				if (!name || !icon?.url) continue;
+				let code = name;
+				if (!code.startsWith(':')) code = `:${code}`;
+				if (!code.endsWith(':')) code = `${code}:`;
+				if (title.includes(code)) {
+					try {
+						const { hostname } = new URL(icon.url);
+						const clean = code.replace(/^:+|:+$/g, '');
+						titleEmoji.push({ code, hostname, clean });
+					} catch {
+						// skip invalid icon URLs
+					}
+				}
+			}
+			if (titleEmoji.length) {
+				mainPost.titleEmoji = JSON.stringify(titleEmoji);
+			}
 		}
 		mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
@@ -273,9 +308,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					cid: options.cid || cid,
 					pid: mainPid,
 					title,
+					titleEmoji: mainPost.titleEmoji,
 					timestamp,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					contentWarning,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				};
@@ -296,10 +333,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					cid: options.cid || cid,
 					pid: mainPid,
 					title,
+					titleEmoji: mainPost.titleEmoji,
 					timestamp,
 					tags,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					contentWarning,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				});
@@ -359,6 +398,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 						pid: post.pid,
 						content: post.content,
 						sourceContent: post.sourceContent,
+						contentWarning: post.contentWarning,
 						timestamp: post.timestamp,
 						_activitypub: post._activitypub,
 					});
@@ -598,14 +638,14 @@ async function assignCategory(post) {
 
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
 	const rules = await activitypub.rules.list();
-	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
-	tags = tags.map(tag => tag.toLowerCase());
+	const tags = await Notes._normalizeTags(post._activitypub.tag || []);
 
 	const matched = rules.reduce((matched, { type, value, cid: target, action: ruleAction }) => {
 		if (!matched.cid) {
 			switch (type) {
 				case 'hashtag': {
-					if (tags.includes(value.toLowerCase())) {
+					const lowerValue = value.toLowerCase();
+					if (tags.some(tag => tag.toLowerCase() === lowerValue)) {
 						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}, action: ${ruleAction}`);
 						return { cid: target, action: ruleAction };
 					}

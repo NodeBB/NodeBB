@@ -183,7 +183,7 @@ inbox.update = async (req) => {
 	let { actor, object } = req.body;
 
 	// Refetch object by id if Update was announce-wrapped
-	if (req.res.locals.apAnnounced) {
+	if (req?.res?.locals?.apAnnounced) {
 		try {
 			const refetched = await activitypub.get('uid', 0, object.id);
 			if (refetched) {
@@ -240,11 +240,18 @@ inbox.update = async (req) => {
 			switch (true) {
 				case isNote: {
 					const cid = await posts.getCidByPid(object.id);
-					const [allowed, isDeleted] = await Promise.all([
+					const [allowed, isDeleted, postUid] = await Promise.all([
 						privileges.categories.can('posts:edit', cid, activitypub._constants.uid),
 						posts.getPostField(object.id, 'deleted'),
+						posts.getPostField(object.id, 'uid'),
 					]);
 					if (!allowed) {
+						throw new Error('[[error:no-privileges]]');
+					}
+					// Only the post's author (the verified signer) may edit it. The
+					// fediverse group's blanket posts:edit must not let one remote
+					// actor edit another's federated post.
+					if (postUid !== actor) {
 						throw new Error('[[error:no-privileges]]');
 					}
 					if (isDeleted) { // fediverse users can't edit deleted posts
@@ -271,7 +278,11 @@ inbox.update = async (req) => {
 				}
 
 				case isMessage: {
-					const { roomId, deleted } = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
+					const { roomId, deleted, fromuid } = await messaging.getMessageFields(object.id, ['roomId', 'deleted', 'fromuid']);
+					// Only the message's author (the verified signer) may edit it.
+					if (fromuid !== actor) {
+						throw new Error('[[error:no-privileges]]');
+					}
 					await messaging.editMessage(actor, object.id, roomId, object.content);
 					if (deleted) {
 						await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
@@ -380,6 +391,10 @@ inbox.delete = async (req) => {
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
+			// Only the post's author (the verified signer) may delete it.
+			if (uid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			await activitypub.feps.announce(id, req.body);
 			try {
 				await api.posts[method]({ uid }, { pid: id });
@@ -400,17 +415,28 @@ inbox.delete = async (req) => {
 				return;
 			}
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
+			// Only the topic's author (the verified signer) may delete it.
+			if (uid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
 			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
 		}
 
 		case isMessage: {
-			const deleted = await messaging.getMessageField(id, 'deleted');
+			const [deleted, fromuid] = await Promise.all([
+				messaging.getMessageField(id, 'deleted'),
+				messaging.getMessageField(id, 'fromuid'),
+			]);
 			if (deleted) {
 				return;
 			}
 
+			// Only the message's author (the verified signer) may delete it.
+			if (fromuid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			await api.chats.deleteMessage({ uid: actor }, { mid: id });
 			break;
 		}
@@ -658,6 +684,14 @@ inbox.announce = async (req) => {
 				throw new Error('[[error:no-privileges]]');
 			}
 
+			// Self-deletion requires the delete's actor to be the post's author; a
+			// group (moderator) announcer may delete on behalf of moderators.
+			const isGroupAnnouncer = await db.exists(`categoryRemote:${actor}`);
+			const postUid = await posts.getPostField(id, 'uid');
+			if (!isGroupAnnouncer && postUid !== object.actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
+
 			const uid = await posts.getPostField(id, 'uid');
 			const isMain = await posts.isMain(id);
 			const postCount = await topics.getTopicField(await posts.getPostField(id, 'tid'), 'postcount');
@@ -840,12 +874,19 @@ inbox.isFollowed = async (actorId, uid) => {
 
 inbox.accept = async (req) => {
 	const { actor, object } = req.body;
-	const { type } = object;
+	let { type } = object;
 
-	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
 	if (object.id === `${nconf.get('url')}/actor`) {
-		return activitypub.relays.handshake(req.body);
-	} else if (!['user', 'category'].includes(localType)) {
+		// If the accepting actor is a known relay, handle as relay handshake
+		const isRelay = await db.isSortedSetMember('relays:createtime', actor);
+		if (isRelay) {
+			return activitypub.relays.handshake(req.body);
+		}
+		type = 'Follow'; // treat as Follow acceptance for hashtag/instance follows
+	}
+
+	const { type: localType, id } = await helpers.resolveLocalId(object.actor || object.id);
+	if (!['user', 'category', 'application'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -879,6 +920,20 @@ inbox.accept = async (req) => {
 				db.sortedSetAdd(`cid:${id}:following`, timestamp, actor),
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, `cid|${id}`), // for notes assertion checking
 			]);
+		} else if (localType === 'application') {
+			// Instance actor follow acceptance
+			if (!await db.isSortedSetMember('followRequests:uid.0', actor)) {
+				if (await db.isSortedSetMember('followingRemote:0', actor)) return; // already following
+				throw new Error('[[error:invalid-data]]'); // not following, not requested, so reject to hopefully stop retries
+			}
+			const timestamp = await db.sortedSetScore('followRequests:uid.0', actor);
+			await Promise.all([
+				db.sortedSetRemove('followRequests:uid.0', actor),
+				db.sortedSetAdd('followingRemote:0', timestamp, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, 0), // for followers backreference
+			]);
+			// Transition hashtag follow state to active
+			await activitypub.hashtags.updateState(actor, 'active');
 		}
 
 		activitypub.actors._followerCache.del(actor);
@@ -895,7 +950,11 @@ inbox.undo = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	let { type: localType, id } = await helpers.resolveLocalId(object.object);
+	// The original activity's object may be embedded as a full object or a bare URL
+	const subjectId = (object.object && typeof object.object === 'object' && !Array.isArray(object.object)) ?
+		object.object.id : object.object;
+
+	let { type: localType, id } = await helpers.resolveLocalId(subjectId);
 
 	// If object is a Follow activity, check if the target is the instance actor (relay follow)
 	if (!localType && object?.type === 'Follow') {
@@ -911,7 +970,16 @@ inbox.undo = async (req) => {
 		case 'Follow': {
 			switch (localType) {
 				case 'application': {
+					// Relay unfollow
 					await activitypub.relays.removeFollower(actor);
+					// Generic instance-actor unfollow
+					await Promise.all([
+						db.sortedSetRemove('followingRemote:0', actor),
+						db.sortedSetRemove('followRequests:uid.0', actor),
+						db.sortedSetRemove(`followersRemote:${actor}`, 0),
+					]);
+					// Transition hashtag follow state to error
+					await activitypub.hashtags.updateState(actor, 'error');
 					break;
 				}
 
@@ -961,13 +1029,13 @@ inbox.undo = async (req) => {
 			}
 
 			await posts.unvote(id, actor);
-			activitypub.feps.announce(object.object, req.body);
+			activitypub.feps.announce(subjectId, req.body);
 			notifications.rescind(`upvote:post:${id}:uid:${actor}`);
 			break;
 		}
 
 		case 'Announce': {
-			id = id || object.object; // remote announces
+			id = id || subjectId; // remote announces
 			const exists = await posts.exists(id);
 			if (!exists) {
 				activitypub.helpers.log(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
@@ -983,7 +1051,11 @@ inbox.undo = async (req) => {
 				object.object = [object.object];
 			}
 			await Promise.all(object.object.map(async (subject) => {
-				const { type, id } = await activitypub.helpers.resolveLocalId(subject.id);
+				const subjectId = typeof subject === 'string' ? subject : subject?.id;
+				const { type, id } = await activitypub.helpers.resolveLocalId(subjectId);
+				if (!type || !id) {
+					return;
+				}
 				try {
 					await flags.rescindReport(type, id, actor);
 				} catch (e) {
@@ -1004,16 +1076,20 @@ inbox.flag = async (req) => {
 	}
 
 	await Promise.all(objects.map(async (subject, index) => {
+		const subjectId = typeof subject === 'string' ? subject : subject?.id;
 		let type, id;
 		try {
-			({ type, id } = await activitypub.helpers.resolveObjects(subject.id));
+			({ type, id } = await activitypub.helpers.resolveLocalId(subjectId));
+			if (!type || !id) {
+				throw new Error('[[error:invalid-data]]');
+			}
 		} catch (e) {
-			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subject.id}`);
+			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subjectId}`);
 			inbox._reject('Flag', objects[index], actor);
 			return;
 		}
 		try {
-			await flags.create(activitypub.helpers.mapToLocalType(type), id, actor, content);
+			await flags.create(type, id, actor, content);
 		} catch (e) {
 			inbox._reject('Flag', objects[index], actor);
 		}
@@ -1031,4 +1107,9 @@ inbox.reject = async (req) => {
 		db.sortedSetRemove('ap:retry:queue', queueId),
 		db.delete(`ap:retry:queue:${queueId}`),
 	]);
+
+	// Transition hashtag follow state to error if this is a rejected Follow from instance actor
+	if (type === 'Follow' && id === `${nconf.get('url')}/actor`) {
+		await activitypub.hashtags.updateState(actor, 'error');
+	}
 };

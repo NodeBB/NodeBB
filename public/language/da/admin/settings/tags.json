@@ -8,6 +8,8 @@
     "max-per-topic": "Maksimalt Antal Etiketter per Tråd",
     "min-length": "Minimal Etiket-længde",
     "max-length": "Maksimal Etiket-længde",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Related Topics",
     "max-related-topics": "Maximum related topics to display (if supported by theme)"
 }

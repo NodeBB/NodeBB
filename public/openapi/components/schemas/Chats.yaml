@@ -2,7 +2,9 @@ RoomObject:
   type: object
   properties:
     roomId:
-      type: [number, string]
+      oneOf:
+        - type: number
+        - type: string
       description: unique identifier for the chat room
     roomName:
       type: string
@@ -42,7 +44,9 @@ MessageObject:
     fromuid:
       type: number
     roomId:
-      type: [number, string]
+      oneOf:
+        - type: number
+        - type: string
     deleted:
       type: number
     system:

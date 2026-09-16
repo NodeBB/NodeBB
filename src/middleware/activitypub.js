@@ -3,6 +3,7 @@
 const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
+const privileges = require('../privileges');
 const activitypub = require('../activitypub');
 const analytics = require('../analytics');
 const helpers = require('./helpers');
@@ -47,6 +48,9 @@ middleware.verify = async function (req, res, next) {
 
 	// Verifies the HTTP Signature if present (required for POST, optional for GET)
 	if (req.headers.hasOwnProperty('signature')) {
+		// `verified` is the keyId that passed cryptographic verification (or false).
+		// Caller identity MUST be derived from this value — never re-parse the raw
+		// Signature header, which can be crafted to disagree with the spec parser.
 		const verified = await activitypub.verify(req);
 		if (!verified) {
 			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
@@ -58,11 +62,9 @@ middleware.verify = async function (req, res, next) {
 			return next();
 		}
 
-		// Set calling user
-		const keyId = req.headers.signature.split(',').filter(line => line.trim().startsWith('keyId="'));
-		if (keyId.length) {
-			req.uid = keyId.at(-1).trim().slice(7, -1).replace(/#.*$/, '');
-		}
+		// Set calling user from the verified keyId (draft `keyId` or RFC 9421 `keyid`)
+		req.apKeyId = verified;
+		req.uid = verified.replace(/#.*$/, '');
 
 		activitypub.helpers.log('[middleware/activitypub] HTTP signature verification passed.');
 	} else if (req.method === 'POST') {
@@ -93,9 +95,9 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	}
 	activitypub.helpers.log('[middleware/activitypub] Request body check passed.');
 
-	// History check
-	const seen = await db.isSortedSetMember('activities:datetime', req.body.id);
-	if (seen) {
+	// History check (w/in last 10 seconds)
+	const seenTimestamp = await db.sortedSetScore('activities:datetime', req.body.id);
+	if (seenTimestamp && (Date.now() - seenTimestamp) < 10000) {
 		activitypub.helpers.log(`[middleware/activitypub] Activity already seen, ignoring (${req.body.id}).`);
 		return res.sendStatus(200);
 	}
@@ -135,19 +137,22 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 		activitypub.helpers.log('[middleware/activitypub] Origin check passed.');
 	}
 
-	// Cross-check key ownership against received actor
+	// Cross-check key ownership against received actor.
+	// The keyId is the one that passed cryptographic verification (set on
+	// req.apKeyId by the verify middleware) — NOT a re-parse of the raw header.
+	if (!req.apKeyId) {
+		// A signed POST reaching this point without a verified keyId is anomalous.
+		activitypub.helpers.log('[middleware/activitypub] No verified keyId available for cross-check.');
+		return res.sendStatus(403);
+	}
+
 	await activitypub.actors.assert(actor);
 	let compare = await db.getObjectsFields([
 		`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
 	], ['id']);
 	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
 
-	const { signature } = req.headers;
-	let keyId = new Map(signature.split(',').filter(Boolean).map((v) => {
-		const index = v.indexOf('=');
-		return [v.substring(0, index).trim(), v.slice(index + 1)];
-	})).get('keyId');
-	keyId = (keyId || '').slice(1, -1).replace(/#[\w-]+$/, '');
+	const keyId = req.apKeyId.replace(/#[\w-]+$/, '');
 	if (compare !== keyId) {
 		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
@@ -193,3 +198,14 @@ middleware.configureResponse = async function (req, res, next) {
 	res.header('Content-Type', 'application/activity+json');
 	next();
 };
+
+middleware.canViewUsers = helpers.try(async function (req, res, next) {
+	// For S2S ActivityPub requests, check view:users privilege.
+	// This mirrors the check in WebFinger (well-known.js profile()) which uses uid -2.
+	const callerUid = req.uid || activitypub._constants.uid;
+	const canView = await privileges.global.can('view:users', callerUid);
+	if (!canView) {
+		return res.sendStatus(404);
+	}
+	next();
+});

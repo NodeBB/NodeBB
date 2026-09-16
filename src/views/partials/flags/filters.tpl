@@ -80,6 +80,7 @@
 			<li class="dropdown-item rounded-1" data-name="type" data-value="all" role="menuitem">{{tx("flags:filter-type-all")}}</li>
 			<li class="dropdown-item rounded-1" data-name="type" data-value="post" role="menuitem">{{tx("flags:filter-type-post")}}</li>
 			<li class="dropdown-item rounded-1" data-name="type" data-value="user" role="menuitem">{{tx("flags:filter-type-user")}}</li>
+			<li class="dropdown-item rounded-1" data-name="type" data-value="message" role="menuitem">{{tx("flags:filter-type-message")}}</li>
 		</ul>
 	</div>
 

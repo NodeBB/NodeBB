@@ -11,6 +11,8 @@ const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (User) {
+	const validSorts = new Set(['joindate', 'lastonline', 'postcount', 'reputation', 'flags']);
+
 	const filterFnMap = {
 		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
 		flagged: user => parseInt(user.flags, 10) > 0,
@@ -50,9 +52,14 @@ module.exports = function (User) {
 					} else {
 						const assertion = await activitypub.actors.assert([handle || data.query]);
 						if (assertion === true) {
-							// Actor already exists; resolve UID from webfinger cache
-							const cached = handle ? activitypub.helpers._webfingerCache.get(handle) : null;
-							uids = cached ? [cached.actorUri] : [handle ? await User.getUidByUserslug(handle) : query];
+							const resolved = handle ? await db.getObjectField('handle:uid', handle.toLowerCase()) : null;
+							if (resolved) {
+								uids = [resolved];
+							} else {
+								const wfKey = handle ? activitypub.helpers._webfingerKey(handle) : false;
+								const cached = wfKey ? activitypub.helpers._webfingerCache.get(wfKey) : null;
+								uids = cached ? [cached.actorUri] : [handle ? await User.getUidByUserslug(handle) : query];
+							}
 						} else if (Array.isArray(assertion) && assertion.length) {
 							uids = assertion.map(u => u.id);
 						}
@@ -150,9 +157,9 @@ module.exports = function (User) {
 		let filters = data.filters || [];
 		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];
-
-		if (data.sortBy) {
-			fields.push(data.sortBy);
+		const sortBy = validSorts.has(data.sortBy) ? data.sortBy : null;
+		if (sortBy) {
+			fields.push(sortBy);
 		}
 
 		filters.forEach((filter) => {
@@ -190,8 +197,8 @@ module.exports = function (User) {
 			}
 		});
 
-		if (data.sortBy) {
-			sortUsers(userData, data.sortBy, data.sortDirection);
+		if (sortBy) {
+			sortUsers(userData, sortBy, data.sortDirection);
 		}
 
 		return userData.map(user => user.uid);

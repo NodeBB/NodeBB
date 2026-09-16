@@ -8,6 +8,8 @@
     "max-per-topic": "Максимальна кількість тегів для теми",
     "min-length": "Мінімальна довжина тега",
     "max-length": "Максимальна довжина тега",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Пов'язані теми",
     "max-related-topics": "Максимальна кількість пов'язаних тем до показу (якщо підтримується темою)"
 }

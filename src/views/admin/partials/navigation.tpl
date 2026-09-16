@@ -107,6 +107,7 @@
 				<a class="btn btn-ghost btn-sm text-start" id="federation-content" href="{relative_path}/admin/federation/content">{{tx("admin/menu:federation/content")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-rules" href="{relative_path}/admin/federation/rules">{{tx("admin/menu:federation/rules")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-relays" href="{relative_path}/admin/federation/relays">{{tx("admin/menu:federation/relays")}}</a>
+				<a class="btn btn-ghost btn-sm text-start" id="federation-hashtags" href="{relative_path}/admin/federation/hashtags">{{tx("admin/menu:federation/hashtags")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-pruning" href="{relative_path}/admin/federation/pruning">{{tx("admin/menu:federation/pruning")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-safety" href="{relative_path}/admin/federation/safety">{{tx("admin/menu:federation/safety")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" id="federation-analytics" href="{relative_path}/admin/federation/analytics">{{tx("admin/menu:federation/analytics")}}</a>

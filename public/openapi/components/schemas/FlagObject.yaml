@@ -85,7 +85,9 @@ FlagHistoryObject:
         type: object
         properties:
           uid:
-            type: [number, string]
+            oneOf:
+              - type: number
+              - type: string
             description: A user identifier
           fields:
             type: object

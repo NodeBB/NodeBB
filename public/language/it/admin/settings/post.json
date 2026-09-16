@@ -59,6 +59,8 @@
 	"backlinks": "Backlink",
 	"backlinks.enabled": "Abilita backlink discussione",
 	"backlinks.help": "Se un post fa riferimento ad un altra discussione, un link al post sarà inserito nella discussione di riferimento in quel momento.",
+	"topic-events.hidden": "Tipologia di eventi con discussione nascosta",
+	"topic-events.hidden-help": "Gli eventi relativi alla discussione e appartenenti alle tipologie selezionate non vengono visti da nessuno nella cronologia della discussione. Gli eventi vengono comunque registrati, quindi riattivando una tipologia si ripristinano gli eventi registrati mentre era nascosto.",
 	"ip-tracking": "Tracciamento IP",
 	"ip-tracking.each-post": "Traccia l'indirizzo IP per ogni post",
 	"enable-post-history": "Abilita cronologia post"

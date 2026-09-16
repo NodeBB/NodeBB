@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Sadece Yönetici Daveti",
 	"registration-type.disabled": "Kayıt yok",
 	"registration-type.help": "Normal - Kullanıcılar, kayıt sayfasından kayıt olabililrler<br/>\nDavetiye İle - Kullanıcılar, başkalarını <a href=\"%1/users\" target=\"_blank\">users</a> sayfasından davet edebilirler.<br/>\nYönetici Davetiyesi İle - Sadece yöneticiler başkalarını <a href=\"%1/users\" target=\"_blank\">users</a> sayfasından ve <a href=\"%1/admin/manage/users\">admin/manage/users</a> sayfasından davet edebilir.<br/>\nKayıt Yok - Yeni üye kaydı kapalı <br/>",
-	"registration-approval-type.help": "Normal - Kullanıcılar hemen kaydolur.<br/>\nYönetici Onayı - Kullanıcı kayıtları, yöneticiler tarafından onaylansın diye<a href=\"%1/admin/manage/registration\">approval queue</a> sırasına konulur. <br/>\nIP için Yönetici Onayı - Yeni Kullanıcılar için Normal Üyelik; hali hazırda kayıtlı olan IP adresleri için Yönetici Onayı <br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "Otomatik onaylanma süresi",
 	"registration-queue-auto-approve-time-help": "Kullanıcıların otomatik onayı için geçecek süre (saat). İptal etmek için 0 yazın.",
 	"registration-queue-show-average-time": "Kullanıcılara ortalama üyelik onaylanma süresini göster",

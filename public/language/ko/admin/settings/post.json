@@ -59,6 +59,8 @@
 	"backlinks": "백링크",
 	"backlinks.enabled": "토픽 백링크 활성화",
 	"backlinks.help": "게시물이 다른 토픽을 참조하는 경우 해당 시점에 참조된 토픽에 게시물로 연결이 삽입됩니다.",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IP 추적",
 	"ip-tracking.each-post": "각 게시물에 대한 IP 주소 추적",
 	"enable-post-history": "게시물 히스토리 활성화"

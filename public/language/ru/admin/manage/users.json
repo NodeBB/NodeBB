@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Введите ID пользователя для поиска",
 	"search.username": "По имени пользователя",
 	"search.username-placeholder": "Введите имя пользователя для поиска",
+	"search.fullname": "By Full Name",
 	"search.email": "По адресу электронной почты",
 	"search.email-placeholder": "Введите адрес электронной почты для поиска",
 	"search.ip": "По IP-адресу",

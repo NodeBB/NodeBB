@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "검색할 사용자 ID를 입력",
 	"search.username": "사용자 이름으로 검색",
 	"search.username-placeholder": "검색할 사용자 이름을 입력",
+	"search.fullname": "By Full Name",
 	"search.email": "이메일로 검색",
 	"search.email-placeholder": "검색할 이메일을 입력",
 	"search.ip": "IP 주소로 검색",

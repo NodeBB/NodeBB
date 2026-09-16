@@ -13,5 +13,6 @@
     "watching.description": "အကြောင်းအရာအသစ်များကို အသိပေးပါ။",
     "not-watching.description": "အကြောင်းအရာအသစ်များကို အသိမပေးပါနှင့်။",
     "following-tag.message": "ဤတက်ဂ်ဖြင့် အကြောင်းအရာတင်လျှင် အသိပေးချက်ရမည်။",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "ဤတက်ဂ်ဖြင့် အကြောင်းအရာတင်လျှင် အသိပေးချက်ရမည်မဟုတ်ပါ။"
 }

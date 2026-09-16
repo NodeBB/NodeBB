@@ -8,6 +8,8 @@
     "max-per-topic": "Máximo de Etiquetas por Tópico",
     "min-length": "Comprimento Mínimo da Etiqueta",
     "max-length": "Comprimento Máximo da Etiqueta",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Tópicos Relacionados",
     "max-related-topics": "Máximo de tópicos relacionados a mostrar (se for suportado pelo tema)"
 }

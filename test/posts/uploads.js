@@ -220,9 +220,13 @@ describe('upload methods', () => {
 		});
 
 		it('should purge the images from disk if the post is purged', async () => {
+			const currentUploads = await posts.uploads.list(postData.pid);
+			assert.strictEqual(currentUploads.length, 2, 'Post should have 2 uploads before purge');
+
 			await posts.purge(postData.pid, uid);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), false);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), false);
+
+			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), false, `current uploads ${currentUploads}`);
+			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), false, `current uploads ${currentUploads}`);
 		});
 
 		it('should leave the images behind if `preserveOrphanedUploads` is enabled', async () => {

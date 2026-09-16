@@ -1,6 +1,8 @@
 'use strict';
 
+const nconf = require('nconf');
 const activitypub = require('../../src/activitypub');
+const request = require('../../src/request');
 const utils = require('../../src/utils');
 const slugify = require('../../src/slugify');
 
@@ -10,6 +12,85 @@ Helpers.mocks = {};
 
 Helpers.mocks._baseUrl = 'https://example.org';
 
+/*
+ * The default remote person used by note()/create(). Created eagerly so that
+ * the ActivityPub request cache and webfinger cache are populated — meaning
+ * actors.assert() on the default note actor never needs a real outbound call.
+ */
+Helpers.mocks.foobar = (override = {}) => {
+	if (!Helpers.mocks._foobar) {
+		Helpers.mocks._foobar = Helpers.mocks.person({
+			id: `${Helpers.mocks._baseUrl}/user/foobar`,
+			preferredUsername: 'foobar',
+			...override,
+		});
+	}
+	return Helpers.mocks._foobar;
+};
+
+/*
+ * Intercepts request.get for remote (non-local) URLs.
+ * Objects are served from the ActivityPub request cache (ActivityPub._cache) —
+ * the same cache ActivityPub.get() reads from — so anything registered by the
+ * mock factories (person/group/note/create) is returned instantly without a
+ * real outbound request. Unknown remote URLs get a 404, mirroring a fetch
+ * failure. Requests to the local test server pass through untouched.
+ *
+ * Call helpers.mocks.mockRequests() in a suite's `before` and
+ * helpers.mocks.restoreRequests() in its `after`.
+ */
+Helpers.mocks._mockRequestInstalled = false;
+
+Helpers.mocks.mockRequests = function () {
+	// Re-seed the default remote actor's caches (databasemock's resetAll() in
+	// the top-level before hook wipes them after module load)
+	Helpers.mocks._seedFoobarCaches();
+	if (Helpers.mocks._mockRequestInstalled) {
+		return;
+	}
+	const localHost = nconf.get('url_parsed').host;
+	Helpers.mocks._originalGet = request.get;
+	request.get = async (url, config) => {
+		let host;
+		try {
+			host = new URL(url).host;
+		} catch (e) {
+			host = null;
+		}
+		if (!host || host === localHost) {
+			return Helpers.mocks._originalGet(url, config);
+		}
+		const cached = activitypub._cache.get(`0;${url}`);
+		if (cached !== undefined) {
+			return {
+				body: cached,
+				response: {
+					ok: true, status: 200, statusCode: 200, statusText: 'OK',
+					headers: { 'content-type': 'application/activity+json' },
+				},
+				url,
+			};
+		}
+		return {
+			body: { error: 'Not Found' },
+			response: {
+				ok: false, status: 404, statusCode: 404, statusText: 'Not Found',
+				headers: { 'content-type': 'application/activity+json' },
+			},
+			url,
+		};
+	};
+	Helpers.mocks._mockRequestInstalled = true;
+};
+
+Helpers.mocks.restoreRequests = function () {
+	if (!Helpers.mocks._mockRequestInstalled) {
+		return;
+	}
+	request.get = Helpers.mocks._originalGet;
+	Helpers.mocks._mockRequestInstalled = false;
+};
+
 Helpers.mocks.person = (override = {}) => {
 	const uuid = utils.generateUUID();
 	let id = `${Helpers.mocks._baseUrl}/${uuid}`;
@@ -17,6 +98,7 @@ Helpers.mocks.person = (override = {}) => {
 		id = override.id;
 	}
 
+	const username = override.preferredUsername || `user_${uuid.slice(0, 8)}`;
 
 	const actor = {
 		'@context': [
@@ -30,7 +112,7 @@ Helpers.mocks.person = (override = {}) => {
 
 		type: 'Person',
 		name: slugify(id),
-		preferredUsername: id,
+		preferredUsername: username,
 
 		publicKey: {
 			id: `${id}#key`,
@@ -43,8 +125,11 @@ Helpers.mocks.person = (override = {}) => {
 	activitypub._cache.set(`0;${id}`, actor);
 	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@example.org`, {
 		actorUri: id,
-		username: id,
+		username: username,
 		hostname: 'example.org',
+		subject: `acct:${username}@example.org`,
+		splitDomain: false,
+		subjectHostname: 'example.org',
 	});
 
 	return { id, actor };
@@ -60,8 +145,11 @@ Helpers.mocks.group = (override = {}) => {
 	activitypub._cache.set(`0;${id}`, actor);
 	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@${hostname}`, {
 		actorUri: id,
-		username: id,
+		username: actor.preferredUsername,
 		hostname,
+		subject: `acct:${actor.preferredUsername}@${hostname}`,
+		splitDomain: false,
+		subjectHostname: hostname,
 	});
 
 	return { id, actor };
@@ -272,6 +360,30 @@ Helpers.mocks.update = (override = {}) => {
 	};
 
 	return { activity };
+};
+
+// Eagerly register the default note actor so it is always assertable offline
+Helpers.mocks.foobar();
+
+/*
+ * Re-populates the TTL caches for the default foobar actor.
+ *
+ * The caches are in-memory and get wiped by databasemock's `resetAll()`
+ * (which runs in a top-level `before` hook, after all test files have been
+ * loaded), so the eager module-load seeding is not enough — every suite that
+ * installs the request mock must re-seed in its own `before`.
+ */
+Helpers.mocks._seedFoobarCaches = function () {
+	const { id, actor } = Helpers.mocks.foobar();
+	activitypub._cache.set(`0;${id}`, actor);
+	activitypub.helpers._webfingerCache.set(`${actor.preferredUsername}@example.org`, {
+		actorUri: id,
+		username: actor.preferredUsername,
+		hostname: 'example.org',
+		subject: `acct:${actor.preferredUsername}@example.org`,
+		splitDomain: false,
+		subjectHostname: 'example.org',
+	});
 };
 
 Helpers.mocks.delete = (override = {}) => {

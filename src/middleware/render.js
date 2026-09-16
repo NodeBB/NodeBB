@@ -47,9 +47,7 @@ module.exports = function (middleware) {
 				options.url = options.url || (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
 
-				if (req.loggedIn) {
-					res.set('cache-control', 'private');
-				}
+				res.set('cache-control', 'private, no-cache');
 
 				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, {
 					req: req,
@@ -451,7 +449,8 @@ module.exports = function (middleware) {
 		const { tidsByFilter } = results.unreadData;
 		navigation = navigation.map((item) => {
 			function modifyNavItem(item, route, filter, content) {
-				if (item && item.route === route) {
+				// navigation routes are prefixed with relative_path in navigation.get
+				if (item && item.route === relative_path + route) {
 					unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 					item.content = content;
 					unreadCount.mobileUnread = content;
@@ -467,7 +466,7 @@ module.exports = function (middleware) {
 			modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
 
 			['flags'].forEach((prop) => {
-				if (item && item.route === `/${prop}` && unreadCount[prop] > 0) {
+				if (item && item.route === `${relative_path}/${prop}` && unreadCount[prop] > 0) {
 					item.iconClass += ' unread-count';
 					item.content = unreadCount.flags;
 				}

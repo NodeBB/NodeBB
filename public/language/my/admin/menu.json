@@ -54,6 +54,7 @@
 	"federation/content": "ဖက်ဒရေးရှင်း အကြောင်းအရာ",
 	"federation/rules": "ဖက်ဒရေးရှင်း စည်းမျဉ်းများ",
 	"federation/relays": "ထပ်ဆင့်ပို့မှုများ",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "ဖြတ်ထုတ်ခြင်း",
 	"federation/safety": "ဘေးကင်းရေး",
 	"federation/analytics": "ခွဲခြမ်းစိတ်ဖြာမှု",

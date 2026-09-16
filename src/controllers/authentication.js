@@ -209,11 +209,13 @@ authenticationController.registerAbort = async (req, res) => {
 
 		const { interstitials } = await user.interstitials.get(req, req.session.registration);
 		if (!interstitials.length) {
+			winston.info(`[register/abort] no intersitials ${JSON.stringify({ uid: req.uid, session: req.session })}`);
 			delete req.session.registration;
 			return res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 		}
+		winston.info(`[register/abort] Found intersitials ${JSON.stringify({ uid: req.uid, session: req.session, interstitials })}`);
 	}
-
+	winston.info(`[register/abort] clearing session ${JSON.stringify({ uid: req.uid, session: req.session })}`);
 	// End the session and redirect to home
 	req.session.destroy(() => {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
@@ -302,7 +304,12 @@ function continueLogin(strategy, req, res, next) {
 			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
 		} else {
 			delete req.query.lang;
-			await authenticationController.doLogin(req, userData.uid);
+			// Capture whether this is a forced re-login before clearing forceLogin.
+			// We clear forceLogin BEFORE doLogin so that passport's session
+			// regenerate + merge doesn't carry the stale flag into the new session.
+			const wasForceLogin = !!req.session.forceLogin;
+			delete req.session.forceLogin;
+			await authenticationController.doLogin(req, userData.uid, wasForceLogin);
 			let destination;
 			if (req.session.returnTo) {
 				destination = req.session.returnTo.startsWith('http') ?
@@ -320,7 +327,9 @@ function continueLogin(strategy, req, res, next) {
 
 function redirectAfterLogin(req, res, destination) {
 	if (req.body?.noscript === 'true') {
-		res.redirect(`${destination}?loggedin`);
+		req.session.save(() => {
+			res.redirect(`${destination}?loggedin`);
+		});
 	} else {
 		res.status(200).send({
 			next: destination,
@@ -328,7 +337,7 @@ function redirectAfterLogin(req, res, destination) {
 	}
 }
 
-authenticationController.doLogin = async function (req, uid) {
+authenticationController.doLogin = async function (req, uid, wasForceLogin) {
 	if (!uid) {
 		return;
 	}
@@ -336,10 +345,10 @@ authenticationController.doLogin = async function (req, uid) {
 	const loginAsync = util.promisify(req.login).bind(req);
 	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && (!req.loggedIn || isSelf);
 	await loginAsync({ uid: uid }, { keepSessionInfo });
-	await authenticationController.onSuccessfulLogin(req, uid);
+	await authenticationController.onSuccessfulLogin(req, uid, true, wasForceLogin);
 };
 
-authenticationController.onSuccessfulLogin = async function (req, uid, trackSession = true) {
+authenticationController.onSuccessfulLogin = async function (req, uid, trackSession = true, wasForceLogin) {
 	/*
 	 * Older code required that this method be called from within the SSO plugin.
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
@@ -347,7 +356,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 	 * only if the user is logging in as themselves and not forcing a reauth.
 	 */
 	const isSelfRelogin = req.loggedIn && parseInt(req.uid, 10) === parseInt(uid, 10);
-	if (isSelfRelogin && !req.session.forceLogin) {
+	if (isSelfRelogin && !req.session.forceLogin && !wasForceLogin) {
 		return true;
 	}
 
@@ -363,11 +372,12 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 
 		req.session.meta = {};
 		const now = Date.now();
-		if (req.session.forceLogin) {
+		if (wasForceLogin) {
 			req.session.meta.reAuthAt = now;
 		} else {
 			delete req.session.meta.reAuthAt;
 		}
+		// Safety net: clear forceLogin if it somehow survived (e.g., from SSO paths)
 		delete req.session.forceLogin;
 		// Associate IP used during login with user account
 		req.session.meta.ip = req.ip;

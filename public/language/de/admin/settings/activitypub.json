@@ -13,6 +13,8 @@
 	"publicKeyFetchRateLimit-help": "Maximale Anzahl an Anfragen zum Abrufen öffentlicher Schlüssel pro Minute und IP-Adresse. (Standard: 256)",
 	"allowLoopback": "Loopback-Verarbeitung erlauben",
 	"allowLoopback-help": "Nur für Debugging-Zwecke nützlich. Sollte am besten deaktiviert bleiben.",
+	"allowSplitDomain": "Verbund mit geteilten Domänen zulassen",
+	"allowSplitDomain-help": "Aktiviere diese Option, um Akteure zuzulassen, deren WebFinger-Handle-Domain sich von der Domain ihres ActivityPub-Dokuments unterscheidet. Das ist nützlich für Instanzen, die Identität (WebFinger) und Content-Hosting (ActivityPub) voneinander trennen. Hinweis: Die kanonische (WebFinger-)Domain ist der Vertrauensanker – ihr WebFinger-Eintrag muss auf das Akteur-Dokument verweisen, und wenn beide Seiten einen öffentlichen Schlüssel veröffentlichen, müssen die Schlüssel übereinstimmen. Handles, die ohne Schlüsselübereinstimmung verifiziert wurden, stützen sich allein auf den URL-Verweis; behandle daher Handles mit getrennten Domains, die aus Domains mit mangelhafter WebFinger-Sicherheit stammen, mit Vorsicht.",
 	"parentTraversalDepth": "Tiefe der Eltern-Traversierung",
 	"parentTraversalDepth-help": "Maximale Anzahl der Durchläufe durch die Antwortkette beim Erstellen des Kontexts. (Standard: 50)",
 
@@ -101,9 +103,29 @@
 	"analytics.term": "Zeitskala",
 	"analytics.hourly": "Stündlich",
 	"analytics.daily": "Täglich",
+	"analytics.activities-by-type": "Aktivitäten nach Art",
+	"analytics.activities-by-type-empty": "Es wurden noch keine Aktivitäten erfasst.",
+	"analytics.activities-by-type-not-filterable": "<strong>Hinweis:</strong> Diese Aufschlüsselung ist weltweit und nicht nach dem ausgewählten Hostnamen gefiltert.",
 
 	"errors.intro": "Folgende(r) %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
 	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden.",
 	"errors.hostname": "Hostname",
-	"errors.type": "Typ"
+	"errors.type": "Typ",
+
+	"hashtags": "Hashtags",
+	"hashtags.intro": "Folge globalen Hashtag-Akteuren, um Inhalte zu erhalten, die bestimmten Tags entsprechen. Der Instanz-Akteur folgt dem Hashtag-Akteur des Relays, der „Announce“-Aktivitäten für passende Inhalte sendet. Nutze Regeln zur automatischen Kategorisierung, um Inhalte den entsprechenden Kategorien zuzuordnen.",
+	"hashtags.relay-host": "Relay-Host",
+	"hashtags.relay-host-help": "Wähle den Relay-Anbieter für Hashtag-Akteure aus.",
+	"hashtags.save-relay": "Speichern",
+	"hashtags.relay-change-warning": "Wenn du den Relay-Host wechselst, werden alle aktuellen Hashtag-Akteure entfolgt und auf dem neuen Relay wieder verfolgt.",
+	"hashtags.follow": "Dem Hashtag folgen",
+	"hashtags.modal.tag": "Hashtag",
+	"hashtags.modal.tag-help": "Gib den Hashtag-Namen ohne das #-Symbol ein (z. B. nodebb).",
+	"hashtags.modal.category": "Kategorie",
+	"hashtags.modal.category-help": "Wähle eine Kategorie aus, um passende Inhalte automatisch weiterzuleiten.",
+	"hashtags.state-pending": "Ausstehend",
+	"hashtags.state-active": "Aktiv",
+	"hashtags.state-error": "Fehler",
+	"hashtags.table.tag": "Tag",
+	"hashtags.table.state": "Status"
 }

@@ -93,7 +93,7 @@ put:
               example: 'Toronto, Canada'
             groupTitle:
               type: string
-              example: '["administrators","Staff"]'
+              example: '["administrators"]'
             birthday:
               type: string
               description: A birthdate given in an ISO format parseable by the Date object

@@ -8,6 +8,8 @@
     "max-per-topic": "Maksimālais birku skaits tematā",
     "min-length": "Minimālais birkas nosaukuma garums",
     "max-length": "Maksimālais birkas nosaukuma garums",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Saistītie temati",
     "max-related-topics": "Maksimālais skaits saistīto tematu, ko rādīt (ja tema tos atbalsta)"
 }

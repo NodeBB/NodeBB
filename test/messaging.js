@@ -488,7 +488,7 @@ describe('Messaging Library', () => {
 			}, 'bar');
 			const { messageId } = msgBody.response;
 
-			await callv3API('delete', `/chats/${deleteRoomId}/messages/${messageId}`, {}, 'bar');
+			await callv3API('delete', `/chats/${deleteRoomId}/messages/${messageId}/state`, {}, 'bar');
 
 			await assert.rejects(
 				api.chats.getRawMessage(
@@ -884,13 +884,13 @@ describe('Messaging Library', () => {
 		});
 
 		it('should fail to delete message if not owner', async () => {
-			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'herp');
+			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}/state`, {}, 'herp');
 			assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(body.status.message, 'You are not allowed to delete this message');
 		});
 
 		it('should mark the message as deleted', async () => {
-			await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'foo');
+			await callv3API('delete', `/chats/${roomId}/messages/${mid}/state`, {}, 'foo');
 			const value = await db.getObjectField(`message:${mid}`, 'deleted');
 			assert.strictEqual(1, parseInt(value, 10));
 		});
@@ -924,7 +924,7 @@ describe('Messaging Library', () => {
 		});
 
 		it('should error out if a message is deleted again', async () => {
-			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}`, {}, 'foo');
+			const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid}/state`, {}, 'foo');
 			assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(body.status.message, 'This chat message has already been deleted.');
 		});
@@ -951,20 +951,20 @@ describe('Messaging Library', () => {
 			});
 
 			it('should error out for regular users', async () => {
-				const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
+				const { response, body } = await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'baz');
 				assert.strictEqual(response.statusCode, 400);
 				assert.strictEqual(body.status.message, 'Chat messaging editing is disabled.');
 			});
 
 			it('should succeed for administrators', async () => {
-				await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'foo');
+				await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'foo');
 				await callv3API('post', `/chats/${roomId}/messages/${mid2}`, {}, 'foo');
 			});
 
 			it('should succeed for global moderators', async () => {
 				await Groups.join(['Global Moderators'], mocks.users.baz.uid);
 
-				await callv3API('delete', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
+				await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'baz');
 				await callv3API('post', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
 
 				await Groups.leave(['Global Moderators'], mocks.users.baz.uid);
@@ -1030,6 +1030,89 @@ describe('Messaging Library', () => {
 			const { response } = await request.get(`${nconf.get('url')}/api/user/baz/chats/${roomId}`, { jar: data.jar });
 
 			assert.equal(response.statusCode, 404);
+		});
+	});
+
+	describe('.markRead()', () => {
+		const plugins = require('../src/plugins');
+		let markReadRoomId;
+
+		before(async () => {
+			markReadRoomId = await Messaging.newRoom(mocks.users.foo.uid, {
+				uids: [mocks.users.herp.uid],
+			});
+		});
+
+		async function markReadAndCaptureHook(uid, roomId) {
+			const fired = new Promise((resolve) => {
+				plugins.hooks.register('my-test-plugin', {
+					hook: 'action:messaging.markRead',
+					method: resolve,
+				});
+			});
+			await Messaging.markRead(uid, roomId);
+			const data = await fired;
+			plugins.hooks.unregister('my-test-plugin', 'action:messaging.markRead');
+			return data;
+		}
+
+		it('should fire action:messaging.markRead with no previous timestamp on first read', async () => {
+			const data = await markReadAndCaptureHook(mocks.users.herp.uid, markReadRoomId);
+
+			assert.strictEqual(parseInt(data.uid, 10), mocks.users.herp.uid);
+			assert.strictEqual(parseInt(data.roomId, 10), parseInt(markReadRoomId, 10));
+			assert(data.timestamp > 0);
+			assert.strictEqual(data.prevTimestamp, 0);
+		});
+
+		it('should hand the timestamp of the previous read to the hook', async () => {
+			const first = await markReadAndCaptureHook(mocks.users.herp.uid, markReadRoomId);
+			await sleep(5);
+			const second = await markReadAndCaptureHook(mocks.users.herp.uid, markReadRoomId);
+
+			assert.strictEqual(second.prevTimestamp, first.timestamp);
+			assert(second.timestamp > second.prevTimestamp);
+		});
+	});
+
+	describe('.isRoomMember()', () => {
+		const plugins = require('../src/plugins');
+		let memberRoomId;
+
+		before(async () => {
+			memberRoomId = await Messaging.newRoom(mocks.users.foo.uid, {
+				uids: [mocks.users.bar.uid],
+			});
+		});
+
+		it('should report actual membership', async () => {
+			assert.strictEqual(await Messaging.isRoomMember(mocks.users.foo.uid, memberRoomId), true);
+			assert.strictEqual(await Messaging.isRoomMember(mocks.users.herp.uid, memberRoomId), false);
+		});
+
+		it('should accept an array of roomIds', async () => {
+			assert.deepStrictEqual(
+				await Messaging.isRoomMember(mocks.users.bar.uid, [memberRoomId, 0]),
+				[true, false]
+			);
+		});
+
+		it('should not be overridable via filter:messaging.isUserInRoom', async () => {
+			plugins.hooks.register('my-test-plugin', {
+				hook: 'filter:messaging.isUserInRoom',
+				method: async data => ({ ...data, inRoom: true }),
+			});
+
+			try {
+				assert.strictEqual(
+					await Messaging.isUserInRoom(mocks.users.herp.uid, memberRoomId), true
+				);
+				assert.strictEqual(
+					await Messaging.isRoomMember(mocks.users.herp.uid, memberRoomId), false
+				);
+			} finally {
+				plugins.hooks.unregister('my-test-plugin', 'filter:messaging.isUserInRoom');
+			}
 		});
 	});
 });

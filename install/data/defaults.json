@@ -17,6 +17,7 @@
     "movingTopicsMaxPosts": 5,
     "enablePostHistory": 1,
     "topicBacklinks": 1,
+    "hiddenTopicEventTypes": [],
     "postCacheSize": 20971520,
     "disableChat": 0,
     "chatEditDuration": 0,
@@ -208,6 +209,7 @@
     "tinyconBackground": "#ff0000",
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
+    "activitypubAllowSplitDomain": 1,
     "activitypubParentTraversalDepth": 50,
     "activitypubPublicKeyFetchRateLimit": 256,
     "activitypubProbe": 1,
@@ -218,5 +220,6 @@
     "activitypubSummaryLimit": 500,
     "activitypubBreakString": "[...]",
     "activitypubWorldDefaultCid": -1,
-    "activitypubRulesCutoffDays": 30
+    "activitypubRulesCutoffDays": 30,
+    "caseSensitiveTags": 1
 }

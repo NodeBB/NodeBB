@@ -1,0 +1,59 @@
+get:
+  tags:
+    - admin
+  summary: Get hashtag relay
+  description: Returns the current relay host for hashtag actors
+  responses:
+    "200":
+      description: Current relay host
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  relay:
+                    type: string
+                    description: Current relay host
+                    example: relay.fedi.buzz
+put:
+  tags:
+    - admin
+  summary: Set hashtag relay
+  description: Set the relay host for hashtag actors; triggers migration of existing follows if changed
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - host
+          properties:
+            host:
+              type: string
+              description: The relay host
+              example: relay.fedi.buzz
+  responses:
+    "200":
+      description: Relay host updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties:
+                  relay:
+                    type: string
+                    description: Updated relay host
+                    example: relay.fedi.buzz
+    "400":
+      description: Invalid relay host

@@ -319,7 +319,9 @@ middleware.requirePageReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
 		} else {
 			req.session.returnTo = req.url;
 			const isAdminPath = req.path === '/admin' || req.path.startsWith('/admin/');
-			res.redirect(`${relative_path}/login${isAdminPath ? '?local=1' : ''}`);
+			req.session.save(() => {
+				res.redirect(`${relative_path}/login${isAdminPath ? '?local=1' : ''}`);
+			});
 		}
 	}
 	return helpers.try(async (req, res, next) => {

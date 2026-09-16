@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Rechercher avec l'ID",
 	"search.username": "Par nom d'utilisateur",
 	"search.username-placeholder": "Entrer un nom d'utilisateur à rechercher",
+	"search.fullname": "By Full Name",
 	"search.email": "Par adresse e-mail",
 	"search.email-placeholder": "Entrez une adresse e-mail à rechercher",
 	"search.ip": "Par adresse IP",

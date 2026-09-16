@@ -8,6 +8,8 @@
     "max-per-topic": "maximální počet značek/téma",
     "min-length": "Minimální délka značky",
     "max-length": "Maximální délka značky",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "Související témata",
     "max-related-topics": "Maximální počet zobrazených souvisejících témat (je-li podporováno motivem)"
 }

@@ -108,7 +108,7 @@ controller.list = async function (req, res) {
 	const [postData, postPrivileges] = await Promise.all([
 		posts.getPostSummaryByPids(mainPids, req.uid, {
 			stripTags: false,
-			extraFields: ['bookmarks'],
+			extraFields: ['bookmarks', 'contentWarning'],
 		}),
 		privileges.posts.get(mainPids, req.uid),
 	]);

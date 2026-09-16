@@ -14,6 +14,11 @@ const Benchpress = require('benchpressjs');
 Benchpress.setGlobal('config', config);
 Benchpress.setGlobal('_i18n', window._i18n);
 
+// Register template helpers synchronously so that any client-side render
+// (e.g. an ajaxify navigation triggered before app.load finishes) has them.
+// Without `tx`, every `{{tx(...)}}` in a template renders as an empty string.
+require('./modules/helpers').register();
+
 require('./sockets');
 require('./overrides');
 require('./ajaxify');
@@ -96,16 +101,14 @@ app.onDomReady = function () {
 
 		require([
 			'taskbar',
-			'helpers',
 			'forum/pagination',
 			'messages',
 			'search',
 			'forum/header',
 			'hooks',
-		], function (taskbar, helpers, pagination, messages, search, header, hooks) {
+		], function (taskbar, pagination, messages, search, header, hooks) {
 			header.prepareDOM();
 			taskbar.init();
-			helpers.register();
 			pagination.init();
 			search.init();
 			overrides.overrideTimeago();

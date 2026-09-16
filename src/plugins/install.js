@@ -222,12 +222,9 @@ module.exports = function (Plugins) {
 		if (nconf.get('plugins:active')) {
 			return nconf.get('plugins:active').includes(id);
 		}
-		const cached = cache.get(`plugin:isActive:${id}`);
-		if (cached !== undefined) {
-			return cached;
-		}
-		const isActive = await db.isSortedSetMember('plugins:active', id);
-		cache.set(`plugin:isActive:${id}`, isActive);
+		const isActive = await cache.get(`plugin:isActive:${id}`, async () => {
+			return await db.isSortedSetMember('plugins:active', id);
+		});
 		return isActive;
 	};
 

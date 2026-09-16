@@ -154,6 +154,10 @@ get:
                 type: string
               hideReadNotifications:
                 type: boolean
+              notificationType_new-reply:
+                type: string
+              notificationType_new-topic-with-tag:
+                type: string
               openOutgoingLinksInNewTab:
                 type: boolean
               topicSearchEnabled:

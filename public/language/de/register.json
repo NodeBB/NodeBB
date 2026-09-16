@@ -20,14 +20,14 @@
     "terms-of-use-error": "Du musst den Nutzungsbedingungen zustimmen",
     "registration-added-to-queue": "Deine Registration wurde abgeschickt. Du wirst eine E-Mail erhalten, sobald sie von einem Administrator akzeptiert wird.",
     "registration-queue-average-time": "Unsere durchschnittliche Zeit für die Genehmigung von Mitgliedschaften beträgt %1 Stunden %2 Minuten.",
-    "registration-queue-auto-approve-time": "Ihre Mitgliedschaft in diesem Forum wird in bis zu %1 Stunden vollständig aktiviert sein.",
-    "interstitial.intro": "Wir benötigen einige zusätzliche Informationen, um Ihr Konto zu aktualisieren&hellip;",
-    "interstitial.intro-new": "Wir benötigen einige zusätzliche Informationen, bevor wir Ihr Konto erstellen können&hellip;",
-    "interstitial.errors-found": "Bitte überprüfen Sie die eingegebenen Informationen:",
+    "registration-queue-auto-approve-time": "Deine Mitgliedschaft in diesem Forum wird in bis zu %1 Stunden vollständig aktiviert sein.",
+    "interstitial.intro": "Wir benötigen einige zusätzliche Informationen, um dein Konto zu aktualisieren&hellip;",
+    "interstitial.intro-new": "Wir benötigen einige zusätzliche Informationen, bevor wir dein Konto erstellen können&hellip;",
+    "interstitial.errors-found": "Bitte überprüfe die eingegebenen Informationen:",
     "gdpr-agree-data": "Ich stimme der Sammlung und Verarbeitung meiner Persönlichen Daten auf dieser Website zu.",
     "gdpr-agree-email": "Ich bin damit einverstanden, dass ich Informations und Benachrichtigungs-E-Mails von dieser Website erhalte.",
     "gdpr-consent-denied": "Du musst zustimmen, dass diese Seite deine Daten sammeln und verarbeiten darf, und dir Emails senden darf.",
-    "invite.error-admin-only": "Die direkte Benutzerregistrierung wurde deaktiviert. Bitte kontaktieren Sie einen Administrator für weitere Details.",
-    "invite.error-invite-only": "Die direkte Benutzerregistrierung wurde deaktiviert. Sie müssen von einem bestehenden Benutzer eingeladen werden, um Zugang zu diesem Forum zu erhalten.",
-    "invite.error-invalid-data": "Die erhaltenen Registrierungsdaten stimmen nicht mit unseren Aufzeichnungen überein. Bitte kontaktieren Sie einen Administrator für weitere Details"
+    "invite.error-admin-only": "Die direkte Benutzerregistrierung wurde deaktiviert. Bitte kontaktiere einen Administrator für weitere Details.",
+    "invite.error-invite-only": "Die direkte Benutzerregistrierung wurde deaktiviert. Du musst von einem bestehenden Benutzer eingeladen werden, um Zugang zu diesem Forum zu erhalten.",
+    "invite.error-invalid-data": "Die erhaltenen Registrierungsdaten stimmen nicht mit unseren Aufzeichnungen überein. Bitte kontaktiere einen Administrator für weitere Details"
 }

@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "הזמנת מנהל בלבד",
 	"registration-type.disabled": "בטל הרשמה",
 	"registration-type.help": "רגיל - משתמשים יכולים להירשם על ידי שימוש בדף ההרשמה (/register).<br/>\nהזמנה בלבד - משתמשים אחרים יכולים להזמין משתמשים מדף <a href=\"%1/users\" target=\"_blank\">המשתמשים.<br/>\nהזמנת מנהל בלבד - רק מנהלים יכולים להזמין משתמשים אחרים מדף <a href=\"%1/users\" target=\"_blank\">המשתמשים</a> ודף ניהול משתמשים</a>.<br/>\nבטל הרשמה - לא ניתן להירשם.<br/>ד",
-	"registration-approval-type.help": "רגיל - משתמשים נרשמים באופן מיידי.<br/>\nאישור מנהל - משתמשים אשר נרשמו מוכנסים לתוך <a href=\"%1/admin/manage/registration\">רשימת אישור</a> למנהלים.<br/>\nאישור מנהל לכתובות IP - רגיל למשתמשים חדשים, אישור מנהל לכתובות IP אשר כבר מקושר אליהם חשבון.<br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "זמן אישור אוטומטי",
 	"registration-queue-auto-approve-time-help": "שעות לפני שהמשתמש מאושר באופן אוטומטי. רשום 0 על-מנת להשבית.",
 	"registration-queue-show-average-time": "הצג למשתמשים זמן ממוצע שנדרש על-מנת לאשר משתמש חדש",

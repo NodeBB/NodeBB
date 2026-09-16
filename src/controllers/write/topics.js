@@ -229,7 +229,7 @@ Topics.getCrossposts = async (req, res) => {
 Topics.crosspost = async (req, res) => {
 	const { cid } = req.body;
 	const crossposts = await topics.crossposts.add(req.params.tid, cid, req.uid);
-	await activitypub.out.announce.topic(req.params.tid, req.uid);
+	await activitypub.out.announce.topic(req.params.tid, req.uid, cid);
 
 	helpers.formatApiResponse(200, res, { crossposts });
 };

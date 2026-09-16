@@ -18,19 +18,27 @@ const db = require('../database');
 const ttl = require('../cache/ttl');
 const user = require('../user');
 const activitypub = require('.');
+const emoji = require('./emoji');
 
 // \w only matches ASCII, so match unicode letters/numbers/marks explicitly to support non-ASCII handles
 const webfingerRegex = /^(@|acct:)?[\p{L}\p{N}\p{M}_.-]+@.+$/u;
+const webfingerUserRegex = /^[\p{L}\p{N}\p{M}_.-]+$/u;
 const webfingerCache = ttl({
 	name: 'ap-webfinger-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 60 * 24, // 24 hours
+});
+const failedWebfingerQueryCache = ttl({
+	name: 'ap-webfinger-query-failures',
+	max: 5000,
+	ttl: 1000 * 60 * 10, // 10 minutes
 });
 const sha256 = payload => crypto.createHash('sha256').update(payload).digest('hex');
 
 const Helpers = module.exports;
 
 Helpers._webfingerCache = webfingerCache; // exported for tests
+Helpers._failedWebfingerQueryCache = failedWebfingerQueryCache; // exported for tests
 
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
@@ -54,6 +62,27 @@ Helpers.log = (message) => {
 	if (process.env.NODE_ENV === 'development') {
 		winston.verbose(message);
 	}
+};
+
+Helpers._hasValidSelfLink = (actorId, actor) => {
+	// Check if the actor document has a self-link pointing to its own URI.
+	// This is used as a fallback for legacy actors when WebFinger query fails.
+	// We look for an explicit { rel: 'self' } link, NOT just a `url` field
+	// which any actor can set regardless of whether it's a valid self-reference.
+	if (!actor || typeof actor !== 'object') {
+		return false;
+	}
+
+	// Check for `link` array with explicit rel=self pointing to actorId
+	if (Array.isArray(actor.link)) {
+		return actor.link.some(
+			l =>
+				(l && typeof l === 'object' && l.rel === 'self' && l.href === actorId) ||
+				(typeof l === 'string' && l === actorId),
+		);
+	}
+
+	return false;
 };
 
 Helpers.isUri = (value) => {
@@ -98,7 +127,17 @@ Helpers.isWebfinger = (value) => {
 	return false;
 };
 
-Helpers.query = async (id) => {
+Helpers._webfingerKey = (id) => {
+	if (Helpers.isUri(id)) {
+		const uri = new URL(id);
+		return `${uri.pathname || uri.href}@${uri.hostname}`;
+	}
+
+	const [username, hostname] = String(id).split('@');
+	return `${(username || '').trim()}@${(hostname || '').trim().toLowerCase()}`;
+};
+
+Helpers.query = async (id, { strict = true } = {}) => {
 	const isUri = Helpers.isUri(id);
 	// username@host ids use acct: URI schema
 	const uri = isUri ? new URL(id) : new URL(`acct:${id}`);
@@ -110,13 +149,26 @@ Helpers.query = async (id) => {
 	username = username.trim();
 	hostname = hostname.trim();
 
-	const cached = webfingerCache.get(id);
-	if (cached !== undefined) {
+	try {
+		if (new URL(`https://${hostname}/`).hostname.toLowerCase() !== hostname.toLowerCase()) {
+			return false;
+		}
+	} catch (e) {
+		return false;
+	}
+
+	const key = Helpers._webfingerKey(id);
+	if (failedWebfingerQueryCache.has(key)) {
+		return false;
+	}
+
+	const cached = webfingerCache.get(key);
+	const fromSameHost = !cached?.hostname ||
+		(typeof cached.hostname === 'string' && cached.hostname.toLowerCase() === hostname.toLowerCase());
+	if (cached !== undefined && fromSameHost && !(strict && cached.splitDomain)) {
 		return cached;
 	}
 
-	// Build the resource from the raw id; URL serialization percent-encodes non-ASCII
-	// characters, which URLSearchParams would then encode a second time
 	const query = new URLSearchParams({ resource: isUri ? uri.href : `acct:${username}@${hostname}` });
 
 	// Make a webfinger query to retrieve routing information
@@ -130,10 +182,31 @@ Helpers.query = async (id) => {
 			timeout: 5000,
 		}));
 	} catch (e) {
+		failedWebfingerQueryCache.set(key, true);
 		return false;
 	}
 
-	if (response.statusCode !== 200 || !body.hasOwnProperty('links')) {
+	if (response.statusCode !== 200) {
+		failedWebfingerQueryCache.set(key, true);
+		return false;
+	}
+
+	const contentType = (response.headers?.['content-type'] || '').toLowerCase();
+	if (contentType && !contentType.includes('application/jrd+json') && !contentType.includes('application/json')) {
+		if (!contentType.includes('application/octet-stream')) {
+			return false;
+		}
+		// Try to parse raw response body as JSON for non-compliant servers
+		if (typeof body === 'string' || body instanceof Buffer) {
+			try {
+				body = JSON.parse(typeof body === 'string' ? body : body.toString('utf8'));
+			} catch (e) {
+				return false;
+			}
+		}
+	}
+
+	if (!body.hasOwnProperty('links')) {
 		return false;
 	}
 
@@ -177,18 +250,123 @@ Helpers.query = async (id) => {
 	} else {
 		subjectHostname = subjectUrl.hostname;
 	}
-	if (subjectHostname !== hostname) {
+
+	// Check for split-domain: queried hostname differs from subject hostname.
+	const splitDomain = subjectHostname.toLowerCase() !== hostname.toLowerCase();
+	if (splitDomain && strict) {
+		// Strict mode: reject responses where the subject hostname differs
 		return false;
 	}
 
-	const payload = { subject, username, hostname, actorUri, publicKey, _raw: body };
-	const claimedId = subjectUrl.pathname;
-	webfingerCache.set(claimedId, payload);
-	if (claimedId !== id) {
-		webfingerCache.set(id, payload);
-	}
+	const payload = {
+		subject, username, hostname, actorUri, publicKey,
+		_raw: body,
+		subjectHostname,
+		splitDomain,
+	};
+	webfingerCache.set(key, payload);
 
 	return payload;
+};
+
+Helpers.verifyActorWebfinger = async (actorId, actor, { allowSelfLinkFallback = false } = {}) => {
+	if (!Helpers.isUri(actorId)) {
+		return false;
+	}
+
+	const idHostname = new URL(actorId).hostname;
+	const preferredUsername = typeof actor.preferredUsername === 'string' ?
+		actor.preferredUsername.trim() : '';
+	if (!webfingerUserRegex.test(preferredUsername)) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'no-backreference' };
+	}
+
+	// Step 1: Backreference — non-strict query on domain B (the actor's id host).
+	// This allows the WebFinger subject to point elsewhere (split-domain forward target).
+	let backref = await Helpers.query(`${preferredUsername}@${idHostname}`, { strict: false });
+
+	if (!backref && allowSelfLinkFallback && Helpers._hasValidSelfLink(actorId, actor)) {
+		backref = {
+			actorUri: actorId,
+			subject: `acct:${preferredUsername}@${idHostname}`,
+			hostname: idHostname,
+			subjectHostname: idHostname,
+			splitDomain: false,
+		};
+	}
+	if (!backref) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'no-backreference' };
+	}
+
+	// The backreference self-link must point at this exact actor document.
+	if (backref.actorUri !== actorId) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
+	}
+
+	if (typeof backref.subject === 'string' && backref.subject.startsWith('acct:')) {
+		const opaque = backref.subject.slice(5);
+		const subjectAt = opaque.lastIndexOf('@');
+		const subjectUser = subjectAt === -1 ? null : opaque.slice(0, subjectAt);
+		if (subjectUser !== null && subjectUser !== preferredUsername) {
+			return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'subject-mismatch' };
+		}
+	}
+
+	// The subject's hostname tells us the canonical domain (A).
+	// Missing subjectHostname (e.g., legacy cache entries) defaults to same-domain.
+	const subjectHost = backref.subjectHostname;
+	if (!subjectHost || subjectHost.toLowerCase() === idHostname.toLowerCase()) {
+		return {
+			ok: true,
+			splitDomain: false,
+			canonicalHandle: `${preferredUsername}@${idHostname}`,
+			reason: null,
+		};
+	}
+
+	const normalizedSubjectHost = subjectHost.toLowerCase();
+
+	if (!meta.config.activitypubAllowSplitDomain) {
+		// Split-domain disabled; reject actors whose subject hostname differs
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
+	}
+
+	const forwardResult = await Helpers.query(`${preferredUsername}@${normalizedSubjectHost}`, { strict: true });
+	if (!forwardResult || forwardResult.actorUri !== actorId) {
+		return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'forward-mismatch' };
+	}
+
+	// Cross-check the key the identity domain published against the actor document's key.
+	let keyVerified = false;
+	const forwardPem = forwardResult.publicKey?.publicKeyPem;
+	const actorPem = actor.publicKey?.publicKeyPem;
+	if (typeof forwardPem === 'string' && forwardPem.trim() &&
+		typeof actorPem === 'string' && actorPem.trim()) {
+		if (forwardPem.trim() !== actorPem.trim()) {
+			return { ok: false, splitDomain: false, canonicalHandle: null, reason: 'key-mismatch' };
+		}
+		keyVerified = true;
+	} else {
+		winston.warn(`[activitypub] Split-domain actor ${actorId} verified without key comparison (key missing from forward webfinger or actor document)`);
+	}
+
+	const blocked = await activitypub.instances.isAllowed(normalizedSubjectHost);
+	if (!blocked.allowed) {
+		return {
+			ok: false,
+			splitDomain: true,
+			canonicalHandle: null,
+			reason: 'canonical-blocked',
+		};
+	}
+
+	return {
+		ok: true,
+		splitDomain: true,
+		canonicalHandle: `${preferredUsername}@${normalizedSubjectHost}`,
+		reason: 'split-domain',
+		keyVerified,
+	};
 };
 
 Helpers.generateKeys = async (type, id) => {
@@ -311,21 +489,6 @@ Helpers.resolveActivity = async (activity, data, id, resolved) => {
 		default: {
 			throw new Error('[[error:activitypub.not-implemented]]');
 		}
-	}
-};
-
-Helpers.mapToLocalType = (type) => {
-	if (type === 'Person') {
-		return 'user';
-	}
-	if (type === 'Group') {
-		return 'category';
-	}
-	if (type === 'Hashtag') {
-		return 'tag';
-	}
-	if (activitypub._constants.acceptedPostTypes.includes(type)) {
-		return 'post';
 	}
 };
 
@@ -574,7 +737,7 @@ Helpers.addressed = (id, activity) => {
 	return combined.has(id);
 };
 
-Helpers.renderEmoji = (text, tags, strip = false) => {
+Helpers.renderEmoji = async (text, tags, strip = false) => {
 	if (!text || !tags) {
 		return text;
 	}
@@ -583,19 +746,22 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 	let result = text;
 
 	const parsed = new Set();
-	tags.forEach((tag) => {
+	const eligibleTags = [];
+
+	// Collect eligible emoji tags
+	for (const tag of tags) {
 		const isEmoji = tag.type === 'Emoji';
 		const hasUrl = tag.icon && tag.icon.url;
 		const isImage = !tag.icon?.mediaType || tag.icon.mediaType.startsWith('image/');
 
 		if (isEmoji && (strip || (hasUrl && isImage))) {
-			if (!Helpers.isUri(tag.icon.url)) {
-				return;
+			if (hasUrl && !Helpers.isUri(tag.icon.url)) {
+				continue;
 			}
 
 			let { name } = tag;
 			if (parsed.has(name)) {
-				return;
+				continue;
 			}
 
 			if (!name.startsWith(':')) {
@@ -605,18 +771,33 @@ Helpers.renderEmoji = (text, tags, strip = false) => {
 				name = `${name}:`;
 			}
 
-			const imgTag = strip ?
-				'' :
-				`<img class="not-responsive emoji" src="${tag.icon.url}" title="${name}" />`;
-
-			let index = result.indexOf(name);
-			while (index !== -1) {
-				result = result.substring(0, index) + imgTag + result.substring(index + name.length);
-				index = result.indexOf(name, index + imgTag.length);
-			}
+			eligibleTags.push({ name, tag });
 			parsed.add(name);
 		}
-	});
+	}
+
+	// Process all emoji tags in parallel
+	const replacements = await Promise.all(eligibleTags.map(async ({ name, tag }) => {
+		let imgTag;
+		if (strip) {
+			imgTag = '';
+		} else {
+			imgTag = await emoji.processEmojiTag(tag);
+		}
+		return { name, imgTag };
+	}));
+
+	// Apply replacements
+	for (const { name, imgTag } of replacements) {
+		if (imgTag === null) {
+			continue;
+		}
+		let index = result.indexOf(name);
+		while (index !== -1) {
+			result = result.substring(0, index) + imgTag + result.substring(index + name.length);
+			index = result.indexOf(name, index + imgTag.length);
+		}
+	}
 
 	return result;
 };

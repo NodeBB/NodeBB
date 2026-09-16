@@ -42,6 +42,10 @@ module.exports = function (Topics) {
 			topicData.tags = data.tags.join(',');
 		}
 
+		if (data.titleEmoji) {
+			topicData.titleEmoji = data.titleEmoji;
+		}
+
 		if (Array.isArray(data.thumbs) && data.thumbs.length) {
 			const thumbs = Topics.thumbs.filterThumbs(data.thumbs);
 			topicData.thumbs = JSON.stringify(thumbs);
@@ -100,10 +104,11 @@ module.exports = function (Topics) {
 		const [categoryExists, [canCreate, canTag], isAdmin] = await Promise.all([
 			isRemoteCid ? true : categories.exists(cid),
 			privileges.categories.can(
-				['topics:create', 'topics:tag'], cid, remoteUid ? -2 : uid
+				['topics:create', 'topics:tag'], remoteUid ? -1 : cid, remoteUid ? -2 : uid
 			),
 			privileges.users.isAdministrator(uid),
 		]);
+
 
 		data.tags = data.tags || [];
 		data.content = String(data.content || '').trimEnd();
@@ -177,18 +182,9 @@ module.exports = function (Topics) {
 		plugins.hooks.fire('action:topic.post', { topic: topicData, post: postData, data: data });
 
 		if (!topicData.scheduled && !topicData.deleted) {
-			setImmediate(async () => {
-				try {
-					if (utils.isNumber(uid)) {
-						// New topic notifications only sent for local-to-local follows only
-						await user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData);
-					}
-
-					await Topics.notifyTagFollowers(postData, uid);
-					await categories.notifyCategoryFollowers(postData, uid);
-				} catch (err) {
-					winston.error(err.stack);
-				}
+			setImmediate(() => {
+				user.notifications.sendTopicNotificationToFollowers(uid, topicData, postData)
+					.catch(err => winston.error(err.stack));
 			});
 		}
 

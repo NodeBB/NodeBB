@@ -23,7 +23,7 @@ privsPosts.get = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
 		return [];
 	}
-	const postData = await posts.getPostsFields(pids, ['tid']);
+	const postData = await posts.getPostsFields(pids, ['tid', 'uid']);
 	const uniqTids = _.uniq(postData.map(p => p && p.tid).filter(Boolean));
 	const topicData = await topics.getTopicsFields(uniqTids, ['cid', 'uid', 'deleted', 'scheduled']);
 	const tidToTopic = _.zipObject(uniqTids, topicData);
@@ -32,7 +32,6 @@ privsPosts.get = async function (pids, uid) {
 	const results = await utils.promiseParallel({
 		isAdmin: user.isAdministrator(uid),
 		isModerator: user.isModerator(uid, uniqueCids),
-		isOwner: posts.isOwner(pids, uid),
 		read: helpers.isAllowedTo('read', uid, uniqueCids),
 		'topics:read': helpers.isAllowedTo('topics:read', uid, uniqueCids),
 		'topics:schedule': helpers.isAllowedTo('topics:schedule', uid, uniqueCids),
@@ -55,11 +54,12 @@ privsPosts.get = async function (pids, uid) {
 	const privileges = postData.map((post, i) => {
 		const topic = tidToTopic[post.tid] || {};
 		const { cid } = topic;
+		const isPostOwner = String(post.uid) === String(uid);
 		const isTopicOwner = String(topic.uid) === String(uid);
 		const isAdminOrMod = results.isAdmin || isModerator[cid];
-		const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator[i])) || results.isAdmin;
-		const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
-		const viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
+		const editable = (privData['posts:edit'][cid] && (isPostOwner || results.isModerator[i])) || results.isAdmin;
+		const viewDeletedPosts = isPostOwner || privData['posts:view_deleted'][cid] || results.isAdmin;
+		const viewHistory = isPostOwner || privData['posts:history'][cid] || results.isAdmin;
 
 		const canViewDeletedScheduled = privsTopics.canViewDeletedScheduled(topic, {
 			view_deleted: results.isAdmin || isTopicOwner || privData['posts:view_deleted'][cid],

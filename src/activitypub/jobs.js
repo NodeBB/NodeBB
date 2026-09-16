@@ -1,5 +1,7 @@
 'use strict';
 
+const nconf = require('nconf');
+
 const db = require('../database');
 const meta = require('../meta');
 const topics = require('../topics');
@@ -38,13 +40,6 @@ Jobs.start = async () => {
 	});
 
 	await cron.addJob({
-		name: 'ap:retry:send',
-		cronTime: '0 * * * * *',
-		runOnInit: false,
-		onTick: async () => await tryCronJob(retryFailedMessages),
-	});
-
-	await cron.addJob({
 		name: 'ap:backfill',
 		cronTime: '15 * * * *',
 		runOnInit: false,
@@ -76,59 +71,15 @@ Jobs.start = async () => {
 			});
 		},
 	});
+
+	// Start draining the send retry queue so tasks left over from a previous
+	// run are retried without waiting for the next outgoing send
+	// Only the primary process runs the drain loop to avoid duplicate sends
+	// across parallel NodeBB instances.
+	if (meta.config.activitypubEnabled && nconf.get('isPrimary')) {
+		activitypub.SendPool.drainLoop();
+	}
 };
-
-async function retryFailedMessages() {
-	const queueIds = await db.getSortedSetRangeByScore('ap:retry:queue', 0, 50, '-inf', Date.now());
-	const queuedData = (await db.getObjects(queueIds.map(id => `ap:retry:queue:${id}`)));
-
-	const retryQueueAdd = [];
-	const retryQueuedSet = [];
-	const queueIdsToRemove = [];
-
-	const oneMinute = 1000 * 60;
-	await Promise.all(queuedData.map(async (data, index) => {
-		const queueId = queueIds[index];
-		if (!data) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-
-		const { uri, id, type, attempts, payload, digest } = data;
-		if (!uri || !id || !type || !payload || attempts > 10) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-		let payloadObj;
-		try {
-			payloadObj = JSON.parse(payload);
-		} catch (err) {
-			queueIdsToRemove.push(queueId);
-			return;
-		}
-		const keyData = await activitypub.getPrivateKey(type, id); // keyData could be moved higher up (optimization)
-		const ok = await activitypub._sendMessage(uri, keyData, payloadObj, digest);
-		if (ok) {
-			queueIdsToRemove.push(queueId);
-		} else {
-			const nextAttempt = (parseInt(attempts, 10) || 0) + 1;
-			const timeout = (2 ** nextAttempt) * oneMinute; // exponential backoff
-			const nextTryOn = Date.now() + timeout;
-			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-				attempts: nextAttempt,
-				timestamp: nextTryOn,
-			}]);
-		}
-	}));
-
-	await Promise.all([
-		db.sortedSetAddBulk(retryQueueAdd),
-		db.setObjectBulk(retryQueuedSet),
-		db.sortedSetRemove('ap:retry:queue', queueIdsToRemove),
-		db.deleteAll(queueIdsToRemove.map(id => `ap:retry:queue:${id}`)),
-	]);
-}
 
 async function backfill() {
 	const start = 0;

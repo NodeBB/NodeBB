@@ -136,6 +136,8 @@ paths:
     $ref: 'write/categories/cid/watch/member.yaml'
   /categories/{cid}/privileges:
     $ref: 'write/categories/cid/privileges.yaml'
+  /categories/{cid}/privileges/copy:
+    $ref: 'write/categories/cid/privileges/copy.yaml'
   /categories/{cid}/privileges/{privilege}:
     $ref: 'write/categories/cid/privileges/privilege.yaml'
   /categories/{cid}/privileges/{privilege}/{member}:
@@ -262,6 +264,8 @@ paths:
     $ref: 'write/chats/roomId/messages/mid/raw.yaml'
   /chats/{roomId}/messages/{mid}/ip:
     $ref: 'write/chats/roomId/messages/mid/ip.yaml'
+  /chats/{roomId}/messages/{mid}/state:
+    $ref: 'write/chats/roomId/messages/mid/state.yaml'
   /flags/:
     $ref: 'write/flags.yaml'
   /flags/{flagId}:
@@ -314,6 +318,12 @@ paths:
     $ref: 'write/admin/activitypub/blocklists/url.yaml'
   /admin/activitypub/blocklists/{url}/refresh:
     $ref: 'write/admin/activitypub/blocklists/url/refresh.yaml'
+  /admin/activitypub/hashtags:
+    $ref: 'write/admin/activitypub/hashtags.yaml'
+  /admin/activitypub/hashtags/{tag}:
+    $ref: 'write/admin/activitypub/hashtags/tag.yaml'
+  /admin/activitypub/hashtags/relay:
+    $ref: 'write/admin/activitypub/hashtags/relay.yaml'
   /admin/plugins/{pluginId}:
     $ref: 'write/admin/plugins/pluginId.yaml'
   /admin/plugins/{pluginId}/active:

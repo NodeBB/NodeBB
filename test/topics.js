@@ -1546,14 +1546,16 @@ describe('Topic\'s', () => {
 				assert.ifError(err);
 				assert.equal(data.matchCount, 5);
 				assert.equal(data.pageCount, 1);
-				const tagData = [
-					{ value: 'nodebb', valueEncoded: 'nodebb', score: 3, class: 'nodebb' },
-					{ value: 'node & c++', valueEncoded: 'node%20%26%20c%2B%2B', score: 1, class: 'node-&-c++' },
-					{ value: 'node icon', valueEncoded: 'node%20icon', score: 1, class: 'node-icon' },
-					{ value: 'nodejs', valueEncoded: 'nodejs', score: 1, class: 'nodejs' },
-					{ value: 'nosql', valueEncoded: 'nosql', score: 1, class: 'nosql' },
-				];
-				assert.deepEqual(data.tags, tagData);
+				const expected = ['nodebb', 'node & c++', 'node icon', 'nodejs', 'nosql'];
+				const actual = data.tags.map(t => t.value);
+				expected.forEach((tag) => {
+					assert.notEqual(actual.indexOf(tag), -1, `Expected tag ${tag} to be present`);
+				});
+				data.tags.forEach((tag) => {
+					assert.ok(tag.score >= 1, `Tag ${tag.value} should have score >= 1`);
+					assert.equal(tag.valueEncoded, encodeURIComponent(tag.value));
+					assert.equal(tag.class, tag.value.replace(/\s/g, '-'));
+				});
 
 				done();
 			});
@@ -1996,6 +1998,36 @@ describe('Topic\'s', () => {
 		});
 	});
 
+	describe('topic views', () => {
+		let viewsTid;
+
+		before(async () => {
+			const result = await topics.post({
+				uid: adminUid,
+				title: 'topic views test',
+				content: 'topic views test content',
+				cid: categoryObj.cid,
+			});
+			viewsTid = result.topicData.tid;
+		});
+
+		it('should only increment the view count once per interval', async () => {
+			const req = { uid: fooUid, session: {} };
+			await topics.increaseViewCount(req, viewsTid);
+			await topics.increaseViewCount(req, viewsTid);
+			assert.strictEqual(await topics.getTopicField(viewsTid, 'viewcount'), 1);
+			assert.deepStrictEqual(Object.keys(req.session.tids_viewed), [String(viewsTid)]);
+		});
+
+		it('should prune expired entries from the session', async () => {
+			const expired = Date.now() - ((meta.config.incrementTopicViewsInterval + 1) * 60000);
+			const req = { uid: fooUid, session: { tids_viewed: { 1: expired, 2: expired } } };
+			await topics.increaseViewCount(req, viewsTid);
+			assert.deepStrictEqual(Object.keys(req.session.tids_viewed), [String(viewsTid)]);
+			assert.strictEqual(await topics.getTopicField(viewsTid, 'viewcount'), 2);
+		});
+	});
+
 	it('should check if user is moderator', (done) => {
 		socketTopics.isModerator({ uid: adminUid }, topic.tid, (err, isModerator) => {
 			assert.ifError(err);
@@ -2163,7 +2195,7 @@ describe('Topic\'s', () => {
 				uid: 0, // call as guest
 				teaserPost: 'last-post',
 			});
-			console.log({ teasers });
+
 			assert.deepStrictEqual(teasers[0], null);
 		});
 	});

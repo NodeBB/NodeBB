@@ -29,7 +29,7 @@
 	"roll-confirm": "האם ליצור מחדש את הטוקן הזה? הטוקן הישן יבוטל מיד ולא יהיה ניתן לשחזרו.",
 	"token-once-title": "Copy Token Now",
 	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
+	"copy-token": "העתקה",
 	"token-copied": "Token copied to clipboard.",
 	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

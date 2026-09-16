@@ -43,7 +43,7 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
 	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
 
-	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
+	app.post('/compose', [middleware.applyCSRF, middleware.pluginHooks], controllers.composer.post);
 };
 
 _mounts.mod = (app, middleware, controllers) => {

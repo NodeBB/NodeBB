@@ -3,10 +3,10 @@
 const nconf = require('nconf');
 const winston = require('winston');
 const { createHash } = require('crypto');
-const { cpus } = require('os');
 
 const request = require('../request');
 const db = require('../database');
+const SendPool = require('./send');
 const pubsub = require('../pubsub');
 const meta = require('../meta');
 const categories = require('../categories');
@@ -90,10 +90,12 @@ ActivityPub.blocklists = require('./blocklists');
 ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
+ActivityPub.hashtags = require('./hashtags');
 ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
 ActivityPub.analytics = require('./analytics');
 ActivityPub.signatures = require('./signatures');
+ActivityPub.emoji = require('./emoji');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
@@ -310,14 +312,24 @@ ActivityPub.sign = async ({ key, keyId }, url, digest) => {
 ActivityPub.verify = async (req) => {
 	ActivityPub.helpers.log('[activitypub/verify] Starting signature verification...');
 
-	const isValid = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
-	if (!isValid) {
+	const verified = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
+	if (!verified) {
 		ActivityPub.helpers.log('[activitypub/verify] Signature verification failed.');
 	} else {
 		ActivityPub.helpers.log('[activitypub/verify] Signature verification succeeded.');
 	}
 
-	return isValid;
+	return verified;
+};
+
+async function _checkFederationPolicy(hostname, url) {
+	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
+	if (!allowed) {
+		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${url}, domain is blocked.`);
+		const e = new Error(`[[error:activitypub.get-failed]]`);
+		e.code = `ap_get_domain_blocked`;
+		throw e;
+	}
 };
 
 ActivityPub.get = async (type, id, uri, options) => {
@@ -326,13 +338,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 
 	const { hostname } = new URL(uri);
-	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
-	if (!allowed) {
-		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
-		const e = new Error(`[[error:activitypub.get-failed]]`);
-		e.code = `ap_get_domain_blocked`;
-		throw e;
-	}
+	await _checkFederationPolicy(hostname, uri);
 
 	options = {
 		cache: true,
@@ -348,7 +354,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	const headers = id >= 0 ? await ActivityPub.sign(keyData, uri) : {};
 	ActivityPub.helpers.log(`[activitypub/get] ${uri}`);
 	try {
-		const { response, body } = await request.get(uri, {
+		const { response, body, url: resolvedUrl } = await request.get(uri, {
 			headers: {
 				...headers,
 				...options.headers,
@@ -356,6 +362,9 @@ ActivityPub.get = async (type, id, uri, options) => {
 			},
 			timeout: 5000,
 		});
+
+		const { hostname: resolvedHostname } = new URL(resolvedUrl);
+		await _checkFederationPolicy(resolvedHostname, resolvedUrl);
 
 		if (!String(response.statusCode).startsWith('2')) {
 			ActivityPub.helpers.log(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
@@ -387,43 +396,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
-	try {
-		const headers = await ActivityPub.sign(keyData, uri, digest);
-
-		const { response, body } = await request.post(uri, {
-			headers: {
-				...headers,
-				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-			},
-			body: payload,
-			timeout: 10000, // configurable?
-		});
-
-		if (String(response.statusCode).startsWith('2')) {
-			ActivityPub.analytics.send({
-				type: payload.type,
-				target: uri,
-			});
-			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
-			return true;
-		}
-		if (typeof body === 'object') {
-			throw new Error(JSON.stringify(body));
-		}
-		throw new Error(String(body));
-	} catch (e) {
-		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
-		ActivityPub.analytics.sendError({
-			payload,
-			uri,
-			error: e,
-		});
-		return false;
-	}
-};
-
-ActivityPub.send = async (type, id, targets, payload) => {
+ActivityPub.send = async (type, id, targets, payload, { delayMs = 0 } = {}) => {
 	if (!meta.config.activitypubEnabled) {
 		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
 	}
@@ -452,44 +425,36 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	payloadHash.update(JSON.stringify(payload));
 	const digest = `SHA-256=${payloadHash.digest('base64')}`;
 
-	const oneMinute = 1000 * 60;
-	const numCores = cpus().length;
-	const batchSettings = {
-		batch: Math.max(8, numCores * 8),
-		interval: numCores === 1 ? 500 : 100,
-	};
-	const keyData = await ActivityPub.getPrivateKey(type, id);
+	// Push all inboxes to the Redis retry queue and dispatch to workers
 	setImmediate(() => {
-		batch.processArray(inboxes, async (inboxBatch) => {
-			const retryQueueAdd = [];
-			const retryQueuedSet = [];
+		const retryQueueAdd = [];
+		const retryQueuedSet = [];
+		const nextTryOn = Date.now() + (delayMs || 0);
 
-			await Promise.all(inboxBatch.map(async (uri) => {
-				const ok = await ActivityPub._sendMessage(uri, keyData, payload, digest);
-				if (!ok) {
-					const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
-					const nextTryOn = Date.now() + oneMinute;
-					retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-					retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-						queueId,
-						uri,
-						id,
-						type,
-						attempts: 1,
-						timestamp: nextTryOn,
-						digest,
-						payload: JSON.stringify(payload),
-					}]);
-				}
-			}));
+		inboxes.forEach((uri) => {
+			const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
+			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
+			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
+				queueId,
+				uri,
+				id,
+				type,
+				attempts: 1,
+				timestamp: nextTryOn,
+				digest,
+				payload: JSON.stringify(payload),
+			}]);
+		});
 
-			if (retryQueueAdd.length) {
-				await Promise.all([
-					db.sortedSetAddBulk(retryQueueAdd),
-					db.setObjectBulk(retryQueuedSet),
-				]);
+		if (retryQueueAdd.length) {
+			db.sortedSetAddBulk(retryQueueAdd);
+			db.setObjectBulk(retryQueuedSet);
+
+			// Start the drain loop if not already draining
+			if (SendPool.pool > 0) {
+				SendPool.drainLoop();
 			}
-		}, batchSettings).catch(err => winston.error(err.stack));
+		}
 	});
 };
 
@@ -721,3 +686,17 @@ ActivityPub.probe = async ({ uid, url }) => {
 	probeCache.set(url, false);
 	return false;
 };
+
+// ---------------------------------------------------------------------------
+// Shutdown — called during graceful NodeBB shutdown
+// ---------------------------------------------------------------------------
+
+ActivityPub.shutdown = function () {
+	if (SendPool.pool > 0) {
+		SendPool.shutdown();
+	}
+};
+
+// Initialize the send pool now that ActivityPub is fully defined
+SendPool.init(ActivityPub);
+ActivityPub.SendPool = SendPool;

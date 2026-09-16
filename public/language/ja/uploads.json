@@ -6,6 +6,6 @@
     "no-uploads-found": "アップロードが見つかりません",
     "public-uploads-info": "アップロードは公開されています。すべての訪問者が閲覧できます。",
     "private-uploads-info": "アップロードは非公開です。ログインしたユーザーのみが閲覧できます。",
-    "delete-upload": "Delete Upload",
-    "delete-upload-confirm": "Are you sure you want to delete this upload?"
+    "delete-upload": "アップロードを削除",
+    "delete-upload-confirm": "このアップロードを削除してもよろしいですか？"
 }

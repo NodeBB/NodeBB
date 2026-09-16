@@ -20,7 +20,15 @@ const helpers = require('./helpers');
 describe('as:Person (Actor asserton)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
+		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('happy path', () => {
@@ -215,6 +223,15 @@ describe('as:Person (Actor asserton)', () => {
 });
 
 describe('as:Group', () => {
+	before(() => {
+		meta.config.activitypubAllowLoopback = 1;
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
+	});
+
 	describe('assertion', () => {
 		let actorUri;
 		let actorData;
@@ -408,6 +425,14 @@ describe('as:Group', () => {
 });
 
 describe('Inbox resolution', () => {
+	before(() => {
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
+	});
+
 	describe('remote users', () => {
 		it('should return an inbox if present', async () => {
 			const { id, actor } = helpers.mocks.person();
@@ -465,6 +490,14 @@ describe('Inbox resolution', () => {
 });
 
 describe('Controllers', () => {
+	before(() => {
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
+	});
+
 	describe('User Actor endpoint', () => {
 		let uid;
 		let slug;
@@ -728,9 +761,8 @@ describe('Controllers', () => {
 					cid,
 					title: 'Lorem "Lipsum" Ipsum',
 					content: 'Lorem ipsum dolor sit amet',
+					deleted: 1,
 				}));
-
-				await topics.delete(topicData.tid, uid);
 
 				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
 					headers: {
@@ -822,10 +854,14 @@ describe('Pruning', () => {
 		await install.giveWorldPrivileges();
 
 		meta.config.activitypubUserPruneDays = 0; // trigger immediate pruning
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
 	});
 
 	after(() => {
 		meta.config.activitypubUserPruneDays = 7;
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('Users', () => {

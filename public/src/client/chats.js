@@ -21,11 +21,12 @@ define('forum/chats', [
 	'chat',
 	'api',
 	'uploadHelpers',
+	'modules/flags',
 ], function (
 	components, mousetrap, recentChats, create,
 	manage, messages, userList, messageSearch, pinnedMessages,
 	events, search, autocomplete, hooks, modals, benchpress, alerts,
-	chatModule, api, uploadHelpers
+	chatModule, api, uploadHelpers, flags
 ) {
 	const Chats = {
 		activeAutocomplete: new WeakMap(),
@@ -339,6 +340,40 @@ define('forum/chats', [
 		});
 	};
 
+	function getTopVisibleMessageIndex(el) {
+		const containerTop = el.offset().top;
+		let index = 0;
+		el.children('[data-index]').each(function () {
+			const msgEl = $(this);
+			const msgIndex = parseInt(msgEl.attr('data-index'), 10);
+			// live-received messages don't carry an index; skip them
+			if (!isNaN(msgIndex) && msgEl.offset().top + msgEl.outerHeight() > containerTop) {
+				index = msgIndex + 1;
+				return false;
+			}
+		});
+		return index;
+	}
+
+	function updateUrlWithMessageIndex(roomId, el) {
+		if (
+			!ajaxify.data.template.chats || !history.replaceState ||
+			String(ajaxify.data.roomId) !== String(roomId) || !ajaxify.data.userslug
+		) {
+			return;
+		}
+		const index = messages.isAtBottom(el) ? 0 : getTopVisibleMessageIndex(el);
+		const newUrl = `user/${ajaxify.data.userslug}/chats/${roomId}${index > 0 ? `/${index}` : ''}`;
+		const fullPath = `${config.relative_path}/${newUrl}`;
+		if (fullPath === window.location.pathname) {
+			return;
+		}
+		const search = window.location.search || '';
+		history.replaceState({
+			url: newUrl + search,
+		}, null, `${window.location.protocol}//${window.location.host}${fullPath}${search}`);
+	}
+
 	Chats.addScrollHandler = function (roomId, uid, el) {
 		let loading = false;
 		let previousScrollTop = el.scrollTop();
@@ -349,6 +384,7 @@ define('forum/chats', [
 			isAtBottom = messages.isAtBottom(el);
 		});
 		el.on('scroll', utils.debounce(async function () {
+			updateUrlWithMessageIndex(roomId, el);
 			if (parseInt(el.attr('data-ignore-next-scroll'), 10) === 1) {
 				el.removeAttr('data-ignore-next-scroll');
 				previousScrollTop = el.scrollTop();
@@ -469,7 +505,18 @@ define('forum/chats', [
 				case 'unpin':
 					pinnedMessages.unpin(messageId, roomId);
 					break;
+				case 'flag':
+					Chats.flagMessage(msgEl.attr('data-mid'), roomId);
+					break;
 			}
+		});
+	};
+
+	Chats.flagMessage = function (messageId, roomId) {
+		flags.showFlagModal({
+			type: 'message',
+			id: messageId,
+			roomId: roomId,
 		});
 	};
 
@@ -755,7 +802,10 @@ define('forum/chats', [
 			roomEl.find('[component="chat/room/teaser"]').html(html[0].outerHTML);
 			roomEl.find('.timeago').timeago();
 			moveChatAndHrToTop(roomEl);
-		} else {
+		} else if (String(ajaxify.data.uid) === String(app.user.uid)) {
+			// The room isn't on screen, so it has to be fetched -- but `GET /chats`
+			// returns the *viewer's* rooms, which have no business being spliced
+			// into a list that is showing another user's rooms.
 			const { rooms } = await api.get(`/chats`, { start: 0, perPage: 2 });
 			const room = rooms.find(r => parseInt(r.roomId, 10) === parseInt(roomId, 10));
 			if (room) {

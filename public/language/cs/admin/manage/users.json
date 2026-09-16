@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Pro hledání, zadejte ID uživatele",
 	"search.username": "Dle jména uživatele",
 	"search.username-placeholder": "Zadejte hledané uživatelské jméno",
+	"search.fullname": "By Full Name",
 	"search.email": "Podle e-mailu",
 	"search.email-placeholder": "Zadejte hledaný e-mail",
 	"search.ip": "Podle IP adresy",

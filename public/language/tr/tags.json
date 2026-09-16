@@ -13,5 +13,6 @@
     "watching.description": "Yeni başlıkları bildir",
     "not-watching.description": "Yeni başlıkları bildirme",
     "following-tag.message": "Bu etiket ile yeni bir başlık oluşturulduğunda bildirim alacaksınız!",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Bu etiket ile yeni bir başlık oluşturulduğunda bildirim almayacaksınız!"
 }

@@ -86,7 +86,7 @@ module.exports = function (Topics) {
 				forkTimestamp: now,
 			}),
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], mainPost.votes, tid),
-			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` }),
+			Topics.events.log(fromTid, { type: 'fork', uid, toCid: cid, href: `/topic/${tid}` }),
 		]);
 
 		// ideally we should federate a "move" activity instead, then can capture remote posts too. tbd

@@ -40,7 +40,7 @@ Out.follow = enabledCheck(async (type, id, actor) => {
 	// Privilege checks should be done upstream
 	const acceptedTypes = ['uid', 'cid'];
 	const assertion = await activitypub.actors.assert(actor);
-	if (!acceptedTypes.includes(type) || !assertion || (Array.isArray(assertion) && assertion.length)) {
+	if (!acceptedTypes.includes(type) || !assertion || (Array.isArray(assertion) && !assertion.length)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
@@ -61,9 +61,10 @@ Out.follow = enabledCheck(async (type, id, actor) => {
 	const timestamp = Date.now();
 
 	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
+	const actorUri = activitypub.helpers.resolveActor(type, id);
 	try {
 		await activitypub.send(type, id, [actor], {
-			id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
+			id: `${actorUri}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 			type: 'Follow',
 			to: [actor],
 			object: actor,
@@ -91,12 +92,34 @@ Out.create.note = enabledCheck(async (uid, post) => {
 	}
 
 	const { activity, targets } = await activitypub.mocks.activities.create(pid, uid, post);
+	const targetsArr = Array.from(targets);
 
-	await Promise.all([
-		activitypub.send('uid', uid, Array.from(targets), activity),
+	// Separate topic participants (immediate) from the rest (deferred)
+	const { tid } = await topics.getTopicFields(pid, ['tid']);
+	const participantUids = await db.getSortedSetMembers(`tid:${tid}:posters`);
+	const participantRemoteUris = participantUids.filter(uid => !utils.isNumber(uid));
+	const immediateTargetsSet = new Set(
+		participantRemoteUris.length ?
+			targetsArr.filter(uri => participantRemoteUris.includes(uri)) :
+			[],
+	);
+	const deferredTargets = targetsArr.filter(uri => !immediateTargetsSet.has(uri));
+
+	const sendPromises = [
 		activitypub.feps.announce(pid, activity),
-		// utils.isNumber(post.cid) ? activitypubApi.add(caller, { pid }) : undefined,
-	]);
+	];
+	if (immediateTargetsSet.size) {
+		sendPromises.push(activitypub.send('uid', uid, Array.from(immediateTargetsSet), activity, {
+			delayMs: 0,
+		}));
+	}
+	// Always send to deferred targets (even if empty) to match original behavior
+	// where send() was always called with all targets.
+	sendPromises.push(activitypub.send('uid', uid, deferredTargets, activity, {
+		delayMs: 10000,
+	}));
+
+	await Promise.all(sendPromises);
 });
 
 Out.create.privateNote = enabledCheck(async (messageObj) => {
@@ -334,8 +357,11 @@ Out.announce.topic = enabledCheck(async (tid, uid, overrideCid) => {
 		return;
 	}
 
-	const allowed = await privileges.posts.can('topics:read', pid, activitypub._constants.uid);
-	if (!allowed) {
+	const [sourceAllowed, targetAllowed] = await Promise.all([
+		privileges.posts.can('topics:read', pid, activitypub._constants.uid),
+		overrideCid ? privileges.categories.can('topics:read', overrideCid, activitypub._constants.uid) : true,
+	]);
+	if (!sourceAllowed || !targetAllowed) {
 		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);
 		return;
 	}
@@ -349,7 +375,7 @@ Out.flag = enabledCheck(async (uid, flag) => {
 		return;
 	}
 	const reportedIds = [flag.targetId];
-	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
+	if ((flag.type === 'post' || flag.type === 'message') && activitypub.helpers.isUri(flag.targetUid)) {
 		reportedIds.push(flag.targetUid);
 	}
 	const reason = flag.reason ||
@@ -472,33 +498,35 @@ Out.undo.follow = enabledCheck(async (type, id, actor) => {
 	], actor);
 	const timestamp = timestamps[0] || timestamps[1];
 
+	const actorUri = activitypub.helpers.resolveActor(type, id);
 	const object = {
-		id: `${nconf.get('url')}/${type}/${id}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
+		id: `${actorUri}#activity/follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Follow',
 		object: actor,
+		actor: actorUri,
 	};
-	if (type === 'uid') {
-		object.actor = `${nconf.get('url')}/uid/${id}`;
-	} else if (type === 'cid') {
-		object.actor = `${nconf.get('url')}/category/${id}`;
-	}
 
 	await activitypub.send(type, id, [actor], {
-		id: `${nconf.get('url')}/${type}/${id}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
+		id: `${actorUri}#activity/undo:follow/${encodeURIComponent(actor)}/${timestamp}`,
 		type: 'Undo',
 		to: [actor],
-		actor: object.actor,
+		actor: actorUri,
 		object,
 	});
 
 	if (type === 'uid') {
-		await Promise.all([
+		const syncPromises = [
 			db.sortedSetRemove(`followingRemote:${id}`, actor),
 			db.sortedSetRemove(`followRequests:uid.${id}`, actor),
 			db.sortedSetRemove(`followersRemote:${actor}`, id),
-			user.syncFollowCounts(id, true, false),
-			user.syncFollowCounts(actor, false, true),
-		]);
+		];
+		if (id > 0) {
+			syncPromises.push(
+				user.syncFollowCounts(id, true, false),
+				user.syncFollowCounts(actor, false, true),
+			);
+		}
+		await Promise.all(syncPromises);
 	} else if (type === 'cid') {
 		await Promise.all([
 			db.sortedSetRemove(`cid:${id}:following`, actor),
@@ -550,7 +578,7 @@ Out.undo.flag = enabledCheck(async (uid, flag) => {
 		return;
 	}
 	const reportedIds = [flag.targetId];
-	if (flag.type === 'post' && activitypub.helpers.isUri(flag.targetUid)) {
+	if ((flag.type === 'post' || flag.type === 'message') && activitypub.helpers.isUri(flag.targetUid)) {
 		reportedIds.push(flag.targetUid);
 	}
 	const reason = flag.reason ||
@@ -573,6 +601,10 @@ Out.undo.flag = enabledCheck(async (uid, flag) => {
 Out.undo.announce = enabledCheck(async (type, id, tid) => {
 	if (!utils.isNumber(id) || !['uid', 'cid'].includes(type)) {
 		throw new Error('[[error:invalid-data]]');
+	}
+	id = parseInt(id, 10);
+	if (id < 0) {
+		return; // skip pseudo-IDs like cid -1 (All Categories)
 	}
 
 	const exists = await Promise.all([

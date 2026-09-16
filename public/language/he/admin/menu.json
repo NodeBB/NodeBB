@@ -54,6 +54,7 @@
 	"federation/content": "תוכן",
 	"federation/rules": "סיווג",
 	"federation/relays": "ממסרים",
+	"federation/hashtags": "Hashtags",
 	"federation/pruning": "אחסון",
 	"federation/safety": "אמון ובטיחות",
 	"federation/analytics": "ניתוח",

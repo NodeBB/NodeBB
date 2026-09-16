@@ -28,6 +28,15 @@
 					<label class="form-label" for="maximumTagLength">{{tx("admin/settings/tags:max-length")}}</label>
 					<input id="maximumTagLength" type="text" class="form-control" value="15" data-field="maximumTagLength">
 				</div>
+				<div class="mb-3">
+					<label class="form-check-label" for="caseSensitiveTags">{{tx("admin/settings/tags:case-sensitive")}}</label>
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" id="caseSensitiveTags" data-field="caseSensitiveTags">
+					</div>
+					<p class="form-text">
+						{{tx("admin/settings/tags:case-sensitive-help")}}
+					</p>
+				</div>
 
 			</div>
 

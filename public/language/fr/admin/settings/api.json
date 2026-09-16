@@ -27,9 +27,9 @@
 
 	"delete-confirm": "Voulez-vous vraiment supprimer ce jeton ? Il ne sera pas récupérable.",
 	"roll-confirm": "Voulez-vous vraiment régénérer ce jeton ? L'ancien jeton sera immédiatement révoqué et ne sera pas récupérable.",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "Copier le token maintenant",
+	"token-once-warning": "Ce token ne s'affichera qu'une seule fois. Conservez-le en lieu sûr avant de fermer cette boîte de dialogue.",
+	"copy-token": "Copier",
+	"token-copied": "Le token a été copié dans le presse-papiers.",
+	"token-copy-failed": "Impossible de copier le token. Veuillez le copier manuellement."
 }
