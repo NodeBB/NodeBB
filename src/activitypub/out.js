@@ -484,14 +484,19 @@ Out.lock = enabledCheck(async (uid, tid) => {
 		cc: [],
 	}, { cid, pid: mainPid });
 
-	await activitypub.send('uid', uid, Array.from(targets), {
-		id: `${nconf.get('url')}/topic/${tid}#activity/lock/${Date.now()}`,
-		type: 'Lock',
-		actor: `${nconf.get('url')}/uid/${uid}`,
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/category/${cid}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
 		to,
 		cc,
-		audience: `${nconf.get('url')}/category/${cid}`,
-		object: `${nconf.get('url')}/topic/${tid}`,
+		object: {
+			id: `${nconf.get('url')}/topic/${tid}#activity/lock/${Date.now()}`,
+			type: 'Lock',
+			actor: `${nconf.get('url')}/uid/${uid}`,
+			audience: `${nconf.get('url')}/category/${cid}`,
+			object: `${nconf.get('url')}/topic/${tid}`,
+		},
 	});
 });
 
@@ -514,14 +519,19 @@ Out.unlock = enabledCheck(async (uid, tid) => {
 		cc: [],
 	}, { cid, pid: mainPid });
 
-	await activitypub.send('uid', uid, Array.from(targets), {
-		id: `${nconf.get('url')}/topic/${tid}#activity/unlock/${Date.now()}`,
-		type: 'Unlock',
-		actor: `${nconf.get('url')}/uid/${uid}`,
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/category/${cid}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
 		to,
 		cc,
-		audience: `${nconf.get('url')}/category/${cid}`,
-		object: `${nconf.get('url')}/topic/${tid}`,
+		object: {
+			id: `${nconf.get('url')}/topic/${tid}#activity/unlock/${Date.now()}`,
+			type: 'Unlock',
+			actor: `${nconf.get('url')}/uid/${uid}`,
+			audience: `${nconf.get('url')}/category/${cid}`,
+			object: `${nconf.get('url')}/topic/${tid}`,
+		},
 	});
 });
 
