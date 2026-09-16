@@ -1111,12 +1111,12 @@ describe('Topic\'s', () => {
 			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 401 if not allowed to read as guest', async () => {
+		it('should 404 if not allowed to read as guest', async () => {
 			const privileges = require('../src/privileges');
 			await privileges.categories.rescind(['groups:topics:read'], topicData.cid, 'guests');
 
 			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/${topicData.slug}`);
-			assert.equal(response.statusCode, 401);
+			assert.equal(response.statusCode, 404);
 			assert(body);
 			await privileges.categories.give(['groups:topics:read'], topicData.cid, 'guests');
 		});
@@ -1155,10 +1155,10 @@ describe('Topic\'s', () => {
 			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 403 if cant read', async () => {
+		it('should 404 if cant read', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/teaser/${123123}`);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:no-privileges]]');
+			assert.equal(response.statusCode, 404);
+			assert.equal(body, 'not-found');
 		});
 
 		it('should load topic teaser', async () => {

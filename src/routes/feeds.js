@@ -62,7 +62,7 @@ async function generateForTopic(req, res, next) {
 	}
 
 	if (!canRead) {
-		return await controllerHelpers.notAllowed(req, res);
+		return next();
 	}
 
 	const topicData = await topics.getTopicWithPosts(topic, `tid:${tid}:posts`, uid, 0, 24, true);
@@ -130,7 +130,7 @@ async function generateForCategory(req, res, next) {
 	}
 
 	if (!userPrivileges.read) {
-		return await controllerHelpers.notAllowed(req, res);
+		return next();
 	}
 
 	let topicsData = await topics.getTopicsByTids(tids, uid);
@@ -347,7 +347,7 @@ async function generateForCategoryRecentPosts(req, res, next) {
 	}
 
 	if (!userPrivileges['topics:read']) {
-		return await controllerHelpers.notAllowed(req, res);
+		return next();
 	}
 
 	const feed = generateForPostsFeed({
