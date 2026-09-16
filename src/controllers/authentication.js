@@ -327,7 +327,9 @@ function continueLogin(strategy, req, res, next) {
 
 function redirectAfterLogin(req, res, destination) {
 	if (req.body?.noscript === 'true') {
-		res.redirect(`${destination}?loggedin`);
+		req.session.save(() => {
+			res.redirect(`${destination}?loggedin`);
+		});
 	} else {
 		res.status(200).send({
 			next: destination,
