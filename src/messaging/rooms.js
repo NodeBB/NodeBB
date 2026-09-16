@@ -293,6 +293,11 @@ module.exports = function (Messaging) {
 
 	async function addUidsToRoom(uids, roomId) {
 		const now = Date.now();
+		const isMembers = await db.isSortedSetMembers(`chat:room:${roomId}:uids`, uids);
+		uids = uids.filter((uid, index) => !isMembers[index]);
+		if (!uids.length) {
+			return;
+		}
 		const timestamps = uids.map(() => now);
 
 		await Promise.all([
