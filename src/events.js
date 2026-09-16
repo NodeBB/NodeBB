@@ -87,16 +87,19 @@ events.types = [
  * Everything else gets stringified and shown as pretty JSON string
  */
 events.log = async function (data) {
-	const eid = await db.incrObjectField('global', 'nextEid');
-	data.timestamp = Date.now();
-	data.eid = eid;
 	const setKeys = [
 		'events:time',
 		`events:time:${data.type}`,
 	];
 	if (data.hasOwnProperty('uid') && data.uid) {
+		if (!utils.isNumber(data.uid)) {
+			return;
+		}
 		setKeys.push(`events:time:uid:${data.uid}`);
 	}
+	const eid = await db.incrObjectField('global', 'nextEid');
+	data.timestamp = Date.now();
+	data.eid = eid;
 	if (!meta.config.logIPs) {
 		delete data.ip;
 	}
