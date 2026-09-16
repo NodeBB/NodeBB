@@ -39,7 +39,7 @@ postsController.redirectToPost = async function (req, res, next) {
 		return next();
 	}
 	if (!canRead) {
-		return helpers.notAllowed(req, res);
+		return next();
 	}
 
 	if (meta.config.activitypubEnabled) {
