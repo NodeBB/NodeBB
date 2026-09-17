@@ -697,6 +697,42 @@ describe('Admin Controllers', () => {
 			requestOpts.jar = (await helpers.loginUser('regularjoe', 'barbar')).jar;
 		});
 
+		describe('write api routes', () => {
+			it('should let a holder of admin:settings use the matching write api route', async () => {
+				await privileges.admin.give(['admin:settings'], uid);
+				try {
+					const { response } = await helpers.request('put', '/api/v3/admin/settings/maximumRelatedTopics', {
+						jar: requestOpts.jar,
+						body: { value: 3 },
+					});
+					assert.strictEqual(response.statusCode, 200);
+				} finally {
+					await privileges.admin.rescind(['admin:settings'], uid);
+				}
+			});
+
+			it('should reject the same route without the privilege', async () => {
+				const { response } = await helpers.request('put', '/api/v3/admin/settings/maximumRelatedTopics', {
+					jar: requestOpts.jar,
+					body: { value: 3 },
+				});
+				assert.strictEqual(response.statusCode, 403);
+			});
+
+			it('should still require more than admin:settings for an unmapped route', async () => {
+				await privileges.admin.give(['admin:settings'], uid);
+				try {
+					const { response } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+						jar: requestOpts.jar,
+						body: { fields: [] },
+					});
+					assert.strictEqual(response.statusCode, 403);
+				} finally {
+					await privileges.admin.rescind(['admin:settings'], uid);
+				}
+			});
+		});
+
 		describe('routeMap parsing', () => {
 			it('should allow normal user access to admin pages', async function () {
 				this.timeout(50000);
