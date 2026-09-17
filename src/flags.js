@@ -669,7 +669,7 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	if (!isPrivileged && allowedFlagsPerDay > 0) {
 		const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 		const flagsOfType = flagData.filter(f => f && f.type === type);
-		if (allowedFlagsPerDay > 0 && flagsOfType.length > allowedFlagsPerDay) {
+		if (flagsOfType.length >= allowedFlagsPerDay) {
 			throw new Error(`[[error:too-many-${type}-flags-per-day, ${allowedFlagsPerDay}]]`);
 		}
 	}
