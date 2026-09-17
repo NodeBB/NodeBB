@@ -97,6 +97,13 @@ Mocks._buildAttachments = (attachment, source) => {
 };
 
 Mocks._normalize = async (object) => {
+	/**
+	 * Strip integrity proofs / legacy signatures from incoming objects
+	 * Proof is stripped because mocks normalize/mutate the object to be NodeBB post-likes/etc.
+	 * Therefore storing the proof is pointless as any attempts to embed and attach stored proof would fail verification
+	 */
+	object = activitypub.proofs.strip(object);
+
 	// Normalized incoming AP objects into expected types for easier mocking
 	let { id, type, uuid, attributedTo, url, image, mediaType, content, source, attachment, cc } = object;
 
@@ -585,6 +592,7 @@ Mocks.actors.user = async (uid) => {
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
 				'https://w3id.org/security/v1',
+				'https://www.w3.org/ns/did/v1',
 			],
 			id: `${nconf.get('url')}/uid/${uid}`,
 			url: `${nconf.get('url')}/user/${userslug}`,
@@ -605,6 +613,11 @@ Mocks.actors.user = async (uid) => {
 				owner: `${nconf.get('url')}/uid/${uid}`,
 				publicKeyPem: publicKey,
 			},
+
+			// FEP-8b32: verification method for object integrity proofs (FEP-521a)
+			...(meta.config.activitypubIntegrityProofs && {
+				assertionMethod: activitypub.proofs._keyUrl('uid', uid),
+			}),
 
 			endpoints: {
 				sharedInbox: `${nconf.get('url')}/inbox`,
@@ -653,6 +666,7 @@ Mocks.actors.category = async (cid) => {
 			'https://www.w3.org/ns/activitystreams',
 			'https://w3id.org/security/v1',
 			'https://join-lemmy.org/context.json',
+			'https://www.w3.org/ns/did/v1',
 		],
 		id: `${nconf.get('url')}/category/${cid}`,
 		url: `${nconf.get('url')}/category/${slug}`,
@@ -675,6 +689,11 @@ Mocks.actors.category = async (cid) => {
 			owner: `${nconf.get('url')}/category/${cid}`,
 			publicKeyPem: publicKey,
 		},
+
+		// FEP-8b32: verification method for object integrity proofs (FEP-521a)
+		...(meta.config.activitypubIntegrityProofs && {
+			assertionMethod: activitypub.proofs._keyUrl('cid', cid),
+		}),
 
 		endpoints: {
 			sharedInbox: `${nconf.get('url')}/inbox`,
@@ -928,6 +947,18 @@ Mocks.notes.public = async (post) => {
 	};
 
 	({ object } = await plugins.hooks.fire('filter:activitypub.mocks.note', { object, post, private: false }));
+
+	// FEP-8b32: object integrity proof. Signed after the plugin hook so the
+	// proof covers the final object; `created` is derived from published/updated
+	// so repeated serialization of the same post is byte-identical.
+	if (meta.config.activitypubIntegrityProofs) {
+		object = await activitypub.proofs.sign(object, {
+			type: 'uid',
+			id: post.user.uid,
+			created: updated || published,
+		});
+	}
+
 	return object;
 };
 

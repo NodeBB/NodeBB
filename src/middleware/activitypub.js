@@ -46,6 +46,17 @@ middleware.verify = async function (req, res, next) {
 		return next();
 	}
 
+	if (meta.config.activitypubIntegrityProofs && req.method === 'POST' && req.body?.object?.proof) {
+		if (activitypub.proofs.isSupported(req.body.object)) {
+			const verified = await activitypub.proofs.verify(req.body.object);
+			if (!verified) {
+				activitypub.helpers.log('[middleware/activitypub] Integrity proof verification failed.');
+				return res.sendStatus(400);
+			}
+			activitypub.helpers.log('[middleware/activitypub] Integrity proof verification passed.');
+		}
+	}
+
 	// Verifies the HTTP Signature if present (required for POST, optional for GET)
 	if (req.headers.hasOwnProperty('signature')) {
 		// `verified` is the keyId that passed cryptographic verification (or false).

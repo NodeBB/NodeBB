@@ -208,6 +208,7 @@
     "tinyconColor": "#ffffff",
     "tinyconBackground": "#ff0000",
     "activitypubEnabled": 1,
+    "activitypubIntegrityProofs": 1,
     "activitypubAllowLoopback": 0,
     "activitypubAllowSplitDomain": 1,
     "activitypubParentTraversalDepth": 50,
