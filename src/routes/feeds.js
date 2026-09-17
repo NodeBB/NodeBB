@@ -13,6 +13,7 @@ const privileges = require('../privileges');
 const db = require('../database');
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');
+const clientIp = require('../ip');
 const routeHelpers = require('./helpers');
 
 const { terms } = controllerHelpers;
@@ -432,8 +433,7 @@ async function generateForTag(req, res) {
 }
 
 function getRssTokenRateLimitKey(req) {
-	const ip = req.ip || req.connection.remoteAddress;
-	return `rss:token:fail:${ip}`;
+	return `rss:token:fail:${clientIp.getClientIp(req)}`;
 }
 
 async function getUidFromToken(req, res) {
