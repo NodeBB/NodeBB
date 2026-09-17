@@ -190,7 +190,11 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 	fields.forEach((f) => {
 		let userValue = userData[f.key];
 		if (f.type === 'select-multi' && userValue) {
-			userValue = JSON.parse(userValue || '[]');
+			try {
+				userValue = JSON.parse(userValue);
+			} catch (err) {
+				userValue = [];
+			}
 		}
 		if (f.type === 'input-link' && userValue) {
 			userValue = utils.isSafeHref(userValue) ? userValue : '';

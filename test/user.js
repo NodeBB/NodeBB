@@ -2068,6 +2068,55 @@ describe('User', () => {
 		});
 	});
 
+	describe('custom profile fields', () => {
+		let fieldUid;
+		const keys = ['favnumber', 'favcolour', 'langs'];
+
+		before(async () => {
+			fieldUid = await User.create({ username: 'customfielduser' });
+			await db.sortedSetAdd('user-custom-fields', [0, 1, 2], keys);
+			await db.setObjectBulk([
+				['user-custom-field:favnumber', { key: 'favnumber', name: 'Favourite number', type: 'input-number' }],
+				['user-custom-field:favcolour', { key: 'favcolour', name: 'Favourite colour', type: 'select' }],
+				['user-custom-field:langs', { key: 'langs', name: 'Languages', type: 'select-multi' }],
+			]);
+			await User.reloadCustomFieldWhitelist();
+		});
+
+		after(async () => {
+			await db.delete('user-custom-fields');
+			await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
+			await User.reloadCustomFieldWhitelist();
+		});
+
+		it('should allow a numeric field to be cleared', async () => {
+			await User.updateProfile(fieldUid, { uid: fieldUid, favnumber: '7' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'favnumber'), '7');
+
+			await User.updateProfile(fieldUid, { uid: fieldUid, favnumber: '' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'favnumber'), '');
+		});
+
+		it('should still reject a non-numeric value', async () => {
+			await assert.rejects(
+				User.updateProfile(fieldUid, { uid: fieldUid, favnumber: 'seven' }),
+				{ message: '[[error:custom-user-field-invalid-number, Favourite number]]' }
+			);
+		});
+
+		it('should not throw when a select field has no options configured', async () => {
+			await User.updateProfile(fieldUid, { uid: fieldUid, favcolour: '' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'favcolour'), '');
+		});
+
+		it('should reject a select-multi value that is not valid json', async () => {
+			await assert.rejects(
+				User.updateProfile(fieldUid, { uid: fieldUid, langs: 'not json' }),
+				{ message: '[[error:custom-user-field-select-value-invalid, Languages]]' }
+			);
+		});
+	});
+
 	describe('invites', () => {
 		let notAnInviterUid;
 		let inviterUid;
