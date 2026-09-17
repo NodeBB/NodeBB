@@ -238,6 +238,55 @@ Proofs.verify = async (object) => {
 	}
 };
 
+// Normalizes attributedTo (string | { id }) to a single URL string. Arrays
+// (or other shapes) yield undefined so the caller treats the object as
+// unauthenticated — a single author is required to bind a proof.
+Proofs._normalizeAttributedTo = (attributedTo) => {
+	if (typeof attributedTo === 'string') {
+		return attributedTo.trim();
+	}
+	if (attributedTo && typeof attributedTo === 'object' && !Array.isArray(attributedTo) && typeof attributedTo.id === 'string') {
+		return attributedTo.id.trim();
+	}
+	return undefined;
+};
+
+// Verifies the object's integrity proof AND binds it to the object's author.
+// `verify` alone only confirms the signature is valid against the key at
+// proof.verificationMethod — a relay could re-sign tampered content with its
+// own key and pass. This additionally requires that key to be controlled by
+// the object's attributedTo (the author), so only the author's own proof
+// counts as authentic. Returns false when there is no (supported) proof,
+// verification fails, the key document is unavailable, or the key's controller
+// does not match the author.
+Proofs.verifyAuthenticity = async (object) => {
+	if (!object || typeof object !== 'object') {
+		return false;
+	}
+	if (!(await Proofs.verify(object))) {
+		return false;
+	}
+
+	const candidate = Proofs._selectProof(object);
+	const attributedTo = Proofs._normalizeAttributedTo(object.attributedTo);
+	if (!candidate || !candidate.verificationMethod || !attributedTo) {
+		return false;
+	}
+
+	try {
+		// _documentLoader is cached, so this reuses the key document already
+		// fetched during verify() above.
+		const { document: keyDoc } = await Proofs._documentLoader(candidate.verificationMethod);
+		const controller = keyDoc && keyDoc.controller;
+		if (!controller) {
+			return false;
+		}
+		return new URL(controller).href === new URL(attributedTo).href;
+	} catch (e) {
+		return false;
+	}
+};
+
 // Removes proof (and legacy linked data signature) without mutating the input.
 Proofs.strip = (object) => {
 	if (!object || typeof object !== 'object') {

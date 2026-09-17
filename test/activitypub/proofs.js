@@ -163,6 +163,81 @@ describe('FEP-8b32: Object Integrity Proofs', () => {
 		});
 	});
 
+	describe('verifyAuthenticity (author binding)', () => {
+		let uid;
+		let otherUid;
+		let keyId;
+		let controller;
+		let otherController;
+
+		const contexts = [
+			'https://www.w3.org/ns/activitystreams',
+			'https://w3id.org/security/data-integrity/v1',
+			'https://w3id.org/security/multikey/v1',
+			'https://www.w3.org/ns/did/v1',
+		];
+
+		before(async function () {
+			this.timeout(20000);
+			meta.config.activitypubIntegrityProofs = true;
+			uid = await user.create({ username: utils.generateUUID() });
+			otherUid = await user.create({ username: utils.generateUUID() });
+			({ keyId, controller } = await proofs.getEd25519Key('uid', uid));
+			({ controller: otherController } = await proofs.getEd25519Key('uid', otherUid));
+
+			await Promise.all(contexts.map(async (url) => {
+				const { body } = await request.get(url, { headers: { accept: 'application/ld+json' } });
+				proofs._cache.set(url, body);
+			}));
+			const keyDocument = await proofs.getKeyDocument('uid', uid);
+			proofs._cache.set(keyId, keyDocument);
+			const otherKeyDocument = await proofs.getKeyDocument('uid', otherUid);
+			proofs._cache.set(`${nconf.get('url')}/uid/${otherUid}/keys/ed25519`, otherKeyDocument);
+		});
+
+		after(function () {
+			meta.config.activitypubIntegrityProofs = undefined;
+		});
+
+		const makeNote = (attributedTo) => ({
+			'@context': 'https://www.w3.org/ns/activitystreams',
+			id: `${nconf.get('url')}/post/1`,
+			type: 'Note',
+			attributedTo,
+			content: 'Hello world',
+		});
+
+		it('should return true for a proof bound to the author', async function () {
+			const signed = await proofs.sign(makeNote(controller), { type: 'uid', id: uid, created: '2025-01-01T00:00:00Z' });
+			assert.strictEqual(await proofs.verifyAuthenticity(signed), true);
+		});
+
+		it('should return false when the proof is signed by a different actor than attributedTo', async function () {
+			// Signed with uid's key (controller = uid) but attributedTo = otherUid:
+			// the signature is valid, yet the key is not controlled by the author.
+			const signed = await proofs.sign(makeNote(otherController), { type: 'uid', id: uid, created: '2025-01-01T00:00:00Z' });
+			assert.strictEqual(await proofs.verify(signed), true, 'signature itself is valid');
+			assert.strictEqual(await proofs.verifyAuthenticity(signed), false);
+		});
+
+		it('should return false for a tampered object', async function () {
+			const signed = await proofs.sign(makeNote(controller), { type: 'uid', id: uid, created: '2025-01-01T00:00:00Z' });
+			const tampered = { ...signed, content: 'Hello evil' };
+			assert.strictEqual(await proofs.verifyAuthenticity(tampered), false);
+		});
+
+		it('should return false when attributedTo is missing', async function () {
+			const { attributedTo, ...noAuthor } = makeNote(controller);
+			const signed = await proofs.sign(noAuthor, { type: 'uid', id: uid, created: '2025-01-01T00:00:00Z' });
+			assert.strictEqual(await proofs.verifyAuthenticity(signed), false);
+		});
+
+		it('should return false when attributedTo is an array', async function () {
+			const signed = await proofs.sign(makeNote([controller]), { type: 'uid', id: uid, created: '2025-01-01T00:00:00Z' });
+			assert.strictEqual(await proofs.verifyAuthenticity(signed), false);
+		});
+	});
+
 	describe('Outbound integration (notes.public)', () => {
 		let cid;
 		let uid;
