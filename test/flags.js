@@ -574,6 +574,26 @@ describe('Flags', () => {
 			await Groups.leave(`cid:${category.cid}:privileges:moderate`, uid3);
 		});
 
+		it('should unassign the flag and record it in the flag history', async () => {
+			await Flags.update(1, adminUid, {
+				assignee: adminUid,
+			});
+			assert.strictEqual(true, await db.isSortedSetMember(`flags:byAssignee:${adminUid}`, 1));
+
+			await Flags.update(1, adminUid, {
+				assignee: '',
+			});
+			assert.strictEqual(false, await db.isSortedSetMember(`flags:byAssignee:${adminUid}`, 1));
+			assert.strictEqual('', await db.getObjectField('flag:1', 'assignee'));
+
+			const history = await Flags.getHistory(1);
+			const changes = history
+				.filter(entry => entry.fields && entry.fields.hasOwnProperty('assignee'))
+				.map(entry => entry.fields.assignee);
+			assert.ok(changes.includes('[[flags:no-assignee]]'));
+			assert.ok(!changes.includes('[[global:guest]]'));
+		});
+
 		it('should do nothing when you attempt to set a bogus state', async () => {
 			await Flags.update(1, adminUid, {
 				state: 'hocus pocus',

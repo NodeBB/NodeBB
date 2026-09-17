@@ -840,11 +840,16 @@ Flags.update = async function (flagId, uid, changeset) {
 			}
 		} else if (prop === 'assignee') {
 			if (changeset[prop] === '') {
-				tasks.push(db.sortedSetRemove(`flags:byAssignee:${changeset[prop]}`, flagId));
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 			/* eslint-disable-next-line */
 			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
 				delete changeset[prop];
 			} else {
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
 				tasks.push(notifyAssignee(changeset[prop]));
 			}
@@ -914,7 +919,9 @@ Flags.getHistory = async function (flagId) {
 	// turn assignee uids into usernames
 	await Promise.all(history.map(async (entry) => {
 		if (entry.fields.hasOwnProperty('assignee')) {
-			entry.fields.assignee = await user.getUserField(entry.fields.assignee, 'username');
+			entry.fields.assignee = entry.fields.assignee === '' ?
+				'[[flags:no-assignee]]' :
+				await user.getUserField(entry.fields.assignee, 'username');
 		}
 	}));
 
