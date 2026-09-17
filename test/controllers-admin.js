@@ -643,6 +643,51 @@ describe('Admin Controllers', () => {
 		plugins.hooks.unregister('somePlugin', 'filter:config.get', onConfigGet);
 	});
 
+	describe('custom user fields', () => {
+		after(async () => {
+			await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: jar,
+				body: { fields: [] },
+			});
+		});
+
+		it('should save custom user fields', async () => {
+			const { response } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: jar,
+				body: {
+					fields: [
+						{ key: 'pronouns', name: 'Pronouns', type: 'input-text' },
+						{ key: 'location', name: 'Location', type: 'input-text' },
+					],
+				},
+			});
+			assert.strictEqual(response.statusCode, 200);
+
+			const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+			assert.deepStrictEqual(keys, ['pronouns', 'location']);
+			const field = await db.getObject('user-custom-field:pronouns');
+			assert.strictEqual(field.name, 'Pronouns');
+		});
+
+		it('should reject a field that collides with a core user field', async () => {
+			const { response, body } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: jar,
+				body: { fields: [{ key: 'username', name: 'Username', type: 'input-text' }] },
+			});
+			assert.strictEqual(response.statusCode, 400);
+			assert.strictEqual(body.status.code, 'bad-request');
+		});
+
+		it('should not allow a regular user to save custom user fields', async () => {
+			const { jar: regularJar } = await helpers.loginUser('regular', 'regularpwd');
+			const { response } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: regularJar,
+				body: { fields: [] },
+			});
+			assert.strictEqual(response.statusCode, 403);
+		});
+	});
+
 	describe('admin page privileges', () => {
 		let uid;
 		const privileges = require('../src/privileges');

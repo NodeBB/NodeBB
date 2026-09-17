@@ -286,6 +286,8 @@ paths:
     $ref: 'write/intents/query/handle.yaml'
   /admin/settings/{setting}:
     $ref: 'write/admin/settings/setting.yaml'
+  /admin/users/custom-fields:
+    $ref: 'write/admin/users/custom-fields.yaml'
   /admin/analytics:
     $ref: 'write/admin/analytics.yaml'
   /admin/analytics/{set}:
