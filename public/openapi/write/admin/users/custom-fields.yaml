@@ -13,6 +13,14 @@ put:
             fields:
               type: array
               description: the complete ordered list of custom user fields
+              example:
+                - key: pronouns
+                  name: Pronouns
+                  icon: fa-user
+                  type: input-text
+                  select-options: ''
+                  visibility: all
+                  min:rep: 0
               items:
                 type: object
                 properties:
