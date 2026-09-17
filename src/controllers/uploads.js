@@ -182,7 +182,8 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
-	const filename = `${Date.now()}-${name.slice(0, -extension.length).slice(0, 255)}${extension}`;
+	const basename = extension ? name.slice(0, -extension.length) : name;
+	const filename = `${Date.now()}-${basename.slice(0, 255)}${extension}`;
 
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 	const storedFile = {

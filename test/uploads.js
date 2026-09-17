@@ -190,6 +190,16 @@ describe('Upload Controllers', () => {
 			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
 		});
 
+		it('should keep the original name when the file has no extension', async () => {
+			const oldValue = meta.config.allowedFileExtensions;
+			meta.config.allowedFileExtensions = '';
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/noextension'), {}, jar, csrf_token);
+			meta.config.allowedFileExtensions = oldValue;
+
+			assert.strictEqual(response.statusCode, 200);
+			assert(body.response.images[0].url.endsWith('-noextension'));
+		});
+
 		it('should upload a file with utf8 characters in the name to a post', async () => {
 			const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/测试.jpg'), {}, jar, csrf_token);
 
