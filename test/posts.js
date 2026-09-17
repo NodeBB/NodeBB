@@ -1194,6 +1194,18 @@ describe('Post\'s', () => {
 			// should not contain the translated message
 			assert(body.indexOf('Perhaps you should') === -1);
 		});
+
+		it('should merge notifications for multiple queued posts from the same user', async () => {
+			const queueUid = await user.create({ username: 'queuemerger' });
+			await apiTopics.reply({ uid: queueUid }, { content: 'first queued reply', tid: topicData.tid });
+			await sleep(5);
+			await apiTopics.reply({ uid: queueUid }, { content: 'second queued reply', tid: topicData.tid });
+			await sleep(2000);
+
+			const { unread } = await user.notifications.get(globalModUid);
+			const queued = unread.filter(n => n && n.type === 'post-queue' && n.mergeId && n.mergeId.endsWith(`-uid-${queueUid}`));
+			assert.strictEqual(queued.length, 1);
+		});
 	});
 
 	describe('post editors', () => {

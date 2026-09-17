@@ -270,7 +270,7 @@ module.exports = function (Posts) {
 		const notifObj = await notifications.create({
 			type: 'post-queue',
 			nid: `post-queue-${id}`,
-			mergeId: `post-queue-${type}-uid-${data.uid}`,
+			mergeId: `post-queue|${type}-uid-${data.uid}`,
 			bodyShort: typeToTx[type],
 			bodyLong: bodyLong,
 			path: `/post-queue/${id}`,
