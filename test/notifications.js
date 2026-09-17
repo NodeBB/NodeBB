@@ -11,6 +11,7 @@ const user = require('../src/user');
 const topics = require('../src/topics');
 const categories = require('../src/categories');
 const notifications = require('../src/notifications');
+const plugins = require('../src/plugins');
 const socketNotifications = require('../src/socket.io/notifications');
 const api = require('../src/api');
 const utils = require('../src/utils');
@@ -394,5 +395,42 @@ describe('Notifications', () => {
 
 		const data = await notifications.get(notification.nid);
 		assert(!data);
+	});
+
+	describe('.merge()', () => {
+		it('should expose how many notifications were merged', async () => {
+			const merged = await notifications.merge([
+				{ nid: 'n1', mergeId: 'new-register', bodyShort: 'one' },
+				{ nid: 'n2', mergeId: 'new-register', bodyShort: 'two' },
+				{ nid: 'n3', mergeId: 'new-register', bodyShort: 'three' },
+			]);
+
+			assert.strictEqual(merged.length, 1);
+			assert.strictEqual(merged[0].mergeCount, 3);
+		});
+
+		it('should let a plugin register its own mergeId', async () => {
+			const method = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'p1', mergeId: 'plugin-merge|7', bodyShort: 'one' },
+					{ nid: 'p2', mergeId: 'plugin-merge|7', bodyShort: 'two' },
+					{ nid: 'p3', mergeId: 'unregistered-merge', bodyShort: 'three' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', method);
+			}
+
+			assert.strictEqual(merged.length, 2);
+			const survivor = merged.find(n => n.mergeId === 'plugin-merge|7');
+			assert.strictEqual(survivor.bodyShort, 'one');
+			assert.strictEqual(survivor.mergeCount, 2);
+		});
 	});
 });

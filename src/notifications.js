@@ -509,18 +509,20 @@ Notifications.prune = async function () {
 
 Notifications.merge = async function (notifications) {
 	// When passed a set of notification objects, merge any that can be merged
-	const mergeIds = [
-		'notifications:upvoted-your-post-in',
-		'notifications:user-started-following-you',
-		'notifications:user-posted-to',
-		'notifications:user-flagged-post-in',
-		'notifications:user-flagged-user',
-		'new-chat',
-		'notifications:user-posted-in-public-room',
-		'new-register',
-		'post-queue',
-		'notifications:activitypub.announce',
-	];
+	const { mergeIds } = await plugins.hooks.fire('filter:notifications.mergeIds', {
+		mergeIds: [
+			'notifications:upvoted-your-post-in',
+			'notifications:user-started-following-you',
+			'notifications:user-posted-to',
+			'notifications:user-flagged-post-in',
+			'notifications:user-flagged-user',
+			'new-chat',
+			'notifications:user-posted-in-public-room',
+			'new-register',
+			'post-queue',
+			'notifications:activitypub.announce',
+		],
+	});
 
 	notifications = mergeIds.reduce((notifications, mergeId) => {
 		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
@@ -551,6 +553,7 @@ Notifications.merge = async function (notifications) {
 				return notifications;
 			}
 			const notifObj = notifications[modifyIndex];
+			notifObj.mergeCount = set.length;
 			switch (mergeId) {
 				case 'new-chat': {
 					const { roomId, roomName, type, user } = set[0];
