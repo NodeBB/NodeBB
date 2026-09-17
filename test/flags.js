@@ -781,6 +781,28 @@ describe('Flags', () => {
 
 			await Meta.configs.set('flags:postFlagsPerDay', 10);
 		});
+
+		it('should not limit flags when the daily limit is 0', async () => {
+			await Meta.configs.set('flags:postFlagsPerDay', 0);
+			const reporterUid = await User.create({ username: 'unlimitedreporter' });
+			const authorUid = await User.create({ username: 'unlimitedauthor' });
+			for (let i = 0; i < 3; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				const data = await Topics.post({
+					cid: category.cid,
+					uid: authorUid,
+					title: `Unlimited flag topic ${i}`,
+					content: 'This is flaggable content',
+				});
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.create('post', data.postData.pid, reporterUid, 'spam');
+			}
+
+			const flagIds = await db.getSortedSetRange(`flags:byReporter:${reporterUid}`, 0, -1);
+			assert.strictEqual(flagIds.length, 3);
+
+			await Meta.configs.set('flags:postFlagsPerDay', 10);
+		});
 	});
 
 	describe('.validate()', () => {
