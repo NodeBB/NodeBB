@@ -116,7 +116,7 @@ module.exports = function (User) {
 					require_tld: true,
 				});
 
-				if (type === 'input-number' && !utils.isNumber(value)) {
+				if (value && type === 'input-number' && !utils.isNumber(value)) {
 					throw new Error(tx.compile(
 						'error:custom-user-field-invalid-number', field.name
 					));
@@ -133,15 +133,20 @@ module.exports = function (User) {
 						'error:custom-user-field-invalid-link', field.name
 					));
 				} else if (field.type === 'select') {
-					const opts = field['select-options'].split('\n').filter(Boolean);
+					const opts = (field['select-options'] || '').split('\n').filter(Boolean);
 					if (!opts.includes(value) && value !== '') {
 						throw new Error(tx.compile(
 							'error:custom-user-field-select-value-invalid', field.name
 						));
 					}
 				} else if (field.type === 'select-multi') {
-					const opts = field['select-options'].split('\n').filter(Boolean);
-					const values = JSON.parse(value || '[]');
+					const opts = (field['select-options'] || '').split('\n').filter(Boolean);
+					let values;
+					try {
+						values = JSON.parse(value || '[]');
+					} catch (err) {
+						values = null;
+					}
 					if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
 						throw new Error(tx.compile(
 							'error:custom-user-field-select-value-invalid', field.name
