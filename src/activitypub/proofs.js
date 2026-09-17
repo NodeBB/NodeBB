@@ -202,7 +202,7 @@ Proofs._selectProof = (object) => {
 // True when the object carries a proof this implementation can verify.
 // FEP-8b32: proofs with an unsupported cryptosuite SHOULD be ignored and
 // other authentication methods (e.g. the HTTP signature) used instead.
-Proofs.isSupported = (object) => Boolean(Proofs._selectProof(object));
+Proofs.isSupported = object => Boolean(Proofs._selectProof(object));
 
 // Verifies the object's integrity proof (FEP-8b32 §Proof verification).
 // Returns false when there is no (supported) proof or verification fails.
@@ -292,6 +292,8 @@ Proofs.strip = (object) => {
 	if (!object || typeof object !== 'object') {
 		return object;
 	}
-	const { proof, signature, ...rest } = object;
+	const rest = { ...object };
+	delete rest.proof;
+	delete rest.signature;
 	return rest;
 };

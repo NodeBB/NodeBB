@@ -188,8 +188,8 @@ inbox.update = async (req) => {
 	// integrity proof bound to its author (FEP-8b32), in which case the proof is
 	// the trust anchor and the network call is skipped.
 	if (req?.res?.locals?.apAnnounced) {
-		const authentic = meta.config.activitypubIntegrityProofs
-			&& await activitypub.proofs.verifyAuthenticity(object);
+		const authentic = meta.config.activitypubIntegrityProofs &&
+			await activitypub.proofs.verifyAuthenticity(object);
 		if (!authentic) {
 			try {
 				const refetched = await activitypub.get('uid', 0, object.id);
@@ -762,9 +762,9 @@ inbox.announce = async (req) => {
 				// chain root and skip re-fetching it. Only do so when resolveId
 				// didn't correct the id (object.id === pid); otherwise pass the id
 				// and let it be fetched as before.
-				const authentic = meta.config.activitypubIntegrityProofs
-					&& object.id === pid
-					&& await activitypub.proofs.verifyAuthenticity(object);
+				const authentic = meta.config.activitypubIntegrityProofs &&
+					object.id === pid &&
+					await activitypub.proofs.verifyAuthenticity(object);
 				const assertion = await activitypub.notes.assert(0, authentic ? object : pid, { cid, skipChecks: true });
 				if (!assertion) {
 					return;
