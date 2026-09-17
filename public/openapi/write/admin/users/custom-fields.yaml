@@ -1,0 +1,55 @@
+put:
+  tags:
+    - admin
+  summary: save custom user fields
+  description: This operation replaces the full set of custom user profile fields with the ones supplied, in the order supplied. The calling user must have the `admin:users` privilege (or be a superadmin) in order for this call to proceed.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            fields:
+              type: array
+              description: the complete ordered list of custom user fields
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: unique identifier of the field
+                    example: pronouns
+                  name:
+                    type: string
+                    description: label shown to users
+                    example: Pronouns
+                  icon:
+                    type: string
+                    example: fa-user
+                  type:
+                    type: string
+                    example: input-text
+                  select-options:
+                    type: string
+                    description: newline separated list of options, for select fields
+                  visibility:
+                    type: string
+                    example: all
+                  min:rep:
+                    type: string
+                    description: reputation required before the field is shown
+                    example: 0
+  responses:
+    '200':
+      description: custom user fields saved
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

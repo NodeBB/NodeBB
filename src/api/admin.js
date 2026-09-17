@@ -9,6 +9,8 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 const events = require('../events');
 const postsCache = require('../posts/cache');
+const db = require('../database');
+const user = require('../user');
 
 const adminApi = module.exports;
 
@@ -19,6 +21,43 @@ adminApi.updateSetting = async (caller, { setting, value }) => {
 	}
 
 	await meta.configs.set(setting, value);
+};
+
+adminApi.users = {};
+
+adminApi.users.saveCustomFields = async (caller, { fields }) => {
+	const ok = await privileges.admin.can('admin:users', caller.uid);
+	if (!ok) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	if (!Array.isArray(fields)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const protectedFields = [
+		...await user.getUserFieldWhitelist(),
+		...user.protectedFields,
+	];
+	for (const field of fields) {
+		if (!field || !field.key) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		if (protectedFields.includes(field.key) || protectedFields.includes(field.key.toLowerCase())) {
+			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
+		}
+	}
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	await db.delete('user-custom-fields');
+	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
+
+	await db.sortedSetAdd(
+		'user-custom-fields',
+		fields.map((f, i) => i),
+		fields.map(f => f.key)
+	);
+	await db.setObjectBulk(
+		fields.map(field => [`user-custom-field:${field.key}`, field])
+	);
+	await user.reloadCustomFieldWhitelist();
 };
 
 adminApi.getAnalyticsKeys = async () => {
