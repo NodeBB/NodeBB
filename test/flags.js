@@ -774,6 +774,57 @@ describe('Flags', () => {
 		});
 	});
 
+	describe('.canFlag()', () => {
+		it('should reject the flag that would exceed the daily limit', async () => {
+			await Meta.configs.set('flags:postFlagsPerDay', 2);
+			const reporterUid = await User.create({ username: 'dailylimitreporter' });
+			const authorUid = await User.create({ username: 'dailylimitauthor' });
+			const pids = [];
+			for (let i = 0; i < 3; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				const data = await Topics.post({
+					cid: category.cid,
+					uid: authorUid,
+					title: `Daily flag limit topic ${i}`,
+					content: 'This is flaggable content',
+				});
+				pids.push(data.postData.pid);
+			}
+
+			await Flags.create('post', pids[0], reporterUid, 'spam');
+			await Flags.create('post', pids[1], reporterUid, 'spam');
+
+			await assert.rejects(
+				Flags.canFlag('post', pids[2], reporterUid),
+				{ message: '[[error:too-many-post-flags-per-day, 2]]' }
+			);
+
+			await Meta.configs.set('flags:postFlagsPerDay', 10);
+		});
+
+		it('should not limit flags when the daily limit is 0', async () => {
+			await Meta.configs.set('flags:postFlagsPerDay', 0);
+			const reporterUid = await User.create({ username: 'unlimitedreporter' });
+			const authorUid = await User.create({ username: 'unlimitedauthor' });
+			for (let i = 0; i < 3; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				const data = await Topics.post({
+					cid: category.cid,
+					uid: authorUid,
+					title: `Unlimited flag topic ${i}`,
+					content: 'This is flaggable content',
+				});
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.create('post', data.postData.pid, reporterUid, 'spam');
+			}
+
+			const flagIds = await db.getSortedSetRange(`flags:byReporter:${reporterUid}`, 0, -1);
+			assert.strictEqual(flagIds.length, 3);
+
+			await Meta.configs.set('flags:postFlagsPerDay', 10);
+		});
+	});
+
 	describe('.validate()', () => {
 		it('should error out if type is post and post is deleted', (done) => {
 			Posts.delete(1, 1, (err) => {
