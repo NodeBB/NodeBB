@@ -944,6 +944,17 @@ describe('Flags', () => {
 				done();
 			});
 		});
+
+		it('should label registration details as such, not as changes', async () => {
+			const history = await Flags.getHistory(1);
+			const keys = history
+				.filter(entry => entry.meta)
+				.reduce((memo, entry) => memo.concat(entry.meta.map(item => item.key)), []);
+
+			assert.ok(keys.includes('[[flags:registered-username]]'));
+			assert.ok(!keys.includes('[[user:change-username]]'));
+			assert.ok(!keys.includes('[[user:change-email]]'));
+		});
 	});
 
 	describe('(v3 API)', () => {

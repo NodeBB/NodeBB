@@ -1111,7 +1111,7 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-username]]',
+					key: changeObj.byUid ? '[[user:change-username]]' : '[[flags:registered-username]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},
@@ -1121,13 +1121,13 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 		});
 
 		return memo;
-	}, [])).concat(emailChanges.reduce((memo, changeObj) => {
+	}, [])).concat(emailChanges.reduce((memo, changeObj, idx) => {
 		uids.push(targetUid);
 		memo.push({
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-email]]',
+					key: idx === emailChanges.length - 1 ? '[[flags:registered-email]]' : '[[user:change-email]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},
