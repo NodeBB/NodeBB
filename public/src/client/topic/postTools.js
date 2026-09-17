@@ -542,9 +542,13 @@ define('forum/topic/postTools', [
 				$(document).off('selectionchange', selectionChangeFn);
 			});
 			const tooltipWidth = selectionTooltip.outerWidth(true);
+			const contentRect = anchorNode.parents('[component="post/content"]').get(0).getBoundingClientRect();
+			let left = tooltipWidth > lastRect.width ? lastRect.left : lastRect.left + lastRect.width - tooltipWidth;
+			left = Math.min(left, Math.min(contentRect.right, $(window).width()) - tooltipWidth);
+			left = Math.max(left, Math.max(contentRect.left, 0));
 			selectionTooltip.css({
 				top: lastRect.bottom + $(window).scrollTop(),
-				left: tooltipWidth > lastRect.width ? lastRect.left : lastRect.left + lastRect.width - tooltipWidth,
+				left: left + $(window).scrollLeft(),
 			});
 		}
 	}
