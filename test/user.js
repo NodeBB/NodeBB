@@ -2049,6 +2049,23 @@ describe('User', () => {
 			const users = await db.getSortedSetRange('registration:queue', 0, -1);
 			assert.equal(users[0], 'invalidname');
 		});
+
+		it('should match queued users against IPv4-mapped IPv6 addresses', async () => {
+			const matchUid = await User.create({ username: 'ipmatchtarget' });
+			await User.logIP(matchUid, '::ffff:10.0.0.7');
+			await User.addToApprovalQueue({
+				username: 'ipmatchqueued',
+				email: 'ipmatch@test.com',
+				password: '123456',
+				ip: '::ffff:10.0.0.7',
+			});
+
+			const users = await User.getRegistrationQueue(0, -1);
+			const queued = users.find(u => u.username === 'ipmatchqueued');
+			assert(queued);
+			assert.equal(queued.ip, '10.0.0.7');
+			assert(queued.ipMatch.map(u => u.uid).includes(matchUid));
+		});
 	});
 
 	describe('invites', () => {
