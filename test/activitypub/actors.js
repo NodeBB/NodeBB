@@ -721,6 +721,21 @@ describe('Controllers', () => {
 				assert(Array.isArray(body.orderedItems));
 				assert.strictEqual(body.orderedItems[0], `${nconf.get('url')}/post/${topicData.mainPid}`);
 			});
+
+			it('should return locked: false for an unlocked topic', () => {
+				assert.strictEqual(body.locked, false);
+			});
+
+			it('should reflect the locked state', async () => {
+				await topics.tools.lock(topicData.tid, 'system');
+				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				}));
+				assert.strictEqual(response.statusCode, 200);
+				assert.strictEqual(body.locked, true);
+			});
 		});
 
 		describe('Scheduled', () => {
