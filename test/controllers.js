@@ -1597,10 +1597,10 @@ describe('Controllers', () => {
 			assert.equal(response.statusCode, 404);
 		});
 
-		it('should 403 if user does not have read privilege', async () => {
+		it('should 404 if user does not have read privilege', async () => {
 			await privileges.categories.rescind(['groups:topics:read'], category.cid, 'registered-users');
 			const { response } = await request.get(`${nconf.get('url')}/api/post/${pid}`, { jar });
-			assert.equal(response.statusCode, 403);
+			assert.equal(response.statusCode, 404);
 			await privileges.categories.give(['groups:topics:read'], category.cid, 'registered-users');
 		});
 
