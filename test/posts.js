@@ -1130,9 +1130,10 @@ describe('Post\'s', () => {
 		});
 
 		it('should prevent regular users from approving posts', async () => {
+			// Restricted and missing queue entries respond identically (no existence oracle)
 			await assert.rejects(
 				apiPosts.acceptQueuedPost({ uid: uid }, { id: queueId }),
-				{ message: '[[error:no-privileges]]' },
+				{ message: '[[error:no-post]]' },
 			);
 		});
 
