@@ -61,6 +61,8 @@
 	"note-added": "Notiz hinzugefügt",
 	"note-deleted": "Notiz gelöscht",
 	"flag-deleted": "Markierung gelöscht",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Konto &amp; Markierungsverlauf",
 	"no-history": "Kein Markierungsverlauf",

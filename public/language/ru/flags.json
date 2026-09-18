@@ -61,6 +61,8 @@
 	"note-added": "Примечание добавлено",
 	"note-deleted": "Примечание удалено",
 	"flag-deleted": "Жалоба удалена",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "История жалоб участника",
 	"no-history": "Нет истории жалобы.",

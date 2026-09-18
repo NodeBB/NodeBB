@@ -61,6 +61,8 @@
 	"note-added": "Note ajoutée",
 	"note-deleted": "Note supprimée",
 	"flag-deleted": "Signalement supprimé",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Compte & Historique des signalements",
 	"no-history": "Aucun historique de signalements",

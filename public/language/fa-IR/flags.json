@@ -61,6 +61,8 @@
 	"note-added": "یادداشت افزوده شد",
 	"note-deleted": "یادداشت حذف شد",
 	"flag-deleted": "Flag Deleted",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "بدون تاریخچه گزارش",

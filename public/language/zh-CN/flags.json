@@ -61,6 +61,8 @@
 	"note-added": "备注已添加",
 	"note-deleted": "备注已删除",
 	"flag-deleted": "举报已删除",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "账号 &amp; 举报历史",
 	"no-history": "没有举报历史。",

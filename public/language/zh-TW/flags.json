@@ -61,6 +61,8 @@
 	"note-added": "備註已添加",
 	"note-deleted": "Note Deleted",
 	"flag-deleted": "Flag Deleted",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "帳戶 &amp; 舉報紀錄",
 	"no-history": "沒有舉報歷史。",

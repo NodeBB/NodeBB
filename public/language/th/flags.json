@@ -61,6 +61,8 @@
 	"note-added": "โน้ตถูกเพิ่มแล้ว",
 	"note-deleted": "โน้ตถูกลบแล้ว",
 	"flag-deleted": "การรายงานถูกลบแล้ว",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "บัญชี และ ประวัติการรายงาน",
 	"no-history": "ไม่มีประวัติการรายงาน",

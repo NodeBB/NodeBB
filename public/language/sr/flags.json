@@ -61,6 +61,8 @@
 	"note-added": "Белешка је додата",
 	"note-deleted": "Белешка је избрисана",
 	"flag-deleted": "Заставица је избрисана",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Налог и историја заставица",
 	"no-history": "Нема историје заставица",

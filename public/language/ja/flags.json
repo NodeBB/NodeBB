@@ -61,6 +61,8 @@
 	"note-added": "ノートが追加されました",
 	"note-deleted": "ノートが削除されました",
 	"flag-deleted": "フラグが削除されました",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "アカウントとフラグ履歴",
 	"no-history": "フラグ履歴がありません",

@@ -61,6 +61,8 @@
 	"note-added": "Бележката е добавена",
 	"note-deleted": "Бележката е изтрита",
 	"flag-deleted": "Докладът е изтрит",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Акаунт и история на докладванията",
 	"no-history": "Няма история на доклада.",

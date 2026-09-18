@@ -61,6 +61,8 @@
 	"note-added": "Jegyzet hozzá adva",
 	"note-deleted": "Jegyzet törölve",
 	"flag-deleted": "Megjelölés törölve",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Felhasználó &amp; Előzmény jelölő",
 	"no-history": "Nincs előzmény jelölő.",

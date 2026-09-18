@@ -61,6 +61,8 @@
 	"note-added": "မှတ်စုထည့်ပြီး",
 	"note-deleted": "မှတ်စုဖျက်ပြီး",
 	"flag-deleted": "အလံဖျက်ပြီး",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "မှတ်တမ်း",
 	"no-history": "မှတ်တမ်းမရှိ",

@@ -61,6 +61,8 @@
 	"note-added": "Note Added",
 	"note-deleted": "Note Deleted",
 	"flag-deleted": "Flag Deleted",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Account &amp; Flag History",
 	"no-history": "No flag history.",

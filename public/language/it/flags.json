@@ -61,6 +61,8 @@
 	"note-added": "Nota aggiunta",
 	"note-deleted": "Nota eliminata",
 	"flag-deleted": "Segnalazione eliminata",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Cronologia segnalazioni account",
 	"no-history": "Nessuna cronologia segnalazione.",

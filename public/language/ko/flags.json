@@ -61,6 +61,8 @@
 	"note-added": "메모 추가됨",
 	"note-deleted": "메모 삭제됨",
 	"flag-deleted": "신고 삭제됨",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "계정 및 신고 기록",
 	"no-history": "신고 기록 없음.",

@@ -61,6 +61,8 @@
 	"note-added": "Notat lagt til",
 	"note-deleted": "Notat slettet",
 	"flag-deleted": "Flagg slettet",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Bruker- og flagghistorikk",
 	"no-history": "Ingen flagghistorikk",

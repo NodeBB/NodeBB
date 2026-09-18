@@ -61,6 +61,8 @@
 	"note-added": "Notatka dodana",
 	"note-deleted": "Notatka usunięta",
 	"flag-deleted": "Flaga skasowana",
+	"registered-username": "Registered As",
+	"registered-email": "Registered With",
 
 	"history": "Konto i historia flag",
 	"no-history": "Brak historii flag.",
