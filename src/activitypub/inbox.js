@@ -4,6 +4,7 @@ const winston = require('winston');
 const nconf = require('nconf');
 
 const db = require('../database');
+const meta = require('../meta');
 const privileges = require('../privileges');
 const user = require('../user');
 const posts = require('../posts');
@@ -182,16 +183,23 @@ inbox.move = async (req) => {
 inbox.update = async (req) => {
 	let { actor, object } = req.body;
 
-	// Refetch object by id if Update was announce-wrapped
+	// Refetch object by id if Update was announce-wrapped. The embedded object
+	// arrived via a relay and cannot be trusted — UNLESS it carries a valid
+	// integrity proof bound to its author (FEP-8b32), in which case the proof is
+	// the trust anchor and the network call is skipped.
 	if (req?.res?.locals?.apAnnounced) {
-		try {
-			const refetched = await activitypub.get('uid', 0, object.id);
-			if (refetched) {
-				object = refetched;
+		const authentic = meta.config.activitypubIntegrityProofs &&
+			await activitypub.proofs.verifyAuthenticity(object);
+		if (!authentic) {
+			try {
+				const refetched = await activitypub.get('uid', 0, object.id);
+				if (refetched) {
+					object = refetched;
+				}
+			} catch (e) {
+				activitypub.helpers.log(`[activitypub/inbox.update] Failed to refetch object ${object.id}: ${e.message}`);
+				return null;
 			}
-		} catch (e) {
-			activitypub.helpers.log(`[activitypub/inbox.update] Failed to refetch object ${object.id}: ${e.message}`);
-			return null;
 		}
 	}
 
@@ -749,7 +757,15 @@ inbox.announce = async (req) => {
 					return;
 				}
 
-				const assertion = await activitypub.notes.assert(0, pid, { cid, skipChecks: true });
+				// Pass the embedded object through when it carries a valid
+				// author-bound proof (FEP-8b32) so notes.assert can use it as the
+				// chain root and skip re-fetching it. Only do so when resolveId
+				// didn't correct the id (object.id === pid); otherwise pass the id
+				// and let it be fetched as before.
+				const authentic = meta.config.activitypubIntegrityProofs &&
+					object.id === pid &&
+					await activitypub.proofs.verifyAuthenticity(object);
+				const assertion = await activitypub.notes.assert(0, authentic ? object : pid, { cid, skipChecks: true });
 				if (!assertion) {
 					return;
 				}

@@ -95,6 +95,7 @@ ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
 ActivityPub.analytics = require('./analytics');
 ActivityPub.signatures = require('./signatures');
+ActivityPub.proofs = require('./proofs');
 ActivityPub.emoji = require('./emoji');
 
 ActivityPub.resolveId = async (uid, id) => {
