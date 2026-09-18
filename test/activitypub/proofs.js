@@ -321,6 +321,30 @@ describe('FEP-8b32: Object Integrity Proofs', () => {
 			};
 		};
 
+		// Signs the Create activity ITSELF (a top-level proof on req.body), using a
+		// non-fragment activity id so it is signable. The nested Note carries no
+		// proof, isolating the top-level carve-out.
+		const signedTopLevel = async (tamper) => {
+			const note = {
+				'@context': 'https://www.w3.org/ns/activitystreams',
+				id: `${nconf.get('url')}/post/${postData.pid}`,
+				type: 'Note',
+				attributedTo: `${nconf.get('url')}/uid/${uid}`,
+				content: 'Hello world',
+			};
+			const activity = {
+				id: `${nconf.get('url')}/post/${postData.pid}/activity/create`,
+				type: 'Create',
+				actor: `${nconf.get('url')}/uid/${uid}`,
+				object: note,
+			};
+			const signed = await proofs.sign(activity, { type: 'uid', id: uid, created: '2025-01-01T00:00:00Z' });
+			if (tamper) {
+				signed.object.content = 'tampered content';
+			}
+			return signed;
+		};
+
 		// POSTs an activity to the local inbox, optionally with an HTTP
 		// signature. By default the signature is from the activity's actor
 		// (the local user); `signAs` signs with a different user's key.
@@ -374,6 +398,20 @@ describe('FEP-8b32: Object Integrity Proofs', () => {
 			// unrelated reasons (e.g. key-ownership cross-check for local actors).
 			assert.notStrictEqual(response.statusCode, 401);
 			assert.notStrictEqual(response.statusCode, 400);
+		});
+
+		it('should skip the HTTP signature when a valid top-level proof is present', async function () {
+			// A top-level proof (on req.body) authenticates the whole envelope, so
+			// the mandatory POST signature is waived. Must not be 401 (no signature)
+			// nor 400 (invalid proof); the key-ownership cross-check is skipped too.
+			const { response } = await postInbox(await signedTopLevel(false));
+			assert.notStrictEqual(response.statusCode, 401);
+			assert.notStrictEqual(response.statusCode, 400);
+		});
+
+		it('should reject a tampered top-level proof even without an HTTP signature', async function () {
+			const { response } = await postInbox(await signedTopLevel(true));
+			assert.strictEqual(response.statusCode, 400);
 		});
 	});
 
