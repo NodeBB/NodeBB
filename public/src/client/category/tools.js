@@ -163,9 +163,17 @@ define('forum/category/tools', [
 		switch (command) {
 			case 'delete':
 			case 'restore':
-			case 'purge':
-				modals.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
+			case 'purge': {
+				// Topics crossposted into this category (not canonical here) can be
+				// uncrossposted instead of deleted/purged
+				const crosspostedTids = getCrosspostedTids(tids);
+				if (command !== 'restore' && crosspostedTids.length) {
+					showCrosspostModal(command, crosspostedTids, execute);
+				} else {
+					modals.confirm(`[[topic:thread-tools.${command}-confirm]]`, execute);
+				}
 				break;
+			}
 
 			case 'pin':
 				threadTools.requestPinExpiry(body, execute.bind(null, true));
@@ -187,6 +195,50 @@ define('forum/category/tools', [
 		socket.removeListener('event:topic_unpinned', setPinnedState);
 		socket.removeListener('event:topic_moved', onTopicMoved);
 	};
+
+	function getCrosspostedTids(tids) {
+		const cid = ajaxify.data.cid;
+		if (!ajaxify.data.topics || !utils.isNumber(cid)) {
+			return [];
+		}
+		return tids.filter((tid) => {
+			const topic = ajaxify.data.topics.find(t => String(t.tid) === String(tid));
+			return topic && String(topic.cid) !== String(cid);
+		});
+	}
+
+	async function showCrosspostModal(command, crosspostedTids, execute) {
+		await modals.dialog({
+			title: `[[topic:thread-tools.${command}-crosspost-title]]`,
+			message: `[[topic:thread-tools.${command}-crosspost-message]]`,
+			buttons: {
+				confirm: {
+					label: `[[topic:thread-tools.${command}]]`,
+					className: 'btn-danger',
+					callback: () => execute(true),
+				},
+				crosspost: {
+					label: '[[topic:thread-tools.remove-crosspost]]',
+					className: 'btn-primary',
+					callback: () => removeCrossposts(crosspostedTids),
+				},
+				cancel: {
+					label: '[[modules:bootbox.cancel]]',
+					className: 'btn-link',
+				},
+			},
+		});
+	}
+
+	function removeCrossposts(tids) {
+		const cid = ajaxify.data.cid;
+		Promise.all(tids.map(tid => api.del(`/topics/${tid}/crossposts`, { cid })))
+			.then(() => {
+				tids.forEach(tid => getTopicEl(tid).remove());
+				onPurgeComplete();
+			})
+			.catch(alerts.error);
+	}
 
 	function closeDropDown() {
 		$('.thread-tools .show').removeClass('show');
