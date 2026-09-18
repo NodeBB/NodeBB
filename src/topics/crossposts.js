@@ -100,6 +100,11 @@ Crossposts.add = async function (tid, cid, uid) {
 	 * (Normally guest uid is 0)
 	 */
 
+	// Normalize numeric cids so crosspost records and topic events are stored consistently
+	if (utils.isNumber(cid)) {
+		cid = parseInt(cid, 10);
+	}
+
 	// Target cid must exist
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
@@ -170,11 +175,20 @@ Crossposts.add = async function (tid, cid, uid) {
 			topics.updateCategoryTagsCount([cid], tags),
 			categories.onTopicsMoved([cid]), // must be done after
 		]);
-	} else {
-		throw new Error('[[error:topic-already-crossposted]]');
+
+		return [...crossposts, { id: crosspostId, uid, tid, cid, timestamp: now }];
 	}
 
-	return [...crossposts, { id: crosspostId, uid, tid, cid, timestamp: now }];
+	// Repeated announce: the topic is already in the target category, so just
+	// replace the previous crosspost topic event with a new one
+	// (toCid is stored as a string, so match against String(cid))
+	const eventIds = await topics.events.find(tid, { type: 'crosspost', toCid: String(cid) });
+	if (eventIds.length) {
+		await topics.events.purge(tid, eventIds);
+	}
+	await topics.events.log(tid, { uid, type: 'crosspost', toCid: cid });
+
+	return crossposts;
 };
 
 Crossposts.queue = async function (tid, cid, uid) {

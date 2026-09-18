@@ -146,11 +146,30 @@ describe('Crossposting (& related logic)', () => {
 			assert.deepStrictEqual(tids1, tids2);
 		});
 
-		it('should throw on cross-posting again when already cross-posted', async () => {
-			await assert.rejects(
-				topics.crossposts.add(tid, cid2, uid),
-				{ message: '[[error:topic-already-crossposted]]' },
-			);
+		it('should replace the previous topic event on repeated announce', async () => {
+			const before = (await topics.events.get(tid, uid)).filter(e => e.type === 'crosspost');
+			assert.strictEqual(before.length, 1);
+
+			const crossposts = await topics.crossposts.add(tid, cid2, uid);
+			assert.strictEqual(crossposts.length, 1);
+
+			const after = (await topics.events.get(tid, uid)).filter(e => e.type === 'crosspost');
+			assert.strictEqual(after.length, 1);
+			assert.notStrictEqual(after[0].id, before[0].id);
+			assert.strictEqual(after[0].timestamp > before[0].timestamp, true);
+		});
+
+		it('should replace the previous topic event when another user announces', async () => {
+			const otherUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+			const before = (await topics.events.get(tid, uid)).filter(e => e.type === 'crosspost');
+			assert.strictEqual(before.length, 1);
+
+			const crossposts = await topics.crossposts.add(tid, cid2, otherUid);
+			assert.strictEqual(crossposts.length, 1);
+
+			const after = (await topics.events.get(tid, uid)).filter(e => e.type === 'crosspost');
+			assert.strictEqual(after.length, 1);
+			assert.strictEqual(parseInt(after[0].uid, 10), otherUid);
 		});
 	});
 
