@@ -523,14 +523,30 @@ Notes.assertPrivate = async (object) => {
 		return null;
 	}
 
-	// Naive image appending (using src/posts/attachments.js is likely better, but not worth the effort)
+	// Naive attachment appending (using src/posts/attachments.js is likely better, but not worth the effort)
+	// todo: mediaType classification is duplicated from Mocks._buildAttachments (mocks.js) and can drift
+	//       (image/audio/video/link vs. image/link). Extract a shared helper if the two ever need to agree.
 	const attachments = payload._activitypub.attachment;
 	if (attachments && Array.isArray(attachments)) {
-		const images = attachments.filter((attachment) => {
-			return attachment.mediaType.startsWith('image/');
-		}).map(({ url, href }) => url || href);
-		images.forEach((url) => {
-			payload.content += `<p><img class="img-fluid img-thumbnail" src="${url}" /></p>`;
+		attachments.forEach((attachment) => {
+			const url = attachment.url || attachment.href;
+			if (!url) {
+				return;
+			}
+			const mediaType = attachment.mediaType || '';
+			const escapedUrl = utils.escapeHTML(url);
+			let html;
+			if (mediaType.startsWith('image/')) {
+				html = `<p><img class="img-fluid img-thumbnail" src="${escapedUrl}" /></p>`;
+			} else if (mediaType.startsWith('audio/')) {
+				html = `<p><audio controls src="${escapedUrl}"></audio></p>`;
+			} else if (mediaType.startsWith('video/')) {
+				html = `<p><video controls src="${escapedUrl}"></video></p>`;
+			} else {
+				const name = utils.escapeHTML(attachment.name || url);
+				html = `<p><a href="${escapedUrl}">${name}</a></p>`;
+			}
+			payload.content += html;
 		});
 	}
 

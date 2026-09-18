@@ -296,6 +296,68 @@ describe('Inbox', () => {
 				});
 			});
 
+			describe('attachment rendering', () => {
+				before(async function () {
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
+					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const remote = helpers.mocks.person();
+					this.remoteId = remote.id;
+					await activitypub.actors.assert([remote.id]);
+				});
+
+				const noteWithAttachments = (uid, remoteId, attachment) => helpers.mocks.note({
+					attributedTo: remoteId,
+					to: [`${nconf.get('url')}/uid/${uid}`],
+					cc: [],
+					attachment,
+				});
+
+				it('should not throw for a Link attachment without mediaType and append it as a link', async function () {
+					const { note } = noteWithAttachments(this.uid, this.remoteId, [
+						{ type: 'Link', href: `${helpers.mocks._baseUrl}/files/report.pdf`, name: 'report.pdf' },
+					]);
+					const { roomId } = await activitypub.notes.assertPrivate(note);
+					assert.ok(roomId);
+					const content = await messaging.getMessageField(note.id, 'content');
+					assert.ok(content.includes(`<a href="${helpers.mocks._baseUrl}/files/report.pdf">report.pdf</a>`));
+				});
+
+				it('should escape hostile characters in attachment url and name', async function () {
+					const hostileUrl = `${helpers.mocks._baseUrl}/files/a"b.png`;
+					const hostileName = `x"onmouseover="alert(1)`;
+					const { note } = noteWithAttachments(this.uid, this.remoteId, [
+						{ type: 'Link', href: hostileUrl, name: hostileName },
+					]);
+					const { roomId } = await activitypub.notes.assertPrivate(note);
+					assert.ok(roomId);
+					const content = await messaging.getMessageField(note.id, 'content');
+					assert.ok(content.includes(`<a href="${utils.escapeHTML(hostileUrl)}">${utils.escapeHTML(hostileName)}</a>`));
+					assert.ok(!content.includes('onmouseover='));
+				});
+
+				it('should append image attachments as <img>', async function () {
+					const { note } = noteWithAttachments(this.uid, this.remoteId, [
+						{ type: 'Image', url: `${helpers.mocks._baseUrl}/files/pic.jpg`, mediaType: 'image/jpeg' },
+					]);
+					const { roomId } = await activitypub.notes.assertPrivate(note);
+					assert.ok(roomId);
+					const content = await messaging.getMessageField(note.id, 'content');
+					assert.ok(content.includes(`<img class="img-fluid img-thumbnail" src="${helpers.mocks._baseUrl}/files/pic.jpg" />`));
+				});
+
+				it('should append audio and video attachments as media elements', async function () {
+					const { note } = noteWithAttachments(this.uid, this.remoteId, [
+						{ type: 'Link', href: `${helpers.mocks._baseUrl}/files/tune.mp3`, mediaType: 'audio/mpeg' },
+						{ type: 'Link', href: `${helpers.mocks._baseUrl}/files/clip.mp4`, mediaType: 'video/mp4' },
+					]);
+					const { roomId } = await activitypub.notes.assertPrivate(note);
+					assert.ok(roomId);
+					const content = await messaging.getMessageField(note.id, 'content');
+					assert.ok(content.includes(`<audio controls src="${helpers.mocks._baseUrl}/files/tune.mp3"></audio>`));
+					assert.ok(content.includes(`<video controls src="${helpers.mocks._baseUrl}/files/clip.mp4"></video>`));
+				});
+			});
+
 			describe('public posts', () => {
 				it('should not create a post when attributedTo is numeric', async () => {
 					const { note } = helpers.mocks.note({
