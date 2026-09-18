@@ -9,7 +9,6 @@ const groups = require('../groups');
 const plugins = require('../plugins');
 const events = require('../events');
 const postsCache = require('../posts/cache');
-const db = require('../database');
 const user = require('../user');
 
 const adminApi = module.exports;
@@ -45,18 +44,7 @@ adminApi.users.saveCustomFields = async (caller, { fields }) => {
 			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
 		}
 	}
-	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	await db.delete('user-custom-fields');
-	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
-
-	await db.sortedSetAdd(
-		'user-custom-fields',
-		fields.map((f, i) => i),
-		fields.map(f => f.key)
-	);
-	await db.setObjectBulk(
-		fields.map(field => [`user-custom-field:${field.key}`, field])
-	);
+	await user.customFields.setFields(fields);
 	await user.reloadCustomFieldWhitelist();
 };
 
