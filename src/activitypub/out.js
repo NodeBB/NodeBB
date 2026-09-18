@@ -359,7 +359,7 @@ Out.announce.topic = enabledCheck(async (tid, uid, overrideCid) => {
 
 	const [sourceAllowed, targetAllowed] = await Promise.all([
 		privileges.posts.can('topics:read', pid, activitypub._constants.uid),
-		overrideCid ? privileges.categories.can('topics:read', overrideCid, activitypub._constants.uid) : true,
+		privileges.categories.can('topics:read', announceCid, activitypub._constants.uid),
 	]);
 	if (!sourceAllowed || !targetAllowed) {
 		activitypub.helpers.log(`[activitypub/api] Not federating announce of pid ${pid} to the fediverse due to privileges.`);

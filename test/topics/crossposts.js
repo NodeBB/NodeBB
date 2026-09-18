@@ -529,6 +529,21 @@ describe('Crossposting (& related logic)', () => {
 				assert.strictEqual(activitypub._sent.size, 0);
 			});
 
+			it('should not federate an Announce for a new topic in a non-federated category', async () => {
+				const { cid: privateCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) });
+				await privileges.categories.rescind(['groups:topics:read'], privateCid, 'fediverse');
+
+				const { note: object } = helpers.mocks.note({
+					audience: `${nconf.get('url')}/category/${privateCid}`,
+				});
+				const { activity } = helpers.mocks.create(object);
+				await activitypub.inbox.create({
+					body: activity,
+				});
+
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+
 			it('should only federate an Announce on a remote reply from the canonical cid', async () => {
 				const { note: object } = helpers.mocks.note({
 					audience: `${nconf.get('url')}/category/${cid1}`,
