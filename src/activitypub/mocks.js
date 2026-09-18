@@ -834,6 +834,21 @@ Mocks.notes.public = async (post) => {
 	let summary = null;
 	let sensitive = null;
 	if (isArticle) {
+		// The magic break string marks the boundary of the summary. In the summary it is
+		// replaced with a marker indicating how many words follow it (i.e. are not
+		// included in the summary); in the content it is excised
+		if (post.content.includes(meta.config.activitypubBreakString)) {
+			const index = post.content.indexOf(meta.config.activitypubBreakString);
+			const breakString = meta.config.activitypubBreakString;
+			const excluded = sanitize(post.content.slice(index + breakString.length), {
+				allowedTags: [],
+				allowedAttributes: {},
+			});
+			const wordCount = excluded.trim().split(/\s+/).filter(Boolean).length;
+			summary = post.content.slice(0, index) + `[${wordCount} more words]`;
+			post.content = post.content.slice(0, index) + post.content.slice(index + breakString.length);
+		}
+
 		// Preview is not adopted by anybody, so is left commented-out for now
 		preview = {
 			type: 'Note',
@@ -843,10 +858,7 @@ Mocks.notes.public = async (post) => {
 			attachment,
 		};
 
-		if (post.content.includes(meta.config.activitypubBreakString)) {
-			const index = post.content.indexOf(meta.config.activitypubBreakString);
-			summary = post.content.slice(0, index + meta.config.activitypubBreakString.length);
-		} else {
+		if (!summary) {
 			const sentences = tokenizer.sentences(post.content, { newline_boundaries: true });
 			// Append sentences to summary until until just under configured character limit
 			const limit = meta.config.activitypubSummaryLimit;

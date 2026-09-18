@@ -71,12 +71,19 @@ describe('Mocking', () => {
 				});
 
 				it('should end the summary with "[...]" if truncation happened', function () {
-					assert(this.article.summary.endsWith, '[...]');
+					assert(this.article.summary.endsWith('[...]'));
 				});
 
-				it('should set a summary that contains everything before the magic break string (if one is set)', function () {
+				it('should set a summary that contains everything before the magic break string, replaced with the word count of the excluded content (if one is set)', function () {
 					assert.strictEqual(this.withBreak.summary, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.\
-							Aliquam vel augue, id luctus nulla. Mauris efficitur blandit neque et mattis. [...]');
+							Aliquam vel augue, id luctus nulla. Mauris efficitur blandit neque et mattis. [56 more words]');
+				});
+
+				it('should excise the magic break string from the outbound content (and preview)', function () {
+					assert(!this.withBreak.content.includes('[...]'));
+					assert(!this.withBreak.content.includes('more words'));
+					assert(!this.withBreak.preview.content.includes('[...]'));
+					assert(!this.withBreak.preview.content.includes('more words'));
 				});
 
 				it('should not contain the magic break string when content is parsed normally', async function () {
@@ -99,7 +106,7 @@ describe('Mocking', () => {
 					it('should work with a customized break string', async function () {
 						const mocked = await activitypub.mocks.notes.public(this.withBreakPost);
 						assert.strictEqual(mocked.summary, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.\
-							Aliquam vel augue, id luctus nulla. Mauris');
+							Aliquam vel augue, id luctus nulla. [62 more words]');
 					});
 				});
 
