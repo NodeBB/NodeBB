@@ -67,7 +67,7 @@ module.exports = function (User) {
 	let iconBackgrounds;
 
 	User.reloadCustomFieldWhitelist = async () => {
-		customFieldWhiteList = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		customFieldWhiteList = await User.customFields.getKeys();
 	};
 
 	User.getUserFieldWhitelist = async function () {
