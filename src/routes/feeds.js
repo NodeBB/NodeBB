@@ -13,6 +13,7 @@ const privileges = require('../privileges');
 const db = require('../database');
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');
+const clientIp = require('../ip');
 const routeHelpers = require('./helpers');
 
 const { terms } = controllerHelpers;
@@ -61,7 +62,7 @@ async function generateForTopic(req, res, next) {
 	}
 
 	if (!canRead) {
-		return await controllerHelpers.notAllowed(req, res);
+		return next();
 	}
 
 	const topicData = await topics.getTopicWithPosts(topic, `tid:${tid}:posts`, uid, 0, 24, true);
@@ -129,7 +130,7 @@ async function generateForCategory(req, res, next) {
 	}
 
 	if (!userPrivileges.read) {
-		return await controllerHelpers.notAllowed(req, res);
+		return next();
 	}
 
 	let topicsData = await topics.getTopicsByTids(tids, uid);
@@ -346,7 +347,7 @@ async function generateForCategoryRecentPosts(req, res, next) {
 	}
 
 	if (!userPrivileges['topics:read']) {
-		return await controllerHelpers.notAllowed(req, res);
+		return next();
 	}
 
 	const feed = generateForPostsFeed({
@@ -432,8 +433,7 @@ async function generateForTag(req, res) {
 }
 
 function getRssTokenRateLimitKey(req) {
-	const ip = req.ip || req.connection.remoteAddress;
-	return `rss:token:fail:${ip}`;
+	return `rss:token:fail:${clientIp.getClientIp(req)}`;
 }
 
 async function getUidFromToken(req, res) {

@@ -8,6 +8,7 @@ const activitypub = require('../../activitypub');
 const meta = require('../../meta');
 
 const helpers = require('../helpers');
+const clientIp = require('../../ip');
 
 const RATE_LIMIT_WINDOW = 5000; // 5 seconds
 
@@ -26,7 +27,7 @@ Intents.query = async (req, res, next) => {
 		return next();
 	}
 
-	const ip = req.ip || req.connection.remoteAddress;
+	const ip = clientIp.getClientIp(req);
 	await checkRateLimit(ip);
 
 	let { handle } = req.params;

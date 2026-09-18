@@ -669,7 +669,7 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	if (!isPrivileged && allowedFlagsPerDay > 0) {
 		const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 		const flagsOfType = flagData.filter(f => f && f.type === type);
-		if (allowedFlagsPerDay > 0 && flagsOfType.length > allowedFlagsPerDay) {
+		if (flagsOfType.length >= allowedFlagsPerDay) {
 			throw new Error(`[[error:too-many-${type}-flags-per-day, ${allowedFlagsPerDay}]]`);
 		}
 	}
@@ -840,11 +840,16 @@ Flags.update = async function (flagId, uid, changeset) {
 			}
 		} else if (prop === 'assignee') {
 			if (changeset[prop] === '') {
-				tasks.push(db.sortedSetRemove(`flags:byAssignee:${changeset[prop]}`, flagId));
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 			/* eslint-disable-next-line */
 			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
 				delete changeset[prop];
 			} else {
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
 				tasks.push(notifyAssignee(changeset[prop]));
 			}
@@ -914,7 +919,9 @@ Flags.getHistory = async function (flagId) {
 	// turn assignee uids into usernames
 	await Promise.all(history.map(async (entry) => {
 		if (entry.fields.hasOwnProperty('assignee')) {
-			entry.fields.assignee = await user.getUserField(entry.fields.assignee, 'username');
+			entry.fields.assignee = entry.fields.assignee === '' ?
+				'[[flags:no-assignee]]' :
+				await user.getUserField(entry.fields.assignee, 'username');
 		}
 	}));
 
@@ -1104,7 +1111,7 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-username]]',
+					key: changeObj.byUid ? '[[user:change-username]]' : '[[flags:registered-username]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},
@@ -1114,13 +1121,13 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 		});
 
 		return memo;
-	}, [])).concat(emailChanges.reduce((memo, changeObj) => {
+	}, [])).concat(emailChanges.reduce((memo, changeObj, idx) => {
 		uids.push(targetUid);
 		memo.push({
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-email]]',
+					key: idx === emailChanges.length - 1 ? '[[flags:registered-email]]' : '[[user:change-email]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},

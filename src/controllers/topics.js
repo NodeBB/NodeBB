@@ -72,7 +72,8 @@ topicsController.get = async function getTopic(req, res, next) {
 		(!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted) ||
 		await shouldHideTopicFromGuest(req.uid, tid, topicData.cid)
 	) {
-		return helpers.notAllowed(req, res);
+		// Respond 404 (not 403) so restricted topics are indistinguishable from missing ones
+		return next();
 	}
 
 	if (req.params.post_index === 'unread') {
@@ -429,7 +430,7 @@ topicsController.teaser = async function (req, res, next) {
 	}
 	const canRead = await privileges.topics.can('topics:read', tid, req.uid);
 	if (!canRead) {
-		return res.status(403).json('[[error:no-privileges]]');
+		return res.status(404).json('not-found');
 	}
 	const pid = await topics.getLatestUndeletedPid(tid);
 	if (!pid) {
@@ -454,7 +455,7 @@ topicsController.pagination = async function (req, res, next) {
 		return next();
 	}
 	if (!await privileges.topics.canRead(tid, req.uid)) {
-		return helpers.notAllowed(req, res);
+		return next();
 	}
 
 	const settings = await user.getSettings(req.uid);
