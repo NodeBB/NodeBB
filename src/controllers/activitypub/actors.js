@@ -174,7 +174,7 @@ Actors.topic = async function (req, res, next) {
 
 	const page = parseInt(req.query.page, 10) || undefined;
 	const perPage = meta.config.postsPerPage;
-	const { cid, title: name, mainPid, slug, timestamp, deleted } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp', 'deleted']);
+	const { cid, title: name, mainPid, slug, timestamp, deleted, locked } = await topics.getTopicFields(req.params.tid, ['cid', 'title', 'mainPid', 'slug', 'timestamp', 'deleted', 'locked']);
 	try {
 		if (timestamp > Date.now()) { // Scheduled topic, no response
 			return next();
@@ -240,6 +240,7 @@ Actors.topic = async function (req, res, next) {
 			name,
 			attributedTo: `${nconf.get('url')}/category/${cid}`,
 			audience: cid !== -1 ? `${nconf.get('url')}/category/${cid}` : undefined,
+			locked: !!locked,
 			...collection,
 		};
 
