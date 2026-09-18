@@ -95,6 +95,23 @@ describe('Topic Events', () => {
 			const restored = await topics.events.get(topic.topicData.tid);
 			assert.strictEqual(restored.length, 1);
 		});
+
+		it('should render events of deleted users as "A Former User"', async () => {
+			const deletedUid = await user.create({ username: `deluser${Math.floor(Math.random() * 1e6)}` });
+			await topics.events.log(topic.topicData.tid, {
+				uid: deletedUid,
+				type: 'fork',
+				href: `/topic/${topic.topicData.tid}`,
+			});
+
+			await user.delete(1, deletedUid);
+
+			const events = await topics.events.get(topic.topicData.tid, fooUid);
+			const event = events.find(e => parseInt(e.uid, 10) === deletedUid);
+			assert(event, 'event of deleted user should still be returned');
+			assert.strictEqual(event.user.displayname, '[[global:former-user]]');
+			assert(event.text.includes('A Former User'));
+		});
 	});
 
 	describe('.purge()', () => {

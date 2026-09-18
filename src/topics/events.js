@@ -120,6 +120,12 @@ function renderUser(event) {
 		userslug: String(event.user.userslug),
 	};
 	const avatar = helpers.buildAvatar(user, '16px', true);
+	// Guests and former users have no profile to link to; their displayname is a
+	// translation key ([[global:guest]] / [[global:former-user]]) resolved by
+	// translateEventArgs (the arg must be a bare key for that to work)
+	if (!user.userslug) {
+		return user.displayname;
+	}
 	const link = `<a href="${relative_path}/user/${helpers.escape(user.userslug)}">${helpers.escape(user.displayname)}</a>`;
 	return `${avatar} ${link}`;
 }
@@ -165,9 +171,12 @@ Events.find = async (tid, match) => {
 };
 
 async function getUserInfo(uids) {
-	uids = new Set(uids); // eliminate dupes
-	const userData = await user.getUsersFields(Array.from(uids), ['picture', 'username', 'userslug']);
-	const userMap = userData.reduce((memo, cur) => memo.set(cur.uid, cur), new Map());
+	uids = [...new Set(uids)]; // eliminate dupes
+	const userData = await user.getUsersFields(uids, ['picture', 'username', 'userslug']);
+	// Deleted users come back with a guest fallback (uid 0), so key by the
+	// original uid (oldUid for deleted locals, the requested uri for deleted
+	// remotes) to keep them lookupable by the event's uid
+	const userMap = userData.reduce((memo, cur, index) => memo.set(cur.uid || cur.oldUid || uids[index], cur), new Map());
 	userMap.set('system', {
 		system: true,
 	});
