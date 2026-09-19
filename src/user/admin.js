@@ -54,7 +54,7 @@ module.exports = function (User) {
 			fields: fieldsToExport,
 			showIps: fieldsToExport.includes('ip'),
 		});
-		const customUserFields = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		const customUserFields = await User.customFields.getKeys();
 		if (!showIps && fields.includes('ip')) {
 			fields.splice(fields.indexOf('ip'), 1);
 		}

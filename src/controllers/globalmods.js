@@ -39,20 +39,33 @@ globalModsController.registrationQueue = async function (req, res, next) {
 	const start = (page - 1) * 20;
 	const stop = start + itemsPerPage - 1;
 
-	const [registrationQueueCount, users, customHeaders, invites] = await Promise.all([
+	const [registrationQueueCount, users, customHeaders, customBulkActions, invites] = await Promise.all([
 		db.sortedSetCard('registration:queue'),
 		user.getRegistrationQueue(start, stop),
 		plugins.hooks.fire('filter:admin.registrationQueue.customHeaders', { headers: [] }),
+		plugins.hooks.fire('filter:admin.registrationQueue.customBulkActions', { actions: [] }),
 		getInvites(),
 	]);
 	const pageCount = Math.max(1, Math.ceil(registrationQueueCount / itemsPerPage));
+
+	const cleanUsers = [];
+	const spamUsers = [];
+	users.forEach((userData) => {
+		if (userData.spamSuspected === undefined) {
+			userData.spamSuspected = !!(userData.usernameSpam || userData.emailSpam || userData.ipSpam);
+		}
+		(userData.spamSuspected ? spamUsers : cleanUsers).push(userData);
+	});
 
 	res.render('registration-queue', {
 		title: '[[pages:registration-queue]]',
 		pagination: pagination.create(page, pageCount, req.query),
 		customHeaders: customHeaders.headers,
+		customBulkActions: customBulkActions.actions,
 		invites,
 		users,
+		cleanUsers,
+		spamUsers,
 		registrationQueueCount,
 		queueEnabled: meta.config.registrationApprovalType === 'admin-approval' || meta.config.registrationApprovalType === 'admin-approval-ip',
 	});

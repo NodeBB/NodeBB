@@ -165,8 +165,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		return fields;
 	}
 
-	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	const allFields = await user.customFields.getFields();
 
 	const isSelf = String(callerUID) === String(userData.uid);
 	const [isAdmin, isModOfAny] = await Promise.all([

@@ -1993,6 +1993,37 @@ describe('User', () => {
 			assert(body.includes('&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com'));
 		});
 
+		it('should split the queue into regular requests and suspected spam', async () => {
+			await helpers.registerUser({
+				username: 'spamqueued',
+				password: '123456',
+				email: 'spamqueued@me.com',
+				gdpr_consent: true,
+			});
+			const filterMethod = async (data) => {
+				data.users.forEach((user) => {
+					if (user.username === 'spamqueued') {
+						user.spamChecked = true;
+						user.ipSpam = true;
+					}
+				});
+				return data;
+			};
+			plugins.hooks.register('test-plugin', { hook: 'filter:user.getRegistrationQueue', method: filterMethod });
+			try {
+				const { jar } = await helpers.loginUser('admin', '123456');
+				const { body } = await request.get(`${nconf.get('url')}/api/registration-queue`, { jar });
+				assert.deepStrictEqual(body.spamUsers.map(u => u.username), ['spamqueued']);
+				assert(body.spamUsers.every(u => u.spamSuspected === true));
+				assert(!body.cleanUsers.some(u => u.username === 'spamqueued'));
+				assert(body.cleanUsers.every(u => u.spamSuspected === false));
+				assert.strictEqual(body.users.length, body.cleanUsers.length + body.spamUsers.length);
+			} finally {
+				plugins.hooks.unregister('test-plugin', 'filter:user.getRegistrationQueue', filterMethod);
+				await User.rejectRegistration('spamqueued');
+			}
+		});
+
 		it('should fail to add user to queue if username is taken', async () => {
 			const { body } = await helpers.registerUser({
 				username: 'rejectme',

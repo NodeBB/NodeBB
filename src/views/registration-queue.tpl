@@ -39,108 +39,65 @@
 			aria-labelledby="registration-queue-tab"
 			tabindex="0"
 		>
-			{{{ if users.length }}}
-			<div class="text-end mb-2">
-				<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-all")}}</button>
-			</div>
-			{{{ end }}}
 			<div class="registration mb-3">
 				{{{ if !queueEnabled }}}
 				<p>{{tx("registration-queue:description", concat(config.relative_path, "/admin/settings/user#user-registration"))}}</p>
 				{{{ end }}}
-				{{{ if queueEnabled }}}
-				{{{ end }}}
 				{{{ if !users.length }}}
 				<p>{{tx("registration-queue:no-users-in-queue")}}</p>
-				{{{ else }}}
-				<div class="table-responsive">
-					<table class="table table-sm text-sm users-list">
-						<thead>
-							<tr>
-								<th>{{tx("registration-queue:list.name")}}</th>
-								<th>{{tx("registration-queue:list.email")}}</th>
-								<th class="hidden-xs">{{tx("registration-queue:list.ip")}}</th>
-								<th class="hidden-xs">{{tx("registration-queue:list.time")}}</th>
-								{{{ each customHeaders }}}
-								<th class="hidden-xs">{{tx(./label)}}</th>
-								{{{ end }}}
-								<th></th>
-							</tr>
-						</thead>
-						<tbody>
-							{{{ each users }}}
-							<tr data-username="{./username}" class="align-middle">
-								<td>
-									{{{ if ./usernameSpam }}}
-									<i class="fa fa-times-circle text-danger" title="{{tx("registration-queue:list.username-spam", ./spamData.username.frequency, ./spamData.username.appears, ./spamData.username.confidence)}}" data-bs-toggle="tooltip" data-bs-html="true"></i>
-									{{{ else }}}
-									{{{ if ./spamChecked }}}
-									<i class="fa fa-check text-success"></i>
-									{{{ end }}}
-									{{{ end }}}
-									{./username}
-									{{{ if ./sso }}}
-									<i class="{./sso.icon}" title="{./sso.name}"></i>
-									{{{ end }}}
-								</td>
-								<td>
-									{{{ if ./emailSpam }}}
-									<i class="fa fa-times-circle text-danger" title="{{tx("registration-queue:list.email-spam", ./spamData.email.frequency, ./spamData.email.appears, ./spamData.email.confidence)}}" data-bs-toggle="tooltip" data-bs-html="true"></i>
-									{{{ else }}}
-									{{{ if ./spamChecked }}}
-									<i class="fa fa-check text-success"></i>
-									{{{ end }}}
-									{{{ end }}}
-									{./email}
-								</td>
-								<td class="hidden-xs">
-									<div class="d-flex gap-2 align-items-center">
-										{{{ if ./ipSpam }}}
-										<i class="fa fa-times-circle text-danger" title="{{tx("registration-queue:list.ip-spam", ./spamData.ip.frequency, ./spamData.ip.appears, ./spamData.ip.confidence)}}" data-bs-toggle="tooltip" data-bs-html="true"></i>
-										{{{ else }}}
-										{{{ if ./spamChecked }}}
-										<i class="fa fa-check text-success"></i>
-										{{{ end }}}
-										{{{ end }}}
-										{./ip}
-										{{{ if ./ipMatch.length }}}
-										<div class="dropdown position-static">
-											<button type="button" class="btn btn-ghost btn-sm dropdown-toggle border" data-bs-toggle="dropdown" aria-expanded="false">{./ipMatch.length} <i class="fa-solid fa-users"></i></button>
-											<ul class="dropdown-menu p-1 overflow-auto" style="max-height:300px;">
-												{{{ each ./ipMatch}}}
-												<li class="d-flex gap-1 align-items-center">
-													<a href="{config.relative_path}/uid/{./uid}" class="dropdown-item rounded-1">{{buildAvatar(@value, "24px", true)}} {./username}</a>
-												</li>
-												{{{ end }}}
-											</ul>
-										</div>
-										{{{ end }}}
-									</div>
-								</td>
-								<td class="hidden-xs">
-									<span class="timeago" title="{./timestampISO}"></span>
-								</td>
+				{{{ end }}}
 
-								{{{ each ./customRows }}}
-								<td class="hidden-xs">{./value}</td>
+				{{{ if cleanUsers.length }}}
+				<div class="registration-queue-group mb-4" data-group="requests">
+					<h3 class="fs-5 mb-2">{{tx("registration-queue:requests")}} <span class="badge text-bg-light">{cleanUsers.length}</span></h3>
+					<div class="table-responsive">
+						<table class="table table-sm text-sm users-list">
+							<!-- IMPORT partials/registration-queue/table-head.tpl -->
+							<tbody>
+								{{{ each cleanUsers }}}
+								<!-- IMPORT partials/registration-queue/user-row.tpl -->
 								{{{ end }}}
-
-								<td>
-									<div class="d-flex gap-1 justify-content-end">
-										<button class="btn btn-light btn-sm" data-action="accept"><i class="fa fa-check text-success"></i></button>
-										<button class="btn btn-light btn-sm" data-action="delete"><i class="fa fa-trash text-danger"></i></button>
-										{{{ each ./customActions }}}
-										<button id="{./id}" title="{{tx(./title)}}" class="btn btn-sm {./class}">
-											<i class="fa {./icon}"></i>
-										</button>
-										{{{ end }}}
-									</div>
-								</td>
-							</tr>
-							{{{ end }}}
-						</tbody>
-					</table>
+							</tbody>
+						</table>
+					</div>
+					<div class="d-flex flex-wrap gap-1 justify-content-end mt-2">
+						<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-all")}}</button>
+						<button data-action="reject-selected" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-selected")}}</button>
+					</div>
 				</div>
+				{{{ end }}}
+
+				{{{ if spamUsers.length }}}
+				<div class="registration-queue-group mb-4" data-group="spam">
+					<h3 class="fs-5 mb-0">{{tx("registration-queue:suspected-spam")}} <span class="badge text-bg-danger">{spamUsers.length}</span></h3>
+					<p class="text-muted text-sm">{{tx("registration-queue:suspected-spam-description")}}</p>
+					<div class="table-responsive">
+						<table class="table table-sm text-sm users-list">
+							<!-- IMPORT partials/registration-queue/table-head.tpl -->
+							<tbody>
+								{{{ each spamUsers }}}
+								<!-- IMPORT partials/registration-queue/user-row.tpl -->
+								{{{ end }}}
+							</tbody>
+						</table>
+					</div>
+					<div class="d-flex flex-wrap gap-1 justify-content-end mt-2">
+						{{{ each customBulkActions }}}
+						<button id="{./id}" class="btn btn-sm {./class}">
+							{{{ if ./icon }}}<i class="fa {./icon}"></i> {{{ end }}}{{tx(./title)}}
+						</button>
+						{{{ end }}}
+						<button data-action="reject-selected" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-selected")}}</button>
+					</div>
+				</div>
+				{{{ end }}}
+
+				{{{ if !cleanUsers.length }}}
+				{{{ if users.length }}}
+				<div class="d-flex justify-content-end mt-2">
+					<button data-action="reject-all" class="btn btn-sm btn-light ff-secondary">{{tx("registration-queue:reject-all")}}</button>
+				</div>
+				{{{ end }}}
 				{{{ end }}}
 
 				<!-- IMPORT admin/partials/paginator.tpl -->

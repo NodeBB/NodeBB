@@ -19,7 +19,7 @@ module.exports = function (User) {
 		let fields = [
 			'username', 'email', 'fullname',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
-			...await db.getSortedSetRange('user-custom-fields', 0, -1),
+			...await User.customFields.getKeys(),
 		];
 		if (Array.isArray(extraFields)) {
 			fields = fields.concat(extraFields);
@@ -89,8 +89,7 @@ module.exports = function (User) {
 	}
 
 	async function validateCustomFields(data) {
-		const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-		const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+		const fields = await User.customFields.getFields();
 		const reputation = await User.getUserField(data.uid, 'reputation');
 
 		fields.forEach((field) => {
