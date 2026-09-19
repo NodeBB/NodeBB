@@ -1533,6 +1533,54 @@ describe('Inbox', () => {
 			});
 		});
 
+		describe('Announce(Undo)', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				// Use helpers.mocks.group() to generate a consistent remote category ID, then assert it
+				({ id: this.remoteCid } = helpers.mocks.group());
+				await activitypub.actors.assertGroup([this.remoteCid]);
+				const { topicData } = await topics.post({
+					cid: this.remoteCid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.remoteActor = 'https://example.org/user/alice';
+				// Lock the topic so the Undo has something to undo
+				await topics.tools.lock(this.tid, 'system');
+			});
+
+			it('should unlock a topic when a category actor announces an Undo of the Lock', async function () {
+				const announceActivity = {
+					type: 'Announce',
+					actor: this.remoteCid,
+					object: {
+						id: `https://example.org/topic/${this.tid}#activity/undo/123`,
+						type: 'Undo',
+						actor: this.remoteActor,
+						object: {
+							id: `https://example.org/topic/${this.tid}#activity/lock/456`,
+							type: 'Lock',
+							actor: this.remoteActor,
+							object: `${nconf.get('url')}/topic/${this.tid}`,
+						},
+					},
+				};
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic should be unlocked');
+			});
+
+			it('should attribute the unlock to the inner actor', async function () {
+				const events = await topics.events.get(this.tid, this.uid);
+				const unlockEvent = events.filter(e => e.type === 'unlock').pop();
+				assert(unlockEvent, 'unlock event should be logged');
+				assert.strictEqual(unlockEvent.uid, this.remoteActor);
+			});
+		});
+
 		describe('.lock', () => {
 			before(async function () {
 				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
@@ -1723,13 +1771,18 @@ describe('Inbox', () => {
 				});
 
 				it('should unlock the mirrored topic afterwards', async function () {
-					const unlockActivity = {
-						type: 'Unlock',
+					const undoActivity = {
+						type: 'Undo',
 						actor: this.remoteActor,
-						object: this.remoteTopicUrl,
+						object: {
+							id: `${this.remoteTopicUrl}#activity/lock/123`,
+							type: 'Lock',
+							actor: this.remoteActor,
+							object: this.remoteTopicUrl,
+						},
 					};
 
-					await activitypub.inbox.unlock({ body: unlockActivity });
+					await activitypub.inbox.undo({ body: undoActivity });
 
 					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
 					assert.strictEqual(isLocked, 0, 'mirrored topic should be unlocked');
@@ -1737,7 +1790,7 @@ describe('Inbox', () => {
 			});
 		});
 
-		describe('.unlock', () => {
+		describe('.undo', () => {
 			before(async function () {
 				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 				const { cid } = await categories.create({ name: utils.generateUUID() });
@@ -1765,14 +1818,19 @@ describe('Inbox', () => {
 				activitypub._sent.clear();
 			});
 
-			it('should unlock a topic in a remote category when a same-origin actor sends an Unlock activity', async function () {
-				const unlockActivity = {
-					type: 'Unlock',
+			it('should unlock a topic in a remote category when a same-origin actor sends an Undo of the Lock', async function () {
+				const undoActivity = {
+					type: 'Undo',
 					actor: this.remoteActor,
-					object: `${nconf.get('url')}/topic/${this.tid}`,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
 				};
 
-				await activitypub.inbox.unlock({ body: unlockActivity });
+				await activitypub.inbox.undo({ body: undoActivity });
 
 				// Verify topic is now unlocked
 				const isLocked = await topics.getTopicField(this.tid, 'locked');
@@ -1780,13 +1838,18 @@ describe('Inbox', () => {
 			});
 
 			it('should do nothing when the topic is not locked', async function () {
-				const unlockActivity = {
-					type: 'Unlock',
+				const undoActivity = {
+					type: 'Undo',
 					actor: this.remoteActor,
-					object: `${nconf.get('url')}/topic/${this.tid}`,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
 				};
 
-				await activitypub.inbox.unlock({ body: unlockActivity });
+				await activitypub.inbox.undo({ body: undoActivity });
 
 				// Topic should still be unlocked
 				const isLocked = await topics.getTopicField(this.tid, 'locked');
@@ -1802,13 +1865,18 @@ describe('Inbox', () => {
 				});
 				await topics.tools.lock(topicData.tid, 'system');
 
-				const unlockActivity = {
-					type: 'Unlock',
+				const undoActivity = {
+					type: 'Undo',
 					actor: this.remoteActor,
-					object: `${nconf.get('url')}/topic/${topicData.tid}`,
+					object: {
+						id: `${nconf.get('url')}/topic/${topicData.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${topicData.tid}`,
+					},
 				};
 
-				await activitypub.inbox.unlock({ body: unlockActivity });
+				await activitypub.inbox.undo({ body: undoActivity });
 
 				const isLocked = await topics.getTopicField(topicData.tid, 'locked');
 				assert.strictEqual(isLocked, 1, 'topic in a local category must not be unlocked');
@@ -1816,30 +1884,63 @@ describe('Inbox', () => {
 
 			it('should throw when the actor is not same-origin as the category', async function () {
 				const foreignActor = helpers.mocks.person({ id: 'https://foreign.example/user/alice' });
-				const unlockActivity = {
-					type: 'Unlock',
+				const undoActivity = {
+					type: 'Undo',
 					actor: foreignActor.id,
-					object: `${nconf.get('url')}/topic/${this.tid}`,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
 				};
 
 				// This should throw an origin mismatch error
 				await assert.rejects(
-					activitypub.inbox.unlock({ body: unlockActivity }),
+					activitypub.inbox.undo({ body: undoActivity }),
 					{ message: '[[error:activitypub.origin-mismatch]]' },
 				);
 			});
 
-			it('should do nothing if the object is a string URL (not an object)', async function () {
-				const unlockActivity = {
-					type: 'Unlock',
+			it('should resolve an embedded Lock activity reference', async function () {
+				// Re-lock the topic first
+				await topics.tools.lock(this.tid, 'system');
+
+				const undoActivity = {
+					type: 'Undo',
 					actor: this.remoteActor,
-					object: `${nconf.get('url')}/topic/${this.tid}`,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/456`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
 				};
 
-				await activitypub.inbox.unlock({ body: unlockActivity });
+				await activitypub.inbox.undo({ body: undoActivity });
 
-				// No error, topic state unchanged
-				assert(true);
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic should be unlocked via embedded Lock reference');
+			});
+
+			it('should ignore an Undo that does not reference a Lock', async function () {
+				// Re-lock the topic first
+				await topics.tools.lock(this.tid, 'system');
+
+				const undoActivity = {
+					type: 'Undo',
+					actor: this.remoteActor,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/announce/789`,
+						type: 'Announce',
+						actor: this.remoteActor,
+					},
+				};
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1, 'topic must remain locked when Undo does not reference a Lock');
 			});
 		});
 	});

@@ -484,20 +484,18 @@ Out.lock = enabledCheck(async (uid, tid) => {
 		cc: [],
 	}, { cid, pid: mainPid });
 
+	const lock = await activitypub.mocks.activities.lock(tid, uid, cid);
 	await activitypub.send('cid', cid, Array.from(targets), {
 		id: `${nconf.get('url')}/category/${cid}#activity/announce/${Date.now()}`,
 		type: 'Announce',
 		actor: `${nconf.get('url')}/category/${cid}`,
 		to,
 		cc,
-		object: {
-			id: `${nconf.get('url')}/topic/${tid}#activity/lock/${Date.now()}`,
-			type: 'Lock',
-			actor: `${nconf.get('url')}/uid/${uid}`,
-			audience: `${nconf.get('url')}/category/${cid}`,
-			object: `${nconf.get('url')}/topic/${tid}`,
-		},
+		object: lock,
 	});
+
+	// Record the Lock activity id so a later unlock can reference it in an Undo (FEP c0d0)
+	await topics.setTopicField(tid, 'apLockId', lock.id);
 });
 
 Out.unlock = enabledCheck(async (uid, tid) => {
@@ -514,11 +512,20 @@ Out.unlock = enabledCheck(async (uid, tid) => {
 		return;
 	}
 
+	// Unlocking is expressed as an Undo of the original Lock (FEP c0d0)
+	const lockId = await topics.getTopicField(tid, 'apLockId');
+	if (!lockId) {
+		activitypub.helpers.log(`[activitypub/api] No Lock activity id recorded for tid ${tid}; not federating unlock.`);
+		return;
+	}
+
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		to: [activitypub._constants.publicAddress],
 		cc: [],
 	}, { cid, pid: mainPid });
 
+	// Embed the original Lock activity (reconstructed from the recorded id)
+	const lock = await activitypub.mocks.activities.lock(tid, uid, cid, lockId);
 	await activitypub.send('cid', cid, Array.from(targets), {
 		id: `${nconf.get('url')}/category/${cid}#activity/announce/${Date.now()}`,
 		type: 'Announce',
@@ -526,13 +533,14 @@ Out.unlock = enabledCheck(async (uid, tid) => {
 		to,
 		cc,
 		object: {
-			id: `${nconf.get('url')}/topic/${tid}#activity/unlock/${Date.now()}`,
-			type: 'Unlock',
+			id: `${nconf.get('url')}/topic/${tid}#activity/undo/${Date.now()}`,
+			type: 'Undo',
 			actor: `${nconf.get('url')}/uid/${uid}`,
-			audience: `${nconf.get('url')}/category/${cid}`,
-			object: `${nconf.get('url')}/topic/${tid}`,
+			object: lock,
 		},
 	});
+
+	await topics.deleteTopicField(tid, 'apLockId');
 });
 
 Out.undo = {};
