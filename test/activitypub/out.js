@@ -279,4 +279,194 @@ describe('Outbound activities module', () => {
 			});
 		});
 	});
+
+	describe('.lock', () => {
+		before(async function () {
+			this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+			this.remoteActor = helpers.mocks.person();
+
+			const { cid } = await categories.create({ name: utils.generateUUID() });
+			this.cid = cid;
+			this.tid = await db.incrObjectField('global', 'nextTid');
+
+			// Create the topic hash
+			const topicData = {
+				tid: this.tid,
+				uid: this.uid,
+				cid: this.cid,
+				mainPid: 0,
+				title: 'Test Topic',
+				slug: `${this.tid}/test-topic`,
+				timestamp: Date.now(),
+				lastposttime: 0,
+				postcount: 0,
+				viewcount: 0,
+			};
+			await db.setObject(`topic:${this.tid}`, topicData);
+
+			// Add a remote user to the topic posters set
+			await db.sortedSetAdd(`tid:${this.tid}:posters`, Date.now(), this.remoteActor.id);
+
+			// Add remote user as a category follower
+			await db.sortedSetAdd(`cid:${this.cid}:uid:watch:state`, Date.now(), this.remoteActor.id);
+
+			// Create a local post in the topic
+			const mainPid = await db.incrObjectField('global', 'nextPid');
+			await db.setObject(`post:${mainPid}`, {
+				pid: mainPid,
+				uid: this.uid,
+				tid: this.tid,
+				cid: this.cid,
+				content: 'Test content',
+			});
+			await db.setObjectField(`topic:${this.tid}`, 'mainPid', mainPid);
+			this.pid = `${nconf.get('url')}/post/${mainPid}`;
+		});
+
+		after(() => {
+			activitypub._sent.clear();
+		});
+
+		it('should send a Lock activity wrapped in an Announce from the category actor', async function () {
+			await activitypub.out.lock(this.uid, this.tid);
+			await wait(50);
+
+			assert.strictEqual(activitypub._sent.size, 1);
+			const { payload } = Array.from(activitypub._sent).pop()[1];
+
+			assert.strictEqual(payload.type, 'Announce');
+			assert.strictEqual(payload.actor, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.type, 'Lock');
+			assert.strictEqual(payload.object.actor, `${nconf.get('url')}/uid/${this.uid}`);
+			// FEP 1b12: audience identifies the group the activity belongs to
+			assert.strictEqual(payload.object.audience, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.object, `${nconf.get('url')}/topic/${this.tid}`);
+			assert(payload.object.id.includes(`/topic/${this.tid}#activity/lock/`));
+		});
+
+		it('should include the category followers collection in cc', function () {
+			const { payload } = Array.from(activitypub._sent).pop()[1];
+			assert(payload.cc.includes(`${nconf.get('url')}/category/${this.cid}/followers`));
+		});
+
+		it('should include remote topic participants in targets', function () {
+			const { targets } = Array.from(activitypub._sent).pop()[1];
+			assert(targets.includes(this.remoteActor.id));
+		});
+
+		it('should not federate when topic is in a non-local category', async function () {
+			activitypub._sent.clear();
+
+			const { cid } = await categories.create({ name: utils.generateUUID() });
+			await db.setObjectField(`topic:${this.tid}`, 'cid', -1);
+
+			await activitypub.out.lock(this.uid, this.tid);
+			await wait(50);
+
+			assert.strictEqual(activitypub._sent.size, 0);
+		});
+
+		describe('non-local category', () => {
+			before(async function () {
+				await db.setObjectField(`topic:${this.tid}`, 'cid', -1);
+				activitypub._sent.clear();
+			});
+
+			it('should not send any activity when cid is -1', async function () {
+				await activitypub.out.lock(this.uid, this.tid);
+				await wait(50);
+
+				assert.strictEqual(activitypub._sent.size, 0);
+			});
+		});
+	});
+
+	describe('.unlock', () => {
+		before(async function () {
+			this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+			this.remoteActor = helpers.mocks.person();
+
+			const { cid } = await categories.create({ name: utils.generateUUID() });
+			this.cid = cid;
+			this.tid = await db.incrObjectField('global', 'nextTid');
+
+			const topicData = {
+				tid: this.tid,
+				uid: this.uid,
+				cid: this.cid,
+				mainPid: 0,
+				title: 'Test Topic',
+				slug: `${this.tid}/test-topic`,
+				timestamp: Date.now(),
+				lastposttime: 0,
+				postcount: 0,
+				viewcount: 0,
+			};
+			await db.setObject(`topic:${this.tid}`, topicData);
+
+			await db.sortedSetAdd(`tid:${this.tid}:posters`, Date.now(), this.remoteActor.id);
+			await db.sortedSetAdd(`cid:${this.cid}:uid:watch:state`, Date.now(), this.remoteActor.id);
+
+			const mainPid = await db.incrObjectField('global', 'nextPid');
+			await db.setObject(`post:${mainPid}`, {
+				pid: mainPid,
+				uid: this.uid,
+				tid: this.tid,
+				cid: this.cid,
+				content: 'Test content',
+			});
+			await db.setObjectField(`topic:${this.tid}`, 'mainPid', mainPid);
+			this.pid = `${nconf.get('url')}/post/${mainPid}`;
+		});
+
+		after(() => {
+			activitypub._sent.clear();
+		});
+
+		it('should send an Undo of the Lock wrapped in an Announce from the category actor', async function () {
+			// Lock first so a Lock activity id is recorded
+			await activitypub.out.lock(this.uid, this.tid);
+			await wait(50);
+			activitypub._sent.clear();
+
+			await activitypub.out.unlock(this.uid, this.tid);
+			await wait(50);
+
+			assert.strictEqual(activitypub._sent.size, 1);
+			const { payload } = Array.from(activitypub._sent).pop()[1];
+
+			assert.strictEqual(payload.type, 'Announce');
+			assert.strictEqual(payload.actor, `${nconf.get('url')}/category/${this.cid}`);
+			assert.strictEqual(payload.object.type, 'Undo');
+			assert.strictEqual(payload.object.actor, `${nconf.get('url')}/uid/${this.uid}`);
+			// The Undo embeds the original Lock activity (FEP c0d0)
+			assert.strictEqual(payload.object.object.type, 'Lock');
+			assert(payload.object.object.id.includes(`/topic/${this.tid}#activity/lock/`));
+			assert.strictEqual(payload.object.object.object, `${nconf.get('url')}/topic/${this.tid}`);
+			assert(payload.object.id.includes(`/topic/${this.tid}#activity/undo/`));
+			// The recorded Lock id is cleared after the Undo is sent
+			const apLockId = await topics.getTopicField(this.tid, 'apLockId');
+			assert(!apLockId, 'apLockId should be cleared after unlock');
+		});
+
+		it('should include the category followers collection in cc', function () {
+			const { payload } = Array.from(activitypub._sent).pop()[1];
+			assert(payload.cc.includes(`${nconf.get('url')}/category/${this.cid}/followers`));
+		});
+
+		it('should include remote topic participants in targets', function () {
+			const { targets } = Array.from(activitypub._sent).pop()[1];
+			assert(targets.includes(this.remoteActor.id));
+		});
+
+		it('should not federate an unlock when no Lock activity id is recorded', async function () {
+			activitypub._sent.clear();
+			await db.deleteObjectField(`topic:${this.tid}`, 'apLockId');
+
+			await activitypub.out.unlock(this.uid, this.tid);
+			await wait(50);
+
+			assert.strictEqual(activitypub._sent.size, 0);
+		});
+	});
 });

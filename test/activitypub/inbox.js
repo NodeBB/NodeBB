@@ -1440,5 +1440,638 @@ describe('Inbox', () => {
 				await db.sortedSetRemove('relays:createtime', relayActor);
 			});
 		});
+
+		describe('Announce(Lock)', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				// Use helpers.mocks.group() to generate a consistent remote category ID, then assert it
+				({ id: this.remoteCid } = helpers.mocks.group());
+				await activitypub.actors.assertGroup([this.remoteCid]);
+				const { topicData } = await topics.post({
+					cid: this.remoteCid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.remoteActor = 'https://example.org/user/alice';
+			});
+
+			it('should lock a topic when a category actor announces a Lock', async function () {
+				const announceActivity = {
+					type: 'Announce',
+					actor: this.remoteCid,
+					object: {
+						id: `https://example.org/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
+				};
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1, 'topic should be locked');
+			});
+
+			it('should attribute the lock to the inner actor', async function () {
+				const events = await topics.events.get(this.tid, this.uid);
+				const lockEvent = events.filter(e => e.type === 'lock').pop();
+				assert(lockEvent, 'lock event should be logged');
+				assert.strictEqual(lockEvent.uid, this.remoteActor);
+			});
+
+			it('should not lock when the inner actor is not same-origin as the announcer', async function () {
+				const { topicData } = await topics.post({
+					cid: this.remoteCid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				const foreignActor = helpers.mocks.person({ id: 'https://foreign.example/user/alice' });
+				const announceActivity = {
+					type: 'Announce',
+					actor: this.remoteCid,
+					object: {
+						id: `https://example.org/topic/${topicData.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: foreignActor.id,
+						object: `${nconf.get('url')}/topic/${topicData.tid}`,
+					},
+				};
+
+				await assert.rejects(
+					activitypub.inbox.announce({ body: announceActivity }),
+					{ message: '[[error:activitypub.origin-mismatch]]' },
+				);
+
+				const isLocked = await topics.getTopicField(topicData.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic must not be locked');
+			});
+
+			it('should not lock a topic outside the announcing category', async function () {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				const announceActivity = {
+					type: 'Announce',
+					actor: this.remoteCid,
+					object: {
+						id: `https://example.org/topic/${topicData.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${topicData.tid}`,
+					},
+				};
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				const isLocked = await topics.getTopicField(topicData.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic in another category must not be locked');
+			});
+
+			describe('remote topic mirrored locally', () => {
+				let originalGet;
+
+				before(async function () {
+					// A topic hosted on example.org, mirrored into a remote category
+					// (its main post is stored locally under the remote URL as pid)
+					const { topicData } = await topics.post({
+						cid: this.remoteCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.remoteTid = topicData.tid;
+					this.remoteTopicUrl = 'https://example.org/topic/10';
+					this.remoteMainPid = 'https://example.org/post/101';
+					await topics.setTopicField(this.remoteTid, 'mainPid', this.remoteMainPid);
+					await db.setObject(`post:${this.remoteMainPid}`, {
+						pid: this.remoteMainPid,
+						uid: this.remoteActor,
+						tid: String(this.remoteTid),
+						content: utils.generateUUID(),
+					});
+					await db.sortedSetAdd(`tid:${this.remoteTid}:posts`, 1, this.remoteMainPid);
+
+					// example.org serves its topic as a collection of post URLs
+					originalGet = activitypub.get;
+					activitypub.get = async (type, id, url, options) => {
+						if (url === this.remoteTopicUrl) {
+							return {
+								'@context': 'https://www.w3.org/ns/activitystreams',
+								id: this.remoteTopicUrl,
+								type: 'OrderedCollection',
+								totalItems: 1,
+								orderedItems: [this.remoteMainPid],
+							};
+						}
+						return originalGet(type, id, url, options);
+					};
+				});
+
+				after(() => {
+					activitypub.get = originalGet;
+				});
+
+				it('should lock a mirrored topic when a category actor announces a Lock with a remote topic URL', async function () {
+					const announceActivity = {
+						type: 'Announce',
+						actor: this.remoteCid,
+						object: {
+							id: `${this.remoteTopicUrl}#activity/lock/123`,
+							type: 'Lock',
+							actor: this.remoteActor,
+							object: this.remoteTopicUrl,
+						},
+					};
+
+					await activitypub.inbox.announce({ body: announceActivity });
+
+					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
+					assert.strictEqual(isLocked, 1, 'mirrored topic should be locked');
+				});
+			});
+		});
+
+		describe('Announce(Undo)', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				// Use helpers.mocks.group() to generate a consistent remote category ID, then assert it
+				({ id: this.remoteCid } = helpers.mocks.group());
+				await activitypub.actors.assertGroup([this.remoteCid]);
+				const { topicData } = await topics.post({
+					cid: this.remoteCid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.remoteActor = 'https://example.org/user/alice';
+				// Lock the topic so the Undo has something to undo
+				await topics.tools.lock(this.tid, 'system');
+			});
+
+			it('should unlock a topic when a category actor announces an Undo of the Lock', async function () {
+				const announceActivity = {
+					type: 'Announce',
+					actor: this.remoteCid,
+					object: {
+						id: `https://example.org/topic/${this.tid}#activity/undo/123`,
+						type: 'Undo',
+						actor: this.remoteActor,
+						object: {
+							id: `https://example.org/topic/${this.tid}#activity/lock/456`,
+							type: 'Lock',
+							actor: this.remoteActor,
+							object: `${nconf.get('url')}/topic/${this.tid}`,
+						},
+					},
+				};
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic should be unlocked');
+			});
+
+			it('should attribute the unlock to the inner actor', async function () {
+				const events = await topics.events.get(this.tid, this.uid);
+				const unlockEvent = events.filter(e => e.type === 'unlock').pop();
+				assert(unlockEvent, 'unlock event should be logged');
+				assert.strictEqual(unlockEvent.uid, this.remoteActor);
+			});
+
+			describe('remote topic mirrored locally', () => {
+				let originalGet;
+
+				before(async function () {
+					// A topic hosted on example.org, mirrored into a remote category
+					const { topicData } = await topics.post({
+						cid: this.remoteCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.remoteTid = topicData.tid;
+					this.remoteTopicUrl = 'https://example.org/topic/20';
+					this.remoteMainPid = 'https://example.org/post/201';
+					await topics.setTopicField(this.remoteTid, 'mainPid', this.remoteMainPid);
+					await db.setObject(`post:${this.remoteMainPid}`, {
+						pid: this.remoteMainPid,
+						uid: this.remoteActor,
+						tid: String(this.remoteTid),
+						content: utils.generateUUID(),
+					});
+					await db.sortedSetAdd(`tid:${this.remoteTid}:posts`, 1, this.remoteMainPid);
+					// Lock the topic so the Undo has something to undo
+					await topics.tools.lock(this.remoteTid, 'system');
+
+					// example.org serves its topic as a collection of post URLs
+					originalGet = activitypub.get;
+					activitypub.get = async (type, id, url, options) => {
+						if (url === this.remoteTopicUrl) {
+							return {
+								'@context': 'https://www.w3.org/ns/activitystreams',
+								id: this.remoteTopicUrl,
+								type: 'OrderedCollection',
+								totalItems: 1,
+								orderedItems: [this.remoteMainPid],
+							};
+						}
+						return originalGet(type, id, url, options);
+					};
+				});
+
+				after(() => {
+					activitypub.get = originalGet;
+				});
+
+				it('should unlock a mirrored topic when a category actor announces an Undo of the Lock with a remote topic URL', async function () {
+					const announceActivity = {
+						type: 'Announce',
+						actor: this.remoteCid,
+						object: {
+							id: `${this.remoteTopicUrl}#activity/undo/123`,
+							type: 'Undo',
+							actor: this.remoteActor,
+							object: {
+								id: `${this.remoteTopicUrl}#activity/lock/456`,
+								type: 'Lock',
+								actor: this.remoteActor,
+								object: this.remoteTopicUrl,
+							},
+						},
+					};
+
+					await activitypub.inbox.announce({ body: announceActivity });
+
+					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
+					assert.strictEqual(isLocked, 0, 'mirrored topic should be unlocked');
+				});
+			});
+		});
+
+		describe('.lock', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { postData, topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.pid = postData.pid;
+
+				// Move the topic into a remote category
+				this.remoteCid = 'https://example.org/category/1';
+				this.remoteActor = 'https://example.org/user/alice';
+				await db.setObject(`categoryRemote:${this.remoteCid}`, {
+					cid: this.remoteCid,
+					name: 'Remote Category',
+					slug: 'remote-category',
+				});
+				await topics.setTopicField(this.tid, 'cid', this.remoteCid);
+			});
+
+			after(() => {
+				activitypub._sent.clear();
+			});
+
+			it('should lock a topic in a remote category when a same-origin actor sends a Lock activity', async function () {
+				// Verify topic is unlocked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0);
+
+				// Create a Lock activity from an actor same-origin as the topic's category
+				const lockActivity = {
+					type: 'Lock',
+					actor: this.remoteActor,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// Verify topic is now locked
+				const isLockedAfter = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLockedAfter, 1);
+			});
+
+			it('should attribute the lock to the remote actor in the topic event log', async function () {
+				const events = await topics.events.get(this.tid, this.uid);
+				const lockEvent = events.filter(e => e.type === 'lock').pop();
+				assert(lockEvent, 'lock event should be logged');
+				assert.strictEqual(lockEvent.uid, this.remoteActor);
+			});
+
+			it('should do nothing when the topic is already locked', async function () {
+				// Topic is already locked from previous test
+				const lockActivity = {
+					type: 'Lock',
+					actor: this.remoteActor,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// Topic should still be locked (no error)
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1);
+			});
+
+			it('should drop requests for topics in local categories', async function () {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+
+				const lockActivity = {
+					type: 'Lock',
+					actor: this.remoteActor,
+					object: `${nconf.get('url')}/topic/${topicData.tid}`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				const isLocked = await topics.getTopicField(topicData.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic in a local category must not be locked');
+			});
+
+			it('should throw when the actor is not same-origin as the category', async function () {
+				const foreignActor = helpers.mocks.person({ id: 'https://foreign.example/user/alice' });
+				const lockActivity = {
+					type: 'Lock',
+					actor: foreignActor.id,
+					object: `${nconf.get('url')}/topic/${this.tid}`,
+				};
+
+				// This should throw an origin mismatch error
+				await assert.rejects(
+					activitypub.inbox.lock({ body: lockActivity }),
+					{ message: '[[error:activitypub.origin-mismatch]]' },
+				);
+			});
+
+			it('should do nothing if the object does not resolve to a local topic', async function () {
+				const lockActivity = {
+					type: 'Lock',
+					actor: this.remoteActor,
+					object: `${nconf.get('url')}/post/999999`,
+				};
+
+				await activitypub.inbox.lock({ body: lockActivity });
+
+				// No error should be thrown
+				assert(true);
+			});
+
+			describe('remote topic mirrored locally', () => {
+				let originalGet;
+
+				before(async function () {
+					// A topic hosted on example.org, mirrored into a remote category
+					// (its main post is stored locally under the remote URL as pid)
+					const { topicData } = await topics.post({
+						cid: this.remoteCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.remoteTid = topicData.tid;
+					this.remoteActor = 'https://example.org/user/alice';
+					this.remoteTopicUrl = 'https://example.org/topic/5';
+					this.remoteMainPid = 'https://example.org/post/42';
+					await topics.setTopicField(this.remoteTid, 'mainPid', this.remoteMainPid);
+					await db.setObject(`post:${this.remoteMainPid}`, {
+						pid: this.remoteMainPid,
+						uid: this.remoteActor,
+						tid: String(this.remoteTid),
+						content: utils.generateUUID(),
+					});
+					await db.sortedSetAdd(`tid:${this.remoteTid}:posts`, 1, this.remoteMainPid);
+
+					// A remote reply whose URL tail collides with the pid of a post
+					// in a *different* local topic (guards against extracting numeric
+					// pids from remote URLs)
+					const { cid: otherCid } = await categories.create({ name: utils.generateUUID() });
+					const { topicData: otherTopic, postData: otherPost } = await topics.post({
+						cid: otherCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.collidingTid = otherTopic.tid;
+					this.remoteReplyUrl = `https://example.org/post/${otherPost.pid}`;
+
+					// example.org serves its topic as a collection of post URLs
+					originalGet = activitypub.get;
+					activitypub.get = async (type, id, url, options) => {
+						if (url === this.remoteTopicUrl) {
+							return {
+								'@context': 'https://www.w3.org/ns/activitystreams',
+								id: this.remoteTopicUrl,
+								type: 'OrderedCollection',
+								totalItems: 2,
+								orderedItems: [this.remoteMainPid, this.remoteReplyUrl],
+							};
+						}
+						return originalGet(type, id, url, options);
+					};
+				});
+
+				after(() => {
+					activitypub.get = originalGet;
+				});
+
+				it('should lock the mirrored topic, not a topic with a colliding local pid', async function () {
+					const lockActivity = {
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: this.remoteTopicUrl,
+					};
+
+					await activitypub.inbox.lock({ body: lockActivity });
+
+					const [mirroredLocked, collidingLocked] = await Promise.all([
+						topics.getTopicField(this.remoteTid, 'locked'),
+						topics.getTopicField(this.collidingTid, 'locked'),
+					]);
+					assert.strictEqual(mirroredLocked, 1, 'mirrored topic should be locked');
+					assert.notStrictEqual(collidingLocked, 1, 'colliding local topic must not be locked');
+				});
+
+				it('should unlock the mirrored topic afterwards', async function () {
+					const undoActivity = {
+						type: 'Undo',
+						actor: this.remoteActor,
+						object: {
+							id: `${this.remoteTopicUrl}#activity/lock/123`,
+							type: 'Lock',
+							actor: this.remoteActor,
+							object: this.remoteTopicUrl,
+						},
+					};
+
+					await activitypub.inbox.undo({ body: undoActivity });
+
+					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
+					assert.strictEqual(isLocked, 0, 'mirrored topic should be unlocked');
+				});
+			});
+		});
+
+		describe('.undo', () => {
+			before(async function () {
+				this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { postData, topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				this.tid = topicData.tid;
+				this.pid = postData.pid;
+
+				// Move the topic into a remote category and lock it first
+				this.remoteCid = 'https://example.org/category/2';
+				this.remoteActor = 'https://example.org/user/bob';
+				await db.setObject(`categoryRemote:${this.remoteCid}`, {
+					cid: this.remoteCid,
+					name: 'Remote Category',
+					slug: 'remote-category',
+				});
+				await topics.setTopicField(this.tid, 'cid', this.remoteCid);
+				await topics.tools.lock(this.tid, 'system');
+			});
+
+			after(() => {
+				activitypub._sent.clear();
+			});
+
+			it('should unlock a topic in a remote category when a same-origin actor sends an Undo of the Lock', async function () {
+				const undoActivity = {
+					type: 'Undo',
+					actor: this.remoteActor,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
+				};
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				// Verify topic is now unlocked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0);
+			});
+
+			it('should do nothing when the topic is not locked', async function () {
+				const undoActivity = {
+					type: 'Undo',
+					actor: this.remoteActor,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
+				};
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				// Topic should still be unlocked
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0);
+			});
+
+			it('should drop requests for topics in local categories', async function () {
+				const { cid } = await categories.create({ name: utils.generateUUID() });
+				const { topicData } = await topics.post({
+					cid, uid: this.uid,
+					title: utils.generateUUID(),
+					content: utils.generateUUID(),
+				});
+				await topics.tools.lock(topicData.tid, 'system');
+
+				const undoActivity = {
+					type: 'Undo',
+					actor: this.remoteActor,
+					object: {
+						id: `${nconf.get('url')}/topic/${topicData.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${topicData.tid}`,
+					},
+				};
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const isLocked = await topics.getTopicField(topicData.tid, 'locked');
+				assert.strictEqual(isLocked, 1, 'topic in a local category must not be unlocked');
+			});
+
+			it('should throw when the actor is not same-origin as the category', async function () {
+				const foreignActor = helpers.mocks.person({ id: 'https://foreign.example/user/alice' });
+				const undoActivity = {
+					type: 'Undo',
+					actor: foreignActor.id,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/123`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
+				};
+
+				// This should throw an origin mismatch error
+				await assert.rejects(
+					activitypub.inbox.undo({ body: undoActivity }),
+					{ message: '[[error:activitypub.origin-mismatch]]' },
+				);
+			});
+
+			it('should resolve an embedded Lock activity reference', async function () {
+				// Re-lock the topic first
+				await topics.tools.lock(this.tid, 'system');
+
+				const undoActivity = {
+					type: 'Undo',
+					actor: this.remoteActor,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/lock/456`,
+						type: 'Lock',
+						actor: this.remoteActor,
+						object: `${nconf.get('url')}/topic/${this.tid}`,
+					},
+				};
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 0, 'topic should be unlocked via embedded Lock reference');
+			});
+
+			it('should ignore an Undo that does not reference a Lock', async function () {
+				// Re-lock the topic first
+				await topics.tools.lock(this.tid, 'system');
+
+				const undoActivity = {
+					type: 'Undo',
+					actor: this.remoteActor,
+					object: {
+						id: `${nconf.get('url')}/topic/${this.tid}#activity/announce/789`,
+						type: 'Announce',
+						actor: this.remoteActor,
+					},
+				};
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const isLocked = await topics.getTopicField(this.tid, 'locked');
+				assert.strictEqual(isLocked, 1, 'topic must remain locked when Undo does not reference a Lock');
+			});
+		});
 	});
 });

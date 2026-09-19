@@ -465,6 +465,84 @@ Out.move.context = enabledCheck(async (uid, tid) => {
 	});
 });
 
+Out.lock = enabledCheck(async (uid, tid) => {
+	const { cid, mainPid } = await topics.getTopicFields(tid, ['cid', 'mainPid']);
+
+	// Only local categories
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const allowed = await privileges.topics.can('topics:read', tid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating lock of tid ${tid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+	}, { cid, pid: mainPid });
+
+	const lock = await activitypub.mocks.activities.lock(tid, uid, cid);
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/category/${cid}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to,
+		cc,
+		object: lock,
+	});
+
+	// Record the Lock activity id so a later unlock can reference it in an Undo (FEP c0d0)
+	await topics.setTopicField(tid, 'apLockId', lock.id);
+});
+
+Out.unlock = enabledCheck(async (uid, tid) => {
+	const { cid, mainPid } = await topics.getTopicFields(tid, ['cid', 'mainPid']);
+
+	// Only local categories
+	if (!utils.isNumber(cid) || parseInt(cid, 10) < 1) {
+		return;
+	}
+
+	const allowed = await privileges.topics.can('topics:read', tid, activitypub._constants.uid);
+	if (!allowed) {
+		activitypub.helpers.log(`[activitypub/api] Not federating unlock of tid ${tid} to the fediverse due to privileges.`);
+		return;
+	}
+
+	// Unlocking is expressed as an Undo of the original Lock (FEP c0d0)
+	const lockId = await topics.getTopicField(tid, 'apLockId');
+	if (!lockId) {
+		activitypub.helpers.log(`[activitypub/api] No Lock activity id recorded for tid ${tid}; not federating unlock.`);
+		return;
+	}
+
+	const { to, cc, targets } = await activitypub.buildRecipients({
+		to: [activitypub._constants.publicAddress],
+		cc: [],
+	}, { cid, pid: mainPid });
+
+	// Embed the original Lock activity (reconstructed from the recorded id)
+	const lock = await activitypub.mocks.activities.lock(tid, uid, cid, lockId);
+	await activitypub.send('cid', cid, Array.from(targets), {
+		id: `${nconf.get('url')}/category/${cid}#activity/announce/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/category/${cid}`,
+		to,
+		cc,
+		object: {
+			id: `${nconf.get('url')}/topic/${tid}#activity/undo/${Date.now()}`,
+			type: 'Undo',
+			actor: `${nconf.get('url')}/uid/${uid}`,
+			object: lock,
+		},
+	});
+
+	await topics.deleteTopicField(tid, 'apLockId');
+});
+
 Out.undo = {};
 
 Out.undo.follow = enabledCheck(async (type, id, actor) => {
