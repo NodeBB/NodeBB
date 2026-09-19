@@ -161,11 +161,19 @@ Events.get = async (tid, uid, reverse = false) => {
 };
 
 Events.find = async (tid, match) => {
+	function stringMatch(obj1, obj2) {
+		function normalizeToString(obj) {
+			return Object.fromEntries(
+				Object.entries(obj).map(([key, value]) => [key, String(value)])
+			);
+		}
+		return _.isMatch(normalizeToString(obj1), normalizeToString(obj2));
+	}
 	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
 	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
 	eventIds = eventIds.map(obj => obj.value);
 	const events = await db.getObjects(keys);
-	eventIds = eventIds.filter((id, idx) => _.isMatch(events[idx], match));
+	eventIds = eventIds.filter((id, idx) => stringMatch(events[idx], match));
 
 	return eventIds;
 };

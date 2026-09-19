@@ -101,9 +101,7 @@ Crossposts.add = async function (tid, cid, uid) {
 	 */
 
 	// Normalize numeric cids so crosspost records and topic events are stored consistently
-	if (utils.isNumber(cid)) {
-		cid = parseInt(cid, 10);
-	}
+	cid = String(cid);
 
 	// Target cid must exist
 	if (!utils.isNumber(cid)) {
@@ -128,7 +126,7 @@ Crossposts.add = async function (tid, cid, uid) {
 	const crosspostedCids = crossposts.map(crosspost => String(crosspost.cid));
 	const now = Date.now();
 	const crosspostId = utils.generateUUID();
-	if (!crosspostedCids.includes(String(cid))) {
+	if (!crosspostedCids.includes(cid)) {
 		const [topicData, pids, tags] = await Promise.all([
 			topics.getTopicFields(tid, [
 				'uid', 'cid', 'timestamp', 'lastposttime', 'pinned',
@@ -140,7 +138,7 @@ Crossposts.add = async function (tid, cid, uid) {
 		let pidTimestamps = await posts.getPostsFields(pids, ['timestamp']);
 		pidTimestamps = pidTimestamps.map(({ timestamp }) => timestamp);
 
-		if (cid === topicData.cid) {
+		if (cid === String(topicData.cid)) {
 			throw new Error('[[error:invalid-cid]]');
 		}
 
@@ -182,7 +180,7 @@ Crossposts.add = async function (tid, cid, uid) {
 	// Repeated announce: the topic is already in the target category, so just
 	// replace the previous crosspost topic event with a new one
 	// (toCid is stored as a string, so match against String(cid))
-	const eventIds = await topics.events.find(tid, { type: 'crosspost', toCid: String(cid) });
+	const eventIds = await topics.events.find(tid, { type: 'crosspost', toCid: cid });
 	if (eventIds.length) {
 		await topics.events.purge(tid, eventIds);
 	}
