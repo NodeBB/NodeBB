@@ -36,6 +36,20 @@ CustomFields.getOptions = function (field) {
 	return (field['select-options'] || '').split('\n').filter(Boolean);
 };
 
+CustomFields.parseValue = function (field, value) {
+	if (field.type !== 'select-multi') {
+		return value;
+	}
+
+	let values;
+	try {
+		values = JSON.parse(value || '[]');
+	} catch (err) {
+		return null;
+	}
+	return Array.isArray(values) ? values : null;
+};
+
 CustomFields.validate = function (field, value) {
 	const { type } = field;
 
@@ -76,13 +90,8 @@ CustomFields.validate = function (field, value) {
 		}
 	} else if (type === 'select-multi') {
 		const opts = CustomFields.getOptions(field);
-		let values;
-		try {
-			values = JSON.parse(value || '[]');
-		} catch (err) {
-			values = null;
-		}
-		if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
+		const values = CustomFields.parseValue(field, value);
+		if (!values || !values.every(value => opts.includes(value))) {
 			throw new Error(tx.compile(
 				'error:custom-user-field-select-value-invalid', field.name
 			));
