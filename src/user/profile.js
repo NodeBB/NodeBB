@@ -93,66 +93,18 @@ module.exports = function (User) {
 		const reputation = await User.getUserField(data.uid, 'reputation');
 
 		fields.forEach((field) => {
-			const { key, type } = field;
-			if (data.hasOwnProperty(key)) {
-				const value = data[key];
-				const minRep = field['min:rep'] || 0;
-				if (reputation < minRep && !meta.config['reputation:disabled']) {
-					throw new Error(tx.compile(
-						'error:not-enough-reputation-custom-field', minRep, field.name
-					));
-				}
-
-				if (typeof value === 'string' && value.length > 255) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-value-too-long', field.name
-					));
-				}
-
-				const isUrl = value && validator.isURL(String(value).trim(), {
-					require_protocol: true,
-					require_valid_protocol: true,
-					require_tld: true,
-				});
-
-				if (value && type === 'input-number' && !utils.isNumber(value)) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-number', field.name
-					));
-				} else if (value && type === 'input-text' && isUrl) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-text', field.name
-					));
-				} else if (value && type === 'input-date' && !validator.isDate(value)) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-date', field.name
-					));
-				} else if (value && field.type === 'input-link' && !isUrl) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-link', field.name
-					));
-				} else if (field.type === 'select') {
-					const opts = (field['select-options'] || '').split('\n').filter(Boolean);
-					if (!opts.includes(value) && value !== '') {
-						throw new Error(tx.compile(
-							'error:custom-user-field-select-value-invalid', field.name
-						));
-					}
-				} else if (field.type === 'select-multi') {
-					const opts = (field['select-options'] || '').split('\n').filter(Boolean);
-					let values;
-					try {
-						values = JSON.parse(value || '[]');
-					} catch (err) {
-						values = null;
-					}
-					if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
-						throw new Error(tx.compile(
-							'error:custom-user-field-select-value-invalid', field.name
-						));
-					}
-				}
+			if (!data.hasOwnProperty(field.key)) {
+				return;
 			}
+
+			const minRep = field['min:rep'] || 0;
+			if (reputation < minRep && !meta.config['reputation:disabled']) {
+				throw new Error(tx.compile(
+					'error:not-enough-reputation-custom-field', minRep, field.name
+				));
+			}
+
+			User.customFields.validate(field, data[field.key]);
 		});
 	}
 

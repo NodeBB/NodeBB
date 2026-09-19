@@ -199,7 +199,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 			userValue = utils.isSafeHref(userValue) ? userValue : '';
 			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
-		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
+		f['select-options'] = user.customFields.getOptions(f);
 		if (f.type === 'select') {
 			f['select-options'].unshift('');
 		}
