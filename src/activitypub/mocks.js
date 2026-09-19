@@ -1158,6 +1158,19 @@ Mocks.activities.announce = async (tid, uid, overrideCid) => {
 	};
 };
 
+Mocks.activities.lock = async (tid, uid, cid, lockId) => {
+	// lockId may be supplied to reconstruct the original Lock (e.g. for an Undo);
+	// otherwise a fresh activity id is generated.
+	lockId = lockId || `${nconf.get('url')}/topic/${tid}#activity/lock/${Date.now()}`;
+	return {
+		id: lockId,
+		type: 'Lock',
+		actor: `${nconf.get('url')}/uid/${uid}`,
+		audience: `${nconf.get('url')}/category/${cid}`,
+		object: `${nconf.get('url')}/topic/${tid}`,
+	};
+};
+
 Mocks.tombstone = async properties => ({
 	'@context': 'https://www.w3.org/ns/activitystreams',
 	type: 'Tombstone',

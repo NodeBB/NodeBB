@@ -39,10 +39,10 @@ inbox.helpers = {
 			throw new Error('[[error:activitypub.origin-mismatch]]');
 		}
 	},
-	validateTopicModeration: async (req, action) => {
-		// Validates a remote moderation activity (Lock, Unlock, Delete).
+	validateTopicModeration: async (req, action, objectOverride) => {
+		// Validates a remote moderation activity (Lock, Undo, Delete).
 		const { actor } = req.body;
-		let { object } = req.body;
+		let object = (objectOverride !== undefined) ? objectOverride : req.body.object;
 
 		// object can be a URL string or an object with id
 		if (typeof object === 'object') {
@@ -254,23 +254,6 @@ inbox.lock = async (req) => {
 
 	activitypub.helpers.log(`[activitypub/inbox/lock] Locking topic ${tid} via ${actor}.`);
 	await topics.tools.lock(tid, actor);
-};
-
-inbox.unlock = async (req) => {
-	const resolved = await inbox.helpers.validateTopicModeration(req, 'unlock');
-	if (!resolved) {
-		return;
-	}
-	const { tid, actor } = resolved;
-
-	const isLocked = await topics.getTopicField(tid, 'locked');
-	if (!isLocked) {
-		activitypub.helpers.log(`[activitypub/inbox/unlock] Topic ${tid} is not locked.`);
-		return;
-	}
-
-	activitypub.helpers.log(`[activitypub/inbox/unlock] Unlocking topic ${tid} via ${actor}.`);
-	await topics.tools.unlock(tid, actor);
 };
 
 inbox.update = async (req) => {
@@ -677,6 +660,10 @@ inbox.announce = async (req) => {
 		activitypub._constants.acceptedPostTypes.includes(object.type);
 	if (!createish && cid) {
 		let id = object?.object?.id || object.object; // expecting object reference
+		// For an Undo of a Lock, the reference is the embedded Lock activity; resolve the topic it targeted
+		if (object.type === 'Undo' && typeof object.object === 'object' && object.object !== null) {
+			id = object.object.object?.id || object.object.object;
+		}
 		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
 		id = localId || id;
 
@@ -806,7 +793,7 @@ inbox.announce = async (req) => {
 			break;
 		}
 
-		case object.type === 'Lock' || object.type === 'Unlock': {
+		case object.type === 'Lock': {
 			if (!cid) {
 				return;
 			}
@@ -825,13 +812,49 @@ inbox.announce = async (req) => {
 			}
 
 			const isLocked = await topics.getTopicField(localId, 'locked');
-			if ((object.type === 'Lock' && isLocked) || (object.type === 'Unlock' && !isLocked)) {
-				activitypub.helpers.log(`[activitypub/inbox/announce] Topic ${localId} is already ${object.type.toLowerCase()}ed. Doing nothing.`);
+			if (isLocked) {
+				activitypub.helpers.log(`[activitypub/inbox/announce] Topic ${localId} is already locked. Doing nothing.`);
 				return;
 			}
 
-			activitypub.helpers.log(`[activitypub/inbox/announce] ${object.type}ing topic ${localId} via ${object.actor}.`);
-			await topics.tools[object.type.toLowerCase()](localId, object.actor);
+			activitypub.helpers.log(`[activitypub/inbox/announce] Locking topic ${localId} via ${object.actor}.`);
+			await topics.tools.lock(localId, object.actor);
+			break;
+		}
+
+		case object.type === 'Undo': {
+			if (!cid) {
+				return;
+			}
+
+			// Only Undo(Lock) is handled today (FEP c0d0); the Lock is expected to be
+			// embedded in the Undo, and other undone activity types are dropped here.
+			const lockRef = object.object;
+			if (typeof lockRef !== 'object' || lockRef === null || lockRef.type !== 'Lock') {
+				return;
+			}
+			const id = lockRef.object?.id || lockRef.object;
+
+			const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
+			if (type !== 'topic' || !localId) {
+				return;
+			}
+
+			// Same-origin: the acting actor must share origin with the announcing category
+			const announcerHostname = new URL(actor).hostname;
+			const actorHostname = new URL(object.actor).hostname;
+			if (announcerHostname !== actorHostname) {
+				throw new Error('[[error:activitypub.origin-mismatch]]');
+			}
+
+			const isLocked = await topics.getTopicField(localId, 'locked');
+			if (!isLocked) {
+				activitypub.helpers.log(`[activitypub/inbox/announce] Topic ${localId} is not locked. Doing nothing.`);
+				return;
+			}
+
+			activitypub.helpers.log(`[activitypub/inbox/announce] Unlocking topic ${localId} via ${object.actor}.`);
+			await topics.tools.unlock(localId, object.actor);
 			break;
 		}
 
@@ -1065,7 +1088,25 @@ inbox.accept = async (req) => {
 
 inbox.undo = async (req) => {
 	// todo: "actor" in this case should be the one in object, no?
-	const { actor, object } = req.body;
+	const { actor } = req.body;
+	let { object } = req.body;
+
+	// When the Undo references the undone activity by URI, fetch it so the type and
+	// target are taken from the activity itself rather than parsed from its id.
+	if (typeof object === 'string') {
+		try {
+			const fetched = await activitypub.get('uid', 0, object);
+			if (!fetched) {
+				activitypub.helpers.log(`[activitypub/inbox/undo] Could not resolve referenced activity ${object}. Ignoring.`);
+				return;
+			}
+			object = fetched;
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/inbox/undo] Failed to fetch referenced activity ${object}: ${e.message}. Ignoring.`);
+			return;
+		}
+	}
+
 	const { type } = object;
 
 	const assertion = await activitypub.actors.assert(actor);
@@ -1185,6 +1226,24 @@ inbox.undo = async (req) => {
 					inbox._reject('Undo', { type: 'Flag', object: [subject] }, actor);
 				}
 			}));
+			break;
+		}
+
+		case 'Lock': {
+			// Undo of a Lock (FEP c0d0): the Lock's object points to the target context
+			const context = (typeof object.object === 'object' && object.object !== null) ? object.object.id : object.object;
+			const resolved = await inbox.helpers.validateTopicModeration(req, 'unlock', context);
+			if (!resolved) {
+				return;
+			}
+			const { tid } = resolved;
+			const isLocked = await topics.getTopicField(tid, 'locked');
+			if (!isLocked) {
+				activitypub.helpers.log(`[activitypub/inbox/undo] Topic ${tid} is not locked.`);
+				return;
+			}
+			activitypub.helpers.log(`[activitypub/inbox/undo] Unlocking topic ${tid} via ${actor}.`);
+			await topics.tools.unlock(tid, actor);
 			break;
 		}
 	}
