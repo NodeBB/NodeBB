@@ -664,22 +664,24 @@ inbox.announce = async (req) => {
 		if (object.type === 'Undo' && typeof object.object === 'object' && object.object !== null) {
 			id = object.object.object?.id || object.object.object;
 		}
-		const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
-		id = localId || id;
-
-		if (type === 'topic') {
-			const exists = await topics.exists(id);
+		// Resolve the target to a local id. resolveTopicId handles both local and
+		// remote (mirrored) topic URLs; posts fall through to resolveLocalId.
+		const tid = await activitypub.helpers.resolveTopicId(id);
+		if (tid) {
+			const exists = await topics.exists(tid);
 			if (!exists) {
-				activitypub.helpers.log(`[activitypub/inbox.announce] Topic (${id}) does not exist locally. Doing nothing.`);
+				activitypub.helpers.log(`[activitypub/inbox.announce] Topic (${tid}) does not exist locally. Doing nothing.`);
 				return;
 			}
 
 			// Category actors can only publish activities concerning topics in said category
-			const _cid = await topics.getTopicField(id, 'cid');
+			const _cid = await topics.getTopicField(tid, 'cid');
 			if (_cid !== cid) {
 				return;
 			}
 		} else {
+			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
+			id = localId || id;
 			const exists = await posts.exists(id);
 			if (!exists) {
 				activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
@@ -799,8 +801,8 @@ inbox.announce = async (req) => {
 			}
 
 			const id = object.object?.id || object.object; // expecting object reference
-			const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
-			if (type !== 'topic' || !localId) {
+			const localId = await activitypub.helpers.resolveTopicId(id);
+			if (!localId) {
 				return;
 			}
 
@@ -835,8 +837,8 @@ inbox.announce = async (req) => {
 			}
 			const id = lockRef.object?.id || lockRef.object;
 
-			const { type, id: localId } = await activitypub.helpers.resolveLocalId(id);
-			if (type !== 'topic' || !localId) {
+			const localId = await activitypub.helpers.resolveTopicId(id);
+			if (!localId) {
 				return;
 			}
 

@@ -1531,6 +1531,68 @@ describe('Inbox', () => {
 				const isLocked = await topics.getTopicField(topicData.tid, 'locked');
 				assert.strictEqual(isLocked, 0, 'topic in another category must not be locked');
 			});
+
+			describe('remote topic mirrored locally', () => {
+				let originalGet;
+
+				before(async function () {
+					// A topic hosted on example.org, mirrored into a remote category
+					// (its main post is stored locally under the remote URL as pid)
+					const { topicData } = await topics.post({
+						cid: this.remoteCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.remoteTid = topicData.tid;
+					this.remoteTopicUrl = 'https://example.org/topic/10';
+					this.remoteMainPid = 'https://example.org/post/101';
+					await topics.setTopicField(this.remoteTid, 'mainPid', this.remoteMainPid);
+					await db.setObject(`post:${this.remoteMainPid}`, {
+						pid: this.remoteMainPid,
+						uid: this.remoteActor,
+						tid: String(this.remoteTid),
+						content: utils.generateUUID(),
+					});
+					await db.sortedSetAdd(`tid:${this.remoteTid}:posts`, 1, this.remoteMainPid);
+
+					// example.org serves its topic as a collection of post URLs
+					originalGet = activitypub.get;
+					activitypub.get = async (type, id, url, options) => {
+						if (url === this.remoteTopicUrl) {
+							return {
+								'@context': 'https://www.w3.org/ns/activitystreams',
+								id: this.remoteTopicUrl,
+								type: 'OrderedCollection',
+								totalItems: 1,
+								orderedItems: [this.remoteMainPid],
+							};
+						}
+						return originalGet(type, id, url, options);
+					};
+				});
+
+				after(() => {
+					activitypub.get = originalGet;
+				});
+
+				it('should lock a mirrored topic when a category actor announces a Lock with a remote topic URL', async function () {
+					const announceActivity = {
+						type: 'Announce',
+						actor: this.remoteCid,
+						object: {
+							id: `${this.remoteTopicUrl}#activity/lock/123`,
+							type: 'Lock',
+							actor: this.remoteActor,
+							object: this.remoteTopicUrl,
+						},
+					};
+
+					await activitypub.inbox.announce({ body: announceActivity });
+
+					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
+					assert.strictEqual(isLocked, 1, 'mirrored topic should be locked');
+				});
+			});
 		});
 
 		describe('Announce(Undo)', () => {
@@ -1578,6 +1640,74 @@ describe('Inbox', () => {
 				const unlockEvent = events.filter(e => e.type === 'unlock').pop();
 				assert(unlockEvent, 'unlock event should be logged');
 				assert.strictEqual(unlockEvent.uid, this.remoteActor);
+			});
+
+			describe('remote topic mirrored locally', () => {
+				let originalGet;
+
+				before(async function () {
+					// A topic hosted on example.org, mirrored into a remote category
+					const { topicData } = await topics.post({
+						cid: this.remoteCid, uid: this.uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+					this.remoteTid = topicData.tid;
+					this.remoteTopicUrl = 'https://example.org/topic/20';
+					this.remoteMainPid = 'https://example.org/post/201';
+					await topics.setTopicField(this.remoteTid, 'mainPid', this.remoteMainPid);
+					await db.setObject(`post:${this.remoteMainPid}`, {
+						pid: this.remoteMainPid,
+						uid: this.remoteActor,
+						tid: String(this.remoteTid),
+						content: utils.generateUUID(),
+					});
+					await db.sortedSetAdd(`tid:${this.remoteTid}:posts`, 1, this.remoteMainPid);
+					// Lock the topic so the Undo has something to undo
+					await topics.tools.lock(this.remoteTid, 'system');
+
+					// example.org serves its topic as a collection of post URLs
+					originalGet = activitypub.get;
+					activitypub.get = async (type, id, url, options) => {
+						if (url === this.remoteTopicUrl) {
+							return {
+								'@context': 'https://www.w3.org/ns/activitystreams',
+								id: this.remoteTopicUrl,
+								type: 'OrderedCollection',
+								totalItems: 1,
+								orderedItems: [this.remoteMainPid],
+							};
+						}
+						return originalGet(type, id, url, options);
+					};
+				});
+
+				after(() => {
+					activitypub.get = originalGet;
+				});
+
+				it('should unlock a mirrored topic when a category actor announces an Undo of the Lock with a remote topic URL', async function () {
+					const announceActivity = {
+						type: 'Announce',
+						actor: this.remoteCid,
+						object: {
+							id: `${this.remoteTopicUrl}#activity/undo/123`,
+							type: 'Undo',
+							actor: this.remoteActor,
+							object: {
+								id: `${this.remoteTopicUrl}#activity/lock/456`,
+								type: 'Lock',
+								actor: this.remoteActor,
+								object: this.remoteTopicUrl,
+							},
+						},
+					};
+
+					await activitypub.inbox.announce({ body: announceActivity });
+
+					const isLocked = await topics.getTopicField(this.remoteTid, 'locked');
+					assert.strictEqual(isLocked, 0, 'mirrored topic should be unlocked');
+				});
 			});
 		});
 
