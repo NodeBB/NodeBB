@@ -59,8 +59,8 @@
 	"backlinks": "Liên kết ngược",
 	"backlinks.enabled": "Bật liên kết ngược chủ đề",
 	"backlinks.help": "Nếu một bài đăng tham chiếu đến chủ đề khác, một liên kết ngược đến bài đăng sẽ được chèn vào chủ đề được tham chiếu vào lúc đó.",
-	"topic-events.hidden": "Hidden topic event types",
-	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
+	"topic-events.hidden": "Các loại sự kiện chủ đề ẩn",
+	"topic-events.hidden-help": "Các sự kiện theo chủ đề thuộc các loại đã chọn sẽ không được hiển thị cho bất kỳ ai trên dòng thời gian của chủ đề. Các sự kiện vẫn được ghi lại, vì vậy việc kích hoạt lại một loại sẽ khôi phục các sự kiện đã được ghi lại trong thời gian nó bị ẩn.",
 	"ip-tracking": "Theo dõi IP",
 	"ip-tracking.each-post": "Theo dõi Địa chỉ IP mỗi bài đăng",
 	"enable-post-history": "Bật lịch sử đăng bài"

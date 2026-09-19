@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Chỉ Admin Mời",
 	"registration-type.disabled": "Không đăng ký",
 	"registration-type.help": "Bình Thường - Người dùng có thể đăng ký từ trang /register.<br/>\nChỉ Mời - Người dùng có thể mời những người khác từ trang <a href=\"%1/users\" target=\"_blank\">người dùng</a>.<br/>\nChỉ Admin Mời - Chỉ quản trị viên mới có thể mời người khác từ trang <a href=\"%1/users\" target=\"_blank\">người dùng</a> và <a href=\"%1/admin/manage/users\">admin/manage/users</a>.<br/>\nKhông đăng ký - Không đăng ký người dùng.<br/>",
-	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
+	"registration-approval-type.help": "Thông thường - Người dùng được đăng ký ngay lập tức.<br/>\nPhê duyệt của quản trị viên - Việc đăng ký người dùng được đưa vào một <a href=\"%1/registration-queue\">hàng đợi phê duyệt</a> dành cho quản trị viên.<br/>\nPhê duyệt của quản trị viên đối với địa chỉ IP - Bình thường đối với người dùng mới, Phê duyệt của quản trị viên đối với các địa chỉ IP đã có tài khoản.<br/>",
 	"registration-queue-auto-approve-time": "Thời Gian Xét Duyệt Tự Động",
 	"registration-queue-auto-approve-time-help": "Giờ trước khi người dùng được xét duyệt tự động. 0 để tắt.",
 	"registration-queue-show-average-time": "Hiện thời gian xét duyệt cho người dùng mới biết",

@@ -59,8 +59,8 @@
 	"backlinks": "Backlinks",
 	"backlinks.enabled": "Themen-Backlinks aktivieren",
 	"backlinks.help": "Wenn ein Beitrag auf ein anderes Thema verweist, wird zu diesem Zeitpunkt ein Link zurück zu dem Beitrag in das referenzierte Thema eingefügt.",
-	"topic-events.hidden": "Hidden topic event types",
-	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
+	"topic-events.hidden": "Versteckte Ereignistypen für Themen",
+	"topic-events.hidden-help": "Ereignisse der ausgewählten Typen werden in der Themen-Zeitleiste für niemanden angezeigt. Die Ereignisse werden weiterhin aufgezeichnet, sodass durch das erneute Aktivieren eines Typs die Ereignisse wiederhergestellt werden, die während der Ausblendung protokolliert wurden.",
 	"ip-tracking": "IP-Verfolgung",
 	"ip-tracking.each-post": "IP-Adresse für jeden Beitrag speichern",
 	"enable-post-history": "Aktiviere Beitrags-Änderungsgeschichte"

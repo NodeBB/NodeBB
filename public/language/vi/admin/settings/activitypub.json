@@ -105,7 +105,7 @@
 	"analytics.daily": "Hằng ngày",
 	"analytics.activities-by-type": "Các Hoạt Động theo Loại",
 	"analytics.activities-by-type-empty": "Chưa có hoạt động nào được ghi nhận.",
-	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
+	"analytics.activities-by-type-not-filterable": "<strong>Ghi chú:</strong> Phân tích này mang tính toàn cục và không được lọc theo tên máy chủ đã chọn.",
 
 	"errors.intro": "Trong vòng 24 giờ qua, hệ thống này đã ghi nhận %1 lỗi sau đây.",
 	"errors.payload-gone": "Thông tin gây ra lỗi này không còn tồn tại nữa.",
@@ -114,10 +114,10 @@
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Theo dõi các tác nhân hashtag toàn cầu để nhận nội dung phù hợp với các thẻ cụ thể. Tác nhân thực thể sẽ theo dõi tác nhân hashtag của máy chủ chuyển tiếp, tác nhân này sẽ gửi các hoạt động Thông báo cho nội dung phù hợp. Sử dụng các quy tắc tự động phân loại để định tuyến nội dung vào các danh mục.",
-	"hashtags.relay-host": "Relay Host",
-	"hashtags.relay-host-help": "Choose the relay provider for hashtag actors.",
+	"hashtags.relay-host": "Máy Chủ Chuyển Tiếp",
+	"hashtags.relay-host-help": "Chọn nhà cung cấp dịch vụ chuyển tiếp cho các tác nhân hashtag.",
 	"hashtags.save-relay": "Lưu",
-	"hashtags.relay-change-warning": "Changing the relay host will unfollow all current hashtag actors and follow them on the new relay.",
+	"hashtags.relay-change-warning": "Việc thay đổi máy chủ chuyển tiếp sẽ hủy theo dõi tất cả những người dùng hashtag hiện tại và theo dõi họ trên máy chủ chuyển tiếp mới.",
 	"hashtags.follow": "Follow Hashtag",
 	"hashtags.modal.tag": "Hashtag",
 	"hashtags.modal.tag-help": "Nhập tên hashtag mà không có ký hiệu # (ví dụ: nodebb).",
@@ -126,6 +126,6 @@
 	"hashtags.state-pending": "Đang đợi",
 	"hashtags.state-active": "Active",
 	"hashtags.state-error": "Lỗi",
-	"hashtags.table.tag": "Tag",
-	"hashtags.table.state": "State"
+	"hashtags.table.tag": "Thẻ",
+	"hashtags.table.state": "Trạng thái"
 }

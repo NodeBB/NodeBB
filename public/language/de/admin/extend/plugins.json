@@ -53,6 +53,6 @@
 	"alert.reorder-success": "Bitte starte dein NodeBB neu um diesen Prozess vollständig abzuschließen.",
 
 	"license.title": "Plugin-Lizenzinformation",
-	"license.intro": "Das Plugin <strong>%1</strong>is unter der %2 lizenziert. Bitte ließ dir diese durch bevor du dieses Plugin aktivierst.",
+	"license.intro": "Das Plugin <strong>%1</strong> ist unter der %2 lizenziert. Bitte ließ dir diese durch bevor du dieses Plugin aktivierst.",
 	"license.cta": "Willst du dieses Plugin wirklich aktivieren?"
 }
