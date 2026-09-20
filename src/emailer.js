@@ -285,6 +285,11 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	const lang = language || meta.config.defaultLang || 'en-GB';
 	const unsubscribable = ['digest', 'notification'];
 
+	params = { ...Emailer._defaultPayload, ...params };
+	if (!params.hasOwnProperty('rtl')) {
+		params.rtl = translator.languageDirection(lang) === 'rtl';
+	}
+
 	// Digests and notifications can be one-click unsubbed
 	let payload = {
 		template: template,
