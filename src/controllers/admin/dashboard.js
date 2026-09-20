@@ -78,6 +78,14 @@ async function getNotices(req) {
 		});
 	}
 
+	if (req && !nconf.get('trust_proxy') && req.get('x-forwarded-for')) {
+		notices.push({
+			done: false,
+			notDoneText: '[[admin/dashboard:trust-proxy-warning]]',
+			tooltip: '[[admin/dashboard:trust-proxy-tooltip]]',
+		});
+	}
+
 	const configuredUrl = nconf.get('url');
 	if (configuredUrl === 'http://localhost:4567') {
 		notices.push({
