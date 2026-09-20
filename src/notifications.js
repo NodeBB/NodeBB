@@ -516,6 +516,7 @@ Notifications.merge = async function (notifications) {
 			'notifications:user-posted-to',
 			'notifications:user-flagged-post-in',
 			'notifications:user-flagged-user',
+			'notifications:user-flagged-message',
 			'new-chat',
 			'notifications:user-posted-in-public-room',
 			'new-register',
@@ -561,6 +562,13 @@ Notifications.merge = async function (notifications) {
 					notifObj.bodyShort = isGroupChat || (roomName !== `[[modules:chat.room-id, ${roomId}]]`) ?
 						tx.compile('notifications:new-messages-in', set.length, tx.escape(roomName)) :
 						tx.compile('notifications:new-messages-from', set.length, tx.escape(user.displayname));
+					break;
+				}
+
+				case 'notifications:user-flagged-message': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.roomName),
+					]);
 					break;
 				}
 
