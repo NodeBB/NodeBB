@@ -588,6 +588,7 @@ Notifications.merge = async function (notifications) {
 				}
 
 				case 'new-register':
+				case 'post-queue':
 					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
 			}
