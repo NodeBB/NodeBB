@@ -570,11 +570,16 @@ Notifications.merge = async function (notifications) {
 					]);
 					break;
 				}
+				case 'notifications:user-flagged-user': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.targetDisplayname),
+					]);
+					break;
+				}
 				case 'notifications:upvoted-your-post-in':
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						tx.escape(notifObj.topicTitle),
