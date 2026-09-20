@@ -1010,6 +1010,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
+			targetDisplayname: targetDisplayname,
 		});
 	} else if (flagObj.type === 'message') {
 		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
