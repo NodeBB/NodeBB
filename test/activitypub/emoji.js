@@ -2,9 +2,12 @@
 
 const assert = require('assert');
 const path = require('path');
+const fs = require('fs').promises;
+const nconf = require('nconf');
 
 const db = require('../mocks/databasemock');
 const activitypub = require('../../src/activitypub');
+const request = require('../../src/request');
 const helpers = require('./helpers');
 
 describe('Emoji', () => {
@@ -95,6 +98,106 @@ describe('Emoji', () => {
 			assert.strictEqual(result.remoteUrl, 'https://mastodon.social/emojis/poop.png');
 			assert.strictEqual(result.mediaType, 'image/png');
 			assert.ok(result.localPath.endsWith(path.normalize('emoji/ap/mastodon.social/poop.png')), JSON.stringify(result));
+		});
+	});
+
+	describe('cacheEmoji', () => {
+		const uploadPath = nconf.get('upload_path') || nconf.get('base_dir') || '.';
+		const emojiDir = path.join(uploadPath, 'emoji', 'ap');
+
+		it('should cache a valid emoji inside the per-host directory', async () => {
+			const tag = {
+				type: 'Emoji',
+				name: ':poop:',
+				icon: { url: 'https://mastodon.social/emojis/poop.png', mediaType: 'image/png' },
+			};
+			const originalGetBuffer = request.getBuffer;
+			request.getBuffer = async () => ({ body: Buffer.from('png-bytes'), response: { ok: true, status: 200 }, url: '' });
+			try {
+				const result = await emojiModule.cacheEmoji(tag);
+				assert.ok(result, 'expected emoji to be cached');
+				const resolved = path.resolve(uploadPath, result.localPath);
+				assert.ok(resolved.startsWith(path.resolve(emojiDir) + path.sep), `wrote outside emoji dir: ${resolved}`);
+				assert.ok(resolved.endsWith('poop.png'), `unexpected filename: ${resolved}`);
+			} finally {
+				request.getBuffer = originalGetBuffer;
+				await fs.unlink(path.join(emojiDir, 'mastodon.social', 'poop.png')).catch(() => {});
+			}
+		});
+
+		it('should not write outside the emoji dir for a traversal name (CWE-22)', async () => {
+			const evilFile = path.resolve(emojiDir, '..', 'evil.png');
+			await fs.unlink(evilFile).catch(() => {});
+
+			const originalGetBuffer = request.getBuffer;
+			request.getBuffer = async () => ({ body: Buffer.from('x'), response: { ok: true, status: 200 }, url: '' });
+			try {
+				const tag = {
+					type: 'Emoji',
+					name: '../../../evil',
+					icon: { url: 'https://example.com/evil.png', mediaType: 'image/png' },
+				};
+				const result = await emojiModule.cacheEmoji(tag);
+				// Slashes are sanitized to underscores, so it lands safely inside the dir
+				assert.ok(result, 'expected emoji to be cached to a sanitized path');
+				const resolved = path.resolve(uploadPath, result.localPath);
+				assert.ok(resolved.startsWith(path.resolve(emojiDir) + path.sep), `wrote outside emoji dir: ${resolved}`);
+				assert.notStrictEqual(resolved, evilFile);
+				await fs.access(evilFile).then(() => assert.fail('evil file should not exist')).catch(() => {});
+			} finally {
+				request.getBuffer = originalGetBuffer;
+			}
+		});
+
+		it('should not persist a disallowed extension (CWE-22)', async () => {
+			const originalGetBuffer = request.getBuffer;
+			request.getBuffer = async () => ({ body: Buffer.from('x'), response: { ok: true, status: 200 }, url: '' });
+			try {
+				const tag = {
+					type: 'Emoji',
+					name: ':shell:',
+					icon: { url: 'https://example.com/shell.php', mediaType: 'application/x-php' },
+				};
+				const result = await emojiModule.cacheEmoji(tag);
+				assert.ok(result, 'expected emoji to be cached');
+				assert.ok(path.resolve(result.localPath).endsWith('.png'), `expected png fallback, got: ${result.localPath}`);
+			} finally {
+				request.getBuffer = originalGetBuffer;
+				await fs.unlink(path.join(emojiDir, 'example.com', 'shell.png')).catch(() => {});
+			}
+		});
+
+		it('should block fetching an emoji from a reserved/private IP (CWE-918)', async () => {
+			// Use the real request layer (bypass the mock) to exercise the SSRF guard
+			const realGetBuffer = helpers.mocks._originalGetBuffer;
+			await assert.rejects(
+				() => realGetBuffer('http://169.254.169.254/latest/meta-data/'),
+				/reserved|lookup-failed/i,
+				'reserved IP fetch should be rejected by the request layer'
+			);
+		});
+
+		it('should route the emoji fetch through the SSRF-protected request layer (CWE-918)', async () => {
+			// cacheEmoji must call request.getBuffer (pinned-lookup dispatcher), not
+			// a bare global fetch. Assert it is invoked for a fresh (uncached) emoji.
+			let called = false;
+			const originalGetBuffer = request.getBuffer;
+			request.getBuffer = async () => {
+				called = true;
+				return { body: Buffer.from('x'), response: { ok: true, status: 200 }, url: '' };
+			};
+			try {
+				const tag = {
+					type: 'Emoji',
+					name: ':route:',
+					icon: { url: 'https://example.com/route.png', mediaType: 'image/png' },
+				};
+				await emojiModule.cacheEmoji(tag);
+				assert.ok(called, 'cacheEmoji should fetch via request.getBuffer');
+			} finally {
+				request.getBuffer = originalGetBuffer;
+				await fs.unlink(path.join(emojiDir, 'example.com', 'route.png')).catch(() => {});
+			}
 		});
 	});
 
