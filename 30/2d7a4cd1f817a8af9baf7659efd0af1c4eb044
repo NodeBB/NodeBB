@@ -1,0 +1,26 @@
+src/posts/queue.js
+  s_0dfe0ecd3d7651::t_ea31ae729dba62 82,84-85,87-97,131-133
+  s_0dfe0ecd3d7651::t_16f12ddf381ee9 83,86
+  s_0dfe0ecd3d7651::t_4898d521cf10e6 134
+test/posts/queue.js
+  s_0dfe0ecd3d7651::t_3fa4df13b504cb 237-255
+  s_0dfe0ecd3d7651::t_c4c0b7ff911849 219,264,281,299
+  s_0dfe0ecd3d7651::t_a92e415e772b0c 193-218,220-236,256-263,265-280,282-298,300-318,320-321
+  s_0dfe0ecd3d7651::t_69c30a7ed9a8c6 319
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "302d7a4cd1f817a8af9baf7659efd0af1c4eb044",
+  "prompts": {},
+  "sessions": {
+    "s_0dfe0ecd3d7651": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0c59b-559c-710a-ab95-0378930139fc",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
