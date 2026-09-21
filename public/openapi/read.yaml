@@ -70,6 +70,8 @@ paths:
     $ref: 'read/sping.yaml'
   /ping:
     $ref: 'read/ping.yaml'
+  /api/oauth/authorize:
+    $ref: 'read/oauth/authorize.yaml'
   /api/:
     $ref: 'read/index.yaml'
   /api/admin:
@@ -146,6 +148,8 @@ paths:
     $ref: 'read/admin/manage/digest.yaml'
   /api/admin/manage/api:
     $ref: 'read/admin/manage/api.yaml'
+  /api/admin/manage/oauth:
+    $ref: 'read/admin/manage/oauth.yaml'
   /api/admin/federation/general:
     $ref: 'read/admin/federation/general.yaml'
   /api/admin/federation/content:

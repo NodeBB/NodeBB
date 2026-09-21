@@ -1,0 +1,115 @@
+get:
+  tags:
+    - oauth
+  summary: OAuth 2.0 authorization endpoint
+  description: >-
+    The OAuth 2.0 authorization endpoint. When accessed by an unauthenticated
+    user, redirects to the login page. When accessed by an authenticated user,
+    renders the consent screen for the given client.
+
+    See also the RFC 8414 metadata at `GET /.well-known/oauth-authorization-server`.
+  parameters:
+    - name: client_id
+      schema:
+        type: string
+      in: query
+      required: true
+      description: The client identifier of the OAuth client
+      example: "my-client-id"
+    - name: redirect_uri
+      schema:
+        type: string
+        format: uri
+      in: query
+      required: true
+      description: The URI the client will be redirected back to after authorization
+      example: "https://example.com/callback"
+    - name: response_type
+      in: query
+      required: true
+      description: The response type requested
+      schema:
+        type: string
+        enum:
+          - code
+      example: "code"
+    - name: state
+      schema:
+        type: string
+      in: query
+      required: false
+      description: An opaque value passed back to the client in the redirect
+      example: "xyz"
+    - name: scope
+      schema:
+        type: string
+      in: query
+      required: false
+      description: A space-separated list of scopes the client is requesting
+      example: "topics:read posts:read"
+    - name: code_challenge
+      schema:
+        type: string
+      in: query
+      required: false
+      description: The PKCE code challenge (S256)
+      example: "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+    - name: code_challenge_method
+      in: query
+      required: false
+      description: The PKCE code challenge method
+      schema:
+        type: string
+        enum:
+          - S256
+          - plain
+      example: "S256"
+  responses:
+    "200":
+      description: The consent screen (rendered as JSON when accessed via the API)
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              client:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  public:
+                    type: boolean
+              scopes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+              transactionID:
+                type: string
+              redirectURI:
+                type: string
+              state:
+                type: string
+              codeChallenge:
+                type: string
+                nullable: true
+              codeChallengeMethod:
+                type: string
+                nullable: true
+    "302":
+      description: Redirect to the login page when the user is not authenticated
+      headers:
+        Location:
+          schema:
+            type: string
+            example: "/login"
