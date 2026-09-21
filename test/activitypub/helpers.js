@@ -50,6 +50,7 @@ Helpers.mocks.mockRequests = function () {
 	}
 	const localHost = nconf.get('url_parsed').host;
 	Helpers.mocks._originalGet = request.get;
+	Helpers.mocks._originalGetBuffer = request.getBuffer;
 	request.get = async (url, config) => {
 		let host;
 		try {
@@ -80,6 +81,38 @@ Helpers.mocks.mockRequests = function () {
 			url,
 		};
 	};
+	// Binary-safe variant (used by the emoji cache). Returns a small buffer for
+	// known URLs and a 404 response otherwise, mirroring request.get.
+	request.getBuffer = async (url, config) => {
+		let host;
+		try {
+			host = new URL(url).host;
+		} catch (e) {
+			host = null;
+		}
+		if (!host || host === localHost) {
+			return Helpers.mocks._originalGetBuffer(url, config);
+		}
+		const cached = activitypub._cache.get(`0;${url}`);
+		if (cached !== undefined) {
+			return {
+				body: Buffer.from('mock-emoji-bytes'),
+				response: {
+					ok: true, status: 200, statusCode: 200, statusText: 'OK',
+					headers: { 'content-type': 'image/png' },
+				},
+				url,
+			};
+		}
+		return {
+			body: Buffer.alloc(0),
+			response: {
+				ok: false, status: 404, statusCode: 404, statusText: 'Not Found',
+				headers: { 'content-type': 'image/png' },
+			},
+			url,
+		};
+	};
 	Helpers.mocks._mockRequestInstalled = true;
 };
 
@@ -88,6 +121,7 @@ Helpers.mocks.restoreRequests = function () {
 		return;
 	}
 	request.get = Helpers.mocks._originalGet;
+	request.getBuffer = Helpers.mocks._originalGetBuffer;
 	Helpers.mocks._mockRequestInstalled = false;
 };
 
