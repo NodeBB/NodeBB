@@ -79,6 +79,22 @@ module.exports = function (Posts) {
 		return postData;
 	};
 
+	function deriveApThumbs(data) {
+		if (!data._activitypub || Array.isArray(data.thumbs)) {
+			return;
+		}
+		const thumbs = [];
+		if (data._activitypub.image && !thumbs.includes(data._activitypub.image)) {
+			thumbs.unshift(data._activitypub.image);
+		}
+		(data._activitypub.attachment || []).forEach((attachment) => {
+			if (attachment.url && attachment.mediaType && attachment.mediaType.startsWith('image/') && !thumbs.includes(attachment.url)) {
+				thumbs.push(attachment.url);
+			}
+		});
+		data.thumbs = thumbs;
+	}
+
 	async function addMetaData(postData) {
 		if (!postData) {
 			return;
@@ -112,6 +128,10 @@ module.exports = function (Posts) {
 		} else if (postData.data.tid) {
 			postData.topic = await topics.getTopicFields(postData.data.tid, ['title', 'cid', 'lastposttime']);
 		}
+
+		// Show thumbs for remote posts too
+		deriveApThumbs(postData.data);
+
 		if (Array.isArray(postData.data.thumbs)) {
 			postData.data.thumbs = postData.data.thumbs.map(
 				thumb => thumb.startsWith('http') ? thumb : upload_url + thumb

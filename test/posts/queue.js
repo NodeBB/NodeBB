@@ -190,4 +190,133 @@ describe('Post Queue', () => {
 			assert.ok(!backfillCalled, 'backfill was not called for local topic');
 		});
 	});
+
+	describe('activitypub attached images', () => {
+		let originalBackfill;
+
+		before(async () => {
+			meta.config.activitypubEnabled = 1;
+			await install.giveWorldPrivileges();
+		});
+
+		beforeEach(() => {
+			originalBackfill = activitypub.notes.backfill;
+		});
+
+		afterEach(async () => {
+			activitypub.notes.backfill = originalBackfill;
+			const queue = await posts.getQueuedPosts();
+			await Promise.all(queue.map(q => posts.removeFromQueue(q.id)));
+		});
+
+		it('should surface _activitypub image and image attachments as thumbs', async () => {
+			await posts.addToQueue({
+				uid,
+				cid,
+				pid: 'https://example.org/post/img-1',
+				title: 'Topic with images',
+				timestamp: Date.now(),
+				content: '<p>test content for queue</p>',
+				_activitypub: {
+					image: 'https://example.org/images/primary.jpg',
+					attachment: [
+						{ type: 'Image', url: 'https://example.org/images/secondary.jpg', mediaType: 'image/jpeg' },
+						{ type: 'Audio', url: 'https://example.org/audio/song.mp3', mediaType: 'audio/mpeg' },
+					],
+				},
+			});
+
+			const queue = await posts.getQueuedPosts();
+			assert.strictEqual(queue.length, 1);
+			assert.deepStrictEqual(queue[0].data.thumbs, [
+				'https://example.org/images/primary.jpg',
+				'https://example.org/images/secondary.jpg',
+			]);
+		});
+
+		it('should include Mastodon-style Document-type image attachments (mediaType-based)', async () => {
+			await posts.addToQueue({
+				uid,
+				cid,
+				pid: 'https://example.org/post/img-doc',
+				title: 'Mastodon doc attachment',
+				timestamp: Date.now(),
+				content: '<p>test content for queue</p>',
+				_activitypub: {
+					attachment: [
+						{ type: 'Document', url: 'https://media.example.org/original/b063e35546e57dcf.png', mediaType: 'image/png' },
+					],
+				},
+			});
+
+			const queue = await posts.getQueuedPosts();
+			assert.deepStrictEqual(queue[0].data.thumbs, ['https://media.example.org/original/b063e35546e57dcf.png']);
+		});
+
+		it('should deduplicate an image present in both image and attachment', async () => {
+			const url = 'https://example.org/images/only.jpg';
+			await posts.addToQueue({
+				uid,
+				cid,
+				pid: 'https://example.org/post/img-2',
+				title: 'Dedup topic',
+				timestamp: Date.now(),
+				content: '<p>test content for queue</p>',
+				_activitypub: {
+					image: url,
+					attachment: [{ type: 'Image', url, mediaType: 'image/jpeg' }],
+				},
+			});
+
+			const queue = await posts.getQueuedPosts();
+			assert.deepStrictEqual(queue[0].data.thumbs, [url]);
+		});
+
+		it('should not affect thumbs of local (non-AP) posts', async () => {
+			await posts.addToQueue({
+				uid,
+				cid,
+				title: 'Local topic',
+				timestamp: Date.now(),
+				content: '<p>test content for queue</p>',
+			});
+
+			const queue = await posts.getQueuedPosts();
+			assert.strictEqual(queue.length, 1);
+			assert.strictEqual(queue[0].data.thumbs, undefined);
+		});
+
+		it('should persist edited thumbs and create topic with them on submit', async () => {
+			const activitypub = require('../../src/activitypub');
+			activitypub.notes.backfill = async () => {};
+
+			await posts.addToQueue({
+				uid,
+				cid,
+				pid: 'https://example.org/post/img-3',
+				title: 'Submit topic',
+				timestamp: Date.now(),
+				content: '<p>test content for queue</p>',
+				_activitypub: {
+					image: 'https://example.org/images/primary.jpg',
+					attachment: [{ type: 'Image', url: 'https://example.org/images/secondary.jpg', mediaType: 'image/jpeg' }],
+				},
+			});
+
+			const queue = await posts.getQueuedPosts();
+			const id = queue[0].id;
+
+			// remove one thumb via editQueuedContent, as the frontend does
+			await posts.editQueuedContent(uid, {
+				id,
+				thumbs: ['https://example.org/images/primary.jpg'],
+			});
+
+			const result = await posts.submitFromQueue(id);
+			assert.ok(result.tid, 'topic was created');
+
+			const thumbs = await topics.getTopicField(result.tid, 'thumbs');
+			assert.deepStrictEqual(thumbs, ['https://example.org/images/primary.jpg']);
+		});
+	});
 });
