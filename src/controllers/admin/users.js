@@ -255,7 +255,7 @@ usersController.customFields = async function (req, res) {
 	const fields = await user.customFields.getFields();
 	fields.forEach((field) => {
 		if (field['select-options']) {
-			field.selectOptionsFormatted = field['select-options'].trim().split('\n').join(', ');
+			field.selectOptionsFormatted = user.customFields.getOptions(field).join(', ');
 		}
 		field['min:rep'] = field['min:rep'] || 0;
 		field.visibility = field.visibility || 'all';

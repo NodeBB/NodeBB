@@ -1010,23 +1010,26 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
+			targetDisplayname: targetDisplayname,
 		});
 	} else if (flagObj.type === 'message') {
 		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
 		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
+		const roomName = roomData?.roomName || targetDisplayname;
 		let bodyLong = String(flagObj.target?.content || '');
 		if (bodyLong && bodyLong.length > 500) {
 			bodyLong = bodyLong.substring(0, 497) + '...';
 		}
 		notifObj = await notifications.create({
 			type: 'new-message-flag',
-			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomData?.roomName || targetDisplayname),
+			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomName),
 			bodyLong: bodyLong,
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:message:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-message|${flagObj.targetId}`,
+			roomName: roomName,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');

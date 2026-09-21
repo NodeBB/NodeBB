@@ -516,6 +516,7 @@ Notifications.merge = async function (notifications) {
 			'notifications:user-posted-to',
 			'notifications:user-flagged-post-in',
 			'notifications:user-flagged-user',
+			'notifications:user-flagged-message',
 			'new-chat',
 			'notifications:user-posted-in-public-room',
 			'new-register',
@@ -564,9 +565,22 @@ Notifications.merge = async function (notifications) {
 					break;
 				}
 
+				case 'notifications:user-flagged-message': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.roomName),
+					]);
+					break;
+				}
+
 				case 'notifications:user-posted-in-public-room': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						notifObj.roomIcon, tx.escape(notifObj.roomName),
+					]);
+					break;
+				}
+				case 'notifications:user-flagged-user': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.targetDisplayname),
 					]);
 					break;
 				}
@@ -574,7 +588,6 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						tx.escape(notifObj.topicTitle),
@@ -583,6 +596,7 @@ Notifications.merge = async function (notifications) {
 				}
 
 				case 'new-register':
+				case 'post-queue':
 					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
 			}
