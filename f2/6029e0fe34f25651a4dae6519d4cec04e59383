@@ -1,0 +1,18 @@
+src/activitypub/contexts.js
+  h_7fe16615636fba 13,29,32,39,51
+src/activitypub/notes.js
+  h_7fe16615636fba 82,101,365-368
+test/activitypub/notes.js
+  h_7fe16615636fba 47-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f26029e0fe34f25651a4dae6519d4cec04e59383",
+  "prompts": {},
+  "humans": {
+    "h_7fe16615636fba": {
+      "author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
