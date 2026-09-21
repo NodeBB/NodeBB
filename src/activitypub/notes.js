@@ -79,6 +79,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 		let chain;
 		let context = await activitypub.contexts.get(uid, id);
+		let contextLocked = false;
 		if (context.tid) {
 			const { tid } = context;
 			return { tid, count: 0 };
@@ -97,6 +98,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					});
 
 					// Context resolves, use in later topic creation
+					contextLocked = context.locked === true;
 					context = context.context;
 				}
 			}
@@ -360,6 +362,10 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			if (context) {
 				activitypub.helpers.log(`[activitypub/notes.assert] Associating tid ${tid} with context ${context}`);
 				await topics.setTopicField(tid, 'context', context);
+				if (contextLocked) {
+					activitypub.helpers.log(`[activitypub/notes.assert] Context ${context} is locked, locking topic ${tid}`);
+					await topics.setTopicField(tid, 'locked', 1);
+				}
 			}
 		}
 

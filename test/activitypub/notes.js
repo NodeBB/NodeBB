@@ -46,6 +46,49 @@ describe('Notes', () => {
 				assert(exists);
 			});
 
+			it('should create a locked topic when the remote context is locked', async () => {
+				const contextUrl = `${helpers.mocks._baseUrl}/context/${utils.generateUUID()}`;
+				const { id: noteId } = helpers.mocks.note({ context: contextUrl });
+				activitypub._cache.set(`0;${contextUrl}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: contextUrl,
+					type: 'OrderedCollection',
+					orderedItems: [noteId],
+					locked: true,
+				});
+
+				const assertion = await activitypub.notes.assert(0, noteId, { skipChecks: true });
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
+				assert.strictEqual(count, 1);
+
+				const locked = await topics.getTopicField(tid, 'locked');
+				assert.strictEqual(locked, 1);
+			});
+
+			it('should create an unlocked topic when the remote context is not locked', async () => {
+				const contextUrl = `${helpers.mocks._baseUrl}/context/${utils.generateUUID()}`;
+				const { id: noteId } = helpers.mocks.note({ context: contextUrl });
+				activitypub._cache.set(`0;${contextUrl}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: contextUrl,
+					type: 'OrderedCollection',
+					orderedItems: [noteId],
+					locked: false,
+				});
+
+				const assertion = await activitypub.notes.assert(0, noteId, { skipChecks: true });
+				assert(assertion);
+
+				const { tid } = assertion;
+				assert(tid);
+
+				const locked = await topics.getTopicField(tid, 'locked');
+				assert.ok(!locked);
+			});
+
 			it('should assert if the cc property is missing', async () => {
 				const { id } = helpers.mocks.note({ cc: 'remove' });
 				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
