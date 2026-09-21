@@ -10,6 +10,7 @@ const Contexts = module.exports;
 Contexts.get = async (uid, id) => {
 	let context;
 	let type;
+	let locked;
 
 	// Generate digest for If-None-Match if locally cached
 	const tid = await posts.getPostField(id, 'tid');
@@ -25,17 +26,17 @@ Contexts.get = async (uid, id) => {
 	}
 
 	try {
-		({ id, type, context } = await activitypub.get('uid', uid, id, { headers, cache: false }));
+		({ id, type, context, locked } = await activitypub.get('uid', uid, id, { headers, cache: false }));
 		if (activitypub._constants.acceptable.contextTypes.has(type)) { // is context
 			activitypub.helpers.log(`[activitypub/context] ${id} is the context.`);
-			return { context: id };
+			return { context: id, locked };
 		} else if (!context) {
 			activitypub.helpers.log(`[activitypub/context] ${id} contains no context.`);
 			return false;
 		}
 
 		// context provided; try to resolve it.
-		({ type } = await activitypub.get('uid', uid, context, { cache: false }));
+		({ type, locked } = await activitypub.get('uid', uid, context, { cache: false }));
 	} catch (e) {
 		if (e.code === 'ap_get_304') {
 			activitypub.helpers.log(`[activitypub/context] ${id} context unchanged.`);
@@ -47,7 +48,7 @@ Contexts.get = async (uid, id) => {
 	}
 
 	if (activitypub._constants.acceptable.contextTypes.has(type)) {
-		return { context };
+		return { context, locked };
 	}
 
 	return false;
