@@ -88,7 +88,14 @@
 					</div>
 					<div class="post-content text-xs text-break line-clamp-sm-2 lh-sm position-relative flex-fill">
 						<a class="stretched-link" tabindex="-1" href="{config.relative_path}/topic/{./topic.slug}{{{ if ./topic.teaser.index }}}/{./topic.teaser.index}{{{ end }}}" aria-label="{{tx("global:lastpost")}}"></a>
+						{{{ if ./topic.teaser.contentWarning }}}
+						<details class="content-warning">
+						<summary>{./topic.teaser.contentWarning}</summary>
 						{{./topic.teaser.content}}
+						</details>
+						{{{ else }}}
+						{{./topic.teaser.content}}
+						{{{ end }}}
 					</div>
 				</div>
 			</div>
