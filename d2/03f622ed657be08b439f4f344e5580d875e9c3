@@ -1,0 +1,100 @@
+src/views/oauth/authorize.tpl
+  s_d8cce7d595a276::t_f29924629d7700 1-54
+public/language/en-GB/admin/manage/oauth.json
+  s_d8cce7d595a276::t_0813f85a3bd078 1-32
+src/controllers/oauth.js
+  s_d8cce7d595a276::t_bec2fb7e7b43c7 18,83
+  s_d8cce7d595a276::t_520b92a026c0e4 102,104,111
+  s_d8cce7d595a276::t_cd9ce4acbf9003 5,54
+  s_d8cce7d595a276::t_cb294341b479ea 1-4,6-17,19-53,55-82,84-101,103,105-110,112-128
+public/language/en-GB/admin/menu.json
+  s_d8cce7d595a276::t_205100063084f6 17
+public/language/en-GB/error.json
+  s_d8cce7d595a276::t_205100063084f6 3-5
+public/openapi/read.yaml
+  s_d8cce7d595a276::t_205100063084f6 73-74
+  s_d8cce7d595a276::t_990688729a5f17 149-150
+public/openapi/write/admin/oauth/clients.yaml
+  s_d8cce7d595a276::t_33d8a7d51fc42e 68,73,90
+  s_d8cce7d595a276::t_fc493c4fe67cf3 1-67,69-72,74-89
+src/middleware/user.js
+  s_d8cce7d595a276::t_205100063084f6 48,167-177
+  s_d8cce7d595a276::t_787f765c1fa584 178
+public/src/admin/manage/oauth.js
+  s_d8cce7d595a276::t_c5ac2af65d0ff5 1-204
+public/openapi/components/schemas/admin/oauthClient.yaml
+  s_d8cce7d595a276::t_87d3afa7606c98 1-41
+src/routes/admin.js
+  s_d8cce7d595a276::t_205100063084f6 36
+public/language/en-GB/oauth.json
+  s_d8cce7d595a276::t_f0ce904ca3a016 1-10
+src/oauth/index.js
+  s_d8cce7d595a276::t_154674e56455a9 1-234,236-287
+  s_d8cce7d595a276::t_ef3974d6c993e4 235
+public/openapi/read/admin/manage/oauth.yaml
+  s_d8cce7d595a276::t_f2f97085926a1e 1-32
+public/openapi/read/oauth/authorize.yaml
+  s_d8cce7d595a276::t_9846aad62c98d7 1-53,55-104
+  s_d8cce7d595a276::t_cc318d1ae196d2 54
+src/routes/index.js
+  s_d8cce7d595a276::t_205100063084f6 163
+src/controllers/write/admin.js
+  s_d8cce7d595a276::t_205100063084f6 316-369
+src/controllers/index.js
+  s_d8cce7d595a276::t_205100063084f6 34
+public/openapi/write/admin/oauth/clients/clientId.yaml
+  s_d8cce7d595a276::t_8616a7edb5e379 21,23,94,96,98,119,121
+  s_d8cce7d595a276::t_c9b4c8789a8545 1-20,22,24-93,95,97,99-118,120
+src/routes/authentication.js
+  s_d8cce7d595a276::t_bec2fb7e7b43c7 58
+  s_d8cce7d595a276::t_205100063084f6 49-56,59-62,64,66-78
+src/views/admin/manage/oauth.tpl
+  s_d8cce7d595a276::t_2abcde282c0304 1-86
+public/openapi/write/admin/oauth/clients/clientId/secret.yaml
+  s_d8cce7d595a276::t_8616a7edb5e379 24,26
+  s_d8cce7d595a276::t_bdaa96b072088c 1-23,25
+src/api/utils.js
+  s_d8cce7d595a276::t_205100063084f6 73-76,104,110,122,124
+src/controllers/admin.js
+  s_d8cce7d595a276::t_205100063084f6 17
+src/oauth/clients.js
+  s_d8cce7d595a276::t_e1c4720e705f6d 215-218
+  s_d8cce7d595a276::t_e992edbdc949f5 1-52,55-132,138-212,214,219-221
+  s_d8cce7d595a276::t_31462e7c023b8e 53-54,133-137,213
+src/views/admin/partials/navigation.tpl
+  s_d8cce7d595a276::t_205100063084f6 50
+src/routes/write/admin.js
+  s_d8cce7d595a276::t_205100063084f6 36-42
+public/openapi/write.yaml
+  s_d8cce7d595a276::t_205100063084f6 301-306
+src/routes/oauth.js
+  s_d8cce7d595a276::t_9da07717226dcc 29,33-39
+  s_d8cce7d595a276::t_bec2fb7e7b43c7 45,79,98
+  s_d8cce7d595a276::t_c2182c7a61efaa 1-24,27-28,30-32,40-44,46-78,80-97,99-105
+  s_d8cce7d595a276::t_4e2335aeb45746 25-26
+src/oauth/tokens.js
+  s_d8cce7d595a276::t_bec2fb7e7b43c7 20-22
+  s_d8cce7d595a276::t_d90c1e7bf01bc6 1-19,23-231
+test/api/schema.js
+  s_d8cce7d595a276::t_205100063084f6 37,91-134,144-147,153-159,182-188,477-498
+  s_d8cce7d595a276::t_5bf03f5379f466 499
+  s_d8cce7d595a276::t_9d5ef23147ba63 148-150
+src/controllers/admin/oauth.js
+  s_d8cce7d595a276::t_808b8f8f25622f 1-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d203f622ed657be08b439f4f344e5580d875e9c3",
+  "prompts": {},
+  "sessions": {
+    "s_d8cce7d595a276": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0c515-2f5e-710a-ab95-03761f198339",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
