@@ -432,5 +432,32 @@ describe('Notifications', () => {
 			assert.strictEqual(survivor.bodyShort, 'one');
 			assert.strictEqual(survivor.mergeCount, 2);
 		});
+
+		it('should merge undifferentiated notifications alongside differentiated ones', async () => {
+			const method = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'b1', mergeId: 'plugin-merge', bodyShort: 'bare one' },
+					{ nid: 'b2', mergeId: 'plugin-merge', bodyShort: 'bare two' },
+					{ nid: 'd1', mergeId: 'plugin-merge|7', bodyShort: 'seven one' },
+					{ nid: 'd2', mergeId: 'plugin-merge|7', bodyShort: 'seven two' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', method);
+			}
+
+			assert.strictEqual(merged.length, 2);
+			const bare = merged.find(n => n.mergeId === 'plugin-merge');
+			assert.strictEqual(bare.bodyShort, 'bare one');
+			assert.strictEqual(bare.mergeCount, 2);
+			const differentiated = merged.find(n => n.mergeId === 'plugin-merge|7');
+			assert.strictEqual(differentiated.mergeCount, 2);
+		});
 	});
 });
