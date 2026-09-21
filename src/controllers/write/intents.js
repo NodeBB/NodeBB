@@ -1,7 +1,5 @@
 'use strict';
 
-const db = require('../../database');
-
 const Intents = module.exports;
 
 const activitypub = require('../../activitypub');
@@ -9,17 +7,18 @@ const meta = require('../../meta');
 
 const helpers = require('../helpers');
 const clientIp = require('../../ip');
+const ratelimit = require('../../ratelimit');
 
 const RATE_LIMIT_WINDOW = 5000; // 5 seconds
 
 async function checkRateLimit(ip) {
-	const key = `locks:intents:query:${ip}`;
-	const exists = await db.exists(key);
-	if (exists) {
+	const withinLimit = await ratelimit.check(`locks:intents:query:${ip}`, {
+		window: RATE_LIMIT_WINDOW,
+		max: 1,
+	});
+	if (!withinLimit) {
 		throw new Error('[[error:api.429]]');
 	}
-	await db.set(key, '1');
-	await db.pexpire(key, RATE_LIMIT_WINDOW);
 }
 
 Intents.query = async (req, res, next) => {

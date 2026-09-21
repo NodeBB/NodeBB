@@ -14,9 +14,13 @@ const db = require('../database');
 const utils = require('../utils');
 const controllers404 = require('../controllers/404');
 const clientIp = require('../ip');
+const ratelimit = require('../ratelimit');
 const routeHelpers = require('./helpers');
 
 const { terms } = controllerHelpers;
+
+const RSS_TOKEN_RATE_LIMIT_WINDOW = 3600000; // one hour
+const RSS_TOKEN_RATE_LIMIT_MAX = 5;
 
 module.exports = function (app, middleware) {
 	function handle404(req, res, next) {
@@ -448,11 +452,11 @@ async function getUidFromToken(req, res) {
 	const queryUid = parseInt(req.query.uid, 10) || 0;
 	const { token } = req.query;
 	const rateLimitKey = getRssTokenRateLimitKey(req);
-	const count = await db.increment(rateLimitKey);
-	if (count === 1) {
-		await db.pexpire(rateLimitKey, 3600000);
-	}
-	if (count > 5 || queryUid <= 0 || !token) {
+	const withinLimit = await ratelimit.check(rateLimitKey, {
+		window: RSS_TOKEN_RATE_LIMIT_WINDOW,
+		max: RSS_TOKEN_RATE_LIMIT_MAX,
+	});
+	if (!withinLimit || queryUid <= 0 || !token) {
 		await controllerHelpers.notAllowed(req, res);
 		return { uid: authUid, ok: false };
 	}
@@ -463,7 +467,7 @@ async function getUidFromToken(req, res) {
 		return { uid: authUid, ok: false };
 	}
 
-	await db.delete(rateLimitKey);
+	await ratelimit.clear(rateLimitKey);
 	req.uid = queryUid;
 	req.loggedIn = queryUid > 0;
 	return { uid: queryUid, ok: true };
