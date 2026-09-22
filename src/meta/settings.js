@@ -40,10 +40,15 @@ Settings.getOne = async function (hash, field) {
 	return data[field] !== undefined ? data[field] : null;
 };
 
-Settings.set = async function (hash, values, quiet) {
+Settings.set = async function (hash, values, quiet, clear) {
 	quiet = quiet || false;
 
 	({ plugin: hash, settings: values, quiet } = await plugins.hooks.fire('filter:settings.set', { plugin: hash, settings: values, quiet }));
+
+	// A full-form save replaces the hash, so drop stale fields not present in `values`
+	if (clear) {
+		await db.delete(`settings:${hash}`);
+	}
 
 	const sortedListData = {};
 	for (const [key, value] of Object.entries(values)) {

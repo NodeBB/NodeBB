@@ -53,6 +53,10 @@ Tags.parse = async (req, data, meta, link) => {
 		});
 	}
 
+	if (!isAPI) {
+		await addCustomTags(defaultTags);
+	}
+
 	const faviconPath = Meta.config['brand:favicon'] ?
 		utils.cacheBustedUrl(Meta.config['brand:favicon'], Meta.config['brand:favicon:updatedAt']) :
 		`${relative_path}/assets/uploads/system/favicon.ico`;
@@ -93,6 +97,9 @@ Tags.parse = async (req, data, meta, link) => {
 		}
 		return tag;
 	}));
+
+	// Page-provided tags take precedence over custom/global tags (last occurrence wins)
+	meta = dedupeMeta(meta);
 
 	await addSiteOGImage(meta);
 
@@ -137,6 +144,47 @@ function addTouchIcons(defaultLinks) {
 		sizes: `${size}x${size}`,
 		href: `${config.basePath}/${config.name(size)}`,
 	}));
+}
+
+async function addCustomTags(defaultTags) {
+	const customTags = await Meta.settings.get('metaTags');
+
+	Object.keys(customTags).forEach((key) => {
+		const content = customTags[key];
+		if (!key || !content) {
+			return;
+		}
+		// Open Graph tags use the `property` attribute, everything else uses `name`
+		const keyName = key.startsWith('og:') ? 'property' : 'name';
+		defaultTags.push({
+			[keyName]: key,
+			content,
+		});
+	});
+}
+
+function dedupeMeta(meta) {
+	const lastByKey = new Map();
+	meta.forEach((tag) => {
+		if (!tag) {
+			return;
+		}
+		const key = tag.name || tag.property;
+		if (key) {
+			lastByKey.set(key, tag);
+		}
+	});
+
+	return meta.filter((tag) => {
+		if (!tag) {
+			return true;
+		}
+		const key = tag.name || tag.property;
+		if (!key) {
+			return true;
+		}
+		return lastByKey.get(key) === tag;
+	});
 }
 
 function addIfNotExists(meta, keyName, tagName, value) {
