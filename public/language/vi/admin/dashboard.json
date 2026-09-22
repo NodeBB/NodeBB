@@ -37,6 +37,8 @@
 	"running-in-development": "Diễn đàn đang chạy ở chế độ phát triển. Diễn đàn có thể mở ra các lỗ hổng tiềm ẩn; hãy liên hệ với quản trị hệ thống của bạn",
 	"localhost-warning": "NodeBB được cấu hình với URL localhost. Bạn cần cập nhật URL này thành tên miền thực tế của mình.",
 	"url-mismatch-warning": "Trang quản trị được truy cập từ một URL khác với URL đã cấu hình trong config.json. (Yêu cầu: %1, Đã cấu hình: %2)",
+	"trust-proxy-warning": "This request arrived through a reverse proxy, but 'trust_proxy' is not enabled in config.json. Every visitor looks like the same IP address to NodeBB.",
+	"trust-proxy-tooltip": "Rate limits, IP bans, registration queue matching and unique visitor counts all rely on the client IP address. Set 'trust_proxy' in config.json when NodeBB is behind a proxy that strips or overwrites X-Forwarded-For from untrusted clients.",
 	"latest-lookup-failed": "Không tìm được phiên bản mới nhất hiện có của NodeBB",
 
 	"notices": "Thông báo",

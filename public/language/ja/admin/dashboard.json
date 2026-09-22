@@ -37,6 +37,8 @@
 	"running-in-development": "フォーラムは開発モードで実行中です。潜在的な脆弱性にさらされている可能性があります。システム管理者にお問い合わせください。",
 	"localhost-warning": "NodeBBはlocalhostのURLで設定されています。実際のドメインに更新してください。",
 	"url-mismatch-warning": "config.jsonで設定されているURLとは異なるURLから管理画面にアクセスされています。（要求: %1、設定: %2）",
+	"trust-proxy-warning": "This request arrived through a reverse proxy, but 'trust_proxy' is not enabled in config.json. Every visitor looks like the same IP address to NodeBB.",
+	"trust-proxy-tooltip": "Rate limits, IP bans, registration queue matching and unique visitor counts all rely on the client IP address. Set 'trust_proxy' in config.json when NodeBB is behind a proxy that strips or overwrites X-Forwarded-For from untrusted clients.",
 	"latest-lookup-failed": "NodeBBの最新バージョンの検索に失敗しました",
 
 	"notices": "通知",

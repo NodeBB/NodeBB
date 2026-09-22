@@ -37,6 +37,8 @@
 	"running-in-development": "הפורום פועל במצב פיתוח. הפורום עשוי להיות חשוף לפגיעויות פוטנציאליות; אנא פנו למנהל המערכת שלכם",
 	"localhost-warning": "NodeBB מוגדר עם כתובת URL של מארח מקומי - localhost. זה צריך להיות מעודכן לדומיין האמיתי שלכם.",
 	"url-mismatch-warning": "גישה ללוח הניהול מכתובת אתר שונה מזו שהוגדרה ב-config.json. (מבוקש: %1, מוגדר: %2)",
+	"trust-proxy-warning": "This request arrived through a reverse proxy, but 'trust_proxy' is not enabled in config.json. Every visitor looks like the same IP address to NodeBB.",
+	"trust-proxy-tooltip": "Rate limits, IP bans, registration queue matching and unique visitor counts all rely on the client IP address. Set 'trust_proxy' in config.json when NodeBB is behind a proxy that strips or overwrites X-Forwarded-For from untrusted clients.",
 	"latest-lookup-failed": "לא הצליח למצוא את הגרסה האחרונה הזמינה של NodeBB",
 
 	"notices": "התראות",
