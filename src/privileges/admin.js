@@ -120,8 +120,6 @@ privsAdmin.socketMap = {
 	'admin.settings.set': 'admin:settings',
 };
 
-const warnedRoutes = new Set();
-
 privsAdmin.resolve = (path) => {
 	if (privsAdmin.routeMap.hasOwnProperty(path)) {
 		return privsAdmin.routeMap[path];
@@ -131,10 +129,7 @@ privsAdmin.resolve = (path) => {
 		.filter(entry => path.startsWith(entry[0]))
 		.sort((entry1, entry2) => entry2[0].length - entry1[0].length);
 	if (!found.length) {
-		if (!warnedRoutes.has(path)) {
-			warnedRoutes.add(path);
-			winston.verbose(`[privileges/admin] No privilege is mapped to admin route "${path}", so only administrators can reach it. Add an entry to privsAdmin.routeMap or privsAdmin.routePrefixMap to delegate it.`);
-		}
+		winston.verbose(`[privileges/admin] No privilege is mapped to admin route "${path}", so only administrators can reach it. Add an entry to privsAdmin.routeMap or privsAdmin.routePrefixMap to delegate it.`);
 		return undefined;
 	}
 	return found[0][1]; // [0] is path [1] is privilege
