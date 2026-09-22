@@ -153,6 +153,16 @@ settingsController.webCrawler = async (req, res) => {
 	});
 };
 
+settingsController.metaTags = async (req, res) => {
+	const settings = await meta.settings.get('metaTags');
+	const tags = Object.keys(settings).map(key => ({ key, content: settings[key] }));
+
+	res.render(`admin/settings/meta-tags`, {
+		title: `[[admin/menu:settings/meta-tags]]`,
+		tags,
+	});
+};
+
 settingsController.advanced = async (req, res) => {
 	const groupData = await groups.getNonPrivilegeGroups('groups:createtime', 0, -1);
 	res.render('admin/settings/advanced', {

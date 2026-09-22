@@ -1,0 +1,27 @@
+get:
+  tags:
+    - admin
+  summary: Get custom meta tags settings
+  responses:
+    "200":
+      description: ""
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  title:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          description: The meta tag key (name or property value)
+                        content:
+                          type: string
+                          description: The meta tag content
+              - $ref: ../../../components/schemas/CommonProps.yaml#/CommonProps

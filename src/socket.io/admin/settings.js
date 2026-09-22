@@ -10,7 +10,8 @@ Settings.get = async function (socket, data) {
 };
 
 Settings.set = async function (socket, data) {
-	await meta.settings.set(data.hash, data.values);
+	// A settings form save represents the complete state, so clear stale fields first
+	await meta.settings.set(data.hash, data.values, false, true);
 	const eventData = data.values;
 	eventData.type = 'settings-change';
 	eventData.uid = socket.uid;

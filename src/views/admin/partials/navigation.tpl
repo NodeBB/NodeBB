@@ -88,6 +88,7 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/notifications">{{tx("admin/menu:settings/notifications")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/cookies">{{tx("admin/menu:settings/cookies")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/web-crawler">{{tx("admin/menu:settings/web-crawler")}}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/meta-tags">{{tx("admin/menu:settings/meta-tags")}}</a>
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/settings/advanced">{{tx("admin/menu:settings/advanced")}}</a>
 			</div>
 		</div>

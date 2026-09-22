@@ -112,6 +112,8 @@ paths:
     $ref: 'read/admin/settings/cookies.yaml'
   /api/admin/settings/web-crawler:
     $ref: 'read/admin/settings/web-crawler.yaml'
+  /api/admin/settings/meta-tags:
+    $ref: 'read/admin/settings/meta-tags.yaml'
   /api/admin/settings/advanced:
     $ref: 'read/admin/settings/advanced.yaml'
   /api/admin/manage/categories:
