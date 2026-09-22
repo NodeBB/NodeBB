@@ -70,6 +70,29 @@ describe('emailer', () => {
 		});
 	});
 
+	it('should let a plugin cancel a direct sendToEmail call', async () => {
+		let sent = false;
+		const sendMethod = async () => {
+			sent = true;
+		};
+		const cancelMethod = async (data) => {
+			data.cancel = data.template === template;
+			return data;
+		};
+
+		Plugins.hooks.register('emailer-test', { hook: 'static:email.send', method: sendMethod });
+		Plugins.hooks.register('emailer-test', { hook: 'filter:email.cancel', method: cancelMethod });
+
+		try {
+			await Emailer.sendToEmail(template, email, language, params);
+		} finally {
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', sendMethod);
+			Plugins.hooks.unregister('emailer-test', 'filter:email.cancel', cancelMethod);
+		}
+
+		assert.strictEqual(sent, false);
+	});
+
 	it('should build custom template on config change', (done) => {
 		const text = 'a random string of text';
 

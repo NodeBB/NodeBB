@@ -542,12 +542,8 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
-			let set;
-			if (differentiator === 0 && differentiators.length === 1) {
-				set = isolated;
-			} else {
-				set = isolated.filter(n => n.mergeId === (`${mergeId}|${differentiator}`));
-			}
+			const target = differentiator === 0 ? mergeId : `${mergeId}|${differentiator}`;
+			const set = isolated.filter(n => n.mergeId === target);
 
 			const modifyIndex = notifications.indexOf(set[0]);
 			if (modifyIndex === -1 || set.length === 1) {
@@ -607,7 +603,7 @@ Notifications.merge = async function (notifications) {
 					return true;
 				}
 
-				return !(notifObj.mergeId === (mergeId + (differentiator ? `|${differentiator}` : '')) && idx !== modifyIndex);
+				return !(notifObj.mergeId === target && idx !== modifyIndex);
 			});
 		});
 

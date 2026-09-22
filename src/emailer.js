@@ -269,15 +269,6 @@ Emailer.send = async (template, uid, params) => {
 	params.displayname = userData.displayname;
 	params.rtl = translator.languageDirection(userSettings.userLang) === 'rtl';
 
-	const result = await Plugins.hooks.fire('filter:email.cancel', {
-		cancel: false, // set to true in plugin to cancel sending email
-		template: template,
-		params: params,
-	});
-
-	if (result.cancel) {
-		return;
-	}
 	await Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
 };
 
@@ -312,6 +303,17 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 			...params.headers,
 		};
 		params.unsubUrl = unsubUrl;
+	}
+
+	const { cancel } = await Plugins.hooks.fire('filter:email.cancel', {
+		cancel: false, // set to true in plugin to cancel sending email
+		template: template,
+		params: params,
+	});
+
+	if (cancel) {
+		winston.info(`[emailer] "${template}" email to ${email} was cancelled by a plugin.`);
+		return;
 	}
 
 	const result = await Plugins.hooks.fire('filter:email.params', {
