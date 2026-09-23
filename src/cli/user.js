@@ -283,7 +283,7 @@ ${pwGenerated ? ` Generated password: ${password}` : ''}`);
 
 	async function makeGlobalMod(uids) {
 		uids = argParsers.intArrayParse(uids, 'uids');
-		await Promise.all(uids.map(uid => groups.join('Global Moderators', uid)));
+		await Promise.all(uids.map(uid => groups.join(groups.GLOBAL_MODERATORS, uid)));
 
 		winston.info('[userCmd/make/globalMod] User(s) added as global moderators.');
 	}
@@ -301,7 +301,7 @@ ${pwGenerated ? ` Generated password: ${password}` : ''}`);
 	async function makeRegular(uids) {
 		uids = argParsers.intArrayParse(uids, 'uids');
 
-		await Promise.all(uids.map(uid => groups.leave(['administrators', 'Global Moderators'], uid)));
+		await Promise.all(uids.map(uid => groups.leave(['administrators', groups.GLOBAL_MODERATORS], uid)));
 
 		const categoryPrivList = await privileges.categories.getPrivilegeList();
 		const cids = await db.getSortedSetRevRange('categories:cid', 0, -1);

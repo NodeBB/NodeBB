@@ -4,6 +4,7 @@ const async = require('async');
 const _ = require('lodash');
 
 const db = require('../database');
+const groups = require('../groups');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const privileges = require('../privileges');
@@ -92,7 +93,7 @@ module.exports = function (Categories) {
 		]);
 
 		await privileges.categories.give(result.defaultPrivileges, category.cid, ['registered-users', 'fediverse']);
-		await privileges.categories.give(result.modPrivileges, category.cid, ['administrators', 'Global Moderators']);
+		await privileges.categories.give(result.modPrivileges, category.cid, ['administrators', groups.GLOBAL_MODERATORS]);
 		await privileges.categories.give(result.guestPrivileges, category.cid, ['guests', 'spiders']);
 
 		cache.del('categories:cid');

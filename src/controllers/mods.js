@@ -163,7 +163,7 @@ modsController.flags.detail = async function (req, res, next) {
 		let uids = [];
 		const [admins, globalMods] = await Promise.all([
 			groups.getMembers('administrators', 0, -1),
-			groups.getMembers('Global Moderators', 0, -1),
+			groups.getMembers(groups.GLOBAL_MODERATORS, 0, -1),
 		]);
 		if (flagData.type === 'user') {
 			uids = await privileges.admin.getUidsWithPrivilege('admin:users');

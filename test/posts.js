@@ -51,7 +51,7 @@ describe('Post\'s', () => {
 			title: 'Test Topic Title',
 			content: 'The content of test topic',
 		}));
-		await groups.join('Global Moderators', globalModUid);
+		await groups.join(groups.GLOBAL_MODERATORS, globalModUid);
 	});
 
 	it('should update category teaser properly', async () => {
@@ -384,12 +384,12 @@ describe('Post\'s', () => {
 
 		it('should not see post content if global mod does not have posts:view_deleted privilege', async () => {
 			const uid = await user.create({ username: 'global mod', password: '123456' });
-			await groups.join('Global Moderators', uid);
-			await privileges.categories.rescind(['groups:posts:view_deleted'], cid, 'Global Moderators');
+			await groups.join(groups.GLOBAL_MODERATORS, uid);
+			await privileges.categories.rescind(['groups:posts:view_deleted'], cid, groups.GLOBAL_MODERATORS);
 			const { jar } = await helpers.loginUser('global mod', '123456');
 			const { body } = await request.get(`${nconf.get('url')}/api/topic/${tid}`, { jar });
 			assert.equal(body.posts[1].content, '[[topic:post-is-deleted]]');
-			await privileges.categories.give(['groups:posts:view_deleted'], cid, 'Global Moderators');
+			await privileges.categories.give(['groups:posts:view_deleted'], cid, groups.GLOBAL_MODERATORS);
 		});
 
 		it('should restore a post', async () => {
@@ -1618,7 +1618,7 @@ describe('Post edit broadcasts', () => {
 		ownerUid = await user.create({ username: `edit-owner-${utils.generateUUID()}` });
 		moderatorUid = await user.create({ username: `edit-moderator-${utils.generateUUID()}` });
 		({ cid } = await categories.create({ name: `edit-race-${utils.generateUUID()}` }));
-		await groups.join('Global Moderators', moderatorUid);
+		await groups.join(groups.GLOBAL_MODERATORS, moderatorUid);
 	});
 
 	it('should not broadcast an edit to the topic room after a concurrent deletion', async () => {

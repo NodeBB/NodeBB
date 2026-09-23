@@ -341,7 +341,7 @@ Controller.getCategoryOutbox = async (req, res) => {
 Controller.getCategoryModerators = async (req, res) => {
 	const { cid } = req.params;
 	const moderatorUids = await user.getModeratorUids([cid]);
-	const adminsAndGlobalMods = await groups.getMembersOfGroups(['administrators', 'Global Moderators']);
+	const adminsAndGlobalMods = await groups.getMembersOfGroups(['administrators', groups.GLOBAL_MODERATORS]);
 	const allModerators = [...new Set([...moderatorUids, ...adminsAndGlobalMods.flat()])];
 
 	const actors = await Promise.all(allModerators.map(async (uid) => {

@@ -205,6 +205,7 @@ module.exports = function (Groups) {
 		await updateWidgets(oldName, newName);
 		await updateConfig(oldName, newName);
 		await updateChatRooms(oldName, newName);
+		await updatePrivileges(oldName, newName);
 		await db.setObject(`group:${oldName}`, { name: newName, slug: slugify(newName) });
 		if (!Groups.isPrivilegeGroup(oldName) && !Groups.isPrivilegeGroup(newName)) {
 			await db.deleteObjectField('groupslug:groupname', group.slug);
@@ -315,6 +316,30 @@ module.exports = function (Groups) {
 				await meta.configs.set(key, meta.config[key]);
 			}
 		}
+	}
+
+	async function updatePrivileges(oldName, newName) {
+		// Lazy require to avoid a circular dependency (privileges.helpers requires groups)
+		const privileges = require('../privileges');
+		// Ensure the privilege maps are initialized, as upgrades run before webserver init
+		await privileges.init();
+		const cids = [0, -1, ...(await db.getSortedSetRange('categories:cid', 0, -1))];
+		const groupPrivileges = [
+			...privileges.categories.getGroupPrivilegeList(),
+			...privileges.global.getGroupPrivilegeList(),
+			...privileges.admin.getGroupPrivilegeList(),
+		];
+		// Group privileges are stored as pseudo-group member zsets: group:<privKey>:members
+		const keys = cids.flatMap(cid => groupPrivileges.map(privilege => `group:cid:${cid}:privileges:${privilege}:members`));
+		const isMembers = await db.isMemberOfSortedSets(keys, oldName);
+		const hitKeys = keys.filter((key, index) => isMembers[index]);
+		if (!hitKeys.length) {
+			return;
+		}
+		const scores = await db.sortedSetsScore(hitKeys, oldName);
+		await db.sortedSetsRemove(hitKeys, oldName);
+		await db.sortedSetsAdd(hitKeys, scores, newName);
+		cache.del(hitKeys);
 	}
 
 	async function updateChatRooms(oldName, newName) {

@@ -59,7 +59,7 @@ describe('Groups', () => {
 		});
 
 		await Groups.create({
-			name: 'Global Moderators',
+			name: Groups.GLOBAL_MODERATORS,
 			userTitle: 'Global Moderator',
 			description: 'Forum wide moderators',
 			hidden: 0,
@@ -722,7 +722,7 @@ describe('Groups', () => {
 
 		it('should add user to Global Moderators group', async () => {
 			const uid = await User.create({ username: 'glomod' });
-			const slug = await Groups.getGroupField('Global Moderators', 'slug');
+			const slug = await Groups.getGroupField(Groups.GLOBAL_MODERATORS, 'slug');
 			await apiGroups.join({ uid: adminUid }, { slug: slug, uid: uid });
 			const isGlobalMod = await User.isGlobalModerator(uid);
 			assert.strictEqual(isGlobalMod, true);
@@ -783,7 +783,7 @@ describe('Groups', () => {
 				}
 				assert.strictEqual(err.message, '[[error:not-allowed]]');
 			}
-			const groups = ['Global Moderators', 'verified-users', 'unverified-users'];
+			const groups = [Groups.GLOBAL_MODERATORS, 'verified-users', 'unverified-users'];
 			for (const g of groups) {
 				// eslint-disable-next-line no-await-in-loop
 				await test(g);
@@ -828,14 +828,14 @@ describe('Groups', () => {
 
 		it('should allow admins to join private groups', async () => {
 			await apiGroups.join({ uid: adminUid }, { uid: adminUid, slug: 'global-moderators' });
-			assert(await Groups.isMember(adminUid, 'Global Moderators'));
+			assert(await Groups.isMember(adminUid, Groups.GLOBAL_MODERATORS));
 		});
 
 		it('should let a user who can approve membership requests join a private group immediately', async () => {
 			meta.config.allowPrivateGroups = 1;
 			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
 			// global moderators can approve requests for non-system groups
-			await Groups.join('Global Moderators', uid);
+			await Groups.join(Groups.GLOBAL_MODERATORS, uid);
 			const slug = await Groups.getGroupField('PrivateCanJoin', 'slug');
 			await apiGroups.join({ uid: uid }, { slug: slug, uid: uid });
 			const [isMember, isPending] = await Promise.all([
@@ -844,7 +844,7 @@ describe('Groups', () => {
 			]);
 			assert.strictEqual(isMember, true);
 			assert.strictEqual(isPending, false);
-			await Groups.leave('Global Moderators', uid);
+			await Groups.leave(Groups.GLOBAL_MODERATORS, uid);
 		});
 
 		it('should place a user who cannot approve requests into the pending queue', async () => {

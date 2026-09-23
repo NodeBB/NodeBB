@@ -1433,7 +1433,7 @@ describe('User', () => {
 			// administrators cannot be banned
 			assert.strictEqual(membership.get('administrators'), false);
 			// This will not restored
-			assert.strictEqual(membership.get('Global Moderators'), false);
+			assert.strictEqual(membership.get(groups.GLOBAL_MODERATORS), false);
 		});
 
 		it('should restore system group memberships after an unban (for a verified user)', async () => {
@@ -2568,7 +2568,7 @@ describe('User', () => {
 				username: 'globalmodhideemail',
 				password: COMMON_PW,
 			});
-			await groups.join('Global Moderators', globalModUid);
+			await groups.join(groups.GLOBAL_MODERATORS, globalModUid);
 			({ jar: globalModJar } = await helpers.loginUser('globalmodhideemail', COMMON_PW));
 
 			regularUser.uid = await User.create(regularUser);

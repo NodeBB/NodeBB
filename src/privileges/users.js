@@ -16,7 +16,7 @@ privsUsers.isAdministrator = async function (uid) {
 };
 
 privsUsers.isGlobalModerator = async function (uid) {
-	return await isGroupMember(uid, 'Global Moderators');
+	return await isGroupMember(uid, groups.GLOBAL_MODERATORS);
 };
 
 async function isGroupMember(uid, groupName) {

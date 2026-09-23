@@ -970,7 +970,7 @@ Flags.appendNote = async function (flagId, uid, note, datetime) {
 Flags.notify = async function (flagObj, uid, notifySelf = false) {
 	const [admins, globalMods] = await Promise.all([
 		groups.getMembers('administrators', 0, -1),
-		groups.getMembers('Global Moderators', 0, -1),
+		groups.getMembers(groups.GLOBAL_MODERATORS, 0, -1),
 	]);
 	let uids = admins.concat(globalMods);
 	let notifObj;

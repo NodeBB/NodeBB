@@ -416,12 +416,12 @@ async function createAdmin() {
 
 async function createGlobalModeratorsGroup() {
 	const groups = require('./groups');
-	const exists = await groups.exists('Global Moderators');
+	const exists = await groups.exists(groups.GLOBAL_MODERATORS);
 	if (exists) {
 		winston.info('Global Moderators group found, skipping creation!');
 	} else {
 		await groups.create({
-			name: 'Global Moderators',
+			name: groups.GLOBAL_MODERATORS,
 			userTitle: 'Global Moderator',
 			description: 'Forum wide moderators',
 			hidden: 0,
@@ -429,10 +429,11 @@ async function createGlobalModeratorsGroup() {
 			disableJoinRequests: 1,
 		});
 	}
-	await groups.show('Global Moderators');
+	await groups.show(groups.GLOBAL_MODERATORS);
 }
 
 async function giveGlobalPrivileges() {
+	const groups = require('./groups');
 	const privileges = require('./privileges');
 	const defaultPrivileges = [
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
@@ -442,7 +443,7 @@ async function giveGlobalPrivileges() {
 	await privileges.global.give(defaultPrivileges, 'registered-users');
 	await privileges.global.give(defaultPrivileges.concat([
 		'groups:ban', 'groups:upload:post:file', 'groups:view:users:info',
-	]), 'Global Moderators');
+	]), groups.GLOBAL_MODERATORS);
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'guests');
 	await privileges.global.give(['groups:view:users', 'groups:view:tags', 'groups:view:groups'], 'spiders');
 	await privileges.global.give(['groups:view:users', 'groups:chat'], 'fediverse');
@@ -450,6 +451,7 @@ async function giveGlobalPrivileges() {
 
 async function giveWorldPrivileges() {
 	// should match privilege assignment logic in src/categories/create.js EXCEPT commented one liner below
+	const groups = require('./groups');
 	const privileges = require('./privileges');
 	const defaultPrivileges = [
 		'groups:find',
@@ -474,7 +476,7 @@ async function giveWorldPrivileges() {
 
 	await privileges.categories.give(defaultPrivileges, -1, ['registered-users']);
 	await privileges.categories.give(defaultPrivileges.slice(2), -1, ['fediverse']); // different priv set for fediverse
-	await privileges.categories.give(modPrivileges, -1, ['administrators', 'Global Moderators']);
+	await privileges.categories.give(modPrivileges, -1, ['administrators', groups.GLOBAL_MODERATORS]);
 	await privileges.categories.give(guestPrivileges, -1, ['guests', 'spiders']);
 }
 
