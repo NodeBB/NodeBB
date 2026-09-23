@@ -233,6 +233,54 @@ describe('Topic\'s', () => {
 			assert.strictEqual(replyResult.body.response.user.username, '[[global:guest]]');
 		});
 
+		it('should ignore _activitypub in the request body', async () => {
+			const categoryObj = await categories.create({
+				name: 'Test Category',
+				description: 'Test category created by testing script',
+			});
+			await privileges.categories.give(['groups:topics:create'], categoryObj.cid, 'guests');
+			await privileges.categories.give(['groups:topics:reply'], categoryObj.cid, 'guests');
+
+			const jar = request.jar();
+			const result = await helpers.request('post', `/api/v3/topics`, {
+				body: {
+					title: 'just a title',
+					cid: categoryObj.cid,
+					content: ':pwned: hello world',
+					_activitypub: {
+						tag: [{
+							type: 'Emoji',
+							name: 'pwned',
+							icon: { url: 'https://example.com/emoji.png', mediaType: 'image/png' },
+						}],
+					},
+				},
+				jar: jar,
+				json: true,
+			});
+
+			assert.strictEqual(result.body.status.code, 'ok');
+			// The _activitypub field must not reach Posts.create, so no emoji rendering occurs
+			assert.strictEqual(result.body.response.mainPost.content, ':pwned: hello world');
+			assert.ok(!result.body.response.mainPost.content.includes('<img'));
+
+			const replyResult = await helpers.request('post', `/api/v3/topics/${result.body.response.tid}`, {
+				body: {
+					content: ':pwned: hello world',
+					_activitypub: {
+						tag: [{
+							type: 'Emoji',
+							name: 'pwned',
+							icon: { url: 'https://example.com/emoji.png', mediaType: 'image/png' },
+						}],
+					},
+				},
+				jar: jar,
+			});
+			assert.strictEqual(replyResult.body.response.content, ':pwned: hello world');
+			assert.ok(!replyResult.body.response.content.includes('<img'));
+		});
+
 		it('should post a topic/reply as guest with handle if guest group has privileges', async () => {
 			const categoryObj = await categories.create({
 				name: 'Test Category',
