@@ -25,6 +25,7 @@ require('./leave')(Groups);
 require('./cache')(Groups);
 
 Groups.BANNED_USERS = 'banned-users';
+Groups.GLOBAL_MODERATORS = 'global-moderators';
 
 Groups.ephemeralGroups = ['guests', 'spiders', 'fediverse'];
 
@@ -34,7 +35,7 @@ Groups.systemGroups = [
 	'unverified-users',
 	Groups.BANNED_USERS,
 	'administrators',
-	'Global Moderators',
+	Groups.GLOBAL_MODERATORS,
 ];
 
 Groups.getEphemeralGroup = function (groupName) {

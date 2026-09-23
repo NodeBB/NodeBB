@@ -295,7 +295,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
 				(member === 'fediverse' && !fediverseEnabled.includes(priv.name)) ||
-				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
+				(member === 'global-moderators' && globalModDisabled.includes(priv.name));
 
 			return `
 				<td data-privilege="${escape(priv.name)}" data-value="${escape(priv.state)}" data-type="${escape(priv.type)}">

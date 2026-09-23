@@ -276,7 +276,7 @@ describe('Crossposting (& related logic)', () => {
 			cid2 = crosspostCategory.cid;
 			uid = await user.create({ username: utils.generateUUID().slice(0, 8) });
 			privUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
-			await groups.join('Global Moderators', privUid);
+			await groups.join(groups.GLOBAL_MODERATORS, privUid);
 
 			const { topicData } = await topics.post({
 				uid,

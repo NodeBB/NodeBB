@@ -261,7 +261,7 @@ describe('Flags', () => {
 		});
 
 		it('should show user history for global moderators', async () => {
-			await Groups.join('Global Moderators', moderatorUid);
+			await Groups.join(Groups.GLOBAL_MODERATORS, moderatorUid);
 			const { body: flagData } = await request.get(`${nconf.get('url')}/api/flags/1`, {
 				jar,
 				headers: {
@@ -272,7 +272,7 @@ describe('Flags', () => {
 			assert(flagData.history);
 			assert(Array.isArray(flagData.history));
 
-			await Groups.leave('Global Moderators', moderatorUid);
+			await Groups.leave(Groups.GLOBAL_MODERATORS, moderatorUid);
 		});
 	});
 
@@ -539,7 +539,7 @@ describe('Flags', () => {
 		});
 
 		it('should allow assignment if user is a global mod and do nothing otherwise', async () => {
-			await Groups.join('Global Moderators', uid3);
+			await Groups.join(Groups.GLOBAL_MODERATORS, uid3);
 
 			await Flags.update(1, uid3, {
 				assignee: uid3,
@@ -553,7 +553,7 @@ describe('Flags', () => {
 			assignee = await db.getObjectField('flag:1', 'assignee');
 			assert.strictEqual(uid3, parseInt(assignee, 10));
 
-			await Groups.leave('Global Moderators', uid3);
+			await Groups.leave(Groups.GLOBAL_MODERATORS, uid3);
 		});
 
 		it('should allow assignment if user is a mod of the category, do nothing otherwise', async () => {
@@ -1214,7 +1214,7 @@ describe('Flags', () => {
 			beforeEach(async () => {
 				// Reset uid back to unprivileged user
 				await Groups.leave('administrators', uid);
-				await Groups.leave('Global Moderators', uid);
+				await Groups.leave(Groups.GLOBAL_MODERATORS, uid);
 				await Privileges.categories.rescind(['moderate'], 1, [uid]);
 
 				const { postData } = await Topics.post({
@@ -1301,7 +1301,7 @@ describe('Flags', () => {
 			});
 
 			it('should allow access to privileged endpoints to global moderators', async () => {
-				await Groups.join('Global Moderators', uid);
+				await Groups.join(Groups.GLOBAL_MODERATORS, uid);
 
 				for (const opts of requests) {
 					// eslint-disable-next-line no-await-in-loop

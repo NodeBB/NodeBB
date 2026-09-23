@@ -962,12 +962,12 @@ describe('Messaging Library', () => {
 			});
 
 			it('should succeed for global moderators', async () => {
-				await Groups.join(['Global Moderators'], mocks.users.baz.uid);
+				await Groups.join([Groups.GLOBAL_MODERATORS], mocks.users.baz.uid);
 
 				await callv3API('delete', `/chats/${roomId}/messages/${mid2}/state`, {}, 'baz');
 				await callv3API('post', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
 
-				await Groups.leave(['Global Moderators'], mocks.users.baz.uid);
+				await Groups.leave([Groups.GLOBAL_MODERATORS], mocks.users.baz.uid);
 			});
 		});
 	});

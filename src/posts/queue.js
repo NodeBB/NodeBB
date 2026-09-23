@@ -229,7 +229,7 @@ module.exports = function (Posts) {
 
 	async function getNotificationUids(cid) {
 		const results = await Promise.all([
-			groups.getMembersOfGroups(['administrators', 'Global Moderators']),
+			groups.getMembersOfGroups(['administrators', groups.GLOBAL_MODERATORS]),
 			categories.getModeratorUids([cid]),
 		]);
 		return _.uniq(_.flattenDeep(results));

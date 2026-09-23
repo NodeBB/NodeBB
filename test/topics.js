@@ -788,13 +788,13 @@ describe('Topic\'s', () => {
 			});
 			const tid1 = topic1.topicData.tid;
 			const globalModUid = await User.create({ username: 'global mod' });
-			await groups.join('Global Moderators', globalModUid);
-			await privileges.categories.rescind(['groups:purge'], categoryObj.cid, 'Global Moderators');
+			await groups.join(groups.GLOBAL_MODERATORS, globalModUid);
+			await privileges.categories.rescind(['groups:purge'], categoryObj.cid, groups.GLOBAL_MODERATORS);
 			try {
 				await apiTopics.purge({ uid: globalModUid }, { tids: [tid1], cid: categoryObj.cid });
 			} catch (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				await privileges.categories.give(['groups:purge'], categoryObj.cid, 'Global Moderators');
+				await privileges.categories.give(['groups:purge'], categoryObj.cid, groups.GLOBAL_MODERATORS);
 				return;
 			}
 			assert(false);

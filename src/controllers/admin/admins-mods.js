@@ -29,7 +29,7 @@ AdminsMods.get = async function (req, res) {
 
 	const [admins, globalMods, moderators, crumbs] = await Promise.all([
 		groups.get('administrators', { uid: req.uid }),
-		groups.get('Global Moderators', { uid: req.uid }),
+		groups.get(groups.GLOBAL_MODERATORS, { uid: req.uid }),
 		getModeratorsOfCategories(pageCategories),
 		categoriesController.buildBreadCrumbs(selectedCategory, '/admin/manage/admins-mods'),
 	]);
