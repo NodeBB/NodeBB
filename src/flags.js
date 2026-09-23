@@ -1013,6 +1013,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			targetDisplayname: targetDisplayname,
 		});
 	} else if (flagObj.type === 'message') {
+		uids = admins;
 		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
 		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);

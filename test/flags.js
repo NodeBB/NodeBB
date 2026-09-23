@@ -728,6 +728,22 @@ describe('Flags', () => {
 		});
 	});
 
+	describe('.notify()', () => {
+		it('should only notify administrators of a chat message flag', async () => {
+			const globalModUid = await User.create({ username: 'message-flag-global-mod' });
+			await Groups.join('Global Moderators', globalModUid);
+
+			const roomId = await messaging.newRoom(uid1, { uids: [uid3] });
+			const { mid } = await messaging.sendMessage({ uid: uid3, roomId, content: 'private chat content' });
+			await api.flags.create({ uid: uid1 }, { type: 'message', id: mid, reason: 'spam', roomId });
+			await sleep(2000);
+
+			const nid = `flag:message:${mid}:${uid1}`;
+			assert(await db.isSortedSetMember(`uid:${adminUid}:notifications:unread`, nid));
+			assert(!await db.isSortedSetMember(`uid:${globalModUid}:notifications:unread`, nid));
+		});
+	});
+
 	describe('.getTarget()', () => {
 		it('should return a post\'s data if queried with type "post"', (done) => {
 			Flags.getTarget('post', 1, 1, (err, data) => {
