@@ -31,6 +31,9 @@ const _privilegeMap = new Map([
 privsAdmin.init = async () => {
 	await plugins.hooks.fire('static:privileges.admin.init', {
 		privileges: _privilegeMap,
+		routeMap: privsAdmin.routeMap,
+		routePrefixMap: privsAdmin.routePrefixMap,
+		socketMap: privsAdmin.socketMap,
 	});
 
 	for (const [, value] of _privilegeMap) {

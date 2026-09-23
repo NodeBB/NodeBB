@@ -758,6 +758,37 @@ describe('Admin Controllers', () => {
 			});
 		});
 
+		describe('static:privileges.admin.init', () => {
+			const plugins = require('../src/plugins');
+			const route = 'plugins/delegated-plugin-page';
+			const method = async (data) => {
+				data.routeMap[route] = 'admin:users';
+				return data;
+			};
+
+			before(async () => {
+				plugins.hooks.register('admin-init-test', { hook: 'static:privileges.admin.init', method });
+				await privileges.admin.init();
+			});
+
+			after(() => {
+				plugins.hooks.unregister('admin-init-test', 'static:privileges.admin.init', method);
+				delete privileges.admin.routeMap[route];
+			});
+
+			it('should let a plugin map its admin page to an admin privilege', async () => {
+				await privileges.admin.rescind(['admin:users'], uid);
+				let { response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts);
+				assert.strictEqual(res.statusCode, 403);
+
+				await privileges.admin.give(['admin:users'], uid);
+				({ response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts));
+				assert.strictEqual(res.statusCode, 404);
+
+				await privileges.admin.rescind(['admin:users'], uid);
+			});
+		});
+
 		it('should list all admin privileges', async () => {
 			const privs = await privileges.admin.getPrivilegeList();
 			assert.deepStrictEqual(privs, [
