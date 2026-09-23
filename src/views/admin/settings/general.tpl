@@ -312,6 +312,12 @@
 					<label for="logIPs" class="form-check-label">{{tx("admin/settings/general:log-ips")}}</label>
 				</div>
 				<p class="form-text">{{tx("admin/settings/general:log-ips-help")}}</p>
+
+				<div class="mb-3">
+					<label class="form-label" for="analyticsRetention">{{tx("admin/settings/general:analytics-retention")}}</label>
+					<input id="analyticsRetention" type="number" class="form-control" min="0" data-field="analyticsRetention" />
+					<p class="form-text">{{tx("admin/settings/general:analytics-retention-help")}}</p>
+				</div>
 			</div>
 
 			<hr/>

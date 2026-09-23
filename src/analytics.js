@@ -58,6 +58,31 @@ Analytics.init = async function () {
 			incrementProperties(total, data.local);
 		});
 	}
+
+	if (runJobs) {
+		await cron.addJob({
+			name: 'prune:analytics',
+			cronTime: '0 3 * * *',
+			onTick: async () => {
+				await Analytics.prune();
+			},
+		});
+	}
+};
+
+Analytics.prune = async function () {
+	const retention = parseInt(meta.config.analyticsRetention, 10);
+	if (!retention || retention <= 0) {
+		return;
+	}
+
+	const cutoff = Date.now() - (retention * 86400000);
+	const keys = await db.getSortedSetRange('analyticsKeys', 0, -1);
+	if (!keys.length) {
+		return;
+	}
+
+	await db.sortedSetsRemoveRangeByScore(keys.map(key => `analytics:${key}`), '-inf', cutoff);
 };
 
 Analytics.writeLocalData = async function () {
