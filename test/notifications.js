@@ -16,6 +16,7 @@ const socketNotifications = require('../src/socket.io/notifications');
 const api = require('../src/api');
 const utils = require('../src/utils');
 const tx = require('../src/translator');
+const helpers = require('./helpers');
 
 const sleep = util.promisify(setTimeout);
 
@@ -110,25 +111,21 @@ describe('Notifications', () => {
 
 	it('should push a notification to uid', async () => {
 		await notifications.push(notification, [uid]);
-		await sleep(2000);
-
-		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
-		assert(isMember);
+		await helpers.waitFor(() => db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid));
 	});
 
 	it('should push a notification to a group', async () => {
 		await notifications.pushGroup(notification, 'registered-users');
-		await sleep(2000);
-
-		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
-		assert(isMember);
+		await helpers.waitFor(() => db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid));
 	});
 
 	it('should push a notification to groups', async () => {
 		await notifications.pushGroups(notification, ['registered-users', 'administrators']);
-		await sleep(2000);
-		const isMember = await db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid);
-		assert(isMember);
+		await helpers.waitFor(() => db.isSortedSetMember(`uid:${uid}:notifications:unread`, notification.nid));
+		// All three pushes above share one nid and fire on a 500ms async job;
+		// settle so the group pushes (which re-add the same nid) have landed
+		// before the mark-read tests assume a stable unread set.
+		await sleep(600);
 	});
 
 	it('should not mark anything with invalid uid or nid', async () => {
@@ -202,8 +199,10 @@ describe('Notifications', () => {
 			tid: tid,
 		});
 		// notifications are sent asynchronously with a 1 second delay.
-		await sleep(3000);
-		const notifications = await user.notifications.get(watcherUid);
+		const notifications = await helpers.waitFor(async () => {
+			const data = await user.notifications.get(watcherUid);
+			return data.unread.length === 1 ? data : undefined;
+		});
 		assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
 		assert.equal(`${nconf.get('relative_path')}/post/${pid}`, notifications.unread[0].path, 'the notification should link to the first unread post');
 	});
@@ -271,8 +270,10 @@ describe('Notifications', () => {
 		});
 
 		await notifications.push(notification, [uid]);
-		await sleep(3000);
-		const nids = await user.notifications.getAll(uid, 'post');
+		const nids = await helpers.waitFor(async () => {
+			const all = await user.notifications.getAll(uid, 'post');
+			return all.includes(nid) ? all : undefined;
+		});
 		assert(nids.includes(nid));
 	});
 
@@ -313,10 +314,10 @@ describe('Notifications', () => {
 			title: 'Test Topic Title',
 			content: 'The content of test topic <script>alert(document.domain)</script>',
 		});
-		await sleep(1100);
-		const data = await user.notifications.getAll(followerUid, '');
-		assert(Array.isArray(data));
-		const notifs = await user.notifications.get(followerUid);
+		const notifs = await helpers.waitFor(async () => {
+			const data = await user.notifications.get(followerUid);
+			return data.unread[0] && data.unread[0].bodyLong === 'The content of test topic ' ? data : undefined;
+		});
 		assert.strictEqual(notifs.unread[0].bodyLong, 'The content of test topic ');
 	});
 
@@ -340,9 +341,10 @@ describe('Notifications', () => {
 		});
 
 		notifications.push(notification, [uid]);
-		await sleep(2000);
-
-		const notifData = await user.notifications.get(uid);
+		const notifData = await helpers.waitFor(async () => {
+			const data = await user.notifications.get(uid);
+			return data.unread[0] && data.unread[0].bodyShort === '<strong>displayName]]&lt;img src=x onerror=alert(document.domain)&gt;</strong> posted <strong>topicTitle]]&lt;img src=x onerror=alert(document.domain)&gt;</strong> in <strong>Lounge]]&lt;img src=x onerror=alert(document.domain)&gt;</strong>' ? data : undefined;
+		});
 		assert.strictEqual(notifData.unread[0].bodyShort, '<strong>displayName]]&lt;img src=x onerror=alert(document.domain)&gt;</strong> posted <strong>topicTitle]]&lt;img src=x onerror=alert(document.domain)&gt;</strong> in <strong>Lounge]]&lt;img src=x onerror=alert(document.domain)&gt;</strong>');
 	});
 
@@ -361,9 +363,10 @@ describe('Notifications', () => {
 		});
 
 		notifications.push(notification, [uid]);
-		await sleep(2000);
-
-		const notifData = await user.notifications.get(uid);
+		const notifData = await helpers.waitFor(async () => {
+			const data = await user.notifications.get(uid);
+			return data.unread[0] && data.unread[0].bodyShort === '<img src="x" />' ? data : undefined;
+		});
 		assert.strictEqual(notifData.unread[0].bodyShort, '<img src="x" />');
 		assert.strictEqual(notifData.unread[0].bodyLong, 'bodylong ');
 	});
@@ -372,9 +375,10 @@ describe('Notifications', () => {
 		meta.config.welcomeNotification = 'welcome to the forums';
 		await user.notifications.sendWelcomeNotification(uid);
 		await user.notifications.sendWelcomeNotification(uid);
-		await sleep(2000);
-
-		const data = await user.notifications.getAll(uid, '');
+		const data = await helpers.waitFor(async () => {
+			const all = await user.notifications.getAll(uid, '');
+			return all.includes(`welcome_${uid}`) ? all : undefined;
+		});
 		meta.config.welcomeNotification = '';
 
 		assert(data.includes(`welcome_${uid}`), data);

@@ -11,6 +11,7 @@ const Topics = require('../src/topics');
 const Categories = require('../src/categories');
 const rewards = require('../src/rewards');
 const socketAdmin = require('../src/socket.io/admin');
+const helpers = require('./helpers');
 
 describe('rewards', () => {
 	let adminUid;
@@ -81,8 +82,10 @@ describe('rewards', () => {
 			const uid = await User.create({ username: 'poster' });
 			await Topics.post({ uid, cid, title: 'test topic', content: 'test content' });
 			await Topics.post({ uid, cid, title: 'test topic 2', content: 'test content' });
-			await setTimeout(2000);
-			const reputation = await User.getUserField(uid, 'reputation');
+			const reputation = await helpers.waitFor(async () => {
+				const rep = await User.getUserField(uid, 'reputation');
+				return parseInt(rep, 10) === 10 ? rep : undefined;
+			});
 			assert.equal(reputation, 10);
 			await Topics.post({ uid, cid, title: 'test topic 3', content: 'test content' });
 			const reputation2 = await User.getUserField(uid, 'reputation');

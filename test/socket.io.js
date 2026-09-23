@@ -117,7 +117,7 @@ describe('socket.io', () => {
 
 		it('should delete users', async () => {
 			await apiUsers.delete({ uid: adminUid }, { uid });
-			await sleep(500);
+			await helpers.waitFor(async () => !(await groups.isMember(uid, 'registered-users')));
 			const isMember = await groups.isMember(uid, 'registered-users');
 			assert(!isMember);
 		});
@@ -135,7 +135,7 @@ describe('socket.io', () => {
 		it('should delete users and their content', async () => {
 			const userData = await apiUsers.create({ uid: adminUid }, { username: 'foo2' });
 			await apiUsers.deleteMany({ uid: adminUid }, { uids: [userData.uid] });
-			await sleep(500);
+			await helpers.waitFor(async () => !(await groups.isMember(userData.uid, 'registered-users')));
 			const isMember = await groups.isMember(userData.uid, 'registered-users');
 			assert(!isMember);
 		});
@@ -772,8 +772,8 @@ describe('socket.io', () => {
 			const uid = await user.create({ username: 'forceme', password: '123345' });
 			await socketAdmin.user.forcePasswordReset({ uid: adminUid }, [uid]);
 			const pwExpiry = await user.getUserField(uid, 'passwordExpiry');
-			const sleep = util.promisify(setTimeout);
-			await sleep(500);
+			// wait until the clock has advanced past the (immediate) expiry
+			await helpers.waitFor(() => pwExpiry < Date.now());
 			assert(pwExpiry > then && pwExpiry < Date.now());
 		});
 

@@ -1387,8 +1387,10 @@ describe('Topic\'s', () => {
 		it('should mark topic notifications read', async () => {
 			await apiTopics.follow({ uid: adminUid }, { tid: tid });
 			const data = await topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid });
-			await sleep(2500);
-			let count = await User.notifications.getUnreadCount(adminUid);
+			let count = await helpers.waitFor(async () => {
+				const c = await User.notifications.getUnreadCount(adminUid);
+				return c === 1 ? c : undefined;
+			});
 			assert.strictEqual(count, 1);
 			await socketTopics.markTopicNotificationsRead({ uid: adminUid }, [tid]);
 			count = await User.notifications.getUnreadCount(adminUid);
@@ -1521,6 +1523,8 @@ describe('Topic\'s', () => {
 
 			const unreadTids = await topics.getUnreadTids({ cid: 0, uid: uid });
 
+			// Give the async notification job time to run, then confirm the
+			// deleted topic's tid never appears as unread
 			await sleep(2000);
 			const [_unreadTids, topicData] = await Promise.all([
 				topics.getUnreadTids({ cid: 0, uid: uid }),

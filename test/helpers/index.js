@@ -9,6 +9,21 @@ const request = require('../../src/request');
 
 const helpers = module.exports;
 
+helpers.waitFor = async function (fn, { timeout = 10000, interval = 100, message } = {}) {
+	const start = Date.now();
+	for (;;) {
+		const result = await fn();
+		if (result) {
+			return result;
+		}
+		if (Date.now() - start >= timeout) {
+			throw new Error(message || `waitFor timed out after ${timeout}ms`);
+		}
+		// eslint-disable-next-line no-await-in-loop
+		await new Promise((resolve) => setTimeout(resolve, interval));
+	}
+};
+
 helpers.getCsrfToken = async (jar) => {
 	const { body } = await request.get(`${nconf.get('url')}/api/config`, {
 		jar,
@@ -190,4 +205,4 @@ helpers.createFolder = async function (path, folderName, jar, csrf_token) {
 	});
 };
 
-require('../../src/promisify')(helpers);
+require('../../src/promisify')(helpers, ['waitFor']);

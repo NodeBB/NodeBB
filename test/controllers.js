@@ -1287,7 +1287,12 @@ describe('Controllers', () => {
 				await Promise.all(types.map(async (type) => {
 					await api.users.generateExport({ uid: fooUid, ip: '127.0.0.1' }, { uid: fooUid, type });
 				}));
-				await sleep(10000);
+				// Exports run in forked child processes; the per-type lock is
+				// released on exit, so wait for that instead of a fixed sleep
+				await Promise.all(types.map((type) => helpers.waitFor(
+					async () => !(await db.isObjectField('locks', `export:${fooUid}${type}`)),
+					{ timeout: 30000 }
+				)));
 				jar = (await helpers.loginUser('foo', 'barbar')).jar;
 			});
 
@@ -1325,9 +1330,9 @@ describe('Controllers', () => {
 			};
 			const notification = await notifications.create(notifData);
 			await notifications.push(notification, fooUid);
-			await sleep(2500);
-			const { response, body } = await request.get(`${nconf.get('url')}/api/notifications`, {
-				jar,
+			const { response, body } = await helpers.waitFor(async () => {
+				const res = await request.get(`${nconf.get('url')}/api/notifications`, { jar });
+				return res.response.statusCode === 200 && res.body.notifications && res.body.notifications[0] ? res : undefined;
 			});
 			assert.equal(response.statusCode, 200);
 			assert(body);
@@ -1433,8 +1438,10 @@ describe('Controllers', () => {
 				jar,
 			});
 			assert.equal(response.statusCode, 200);
-			await sleep(500);
-			const viewcount = await user.getUserField(fooUid, 'profileviews');
+			const viewcount = await helpers.waitFor(async () => {
+				const count = await user.getUserField(fooUid, 'profileviews');
+				return count > 0 ? count : undefined;
+			});
 			assert(viewcount > 0);
 		});
 
