@@ -78,7 +78,7 @@ module.exports = function (Groups) {
 			roomData.map(r => r.roomId),
 			await Promise.all(roomData.map(r => Groups.isMemberOfAny(uid, r.groups)))
 		);
-		const roomIds = roomData.filter(r => isMemberOfAny[r.roomId]).map(r => r.roomId);
+		const roomIds = roomData.filter(r => !isMemberOfAny[r.roomId]).map(r => r.roomId);
 		await messaging.leaveRooms(uid, roomIds);
 	}
 

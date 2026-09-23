@@ -803,18 +803,6 @@ Flags.update = async function (flagId, uid, changeset) {
 		});
 		await notifications.push(notifObj, [assigneeId]);
 	};
-	const isAssignable = async function (assigneeId) {
-		let allowed = await user.isAdminOrGlobalMod(assigneeId);
-
-		// Mods are also allowed to be assigned, if flag target is post in uid's moderated cid
-		if (!allowed && current.type === 'post') {
-			const cid = await posts.getCidByPid(current.targetId);
-			allowed = await user.isModerator(assigneeId, cid);
-		}
-
-		return allowed;
-	};
-
 	async function rescindNotifications(match) {
 		const nids = await db.getSortedSetScan({ key: 'notifications', match: `${match}*` });
 		return notifications.rescind(nids);
@@ -844,7 +832,7 @@ Flags.update = async function (flagId, uid, changeset) {
 					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
 				}
 			/* eslint-disable-next-line */
-			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
+			} else if (!await Flags.canView(flagId, parseInt(changeset[prop], 10))) {
 				delete changeset[prop];
 			} else {
 				if (current[prop]) {
@@ -1013,6 +1001,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			targetDisplayname: targetDisplayname,
 		});
 	} else if (flagObj.type === 'message') {
+		uids = admins;
 		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
 		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);

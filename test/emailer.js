@@ -45,6 +45,13 @@ describe('emailer', () => {
 		server.listen(4000, done);
 	});
 
+	it('should return wellknownservices', () => {
+		const services = Emailer.listServices();
+		assert(Array.isArray(services));
+		assert(services.length > 0);
+		assert(services.includes('SES'), services);
+	});
+
 	// TODO: test sendmail here at some point
 
 	it('plugin hook should work', (done) => {

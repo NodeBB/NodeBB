@@ -595,6 +595,10 @@ Notifications.merge = async function (notifications) {
 				case 'post-queue':
 					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
 					break;
+
+				default:
+					notifObj.bodyShort = `[[notifications:merged-notifications, ${set.length}]]`;
+					break;
 			}
 
 			// Filter out duplicates
