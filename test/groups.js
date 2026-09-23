@@ -874,6 +874,44 @@ describe('Groups', () => {
 				});
 			});
 		});
+
+		describe('public chat rooms restricted to groups', () => {
+			const messaging = require('../src/messaging');
+			let uid;
+
+			async function createRoomFor(groupNames) {
+				const roomId = await messaging.newRoom(adminUid, {
+					type: 'public',
+					roomName: utils.generateUUID(),
+					groups: groupNames,
+				});
+				await messaging.loadRoom(uid, { roomId });
+				assert(await messaging.isUserInRoom(uid, roomId));
+				return roomId;
+			}
+
+			before(async () => {
+				uid = await User.create({ username: 'public-room-leaver' });
+				await Groups.create({ name: 'room-group-a' });
+				await Groups.create({ name: 'room-group-b' });
+			});
+
+			beforeEach(async () => {
+				await Groups.join(['room-group-a', 'room-group-b'], uid);
+			});
+
+			it('should remove the user from a room they can no longer enter', async () => {
+				const roomId = await createRoomFor(['room-group-a']);
+				await Groups.leave('room-group-a', uid);
+				assert.strictEqual(await messaging.isUserInRoom(uid, roomId), false);
+			});
+
+			it('should keep the user in a room another of their groups still lets them into', async () => {
+				const roomId = await createRoomFor(['room-group-a', 'room-group-b']);
+				await Groups.leave('room-group-a', uid);
+				assert.strictEqual(await messaging.isUserInRoom(uid, roomId), true);
+			});
+		});
 	});
 
 	describe('.leaveAllGroups()', () => {
