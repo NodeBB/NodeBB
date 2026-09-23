@@ -202,6 +202,8 @@ async function setupMockDefaults() {
 	meta.config.postDelay = 0;
 	meta.config.initialPostDelay = 0;
 	meta.config.newbiePostDelay = 0;
+	meta.config.passwordResetDelay = 0; // skip anti-enumeration sleep in tests
+	meta.config.emailChangeDelay = 0; // skip anti-brute-force sleep in tests
 	meta.config.autoDetectLang = 0;
 	meta.config.activitypubProbeTimeout = 30000;
 	meta.config.postQueue = 0;

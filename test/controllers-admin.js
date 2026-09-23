@@ -2,6 +2,8 @@
 
 const async = require('async');
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const nconf = require('nconf');
 
 const db = require('./mocks/databasemock');
@@ -297,22 +299,23 @@ describe('Admin Controllers', () => {
 		assert(body);
 	});
 
-	it('should load /admin/users/csv', (done) => {
+	it('should load /admin/users/csv', async () => {
 		const socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.exportUsersCSV({ uid: adminUid }, {}, (err) => {
-			assert.ifError(err);
-			setTimeout(async () => {
-				const { response, body } = await request.get(`${nconf.get('url')}/api/admin/users/csv`, {
-					jar: jar,
-					headers: {
-						referer: `${nconf.get('url')}/admin/manage/users`,
-					},
-				});
-				assert.equal(response.statusCode, 200);
-				assert(body);
-				done();
-			}, 2000);
+		const csvPath = path.join(nconf.get('base_dir'), 'build/export', 'users.csv');
+		const start = Date.now();
+		await new Promise((resolve, reject) => {
+			socketAdmin.user.exportUsersCSV({ uid: adminUid }, {}, (err) => (err ? reject(err) : resolve()));
 		});
+		// wait for the async export to rewrite the CSV file
+		await helpers.waitFor(async () => (await fs.promises.stat(csvPath)).mtimeMs > start);
+		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/users/csv`, {
+			jar: jar,
+			headers: {
+				referer: `${nconf.get('url')}/admin/manage/users`,
+			},
+		});
+		assert.equal(response.statusCode, 200);
+		assert(body);
 	});
 
 	it('should return 403 if no referer', async () => {

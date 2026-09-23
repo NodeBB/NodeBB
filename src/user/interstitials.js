@@ -70,8 +70,9 @@ Interstitials.email = async (data) => {
 					}),
 				]);
 
-				if (!isPasswordCorrect) {
-					await sleep(2000);
+				const emailChangeDelay = meta.config.emailChangeDelay ?? 2000;
+				if (!isPasswordCorrect && emailChangeDelay > 0) {
+					await sleep(emailChangeDelay);
 				}
 
 				// Changing or removing an existing email is not allowed if email edits are disabled.

@@ -1393,10 +1393,10 @@ describe('User', () => {
 		});
 
 		it('should ban user temporarily', async () => {
-			await User.bans.ban(testUserUid, Date.now() + 2000);
+			await User.bans.ban(testUserUid, Date.now() + 500);
 			let isBanned = await User.bans.isBanned(testUserUid);
 			assert.equal(isBanned, true);
-			await setTimeout(3000);
+			await helpers.waitFor(async () => !(await User.bans.isBanned(testUserUid)));
 			isBanned = await User.bans.isBanned(testUserUid);
 			assert.equal(isBanned, false);
 			await User.bans.unban(testUserUid);
@@ -1475,9 +1475,10 @@ describe('User', () => {
 
 		it('should unban user properly if only "banned" field is requested', async () => {
 			const testUid = await User.create({ username: 'bannedUser3' });
-			await User.bans.ban(testUid, Date.now() + 2000);
+			await User.bans.ban(testUid, Date.now() + 500);
 			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), true);
-			await setTimeout(3000);
+			// wait for the temporary ban to expire
+			await helpers.waitFor(async () => !(await User.bans.isBanned(testUid)));
 			await User.getUserFields(testUid, ['uid', 'banned']); // loading their data unbans the user
 			assert.strictEqual(await db.isSortedSetMember('users:banned', testUid), false);
 		});

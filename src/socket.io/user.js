@@ -43,13 +43,20 @@ SocketUser.reset.send = async function (socket, email) {
 			email: email,
 		});
 	}
+
+	const resetDelay = meta.config.passwordResetDelay ?? 2500;
+	const delay = async () => {
+		if (resetDelay > 0) {
+			await sleep(resetDelay + (utils.secureRandom(0, 500) - 250));
+		}
+	};
 	try {
 		await user.reset.send(email);
 		await logEvent('[[success:success]]');
-		await sleep(2500 + (utils.secureRandom(0, 500) - 250));
+		await delay();
 	} catch (err) {
 		await logEvent(err.message);
-		await sleep(2500 + (utils.secureRandom(0, 500) - 250));
+		await delay();
 		const internalErrors = ['[[error:invalid-email]]', '[[error:reset-rate-limited]]'];
 		if (!internalErrors.includes(err.message)) {
 			throw err;

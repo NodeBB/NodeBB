@@ -1201,9 +1201,12 @@ describe('Post\'s', () => {
 			await apiTopics.reply({ uid: queueUid }, { content: 'first queued reply', tid: topicData.tid });
 			await sleep(5);
 			await apiTopics.reply({ uid: queueUid }, { content: 'second queued reply', tid: topicData.tid });
-			await sleep(2000);
 
-			const { unread } = await user.notifications.get(globalModUid);
+			const { unread } = await helpers.waitFor(async () => {
+				const notifs = await user.notifications.get(globalModUid);
+				const queued = notifs.unread.filter(n => n && n.type === 'post-queue' && n.mergeId && n.mergeId.endsWith(`-uid-${queueUid}`));
+				return queued.length === 1 ? notifs : undefined;
+			});
 			const queued = unread.filter(n => n && n.type === 'post-queue' && n.mergeId && n.mergeId.endsWith(`-uid-${queueUid}`));
 			assert.strictEqual(queued.length, 1);
 		});

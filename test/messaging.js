@@ -537,8 +537,10 @@ describe('Messaging Library', () => {
 			await db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), mocks.users.herp.uid);
 
 			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'second chat message **bold** text' }, 'foo');
-			await sleep(3000);
-			const data = await User.notifications.get(mocks.users.herp.uid);
+			const data = await helpers.waitFor(async () => {
+				const notifs = await User.notifications.get(mocks.users.herp.uid);
+				return notifs.unread[0] ? notifs : undefined;
+			});
 			assert(data.unread[0]);
 			const notification = data.unread[0];
 			assert.strictEqual(notification.bodyShort, `New message in <strong>Room ${roomId}</strong>`);
