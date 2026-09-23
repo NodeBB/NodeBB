@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "ইমেইল নিশ্চিত করা হয়েছে",
     "email-confirmed-message": "আপনার ইমেইল যাচাই করার জন্য আপনাকে ধন্যবাদ। আপনার অ্যাকাউন্টটি এখন সম্পূর্ণরূপে সক্রিয়।",
     "email-confirm-error-message": "আপনার ইমেল ঠিকানার বৈধতা যাচাইয়ে একটি সমস্যা হয়েছে। সম্ভবত কোডটি ভুল ছিল অথবা কোডের মেয়াদ শেষ হয়ে গিয়েছে।",

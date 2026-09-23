@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Il tuo post in coda è stato rifiutato per il seguente motivo: \"%1\"",
     "post-queue-notify": "Il post in coda ha ricevuto una notifica: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",

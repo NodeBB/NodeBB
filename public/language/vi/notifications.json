@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Bài đăng của bạn đã bị từ chối vì lý do sau: \"%1\"",
     "post-queue-notify": "Bài đăng đang chờ xử lý đã nhận được thông báo: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Đã Xác Nhận Email",
     "email-confirmed-message": "Cảm ơn bạn đã xác nhận email. Tài khoản của bạn được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có lẽ mã không hợp lệ hoặc đã hết hạn.",

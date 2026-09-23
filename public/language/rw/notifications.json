@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Email Yemejwe",
     "email-confirmed-message": "Urakoze kugaragaza ko email yawe ikora. Ubu ngubu konte yawe irakora nta kabuza.",
     "email-confirm-error-message": "Havutse ikibazo mu gushaka kumenya niba email yawe ikora. Ushobora kuba wakoresheje kode itari yo cyangwa se yarengeje igihe.",

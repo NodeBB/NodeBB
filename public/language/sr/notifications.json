@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Е-пошта је потврђена.",
     "email-confirmed-message": "Хвала на овери ваше е-поште. Ваш налог је сада у потпуности активан.",
     "email-confirm-error-message": "Дошло је до проблема са овером ваше е-поште. Можда је код неисправан или је истекао.",

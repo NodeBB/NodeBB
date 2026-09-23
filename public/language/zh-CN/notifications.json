@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "您的待发布帖子因以下原因被拒绝：\"%1\"",
     "post-queue-notify": "队列中的帖子收到通知：\"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已完全激活。",
     "email-confirm-error-message": "验证的您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",

@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "電子信箱已確認",
     "email-confirmed-message": "感謝您驗證您的電子信箱。您的帳戶現已完全啟用。",
     "email-confirm-error-message": "驗證的您電子信箱地址時出現了問題。可能是因為驗證碼無效或已過期。",

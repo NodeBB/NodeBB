@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Электронная почта подтверждена",
     "email-confirmed-message": "Спасибо за подтверждение адреса электронной почты. Ваша учётная запись активирована.",
     "email-confirm-error-message": "Ошибка проверки адреса электронной почты. Возможно, код подтверждения введён неправильно или у него истёк срок действия.",

@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "အောက်ပါ အကြောင်းရင်းကြောင့် သင့်တန်းစီနေသော ပို့စ်ကို ငြင်းပယ်လိုက်ပါပြီ: \"%1\"",
     "post-queue-notify": "တန်းစီနေသော ပို့စ်မှ အသိပေးချက် ရရှိသည်: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "အီးမေးလ် အတည်ပြုပြီးပါပြီ",
     "email-confirmed-message": "အီးမေးလ်ကို အတည်ပြုပေးသည့်အတွက် ကျေးဇူးတင်ပါသည်။ သင့်အကောင့်ကို ယခု အပြည့်အဝ အသက်သွင်းလိုက်ပါပြီ။",
     "email-confirm-error-message": "သင့်အီးမေးလ်လိပ်စာကို အတည်ပြုရာတွင် ပြဿနာရှိနေပါသည်။ ကုဒ် မှားယွင်းနေခြင်း သို့မဟုတ် သက်တမ်းကုန်ဆုံးသွားခြင်း ဖြစ်နိုင်သည်။",

@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "El. paštas patvirtintas",
     "email-confirmed-message": "Dėkojame už el. pašto patvirtinimą. Jūsų paskyra pilnai aktyvuota.",
     "email-confirm-error-message": "Įvyko klaida mėginant patvirtinti Jūsų el. pašto adresą. Galbūt kodas yra neteisingas, arba nebegalioajantis.",

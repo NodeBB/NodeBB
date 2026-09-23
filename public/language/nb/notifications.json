@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Innlegget ditt har blitt avvist på grunn av \"%1\"",
     "post-queue-notify": "Varsel mottatt for innlegg i kø:<br/>\"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "E-post bekreftet",
     "email-confirmed-message": "Takk for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
     "email-confirm-error-message": "Det oppsto et problem under validering av e-posten din. Koden kan ha vært ugyldig eller ha utløpt.",

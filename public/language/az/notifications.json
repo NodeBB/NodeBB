@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "E-poçt təsdiqləndi",
     "email-confirmed-message": "E-poçtunuzu təsdiq etdiyiniz üçün təşəkkür edirik. Artıq hesabınız tam aktivləşdirilib.",
     "email-confirm-error-message": "E-poçt ünvanınızı təsdiqkləyərkən problem baş verdi. Ola bilsin ki, kod etibarsız olub və ya vaxtı keçib.",

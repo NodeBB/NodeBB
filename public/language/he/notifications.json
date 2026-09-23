@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "הפוסט הממתין שלך נדחה מהסיבה הבאה: \"%1\"",
     "post-queue-notify": "פוסט ממתין קיבל התראה: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",

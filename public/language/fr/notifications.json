@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Votre publication a été rejetée pour le motif suivant : \"%1\"",
     "post-queue-notify": "Une publication en attente a reçu une notification : \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "E-mail vérifié",
     "email-confirmed-message": "Merci pour la validation de votre adresse e-mail. Votre compte est désormais activé.",
     "email-confirm-error-message": "Problème lors de la vérification de votre e-mail. Le code est peut-être invalide ou expiré.",

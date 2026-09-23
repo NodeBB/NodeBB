@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "キューに入れた投稿が次の理由で却下されました：「%1」",
     "post-queue-notify": "投稿キューに関する連絡：「%1」",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Eメールが確認されました",
     "email-confirmed-message": "メールアドレス検証をして頂き、ありがとうございます。あなたのアカウントは完全にアクティブになりました。",
     "email-confirm-error-message": "あなたのEメールアドレス検証に問題があります。コードが無効か、期限切れです。",

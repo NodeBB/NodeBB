@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Twój post oczekujący został odrzucony z następującego powodu: \"%1\"",
     "post-queue-notify": "Post oczekujący w kolejce otrzymał powiadomienie: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji - kod jest błędny lub przestarzały",

@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Correo electrónico confirmado",
     "email-confirmed-message": "Gracias por validar tu correo electrónico. Tu cuenta ya está completamente activa.",
     "email-confirm-error-message": "Hubo un problema al validar tu cuenta de correo electrónico. Quizá el código era erróneo o expiró...",

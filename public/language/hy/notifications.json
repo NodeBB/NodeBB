@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Էլփոստը հաստատված է",
     "email-confirmed-message": "Շնորհակալություն ձեր էլփոստը հաստատելու համար: Ձեր հաշիվն այժմ ամբողջությամբ ակտիվացված է:",
     "email-confirm-error-message": "Ձեր էլփոստի հասցեն վավերացնելիս խնդիր առաջացավ: Հավանաբար կոդը անվավեր է կամ ժամկետանց է:",

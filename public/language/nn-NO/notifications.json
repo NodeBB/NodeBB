@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Innlegget ditt i køen er avvist på grunn av \"%1\"",
     "post-queue-notify": "Innlegg i kø fekk eit varsel:<br/>\"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "E-post stadfesta",
     "email-confirmed-message": "Takk for at du stadfesta e-posten din. Kontoen din er no fullt aktivert.",
     "email-confirm-error-message": "Det oppstod eit problem med å stadfeste e-postadressa di. Kanskje koden var ugyldig eller utløpt.",

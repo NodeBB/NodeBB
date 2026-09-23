@@ -80,6 +80,7 @@
     "post-queue-rejected-for-reason": "Your queued post has been rejected for the following reason: \"%1\"",
     "post-queue-notify": "Queued post received a notification: \"%1\"",
     "post-queue-multiple": "There are <strong>%1</strong> posts awaiting review.",
+    "merged-notifications": "You have <strong>%1</strong> new notifications.",
     "email-confirmed": "Email confirmat",
     "email-confirmed-message": "Îți mulțumim pentru validarea emailului. Contul tău este acuma activat.",
     "email-confirm-error-message": "A fost o problemă cu activarea adresei tale de email. Poate codul de activare a fost invalid sau expirat.",
