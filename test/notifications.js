@@ -429,7 +429,7 @@ describe('Notifications', () => {
 
 			assert.strictEqual(merged.length, 2);
 			const survivor = merged.find(n => n.mergeId === 'plugin-merge|7');
-			assert.strictEqual(survivor.bodyShort, 'one');
+			assert.strictEqual(survivor.bodyShort, '[[notifications:merged-notifications, 2]]');
 			assert.strictEqual(survivor.mergeCount, 2);
 		});
 
@@ -454,10 +454,64 @@ describe('Notifications', () => {
 
 			assert.strictEqual(merged.length, 2);
 			const bare = merged.find(n => n.mergeId === 'plugin-merge');
-			assert.strictEqual(bare.bodyShort, 'bare one');
+			assert.strictEqual(bare.bodyShort, '[[notifications:merged-notifications, 2]]');
 			assert.strictEqual(bare.mergeCount, 2);
 			const differentiated = merged.find(n => n.mergeId === 'plugin-merge|7');
 			assert.strictEqual(differentiated.mergeCount, 2);
+		});
+
+		it('should give a plugin-registered mergeId a generic bodyShort with the merged count', async () => {
+			const method = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'g1', mergeId: 'plugin-merge|3', bodyShort: 'first' },
+					{ nid: 'g2', mergeId: 'plugin-merge|3', bodyShort: 'second' },
+					{ nid: 'g3', mergeId: 'plugin-merge|3', bodyShort: 'third' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', method);
+			}
+
+			assert.strictEqual(merged.length, 1);
+			assert.strictEqual(merged[0].mergeCount, 3);
+			assert.strictEqual(merged[0].bodyShort, '[[notifications:merged-notifications, 3]]');
+		});
+
+		it('should let filter:notifications.merge override the generic bodyShort', async () => {
+			const mergeIdsMethod = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			const mergeMethod = async (data) => {
+				data.notifications.forEach((n) => {
+					if (n.mergeId === 'plugin-merge') {
+						n.bodyShort = `custom ${n.mergeCount}`;
+					}
+				});
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method: mergeIdsMethod });
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.merge', method: mergeMethod });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'o1', mergeId: 'plugin-merge', bodyShort: 'first' },
+					{ nid: 'o2', mergeId: 'plugin-merge', bodyShort: 'second' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', mergeIdsMethod);
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.merge', mergeMethod);
+			}
+
+			assert.strictEqual(merged.length, 1);
+			assert.strictEqual(merged[0].bodyShort, 'custom 2');
 		});
 	});
 });
