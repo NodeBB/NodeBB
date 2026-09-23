@@ -306,8 +306,14 @@ describe('Admin Controllers', () => {
 		await new Promise((resolve, reject) => {
 			socketAdmin.user.exportUsersCSV({ uid: adminUid }, {}, (err) => (err ? reject(err) : resolve()));
 		});
-		// wait for the async export to rewrite the CSV file
-		await helpers.waitFor(async () => (await fs.promises.stat(csvPath)).mtimeMs > start);
+		// wait for the async export to rewrite the CSV file (it does not exist until the export runs)
+		await helpers.waitFor(async () => {
+			try {
+				return (await fs.promises.stat(csvPath)).mtimeMs > start;
+			} catch {
+				return undefined;
+			}
+		});
 		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/users/csv`, {
 			jar: jar,
 			headers: {

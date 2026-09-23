@@ -537,12 +537,14 @@ describe('Messaging Library', () => {
 			await db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), mocks.users.herp.uid);
 
 			await callv3API('post', `/chats/${roomId}`, { roomId: roomId, message: 'second chat message **bold** text' }, 'foo');
+			// herp has unread notifications from earlier tests in this file, so wait for the one for this room specifically
+			const isThisRoom = (n) => n.nid.startsWith(`chat_${roomId}_${mocks.users.foo.uid}_`);
 			const data = await helpers.waitFor(async () => {
 				const notifs = await User.notifications.get(mocks.users.herp.uid);
-				return notifs.unread[0] ? notifs : undefined;
+				return notifs.unread.some(isThisRoom) ? notifs : undefined;
 			});
-			assert(data.unread[0]);
-			const notification = data.unread[0];
+			const notification = data.unread.find(isThisRoom);
+			assert(notification);
 			assert.strictEqual(notification.bodyShort, `New message in <strong>Room ${roomId}</strong>`);
 			assert(notification.nid.startsWith(`chat_${roomId}_${mocks.users.foo.uid}_`));
 			assert.strictEqual(notification.path, `${nconf.get('relative_path')}/chats/${roomId}`);
