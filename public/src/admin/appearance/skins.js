@@ -2,8 +2,8 @@
 
 
 define('admin/appearance/skins', [
-	'translator', 'alerts', 'settings',
-], function (translator, alerts, settings) {
+	'translator', 'alerts', 'settings', 'hooks', 'slugify',
+], function (translator, alerts, settings, hooks, slugify) {
 	const Skins = {};
 
 	Skins.init = function () {
@@ -12,6 +12,15 @@ define('admin/appearance/skins', [
 			method: 'get',
 			url: 'https://bootswatch.com/api/5.json',
 		}).done((bsData) => {
+			hooks.on('action:settings.sorted-list.loaded', (data) => {
+				if (data.hash === 'custom-skins') {
+					// slugify all custom-skin ids after load
+					$('.custom-skin-settings [data-type="list"] [data-theme]').each((i, el) => {
+						$(el).attr('data-theme', slugify($(el).attr('data-theme')));
+					});
+					highlightSelectedTheme(app.config.bootswatchSkin);
+				}
+			});
 			settings.load('custom-skins', $('.custom-skin-settings'));
 			Skins.render(bsData);
 		});
