@@ -363,7 +363,8 @@ Controller.getCategoryModerators = async (req, res) => {
 };
 
 Controller.getAdmins = async (req, res) => {
-	const adminUids = await user.getAdminsandGlobalMods();
+	const adminsAndGlobalMods = await groups.getMembersOfGroups(['administrators', groups.GLOBAL_MODERATORS]);
+	const adminUids = [...new Set(adminsAndGlobalMods.flat())];
 
 	const actors = await Promise.all(adminUids.map(async (uid) => {
 		return await activitypub.mocks.actors.user(uid);

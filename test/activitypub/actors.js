@@ -8,6 +8,7 @@ const meta = require('../../src/meta');
 const install = require('../../src/install');
 const categories = require('../../src/categories');
 const user = require('../../src/user');
+const groups = require('../../src/groups');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const activitypub = require('../../src/activitypub');
@@ -677,6 +678,31 @@ describe('Controllers', () => {
 			assert(body2 && body2.aliases && body2.links);
 			assert(body2.aliases.includes(nconf.get('url')));
 			assert(body2.links.some(item => item.rel === 'self' && item.type === 'application/activity+json' && item.href === `${nconf.get('url')}/actor`));
+		});
+	});
+
+	describe('Administrators Collection endpoint', () => {
+		let adminUid;
+		let globalModUid;
+
+		before(async () => {
+			adminUid = await user.create({ username: slugify(utils.generateUUID().slice(0, 8)) });
+			globalModUid = await user.create({ username: slugify(utils.generateUUID().slice(0, 8)) });
+			await groups.join('administrators', adminUid);
+			await groups.join(groups.GLOBAL_MODERATORS, globalModUid);
+		});
+
+		it('should list administrators and global moderators as actors', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/actor/admins`, {
+				headers: {
+					Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				},
+			});
+
+			assert.strictEqual(response.statusCode, 200);
+			const ids = (body.orderedItems || body.items).map(actor => actor.id);
+			assert(ids.includes(`${nconf.get('url')}/uid/${adminUid}`));
+			assert(ids.includes(`${nconf.get('url')}/uid/${globalModUid}`));
 		});
 	});
 
