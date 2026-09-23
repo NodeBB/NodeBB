@@ -105,7 +105,7 @@
     "notificationType-post-queue": "Når eit nytt innlegg vert lagt i køen",
     "notificationType-new-post-flag": "Når eit innlegg vert rapportert",
     "notificationType-new-user-flag": "Når ein brukar vert rapportert",
-    "notificationType-new-message-flag": "When a chat message is flagged",
+    "notificationType-new-message-flag": "Når ein chat-melding blir rapportert",
     "notificationType-new-reward": "Når du får ein ny utmerking",
     "activitypub.announce": "<strong>%1</strong> delte din post i <strong>%2</strong> til sine følgarar.",
     "activitypub.announce-dual": "<strong>%1</strong> og <strong>%2</strong> delte innlegget ditt i <strong>%3</strong>til sine følgarar.",

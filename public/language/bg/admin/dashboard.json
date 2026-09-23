@@ -37,8 +37,8 @@
 	"running-in-development": "Форумът работи в режим за разработчици, така че може да бъде уязвим. Моля, свържете се със системния си администратор.",
 	"localhost-warning": "NodeBB е настроен с адрес на localhost. Това трябва да бъде променено с истинския домейн.",
 	"url-mismatch-warning": "Осъществен е достъп до администраторския панел от адрес, който е различен от настроения в config.json. (Заявен: %1, Настроен: %2)",
-	"trust-proxy-warning": "This request arrived through a reverse proxy, but 'trust_proxy' is not enabled in config.json. Every visitor looks like the same IP address to NodeBB.",
-	"trust-proxy-tooltip": "Rate limits, IP bans, registration queue matching and unique visitor counts all rely on the client IP address. Set 'trust_proxy' in config.json when NodeBB is behind a proxy that strips or overwrites X-Forwarded-For from untrusted clients.",
+	"trust-proxy-warning": "Тази заявка е пристигнала чрез обратен сървър-посредник, но „trust_proxy“ не е включено в config.json. За NodeBB всеки посетител ще изглежда сякаш използва един и същ IP адрес.",
+	"trust-proxy-tooltip": "Ограниченията на броя заявки, блокирането по IP адрес, опашката за регистрации и броя на уникални посетители зависят от IP адреса на клиента. Задайте „trust_proxy“ в config.json когато NodeBB е зад сървър-посредник, който премахва или пренаписва X-Forwarded-For от недоверените клиенти.",
 	"latest-lookup-failed": "Не може да бъде извършена проверка за последната налична версия на NodeBB",
 
 	"notices": "Забележки",
