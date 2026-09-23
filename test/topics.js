@@ -1640,6 +1640,38 @@ describe('Topic\'s', () => {
 			assert.strictEqual(tags[0], 'plugins');
 		});
 
+		it('should not delete a tag when the new name cleans up to the same tag', async () => {
+			const { caseSensitiveTags } = meta.config;
+			meta.config.caseSensitiveTags = 0;
+			try {
+				const { topicData } = await topics.post({ uid: adminUid, tags: ['samename'], title: 'topic tagged with samename', content: 'topic content', cid: topic.categoryId });
+
+				await socketAdmin.tags.rename({ uid: adminUid }, [{
+					value: 'samename',
+					newName: 'SameName',
+				}]);
+
+				assert.deepStrictEqual(await topics.getTagTids('samename', 0, -1), [String(topicData.tid)]);
+				assert.strictEqual(await db.sortedSetScore('tags:topic:count', 'samename'), 1);
+				assert.deepStrictEqual(await topics.getTopicTags(topicData.tid), ['samename']);
+			} finally {
+				meta.config.caseSensitiveTags = caseSensitiveTags;
+			}
+		});
+
+		it('should rename a tag to a different case when tags are case sensitive', async () => {
+			const { topicData } = await topics.post({ uid: adminUid, tags: ['casetag'], title: 'topic tagged with casetag', content: 'topic content', cid: topic.categoryId });
+
+			await socketAdmin.tags.rename({ uid: adminUid }, [{
+				value: 'casetag',
+				newName: 'CaseTag',
+			}]);
+
+			assert.deepStrictEqual(await topics.getTagTids('casetag', 0, -1), []);
+			assert.deepStrictEqual(await topics.getTagTids('CaseTag', 0, -1), [String(topicData.tid)]);
+			assert.deepStrictEqual(await topics.getTopicTags(topicData.tid), ['CaseTag']);
+		});
+
 		it('should return related topics', (done) => {
 			const meta = require('../src/meta');
 			meta.config.maximumRelatedTopics = 2;
