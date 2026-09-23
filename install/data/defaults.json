@@ -88,6 +88,7 @@
     "bookmarkThreshold": 5,
     "autoDetectLang": 1,
     "logIPs": 1,
+    "analyticsRetention": 90,
     "reputation:disabled": 0,
     "downvote:disabled": 0,
     "disableSignatures": 0,
