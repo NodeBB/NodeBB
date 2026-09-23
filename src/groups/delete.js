@@ -51,8 +51,34 @@ module.exports = function (Groups) {
 			`zset:groups:createtime`,
 			...groupNames.map(groupName => `group:${groupName}:members`),
 		]);
+		await removeGroupsFromPublicRooms(groupNames);
 		plugins.hooks.fire('action:groups.destroy', { groups: groupsData });
 	};
+
+	async function removeGroupsFromPublicRooms(groupNames) {
+		const messaging = require('../messaging');
+		const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
+		const roomData = (await messaging.getRoomsData(roomIds)).filter(
+			room => room && Array.isArray(room.groups) && room.groups.some(group => groupNames.includes(group))
+		);
+		await Promise.all(roomData.map(async (room) => {
+			const groups = room.groups.filter(group => !groupNames.includes(group));
+			if (!groups.length) {
+				groups.push('administrators');
+			}
+			await db.setObjectField(`chat:room:${room.roomId}`, 'groups', JSON.stringify(groups));
+
+			const uids = await messaging.getUidsInRoom(room.roomId, 0, -1);
+			const [isMembers, isAdmins] = await Promise.all([
+				Promise.all(uids.map(uid => Groups.isMemberOfAny(uid, groups))),
+				Groups.isMembers(uids, 'administrators'),
+			]);
+			const uidsToRemove = uids.filter((uid, index) => !isMembers[index] && !isAdmins[index]);
+			if (uidsToRemove.length) {
+				await messaging.leaveRoom(uidsToRemove, room.roomId);
+			}
+		}));
+	}
 
 	async function removeGroupsFromPostEditors(groupNames) {
 		await Promise.all(groupNames.map(
