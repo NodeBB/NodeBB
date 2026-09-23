@@ -594,6 +594,26 @@ describe('Flags', () => {
 			assert.ok(!changes.includes('[[global:guest]]'));
 		});
 
+		it('should not assign a chat message flag to a global moderator', async () => {
+			const globalModUid = await User.create({ username: 'message-flag-assignee' });
+			await Groups.join('Global Moderators', globalModUid);
+
+			const roomId = await messaging.newRoom(uid1, { uids: [uid3] });
+			const { mid } = await messaging.sendMessage({ uid: uid3, roomId, content: 'private chat content' });
+			const { flagId } = await Flags.create('message', mid, uid1, 'spam');
+
+			await Flags.update(flagId, adminUid, {
+				assignee: globalModUid,
+			});
+			assert.strictEqual(false, await Flags.canView(flagId, globalModUid));
+			assert.notStrictEqual(String(globalModUid), String(await db.getObjectField(`flag:${flagId}`, 'assignee')));
+
+			await Flags.update(flagId, adminUid, {
+				assignee: adminUid,
+			});
+			assert.strictEqual(String(adminUid), String(await db.getObjectField(`flag:${flagId}`, 'assignee')));
+		});
+
 		it('should do nothing when you attempt to set a bogus state', async () => {
 			await Flags.update(1, adminUid, {
 				state: 'hocus pocus',
