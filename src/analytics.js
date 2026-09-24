@@ -44,30 +44,28 @@ Analytics.init = async function () {
 	});
 
 	if (runJobs) {
-		await cron.addJob({
-			name: 'prune:ip:recent',
-			cronTime: '*/30 * * * *',
-			onTick: async () => {
-				await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
-			},
-		});
-	}
-
-	if (runJobs) {
 		pubsub.on('analytics:publish', (data) => {
 			incrementProperties(total, data.local);
 		});
 	}
+};
 
-	if (runJobs) {
-		await cron.addJob({
-			name: 'prune:analytics',
-			cronTime: '0 3 * * *',
-			onTick: async () => {
-				await Analytics.prune();
-			},
-		});
-	}
+Analytics.startJobs = async function () {
+	await cron.addJob({
+		name: 'prune:ip:recent',
+		cronTime: '*/30 * * * *',
+		onTick: async () => {
+			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
+		},
+	});
+
+	await cron.addJob({
+		name: 'prune:analytics',
+		cronTime: '0 3 * * *',
+		onTick: async () => {
+			await Analytics.prune();
+		},
+	});
 };
 
 Analytics.prune = async function () {
