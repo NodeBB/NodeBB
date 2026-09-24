@@ -1033,6 +1033,42 @@ describe('Messaging Library', () => {
 		});
 	});
 
+	describe('pinned messages', () => {
+		let ownerUid;
+		let earlyUid;
+		let lateUid;
+		let roomId;
+		let oldMid;
+		let newMid;
+
+		before(async () => {
+			ownerUid = await User.create({ username: 'pinowner' });
+			earlyUid = await User.create({ username: 'pinearly' });
+			lateUid = await User.create({ username: 'pinlate' });
+			roomId = await Messaging.newRoom(ownerUid, { uids: [earlyUid] });
+			const now = Date.now();
+			({ mid: oldMid } = await Messaging.addMessage({
+				uid: ownerUid, roomId, content: 'before join', timestamp: now - 10000,
+			}));
+			await db.sortedSetAdd(`chat:room:${roomId}:uids`, [now - 20000, now - 5000], [earlyUid, lateUid]);
+			({ mid: newMid } = await Messaging.addMessage({
+				uid: ownerUid, roomId, content: 'after join', timestamp: now,
+			}));
+			await Messaging.pinMessage(oldMid, roomId);
+			await Messaging.pinMessage(newMid, roomId);
+		});
+
+		it('should not return pinned messages sent before a user joined a private room', async () => {
+			const messages = await Messaging.getPinnedMessages(roomId, lateUid, 0, 49);
+			assert.deepStrictEqual(messages.map(m => m.messageId), [newMid]);
+		});
+
+		it('should return all pinned messages to users who were in the room', async () => {
+			const messages = await Messaging.getPinnedMessages(roomId, earlyUid, 0, 49);
+			assert.deepStrictEqual(messages.map(m => m.messageId).sort(), [oldMid, newMid].sort());
+		});
+	});
+
 	describe('.markRead()', () => {
 		const plugins = require('../src/plugins');
 		let markReadRoomId;

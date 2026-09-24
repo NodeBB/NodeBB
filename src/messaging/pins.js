@@ -31,10 +31,17 @@ module.exports = function (Messaging) {
 			return [];
 		}
 
-		const messageData = await Messaging.getMessagesData(mids, uid, roomId, true);
+		const canView = await Messaging.canViewMessage(mids, roomId, uid);
+		const indices = mids.map((mid, i) => start + i).filter((index, i) => canView[i]);
+		const visibleMids = mids.filter((mid, i) => canView[i]);
+		if (!visibleMids.length) {
+			return [];
+		}
+
+		const messageData = await Messaging.getMessagesData(visibleMids, uid, roomId, true);
 		messageData.forEach((msg, i) => {
 			if (msg) {
-				msg.index = start + i;
+				msg.index = indices[i];
 			}
 		});
 		return messageData;
