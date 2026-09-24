@@ -64,5 +64,7 @@
 	"info-plugins-additional": "プラグインは投稿共有用の追加ネットワークを追加できます。",
 	"privacy": "プライバシー",
 	"log-ips": "IPアドレスを記録する",
-	"log-ips-help": "有効にすると、分析のためにすべての訪問者のIPアドレスがソート済みセットに保存されます。これはユニークな訪問者数の算出に使用されます。"
+	"log-ips-help": "有効にすると、分析のためにすべての訪問者のIPアドレスがソート済みセットに保存されます。これはユニークな訪問者数の算出に使用されます。",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }

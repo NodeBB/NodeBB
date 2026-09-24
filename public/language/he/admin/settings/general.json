@@ -64,5 +64,7 @@
 	"info-plugins-additional": "תוספים יכולים להוסיף כאן רשתות נוספות לשיתוף פוסטים.",
 	"privacy": "פרטיות",
 	"log-ips": "רישום כתובות IP",
-	"log-ips-help": "זהכאשר האפשרות מופעלת, כתובות ה-IP של כל המבקרים נשמרות בקבוצה ממוינת לצורכי ניתוח נתונים. הדבר משמש לחישוב מספר המבקרים הייחודיים."
+	"log-ips-help": "זהכאשר האפשרות מופעלת, כתובות ה-IP של כל המבקרים נשמרות בקבוצה ממוינת לצורכי ניתוח נתונים. הדבר משמש לחישוב מספר המבקרים הייחודיים.",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }

@@ -64,5 +64,7 @@
 	"info-plugins-additional": "Eklentiler, paylaşımda bulunmak için ek sosyal ağlar ekleyebilir.",
 	"privacy": "Privacy",
 	"log-ips": "Log IP Addresses",
-	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors.",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }

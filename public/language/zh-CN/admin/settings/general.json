@@ -64,5 +64,7 @@
 	"info-plugins-additional": "插件可以添加额外的社交网络，用于分享帖子。",
 	"privacy": "隐私",
 	"log-ips": "记录 IP 地址",
-	"log-ips-help": "启用此功能后，所有访问者的 IP 地址将存储在一个排序集合中，用于分析目的。这用于计算独立访问者数量。"
+	"log-ips-help": "启用此功能后，所有访问者的 IP 地址将存储在一个排序集合中，用于分析目的。这用于计算独立访问者数量。",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }

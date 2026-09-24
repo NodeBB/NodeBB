@@ -64,5 +64,7 @@
 	"info-plugins-additional": "Plugin có thể thêm các mạng bổ sung để chia sẻ bài đăng.",
 	"privacy": "Riêng tư",
 	"log-ips": "Ghi nhật ký địa chỉ IP",
-	"log-ips-help": "Khi được bật, địa chỉ IP của tất cả khách truy cập sẽ được lưu trữ trong một bộ được sắp xếp cho mục đích phân tích. Điều này được sử dụng để tính toán số lượng khách truy cập."
+	"log-ips-help": "Khi được bật, địa chỉ IP của tất cả khách truy cập sẽ được lưu trữ trong một bộ được sắp xếp cho mục đích phân tích. Điều này được sử dụng để tính toán số lượng khách truy cập.",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }

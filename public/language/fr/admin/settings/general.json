@@ -64,5 +64,7 @@
 	"info-plugins-additional": "Les plugins peuvent ajouter de nouveaux réseaux pour partager des messages.",
 	"privacy": "Confidentialité",
 	"log-ips": "Enregistrer les adresses IP",
-	"log-ips-help": "Lorsque cette option est activée, les adresses IP de tous les visiteurs sont enregistrées dans un ensemble trié à des fins d'analyse. Ces données servent à calculer le nombre de visiteurs uniques."
+	"log-ips-help": "Lorsque cette option est activée, les adresses IP de tous les visiteurs sont enregistrées dans un ensemble trié à des fins d'analyse. Ces données servent à calculer le nombre de visiteurs uniques.",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }

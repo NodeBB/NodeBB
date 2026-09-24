@@ -64,5 +64,7 @@
 	"info-plugins-additional": "Добавките могат да добавят допълнителни мрежи за споделяне на публикации.",
 	"privacy": "Поверителност",
 	"log-ips": "Записване на IP адреси в журнала",
-	"log-ips-help": "Когато това е включено, IP адресите на всички посетители ще се съхраняват в сортирана колекция за аналитични цели. Това се използва за изчисляване на броя на уникалните посетители."
+	"log-ips-help": "Когато това е включено, IP адресите на всички посетители ще се съхраняват в сортирана колекция за аналитични цели. Това се използва за изчисляване на броя на уникалните посетители.",
+	"analytics-retention": "Analytics Retention (days)",
+	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
 }
