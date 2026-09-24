@@ -1526,4 +1526,99 @@ describe('Flags', () => {
 		});
 
 	});
+
+	describe('user flag access', () => {
+		let globalModUid;
+		let userManagerUid;
+		let targetUid;
+		let flagId;
+		let globalModJar;
+		let userManagerJar;
+
+		before(async () => {
+			globalModUid = await User.create({ username: 'user-flag-global-mod', password: 'abcdef' });
+			await Groups.join('Global Moderators', globalModUid);
+			userManagerUid = await User.create({ username: 'user-flag-user-manager', password: 'abcdef' });
+			await Privileges.admin.give(['admin:users'], userManagerUid);
+			targetUid = await User.create({ username: 'user-flag-target' });
+
+			({ flagId } = await api.flags.create({ uid: uid1 }, { type: 'user', id: targetUid, reason: 'spam' }));
+			await sleep(2000);
+
+			({ jar: globalModJar } = await helpers.loginUser('user-flag-global-mod', 'abcdef'));
+			({ jar: userManagerJar } = await helpers.loginUser('user-flag-user-manager', 'abcdef'));
+		});
+
+		after(async () => {
+			await Privileges.admin.rescind(['admin:users'], userManagerUid);
+			await Groups.leave('Global Moderators', globalModUid);
+		});
+
+		it('should let admin:users holders view a user flag, but not global moderators', async () => {
+			assert.strictEqual(await Flags.canView(flagId, userManagerUid), true);
+			assert.strictEqual(await Flags.canView(flagId, globalModUid), false);
+			assert.strictEqual(await Flags.canView(flagId, adminUid), true);
+		});
+
+		it('should notify admin:users holders of a new user flag, but not global moderators', async () => {
+			const nid = `flag:user:${targetUid}:${uid1}`;
+			assert(await db.isSortedSetMember(`uid:${userManagerUid}:notifications:unread`, nid));
+			assert(await db.isSortedSetMember(`uid:${adminUid}:notifications:unread`, nid));
+			assert(!await db.isSortedSetMember(`uid:${globalModUid}:notifications:unread`, nid));
+		});
+
+		it('should open the flag detail page only for those who can view the flag', async () => {
+			let { response } = await request.get(`${nconf.get('url')}/api/flags/${flagId}`, { jar: userManagerJar });
+			assert.strictEqual(response.statusCode, 200);
+
+			({ response } = await request.get(`${nconf.get('url')}/api/flags/${flagId}`, { jar: globalModJar }));
+			assert.strictEqual(response.statusCode, 404);
+		});
+
+		it('should list user flags only to those who can view them', async () => {
+			const { body: managerList } = await request.get(`${nconf.get('url')}/api/flags`, { jar: userManagerJar });
+			assert(managerList.flags.some(flag => flag.flagId === flagId));
+			assert(managerList.flags.every(flag => flag.type === 'user'));
+
+			const { body: globalModList } = await request.get(`${nconf.get('url')}/api/flags`, { jar: globalModJar });
+			assert(globalModList.flags.every(flag => flag.type !== 'user'));
+
+			const { body: filteredList } = await request.get(`${nconf.get('url')}/api/flags?type=user`, { jar: globalModJar });
+			assert.strictEqual(filteredList.flags.length, 0);
+		});
+
+		it('should list both user flags and moderated category flags to a moderator who holds admin:users', async () => {
+			const { postData } = await Topics.post({
+				cid: category.cid,
+				uid: uid3,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			const { flagId: postFlagId } = await Flags.create('post', postData.pid, uid1, 'spam');
+			await Privileges.admin.give(['admin:users'], moderatorUid);
+			try {
+				const { body } = await request.get(`${nconf.get('url')}/api/flags`, { jar });
+				const flagIds = body.flags.map(flag => flag.flagId);
+				assert(flagIds.includes(flagId));
+				assert(flagIds.includes(postFlagId));
+			} finally {
+				await Privileges.admin.rescind(['admin:users'], moderatorUid);
+			}
+		});
+
+		it('should let admin:users holders read and update a user flag through the write API', async () => {
+			let { response } = await helpers.request('get', `/api/v3/flags/${flagId}`, { jar: userManagerJar });
+			assert.strictEqual(response.statusCode, 200);
+
+			({ response } = await helpers.request('get', `/api/v3/flags/${flagId}`, { jar: globalModJar }));
+			assert.strictEqual(response.statusCode, 404);
+
+			await api.flags.update({ uid: userManagerUid }, { flagId, state: 'wip' });
+			assert.strictEqual(await db.getObjectField(`flag:${flagId}`, 'state'), 'wip');
+			await assert.rejects(
+				api.flags.update({ uid: globalModUid }, { flagId, state: 'resolved' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+	});
 });

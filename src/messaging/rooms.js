@@ -360,7 +360,7 @@ module.exports = function (Messaging) {
 			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1, userCount: countMap[id] }]),
 			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0, userCount: countMap[id] }]),
 		]);
-		roomUidCache.del(roomIds.map(id => `chat:room:${id}:users`));
+		roomUidCache.del(roomIds.map(id => `chat:room:${id}:uids:online:all`));
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
