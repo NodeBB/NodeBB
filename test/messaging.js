@@ -1033,6 +1033,38 @@ describe('Messaging Library', () => {
 		});
 	});
 
+	describe('unread count pushes', () => {
+		it('should follow membership changes in a private room', async () => {
+			const ownerUid = await User.create({ username: utils.generateUUID().slice(0, 10) });
+			const leaverUid = await User.create({ username: utils.generateUUID().slice(0, 10) });
+			const lateUid = await User.create({ username: utils.generateUUID().slice(0, 10) });
+			const roomId = await Messaging.newRoom(ownerUid, { uids: [leaverUid] });
+
+			const pushedTo = [];
+			const { pushUnreadCount } = Messaging;
+			Messaging.pushUnreadCount = (uids, data) => {
+				pushedTo.push(uids.map(String));
+				return pushUnreadCount(uids, data);
+			};
+			try {
+				let message = await Messaging.sendMessage({ uid: ownerUid, roomId, content: 'before the leave' });
+				await Messaging.notifyUsersInRoom(ownerUid, roomId, message);
+
+				await Messaging.leaveRoom([leaverUid], roomId);
+				await Messaging.addUsersToRoom(ownerUid, [lateUid], roomId);
+
+				message = await Messaging.sendMessage({ uid: ownerUid, roomId, content: 'after the leave' });
+				await Messaging.notifyUsersInRoom(ownerUid, roomId, message);
+			} finally {
+				Messaging.pushUnreadCount = pushUnreadCount;
+			}
+
+			const lastPush = pushedTo.pop();
+			assert(!lastPush.includes(String(leaverUid)));
+			assert(lastPush.includes(String(lateUid)));
+		});
+	});
+
 	describe('.markRead()', () => {
 		const plugins = require('../src/plugins');
 		let markReadRoomId;
