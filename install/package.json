@@ -95,7 +95,7 @@
         "logrotate-stream": "0.2.9",
         "lru-cache": "11.5.3",
         "mime": "4.1.0",
-        "minimizer-webpack-plugin": "5.11.0",
+        "minimizer-webpack-plugin": "5.12.0",
         "mkdirp": "3.0.1",
         "mongodb": "7.6.0",
         "morgan": "1.12.1",
