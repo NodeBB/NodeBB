@@ -1052,6 +1052,7 @@ describe('Messaging Library', () => {
 
 			assert.strictEqual(await Messaging.isUserInRoom(memberUid, roomId), false);
 			assert.strictEqual(await Messaging.isUserInRoom(mocks.users.foo.uid, roomId), true);
+		});
 	});
     
   describe('unread count pushes', () => {
@@ -1083,7 +1084,7 @@ describe('Messaging Library', () => {
 			const lastPush = pushedTo.pop();
 			assert(!lastPush.includes(String(leaverUid)));
 			assert(lastPush.includes(String(lateUid)));
-    	});
+		});
 	});
 
 	describe('.markRead()', () => {
