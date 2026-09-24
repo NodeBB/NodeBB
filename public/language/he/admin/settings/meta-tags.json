@@ -1,8 +1,8 @@
 {
-	"custom-tags": "Custom Meta Tags",
-	"description": "Add global <code>&lt;meta&gt;</code> tags to every page. These are appended to the default tags and can be overridden per-page. Page-specific tags take precedence over the ones defined here. Open Graph keys (e.g. <code>og:title</code>) use the <code>property</code> attribute, all others use <code>name</code>.",
-	"key": "Key",
-	"content": "Content",
-	"remove": "Remove",
-	"add-tag": "Add Tag"
+	"custom-tags": "תגי מטא מותאמות אישית",
+	"description": "הוספת תגיות <code>&lt;meta&gt;</code> גלובליות לכל דף. תגיות אלו מתווספות לתגיות ברירת המחדל וניתן לדרוס אותן ברמת הדף. לתגיות ספציפיות לדף יש קדימות על פני אלו המוגדרות כאן. מפתחות Open Graph (לדוגמא<code>og:title</code>) משתמשים במאפיין <code>property</code> וכל השאר משתמשים ב-<code>name</code>.",
+	"key": "מפתח",
+	"content": "תוכן",
+	"remove": "הסרה",
+	"add-tag": "הוספת תג"
 }

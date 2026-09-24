@@ -1,8 +1,8 @@
 {
-	"custom-tags": "Custom Meta Tags",
-	"description": "Add global <code>&lt;meta&gt;</code> tags to every page. These are appended to the default tags and can be overridden per-page. Page-specific tags take precedence over the ones defined here. Open Graph keys (e.g. <code>og:title</code>) use the <code>property</code> attribute, all others use <code>name</code>.",
-	"key": "Key",
-	"content": "Content",
-	"remove": "Remove",
-	"add-tag": "Add Tag"
+	"custom-tags": "Benutzerdefinierte Meta-Tags",
+	"description": "Füge weltweite <code>&lt;meta&gt;</code> Tags zu jeder Seite hinzu. Diese werden an die Standard-Tags angehängt und können seitenweise überschrieben werden.  Seitenspezifische Tags haben Vorrang vor den hier definierten. Open-Graph-Schlüssel (z. B. <code>og:title</code>) verwenden das Attribut <code>Eigenschaft</code>, alle anderen das Attribut<code>Name</code>.",
+	"key": "Schlüssel",
+	"content": "Inhalt",
+	"remove": "Entfernen",
+	"add-tag": "Tag hinzufügen"
 }

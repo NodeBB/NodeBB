@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Tylko zaproszenia administratora",
 	"registration-type.disabled": "Brak rejestracji",
 	"registration-type.help": "Standardowa - Użytkownicy mogą się rejestrować na stronie /register.<br/>\nTylko zaproszenia - Użytkownicy mogą zapraszać innych poprzez stronę <a href=\"%1/users\" target=\"_blank\">users</a>.<br/>\nTylko zaproszenia administratora - Tylko administratorzy mogą zapraszać innych poprzez stronę <a href=\"%1/users\" target=\"_blank\">users</a> oraz <a href=\"%1/admin/manage/users\">admin/manage/users</a>.<br/>\nBrak rejestracji - Brak rejestracji użytkowników.<br/>",
-	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
+	"registration-approval-type.help": "Standardowa - Użytkownicy są rejestrowani od razu.<br/>\nZatwierdzenie przez administratora - Rejestracje użytkowników są umieszczane w <a href=\"%1/registration-queue\">kolejce do akceptacji</a> dla administratorów.<br/>\nZatwierdzenie administratora dla IP - Standardowa dla nowych użytkowników, a zatwierdzenie administratora dla adresów IP, które już mają konto.<br/>",
 	"registration-queue-auto-approve-time": "Czas automatycznej akceptacji",
 	"registration-queue-auto-approve-time-help": "Godzin do automatycznej akceptacji użytkownika. 0 by wyłączyć.",
 	"registration-queue-show-average-time": "Pokazuj użytkownikom średni czas, jaki zajmuje akceptacja nowego użytkownika",

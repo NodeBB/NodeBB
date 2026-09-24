@@ -1,8 +1,8 @@
 {
-	"custom-tags": "Custom Meta Tags",
-	"description": "Add global <code>&lt;meta&gt;</code> tags to every page. These are appended to the default tags and can be overridden per-page. Page-specific tags take precedence over the ones defined here. Open Graph keys (e.g. <code>og:title</code>) use the <code>property</code> attribute, all others use <code>name</code>.",
-	"key": "Key",
-	"content": "Content",
-	"remove": "Remove",
-	"add-tag": "Add Tag"
+	"custom-tags": "Персонализирани мета-етикети",
+	"description": "Добавяйте глобални <code>&lt;meta&gt;</code> етикети към всяка страница. Те се поставят след стандартните етикети във всяка страница и могат да бъдат заменени при желание за отделни страници. Етикетите специфични за страницата имат предимство пред тези описани тук. Ключовете от Open Graph (например <code>og:title</code>) използват свойството <code>property</code>, а всички останали използват <code>name</code>.",
+	"key": "Ключ",
+	"content": "Съдържание",
+	"remove": "Премахване",
+	"add-tag": "Добавяне на етикет"
 }

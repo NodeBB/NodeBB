@@ -1,8 +1,8 @@
 {
 	"custom-tags": "Custom Meta Tags",
 	"description": "Add global <code>&lt;meta&gt;</code> tags to every page. These are appended to the default tags and can be overridden per-page. Page-specific tags take precedence over the ones defined here. Open Graph keys (e.g. <code>og:title</code>) use the <code>property</code> attribute, all others use <code>name</code>.",
-	"key": "Key",
-	"content": "Content",
-	"remove": "Remove",
+	"key": "Klucz",
+	"content": "Zawartość",
+	"remove": "Usuń",
 	"add-tag": "Add Tag"
 }

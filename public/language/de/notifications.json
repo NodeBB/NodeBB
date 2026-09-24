@@ -80,7 +80,7 @@
     "post-queue-rejected-for-reason": "Dein Beitrag in der Warteschlange wurde abgelehnt, weil: \"%1\"",
     "post-queue-notify": "Der in der Warteschlange stehende Beitrag hat eine Benachrichtigung bekommen: „%1“",
     "post-queue-multiple": "Es warten <strong>%1</strong> Beiträge auf Überprüfung.",
-    "merged-notifications": "You have <strong>%1</strong> new notifications.",
+    "merged-notifications": "Du hast <strong>%1</strong> neue Benachrichtigungen.",
     "email-confirmed": "E-Mail bestätigt",
     "email-confirmed-message": "Vielen Dank für deine E-Mail-Validierung. Dein Konto ist nun vollständig aktiviert.",
     "email-confirm-error-message": "Es gab ein Problem bei der Validierung deiner E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",

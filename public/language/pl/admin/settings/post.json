@@ -17,7 +17,7 @@
 	"restrictions.post-queue-rep-threshold": "Reputacja wymagana do ominięcia kolejki postów",
 	"restrictions.groups-exempt-from-post-queue": "Wybierz grupy, które powinny być zwolnione z kolejki postów",
 	"restrictions-new.post-queue": "Włącz restrykcje dla nowych użytkowników",
-	"restrictions.post-queue-help": "Włączenie kolejki postów spowoduje umieszczenie postów nowych użytkowników w kolejce do zatwierdzenia",
+	"restrictions.post-queue-help": "Włączenie kolejki postów spowoduje umieszczenie postów nowych użytkowników w kolejce do akceptacji",
 	"restrictions-new.post-queue-help": "Włączenie restrykcji dla nowych użytkowników ustawi restrykcje na ich wpisy.",
 	"restrictions.seconds-between": "Liczba sekund pomiędzy wpisami",
 	"restrictions.seconds-edit-after": "Przez ile sekund posty mogą być edytowane (ustaw 0 aby wyłączyć)",

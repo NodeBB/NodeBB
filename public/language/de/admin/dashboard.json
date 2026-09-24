@@ -37,8 +37,8 @@
 	"running-in-development": "Das Forum wurde im Entwicklermodus gestartet. Das Forum könnte potenziellen Gefahren ausgeliefert sein. Bitte kontaktiere den Systemadministrator.",
 	"localhost-warning": "NodeBB ist mit einer „localhost“-URL konfiguriert. Diese sollte auf deine tatsächliche Domain aktualisiert werden.",
 	"url-mismatch-warning": "Auf das Admin-Panel wurde über eine andere URL zugegriffen als die, die in der Datei „config.json“ konfiguriert ist. (Angefordert: %1, Konfiguriert: %2)",
-	"trust-proxy-warning": "This request arrived through a reverse proxy, but 'trust_proxy' is not enabled in config.json. Every visitor looks like the same IP address to NodeBB.",
-	"trust-proxy-tooltip": "Rate limits, IP bans, registration queue matching and unique visitor counts all rely on the client IP address. Set 'trust_proxy' in config.json when NodeBB is behind a proxy that strips or overwrites X-Forwarded-For from untrusted clients.",
+	"trust-proxy-warning": "Diese Anfrage kam über einen Reverse-Proxy, aber „trust_proxy“ ist in der config.json nicht aktiviert. Für NodeBB sieht jeder Besucher so aus, als hätte er dieselbe IP-Adresse.",
+	"trust-proxy-tooltip": "Ratenbegrenzungen, IP-Sperren, der Abgleich der Registrierungswarteschlange und die Zählung der eindeutigen Besucher basieren alle auf der IP-Adresse des Clients. Setze „trust_proxy“ in der Datei „config.json“, wenn NodeBB hinter einem Proxy läuft, der den Header „X-Forwarded-For“ von nicht vertrauenswürdigen Clients entfernt oder überschreibt.",
 	"latest-lookup-failed": "Die neueste verfügbare Version von NodeBB konnte nicht abgerufen werden",
 
 	"notices": "Hinweise",

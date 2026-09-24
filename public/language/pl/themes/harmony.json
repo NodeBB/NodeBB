@@ -5,7 +5,7 @@
 	"dark": "Ciemny",
 	"collapse": "Zwiń",
 	"expand": "Rozwiń",
-	"sidebar-toggle": "Przełącz panele boczne",
+	"sidebar-toggle": "Przełącz paski boczne",
 	"login-register-to-search": "Aby wyszukiwać zaloguj się lub zarejestruj.",
 	"settings.title": "Ustawienia stylu",
 	"settings.enableQuickReply": "Włącz szybkie odpowiadanie",
@@ -20,6 +20,6 @@
 	"settings.autohideBottombar": "Ukryj nawigację dla mobilnych z automatu",
 	"settings.autohideBottombar.help": "Belka dla mobilnych zostanie ukryta przy przewijaniu strony w dół",
 	"settings.topMobilebar": "Przenieś nawigację mobilną na szczyt",
-	"settings.openSidebars": "Otwórz panele boczne",
+	"settings.openSidebars": "Otwórz paski boczne",
 	"settings.chatModals": "Włącz okienka czatu"
 }
