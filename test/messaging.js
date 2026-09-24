@@ -1037,6 +1037,290 @@ describe('Messaging Library', () => {
 		});
 	});
 
+	describe('member groups', () => {
+		let adminUid;
+		let ownerUid;
+		let memberUid;
+		let groupName;
+		let otherGroupName;
+
+		async function createRoom(memberGroups, uids = []) {
+			const { roomId } = await api.chats.create({ uid: ownerUid, session: {} }, { uids, memberGroups });
+			return roomId;
+		}
+
+		before(async () => {
+			adminUid = mocks.users.foo.uid;
+			ownerUid = await User.create({ username: 'mgowner' });
+			memberUid = await User.create({ username: 'mgmember' });
+			groupName = `mg-${utils.generateUUID().slice(0, 8)}`;
+			otherGroupName = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name: groupName });
+			await Groups.create({ name: otherGroupName });
+			await Groups.update(groupName, { chatContactable: 1 });
+			await Groups.update(otherGroupName, { chatContactable: 1 });
+			await Groups.join(groupName, memberUid);
+		});
+
+		it('should not let a regular user link a group that does not allow it', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			await assert.rejects(createRoom([name]), { message: '[[error:no-privileges]]' });
+		});
+
+		it('should not link excluded groups, even for administrators', async () => {
+			await assert.rejects(
+				api.chats.create({ uid: adminUid, session: {} }, { uids: [], memberGroups: ['registered-users'] }),
+				{ message: '[[error:cant-add-group-to-chat-room]]' }
+			);
+			await assert.rejects(
+				api.chats.create({ uid: adminUid, session: {} }, { uids: [], memberGroups: ['cid:0:privileges:groups:chat'] }),
+				{ message: '[[error:cant-add-group-to-chat-room]]' }
+			);
+		});
+
+		it('should not link groups to a public room', async () => {
+			await assert.rejects(
+				api.chats.create({ uid: adminUid, session: {} }, {
+					type: 'public', uids: [], groups: ['registered-users'], memberGroups: [groupName],
+				}),
+				{ message: '[[error:invalid-data]]' }
+			);
+		});
+
+		it('should create a private room with only a group and add its members', async () => {
+			const roomId = await createRoom([groupName]);
+			const room = await Messaging.getRoomData(roomId);
+			assert.deepStrictEqual(room.memberGroups, [groupName]);
+			assert(await Messaging.isUserInRoom(memberUid, roomId));
+			assert(await Messaging.isRoomOwner(ownerUid, roomId));
+			assert(!await Messaging.isRoomOwner(memberUid, roomId));
+			const roomIds = await db.getSortedSetRange(`uid:${memberUid}:chat:rooms`, 0, -1);
+			assert(roomIds.includes(String(roomId)));
+		});
+
+		it('should add users who join the group later, with the full history', async () => {
+			const roomId = await createRoom([groupName]);
+			const { mid } = await Messaging.addMessage({ uid: ownerUid, roomId, content: 'before join' });
+			const lateUid = await User.create({ username: 'mglate' });
+			await Groups.join(groupName, lateUid);
+
+			assert(await Messaging.isUserInRoom(lateUid, roomId));
+			assert(await Messaging.canViewMessage(mid, roomId, lateUid));
+			const messages = await Messaging.getMessages({
+				callerUid: lateUid, uid: lateUid, roomId, start: 0, isNew: false,
+			});
+			assert(messages.some(message => message.messageId === mid));
+		});
+
+		it('should give full history to an existing member who joins the group', async () => {
+			const invitedUid = await User.create({ username: 'mginvited' });
+			const roomId = await createRoom([groupName]);
+			const { mid } = await Messaging.addMessage({ uid: ownerUid, roomId, content: 'before invite' });
+			await Messaging.addUsersToRoom(ownerUid, [invitedUid], roomId);
+			await db.sortedSetAdd(`chat:room:${roomId}:uids`, Date.now() + 1000, invitedUid);
+			assert(!await Messaging.canViewMessage(mid, roomId, invitedUid));
+
+			await Groups.join(groupName, invitedUid);
+			assert(await Messaging.canViewMessage(mid, roomId, invitedUid));
+		});
+
+		it('should remove users who leave the group', async () => {
+			const leaverUid = await User.create({ username: 'mgleaver' });
+			await Groups.join(groupName, leaverUid);
+			const roomId = await createRoom([groupName]);
+			assert(await Messaging.isUserInRoom(leaverUid, roomId));
+
+			await Groups.leave(groupName, leaverUid);
+			assert(!await Messaging.isUserInRoom(leaverUid, roomId));
+			assert(!await db.isSetMember(`chat:room:${roomId}:uids:groups`, leaverUid));
+		});
+
+		it('should keep users who were added directly when they leave the group', async () => {
+			const directUid = await User.create({ username: 'mgdirect' });
+			await Groups.join(groupName, directUid);
+			const roomId = await createRoom([groupName], [directUid]);
+
+			await Groups.leave(groupName, directUid);
+			assert(await Messaging.isUserInRoom(directUid, roomId));
+		});
+
+		it('should keep a group member who is later added directly when they leave the group', async () => {
+			const laterDirectUid = await User.create({ username: 'mglaterdirect' });
+			await Groups.join(groupName, laterDirectUid);
+			const roomId = await createRoom([groupName]);
+			await Messaging.addUsersToRoom(ownerUid, [laterDirectUid], roomId);
+
+			await Groups.leave(groupName, laterDirectUid);
+			assert(await Messaging.isUserInRoom(laterDirectUid, roomId));
+		});
+
+		it('should keep users who are still in another linked group', async () => {
+			const bothUid = await User.create({ username: 'mgboth' });
+			await Groups.join([groupName, otherGroupName], bothUid);
+			const roomId = await createRoom([groupName, otherGroupName]);
+
+			await Groups.leave(groupName, bothUid);
+			assert(await Messaging.isUserInRoom(bothUid, roomId));
+			await Groups.leave(otherGroupName, bothUid);
+			assert(!await Messaging.isUserInRoom(bothUid, roomId));
+		});
+
+		it('should let the room owner replace the linked groups', async () => {
+			const otherUid = await User.create({ username: 'mgother' });
+			await Groups.join(otherGroupName, otherUid);
+			const roomId = await createRoom([groupName]);
+
+			await api.chats.update({ uid: ownerUid }, { roomId, memberGroups: [otherGroupName] });
+			const room = await Messaging.getRoomData(roomId);
+			assert.deepStrictEqual(room.memberGroups, [otherGroupName]);
+			assert(!await Messaging.isUserInRoom(memberUid, roomId));
+			assert(await Messaging.isUserInRoom(otherUid, roomId));
+			assert(!await db.isSortedSetMember(`group:${groupName}:chat:rooms`, roomId));
+			assert(await db.isSortedSetMember(`group:${otherGroupName}:chat:rooms`, roomId));
+		});
+
+		it('should not let the room owner remove a member who joined through a group', async () => {
+			const roomId = await createRoom([groupName]);
+			await assert.rejects(
+				api.chats.kick({ uid: ownerUid }, { roomId, uids: [memberUid] }),
+				{ message: '[[error:cant-remove-group-member-from-chat-room]]' }
+			);
+			assert(await Messaging.isUserInRoom(memberUid, roomId));
+		});
+
+		it('should still let the room owner remove members who were added directly', async () => {
+			const directUid = await User.create({ username: 'mgkicked' });
+			const roomId = await createRoom([groupName], [directUid]);
+			await api.chats.kick({ uid: ownerUid }, { roomId, uids: [directUid] });
+			assert(!await Messaging.isUserInRoom(directUid, roomId));
+		});
+
+		it('should let the room owner keep a group they could not link themselves', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			const roomId = await createRoom([groupName]);
+			await api.chats.update({ uid: adminUid }, { roomId, memberGroups: [groupName, name] });
+
+			await api.chats.update({ uid: ownerUid }, { roomId, memberGroups: [name] });
+			const room = await Messaging.getRoomData(roomId);
+			assert.deepStrictEqual(room.memberGroups, [name]);
+			await assert.rejects(
+				api.chats.update({ uid: ownerUid }, { roomId, memberGroups: [name, 'administrators'] }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
+		it('should not let other room members change the linked groups', async () => {
+			const roomId = await createRoom([groupName]);
+			await assert.rejects(
+				api.chats.update({ uid: memberUid }, { roomId, memberGroups: [] }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
+		it('should follow a group rename', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			const newName = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			await Groups.update(name, { chatContactable: 1 });
+			const roomId = await createRoom([name]);
+
+			await Groups.update(name, { name: newName });
+			const room = await Messaging.getRoomData(roomId);
+			assert.deepStrictEqual(room.memberGroups, [newName]);
+
+			const renamedUid = await User.create({ username: 'mgrenamed' });
+			await Groups.join(newName, renamedUid);
+			assert(await Messaging.isUserInRoom(renamedUid, roomId));
+		});
+
+		it('should unlink a deleted group and remove its members', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			await Groups.update(name, { chatContactable: 1 });
+			const deletedMemberUid = await User.create({ username: 'mgdeleted' });
+			await Groups.join(name, deletedMemberUid);
+			const roomId = await createRoom([name]);
+
+			await Groups.destroy(name);
+			const room = await Messaging.getRoomData(roomId);
+			assert.deepStrictEqual(room.memberGroups, []);
+			assert(!await Messaging.isUserInRoom(deletedMemberUid, roomId));
+			assert(await Messaging.isUserInRoom(ownerUid, roomId));
+			assert(!await db.exists(`group:${name}:chat:rooms`));
+		});
+
+		it('should remove the room from the group index when the room is deleted', async () => {
+			const roomId = await createRoom([groupName]);
+			await Messaging.deleteRooms([roomId]);
+			assert(!await db.isSortedSetMember(`group:${groupName}:chat:rooms`, roomId));
+			assert(!await db.exists(`chat:room:${roomId}:uids:groups`));
+		});
+
+		it('should mark members who joined through a group and not offer to kick them', async () => {
+			const directUid = await User.create({ username: 'mglisted' });
+			const roomId = await createRoom([groupName], [directUid]);
+			const { users } = await api.chats.users({ uid: ownerUid }, { roomId });
+			const member = users.find(u => u.uid === memberUid);
+			const direct = users.find(u => u.uid === directUid);
+			assert.strictEqual(member.viaGroup, true);
+			assert.strictEqual(member.canKick, false);
+			assert.strictEqual(direct.viaGroup, false);
+			assert.strictEqual(direct.canKick, true);
+		});
+
+		it('should show the group, not its members, in the room title', async () => {
+			const roomId = await createRoom([groupName]);
+			const ownerRoom = await Messaging.loadRoom(ownerUid, { roomId });
+			assert(ownerRoom.chatWithMessage.includes(groupName));
+			assert(!ownerRoom.chatWithMessage.includes('mgmember'));
+			assert.strictEqual(ownerRoom.usernames, groupName);
+
+			const memberRoom = await Messaging.loadRoom(memberUid, { roomId });
+			assert(memberRoom.chatWithMessage.includes('mgowner'));
+			assert(memberRoom.chatWithMessage.includes(groupName));
+
+			const { rooms } = await Messaging.getRecentChats(ownerUid, ownerUid, 0, 49);
+			const recent = rooms.find(room => room.roomId === roomId);
+			assert.strictEqual(recent.usernames, groupName);
+		});
+
+		it('should list the groups a user may link', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+
+			const userGroups = await Messaging.getLinkableGroups(ownerUid);
+			assert(userGroups.includes(groupName));
+			assert(!userGroups.includes(name));
+
+			const adminGroups = await Messaging.getLinkableGroups(adminUid);
+			assert(adminGroups.includes(groupName));
+			assert(adminGroups.includes(name));
+			assert(adminGroups.includes('administrators'));
+			assert(!adminGroups.includes('registered-users'));
+		});
+
+		it('should keep the list of contactable groups in sync', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			const newName = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			await Groups.update(name, { chatContactable: 1 });
+			assert(await db.isSortedSetMember('groups:chatContactable', name));
+
+			await Groups.update(name, { name: newName });
+			assert(!await db.isSortedSetMember('groups:chatContactable', name));
+			assert(await db.isSortedSetMember('groups:chatContactable', newName));
+
+			await Groups.update(newName, { chatContactable: 0 });
+			assert(!await db.isSortedSetMember('groups:chatContactable', newName));
+
+			await Groups.update(newName, { chatContactable: 1 });
+			await Groups.destroy(newName);
+			assert(!await db.isSortedSetMember('groups:chatContactable', newName));
+		});
+	});
+
 	describe('.markRead()', () => {
 		const plugins = require('../src/plugins');
 		let markReadRoomId;

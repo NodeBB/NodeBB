@@ -4,6 +4,7 @@ const _ = require('lodash');
 const winston = require('winston');
 
 const db = require('../database');
+const batch = require('../batch');
 const user = require('../user');
 const groups = require('../groups');
 const plugins = require('../plugins');
@@ -67,6 +68,15 @@ module.exports = function (Messaging) {
 					} catch (err) {
 						winston.error(err.stack);
 						data.groups = [];
+					}
+				}
+
+				if (data.hasOwnProperty('memberGroups') || !fields.length || fields.includes('memberGroups')) {
+					try {
+						data.memberGroups = JSON.parse(data.memberGroups || '[]');
+					} catch (err) {
+						winston.error(err.stack);
+						data.memberGroups = [];
 					}
 				}
 			}
@@ -136,6 +146,10 @@ module.exports = function (Messaging) {
 			await Messaging.addSystemMessage('user-join', uid, roomId);
 		}
 
+		if (!isPublic && Array.isArray(data.memberGroups) && data.memberGroups.length) {
+			await Messaging.addMemberGroups(roomId, data.memberGroups);
+		}
+
 		return roomId;
 	};
 
@@ -149,10 +163,14 @@ module.exports = function (Messaging) {
 		}
 
 		await Promise.all(roomIds.map(async (roomId) => {
-			const uids = await db.getSortedSetMembers(`chat:room:${roomId}:uids`);
+			const [uids, room] = await Promise.all([
+				db.getSortedSetMembers(`chat:room:${roomId}:uids`),
+				Messaging.getRoomData(roomId, ['memberGroups']),
+			]);
 			const keys = uids
 				.map(uid => `uid:${uid}:chat:rooms`)
-				.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
+				.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`))
+				.concat(room ? room.memberGroups.map(group => `group:${group}:chat:rooms`) : []);
 
 			await db.sortedSetsRemove(keys, roomId);
 		}));
@@ -160,6 +178,7 @@ module.exports = function (Messaging) {
 			db.deleteAll([
 				...roomIds.map(id => `chat:room:${id}`),
 				...roomIds.map(id => `chat:room:${id}:uids`),
+				...roomIds.map(id => `chat:room:${id}:uids:groups`),
 				...roomIds.map(id => `chat:room:${id}:owners`),
 				...roomIds.map(id => `chat:room:${id}:uids:online`),
 				...roomIds.map(id => `chat:room:${id}:notification:settings`),
@@ -289,6 +308,7 @@ module.exports = function (Messaging) {
 		}
 
 		await addUidsToRoom(payload.uids, roomId);
+		await db.setRemove(`chat:room:${roomId}:uids:groups`, payload.uids);
 	};
 
 	async function addUidsToRoom(uids, roomId) {
@@ -326,6 +346,10 @@ module.exports = function (Messaging) {
 
 		if (!payload.isOwner) {
 			throw new Error('[[error:cant-remove-users-from-chat-room]]');
+		}
+		const isMembersThroughGroup = await Messaging.isMemberThroughGroup(payload.uids, payload.roomId);
+		if (isMembersThroughGroup.includes(true)) {
+			throw new Error('[[error:cant-remove-group-member-from-chat-room]]');
 		}
 
 		await Messaging.leaveRoom(payload.uids, payload.roomId);
@@ -365,6 +389,7 @@ module.exports = function (Messaging) {
 				`chat:room:${roomId}:uids:online`,
 			], uids),
 			db.sortedSetsRemove(keys, roomId),
+			db.setRemove(`chat:room:${roomId}:uids:groups`, uids),
 		]);
 		if (await joinLeaveMessagesEnabled(roomId)) {
 			await Promise.all(
@@ -395,6 +420,7 @@ module.exports = function (Messaging) {
 				`uid:${uid}:chat:rooms`,
 				`uid:${uid}:chat:rooms:unread`,
 			], roomIds),
+			db.setsRemove(roomIds.map(roomId => `chat:room:${roomId}:uids:groups`), uid),
 		]);
 
 		await Promise.all(roomIds.map(async (roomId) => {
@@ -416,6 +442,119 @@ module.exports = function (Messaging) {
 			if (parseInt(newOwner, 10) > 0) {
 				await db.sortedSetAdd(`chat:room:${roomId}:owners`, Date.now(), newOwner);
 			}
+		}
+	}
+
+	Messaging.isMemberThroughGroup = async (uids, roomId) => db.isSetMembers(`chat:room:${roomId}:uids:groups`, uids);
+
+	Messaging.isLinkableGroup = groupName => ![
+		...groups.ephemeralGroups,
+		'registered-users',
+		'verified-users',
+		'unverified-users',
+		groups.BANNED_USERS,
+	].includes(groupName) && !groups.isPrivilegeGroup(groupName);
+
+	Messaging.getLinkableGroups = async (uid) => {
+		const isAdmin = await user.isAdministrator(uid);
+		const groupNames = await db.getSortedSetRange(isAdmin ? 'groups:createtime' : 'groups:chatContactable', 0, -1);
+		return groupNames.filter(Messaging.isLinkableGroup);
+	};
+
+	Messaging.addMemberGroups = async (roomId, groupNames) => {
+		const room = await Messaging.getRoomData(roomId, ['roomId', 'public', 'timestamp', 'memberGroups']);
+		if (!room || room.public) {
+			return;
+		}
+		const newGroups = _.uniq(groupNames).filter(group => !room.memberGroups.includes(group));
+		if (!newGroups.length) {
+			return;
+		}
+		await Promise.all([
+			db.setObjectField(`chat:room:${roomId}`, 'memberGroups', JSON.stringify(room.memberGroups.concat(newGroups))),
+			db.sortedSetsAdd(newGroups.map(group => `group:${group}:chat:rooms`), room.timestamp, roomId),
+		]);
+		const members = await db.getSortedSetsMembers(newGroups.map(group => `group:${group}:members`));
+		await batch.processArray(_.uniq(members.flat()), async (uids) => {
+			await addGroupMembersToRoom(uids, room);
+		}, { batch: 500 });
+	};
+
+	Messaging.removeMemberGroups = async (roomId, groupNames) => {
+		const room = await Messaging.getRoomData(roomId, ['memberGroups']);
+		if (!room) {
+			return;
+		}
+		const memberGroups = room.memberGroups.filter(group => !groupNames.includes(group));
+		await Promise.all([
+			db.setObjectField(`chat:room:${roomId}`, 'memberGroups', JSON.stringify(memberGroups)),
+			db.sortedSetsRemove(groupNames.map(group => `group:${group}:chat:rooms`), roomId),
+		]);
+		const uids = await db.getSetMembers(`chat:room:${roomId}:uids:groups`);
+		await removeGroupMembersFromRoom(uids, roomId, memberGroups);
+	};
+
+	Messaging.setMemberGroups = async (roomId, groupNames) => {
+		const room = await Messaging.getRoomData(roomId, ['memberGroups']);
+		if (!room) {
+			return;
+		}
+		const removedGroups = room.memberGroups.filter(group => !groupNames.includes(group));
+		if (removedGroups.length) {
+			await Messaging.removeMemberGroups(roomId, removedGroups);
+		}
+		await Messaging.addMemberGroups(roomId, groupNames);
+	};
+
+	Messaging.addUserToMemberGroupRooms = async (uid, groupNames) => {
+		const rooms = await getMemberGroupRooms(groupNames, ['roomId', 'timestamp']);
+		await Promise.all(rooms.map(room => addGroupMembersToRoom([uid], room)));
+	};
+
+	Messaging.removeUserFromMemberGroupRooms = async (uid, groupNames) => {
+		const rooms = await getMemberGroupRooms(groupNames, ['roomId', 'memberGroups']);
+		await Promise.all(rooms.map(room => removeGroupMembersFromRoom([uid], room.roomId, room.memberGroups)));
+	};
+
+	async function getMemberGroupRooms(groupNames, fields) {
+		const roomIds = await db.getSortedSetsMembers(groupNames.map(group => `group:${group}:chat:rooms`));
+		const rooms = await Messaging.getRoomsData(_.uniq(roomIds.flat()), fields);
+		return rooms.filter(Boolean);
+	}
+
+	async function addGroupMembersToRoom(uids, room) {
+		const { roomId } = room;
+		const isMembers = await db.isSortedSetMembers(`chat:room:${roomId}:uids`, uids);
+		const newUids = uids.filter((uid, index) => !isMembers[index]);
+		await db.sortedSetAdd(`chat:room:${roomId}:uids`, uids.map(() => room.timestamp), uids);
+		if (!newUids.length) {
+			return;
+		}
+		const now = Date.now();
+		await Promise.all([
+			db.sortedSetAdd(`chat:room:${roomId}:uids:online`, newUids.map(() => now), newUids),
+			db.setAdd(`chat:room:${roomId}:uids:groups`, newUids),
+			Messaging.addRoomToUsers(roomId, newUids, now),
+		]);
+		await updateUserCount([roomId]);
+		if (await joinLeaveMessagesEnabled(roomId)) {
+			await Promise.all(
+				newUids.map(uid => Messaging.addSystemMessage('user-join', uid, roomId))
+			);
+		}
+	}
+
+	async function removeGroupMembersFromRoom(uids, roomId, memberGroups) {
+		if (!uids.length) {
+			return;
+		}
+		const [isGroupUids, isMembers] = await Promise.all([
+			db.isSetMembers(`chat:room:${roomId}:uids:groups`, uids),
+			Promise.all(uids.map(uid => groups.isMemberOfAny(uid, memberGroups))),
+		]);
+		const uidsToRemove = uids.filter((uid, index) => isGroupUids[index] && !isMembers[index]);
+		if (uidsToRemove.length) {
+			await Messaging.leaveRoom(uidsToRemove, roomId);
 		}
 	}
 
@@ -444,14 +583,16 @@ module.exports = function (Messaging) {
 
 	Messaging.getUsersInRoomFromSet = async (set, roomId, start, stop, reverse = false) => {
 		const uids = await Messaging.getUidsInRoomFromSet(set, start, stop, reverse);
-		const [users, isOwners] = await Promise.all([
+		const [users, isOwners, isMembersThroughGroup] = await Promise.all([
 			user.getUsersFields(uids, ['uid', 'username', 'picture', 'status']),
 			Messaging.isRoomOwner(uids, roomId),
+			Messaging.isMemberThroughGroup(uids, roomId),
 		]);
 
 		return users.map((user, index) => {
 			user.index = start + index;
 			user.isOwner = isOwners[index];
+			user.viaGroup = isMembersThroughGroup[index];
 			return user;
 		});
 	};
@@ -587,8 +728,9 @@ module.exports = function (Messaging) {
 		room.canReply = canReply;
 		room.groupChat = users.length > 2;
 		room.icon = Messaging.getRoomIcon(room);
-		room.usernames = Messaging.generateUsernames(room, uid);
-		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
+		const [chatWith] = await Messaging.getMemberGroupsChatWith([room], uid);
+		room.usernames = Messaging.generateUsernames(room, uid, chatWith);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, chatWith);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

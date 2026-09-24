@@ -4,6 +4,7 @@ const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
+const groups = require('../groups');
 const meta = require('../meta');
 const messaging = require('../messaging');
 const privileges = require('../privileges');
@@ -32,6 +33,26 @@ async function rateLimitExceeded(caller, field) {
 
 	session[field] = now;
 	return false;
+}
+
+async function checkMemberGroups(uid, groupNames) {
+	if (!Array.isArray(groupNames) || groupNames.some(groupName => typeof groupName !== 'string')) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (!groupNames.every(messaging.isLinkableGroup)) {
+		throw new Error('[[error:cant-add-group-to-chat-room]]');
+	}
+	const [exists, isAdmin, groupData] = await Promise.all([
+		groups.exists(groupNames),
+		user.isAdministrator(uid),
+		groups.getGroupsFields(groupNames, ['chatContactable']),
+	]);
+	if (!exists.every(Boolean)) {
+		throw new Error('[[error:no-group]]');
+	}
+	if (!isAdmin && groupData.some(group => !group.chatContactable)) {
+		throw new Error('[[error:no-privileges]]');
+	}
 }
 
 chatsAPI.list = async (caller, { uid = caller.uid, start, stop, page, perPage } = {}) => {
@@ -66,7 +87,15 @@ chatsAPI.create = async function (caller, data) {
 		throw new Error(`[[error:wrong-parameter-type, uids, ${typeof data.uids}, Array]]`);
 	}
 
-	if (!isPublic && !data.uids.length) {
+	const memberGroups = data.memberGroups || [];
+	if (isPublic && memberGroups.length) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (memberGroups.length) {
+		await checkMemberGroups(caller.uid, memberGroups);
+	}
+
+	if (!isPublic && !data.uids.length && !memberGroups.length) {
 		throw new Error('[[error:no-users-selected]]');
 	}
 	if (isPublic && (!Array.isArray(data.groups) || !data.groups.length)) {
@@ -164,6 +193,19 @@ chatsAPI.update = async (caller, data) => {
 		if (roomData.public && isAdmin) {
 			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
 		}
+	}
+	if (data.hasOwnProperty('memberGroups')) {
+		if (roomData.public) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		if (!isAdmin && !await messaging.isRoomOwner(caller.uid, data.roomId)) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		if (!Array.isArray(data.memberGroups)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		await checkMemberGroups(caller.uid, data.memberGroups.filter(group => !roomData.memberGroups.includes(group)));
+		await messaging.setMemberGroups(data.roomId, data.memberGroups);
 	}
 	if (isAdmin) {
 		const updateData = {};
@@ -270,7 +312,7 @@ chatsAPI.users = async (caller, data) => {
 	}
 	users.forEach((user) => {
 		const isSelf = String(user.uid) === String(caller.uid);
-		user.canKick = isOwner && !isSelf;
+		user.canKick = isOwner && !isSelf && !user.viaGroup;
 		user.canToggleOwner = utils.isNumber(user.uid) && (isAdmin || isOwner) && !isSelf;
 		user.online = isSelf || onlineUids.includes(String(user.uid));
 	});

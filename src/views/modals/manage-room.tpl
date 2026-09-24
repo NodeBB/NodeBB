@@ -25,7 +25,7 @@
 	<hr />
 
 	<div class="row">
-		<div class="col-12 {{{ if (user.isAdmin && room.public) }}}col-md-6{{{ end }}}">
+		<div class="col-12 {{{ if (user.isAdmin && room.public) }}}col-md-6{{{ end }}}{{{ if canEditMemberGroups }}}col-md-6{{{ end }}}">
 			<label class="form-label">{{tx("global:users")}}</label>
 			<input component="chat/manage/user/list/search" class="form-control mb-1" type="text" placeholder="{{tx("global:user-search-prompt")}}" />
 			<ul component="chat/manage/user/list" class="list-group overflow-auto" style="max-height: 300px;">
@@ -42,8 +42,19 @@
 			</select>
 		</div>
 		{{{ end }}}
+		{{{ if canEditMemberGroups }}}
+		<div class="col-12 col-md-6 d-flex flex-column">
+			<label class="form-label">{{tx("modules:chat.member-groups")}}</label>
+			<select component="chat/room/member-groups" class="form-select flex-fill" multiple>
+				{{{ each memberGroupOptions }}}
+				<option value="{./name}" {{{ if ./selected }}}selected{{{ end }}}>{./name}</option>
+				{{{ end }}}
+			</select>
+			<p class="form-text">{{tx("modules:chat.member-groups-help")}}</p>
+		</div>
+		{{{ end }}}
 	</div>
-	{{{ if user.isAdmin }}}
+	{{{ if canSave }}}
 	<hr/>
 	<div class="d-flex justify-content-end">
 		<button component="chat/manage/save" class="btn btn-sm btn-primary">{{tx("global:save")}}</button>

@@ -27,7 +27,7 @@ module.exports = function (Groups) {
 
 		// Cast some values as bool (if not boolean already)
 		// 'true' and '1' = true, everything else false
-		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave'].forEach((prop) => {
+		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave', 'chatContactable'].forEach((prop) => {
 			if (values.hasOwnProperty(prop) && typeof values[prop] !== 'boolean') {
 				values[prop] = values[prop] === 'true' || parseInt(values[prop], 10) === 1;
 			}
@@ -70,6 +70,10 @@ module.exports = function (Groups) {
 			payload.disableLeave = values.disableLeave ? '1' : '0';
 		}
 
+		if (values.hasOwnProperty('chatContactable')) {
+			payload.chatContactable = values.chatContactable ? '1' : '0';
+		}
+
 		if (values.hasOwnProperty('name')) {
 			await checkNameChange(groupName, values.name);
 		}
@@ -86,6 +90,12 @@ module.exports = function (Groups) {
 			const validCids = await categories.getCidsByPrivilege('categories:cid', groupName, 'topics:read');
 			const cidsArray = values.memberPostCids.split(',').map(cid => (cid || '').trim()).filter(Boolean);
 			payload.memberPostCids = cidsArray.filter(cid => validCids.includes(cid)).join(',') || '';
+		}
+
+		if (values.hasOwnProperty('chatContactable')) {
+			await (values.chatContactable ?
+				db.sortedSetAdd('groups:chatContactable', Date.now(), groupName) :
+				db.sortedSetRemove('groups:chatContactable', groupName));
 		}
 
 		await db.setObject(`group:${groupName}`, payload);
@@ -225,7 +235,7 @@ module.exports = function (Groups) {
 		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
 		await updatePostEditorGroups(oldName, newName);
 
-		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
+		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount', 'groups:chatContactable'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
 
 		plugins.hooks.fire('action:group.rename', {
@@ -354,5 +364,13 @@ module.exports = function (Groups) {
 			}
 		});
 		await db.setObjectBulk(bulkSet);
+
+		const memberGroupRoomIds = await db.getSortedSetRange(`group:${oldName}:chat:rooms`, 0, -1);
+		const memberGroupRooms = await messaging.getRoomsData(memberGroupRoomIds, ['roomId', 'memberGroups']);
+		await db.setObjectBulk(memberGroupRooms.filter(Boolean).map(room => [
+			`chat:room:${room.roomId}`,
+			{ memberGroups: JSON.stringify(room.memberGroups.map(group => (group === oldName ? newName : group))) },
+		]));
+		await db.rename(`group:${oldName}:chat:rooms`, `group:${newName}:chat:rooms`);
 	}
 };
