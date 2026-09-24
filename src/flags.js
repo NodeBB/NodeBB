@@ -75,6 +75,9 @@ Flags.init = async function () {
 			cid: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byCid:', key);
 			},
+			visible: function (sets, orSets, key) {
+				orSets.push(key);
+			},
 			page: function () { /* noop */ },
 			perPage: function () { /* noop */ },
 			quick: function (sets, orSets, key, uid) {
@@ -707,6 +710,10 @@ Flags.canView = async (flagId, uid) => {
 		return user.isAdministrator(uid);
 	}
 
+	if (type === 'user') {
+		return privileges.admin.can('admin:users', uid);
+	}
+
 	if (type === 'post') {
 		const cid = await Flags.getTargetCid(type, targetId);
 		const isModerator = await user.isModerator(uid, cid);
@@ -715,6 +722,25 @@ Flags.canView = async (flagId, uid) => {
 	}
 
 	return isAdminOrGlobalMod;
+};
+
+Flags.getVisibleSets = async (uid) => {
+	const [isAdmin, isAdminOrGlobalMod, canManageUsers, moderatedCids] = await Promise.all([
+		user.isAdministrator(uid),
+		user.isAdminOrGlobalMod(uid),
+		privileges.admin.can('admin:users', uid),
+		user.getModeratedCids(uid),
+	]);
+	if (isAdmin) {
+		return null;
+	}
+	const sets = isAdminOrGlobalMod ?
+		['flags:byType:post'] :
+		moderatedCids.map(cid => `flags:byCid:${cid}`);
+	if (canManageUsers) {
+		sets.push('flags:byType:user');
+	}
+	return sets;
 };
 
 Flags.getTarget = async function (type, id, uid) {
@@ -988,6 +1014,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
+		uids = _.uniq(admins.concat(await privileges.admin.getUidsWithPrivilege('admin:users')));
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetId);
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
