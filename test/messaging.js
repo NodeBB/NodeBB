@@ -1196,6 +1196,21 @@ describe('Messaging Library', () => {
 			assert(!await Messaging.isUserInRoom(directUid, roomId));
 		});
 
+		it('should let the room owner keep a group they could not link themselves', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			const roomId = await createRoom([groupName]);
+			await api.chats.update({ uid: adminUid }, { roomId, memberGroups: [groupName, name] });
+
+			await api.chats.update({ uid: ownerUid }, { roomId, memberGroups: [name] });
+			const room = await Messaging.getRoomData(roomId);
+			assert.deepStrictEqual(room.memberGroups, [name]);
+			await assert.rejects(
+				api.chats.update({ uid: ownerUid }, { roomId, memberGroups: [name, 'administrators'] }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
+
 		it('should not let other room members change the linked groups', async () => {
 			const roomId = await createRoom([groupName]);
 			await assert.rejects(

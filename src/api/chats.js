@@ -208,7 +208,10 @@ chatsAPI.update = async (caller, data) => {
 		if (!isAdmin && !await messaging.isRoomOwner(caller.uid, data.roomId)) {
 			throw new Error('[[error:no-privileges]]');
 		}
-		await checkMemberGroups(caller.uid, data.memberGroups);
+		if (!Array.isArray(data.memberGroups)) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		await checkMemberGroups(caller.uid, data.memberGroups.filter(group => !roomData.memberGroups.includes(group)));
 		await messaging.setMemberGroups(data.roomId, data.memberGroups);
 	}
 	if (isAdmin) {
