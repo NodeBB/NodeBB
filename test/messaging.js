@@ -15,6 +15,7 @@ const Messaging = require('../src/messaging');
 const api = require('../src/api');
 const helpers = require('./helpers');
 const request = require('../src/request');
+const plugins = require('../src/plugins');
 const translator = require('../src/translator');
 const utils = require('../src/utils');
 
@@ -968,6 +969,157 @@ describe('Messaging Library', () => {
 				await callv3API('post', `/chats/${roomId}/messages/${mid2}`, {}, 'baz');
 
 				await Groups.leave(['Global Moderators'], mocks.users.baz.uid);
+			});
+		});
+	});
+
+	describe('searchRecentChats', () => {
+		const searchPlugin = 'messaging-search-test';
+		const searchHook = 'filter:messaging.searchMessages';
+		let alice;
+		let bob;
+		let carol;
+		let namedRoom;
+		let contentRoom;
+		let joinCutoffRoom;
+		let blockedRoom;
+		const _delay = meta.config.newbieChatMessageDelay;
+
+		// stand-in for a search plugin: a naive substring scan over the rooms the
+		// core asked about, so the tests exercise the core side of the hook
+		async function fakeMessageSearch(data) {
+			const perRoom = await Promise.all((data.roomId || []).map(async (roomId) => {
+				const mids = await db.getSortedSetRange(`chat:room:${roomId}:mids`, 0, -1);
+				const messages = await Messaging.getMessagesFields(mids, ['content', 'deleted', 'system']);
+				return mids.filter((mid, idx) => {
+					const msg = messages[idx];
+					return msg && !msg.deleted && !msg.system &&
+						String(msg.content).toLowerCase().includes(String(data.content).toLowerCase());
+				});
+			}));
+			data.ids = data.ids.concat(perRoom.flat().slice(0, data.limit || 100));
+			return data;
+		}
+
+		async function search(uid, query) {
+			const { rooms } = await Messaging.searchRecentChats(uid, uid, query);
+			return rooms;
+		}
+
+		before(async () => {
+			meta.config.newbieChatMessageDelay = 0;
+			alice = await User.create({ username: 'alice-search' });
+			bob = await User.create({ username: 'bob-search' });
+			carol = await User.create({ username: 'carol-search' });
+
+			namedRoom = await Messaging.newRoom(alice, {
+				uids: [bob], roomName: 'Roadmap planning',
+			});
+			await Messaging.addMessage({ uid: bob, roomId: namedRoom, content: 'the last word here' });
+
+			contentRoom = await Messaging.newRoom(alice, { uids: [bob] });
+			await Messaging.addMessage({ uid: bob, roomId: contentRoom, content: 'pineapple on pizza' });
+			await Messaging.addMessage({ uid: bob, roomId: contentRoom, content: 'something else entirely' });
+
+			blockedRoom = await Messaging.newRoom(alice, { uids: [carol] });
+			await Messaging.addMessage({ uid: carol, roomId: blockedRoom, content: 'aubergine casserole' });
+		});
+
+		after(async () => {
+			meta.config.newbieChatMessageDelay = _delay;
+		});
+
+		it('should match a room by its name', async () => {
+			const rooms = await search(alice, 'roadmap');
+			assert.strictEqual(rooms.length, 1);
+			assert.strictEqual(rooms[0].roomId, namedRoom);
+		});
+
+		it('should match a room by a participant username', async () => {
+			const rooms = await search(alice, 'bob-search');
+			assert.strictEqual(rooms.length, 2);
+			assert.deepStrictEqual(
+				rooms.map(room => room.roomId).sort(), [namedRoom, contentRoom].sort()
+			);
+		});
+
+		it('should not match message content without a search plugin', async () => {
+			// dbsearch ships with core and is active here, so the hook has to be
+			// emptied to get at the no-listener behaviour
+			const listeners = plugins.loadedHooks[searchHook];
+			delete plugins.loadedHooks[searchHook];
+			try {
+				assert.deepStrictEqual(await search(alice, 'pineapple'), []);
+			} finally {
+				plugins.loadedHooks[searchHook] = listeners;
+			}
+		});
+
+		describe('with a search plugin', () => {
+			let listeners;
+
+			before(() => {
+				// replace the hook rather than adding to it: with dbsearch also
+				// listening, results would depend on whether it has indexed these
+				// messages yet, which is not the same across database backends
+				listeners = plugins.loadedHooks[searchHook];
+				plugins.loadedHooks[searchHook] = [];
+				plugins.hooks.register(searchPlugin, {
+					hook: searchHook,
+					method: fakeMessageSearch,
+				});
+			});
+
+			after(() => {
+				plugins.loadedHooks[searchHook] = listeners;
+			});
+
+			it('should match a room by message content', async () => {
+				const rooms = await search(alice, 'pineapple');
+				assert.strictEqual(rooms.length, 1);
+				assert.strictEqual(rooms[0].roomId, contentRoom);
+			});
+
+			it('should show the matching message as the teaser', async () => {
+				const [room] = await search(alice, 'pineapple');
+				assert.strictEqual(room.teaser.content, 'pineapple on pizza');
+				assert.strictEqual(room.teaser.user.uid, bob);
+			});
+
+			it('should expose the position of the matching message', async () => {
+				const [room] = await search(alice, 'pineapple');
+				assert(room.teaser.index > 0, `expected a position, got ${room.teaser.index}`);
+			});
+
+			it('should keep the last message as teaser when the room matched by name', async () => {
+				const [room] = await search(alice, 'roadmap');
+				assert.strictEqual(room.teaser.content, 'the last word here');
+			});
+
+			it('should ignore queries shorter than three characters', async () => {
+				assert.deepStrictEqual(await search(alice, 'pi'), []);
+			});
+
+			it('should not match messages sent before the user joined a private room', async () => {
+				joinCutoffRoom = await Messaging.newRoom(alice, { uids: [bob] });
+				await Messaging.addMessage({
+					uid: bob, roomId: joinCutoffRoom, content: 'kumquat marmalade',
+				});
+				await sleep(50);
+				await Messaging.addUsersToRoom(alice, [carol], joinCutoffRoom);
+
+				assert.deepStrictEqual(await search(carol, 'kumquat'), []);
+				const rooms = await search(alice, 'kumquat');
+				assert.strictEqual(rooms.length, 1);
+				assert.strictEqual(rooms[0].roomId, joinCutoffRoom);
+			});
+
+			it('should not match messages from blocked users', async () => {
+				assert.strictEqual((await search(alice, 'aubergine')).length, 1);
+
+				await User.blocks.add(carol, alice);
+				assert.deepStrictEqual(await search(alice, 'aubergine'), []);
+				await User.blocks.remove(carol, alice);
 			});
 		});
 	});
