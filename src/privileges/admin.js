@@ -67,6 +67,8 @@ privsAdmin.routeMap = {
 	'extend/plugins': 'admin:settings',
 	'extend/widgets': 'admin:settings',
 	'extend/rewards': 'admin:settings',
+	'manage/uploads': 'admin:settings',
+	'upload/file': 'admin:settings',
 	// uploads
 	'category/uploadpicture': 'admin:categories',
 	uploadfavicon: 'admin:settings',
@@ -84,6 +86,7 @@ privsAdmin.routePrefixMap = {
 	'manage/users/': 'admin:users',
 	'manage/groups/': 'admin:groups',
 	'settings/': 'admin:settings',
+	'federation/': 'admin:settings',
 	'appearance/': 'admin:settings',
 	'plugins/': 'admin:settings',
 };
