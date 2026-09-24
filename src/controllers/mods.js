@@ -6,7 +6,6 @@ const user = require('../user');
 const groups = require('../groups');
 const meta = require('../meta');
 const posts = require('../posts');
-const db = require('../database');
 const flags = require('../flags');
 const analytics = require('../analytics');
 const plugins = require('../plugins');
@@ -36,14 +35,17 @@ modsController.flags.list = async function (req, res) {
 		type: ['post', 'user', 'message'],
 	};
 
-	const [isAdminOrGlobalMod, moderatedCids, { filters: allFilters }, { sorts: allSorts }] = await Promise.all([
+	const [
+		isAdminOrGlobalMod, moderatedCids, visibleSets, { filters: allFilters }, { sorts: allSorts },
+	] = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
+		flags.getVisibleSets(req.uid),
 		plugins.hooks.fire('filter:flags.validateFilters', { filters: coreFilters, validation }),
 		plugins.hooks.fire('filter:flags.validateSort', { sorts: validation.sort }),
 	]);
 
-	if (!(isAdminOrGlobalMod || !!moderatedCids.length)) {
+	if (visibleSets && !visibleSets.length) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -54,16 +56,19 @@ modsController.flags.list = async function (req, res) {
 	const validFilters = helpers.validateParameters(req.query, allFilters, validation);
 
 	let hasFilter = !!Object.keys(validFilters).length;
+	let cidIsDefault = false;
 
 	if (res.locals.cids) {
 		if (!validFilters.cid) {
 			// If mod and no cid filter, add filter for their modded categories
 			validFilters.cid = res.locals.cids;
+			cidIsDefault = true;
 		} else if (Array.isArray(validFilters.cid)) {
 			// Remove cids they do not moderate
 			validFilters.cid = validFilters.cid.filter(cid => res.locals.cids.includes(String(cid)));
 		} else if (!res.locals.cids.includes(String(validFilters.cid))) {
 			validFilters.cid = res.locals.cids;
+			cidIsDefault = true;
 			hasFilter = false;
 		}
 	}
@@ -82,9 +87,17 @@ modsController.flags.list = async function (req, res) {
 
 	hasFilter = hasFilter || !!sort;
 
+	const listFilters = { ...validFilters };
+	if (cidIsDefault) {
+		delete listFilters.cid;
+	}
+	if (visibleSets) {
+		listFilters.visible = visibleSets;
+	}
+
 	const [flagsData, analyticsData, selectData] = await Promise.all([
 		flags.list({
-			filters: validFilters,
+			filters: listFilters,
 			sort: sort,
 			uid: req.uid,
 			query: req.query,
@@ -125,39 +138,14 @@ modsController.flags.list = async function (req, res) {
 };
 
 modsController.flags.detail = async function (req, res, next) {
+	if (!await flags.canView(req.params.flagId, req.uid)) {
+		return next(); // 404
+	}
 	const results = await utils.promiseParallel({
-		isAdmin: user.isAdministrator(req.uid),
-		isAdminOrGlobalMod: user.isAdminOrGlobalMod(req.uid),
-		moderatedCids: user.getModeratedCids(req.uid),
 		flagData: flags.get(req.params.flagId),
 		privileges: Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	});
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
-	if (!results.flagData || (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length))) {
-		return next(); // 404
-	}
-
-	// message flags require admin access regardless of global mod status
-	if (results.flagData.type === 'message' && !results.isAdmin) {
-		return next();
-	}
-
-	// extra checks for plain moderators
-	if (!results.isAdminOrGlobalMod) {
-		if (results.flagData.type === 'user') {
-			return next();
-		}
-		if (results.flagData.type === 'post') {
-			const isFlagInModeratedCids = await db.isMemberOfSortedSets(
-				results.moderatedCids.map(cid => `flags:byCid:${cid}`),
-				results.flagData.flagId
-			);
-			if (!isFlagInModeratedCids.includes(true)) {
-				return next();
-			}
-		}
-	}
-
 
 	async function getAssignees(flagData, uid) {
 		let uids = [];

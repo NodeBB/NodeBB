@@ -67,16 +67,7 @@ module.exports = function (Groups) {
 				groups.push('administrators');
 			}
 			await db.setObjectField(`chat:room:${room.roomId}`, 'groups', JSON.stringify(groups));
-
-			const uids = await messaging.getUidsInRoom(room.roomId, 0, -1);
-			const [isMembers, isAdmins] = await Promise.all([
-				Promise.all(uids.map(uid => Groups.isMemberOfAny(uid, groups))),
-				Groups.isMembers(uids, 'administrators'),
-			]);
-			const uidsToRemove = uids.filter((uid, index) => !isMembers[index] && !isAdmins[index]);
-			if (uidsToRemove.length) {
-				await messaging.leaveRoom(uidsToRemove, room.roomId);
-			}
+			await messaging.removeUsersWithoutAccess(room.roomId);
 		}));
 	}
 

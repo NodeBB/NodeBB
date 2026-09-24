@@ -188,6 +188,22 @@ post:
             uids:
               type: array
               example: [2]
+            roomName:
+              type: string
+              description: the name of the room
+            type:
+              type: string
+              enum: [public]
+              description: pass `public` to create a public room (administrators only)
+            groups:
+              type: array
+              items:
+                type: string
+              description: the groups allowed to join the room, required when `type` is `public`
+            joinLeaveMessages:
+              type: number
+              enum: [0, 1]
+              description: whether to post a system message when a user joins or leaves the room
           required:
             - uids
   responses:

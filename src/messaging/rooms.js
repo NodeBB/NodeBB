@@ -331,6 +331,22 @@ module.exports = function (Messaging) {
 		await Messaging.leaveRoom(payload.uids, payload.roomId);
 	};
 
+	Messaging.removeUsersWithoutAccess = async (roomId) => {
+		const room = await Messaging.getRoomData(roomId, ['public', 'groups']);
+		if (!room || !room.public || !room.groups.length) {
+			return;
+		}
+		const uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+		const [isMembers, isAdmins] = await Promise.all([
+			Promise.all(uids.map(uid => groups.isMemberOfAny(uid, room.groups))),
+			groups.isMembers(uids, 'administrators'),
+		]);
+		const uidsToRemove = uids.filter((uid, index) => !isMembers[index] && !isAdmins[index]);
+		if (uidsToRemove.length) {
+			await Messaging.leaveRoom(uidsToRemove, roomId);
+		}
+	};
+
 	Messaging.isGroupChat = async function (roomId) {
 		return (await Messaging.getRoomData(roomId)).groupChat;
 	};
@@ -344,7 +360,7 @@ module.exports = function (Messaging) {
 			...groupChats.map(id => [`chat:room:${id}`, { groupChat: 1, userCount: countMap[id] }]),
 			...privateChats.map(id => [`chat:room:${id}`, { groupChat: 0, userCount: countMap[id] }]),
 		]);
-		roomUidCache.del(roomIds.map(id => `chat:room:${id}:users`));
+		roomUidCache.del(roomIds.map(id => `chat:room:${id}:uids:online:all`));
 	}
 
 	Messaging.leaveRoom = async (uids, roomId) => {
