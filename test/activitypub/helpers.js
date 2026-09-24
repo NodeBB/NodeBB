@@ -223,9 +223,9 @@ Helpers.mocks.create = (input = {}) => {
 	let actor = 'https://example.org/user/foobar';
 	let override = {};
 
-	// Support both old API (positional note object) and new API (override object with actor/object keys)
-	if (input && typeof input === 'object' && input.type === 'Note') {
-		// Old API: first argument is the note object
+	// Support both old API (positional post object) and new API (override object with actor/object keys)
+	if (input && typeof input === 'object' && input.type && activitypub._constants.acceptedPostTypes.includes(input.type)) {
+		// Old API: first argument is a post object (Note, Question, etc.)
 		object = input;
 	} else {
 		// New API: override object
