@@ -223,7 +223,6 @@ actions.buildCSS = async function buildCSS(data) {
 			importers: [new sass.NodePackageImporter()],
 		};
 		if (data.minify) {
-			opts.style = 'compressed';
 			opts.silenceDeprecations = [
 				'legacy-js-api', 'color-functions',
 				'global-builtin', 'import', 'if-function',
@@ -237,15 +236,18 @@ actions.buildCSS = async function buildCSS(data) {
 
 
 	async function processScss(direction) {
-		if (direction === 'rtl') {
-			css = await postcss([rtlcss()]).process(css, {
-				from: undefined,
-			});
-		}
-		const postcssArgs = [autoprefixer];
-		return await postcss(postcssArgs).process(css, {
+		const postcssArgs = direction === 'rtl' ? [rtlcss(), autoprefixer] : [autoprefixer];
+		const result = await postcss(postcssArgs).process(css, {
 			from: undefined,
 		});
+		if (!data.minify) {
+			return result;
+		}
+		const minified = await sass.compileStringAsync(result.css, {
+			syntax: 'css',
+			style: 'compressed',
+		});
+		return { css: minified.css };
 	}
 
 	const [ltrresult, rtlresult] = await Promise.all([
