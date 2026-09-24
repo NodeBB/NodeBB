@@ -1,0 +1,21 @@
+src/start.js
+  s_5612698588be0b::t_1f77e09c78e247 39
+src/analytics.js
+  s_5612698588be0b::t_c80a2c10ec4425 51,53-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "afb8e06ef0fdbb0519a4eaabbb59aa9fd5263394",
+  "prompts": {},
+  "sessions": {
+    "s_5612698588be0b": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0d014-260b-76ce-9716-51951876bda2",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
