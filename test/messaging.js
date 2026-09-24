@@ -1083,7 +1083,7 @@ describe('Messaging Library', () => {
 			const lastPush = pushedTo.pop();
 			assert(!lastPush.includes(String(leaverUid)));
 			assert(lastPush.includes(String(lateUid)));
-    });
+    	});
 	});
 
 	describe('.markRead()', () => {
