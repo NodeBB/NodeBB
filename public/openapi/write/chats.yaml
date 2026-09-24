@@ -188,6 +188,11 @@ post:
             uids:
               type: array
               example: [2]
+            memberGroups:
+              type: array
+              items:
+                type: string
+              description: groups whose members become members of the room, private rooms only (non-administrators may only use groups that allow it)
           required:
             - uids
   responses:

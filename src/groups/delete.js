@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const plugins = require('../plugins');
 const slugify = require('../slugify');
 const db = require('../database');
@@ -26,7 +28,8 @@ module.exports = function (Groups) {
 				`group:${groupName}:invited`,
 				`group:${groupName}:owners`,
 				`group:${groupName}:member:pids`,
-				`group:${groupName}:editor:pids`
+				`group:${groupName}:editor:pids`,
+				`group:${groupName}:chat:rooms`
 			);
 		});
 		const sets = groupNames.map(groupName => `${groupName.toLowerCase()}:${groupName}`);
@@ -36,6 +39,7 @@ module.exports = function (Groups) {
 
 		await removeGroupsFromPrivilegeGroups(groupNames);
 		await removeGroupsFromPostEditors(groupNames);
+		await removeGroupsFromMemberGroupRooms(groupNames);
 		await Promise.all([
 			db.deleteAll(keys),
 			db.sortedSetRemove([
@@ -78,6 +82,12 @@ module.exports = function (Groups) {
 				await messaging.leaveRoom(uidsToRemove, room.roomId);
 			}
 		}));
+	}
+
+	async function removeGroupsFromMemberGroupRooms(groupNames) {
+		const messaging = require('../messaging');
+		const roomIds = await db.getSortedSetsMembers(groupNames.map(groupName => `group:${groupName}:chat:rooms`));
+		await Promise.all(_.uniq(roomIds.flat()).map(roomId => messaging.removeMemberGroups(roomId, groupNames)));
 	}
 
 	async function removeGroupsFromPostEditors(groupNames) {
