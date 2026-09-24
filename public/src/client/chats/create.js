@@ -21,6 +21,7 @@ define('forum/chats/create', [
 		const html = await Benchpress.render('modals/create-room', {
 			user: app.user,
 			groups,
+			linkableGroups: ajaxify.data.linkableGroups || [],
 		});
 
 		const modal = await modals.dialog({
@@ -38,8 +39,9 @@ define('forum/chats/create', [
 						).get();
 						const type = modal.find('[component="chat/room/type"]').val();
 						const groups = modal.find('[component="chat/room/groups"]').val();
+						const memberGroups = type === 'public' ? [] : (modal.find('[component="chat/room/member-groups"]').val() || []);
 
-						if (type === 'private' && !uids.length) {
+						if (type !== 'public' && !uids.length && !memberGroups.length) {
 							alerts.error('[[error:no-users-selected]]');
 							return false;
 						}
@@ -57,6 +59,7 @@ define('forum/chats/create', [
 							uids: uids,
 							type: type,
 							groups: groups,
+							memberGroups: memberGroups,
 						}).then(({ roomId }) => {
 							ajaxify.go('chats/' + roomId);
 							modal.modal('hide');
@@ -84,6 +87,7 @@ define('forum/chats/create', [
 		modal.find('[component="chat/room/type"]').on('change', function () {
 			const type = $(this).val();
 			modal.find('[component="chat/room/public/options"]').toggleClass('hidden', type === 'private');
+			modal.find('[component="chat/room/member-groups/options"]').toggleClass('hidden', type === 'public');
 		});
 	}
 

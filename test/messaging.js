@@ -1257,6 +1257,68 @@ describe('Messaging Library', () => {
 			assert(!await db.isSortedSetMember(`group:${groupName}:chat:rooms`, roomId));
 			assert(!await db.exists(`chat:room:${roomId}:uids:groups`));
 		});
+
+		it('should mark members who joined through a group and not offer to kick them', async () => {
+			const directUid = await User.create({ username: 'mglisted' });
+			const roomId = await createRoom([groupName], [directUid]);
+			const { users } = await api.chats.users({ uid: ownerUid }, { roomId });
+			const member = users.find(u => u.uid === memberUid);
+			const direct = users.find(u => u.uid === directUid);
+			assert.strictEqual(member.viaGroup, true);
+			assert.strictEqual(member.canKick, false);
+			assert.strictEqual(direct.viaGroup, false);
+			assert.strictEqual(direct.canKick, true);
+		});
+
+		it('should show the group, not its members, in the room title', async () => {
+			const roomId = await createRoom([groupName]);
+			const ownerRoom = await Messaging.loadRoom(ownerUid, { roomId });
+			assert(ownerRoom.chatWithMessage.includes(groupName));
+			assert(!ownerRoom.chatWithMessage.includes('mgmember'));
+			assert.strictEqual(ownerRoom.usernames, groupName);
+
+			const memberRoom = await Messaging.loadRoom(memberUid, { roomId });
+			assert(memberRoom.chatWithMessage.includes('mgowner'));
+			assert(memberRoom.chatWithMessage.includes(groupName));
+
+			const { rooms } = await Messaging.getRecentChats(ownerUid, ownerUid, 0, 49);
+			const recent = rooms.find(room => room.roomId === roomId);
+			assert.strictEqual(recent.usernames, groupName);
+		});
+
+		it('should list the groups a user may link', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+
+			const userGroups = await Messaging.getLinkableGroups(ownerUid);
+			assert(userGroups.includes(groupName));
+			assert(!userGroups.includes(name));
+
+			const adminGroups = await Messaging.getLinkableGroups(adminUid);
+			assert(adminGroups.includes(groupName));
+			assert(adminGroups.includes(name));
+			assert(adminGroups.includes('administrators'));
+			assert(!adminGroups.includes('registered-users'));
+		});
+
+		it('should keep the list of contactable groups in sync', async () => {
+			const name = `mg-${utils.generateUUID().slice(0, 8)}`;
+			const newName = `mg-${utils.generateUUID().slice(0, 8)}`;
+			await Groups.create({ name });
+			await Groups.update(name, { chatContactable: 1 });
+			assert(await db.isSortedSetMember('groups:chatContactable', name));
+
+			await Groups.update(name, { name: newName });
+			assert(!await db.isSortedSetMember('groups:chatContactable', name));
+			assert(await db.isSortedSetMember('groups:chatContactable', newName));
+
+			await Groups.update(newName, { chatContactable: 0 });
+			assert(!await db.isSortedSetMember('groups:chatContactable', newName));
+
+			await Groups.update(newName, { chatContactable: 1 });
+			await Groups.destroy(newName);
+			assert(!await db.isSortedSetMember('groups:chatContactable', newName));
+		});
 	});
 
 	describe('.markRead()', () => {

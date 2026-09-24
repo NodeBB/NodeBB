@@ -347,8 +347,8 @@ module.exports = function (Messaging) {
 		if (!payload.isOwner) {
 			throw new Error('[[error:cant-remove-users-from-chat-room]]');
 		}
-		const isGroupUids = await db.isSetMembers(`chat:room:${payload.roomId}:uids:groups`, payload.uids);
-		if (isGroupUids.includes(true)) {
+		const isMembersThroughGroup = await Messaging.isMemberThroughGroup(payload.uids, payload.roomId);
+		if (isMembersThroughGroup.includes(true)) {
 			throw new Error('[[error:cant-remove-group-member-from-chat-room]]');
 		}
 
@@ -444,6 +444,22 @@ module.exports = function (Messaging) {
 			}
 		}
 	}
+
+	Messaging.isMemberThroughGroup = async (uids, roomId) => db.isSetMembers(`chat:room:${roomId}:uids:groups`, uids);
+
+	Messaging.isLinkableGroup = groupName => ![
+		...groups.ephemeralGroups,
+		'registered-users',
+		'verified-users',
+		'unverified-users',
+		groups.BANNED_USERS,
+	].includes(groupName) && !groups.isPrivilegeGroup(groupName);
+
+	Messaging.getLinkableGroups = async (uid) => {
+		const isAdmin = await user.isAdministrator(uid);
+		const groupNames = await db.getSortedSetRange(isAdmin ? 'groups:createtime' : 'groups:chatContactable', 0, -1);
+		return groupNames.filter(Messaging.isLinkableGroup);
+	};
 
 	Messaging.addMemberGroups = async (roomId, groupNames) => {
 		const room = await Messaging.getRoomData(roomId, ['roomId', 'public', 'timestamp', 'memberGroups']);
@@ -567,14 +583,16 @@ module.exports = function (Messaging) {
 
 	Messaging.getUsersInRoomFromSet = async (set, roomId, start, stop, reverse = false) => {
 		const uids = await Messaging.getUidsInRoomFromSet(set, start, stop, reverse);
-		const [users, isOwners] = await Promise.all([
+		const [users, isOwners, isMembersThroughGroup] = await Promise.all([
 			user.getUsersFields(uids, ['uid', 'username', 'picture', 'status']),
 			Messaging.isRoomOwner(uids, roomId),
+			Messaging.isMemberThroughGroup(uids, roomId),
 		]);
 
 		return users.map((user, index) => {
 			user.index = start + index;
 			user.isOwner = isOwners[index];
+			user.viaGroup = isMembersThroughGroup[index];
 			return user;
 		});
 	};
@@ -710,8 +728,9 @@ module.exports = function (Messaging) {
 		room.canReply = canReply;
 		room.groupChat = users.length > 2;
 		room.icon = Messaging.getRoomIcon(room);
-		room.usernames = Messaging.generateUsernames(room, uid);
-		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
+		const [chatWith] = await Messaging.getMemberGroupsChatWith([room], uid);
+		room.usernames = Messaging.generateUsernames(room, uid, chatWith);
+		room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, chatWith);
 		room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
 		room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;

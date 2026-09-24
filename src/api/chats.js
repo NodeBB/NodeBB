@@ -39,14 +39,7 @@ async function checkMemberGroups(uid, groupNames) {
 	if (!Array.isArray(groupNames) || groupNames.some(groupName => typeof groupName !== 'string')) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	const excludedGroups = [
-		...groups.ephemeralGroups,
-		'registered-users',
-		'verified-users',
-		'unverified-users',
-		groups.BANNED_USERS,
-	];
-	if (groupNames.some(groupName => excludedGroups.includes(groupName) || groups.isPrivilegeGroup(groupName))) {
+	if (!groupNames.every(messaging.isLinkableGroup)) {
 		throw new Error('[[error:cant-add-group-to-chat-room]]');
 	}
 	const [exists, isAdmin, groupData] = await Promise.all([
@@ -319,7 +312,7 @@ chatsAPI.users = async (caller, data) => {
 	}
 	users.forEach((user) => {
 		const isSelf = String(user.uid) === String(caller.uid);
-		user.canKick = isOwner && !isSelf;
+		user.canKick = isOwner && !isSelf && !user.viaGroup;
 		user.canToggleOwner = utils.isNumber(user.uid) && (isAdmin || isOwner) && !isSelf;
 		user.online = isSelf || onlineUids.includes(String(user.uid));
 	});

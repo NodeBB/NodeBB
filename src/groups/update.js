@@ -92,6 +92,12 @@ module.exports = function (Groups) {
 			payload.memberPostCids = cidsArray.filter(cid => validCids.includes(cid)).join(',') || '';
 		}
 
+		if (values.hasOwnProperty('chatContactable')) {
+			await (values.chatContactable ?
+				db.sortedSetAdd('groups:chatContactable', Date.now(), groupName) :
+				db.sortedSetRemove('groups:chatContactable', groupName));
+		}
+
 		await db.setObject(`group:${groupName}`, payload);
 		await Groups.renameGroup(groupName, values.name);
 
@@ -229,7 +235,7 @@ module.exports = function (Groups) {
 		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
 		await updatePostEditorGroups(oldName, newName);
 
-		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
+		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount', 'groups:chatContactable'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
 
 		plugins.hooks.fire('action:group.rename', {
