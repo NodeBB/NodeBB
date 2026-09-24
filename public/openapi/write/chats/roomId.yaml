@@ -112,6 +112,11 @@ put:
               type: string
               description: the new name of the room
               example: 'casper the friendly room'
+            memberGroups:
+              type: array
+              items:
+                type: string
+              description: replaces the groups whose members are members of the room, private rooms only (room owners and administrators)
   responses:
     '200':
       description: Chat room renamed
