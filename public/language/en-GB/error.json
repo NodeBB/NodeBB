@@ -265,6 +265,7 @@
 	"no-users-selected": "No user(s) selected",
 	"no-groups-selected": "No group(s) selected",
 	"cant-add-group-to-chat-room": "This group can't be added to a chat room",
+	"cant-remove-group-member-from-chat-room": "Members who joined through a group can only be removed by removing the group from the room",
 	"invalid-home-page-route": "Invalid home page route",
 
 	"invalid-session": "Invalid Session",

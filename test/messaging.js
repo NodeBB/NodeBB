@@ -1180,6 +1180,22 @@ describe('Messaging Library', () => {
 			assert(await db.isSortedSetMember(`group:${otherGroupName}:chat:rooms`, roomId));
 		});
 
+		it('should not let the room owner remove a member who joined through a group', async () => {
+			const roomId = await createRoom([groupName]);
+			await assert.rejects(
+				api.chats.kick({ uid: ownerUid }, { roomId, uids: [memberUid] }),
+				{ message: '[[error:cant-remove-group-member-from-chat-room]]' }
+			);
+			assert(await Messaging.isUserInRoom(memberUid, roomId));
+		});
+
+		it('should still let the room owner remove members who were added directly', async () => {
+			const directUid = await User.create({ username: 'mgkicked' });
+			const roomId = await createRoom([groupName], [directUid]);
+			await api.chats.kick({ uid: ownerUid }, { roomId, uids: [directUid] });
+			assert(!await Messaging.isUserInRoom(directUid, roomId));
+		});
+
 		it('should not let other room members change the linked groups', async () => {
 			const roomId = await createRoom([groupName]);
 			await assert.rejects(

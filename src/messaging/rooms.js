@@ -347,6 +347,10 @@ module.exports = function (Messaging) {
 		if (!payload.isOwner) {
 			throw new Error('[[error:cant-remove-users-from-chat-room]]');
 		}
+		const isGroupUids = await db.isSetMembers(`chat:room:${payload.roomId}:uids:groups`, payload.uids);
+		if (isGroupUids.includes(true)) {
+			throw new Error('[[error:cant-remove-group-member-from-chat-room]]');
+		}
 
 		await Messaging.leaveRoom(payload.uids, payload.roomId);
 	};
