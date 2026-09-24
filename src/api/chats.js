@@ -163,6 +163,7 @@ chatsAPI.update = async (caller, data) => {
 	if (data.hasOwnProperty('groups')) {
 		if (roomData.public && isAdmin) {
 			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
+			await messaging.removeUsersWithoutAccess(data.roomId);
 		}
 	}
 	if (isAdmin) {
