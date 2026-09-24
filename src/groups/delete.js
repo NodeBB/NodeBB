@@ -46,6 +46,7 @@ module.exports = function (Groups) {
 				'groups:createtime',
 				'groups:visible:createtime',
 				'groups:visible:memberCount',
+				'groups:chatContactable',
 			], groupNames),
 			db.sortedSetRemove('groups:visible:name', sets),
 			db.deleteObjectFields('groupslug:groupname', groupSlugs),

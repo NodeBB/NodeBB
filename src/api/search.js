@@ -146,12 +146,16 @@ searchApi.roomUsers = async (caller, { query, roomId }) => {
 	);
 
 	const roomUsers = users.filter(user => isUidInRoom[user.uid]);
-	const isOwners = await messaging.isRoomOwner(roomUsers.map(u => u.uid), roomId);
+	const [isOwners, isMembersThroughGroup] = await Promise.all([
+		messaging.isRoomOwner(roomUsers.map(u => u.uid), roomId),
+		messaging.isMemberThroughGroup(roomUsers.map(u => u.uid), roomId),
+	]);
 
 	roomUsers.forEach((user, index) => {
 		if (user) {
 			user.isOwner = isOwners[index];
-			user.canKick = isRoomOwner && String(user.uid) !== String(caller.uid);
+			user.viaGroup = isMembersThroughGroup[index];
+			user.canKick = isRoomOwner && String(user.uid) !== String(caller.uid) && !user.viaGroup;
 		}
 	});
 

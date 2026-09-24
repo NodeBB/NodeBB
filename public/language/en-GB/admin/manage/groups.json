@@ -36,6 +36,8 @@
 	"edit.private-override": "Warning: Private groups is disabled at system level, which overrides this option.",
 	"edit.disable-join": "Disable join requests",
 	"edit.disable-leave": "Disallow users from leaving the group",
+	"edit.chat-contactable": "Allow users to start a chat with this group",
+	"edit.chat-contactable-help": "Users can open a private chat room with this group. All of its members join the room.",
 	"edit.hidden": "Hidden",
 	"edit.hidden-details": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
 	"edit.add-user": "Add User to Group",

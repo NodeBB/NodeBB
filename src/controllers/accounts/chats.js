@@ -1,5 +1,7 @@
 'use strict';
 
+const validator = require('validator');
+
 const db = require('../../database');
 const messaging = require('../../messaging');
 const meta = require('../../meta');
@@ -23,10 +25,12 @@ chatsController.get = async function (req, res, next) {
 		return helpers.notAllowed(req, res);
 	}
 
+	const linkableGroups = await messaging.getLinkableGroups(req.uid);
 	const payload = {
 		title: '[[pages:chats]]',
 		uid: uid,
 		userslug: req.params.userslug,
+		linkableGroups: linkableGroups.map(name => ({ name: validator.escape(String(name)) })),
 	};
 	const isSwitch = res.locals.isAPI && parseInt(req.query.switch, 10) === 1;
 	if (!isSwitch) {
