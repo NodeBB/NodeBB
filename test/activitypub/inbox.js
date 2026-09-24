@@ -182,6 +182,35 @@ describe('Inbox', () => {
 					assert.strictEqual(cid, -1);
 				});
 			});
+
+			describe('(Question)', () => {
+				it('Mocks.post should preserve FEP-9967 poll fields in _activitypub', async () => {
+					// Minimal Question — core only needs to pass the poll fields through;
+					// full poll fixtures live in the poll plugin's test suite.
+					const question = {
+						id: 'https://example.org/object/question',
+						url: 'https://example.org/object/question',
+						type: 'Question',
+						to: ['https://www.w3.org/ns/activitystreams#Public'],
+						attributedTo: 'https://example.org/user/foobar',
+						name: 'Test question',
+						content: '<p>Test question</p>',
+						published: new Date().toISOString(),
+						oneOf: [
+							{ type: 'Note', name: 'Option A', replies: { type: 'Collection', totalItems: 3 } },
+							{ type: 'Note', name: 'Option B', replies: { type: 'Collection', totalItems: 7 } },
+						],
+						endTime: new Date().toISOString(),
+						votersCount: 10,
+					};
+					const payload = await activitypub.mocks.post(question);
+					assert(payload._activitypub, '_activitypub should exist');
+					assert(Array.isArray(payload._activitypub.oneOf), 'oneOf should be preserved');
+					assert.strictEqual(payload._activitypub.oneOf.length, 2);
+					assert(payload._activitypub.endTime, 'endTime should be preserved');
+					assert.strictEqual(payload._activitypub.votersCount, 10);
+				});
+			});
 		});
 
 		describe('attributedTo validation', () => {

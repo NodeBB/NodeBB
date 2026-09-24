@@ -445,6 +445,7 @@ Mocks.post = async (objects) => {
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
 			to, cc, audience, attachment, tag, image, summary, sensitive,
+			oneOf, anyOf, endTime, closed, votersCount, // poll-specific (FEP-9967)
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -473,7 +474,15 @@ Mocks.post = async (objects) => {
 			editor: edited ? uid : undefined,
 			// Store contentWarning only for Note + sensitive + summary (Fediverse CW convention)
 			...(object.type === 'Note' && sensitive && summary && { contentWarning: summary }),
-			_activitypub: { to, cc, audience, attachment, tag, url, image },
+			_activitypub: {
+				to, cc, audience, attachment, tag, url, image,
+				// Poll (Question) fields — only present on Question objects (FEP-9967).
+				// `closed` is treated the same as `endTime` per the FEP.
+				...(oneOf && { oneOf }),
+				...(anyOf && { anyOf }),
+				...((endTime || closed) && { endTime: endTime || closed }),
+				...(votersCount !== undefined && { votersCount }),
+			},
 		};
 
 		return payload;
