@@ -32,6 +32,14 @@ Errors.init = async function () {
 		},
 	});
 
+	await cron.addJob({
+		name: 'prune:errors',
+		cronTime: '0 3 * * *',
+		onTick: async () => {
+			await db.delete('errors:404');
+		},
+	});
+
 	if (runJobs) {
 		pubsub.on('errors:publish', (data) => {
 			for (const [key, value] of Object.entries(data.local)) {
