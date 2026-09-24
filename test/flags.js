@@ -596,7 +596,7 @@ describe('Flags', () => {
 
 		it('should not assign a chat message flag to a global moderator', async () => {
 			const globalModUid = await User.create({ username: 'message-flag-assignee' });
-			await Groups.join('Global Moderators', globalModUid);
+			await Groups.join(Groups.GLOBAL_MODERATORS, globalModUid);
 
 			const roomId = await messaging.newRoom(uid1, { uids: [uid3] });
 			const { mid } = await messaging.sendMessage({ uid: uid3, roomId, content: 'private chat content' });
@@ -751,7 +751,7 @@ describe('Flags', () => {
 	describe('.notify()', () => {
 		it('should only notify administrators of a chat message flag', async () => {
 			const globalModUid = await User.create({ username: 'message-flag-global-mod' });
-			await Groups.join('Global Moderators', globalModUid);
+			await Groups.join(Groups.GLOBAL_MODERATORS, globalModUid);
 
 			const roomId = await messaging.newRoom(uid1, { uids: [uid3] });
 			const { mid } = await messaging.sendMessage({ uid: uid3, roomId, content: 'private chat content' });
@@ -1537,7 +1537,7 @@ describe('Flags', () => {
 
 		before(async () => {
 			globalModUid = await User.create({ username: 'user-flag-global-mod', password: 'abcdef' });
-			await Groups.join('Global Moderators', globalModUid);
+			await Groups.join(Groups.GLOBAL_MODERATORS, globalModUid);
 			userManagerUid = await User.create({ username: 'user-flag-user-manager', password: 'abcdef' });
 			await Privileges.admin.give(['admin:users'], userManagerUid);
 			targetUid = await User.create({ username: 'user-flag-target' });
@@ -1551,7 +1551,7 @@ describe('Flags', () => {
 
 		after(async () => {
 			await Privileges.admin.rescind(['admin:users'], userManagerUid);
-			await Groups.leave('Global Moderators', globalModUid);
+			await Groups.leave(Groups.GLOBAL_MODERATORS, globalModUid);
 		});
 
 		it('should let admin:users holders view a user flag, but not global moderators', async () => {
