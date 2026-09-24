@@ -1054,8 +1054,8 @@ describe('Messaging Library', () => {
 			assert.strictEqual(await Messaging.isUserInRoom(mocks.users.foo.uid, roomId), true);
 		});
 	});
-    
-  describe('unread count pushes', () => {
+
+	describe('unread count pushes', () => {
 		it('should follow membership changes in a private room', async () => {
 			const ownerUid = await User.create({ username: utils.generateUUID().slice(0, 10) });
 			const leaverUid = await User.create({ username: utils.generateUUID().slice(0, 10) });
