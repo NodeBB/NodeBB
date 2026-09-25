@@ -186,7 +186,15 @@ SendPool.drainLoop = async function () {
 					.then(async (result) => {
 						SendPool._inFlight.delete(task.queueId);
 						if (result.fallback) {
-							winston.warn(`[activitypub/send] RFC 9421 request failed (${result.fallback}); retrying with draft signature`);
+							try {
+								await SendPool._activityPub.analytics.sendError({
+									payload: task.payload,
+									uri: task.uri,
+									error: new Error(`RFC 9421 request failed (${result.fallback}); retrying with draft signature`),
+								});
+							} catch (e) {
+								winston.warn(`[activitypub/send] Analytics sendError failed: ${e.message}`);
+							}
 						}
 						if (result.success) {
 							await SendPool.handleResult(queueId, {
