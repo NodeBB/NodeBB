@@ -46,8 +46,50 @@ middleware.verify = async function (req, res, next) {
 		return next();
 	}
 
-	// Verifies the HTTP Signature if present (required for POST, optional for GET)
-	if (req.headers.hasOwnProperty('signature')) {
+	// FEP-8b32: a top-level integrity proof (on the activity itself) authenticates
+	// the entire envelope (actor, object, ...). When present it is verified INSTEAD
+	// of the HTTP signature — the sole carve-out from the mandatory-signature rule
+	// for POST. Caller identity is derived from the authenticated envelope.
+	let proofVerified = false;
+	if (meta.config.activitypubIntegrityProofs && req.method === 'POST' && req.body?.proof) {
+		if (activitypub.proofs.isSupported(req.body)) {
+			const verified = await activitypub.proofs.verify(req.body);
+			if (!verified) {
+				activitypub.helpers.log('[middleware/activitypub] Top-level integrity proof verification failed.');
+				return res.sendStatus(400);
+			}
+			proofVerified = true;
+			req.apProofVerified = true;
+			const candidate = activitypub.proofs._selectProof(req.body);
+			req.apKeyId = candidate.verificationMethod;
+			let { actor } = req.body;
+			if (typeof actor === 'object' && actor.hasOwnProperty('id')) {
+				actor = actor.id;
+			}
+			if (Array.isArray(actor)) {
+				actor = actor.map(a => (typeof a === 'string' ? a : a.id))[0];
+			}
+			req.uid = actor;
+			activitypub.helpers.log('[middleware/activitypub] Top-level integrity proof verification passed; HTTP signature skipped.');
+		}
+	}
+
+	if (meta.config.activitypubIntegrityProofs && req.method === 'POST' && req.body?.object?.proof) {
+		if (activitypub.proofs.isSupported(req.body.object)) {
+			const verified = await activitypub.proofs.verify(req.body.object);
+			if (!verified) {
+				activitypub.helpers.log('[middleware/activitypub] Integrity proof verification failed.');
+				return res.sendStatus(400);
+			}
+			activitypub.helpers.log('[middleware/activitypub] Integrity proof verification passed.');
+		}
+	}
+
+	// Verifies the HTTP Signature if present (required for POST, optional for GET).
+	// A valid top-level integrity proof is the sole carve-out that waives it.
+	if (proofVerified) {
+		// HTTP signature skipped — the top-level proof authenticated the envelope.
+	} else if (req.headers.hasOwnProperty('signature')) {
 		// `verified` is the keyId that passed cryptographic verification (or false).
 		// Caller identity MUST be derived from this value — never re-parse the raw
 		// Signature header, which can be crafted to disagree with the spec parser.
@@ -140,24 +182,29 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	// Cross-check key ownership against received actor.
 	// The keyId is the one that passed cryptographic verification (set on
 	// req.apKeyId by the verify middleware) — NOT a re-parse of the raw header.
-	if (!req.apKeyId) {
+	// Skipped when a top-level integrity proof authenticated the envelope: the
+	// proof already binds the actor to its own key, so the RSA key-ownership
+	// comparison (which has no Ed25519 counterpart) does not apply.
+	if (req.apProofVerified) {
+		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check skipped (top-level integrity proof).');
+	} else if (!req.apKeyId) {
 		// A signed POST reaching this point without a verified keyId is anomalous.
 		activitypub.helpers.log('[middleware/activitypub] No verified keyId available for cross-check.');
 		return res.sendStatus(403);
-	}
+	} else {
+		await activitypub.actors.assert(actor);
+		let compare = await db.getObjectsFields([
+			`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
+		], ['id']);
+		compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
 
-	await activitypub.actors.assert(actor);
-	let compare = await db.getObjectsFields([
-		`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
-	], ['id']);
-	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
-
-	const keyId = req.apKeyId.replace(/#[\w-]+$/, '');
-	if (compare !== keyId) {
-		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
-		return res.sendStatus(403);
+		const keyId = req.apKeyId.replace(/#[\w-]+$/, '');
+		if (compare !== keyId) {
+			activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
+			return res.sendStatus(403);
+		}
+		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check passed.');
 	}
-	activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check passed.');
 
 	next();
 });

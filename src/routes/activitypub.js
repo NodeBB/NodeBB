@@ -3,6 +3,17 @@
 const helpers = require('./helpers');
 
 module.exports = function (app, middleware, controllers) {
+	// Some clients naively include URI fragments in the request path (e.g.
+	// GET /uid/1#key). Fragments are not sent per RFC 3986; strip them so
+	// such requests resolve to the actor document, which still carries the key.
+	app.use((req, res, next) => {
+		const hashIndex = req.url.indexOf('#');
+		if (hashIndex !== -1) {
+			req.url = req.url.slice(0, hashIndex);
+		}
+		next();
+	});
+
 	helpers.setupPageRoute(app, '/world', [
 		middleware.activitypub.enabled,
 		middleware.activitypub.pageview,
@@ -35,9 +46,11 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/actor', middlewares, helpers.tryRoute(controllers.activitypub.actors.application));
 	app.get('/actor/following', middlewares, helpers.tryRoute(controllers.activitypub.actors.following));
 	app.get('/actor/admins', middlewares, helpers.tryRoute(controllers.activitypub.getAdmins));
+	app.get('/actor/keys/ed25519', middlewares, helpers.tryRoute(controllers.activitypub.actors.instanceKey));
 	app.post('/inbox', [...middlewares, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 
 	app.get('/uid/:uid', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.user));
+	app.get('/uid/:uid/keys/ed25519', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.key));
 	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
 	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.getInbox));
 	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
@@ -51,6 +64,7 @@ module.exports = function (app, middleware, controllers) {
 
 	app.get('/topic/:tid/:slug?', [...middlewares, middleware.assert.topic], helpers.tryRoute(controllers.activitypub.actors.topic));
 
+	app.get('/category/:cid/keys/ed25519', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.key));
 	app.get('/category/:cid/inbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getInbox));
 	app.post('/category/:cid/inbox', [...middlewares, middleware.assert.category, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 	app.get('/category/:cid/outbox', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.getCategoryOutbox));

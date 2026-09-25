@@ -488,6 +488,88 @@ describe('Inbox', () => {
 				});
 			});
 
+			describe('proof-gated object pass-through (FEP-8b32)', () => {
+				let remoteCid;
+
+				const SENTINEL = new Error('sentinel-stop');
+
+				before(async () => {
+					meta.config.activitypubIntegrityProofs = true;
+
+					// Remote category actor (announcer) — sidesteps the follower/orphan check
+					({ id: remoteCid } = helpers.mocks.group());
+					await activitypub.actors.assertGroup([remoteCid]);
+				});
+
+				after(function () {
+					meta.config.activitypubIntegrityProofs = undefined;
+				});
+
+				// Stub resolveId (pass-through, avoids its network fetch), notes.assert
+				// (capture the argument, then halt via SENTINEL), and verifyAuthenticity
+				// (the proof logic itself is unit-tested in test/activitypub/proofs.js).
+				const withStubs = (authentic) => {
+					const originalResolveId = activitypub.resolveId;
+					const originalAssert = activitypub.notes.assert;
+					const originalVerifyAuth = activitypub.proofs.verifyAuthenticity;
+					let captured;
+					activitypub.resolveId = async (u, id) => id;
+					activitypub.notes.assert = async (u, input) => {
+						captured = input;
+						throw SENTINEL;
+					};
+					activitypub.proofs.verifyAuthenticity = async () => authentic;
+					return {
+						run: async (body) => {
+							try {
+								await activitypub.inbox.announce({ body });
+							} catch (e) {
+								assert.strictEqual(e, SENTINEL);
+							}
+							return captured;
+						},
+						restore: () => {
+							activitypub.resolveId = originalResolveId;
+							activitypub.notes.assert = originalAssert;
+							activitypub.proofs.verifyAuthenticity = originalVerifyAuth;
+						},
+					};
+				};
+
+				const makeNote = () => ({
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: `https://remote.example/post/${utils.generateUUID()}`,
+					type: 'Note',
+					attributedTo: 'https://remote.example/user/foobar',
+					content: 'Hello world',
+					to: [remoteCid],
+				});
+
+				it('should pass the embedded object to notes.assert when the proof is authentic', async function () {
+					const note = makeNote();
+					const { activity } = helpers.mocks.announce({ actor: remoteCid, object: note });
+					const { run, restore } = withStubs(true);
+					try {
+						const captured = await run(activity);
+						assert.strictEqual(captured, note, 'expected the embedded object, not its id');
+					} finally {
+						restore();
+					}
+				});
+
+				it('should pass the id (not the object) when the proof is not authentic', async function () {
+					const note = makeNote();
+					const { activity } = helpers.mocks.announce({ actor: remoteCid, object: note });
+					const { run, restore } = withStubs(false);
+					try {
+						const captured = await run(activity);
+						assert.strictEqual(typeof captured, 'string', 'expected the id string, not the object');
+					} finally {
+						restore();
+					}
+				});
+			});
+
 			describe('(Create) or (Note) referencing local post', () => {
 				let uid;
 				let topicData;
