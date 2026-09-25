@@ -310,7 +310,7 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
-
+			
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :
@@ -421,7 +421,10 @@ module.exports = function (User) {
 			relativeCandidate = relativeCandidate.slice(relative_path.length);
 		}
 		const normalizedPath = path.posix.normalize(relativeCandidate);
-		return normalizedPath === upload_url || normalizedPath.startsWith(`${upload_url}/`);
+		// old user profile images are stored as `/uploads/profile` instead of `/assets/uploads/profile`
+		const legacyUploadUrl = upload_url.replace(/^\/assets/, '');
+		return normalizedPath === upload_url || normalizedPath.startsWith(`${upload_url}/`) ||
+			normalizedPath === legacyUploadUrl || normalizedPath.startsWith(`${legacyUploadUrl}/`);
 	};
 
 
