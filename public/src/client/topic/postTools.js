@@ -480,24 +480,20 @@ define('forum/topic/postTools', [
 	const selectionChangeFn = utils.debounce(selectionChange, 250);
 
 	function handleSelectionTooltip() {
+		$(document).off('selectionchange', selectionChangeFn);
 		if (!ajaxify.data.privileges['topics:reply']) {
 			return;
 		}
 
 		hooks.onPage('action:posts.loaded', delayedTooltip);
-		$(document).off('selectionchange');
-		$(document).on('selectionchange', function () {
-			const selectionEmpty = window.getSelection().toString() === '';
-			if (selectionEmpty) {
-				$('[component="selection/tooltip"]').addClass('hidden');
-			}
-		});
 		$(document).on('selectionchange', selectionChangeFn);
 	}
 
 	function selectionChange() {
 		const selectionEmpty = window.getSelection().toString() === '';
-		if (!selectionEmpty) {
+		if (selectionEmpty) {
+			$('[component="selection/tooltip"]').addClass('hidden');
+		} else {
 			delayedTooltip();
 		}
 	}
