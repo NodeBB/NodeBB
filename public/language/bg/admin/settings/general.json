@@ -65,6 +65,6 @@
 	"privacy": "Поверителност",
 	"log-ips": "Записване на IP адреси в журнала",
 	"log-ips-help": "Когато това е включено, IP адресите на всички посетители ще се съхраняват в сортирана колекция за аналитични цели. Това се използва за изчисляване на броя на уникалните посетители.",
-	"analytics-retention": "Analytics Retention (days)",
-	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
+	"analytics-retention": "Запазване на анализите (дни)",
+	"analytics-retention-help": "Брой дни през които данните от анализите (преглеждания на страници, уникални посетители и т.н.) се пазят, преди да бъдат автоматично изтрити. Задайте 0, за да пазите данните от анализите завинаги."
 }
