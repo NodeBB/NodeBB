@@ -63,7 +63,7 @@ fires `filter:post.create` / `filter:post.edit` — the hooks the plugin already
 
 ---
 
-## Phase 1 — Ingest + view remote polls ✅ READY TO IMPLEMENT
+## Phase 1 — Ingest + view remote polls ✅ COMPLETE
 
 **Scope:** `Create(Question)` → topic + post + a poll record marked `remote`;
 `Update(Question)` → refresh results/end time; poll renders with options + current results
@@ -102,7 +102,7 @@ No `plugin.json` change in this phase.
 
 ---
 
-## Phase 2 — Outbound `Question` serialization ⚠️ NEEDS TECHNICAL REVIEW PRIOR TO IMPLEMENTATION
+## Phase 2 — Outbound `Question` serialization ✅ COMPLETE
 
 **Scope:** When a **local** post with polls is created/updated, federate it as a `Question`
 object (not a plain `Note`/`Article`).
@@ -110,22 +110,27 @@ object (not a plain `Note`/`Article`).
 ### Approach
 
 - New plugin hook `filter:activitypub.mocks.note` (fired at the end of `Mocks.notes.public`,
-  `mocks.js:944`). If the post has `pollIds`, transform the serialized object:
+  `mocks.js:944`, receives `{ object, post }`). If `post` has `pollIds`, transform the
+  serialized object:
   - `type: 'Question'`
-  - `oneOf` (single) or `anyOf` (multi) built from the poll options, each with
+  - `oneOf` (single) or `anyOf` (multi) built from the **first** poll's options, each with
     `replies: { type: 'Collection', totalItems: <voteCount> }`
-  - `endTime` from `poll.end`; `votersCount` from the voter count
+  - `endTime` from `poll.end` (omit if open); `votersCount` from the voter count; `closed` if
+    the poll is ended
+  - **Follow the `Note` branch, not `Article`:** drop `preview`/`summary`/`sensitive`. A poll post
+    is never serialized as an `Article`. **Keep `name`** (the topic title) — it is harmless and not
+    in the `Question` schema, but does not conflict.
 - Register the hook in `plugin.json`.
 
-### Open questions (resolve in review)
+### Decisions (resolved in review)
 
-- Interaction with the existing `isArticle` branch in `Mocks.notes.public` (main posts serialize
-  as `Article` with a `preview`). A main post that is a poll would become a `Question` — confirm
-  consumers handle `Question` where an `Article`/`Note` is expected, and whether `preview`/
-  `summary` should be dropped.
-- Which poll on a post wins if a post has multiple polls (`pollIds` is an array). FEP-9967 models
-  one `Question` = one poll; decide serialization for the multi-poll case.
-- `updated` property maintenance on vote changes (see Phase 3).
+- **`Note` vs `Article`:** a post with a poll always serializes via the `Note` branch — no
+  `summary`/`preview`/`sensitive`. The plugin hook drops those fields and sets `type: 'Question'`.
+  The topic-title `name` is kept (harmless, non-conflicting).
+- **Multiple polls:** only the **first** poll on a post is federated out (FEP-9967 models one
+  `Question` = one poll). A note is shown at poll-creation time that federation of multiple polls
+  per post is not supported.
+- **`updated`:** only changed when the post is edited. Phase 4 updates `updated` on vote receipt.
 
 ---
 
