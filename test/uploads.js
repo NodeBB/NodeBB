@@ -851,7 +851,7 @@ describe('Upload Controllers', () => {
 			});
 		});
 
-		describe('.getUploadsForPost() should ignore @ suffixes after file path', () => {
+		describe('.getUploadsForPost() should ignore ? suffixes after file path', () => {
 			let relPath;
 			const relativePath = nconf.get('relative_path') || '';
 			before(async () => {
@@ -860,20 +860,20 @@ describe('Upload Controllers', () => {
 				relPath = body.response.images[0].url.slice(body.response.images[0].url.indexOf('/files/'));
 			});
 
-			it('should strip a width x height suffix (@1920x1080)', async () => {
-				const content = `![alt](${relativePath}/assets/uploads${relPath}@1920x1080)`;
+			it('should strip a width x height suffix (?w=1920&h=1080)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}?w=1920&h=1080)`;
 				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
 				assert.deepStrictEqual(uploads, [relPath]);
 			});
 
-			it('should strip a percentage suffix (@50%)', async () => {
-				const content = `![alt](${relativePath}/assets/uploads${relPath}@50%)`;
+			it('should strip a percentage suffix (?w=50%)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}?w=50%)`;
 				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
 				assert.deepStrictEqual(uploads, [relPath]);
 			});
 
-			it('should strip a width-only/multiplier suffix (@200)', async () => {
-				const content = `![alt](${relativePath}/assets/uploads${relPath}@200)`;
+			it('should strip a width-only/multiplier suffix (?w=200)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}?w=200)`;
 				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
 				assert.deepStrictEqual(uploads, [relPath]);
 			});
