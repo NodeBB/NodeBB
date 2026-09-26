@@ -83,14 +83,13 @@ Analytics.prune = async function () {
 	}
 
 	await Promise.all(keys.map(async (key) => {
-		const bulkRemove = [];
+		const valuesToRemove = [];
 		await batch.processSortedSet(`analytics:${key}`, async (values) => {
-			const expiredValues = values.filter(value => parseInt(value, 10) < cutoff);
-			bulkRemove.push(...expiredValues.map(value => [`analytics:${key}`, value]));
+			valuesToRemove.push(...values.filter(value => parseInt(value, 10) < cutoff));
 		}, {
 			batch: 500,
 		});
-		await db.sortedSetRemoveBulk(bulkRemove);
+		await db.sortedSetRemove(`analytics:${key}`, valuesToRemove);
 	}));
 };
 
