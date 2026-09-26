@@ -13,6 +13,7 @@ const utils = require('./utils');
 const plugins = require('./plugins');
 const pubsub = require('./pubsub');
 const cron = require('./cron');
+const batch = require('./batch');
 
 const Analytics = module.exports;
 
@@ -55,7 +56,8 @@ Analytics.startJobs = async function () {
 		name: 'prune:ip:recent',
 		cronTime: '*/30 * * * *',
 		onTick: async () => {
-			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - 172800000);
+			const twoDaysMs = 2 * 24 * 60 * 60 * 1000;
+			await db.sortedSetsRemoveRangeByScore(['ip:recent'], '-inf', Date.now() - twoDaysMs);
 		},
 	});
 
@@ -73,14 +75,23 @@ Analytics.prune = async function () {
 	if (!retention || retention <= 0) {
 		return;
 	}
-
-	const cutoff = Date.now() - (retention * 86400000);
+	const oneDayMs = 24 * 60 * 60 * 1000;
+	const cutoff = Date.now() - (retention * oneDayMs);
 	const keys = await db.getSortedSetRange('analyticsKeys', 0, -1);
 	if (!keys.length) {
 		return;
 	}
 
-	await db.sortedSetsRemoveRangeByScore(keys.map(key => `analytics:${key}`), '-inf', cutoff);
+	await Promise.all(keys.map(async (key) => {
+		const bulkRemove = [];
+		await batch.processSortedSet(`analytics:${key}`, async (values) => {
+			const expiredValues = values.filter(value => parseInt(value, 10) < cutoff);
+			bulkRemove.push(...expiredValues.map(value => [`analytics:${key}`, value]));
+		}, {
+			batch: 500,
+		});
+		await db.sortedSetRemoveBulk(bulkRemove);
+	}));
 };
 
 Analytics.writeLocalData = async function () {
