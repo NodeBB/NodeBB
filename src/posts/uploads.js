@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const upload_path = nconf.get('upload_path');
-	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
+	const searchRegex = /\/assets\/uploads(\/files\/[^\s")@]+\.?[\w]*)/g;
 
 	const _getFullPath = relativePath => path.join(upload_path, relativePath);
 	const _filterValidPaths = async function (filePaths) {

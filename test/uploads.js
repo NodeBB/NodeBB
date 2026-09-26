@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 const path = require('path');
@@ -849,6 +848,38 @@ describe('Upload Controllers', () => {
 			after(async () => {
 				await emptyUploadsFolder();
 				meta.config.orphanExpiryDays = _orphanExpiryDays;
+			});
+		});
+
+		describe('.getUploadsForPost() should ignore @ suffixes after file path', () => {
+			let relPath;
+			const relativePath = nconf.get('relative_path') || '';
+			before(async () => {
+				const { jar, csrf_token } = await helpers.loginUser('regular', 'zugzug');
+				const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+				relPath = body.response.images[0].url.slice(body.response.images[0].url.indexOf('/files/'));
+			});
+
+			it('should strip a width x height suffix (@1920x1080)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}@1920x1080)`;
+				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
+				assert.deepStrictEqual(uploads, [relPath]);
+			});
+
+			it('should strip a percentage suffix (@50%)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}@50%)`;
+				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
+				assert.deepStrictEqual(uploads, [relPath]);
+			});
+
+			it('should strip a width-only/multiplier suffix (@200)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}@200)`;
+				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
+				assert.deepStrictEqual(uploads, [relPath]);
+			});
+
+			after(async () => {
+				await emptyUploadsFolder();
 			});
 		});
 	});
