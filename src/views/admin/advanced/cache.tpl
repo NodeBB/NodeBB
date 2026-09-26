@@ -31,8 +31,8 @@
 					<tr class="align-middle">
 						<td data-sort-value="{./name}">
 							<div class="d-flex gap-1 align-items-center">
-								<div class="form-check form-switch text-sm" data-name="{@key}" style="min-height: initial;">
-									<input class="form-check-input" type="checkbox" {{{if caches.enabled}}}checked{{{end}}}>
+								<div class="form-check form-switch text-sm" data-name="{./name}" style="min-height: initial;">
+									<input class="form-check-input" type="checkbox" {{{if ./enabled}}}checked{{{end}}}>
 								</div>
 								{./name}
 							</div>
