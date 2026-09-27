@@ -271,6 +271,7 @@ SELECT "_key", "type"
   FROM "legacy_object"
  WHERE "expireAt" IS NULL
     OR "expireAt" > CURRENT_TIMESTAMP`);
+			await createIndices(client);
 		}
 
 		if (!res.rows[0].c) {
@@ -352,14 +353,19 @@ postgresModule.createIndices = async function () {
 	}
 	winston.info('[database] Checking database indices.');
 	try {
-		await postgresModule.pool.query(`CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC)`);
-		await postgresModule.pool.query(`CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`);
+		await createIndices(postgresModule.pool);
 		winston.info('[database] Checking database indices done!');
 	} catch (err) {
 		winston.error(`Error creating index ${err.message}`);
 		throw err;
 	}
 };
+
+function createIndices(client) {
+	return client.query(`
+CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC);
+CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC);`);
+}
 
 postgresModule.checkCompatibility = function (callback) {
 	const postgresPkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../../node_modules/pg/package.json'), 'utf8'));
