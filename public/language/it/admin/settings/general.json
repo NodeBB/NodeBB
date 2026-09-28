@@ -65,6 +65,6 @@
 	"privacy": "Privacy",
 	"log-ips": "Registra gli indirizzi IP",
 	"log-ips-help": "Quando abilitata, gli indirizzi IP di tutti i visitatori sono memorizzati in un insieme ordinato a fini di analisi. Ciò serve a calcolare il numero di visitatori unici.",
-	"analytics-retention": "Analytics Retention (days)",
-	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
+	"analytics-retention": "Conservazione Analitica (giorni)",
+	"analytics-retention-help": "Numero di giorni per cui conservare i dati analitici (visualizzazioni di pagina, visitatori unici, ecc.) prima che siano automaticamente eliminati. Imposta a 0 per conservare i dati di analisi per sempre."
 }
