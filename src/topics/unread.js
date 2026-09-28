@@ -357,13 +357,6 @@ module.exports = function (Topics) {
 		}
 	};
 
-	Topics.markCategoryUnreadForAll = async function (/* tid */) {
-		// TODO: remove in 4.x
-		console.warn('[deprecated] Topics.markCategoryUnreadForAll deprecated');
-		// const cid = await Topics.getTopicField(tid, 'cid');
-		// await categories.markAsUnreadForAll(cid);
-	};
-
 	Topics.hasReadTopics = async function (tids, uid) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return tids.map(() => false);
