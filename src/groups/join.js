@@ -6,6 +6,7 @@ const db = require('../database');
 const user = require('../user');
 const plugins = require('../plugins');
 const cache = require('../cache');
+const messaging = require('../messaging');
 const utils = require('../utils');
 
 module.exports = function (Groups) {
@@ -63,6 +64,7 @@ module.exports = function (Groups) {
 		}
 
 		await setGroupTitleIfNotSet(groupsToJoin, uid);
+		await messaging.addUserToMemberGroupRooms(uid, groupsToJoin);
 
 		plugins.hooks.fire('action:group.join', {
 			groupNames: groupsToJoin,

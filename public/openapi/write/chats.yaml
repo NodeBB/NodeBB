@@ -204,6 +204,11 @@ post:
               type: number
               enum: [0, 1]
               description: whether to post a system message when a user joins or leaves the room
+            memberGroups:
+              type: array
+              items:
+                type: string
+              description: groups whose members become members of the room, private rooms only (non-administrators may only use groups that allow it)
           required:
             - uids
   responses:

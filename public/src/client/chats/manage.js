@@ -25,10 +25,25 @@ define('forum/chats/manage', [
 				}
 			}
 
+			const memberGroups = ajaxify.data.memberGroups || [];
+			const canEditMemberGroups = !ajaxify.data.public && (app.user.isAdmin || ajaxify.data.isOwner);
+			const memberGroupOptions = (ajaxify.data.linkableGroups || []).map(g => ({ ...g }));
+			memberGroups.forEach((name) => {
+				const option = memberGroupOptions.find(g => $('<div>').html(g.name).text() === name);
+				if (option) {
+					option.selected = true;
+				} else {
+					memberGroupOptions.push({ name: utils.escapeHTML(name), selected: true });
+				}
+			});
+
 			const html = await Benchpress.render('modals/manage-room', {
 				groups,
 				user: app.user,
 				room: ajaxify.data,
+				canEditMemberGroups,
+				memberGroupOptions,
+				canSave: app.user.isAdmin || canEditMemberGroups,
 			});
 			modal = await modals.dialog({
 				title: '[[modules:chat.manage-room]]',
@@ -75,12 +90,15 @@ define('forum/chats/manage', [
 				const notifSettingEl = modal.find('[component="chat/room/notification/setting"]');
 				const joinLeaveMessagesEl = modal.find('[component="chat/room/join-leave-messages"]');
 
+				const memberGroupsEl = modal.find('[component="chat/room/member-groups"]');
 				api.put(`/chats/${roomId}`, {
 					groups: modal.find('[component="chat/room/groups"]').val(),
+					memberGroups: memberGroupsEl.length ? (memberGroupsEl.val() || []) : undefined,
 					notificationSetting: notifSettingEl.val(),
 					joinLeaveMessages: joinLeaveMessagesEl.is(':checked') ? 1 : 0,
 				}).then((payload) => {
 					ajaxify.data.groups = payload.groups;
+					ajaxify.data.memberGroups = payload.memberGroups;
 					ajaxify.data.notificationSetting = payload.notificationSetting;
 					ajaxify.data.joinLeaveMessages = payload.joinLeaveMessages;
 					const roomDefaultOption = payload.notificationOptions[0];
