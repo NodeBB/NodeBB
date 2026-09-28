@@ -653,6 +653,18 @@ async function generateBannedResponse(res) {
 	return response;
 }
 
+const statusCodeMap = new Map([
+	[400, 'bad-request'],
+	[401, 'not-authorised'],
+	[403, 'forbidden'],
+	[404, 'not-found'],
+	[426, 'upgrade-required'],
+	[429, 'too-many-requests'],
+	[500, 'internal-server-error'],
+	[501, 'not-implemented'],
+	[503, 'service-unavailable'],
+]);
+
 helpers.generateError = async (statusCode, message, res) => {
 	async function translateMessage(message) {
 		const { req } = res;
@@ -664,53 +676,13 @@ helpers.generateError = async (statusCode, message, res) => {
 		message = await translateMessage(message);
 	}
 
-	const payload = {
+	return {
 		status: {
-			code: 'internal-server-error',
+			code: statusCodeMap.get(statusCode) || 'internal-server-error',
 			message: message || await translateMessage(`[[error:api.${statusCode}]]`),
 		},
 		response: {},
 	};
-
-	switch (statusCode) {
-		case 400:
-			payload.status.code = 'bad-request';
-			break;
-
-		case 401:
-			payload.status.code = 'not-authorised';
-			break;
-
-		case 403:
-			payload.status.code = 'forbidden';
-			break;
-
-		case 404:
-			payload.status.code = 'not-found';
-			break;
-
-		case 426:
-			payload.status.code = 'upgrade-required';
-			break;
-
-		case 429:
-			payload.status.code = 'too-many-requests';
-			break;
-
-		case 500:
-			payload.status.code = 'internal-server-error';
-			break;
-
-		case 501:
-			payload.status.code = 'not-implemented';
-			break;
-
-		case 503:
-			payload.status.code = 'service-unavailable';
-			break;
-	}
-
-	return payload;
 };
 
 helpers.validateParameters = function (query, fields, validation) {
