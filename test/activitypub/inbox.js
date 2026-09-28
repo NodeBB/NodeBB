@@ -12,6 +12,7 @@ const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const privileges = require('../../src/privileges');
 const messaging = require('../../src/messaging');
+const notifications = require('../../src/notifications');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
@@ -591,6 +592,43 @@ describe('Inbox', () => {
 
 					const exists = await db.isSortedSetMember(`pid:${topicData.mainPid}:announces`, id);
 					assert(!exists);
+				});
+
+				it('should send a notification to the post owner when a remote Person shares', async () => {
+					const { id } = helpers.mocks.person();
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+					announces += 1;
+
+					const nid = `announce:post:${postData.pid}:uid:${id}`;
+					const notif = await notifications.get(nid);
+					assert(notif, 'expected a notification for a Person announcer');
+				});
+
+				it('should NOT notify the post owner when a remote non-Person shares, but should still log the share', async () => {
+					const { id } = helpers.mocks.person({ type: 'Application' });
+					const { activity } = helpers.mocks.announce({
+						actor: id,
+						object: localNote,
+						cc: [`${nconf.get('url')}/uid/${topicData.uid}`],
+					});
+
+					await activitypub.inbox.announce({ body: activity });
+					announces += 1;
+
+					// Share topic event / announces counter is still updated (transparency)
+					const count = await posts.getPostField(topicData.mainPid, 'announces');
+					assert.strictEqual(count, announces);
+
+					// But no user notification is sent
+					const nid = `announce:post:${postData.pid}:uid:${id}`;
+					const notif = await notifications.get(nid);
+					assert(!notif, 'expected no notification for a non-Person announcer');
 				});
 			});
 

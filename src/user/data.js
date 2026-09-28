@@ -277,6 +277,11 @@ module.exports = function (User) {
 				user.fullnameEmoji = user.fullnameEmoji ? JSON.parse(String(user.fullnameEmoji)) : [];
 			}
 
+			// Parse apType (comma-joined AP actor types) into an array
+			if (user.hasOwnProperty('apType')) {
+				user.apType = user.apType ? String(user.apType).split(',') : [];
+			}
+
 			if (user.hasOwnProperty('username')) {
 				user.username = String(user.username || '');
 			}

@@ -323,13 +323,12 @@ Mocks.profile = async (actors) => {
 			followerCount,
 			followingCount,
 
+			apType: Array.isArray(actor.type) ? actor.type.join(',') : actor.type,
 			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
 			customFields: customFields && new URLSearchParams(customFields).toString(),
-
-			// Store the canonical webfinger handle for split-domain identity verification
 			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 

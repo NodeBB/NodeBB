@@ -880,7 +880,12 @@ inbox.announce = async (req) => {
 				pid = id;
 				tid = await posts.getPostField(id, 'tid');
 
-				socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
+				// Notifs for Person-type actors only
+				const apType = await user.getUserField(actor, 'apType');
+				const isPerson = apType === null ? true : apType.includes('Person');
+				if (isPerson) {
+					socketHelpers.sendNotificationToPostOwner(pid, actor, 'announce', 'notifications:activitypub.announce');
+				}
 			} else { // Remote object
 				// Follower check
 				if (!fromRelay && !cid && !syncedCids.length) {
