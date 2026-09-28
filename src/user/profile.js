@@ -2,6 +2,7 @@
 'use strict';
 
 const _ = require('lodash');
+const nconf = require('nconf');
 const validator = require('validator');
 const winston = require('winston');
 
@@ -12,6 +13,7 @@ const db = require('../database');
 const groups = require('../groups');
 const plugins = require('../plugins');
 const activitypub = require('../activitypub');
+const request = require('../request');
 const tx = require('../translator');
 
 module.exports = function (User) {
@@ -61,6 +63,8 @@ module.exports = function (User) {
 
 		if (Object.keys(updateData).length) {
 			await User.setUserFields(updateUid, updateData);
+			// Fire-and-forget XFN (rel="me") verification for changed URL fields
+			User.links.verifyChanged(updateUid, oldData, updateData).catch(err => winston.warn(`[user.profile] link verification error: ${err.message}`));
 		}
 
 		plugins.hooks.fire('action:user.updateProfile', {
@@ -75,6 +79,81 @@ module.exports = function (User) {
 			'email', 'username', 'userslug',
 			'picture', 'icon:text', 'icon:bgColor',
 		]);
+	};
+
+	User.links = {};
+
+	/**
+	 * Fire-and-forget XFN (rel="me") verification for input-link custom fields
+	 * whose values changed on a profile save.
+	 */
+	User.links.verifyChanged = async function (uid, oldData, newData) {
+		const fields = await User.customFields.getFields();
+		const changedKeys = fields
+			.filter(field => field.type === 'input-link')
+			.map(field => field.key)
+			.filter(key => newData[key] !== undefined && newData[key] !== (oldData[key] || ''));
+
+		if (!changedKeys.length) {
+			return;
+		}
+
+		// Per-user cooldown — prevents hammering remote sites by toggling values
+		const cooldownKey = `user:${uid}:verify-links:cooldown`;
+		const hits = await db.increment(cooldownKey);
+		if (hits > 1) {
+			return;
+		}
+		await db.pexpire(cooldownKey, meta.config['linkVerify:cooldown']);
+
+		await Promise.all(changedKeys.map(async (key) => {
+			if (!newData[key]) {
+				// Field was cleared — drop any previous verification
+				return await User.links.setVerified(uid, key, false);
+			}
+			try {
+				await User.links.verify(uid, key, newData[key]);
+			} catch (err) {
+				winston.warn(`[user.links] verification failed for user ${uid} field ${key}: ${err.message}`);
+			}
+		}));
+	};
+
+	/**
+	 * Fetch the URL and check for a <link>/<a> element with rel="me" pointing
+	 * back to this user's profile. Sets/clears the `verified:<key>` user field.
+	 * Fetch failures leave the existing verification state untouched.
+	 */
+	User.links.verify = async function (uid, key, value) {
+		let result;
+		try {
+			result = await request.get(value, {
+				timeout: meta.config['linkVerify:timeout'],
+				sizeLimit: meta.config['linkVerify:sizeLimit'],
+				headers: { accept: 'text/html' },
+			});
+		} catch (err) {
+			winston.warn(`[user.links] fetch failed for user ${uid} field ${key}: ${err.message}`);
+			return;
+		}
+
+		const contentType = result.response.headers['content-type'] || '';
+		if (!contentType.includes('text/html')) {
+			return await User.links.setVerified(uid, key, false);
+		}
+
+		const userslug = await User.getUserField(uid, 'userslug');
+		const verified = findMeLink(result.body, result.url, uid, userslug) !== null;
+		return await User.links.setVerified(uid, key, verified);
+	};
+
+	User.links.setVerified = async function (uid, key, verified) {
+		const field = `verified:${key}`;
+		if (verified) {
+			await User.setUserField(uid, field, Date.now());
+		} else {
+			await User.setUserField(uid, field, '');
+		}
 	};
 
 	async function validateData(callerUid, data) {
@@ -372,3 +451,61 @@ module.exports = function (User) {
 		plugins.hooks.fire('action:password.change', { uid, targetUid });
 	};
 };
+
+/**
+ * Scan HTML for <link>/<a> tags whose rel attribute contains "me" and whose
+ * href resolves to one of the user's profile URLs.
+ * Returns the matching normalized URL, or null.
+ */
+function findMeLink(html, baseUrl, uid, userslug) {
+	const expected = getExpectedProfileUrls(uid, userslug);
+	const tagRegex = /<(?:link|a)\b[^>]*>/gi;
+	let tag;
+	while ((tag = tagRegex.exec(html)) !== null) {
+		const fullTag = tag[0];
+		const relMatch = fullTag.match(/\brel\s*=\s*(["'])(.*?)\1/i);
+		if (!relMatch) {
+			continue;
+		}
+		const rels = relMatch[2].toLowerCase().split(/\s+/);
+		if (!rels.includes('me')) {
+			continue;
+		}
+		const hrefMatch = fullTag.match(/\bhref\s*=\s*(["'])(.*?)\1/i);
+		if (!hrefMatch) {
+			continue;
+		}
+		const candidate = normalizeUrl(hrefMatch[2], baseUrl);
+		if (candidate && expected.includes(candidate)) {
+			return candidate;
+		}
+	}
+	return null;
+}
+
+function getExpectedProfileUrls(uid, userslug) {
+	const base = nconf.get('url');
+	return [
+		normalizeUrl(`${base}/user/${userslug}`, base),
+		normalizeUrl(`${base}/uid/${uid}`, base),
+	].filter(Boolean);
+}
+
+function normalizeUrl(raw, base) {
+	let u;
+	try {
+		u = new URL(raw, base);
+	} catch (err) {
+		return null;
+	}
+	if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+		return null;
+	}
+	u.hash = '';
+	u.search = '';
+	u.hostname = u.hostname.toLowerCase();
+	while (u.pathname.length > 1 && u.pathname.endsWith('/')) {
+		u.pathname = u.pathname.slice(0, -1);
+	}
+	return u.href;
+}

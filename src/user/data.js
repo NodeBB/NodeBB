@@ -67,7 +67,8 @@ module.exports = function (User) {
 	let iconBackgrounds;
 
 	User.reloadCustomFieldWhitelist = async () => {
-		customFieldWhiteList = await User.customFields.getKeys();
+		const keys = await User.customFields.getKeys();
+		customFieldWhiteList = keys.concat(keys.map(key => `verified:${key}`)); // XFN verification timestamps
 	};
 
 	User.getUserFieldWhitelist = async function () {
@@ -315,7 +316,7 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
-			
+
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :
