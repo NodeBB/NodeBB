@@ -2149,6 +2149,114 @@ describe('User', () => {
 		});
 	});
 
+	describe('custom profile field link verification (XFN rel="me")', () => {
+		let fieldUid;
+		const originalGet = request.get;
+		const base = nconf.get('url');
+		const cooldownKey = uid => `user:${uid}:verify-links:cooldown`;
+
+		function stubGet(body, contentType = 'text/html; charset=utf-8', url = 'https://mastodon.social/@test') {
+			request.get = async () => ({
+				body,
+				response: { headers: { 'content-type': contentType } },
+				url,
+			});
+		}
+
+		before(async () => {
+			fieldUid = await User.create({ username: 'xfnverifyuser' });
+			await db.sortedSetAdd('user-custom-fields', 0, 'mastodon');
+			await db.setObject('user-custom-field:mastodon', { key: 'mastodon', name: 'Mastodon', type: 'input-link' });
+			await User.reloadCustomFieldWhitelist();
+		});
+
+		after(async () => {
+			request.get = originalGet;
+			await db.delete('user-custom-fields');
+			await db.delete('user-custom-field:mastodon');
+			await db.delete(cooldownKey(fieldUid));
+			await User.reloadCustomFieldWhitelist();
+		});
+
+		it('should mark a field verified when the remote page has a rel="me" backlink', async () => {
+			stubGet(`<html><head><link rel="me" href="${base}/user/xfnverifyuser"></head></html>`);
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://mastodon.social/@test' });
+			assert(await User.getUserField(fieldUid, 'verified:mastodon'));
+		});
+
+		it('should accept /uid/:uid backlinks and <a> elements', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			stubGet(`<html><body><a rel="me noopener" href="${base}/uid/${fieldUid}">my profile</a></body></html>`, 'text/html', 'https://example.com/@test');
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://example.com/@test' });
+			assert(await User.getUserField(fieldUid, 'verified:mastodon'));
+		});
+
+		it('should not verify a rel="me" link pointing to a different profile', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			stubGet(`<link rel="me" href="${base}/user/someoneelse">`);
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://mastodon.social/@other' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'verified:mastodon'), '');
+		});
+
+		it('should clear verification when the remote page has no rel="me" backlink', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			await User.setUserField(fieldUid, 'verified:mastodon', Date.now());
+			stubGet(`<html><head><link rel="nofollow" href="${base}/user/xfnverifyuser"></head></html>`);
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://mastodon.social/@test' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'verified:mastodon'), '');
+		});
+
+		it('should clear verification for non-html responses', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			await User.setUserField(fieldUid, 'verified:mastodon', Date.now());
+			stubGet('{"json":true}', 'application/json');
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://mastodon.social/@test' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'verified:mastodon'), '');
+		});
+
+		it('should leave verification untouched when the fetch fails', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			await User.setUserField(fieldUid, 'verified:mastodon', Date.now());
+			request.get = async () => { throw new Error('fetch failed'); };
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://mastodon.social/@test' });
+			assert(await User.getUserField(fieldUid, 'verified:mastodon'));
+		});
+
+		it('should clear the verified flag when the field is emptied', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			await User.setUserField(fieldUid, 'verified:mastodon', Date.now());
+			stubGet(`<link rel="me" href="${base}/user/xfnverifyuser">`);
+			await User.links.verifyChanged(fieldUid, { mastodon: 'https://mastodon.social/@test' }, { mastodon: '' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'verified:mastodon'), '');
+		});
+
+		it('should not fetch again within the cooldown window', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			let calls = 0;
+			request.get = async () => {
+				calls += 1;
+				return { body: '', response: { headers: { 'content-type': 'text/html' } }, url: 'https://a.example/' };
+			};
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://a.example/@1' });
+			await User.links.verifyChanged(fieldUid, {}, { mastodon: 'https://b.example/@2' });
+			assert.strictEqual(calls, 1);
+		});
+
+		it('should trigger verification on profile save', async () => {
+			await db.delete(cooldownKey(fieldUid));
+			stubGet(`<link rel="me" href="${base}/user/xfnverifyuser">`);
+			await User.updateProfile(fieldUid, { uid: fieldUid, mastodon: 'https://mastodon.social/@test' });
+			let verified;
+			for (let i = 0; i < 40 && !verified; i += 1) {
+				// eslint-disable-next-line no-await-in-loop
+				await setTimeout(25);
+				// eslint-disable-next-line no-await-in-loop
+				verified = await User.getUserField(fieldUid, 'verified:mastodon');
+			}
+			assert(verified);
+		});
+	});
+
 	describe('invites', () => {
 		let notAnInviterUid;
 		let inviterUid;

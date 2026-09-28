@@ -188,6 +188,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 
 	fields.forEach((f) => {
 		let userValue = userData[f.key];
+		f.verified = userData[`verified:${f.key}`];
 		if (f.type === 'select-multi' && userValue) {
 			userValue = user.customFields.parseValue(f, userValue) || [];
 		}

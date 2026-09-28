@@ -82,6 +82,28 @@
 
 			<hr/>
 
+			<div id="link-verification" class="mb-4">
+				<h5 class="fw-bold tracking-tight settings-header">{{tx("admin/settings/user:link-verification")}}</h5>
+				<p class="form-text">{{tx("admin/settings/user:link-verification-help", config.relative_path)}}</p>
+				<div class="mb-3">
+					<label class="form-label" for="linkVerify:timeout">{{tx("admin/settings/user:link-verification-timeout")}}</label>
+					<input id="linkVerify:timeout" type="number" min="0" class="form-control" data-field="linkVerify:timeout" placeholder="5000">
+					<p class="form-text">{{tx("admin/settings/user:link-verification-timeout-help")}}</p>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="linkVerify:sizeLimit">{{tx("admin/settings/user:link-verification-size-limit")}}</label>
+					<input id="linkVerify:sizeLimit" type="number" min="0" class="form-control" data-field="linkVerify:sizeLimit" placeholder="524288">
+					<p class="form-text">{{tx("admin/settings/user:link-verification-size-limit-help")}}</p>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" for="linkVerify:cooldown">{{tx("admin/settings/user:link-verification-cooldown")}}</label>
+					<input id="linkVerify:cooldown" type="number" min="0" class="form-control" data-field="linkVerify:cooldown" placeholder="60000">
+					<p class="form-text">{{tx("admin/settings/user:link-verification-cooldown-help")}}</p>
+				</div>
+			</div>
+
+			<hr/>
+
 			<div id="session-time" class="mb-4">
 				<h5 class="fw-bold tracking-tight settings-header">{{tx("admin/settings/user:session-time")}}</h5>
 				<div class="row">
