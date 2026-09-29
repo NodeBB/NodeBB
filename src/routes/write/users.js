@@ -4,6 +4,7 @@ const router = require('express').Router();
 const middleware = require('../../middleware');
 const controllers = require('../../controllers');
 const routeHelpers = require('../helpers');
+const user = require('../../user');
 
 const { setupApiRoute } = routeHelpers;
 
@@ -28,14 +29,12 @@ function authenticatedRoutes() {
 	};
 
 	const requireApiReAuthForSelfDelete = async function (req, res, next) {
-		// only reauth when a user is deleting their own account; an admin deleting
-		// another user's account is already privileged and doesn't need re-auth
+		// only reauth when a user is deleting their own account AND has no local password (SSO-only)
 		const isSelf = String(req.uid) === String(req.params.uid);
-		if (isSelf) {
-			await reauthMiddleware(req, res, next);
-		} else {
-			next();
+		if (isSelf && !(await user.hasPassword(req.uid))) {
+			return await reauthMiddleware(req, res, next);
 		}
+		next();
 	};
 
 	setupApiRoute(router, 'post', '/reauth/verify', [reauthMiddleware], function (req, res) {

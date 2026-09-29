@@ -34,6 +34,7 @@ editController.get = async function (req, res, next) {
 	userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
 	userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 	userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
+	userData.hasPassword = await user.hasPassword(res.locals.uid);
 	userData.allowAboutMe = accountHelpers.meetsMinReputation(userData, 'min:rep:aboutme');
 	userData.allowSignature = canUseSignature && accountHelpers.meetsMinReputation(userData, 'min:rep:signature');
 	userData.defaultAvatar = user.getDefaultAvatar();
