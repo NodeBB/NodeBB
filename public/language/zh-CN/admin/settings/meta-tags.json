@@ -1,8 +1,8 @@
 {
-	"custom-tags": "Custom Meta Tags",
-	"description": "Add global <code>&lt;meta&gt;</code> tags to every page. These are appended to the default tags and can be overridden per-page. Page-specific tags take precedence over the ones defined here. Open Graph keys (e.g. <code>og:title</code>) use the <code>property</code> attribute, all others use <code>name</code>.",
-	"key": "Key",
-	"content": "Content",
-	"remove": "Remove",
-	"add-tag": "Add Tag"
+	"custom-tags": "自定义 Meta 标签",
+	"description": "为每个页面添加全局 <code>&lt;meta&gt;</code> 标签。这些标签会追加到默认标签中，并且可以在每个页面中被覆盖。特定页面的标签优先于此处定义的标签。Open Graph 键（例如 <code>og:title</code>）使用 <code>property</code> 属性，其他所有键均使用 <code>name</code>.",
+	"key": "键",
+	"content": "内容",
+	"remove": "移除",
+	"add-tag": "添加标签"
 }

@@ -37,8 +37,8 @@
 	"running-in-development": "论坛正以开发模式运行。处于该模式的论坛可能存在潜在的漏洞，请联系您的论坛管理员。",
 	"localhost-warning": "NodeBB 当前配置的 URL 为 localhost。请将其更新为您的实际域名。",
 	"url-mismatch-warning": "通过与 config.json 中配置不同的 URL 访问了管理员面板。（请求的：%1，配置的：%2）",
-	"trust-proxy-warning": "This request arrived through a reverse proxy, but 'trust_proxy' is not enabled in config.json. Every visitor looks like the same IP address to NodeBB.",
-	"trust-proxy-tooltip": "Rate limits, IP bans, registration queue matching and unique visitor counts all rely on the client IP address. Set 'trust_proxy' in config.json when NodeBB is behind a proxy that strips or overwrites X-Forwarded-For from untrusted clients.",
+	"trust-proxy-warning": "此请求通过反向代理到达，但在 config.json 中未启用 'trust_proxy'。对 NodeBB 而言，所有访客看起来都是同一个 IP 地址。",
+	"trust-proxy-tooltip": "速率限制、IP 封禁、注册队列匹配以及独立访客统计均依赖于客户端 IP 地址。当 NodeBB 位于会剥离或覆盖来自不受信任客户端的 X-Forwarded-For 的代理之后时，请在 config.json 中设置 'trust_proxy'。",
 	"latest-lookup-failed": "查询NodeBB的最新版本失败",
 
 	"notices": "提醒",

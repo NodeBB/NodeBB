@@ -65,6 +65,6 @@
 	"privacy": "隐私",
 	"log-ips": "记录 IP 地址",
 	"log-ips-help": "启用此功能后，所有访问者的 IP 地址将存储在一个排序集合中，用于分析目的。这用于计算独立访问者数量。",
-	"analytics-retention": "Analytics Retention (days)",
-	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
+	"analytics-retention": "分析数据保留期（天）",
+	"analytics-retention-help": "分析数据（页面浏览量、独立访客等）在自动清理前保留的天数。设置为 0 则永久保留分析数据。"
 }
