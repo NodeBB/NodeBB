@@ -14,6 +14,8 @@ const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 const plugins = require('../../src/plugins');
 
+const helpers = require('./helpers');
+
 describe('Mocking', () => {
 	describe('Outbound (local content to AP object)', () => {
 		describe('Notes', () => {
@@ -352,6 +354,72 @@ describe('Mocking', () => {
 
 					assert.strictEqual(actor.icon, undefined);
 				});
+			});
+		});
+	});
+
+	describe('Inbound (AP object to local content)', () => {
+		describe('.post()', () => {
+			before(() => {
+				meta.config.activitypubEnabled = 1;
+				helpers.mocks.mockRequests();
+			});
+
+			after(() => {
+				helpers.mocks.restoreRequests();
+			});
+
+			it('should rewrite hashtag anchor hrefs to local tag URLs (case-insensitive match against the tag array)', async () => {
+				const { note } = helpers.mocks.note({
+					content: '<p>I heard that the server <a href="https://example.org/tags/theForkiverse" class="mention hashtag" rel="tag">#<span>theForkiverse</span></a> may shut down soon.</p>',
+					tag: [
+						{ type: 'Hashtag', href: 'https://example.org/tags/theforkiverse', name: '#theforkiverse' },
+					],
+				});
+
+				const payload = await activitypub.mocks.post(note);
+
+				assert(payload.content.includes('<a href="/tags/theforkiverse"'), `Unexpected content: ${payload.content}`);
+				assert(!payload.content.includes('https://example.org/tags/'));
+			});
+
+			it('should use the canonical tag name from the tag array verbatim (NodeBB tags are case-sensitive)', async () => {
+				const { note } = helpers.mocks.note({
+					content: '<p>Thanks to the <a href="https://example.org/tags/forkiverse" class="mention hashtag" rel="tag">#<span>forkiverse</span></a>!</p>',
+					tag: [
+						{ type: 'Hashtag', href: 'https://example.org/tags/Forkiverse', name: '#Forkiverse' },
+					],
+				});
+
+				const payload = await activitypub.mocks.post(note);
+
+				assert(payload.content.includes('<a href="/tags/Forkiverse"'), `Unexpected content: ${payload.content}`);
+				assert(!payload.content.includes('/tags/forkiverse'));
+			});
+
+			it('should leave anchors without a matching Hashtag tag entry untouched', async () => {
+				const { note } = helpers.mocks.note({
+					content: '<p><a href="https://example.org/tags/unknown">link</a> and <a href="https://example.org/user/stranger">@stranger</a></p>',
+					tag: [
+						{ type: 'Mention', href: 'https://example.org/user/stranger', name: '@stranger' },
+					],
+				});
+
+				const payload = await activitypub.mocks.post(note);
+
+				assert(payload.content.includes('href="https://example.org/tags/unknown"'));
+				assert(payload.content.includes('href="https://example.org/user/stranger"'));
+			});
+
+			it('should leave content untouched when there is no tag array', async () => {
+				const { note } = helpers.mocks.note({
+					content: '<p><a href="https://example.org/tags/something">link</a></p>',
+					tag: 'remove',
+				});
+
+				const payload = await activitypub.mocks.post(note);
+
+				assert(payload.content.includes('href="https://example.org/tags/something"'));
 			});
 		});
 	});

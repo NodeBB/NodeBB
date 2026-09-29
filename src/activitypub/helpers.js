@@ -599,6 +599,32 @@ Helpers.generateTitle = (html) => {
 };
 
 
+Helpers.rewriteHashtagAnchors = (content, tag) => {
+	// Rewrite hashtag anchor hrefs to local tag URLs, using the canonical tag array
+	// (hashtag hrefs are case-insensitive, the tag array entry is authoritative)
+	tag = Array.isArray(tag) ? tag : (tag ? [tag] : []);
+	const urlMap = new Map();
+	tag.forEach((item) => {
+		if (!item || item.type !== 'Hashtag' || typeof item.href !== 'string' || !item.href) {
+			return;
+		}
+		const name = typeof item.name === 'string' ? item.name.replace(/^#/, '') : '';
+		if (!name) {
+			return;
+		}
+		urlMap.set(item.href.toLowerCase(), `/tags/${encodeURIComponent(name)}`);
+	});
+
+	if (!urlMap.size) {
+		return content;
+	}
+
+	return content.replace(/(<a[^>]*href=['"])([^'"]+)(['"])/gi, (match, prefix, href, suffix) => {
+		const replacement = urlMap.get(href.toLowerCase());
+		return replacement ? `${prefix}${replacement}${suffix}` : match;
+	});
+};
+
 Helpers.remoteAnchorToLocalProfile = async (content, isMarkdown = false) => {
 	let anchorRegex;
 	if (isMarkdown) {

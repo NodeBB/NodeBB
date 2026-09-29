@@ -140,6 +140,7 @@ Mocks._normalize = async (object) => {
 	} else if (content && content.length) {
 		content = sanitize(content, sanitizeConfig);
 		content = await activitypub.helpers.remoteAnchorToLocalProfile(content);
+		content = activitypub.helpers.rewriteHashtagAnchors(content, object.tag);
 	} else {
 		content = '<em>This post did not contain any content.</em>';
 	}
