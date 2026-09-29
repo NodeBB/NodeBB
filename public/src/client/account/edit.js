@@ -84,6 +84,12 @@ define('forum/account/edit', [
 
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', async function () {
+			try {
+				await api.post('/users/reauth/verify');
+			} catch (err) {
+				return false;
+			}
+
 			const modal = await modals.confirm('<p>[[user:delete-account-confirm]]</p><p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
 				if (!confirm) {
 					return;

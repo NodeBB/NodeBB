@@ -27,6 +27,17 @@ function authenticatedRoutes() {
 		}
 	};
 
+	const requireApiReAuthForSelfDelete = async function (req, res, next) {
+		// only reauth when a user is deleting their own account; an admin deleting
+		// another user's account is already privileged and doesn't need re-auth
+		const isSelf = String(req.uid) === String(req.params.uid);
+		if (isSelf) {
+			await reauthMiddleware(req, res, next);
+		} else {
+			next();
+		}
+	};
+
 	setupApiRoute(router, 'post', '/reauth/verify', [reauthMiddleware], function (req, res) {
 		res.json({ verified: true });
 	});
@@ -40,7 +51,7 @@ function authenticatedRoutes() {
 	setupApiRoute(router, 'delete', '/:uid', [...middlewares, middleware.assert.user], controllers.write.users.delete);
 	setupApiRoute(router, 'put', '/:uid/picture', [...middlewares, middleware.assert.user], controllers.write.users.changePicture);
 	setupApiRoute(router, 'delete', '/:uid/content', [...middlewares, middleware.assert.user], controllers.write.users.deleteContent);
-	setupApiRoute(router, 'delete', '/:uid/account', [...middlewares, middleware.assert.user], controllers.write.users.deleteAccount);
+	setupApiRoute(router, 'delete', '/:uid/account', [...middlewares, middleware.assert.user, requireApiReAuthForSelfDelete], controllers.write.users.deleteAccount);
 
 	setupApiRoute(router, 'get', '/:uid/status', [middleware.assert.user, middleware.canViewUsers], controllers.write.users.getStatus);
 	setupApiRoute(router, 'head', '/:uid/status/:status', [middleware.assert.user, middleware.canViewUsers], controllers.write.users.checkStatus);
