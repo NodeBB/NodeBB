@@ -11,11 +11,18 @@ define('forum/tags', ['forum/infinitescroll', 'alerts'], function (infinitescrol
 				return resetSearch();
 			}
 
-			socket.emit('topics.searchAndLoadTags', { query: $('#tag-search').val() }, function (err, results) {
+			const query = $('#tag-search').val().trim();
+			socket.emit('topics.searchAndLoadTags', { query: query }, function (err, results) {
 				if (err) {
 					return alerts.error(err);
 				}
-				onTagsLoaded(results.tags, true);
+				const tags = results.tags.length ? results.tags : [{
+					// fallback if no results
+					value: query,
+					valueEncoded: encodeURIComponent(query),
+					score: 0,
+				}];
+				onTagsLoaded(tags, true);
 			});
 		}, 250));
 
