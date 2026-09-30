@@ -239,9 +239,18 @@ uploadsController.uploadFile = async function (req, res, next) {
 		return next(new Error('[[error:invalid-path]]'));
 	}
 
-	const data = await file.saveFileToLocal(uploadedFile.name, params.folder, uploadedFile.path);
+	// strip '-resized' substrings from the original filename
+	// (rationale: see saveFileToLocal in src/controllers/uploads.js — this
+	// controller bypasses that helper and calls file.saveFileToLocal directly).
+	const rawName = String(uploadedFile.name || 'upload');
+	const extension = path.extname(rawName) || '';
+	const stripped = rawName.slice(0, rawName.length - extension.length).split('-resized').join('');
+	const fileName = `${stripped || 'upload'}${extension}`;
+
+	const data = await file.saveFileToLocal(fileName, params.folder, uploadedFile.path);
 	res.json([{ url: data.url }]);
 };
+
 
 uploadsController.uploadLogo = async function (req, res) {
 	const storedFile = await upload('site-logo', req);
