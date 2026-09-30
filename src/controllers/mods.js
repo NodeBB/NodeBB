@@ -235,7 +235,7 @@ modsController.postQueue = async function (req, res, next) {
 	postData = postData
 		.filter(p => p &&
 			(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
-			(isAdmin || isGlobalMod || moderatedCids.includes(Number(p.category.cid)) || req.uid === p.user.uid))
+			(isAdmin || isGlobalMod || moderatedCids.map(String).includes(String(p.category.cid)) || req.uid === p.user.uid))
 		.map((post) => {
 			const isSelf = post.user.uid === req.uid;
 			post.canAccept = !isSelf && (isAdmin || isGlobalMod || !!moderatedCids.length);
