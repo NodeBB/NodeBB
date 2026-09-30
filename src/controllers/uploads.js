@@ -179,10 +179,6 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 };
 
 async function saveFileToLocal(uid, folder, uploadedFile) {
-	// Strip the '-resized' marker from the original filename (see file.stripResized):
-	// upload keying strips the marker, so a stored basename that natively contains
-	// it never matches its own records. The display name returned to the composer
-	// stays the user's original filename.
 	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
