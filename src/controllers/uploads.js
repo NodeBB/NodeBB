@@ -179,18 +179,26 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 };
 
 async function saveFileToLocal(uid, folder, uploadedFile) {
-	const name = uploadedFile.name || 'upload';
-	const extension = path.extname(name) || '';
+	// strip '-resized' substrings from the original filename.
+	// Core derives upload:<md5> keys from '-resized'-stripped paths (posts.uploads
+	// content sync and getUsage), so a stored filename that natively contains
+	// '-resized' never matches its own records: the file is left untracked
+	// (reported unused, orphan-deletable, and ungated by attachment-privilege
+	// plugins) even while embedded in live posts and chats.
+	const rawName = String(uploadedFile.name || 'upload');
+	const extension = path.extname(rawName) || '';
+	const stripped = rawName.slice(0, rawName.length - extension.length).split('-resized').join('');
+	const name = `${stripped || 'upload'}${extension}`;
 
-	const basename = extension ? name.slice(0, -extension.length) : name;
-	const filename = `${Date.now()}-${basename.slice(0, 255)}${extension}`;
+	const filename = `${Date.now()}-${name.slice(0, -extension.length).slice(0, 255)}${extension}`;
 
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
 	const storedFile = {
 		url: nconf.get('relative_path') + upload.url,
 		path: upload.path,
-		name: uploadedFile.name,
+		name: uploadedFile.name,   // ← display name stays original, only the stored name changes
 	};
+
 
 	await user.associateUpload(uid, upload.url.replace(`${nconf.get('upload_url')}`, ''));
 	const data = await plugins.hooks.fire('filter:uploadStored', {
