@@ -55,20 +55,34 @@ const maxSockets = 64; // total sockets across all hosts
 const maxConnections = 256; // allow connection reuse above maxSockets
 const connectionsPerHost = 10; // per-server connection limit
 
-const dispatcher = new NodeBBAgent({
-	maxSockets,
-	maxConnections,
-	connections: connectionsPerHost,
-	allowH2: true,
-	pipelining: 1,
-	connect: {
-		lookup,
-		rejectUnauthorized: !isDevOrTest,
-	},
-});
-const manualDispatcher = new Dispatcher1Wrapper(dispatcher);
+function createDispatcher(rejectUnauthorized) {
+	const agent = new NodeBBAgent({
+		maxSockets,
+		maxConnections,
+		connections: connectionsPerHost,
+		allowH2: true,
+		pipelining: 1,
+		connect: {
+			lookup,
+			rejectUnauthorized,
+		},
+	});
+	return new Dispatcher1Wrapper(agent);
+}
 
-async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1024, binary = false, ...config } = {}) {
+const manualDispatcher = createDispatcher(!isDevOrTest);
+
+let insecureDispatcher = null;
+function getInsecureDispatcher() {
+	if (!insecureDispatcher) {
+		insecureDispatcher = createDispatcher(false);
+	}
+	return insecureDispatcher;
+}
+
+async function call(url, method, {
+	body, timeout, jar, sizeLimit = 10 * 1024 * 1024, binary = false, rejectUnauthorized, ...config
+} = {}) {
 	const originalUrl = url;
 	let currentUrl = url;
 	let redirectCount = 0; // Add redirect counter
@@ -99,7 +113,7 @@ async function call(url, method, { body, timeout, jar, sizeLimit = 10 * 1024 * 1
 			},
 			signal: timeout > 0 ? AbortSignal.timeout(timeout) : undefined,
 			size: sizeLimit,
-			dispatcher: manualDispatcher,
+			dispatcher: rejectUnauthorized === false ? getInsecureDispatcher() : manualDispatcher,
 		};
 		if (body instanceof FormData) {
 			// If body is FormData, let fetch handle the content-type header
