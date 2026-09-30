@@ -1097,6 +1097,17 @@ describe('Post\'s', () => {
 			assert(!Object.hasOwn(posts[0].data, 'req'));
 		});
 
+		it('should load queued posts for a category moderator', async () => {
+			const modUid = await user.create({ username: 'queuecatmod', password: 'queuecatmodpwd' });
+			await privileges.categories.give(['moderate'], cid, modUid);
+			const { jar: modJar } = await helpers.loginUser('queuecatmod', 'queuecatmodpwd');
+			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar: modJar });
+			const ids = body.posts.map(p => p.id);
+			assert(ids.includes(topicQueueId));
+			assert(ids.includes(queueId));
+			await privileges.categories.rescind(['moderate'], cid, modUid);
+		});
+
 		it('should error if data is invalid', async () => {
 			await assert.rejects(
 				apiPosts.editQueuedPost({ uid: globalModUid }, null),
