@@ -20,8 +20,9 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	filename = filename.split('.').map(name => slugify(name)).join('.');
-
+	const slugified = filename.split('.').map(name => slugify(name)).join('.');
+	filename = file.stripResized(slugified);   // strip AFTER slugify: "photo resized.jpg"
+	                                          // slugifies to "photo-resized.jpg" first
 	let uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!file.isPathInside(nconf.get('upload_path'), uploadPath)) {
 		throw new Error('[[error:invalid-path]]');
@@ -33,7 +34,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 	// markers are stripped (see file.stripResized). Fixed-name callers (site logo,
 	// favicon, touch icon, screenshot, …) rely on the default overwrite semantics
 	// and must not opt in.
-	if (unique && await file.exists(uploadPath)) {
+	if ((unique || filename !== slugified) && await file.exists(uploadPath)) {
 		const extension = path.extname(filename);
 		const basename = path.basename(filename, extension);
 		let counter = 0;

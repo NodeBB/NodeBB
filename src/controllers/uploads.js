@@ -183,7 +183,7 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	// upload keying strips the marker, so a stored basename that natively contains
 	// it never matches its own records. The display name returned to the composer
 	// stays the user's original filename.
-	const name = file.stripResized(uploadedFile.name);
+	const name = uploadedFile.name || 'upload';
 	const extension = path.extname(name) || '';
 
 	const basename = extension ? name.slice(0, -extension.length) : name;

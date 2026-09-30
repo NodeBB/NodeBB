@@ -243,14 +243,7 @@ uploadsController.uploadFile = async function (req, res, next) {
 	// Only guard against collisions the normalization itself introduces (e.g.
 	// photo-resized.jpg must not silently replace photo.jpg); a plain same-name
 	// re-upload keeps its existing replace semantics.
-	const rawName = String(uploadedFile.name || 'upload');
-	const fileName = file.stripResized(rawName);
-	const data = await file.saveFileToLocal(
-		fileName,
-		params.folder,
-		uploadedFile.path,
-		{ unique: fileName !== rawName }
-	);
+	const data = await file.saveFileToLocal(uploadedFile.name, params.folder, uploadedFile.path);
 	res.json([{ url: data.url }]);
 };
 
