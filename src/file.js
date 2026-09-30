@@ -16,15 +16,32 @@ graceful.gracefulify(fs);
 
 const file = module.exports;
 
-file.saveFileToLocal = async function (filename, folder, tempPath) {
+file.saveFileToLocal = async function (filename, folder, tempPath, { unique = false } = {}) {
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
 	filename = filename.split('.').map(name => slugify(name)).join('.');
 
-	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+	let uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!file.isPathInside(nconf.get('upload_path'), uploadPath)) {
 		throw new Error('[[error:invalid-path]]');
+	}
+
+	// fs.copyFile silently replaces existing targets. When opted in (user uploads),
+	// derive a non-colliding name first: two uploads handled in the same request can
+	// resolve to the same filename within the same millisecond once '-resized'
+	// markers are stripped (see file.stripResized). Fixed-name callers (site logo,
+	// favicon, touch icon, screenshot, …) rely on the default overwrite semantics
+	// and must not opt in.
+	if (unique && await file.exists(uploadPath)) {
+		const extension = path.extname(filename);
+		const basename = path.basename(filename, extension);
+		let counter = 0;
+		do {
+			counter += 1;
+			filename = `${basename}-${counter}${extension}`;
+			uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+		} while (await file.exists(uploadPath));
 	}
 
 	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
@@ -66,6 +83,23 @@ file.appendToFileName = function (filename, string) {
 		return filename + string;
 	}
 	return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
+};
+
+// The counterpart to appendToFileName(): core appends '-resized' when generating
+// resize variants, and upload keying strips the marker (posts.uploads
+// getUploadsFromPostContent / getUsage). A stored basename that natively contains
+// '-resized' therefore never matches its own records: the file is dropped at
+// post-save (_filterValidPaths), reported unused/orphaned in ACP, orphan-deletable
+// (isOrphan), and its uploader record (user.associateUpload) is keyed divergently
+// from its usage keys. Remove the marker from upload names before storing them.
+// All occurrences are removed (not just the first) so the stored name can never
+// retain a marker that downstream first-occurrence stripping would then remove.
+file.stripResized = function (filename) {
+	const raw = String(filename || 'upload');
+	const extension = path.extname(raw) || '';
+	const basename = raw.slice(0, raw.length - extension.length);
+	const stripped = basename.split('-resized').join('') || 'upload';
+	return `${stripped}${extension}`;
 };
 
 file.allowedExtensions = function () {

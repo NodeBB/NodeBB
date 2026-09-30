@@ -239,7 +239,18 @@ uploadsController.uploadFile = async function (req, res, next) {
 		return next(new Error('[[error:invalid-path]]'));
 	}
 
-	const data = await file.saveFileToLocal(uploadedFile.name, params.folder, uploadedFile.path);
+	// Strip the '-resized' marker from the original filename (see file.stripResized).
+	// Only guard against collisions the normalization itself introduces (e.g.
+	// photo-resized.jpg must not silently replace photo.jpg); a plain same-name
+	// re-upload keeps its existing replace semantics.
+	const rawName = String(uploadedFile.name || 'upload');
+	const fileName = file.stripResized(rawName);
+	const data = await file.saveFileToLocal(
+		fileName,
+		params.folder,
+		uploadedFile.path,
+		{ unique: fileName !== rawName }
+	);
 	res.json([{ url: data.url }]);
 };
 

@@ -179,13 +179,20 @@ uploadsController.uploadFile = async function (uid, uploadedFile) {
 };
 
 async function saveFileToLocal(uid, folder, uploadedFile) {
-	const name = uploadedFile.name || 'upload';
+	// Strip the '-resized' marker from the original filename (see file.stripResized):
+	// upload keying strips the marker, so a stored basename that natively contains
+	// it never matches its own records. The display name returned to the composer
+	// stays the user's original filename.
+	const name = file.stripResized(uploadedFile.name);
 	const extension = path.extname(name) || '';
 
 	const basename = extension ? name.slice(0, -extension.length) : name;
 	const filename = `${Date.now()}-${basename.slice(0, 255)}${extension}`;
 
-	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path);
+	// unique: two uploads in the same request can resolve to the same filename
+	// within the same millisecond once the marker is stripped (fs.copyFile would
+	// silently overwrite the first file).
+	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path, { unique: true });
 	const storedFile = {
 		url: nconf.get('relative_path') + upload.url,
 		path: upload.path,
