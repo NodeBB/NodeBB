@@ -97,7 +97,7 @@
         "mime": "4.1.0",
         "minimizer-webpack-plugin": "5.12.0",
         "mkdirp": "3.0.1",
-        "mongodb": "7.6.0",
+        "mongodb": "7.7.0",
         "morgan": "1.12.1",
         "mousetrap": "1.6.5",
         "multer": "2.4.0",
@@ -136,7 +136,7 @@
         "rss": "1.2.2",
         "rtlcss": "4.3.0",
         "sanitize-html": "2.17.7",
-        "sass": "1.105.0",
+        "sass": "1.105.1",
         "satori": "0.33.5",
         "sbd": "^1.0.19",
         "semver": "7.8.5",
@@ -187,7 +187,7 @@
         "smtp-server": "3.19.15"
     },
     "optionalDependencies": {
-        "sass-embedded": "1.105.0"
+        "sass-embedded": "1.105.1"
     },
     "resolutions": {
         "*/jquery": "3.7.1"
