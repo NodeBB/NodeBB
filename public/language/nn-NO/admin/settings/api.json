@@ -27,9 +27,9 @@
 
 	"delete-confirm": "Er du sikker på at du vil slette dette tokenet?",
 	"roll-confirm": "Er du sikker på at du vil rotere dette tokenet?",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "Kopier tokenet no",
+	"token-once-warning": "Dette tokenet blir berre vist éin gong. Lagre det på ein trygg stad før du lukkar denne dialogboksen.",
+	"copy-token": "Kopier",
+	"token-copied": "Tokenet er kopiert til utklippstavla.",
+	"token-copy-failed": "Kunne ikkje kopiere tokenet. Kopier det manuelt."
 }

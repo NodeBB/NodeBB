@@ -1,6 +1,6 @@
 {
 	"you-are-on": "Du er på <strong>%1:%2</strong>",
-	"ip": "IP <strong>%1</strong>",
+	"ip": "IP-adresse <strong>%1</strong>",
 	"nodes-responded": "%1 noder svarte innen %2ms!",
 	"host": "Vert",
 	"primary": "Primær",

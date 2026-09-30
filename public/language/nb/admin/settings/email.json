@@ -8,7 +8,7 @@
 	"confirmation-settings": "Bekreftelsesinnstillinger",
 	"confirmation.expiry": "Antall timer lenken for e-postbekreftelse er gyldig",
 
-	"smtp-transport": "SMTP Transport",
+	"smtp-transport": "SMTP-transport",
 	"smtp-transport.enabled": "Aktiver SMTP Transport",
 	"smtp-transport-help": "Du kan velge fra en liste over kjente tjenester eller legge inn en egendefinert.",
 	"smtp-transport.service": "Velg en tjeneste",

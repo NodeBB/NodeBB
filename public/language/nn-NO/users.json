@@ -23,11 +23,11 @@
     "categories": "Kategoriar",
     "tags": "Emneord",
     "no-users-found": "Ingen brukarar funne!",
-    "temp-ban.length": "Length",
-    "temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-    "temp-ban.select-reason": "Select a reason",
-    "temp-ban.hours": "Hours",
-    "temp-ban.days": "Days",
-    "temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
-    "temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute."
+    "temp-ban.length": "Varigheit",
+    "temp-ban.reason": "Årsak <span class=\"text-muted\">(valfritt)</span>",
+    "temp-ban.select-reason": "Vel ei årsak",
+    "temp-ban.hours": "Timar",
+    "temp-ban.days": "Dagar",
+    "temp-ban.explanation": "Angi kor lenge utestenginga skal vare. Merk at 0 betyr permanent utestenging.",
+    "temp-mute.explanation": "Angi kor lenge dempinga skal vare. Merk at 0 betyr permanent demping."
 }

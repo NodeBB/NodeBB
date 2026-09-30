@@ -13,7 +13,7 @@
 	"manage/tags": "Emneord",
 	"manage/users": "Brukere",
 	"manage/admins-mods": "Administratorer og moderatorer",
-	"manage/api": "API Access",
+	"manage/api": "API-tilgang",
 	"manage/registration": "Registreringskø",
 	"manage/flagged-content": "Flagget innhold",
 	"manage/post-queue": "Innleggskø",
@@ -55,7 +55,7 @@
 	"federation/content": "Innhold",
 	"federation/rules": "Kategorisering",
 	"federation/relays": "Relays/Videresendingstjenester",
-	"federation/hashtags": "Hashtags",
+	"federation/hashtags": "Emneknagger",
 	"federation/pruning": "Lagring",
 	"federation/safety": "Tillit og sikkerhet",
 	"federation/analytics": "Statistikk",
@@ -68,12 +68,12 @@
 
 	"section-extend": "Utvidelser",
 	"extend/plugins": "Tillegg",
-	"extend/widgets": "Widgets",
+	"extend/widgets": "Widgeter",
 	"extend/rewards": "Belønninger",
 
 	"section-social-auth": "Sosial autentisering",
 
-	"section-plugins": "Plugins",
+	"section-plugins": "Tillegg",
 	"extend/plugins.install": "Installer plugins",
 
 	"section-advanced": "Avansert",
@@ -84,13 +84,13 @@
 	"advanced/errors": "Feil",
 	"advanced/cache": "Buffer",
 	"advanced/jobs": "Oppgaver",
-	"development/logger": "Logger",
+	"development/logger": "Logging",
 	"development/info": "Info",
 
 	"rebuild-and-restart-forum": "Gjenoppbygg og restart forum",
 	"rebuild-and-restart": "Gjenoppbygg og restart",
 	"restart-forum": "Restart forum",
-	"restart": "Restart",
+	"restart": "Start på nytt",
 	"logout": "Logg ut",
 	"view-forum": "Vis forum",
 

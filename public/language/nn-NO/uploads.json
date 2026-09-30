@@ -6,6 +6,6 @@
     "no-uploads-found": "Ingen opplastingar funne",
     "public-uploads-info": "Opplastingar er offentlege, alle besøkande kan sjå dei.",
     "private-uploads-info": "Opplastingar er private, berre innlogga brukarar kan sjå dei.",
-    "delete-upload": "Delete Upload",
-    "delete-upload-confirm": "Are you sure you want to delete this upload?"
+    "delete-upload": "Slett opplasting",
+    "delete-upload-confirm": "Er du sikker på at du vil slette denne opplastinga?"
 }

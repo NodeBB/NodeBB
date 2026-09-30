@@ -1,15 +1,15 @@
 {
 	"alert.confirm-rebuild-and-restart": "Er du sikker på at du vil bygge om og starte på nytt?",
 	"alert.confirm-restart": "Er du sikker på at du vil starte på nytt?",
-	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
-	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
-	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
-	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.title": "Byggjer på nytt... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB byggjer front-end-ressursar på nytt (css, javascript osb.).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Vellukka",
+	"rebuilding.success.message": "NodeBB er bygd og starta på nytt.",
+	"build.complete": "Bygginga er fullført!... <i class=\"fa fa-spin fa-refresh\"></i>",
 
-	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"restarting.message": "NodeBB is restarting.",
-	"restarting.success.message": "NodeBB has restarted successfully.",
+	"restarting.title": "Startar på nytt... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB startar på nytt.",
+	"restarting.success.message": "NodeBB er starta på nytt.",
 
 
 	"acp-title": "%1 | Admin Kontrollpanel",

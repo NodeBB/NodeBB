@@ -1,5 +1,5 @@
 {
-	"tokens": "Tokens",
+	"tokens": "Tokener",
 	"settings": "Innstillinger",
 	"lead-text": "Fra denne siden kan du konfigurere tilgang til Write API i NodeBB.",
 	"intro": "Som standard autentiserer Write API brukere basert på deres øktinformasjonskapsel, men NodeBB støtter også Bearer-autentisering via tokens generert fra denne siden.",
@@ -27,9 +27,9 @@
 
 	"delete-confirm": "Er du sikker på at du vil slette dette tokenet? Det vil ikke kunne gjenopprettes.",
 	"roll-confirm": "Er du sikker på at du vil regenerere dette tokenet? Det gamle tokenet vil umiddelbart bli tilbakekalt og kan ikke gjenopprettes.",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
-	"copy-token": "Copy",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-once-title": "Kopier tokenet nå",
+	"token-once-warning": "Dette tokenet vises bare én gang. Lagre det på et trygt sted før du lukker denne dialogboksen.",
+	"copy-token": "Kopier",
+	"token-copied": "Tokenet er kopiert til utklippstavlen.",
+	"token-copy-failed": "Kunne ikke kopiere tokenet. Kopier det manuelt."
 }

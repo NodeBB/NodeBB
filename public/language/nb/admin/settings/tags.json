@@ -8,8 +8,8 @@
     "max-per-topic": "Maksimalt antall emneord per tråd",
     "min-length": "Minimum lengde på emneord",
     "max-length": "Maksimal lengde på emneord",
-    "case-sensitive": "Case-Sensitive Tags",
-    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
+    "case-sensitive": "Skill mellom store og små bokstaver i emneord",
+    "case-sensitive-help": "Når dette er aktivert, skilles det mellom store og små bokstaver i emneord (#NodeBB og #nodebb blir behandlet som ulike emneord). Når dette er deaktivert, blir emneord gjort om til små bokstaver.",
     "related-topics": "Relaterte tråder",
     "max-related-topics": "Maksimalt antall relaterte tråder som skal vises (hvis støttet av tema)"
 }

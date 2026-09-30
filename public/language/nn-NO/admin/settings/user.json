@@ -51,7 +51,7 @@
 	"registration-type.admin-invite-only": "Berre med invitasjon frå administrator",
 	"registration-type.disabled": "Registrering deaktivert",
 	"registration-type.help": "Forklaring av registreringstypar",
-	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
+	"registration-approval-type.help": "Normal – brukarar blir registrerte med ein gong.<br/>\nGodkjenning av administrator – registreringar blir lagde i ein <a href=\"%1/registration-queue\">godkjenningskø</a> for administratorar.<br/>\nGodkjenning av administrator for IP-adresser – normal for nye brukarar, godkjenning av administrator for IP-adresser som allereie har ein konto.<br/>",
 	"registration-queue-auto-approve-time": "Tid for automatisk godkjenning i kø",
 	"registration-queue-auto-approve-time-help": "Angi tida det tek før ein brukar vert godkjent automatisk.",
 	"registration-queue-show-average-time": "Vis gjennomsnittleg ventetid for registreringskø",
