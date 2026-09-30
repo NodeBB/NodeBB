@@ -57,11 +57,11 @@ async function loadFromTopicData(topicData, options = {}) {
 	// Add attachments to thumb sets
 	mainPidAttachments.forEach((attachments, idx) => {
 		attachments = attachments.filter(
-			attachment => !thumbs[idx].includes(attachment.url) && (attachment.mediaType && attachment.mediaType.startsWith('image/'))
+			a => a && !thumbs[idx].includes(a.url) && (a.mediaType && a.mediaType.startsWith('image/'))
 		);
 
 		if (attachments.length) {
-			thumbs[idx].push(...attachments.map(attachment => attachment.url));
+			thumbs[idx].push(...attachments.map(a => a.url));
 		}
 	});
 
