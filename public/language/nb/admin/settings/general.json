@@ -65,6 +65,6 @@
 	"privacy": "Personvern",
 	"log-ips": "Logg IP-adresser",
 	"log-ips-help": "Når dette er aktivert, lagres IP-adressene til alle besøkende i et sortert sett for analyseformål. Dette brukes til å beregne unike besøkende.",
-	"analytics-retention": "Analytics Retention (days)",
-	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
+	"analytics-retention": "Lagringstid for analysedata (dager)",
+	"analytics-retention-help": "Antall dager analysedata (sidevisninger, unike besøkende osv.) lagres før de slettes automatisk. Sett til 0 for å beholde analysedata for alltid."
 }
