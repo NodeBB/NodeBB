@@ -103,6 +103,19 @@ describe('Upload Controllers', () => {
 			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
 		});
 
+		it('should upload an image with -resized.png in its filename', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test-resized.png'), {}, jar, csrf_token);
+			assert.equal(response.statusCode, 200);
+			const image = body.response.images[0];
+			// image name is unchanged
+			assert.strictEqual(image.name, 'test-resized.png');
+			// saved file has no -resized at the end ie test-resized.png becomes test.png
+			assert(image.url.endsWith('-test.png'));
+			// user record doesn't have -resized at the end
+			const [userUpload] = await db.getSortedSetRevRange(`uid:${regularUid}:uploads`, 0, 0);
+			assert(image.url.endsWith(userUpload), userUpload);
+		});
+
 		it('should upload an svg image to a post', async () => {
 			const oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html,svg';
