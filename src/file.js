@@ -20,7 +20,7 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	const slugified = filename.split('.').map(name => slugify(name)).join('.');															   
+	const slugified = filename.split('.').map(name => slugify(name)).join('.');
 	filename = file.stripResized(slugified);
 	let uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!file.isPathInside(nconf.get('upload_path'), uploadPath)) {
@@ -35,12 +35,12 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 		await sanitizeXml(tempPath);
 	}
 
-	if (unique || filename !== slugified) {											 
+	if (unique || filename !== slugified) {
 		const ext = path.extname(filename);
 		const base = path.basename(filename, ext);
 		let counter = 0;
 		/* eslint-disable no-await-in-loop */
-		for (;;) {				
+		for (;;) {
 			try {
 				await fs.promises.copyFile(tempPath, uploadPath, fs.constants.COPYFILE_EXCL);
 				break;
@@ -92,7 +92,7 @@ file.appendToFileName = function (filename, string) {
 	}
 	return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
 };
-																				  			   
+
 file.stripResized = function (filename) {
 	const raw = String(filename || 'upload');
 	const extension = path.extname(raw) || '';
