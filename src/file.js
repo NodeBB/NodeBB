@@ -20,32 +20,13 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	const slugified = filename.split('.').map(name => slugify(name)).join('.');
-	filename = file.stripResized(slugified);   // strip AFTER slugify: "photo resized.jpg"
-	                                          // slugifies to "photo-resized.jpg" first
+	const slugified = filename.split('.').map(name => slugify(name)).join('.');															   
+	filename = file.stripResized(slugified);
 	let uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!file.isPathInside(nconf.get('upload_path'), uploadPath)) {
 		throw new Error('[[error:invalid-path]]');
 	}
 
-	// fs.copyFile silently replaces existing targets. When opted in (user uploads),
-	// derive a non-colliding name first: two uploads handled in the same request can
-	// resolve to the same filename within the same millisecond once '-resized'
-	// markers are stripped (see file.stripResized). Fixed-name callers (site logo,
-	// favicon, touch icon, screenshot, …) rely on the default overwrite semantics
-	// and must not opt in.
-	if ((unique || filename !== slugified) && await file.exists(uploadPath)) {
-		const extension = path.extname(filename);
-		const basename = path.basename(filename, extension);
-		let counter = 0;
-		do {
-			counter += 1;
-			filename = `${basename}-${counter}${extension}`;
-			uploadPath = path.join(nconf.get('upload_path'), folder, filename);
-		} while (await file.exists(uploadPath));
-	}
-
-	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
 	const extension = path.extname(filename).toLowerCase();
 	if (extension === '.svg') {
@@ -54,7 +35,33 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 		await sanitizeXml(tempPath);
 	}
 
-	await fs.promises.copyFile(tempPath, uploadPath);
+	if (unique || filename !== slugified) {											 
+		const ext = path.extname(filename);
+		const base = path.basename(filename, ext);
+		let counter = 0;
+		/* eslint-disable no-await-in-loop */
+		for (;;) {				
+			try {
+				await fs.promises.copyFile(tempPath, uploadPath, fs.constants.COPYFILE_EXCL);
+				break;
+			} catch (err) {
+				// windows reports EPERM instead of EEXIST for exclusive creates
+				const collision = err.code === 'EEXIST' ||
+					(err.code === 'EPERM' && await file.exists(uploadPath).catch(() => false));
+				if (!collision || counter >= 100) {
+					throw err;
+				}
+				counter += 1;
+				filename = `${base}-${counter}${ext}`;
+				uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+			}
+		}
+		/* eslint-enable no-await-in-loop */
+	} else {
+		await fs.promises.copyFile(tempPath, uploadPath);
+	}
+
+	winston.verbose(`Saved file ${filename} to : ${uploadPath}`);
 	return {
 		url: `/assets/uploads/${folder ? `${folder}/` : ''}${filename}`,
 		path: uploadPath,
@@ -85,16 +92,7 @@ file.appendToFileName = function (filename, string) {
 	}
 	return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
 };
-
-// The counterpart to appendToFileName(): core appends '-resized' when generating
-// resize variants, and upload keying strips the marker (posts.uploads
-// getUploadsFromPostContent / getUsage). A stored basename that natively contains
-// '-resized' therefore never matches its own records: the file is dropped at
-// post-save (_filterValidPaths), reported unused/orphaned in ACP, orphan-deletable
-// (isOrphan), and its uploader record (user.associateUpload) is keyed divergently
-// from its usage keys. Remove the marker from upload names before storing them.
-// All occurrences are removed (not just the first) so the stored name can never
-// retain a marker that downstream first-occurrence stripping would then remove.
+																				  			   
 file.stripResized = function (filename) {
 	const raw = String(filename || 'upload');
 	const extension = path.extname(raw) || '';
