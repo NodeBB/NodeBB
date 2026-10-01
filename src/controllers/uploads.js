@@ -185,9 +185,6 @@ async function saveFileToLocal(uid, folder, uploadedFile) {
 	const basename = extension ? name.slice(0, -extension.length) : name;
 	const filename = `${Date.now()}-${basename.slice(0, 255)}${extension}`;
 
-	// unique: two uploads in the same request can resolve to the same filename
-	// within the same millisecond once the marker is stripped (fs.copyFile would
-	// silently overwrite the first file).
 	const upload = await file.saveFileToLocal(filename, folder, uploadedFile.path, { unique: true });
 	const storedFile = {
 		url: nconf.get('relative_path') + upload.url,
