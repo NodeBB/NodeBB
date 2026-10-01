@@ -16,18 +16,17 @@ graceful.gracefulify(fs);
 
 const file = module.exports;
 
-file.saveFileToLocal = async function (filename, folder, tempPath) {
+file.saveFileToLocal = async function (filename, folder, tempPath, { unique = false } = {}) {
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	filename = filename.split('.').map(name => slugify(name)).join('.');
-
-	const uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+	const slugified = filename.split('.').map(name => slugify(name)).join('.');															   
+	filename = file.stripResized(slugified);
+	let uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	if (!file.isPathInside(nconf.get('upload_path'), uploadPath)) {
 		throw new Error('[[error:invalid-path]]');
 	}
 
-	winston.verbose(`Saving file ${filename} to : ${uploadPath}`);
 	await mkdirp(path.dirname(uploadPath));
 	const extension = path.extname(filename).toLowerCase();
 	if (extension === '.svg') {
@@ -36,7 +35,33 @@ file.saveFileToLocal = async function (filename, folder, tempPath) {
 		await sanitizeXml(tempPath);
 	}
 
-	await fs.promises.copyFile(tempPath, uploadPath);
+	if (unique || filename !== slugified) {											 
+		const ext = path.extname(filename);
+		const base = path.basename(filename, ext);
+		let counter = 0;
+		/* eslint-disable no-await-in-loop */
+		for (;;) {				
+			try {
+				await fs.promises.copyFile(tempPath, uploadPath, fs.constants.COPYFILE_EXCL);
+				break;
+			} catch (err) {
+				// windows reports EPERM instead of EEXIST for exclusive creates
+				const collision = err.code === 'EEXIST' ||
+					(err.code === 'EPERM' && await file.exists(uploadPath).catch(() => false));
+				if (!collision || counter >= 100) {
+					throw err;
+				}
+				counter += 1;
+				filename = `${base}-${counter}${ext}`;
+				uploadPath = path.join(nconf.get('upload_path'), folder, filename);
+			}
+		}
+		/* eslint-enable no-await-in-loop */
+	} else {
+		await fs.promises.copyFile(tempPath, uploadPath);
+	}
+
+	winston.verbose(`Saved file ${filename} to : ${uploadPath}`);
 	return {
 		url: `/assets/uploads/${folder ? `${folder}/` : ''}${filename}`,
 		path: uploadPath,
@@ -66,6 +91,14 @@ file.appendToFileName = function (filename, string) {
 		return filename + string;
 	}
 	return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
+};
+																				  			   
+file.stripResized = function (filename) {
+	const raw = String(filename || 'upload');
+	const extension = path.extname(raw) || '';
+	const basename = raw.slice(0, raw.length - extension.length);
+	const stripped = basename.split('-resized').join('') || 'upload';
+	return `${stripped}${extension}`;
 };
 
 file.allowedExtensions = function () {
