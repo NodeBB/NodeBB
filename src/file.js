@@ -34,29 +34,11 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 	} else if (extension === '.xml') {
 		await sanitizeXml(tempPath);
 	}
-
-	if (unique || filename !== slugified) {
-		const ext = path.extname(filename);
-		const base = path.basename(filename, ext);
-		let counter = 0;
-		/* eslint-disable no-await-in-loop */
-		for (;;) {
-			try {
-				await fs.promises.copyFile(tempPath, uploadPath, fs.constants.COPYFILE_EXCL);
-				break;
-			} catch (err) {
-				// windows reports EPERM instead of EEXIST for exclusive creates
-				const collision = err.code === 'EEXIST' ||
-					(err.code === 'EPERM' && await file.exists(uploadPath).catch(() => false));
-				if (!collision || counter >= 100) {
-					throw err;
-				}
-				counter += 1;
-				filename = `${base}-${counter}${ext}`;
-				uploadPath = path.join(nconf.get('upload_path'), folder, filename);
-			}
-		}
-		/* eslint-enable no-await-in-loop */
+	// avoid overwriting the original file when stripResized() changes the filename.
+	const preventOverwrite = unique || filename !== slugified;
+	if (preventOverwrite) {
+		uploadPath = await copyFileWithUniqueName(tempPath, uploadPath);
+		filename = path.basename(uploadPath);
 	} else {
 		await fs.promises.copyFile(tempPath, uploadPath);
 	}
@@ -67,6 +49,34 @@ file.saveFileToLocal = async function (filename, folder, tempPath, { unique = fa
 		path: uploadPath,
 	};
 };
+
+async function copyFileWithUniqueName(sourcePath, destinationPath) {
+	const ext = path.extname(destinationPath);
+	const base = path.basename(destinationPath, ext);
+	const dir = path.dirname(destinationPath);
+
+	let counter = 0;
+
+	/* eslint-disable no-await-in-loop */
+	for (;;) {
+		try {
+			await fs.promises.copyFile(sourcePath, destinationPath, fs.constants.COPYFILE_EXCL);
+			return destinationPath;
+		} catch (err) {
+			// Windows reports EPERM instead of EEXIST for exclusive creates
+			const collision = err.code === 'EEXIST' ||
+				(err.code === 'EPERM' && await file.exists(destinationPath).catch(() => false));
+
+			if (!collision || counter >= 100) {
+				throw err;
+			}
+
+			counter += 1;
+			destinationPath = path.join(dir, `${base}-${counter}${ext}`);
+		}
+	}
+	/* eslint-enable no-await-in-loop */
+}
 
 file.isPathInside = function (base, targetPath) {
 	const resolvedBase = path.resolve(base);
