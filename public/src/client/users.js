@@ -27,7 +27,7 @@ define('forum/users', [
 
 	Users.handleSearch = function (params) {
 		searchResultCount = params && params.resultCount;
-		$('#search-user').on('keyup', utils.debounce(doSearch, 250));
+		$('#search-user').on('input', utils.debounce(doSearch, 250));
 		$('.search select, .search input[type="checkbox"]').on('change', doSearch);
 
 		// Populate box with query if present
