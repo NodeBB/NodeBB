@@ -254,17 +254,15 @@ Actors.assert = async (ids, options = {}) => {
 	const queries = profiles.reduce((memo, profile, idx) => {
 		const { username, fullname } = current[idx];
 
-		if (options.update || username !== profile.username) {
-			if (uidsForCurrent[idx] !== 0) {
-				memo.searchRemove.push(['ap.preferredUsername:sorted', `${username.toLowerCase()}:${profile.uid}`]);
-				memo.handleRemove.push(username.toLowerCase());
-			}
-
-			memo.searchAdd.push(['ap.preferredUsername:sorted', 0, `${profile.username.toLowerCase()}:${profile.uid}`]);
-			memo.handleAdd[profile.username.toLowerCase()] = profile.uid;
+		if (uidsForCurrent[idx] !== 0) {
+			memo.searchRemove.push(['ap.preferredUsername:sorted', `${username.toLowerCase()}:${profile.uid}`]);
+			memo.handleRemove.push(username.toLowerCase());
 		}
 
-		if (options.update || (profile.fullname && fullname !== profile.fullname)) {
+		memo.searchAdd.push(['ap.preferredUsername:sorted', 0, `${profile.username.toLowerCase()}:${profile.uid}`]);
+		memo.handleAdd[profile.username.toLowerCase()] = profile.uid;
+
+		if (profile.fullname) {
 			if (fullname && uidsForCurrent[idx] !== 0) {
 				memo.searchRemove.push(['ap.name:sorted', `${fullname.toLowerCase()}:${profile.uid}`]);
 			}
