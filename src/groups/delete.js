@@ -51,8 +51,25 @@ module.exports = function (Groups) {
 			`zset:groups:createtime`,
 			...groupNames.map(groupName => `group:${groupName}:members`),
 		]);
+		await removeGroupsFromPublicRooms(groupNames);
 		plugins.hooks.fire('action:groups.destroy', { groups: groupsData });
 	};
+
+	async function removeGroupsFromPublicRooms(groupNames) {
+		const messaging = require('../messaging');
+		const roomIds = await db.getSortedSetRange('chat:rooms:public', 0, -1);
+		const roomData = (await messaging.getRoomsData(roomIds)).filter(
+			room => room && Array.isArray(room.groups) && room.groups.some(group => groupNames.includes(group))
+		);
+		await Promise.all(roomData.map(async (room) => {
+			const groups = room.groups.filter(group => !groupNames.includes(group));
+			if (!groups.length) {
+				groups.push('administrators');
+			}
+			await db.setObjectField(`chat:room:${room.roomId}`, 'groups', JSON.stringify(groups));
+			await messaging.removeUsersWithoutAccess(room.roomId);
+		}));
+	}
 
 	async function removeGroupsFromPostEditors(groupNames) {
 		await Promise.all(groupNames.map(

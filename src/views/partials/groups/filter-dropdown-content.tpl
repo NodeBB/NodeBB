@@ -16,7 +16,7 @@
 		{{{ each groups }}}
 		<li role="presentation" class="user {{{ if ./selected}}}selected{{{end}}}">
 			<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" role="menuitem" href="{config.relative_path}/{./url}">
-				<div class="flex-grow-1 d-inline-flex gap-1 align-items-center">{./displayName}</div>
+				<div class="flex-grow-1 d-inline-flex gap-1 align-items-center text-capitalize">{generateGroupDisplayName(@value)}</div>
 				<i class="flex-shrink-0 fa fa-fw {{{ if ./selected }}}fa-check{{{ end }}}"></i>
 			</a>
 		</li>

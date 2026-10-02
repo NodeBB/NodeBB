@@ -574,6 +574,46 @@ describe('Flags', () => {
 			await Groups.leave(`cid:${category.cid}:privileges:moderate`, uid3);
 		});
 
+		it('should unassign the flag and record it in the flag history', async () => {
+			await Flags.update(1, adminUid, {
+				assignee: adminUid,
+			});
+			assert.strictEqual(true, await db.isSortedSetMember(`flags:byAssignee:${adminUid}`, 1));
+
+			await Flags.update(1, adminUid, {
+				assignee: '',
+			});
+			assert.strictEqual(false, await db.isSortedSetMember(`flags:byAssignee:${adminUid}`, 1));
+			assert.strictEqual('', await db.getObjectField('flag:1', 'assignee'));
+
+			const history = await Flags.getHistory(1);
+			const changes = history
+				.filter(entry => entry.fields && entry.fields.hasOwnProperty('assignee'))
+				.map(entry => entry.fields.assignee);
+			assert.ok(changes.includes('[[flags:no-assignee]]'));
+			assert.ok(!changes.includes('[[global:guest]]'));
+		});
+
+		it('should not assign a chat message flag to a global moderator', async () => {
+			const globalModUid = await User.create({ username: 'message-flag-assignee' });
+			await Groups.join('Global Moderators', globalModUid);
+
+			const roomId = await messaging.newRoom(uid1, { uids: [uid3] });
+			const { mid } = await messaging.sendMessage({ uid: uid3, roomId, content: 'private chat content' });
+			const { flagId } = await Flags.create('message', mid, uid1, 'spam');
+
+			await Flags.update(flagId, adminUid, {
+				assignee: globalModUid,
+			});
+			assert.strictEqual(false, await Flags.canView(flagId, globalModUid));
+			assert.notStrictEqual(String(globalModUid), String(await db.getObjectField(`flag:${flagId}`, 'assignee')));
+
+			await Flags.update(flagId, adminUid, {
+				assignee: adminUid,
+			});
+			assert.strictEqual(String(adminUid), String(await db.getObjectField(`flag:${flagId}`, 'assignee')));
+		});
+
 		it('should do nothing when you attempt to set a bogus state', async () => {
 			await Flags.update(1, adminUid, {
 				state: 'hocus pocus',
@@ -708,6 +748,22 @@ describe('Flags', () => {
 		});
 	});
 
+	describe('.notify()', () => {
+		it('should only notify administrators of a chat message flag', async () => {
+			const globalModUid = await User.create({ username: 'message-flag-global-mod' });
+			await Groups.join('Global Moderators', globalModUid);
+
+			const roomId = await messaging.newRoom(uid1, { uids: [uid3] });
+			const { mid } = await messaging.sendMessage({ uid: uid3, roomId, content: 'private chat content' });
+			await api.flags.create({ uid: uid1 }, { type: 'message', id: mid, reason: 'spam', roomId });
+			await sleep(2000);
+
+			const nid = `flag:message:${mid}:${uid1}`;
+			assert(await db.isSortedSetMember(`uid:${adminUid}:notifications:unread`, nid));
+			assert(!await db.isSortedSetMember(`uid:${globalModUid}:notifications:unread`, nid));
+		});
+	});
+
 	describe('.getTarget()', () => {
 		it('should return a post\'s data if queried with type "post"', (done) => {
 			Flags.getTarget('post', 1, 1, (err, data) => {
@@ -751,6 +807,57 @@ describe('Flags', () => {
 				assert.strictEqual(0, Object.keys(data).length);
 				done();
 			});
+		});
+	});
+
+	describe('.canFlag()', () => {
+		it('should reject the flag that would exceed the daily limit', async () => {
+			await Meta.configs.set('flags:postFlagsPerDay', 2);
+			const reporterUid = await User.create({ username: 'dailylimitreporter' });
+			const authorUid = await User.create({ username: 'dailylimitauthor' });
+			const pids = [];
+			for (let i = 0; i < 3; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				const data = await Topics.post({
+					cid: category.cid,
+					uid: authorUid,
+					title: `Daily flag limit topic ${i}`,
+					content: 'This is flaggable content',
+				});
+				pids.push(data.postData.pid);
+			}
+
+			await Flags.create('post', pids[0], reporterUid, 'spam');
+			await Flags.create('post', pids[1], reporterUid, 'spam');
+
+			await assert.rejects(
+				Flags.canFlag('post', pids[2], reporterUid),
+				{ message: '[[error:too-many-post-flags-per-day, 2]]' }
+			);
+
+			await Meta.configs.set('flags:postFlagsPerDay', 10);
+		});
+
+		it('should not limit flags when the daily limit is 0', async () => {
+			await Meta.configs.set('flags:postFlagsPerDay', 0);
+			const reporterUid = await User.create({ username: 'unlimitedreporter' });
+			const authorUid = await User.create({ username: 'unlimitedauthor' });
+			for (let i = 0; i < 3; i++) {
+				// eslint-disable-next-line no-await-in-loop
+				const data = await Topics.post({
+					cid: category.cid,
+					uid: authorUid,
+					title: `Unlimited flag topic ${i}`,
+					content: 'This is flaggable content',
+				});
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.create('post', data.postData.pid, reporterUid, 'spam');
+			}
+
+			const flagIds = await db.getSortedSetRange(`flags:byReporter:${reporterUid}`, 0, -1);
+			assert.strictEqual(flagIds.length, 3);
+
+			await Meta.configs.set('flags:postFlagsPerDay', 10);
 		});
 	});
 
@@ -923,6 +1030,17 @@ describe('Flags', () => {
 				assert.strictEqual(history[0].fields.state, '[[flags:state-rejected]]');
 				done();
 			});
+		});
+
+		it('should label registration details as such, not as changes', async () => {
+			const history = await Flags.getHistory(1);
+			const keys = history
+				.filter(entry => entry.meta)
+				.reduce((memo, entry) => memo.concat(entry.meta.map(item => item.key)), []);
+
+			assert.ok(keys.includes('[[flags:registered-username]]'));
+			assert.ok(!keys.includes('[[user:change-username]]'));
+			assert.ok(!keys.includes('[[user:change-email]]'));
 		});
 	});
 
@@ -1407,5 +1525,100 @@ describe('Flags', () => {
 			});
 		});
 
+	});
+
+	describe('user flag access', () => {
+		let globalModUid;
+		let userManagerUid;
+		let targetUid;
+		let flagId;
+		let globalModJar;
+		let userManagerJar;
+
+		before(async () => {
+			globalModUid = await User.create({ username: 'user-flag-global-mod', password: 'abcdef' });
+			await Groups.join('Global Moderators', globalModUid);
+			userManagerUid = await User.create({ username: 'user-flag-user-manager', password: 'abcdef' });
+			await Privileges.admin.give(['admin:users'], userManagerUid);
+			targetUid = await User.create({ username: 'user-flag-target' });
+
+			({ flagId } = await api.flags.create({ uid: uid1 }, { type: 'user', id: targetUid, reason: 'spam' }));
+			await sleep(2000);
+
+			({ jar: globalModJar } = await helpers.loginUser('user-flag-global-mod', 'abcdef'));
+			({ jar: userManagerJar } = await helpers.loginUser('user-flag-user-manager', 'abcdef'));
+		});
+
+		after(async () => {
+			await Privileges.admin.rescind(['admin:users'], userManagerUid);
+			await Groups.leave('Global Moderators', globalModUid);
+		});
+
+		it('should let admin:users holders view a user flag, but not global moderators', async () => {
+			assert.strictEqual(await Flags.canView(flagId, userManagerUid), true);
+			assert.strictEqual(await Flags.canView(flagId, globalModUid), false);
+			assert.strictEqual(await Flags.canView(flagId, adminUid), true);
+		});
+
+		it('should notify admin:users holders of a new user flag, but not global moderators', async () => {
+			const nid = `flag:user:${targetUid}:${uid1}`;
+			assert(await db.isSortedSetMember(`uid:${userManagerUid}:notifications:unread`, nid));
+			assert(await db.isSortedSetMember(`uid:${adminUid}:notifications:unread`, nid));
+			assert(!await db.isSortedSetMember(`uid:${globalModUid}:notifications:unread`, nid));
+		});
+
+		it('should open the flag detail page only for those who can view the flag', async () => {
+			let { response } = await request.get(`${nconf.get('url')}/api/flags/${flagId}`, { jar: userManagerJar });
+			assert.strictEqual(response.statusCode, 200);
+
+			({ response } = await request.get(`${nconf.get('url')}/api/flags/${flagId}`, { jar: globalModJar }));
+			assert.strictEqual(response.statusCode, 404);
+		});
+
+		it('should list user flags only to those who can view them', async () => {
+			const { body: managerList } = await request.get(`${nconf.get('url')}/api/flags`, { jar: userManagerJar });
+			assert(managerList.flags.some(flag => flag.flagId === flagId));
+			assert(managerList.flags.every(flag => flag.type === 'user'));
+
+			const { body: globalModList } = await request.get(`${nconf.get('url')}/api/flags`, { jar: globalModJar });
+			assert(globalModList.flags.every(flag => flag.type !== 'user'));
+
+			const { body: filteredList } = await request.get(`${nconf.get('url')}/api/flags?type=user`, { jar: globalModJar });
+			assert.strictEqual(filteredList.flags.length, 0);
+		});
+
+		it('should list both user flags and moderated category flags to a moderator who holds admin:users', async () => {
+			const { postData } = await Topics.post({
+				cid: category.cid,
+				uid: uid3,
+				title: utils.generateUUID(),
+				content: utils.generateUUID(),
+			});
+			const { flagId: postFlagId } = await Flags.create('post', postData.pid, uid1, 'spam');
+			await Privileges.admin.give(['admin:users'], moderatorUid);
+			try {
+				const { body } = await request.get(`${nconf.get('url')}/api/flags`, { jar });
+				const flagIds = body.flags.map(flag => flag.flagId);
+				assert(flagIds.includes(flagId));
+				assert(flagIds.includes(postFlagId));
+			} finally {
+				await Privileges.admin.rescind(['admin:users'], moderatorUid);
+			}
+		});
+
+		it('should let admin:users holders read and update a user flag through the write API', async () => {
+			let { response } = await helpers.request('get', `/api/v3/flags/${flagId}`, { jar: userManagerJar });
+			assert.strictEqual(response.statusCode, 200);
+
+			({ response } = await helpers.request('get', `/api/v3/flags/${flagId}`, { jar: globalModJar }));
+			assert.strictEqual(response.statusCode, 404);
+
+			await api.flags.update({ uid: userManagerUid }, { flagId, state: 'wip' });
+			assert.strictEqual(await db.getObjectField(`flag:${flagId}`, 'state'), 'wip');
+			await assert.rejects(
+				api.flags.update({ uid: globalModUid }, { flagId, state: 'resolved' }),
+				{ message: '[[error:no-privileges]]' }
+			);
+		});
 	});
 });

@@ -171,10 +171,9 @@ module.exports = function (User) {
 			return user;
 		});
 		await Promise.all(users.map(async (user) => {
-			// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
-			// need to keep this for getIPMatchedUsers
-			user.ip = user.ip.replace('::ffff:', '');
 			await getIPMatchedUsers(user);
+			// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
+			user.ip = user.ip.replace('::ffff:', '');
 			user.customActions = user.customActions || [];
 			/*
 				// then spam prevention plugins, using the "filter:user.getRegistrationQueue" hook can be like:
@@ -192,7 +191,11 @@ module.exports = function (User) {
 	};
 
 	async function getIPMatchedUsers(user) {
-		const uids = await User.getUidsFromSet(`ip:${user.ip}:uid`, 0, -1);
+		const ips = user.ip.startsWith('::ffff:') ? [user.ip, user.ip.slice('::ffff:'.length)] : [user.ip];
+		const uidSets = await Promise.all(
+			ips.map(ip => User.getUidsFromSet(`ip:${ip}:uid`, 0, -1))
+		);
+		const uids = Array.from(new Set(uidSets.flat()));
 		user.ipMatch = await User.getUsersFields(uids, ['uid', 'username', 'picture']);
 	}
 

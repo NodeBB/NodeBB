@@ -75,6 +75,9 @@ Flags.init = async function () {
 			cid: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byCid:', key);
 			},
+			visible: function (sets, orSets, key) {
+				orSets.push(key);
+			},
 			page: function () { /* noop */ },
 			perPage: function () { /* noop */ },
 			quick: function (sets, orSets, key, uid) {
@@ -669,7 +672,7 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	if (!isPrivileged && allowedFlagsPerDay > 0) {
 		const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 		const flagsOfType = flagData.filter(f => f && f.type === type);
-		if (allowedFlagsPerDay > 0 && flagsOfType.length > allowedFlagsPerDay) {
+		if (flagsOfType.length >= allowedFlagsPerDay) {
 			throw new Error(`[[error:too-many-${type}-flags-per-day, ${allowedFlagsPerDay}]]`);
 		}
 	}
@@ -707,6 +710,10 @@ Flags.canView = async (flagId, uid) => {
 		return user.isAdministrator(uid);
 	}
 
+	if (type === 'user') {
+		return privileges.admin.can('admin:users', uid);
+	}
+
 	if (type === 'post') {
 		const cid = await Flags.getTargetCid(type, targetId);
 		const isModerator = await user.isModerator(uid, cid);
@@ -715,6 +722,25 @@ Flags.canView = async (flagId, uid) => {
 	}
 
 	return isAdminOrGlobalMod;
+};
+
+Flags.getVisibleSets = async (uid) => {
+	const [isAdmin, isAdminOrGlobalMod, canManageUsers, moderatedCids] = await Promise.all([
+		user.isAdministrator(uid),
+		user.isAdminOrGlobalMod(uid),
+		privileges.admin.can('admin:users', uid),
+		user.getModeratedCids(uid),
+	]);
+	if (isAdmin) {
+		return null;
+	}
+	const sets = isAdminOrGlobalMod ?
+		['flags:byType:post'] :
+		moderatedCids.map(cid => `flags:byCid:${cid}`);
+	if (canManageUsers) {
+		sets.push('flags:byType:user');
+	}
+	return sets;
 };
 
 Flags.getTarget = async function (type, id, uid) {
@@ -803,18 +829,6 @@ Flags.update = async function (flagId, uid, changeset) {
 		});
 		await notifications.push(notifObj, [assigneeId]);
 	};
-	const isAssignable = async function (assigneeId) {
-		let allowed = await user.isAdminOrGlobalMod(assigneeId);
-
-		// Mods are also allowed to be assigned, if flag target is post in uid's moderated cid
-		if (!allowed && current.type === 'post') {
-			const cid = await posts.getCidByPid(current.targetId);
-			allowed = await user.isModerator(assigneeId, cid);
-		}
-
-		return allowed;
-	};
-
 	async function rescindNotifications(match) {
 		const nids = await db.getSortedSetScan({ key: 'notifications', match: `${match}*` });
 		return notifications.rescind(nids);
@@ -840,11 +854,16 @@ Flags.update = async function (flagId, uid, changeset) {
 			}
 		} else if (prop === 'assignee') {
 			if (changeset[prop] === '') {
-				tasks.push(db.sortedSetRemove(`flags:byAssignee:${changeset[prop]}`, flagId));
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 			/* eslint-disable-next-line */
-			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
+			} else if (!await Flags.canView(flagId, parseInt(changeset[prop], 10))) {
 				delete changeset[prop];
 			} else {
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
 				tasks.push(notifyAssignee(changeset[prop]));
 			}
@@ -914,7 +933,9 @@ Flags.getHistory = async function (flagId) {
 	// turn assignee uids into usernames
 	await Promise.all(history.map(async (entry) => {
 		if (entry.fields.hasOwnProperty('assignee')) {
-			entry.fields.assignee = await user.getUserField(entry.fields.assignee, 'username');
+			entry.fields.assignee = entry.fields.assignee === '' ?
+				'[[flags:no-assignee]]' :
+				await user.getUserField(entry.fields.assignee, 'username');
 		}
 	}));
 
@@ -993,6 +1014,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
+		uids = _.uniq(admins.concat(await privileges.admin.getUidsWithPrivilege('admin:users')));
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetId);
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
@@ -1003,23 +1025,27 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
+			targetDisplayname: targetDisplayname,
 		});
 	} else if (flagObj.type === 'message') {
+		uids = admins;
 		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
 		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
+		const roomName = roomData?.roomName || targetDisplayname;
 		let bodyLong = String(flagObj.target?.content || '');
 		if (bodyLong && bodyLong.length > 500) {
 			bodyLong = bodyLong.substring(0, 497) + '...';
 		}
 		notifObj = await notifications.create({
 			type: 'new-message-flag',
-			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomData?.roomName || targetDisplayname),
+			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomName),
 			bodyLong: bodyLong,
 			path: `/flags/${flagObj.flagId}`,
 			nid: `flag:message:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-message|${flagObj.targetId}`,
+			roomName: roomName,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');
@@ -1104,7 +1130,7 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-username]]',
+					key: changeObj.byUid ? '[[user:change-username]]' : '[[flags:registered-username]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},
@@ -1114,13 +1140,13 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 		});
 
 		return memo;
-	}, [])).concat(emailChanges.reduce((memo, changeObj) => {
+	}, [])).concat(emailChanges.reduce((memo, changeObj, idx) => {
 		uids.push(targetUid);
 		memo.push({
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-email]]',
+					key: idx === emailChanges.length - 1 ? '[[flags:registered-email]]' : '[[user:change-email]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},

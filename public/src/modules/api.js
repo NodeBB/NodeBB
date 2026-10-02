@@ -26,7 +26,7 @@ async function call(options, callback) {
 		const result = await xhr(options);
 		return result;
 	} catch (err) {
-		if (err.message === await translator.translate('[[error:api.401]]', config.userLang)) {
+		if (err.status === 401) {
 			const { url } = await fireHook('filter:admin.reauth', { url: 'login' });
 			const message = await translator.translate('[[error:api.reauth-required]]', config.userLang);
 			confirm(message, (ok) => {
@@ -87,15 +87,15 @@ async function xhr(options) {
 	}
 
 	if (!res.ok) {
+		let message = res.statusText;
 		if (response) {
 			const jsonError = isJSON && (response.status?.message || response.error || '');
 			const fallbackError = typeof response === 'string' ? response : (res.statusText || `[[error:api.${res.status}]]`);
-			throw new Error(isJSON && jsonError ?
-				jsonError :
-				fallbackError
-			);
+			message = isJSON && jsonError ? jsonError : fallbackError;
 		}
-		throw new Error(res.statusText);
+		const err = new Error(message);
+		err.status = res.status;
+		throw err;
 	}
 
 	return isJSON && response && response.hasOwnProperty('status') && response.hasOwnProperty('response') ?

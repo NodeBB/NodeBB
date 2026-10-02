@@ -417,7 +417,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${style}" onError="this.remove()" itemprop="image" />`;
+			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${style}" onError="this.remove()" />`;
 		}
 		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${style} background-color: ${iconBgColor}">${iconText}</span>`;
 		return output;

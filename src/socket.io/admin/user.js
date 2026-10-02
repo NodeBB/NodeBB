@@ -11,6 +11,7 @@ const user = require('../../user');
 const events = require('../../events');
 const utils = require('../../utils');
 const sockets = require('..');
+const api = require('../../api');
 
 const User = module.exports;
 
@@ -157,28 +158,7 @@ User.exportUsersCSV = async function (socket, data) {
 };
 
 User.saveCustomFields = async function (socket, fields) {
-	const protectedFields = [
-		...await user.getUserFieldWhitelist(),
-		...user.protectedFields,
-	];
-	for (const field of fields) {
-		if (protectedFields.includes(field.key) || protectedFields.includes(field.key.toLowerCase())) {
-			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
-		}
-	}
-	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	await db.delete('user-custom-fields');
-	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
-
-	await db.sortedSetAdd(
-		`user-custom-fields`,
-		fields.map((f, i) => i),
-		fields.map(f => f.key)
-	);
-	await db.setObjectBulk(
-		fields.map(field => [`user-custom-field:${field.key}`, field])
-	);
-	await user.reloadCustomFieldWhitelist();
+	await api.admin.users.saveCustomFields(socket, { fields });
 };
 
 User.saveCustomReasons = async function (socket, reasons) {

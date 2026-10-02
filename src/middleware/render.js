@@ -412,17 +412,18 @@ module.exports = function (middleware) {
 			unreadChatCount: messaging.getUnreadCount(uid),
 			unreadNotificationCount: user.notifications.getUnreadCount(uid),
 			unreadFlagCount: (async function () {
-				if (routes.includes('/flags') && await user.isPrivileged(uid)) {
-					return flags.getCount({
-						uid,
-						query,
-						filters: {
-							quick: 'unresolved',
-							cid: (await user.isAdminOrGlobalMod(uid)) ? [] : (await user.getModeratedCids(uid)),
-						},
-					});
+				if (!routes.includes('/flags')) {
+					return 0;
 				}
-				return 0;
+				const visibleSets = await flags.getVisibleSets(uid);
+				if (visibleSets && !visibleSets.length) {
+					return 0;
+				}
+				const filters = { quick: 'unresolved' };
+				if (visibleSets) {
+					filters.visible = visibleSets;
+				}
+				return flags.getCount({ uid, query, filters });
 			}()),
 		};
 		const results = await utils.promiseParallel(calls);

@@ -1097,6 +1097,17 @@ describe('Post\'s', () => {
 			assert(!Object.hasOwn(posts[0].data, 'req'));
 		});
 
+		it('should load queued posts for a category moderator', async () => {
+			const modUid = await user.create({ username: 'queuecatmod', password: 'queuecatmodpwd' });
+			await privileges.categories.give(['moderate'], cid, modUid);
+			const { jar: modJar } = await helpers.loginUser('queuecatmod', 'queuecatmodpwd');
+			const { body } = await request.get(`${nconf.get('url')}/api/post-queue`, { jar: modJar });
+			const ids = body.posts.map(p => p.id);
+			assert(ids.includes(topicQueueId));
+			assert(ids.includes(queueId));
+			await privileges.categories.rescind(['moderate'], cid, modUid);
+		});
+
 		it('should error if data is invalid', async () => {
 			await assert.rejects(
 				apiPosts.editQueuedPost({ uid: globalModUid }, null),
@@ -1130,9 +1141,10 @@ describe('Post\'s', () => {
 		});
 
 		it('should prevent regular users from approving posts', async () => {
+			// Restricted and missing queue entries respond identically (no existence oracle)
 			await assert.rejects(
 				apiPosts.acceptQueuedPost({ uid: uid }, { id: queueId }),
-				{ message: '[[error:no-privileges]]' },
+				{ message: '[[error:no-post]]' },
 			);
 		});
 
@@ -1193,6 +1205,18 @@ describe('Post\'s', () => {
 			const { body } = await request.get(`${nconf.get('url')}/post-queue/${result.id}`, { jar });
 			// should not contain the translated message
 			assert(body.indexOf('Perhaps you should') === -1);
+		});
+
+		it('should merge notifications for multiple queued posts from the same user', async () => {
+			const queueUid = await user.create({ username: 'queuemerger' });
+			await apiTopics.reply({ uid: queueUid }, { content: 'first queued reply', tid: topicData.tid });
+			await sleep(5);
+			await apiTopics.reply({ uid: queueUid }, { content: 'second queued reply', tid: topicData.tid });
+			await sleep(2000);
+
+			const { unread } = await user.notifications.get(globalModUid);
+			const queued = unread.filter(n => n && n.type === 'post-queue' && n.mergeId && n.mergeId.endsWith(`-uid-${queueUid}`));
+			assert.strictEqual(queued.length, 1);
 		});
 	});
 

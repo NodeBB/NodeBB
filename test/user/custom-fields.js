@@ -144,4 +144,21 @@ describe('custom user fields', () => {
 		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
 		assert.strictEqual(body.website, 'https://nodebb.org');
 	});
+
+	it('should render a select-multi field from its stored json', async () => {
+		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
+		const field = body.customUserFields.find(f => f.key === 'favouriteLanguages');
+		assert.strictEqual(field.value, 'Javascript, Python');
+		assert.deepStrictEqual(
+			field['select-options'].filter(opt => opt.selected).map(opt => opt.value),
+			['Javascript', 'Python']
+		);
+	});
+
+	it('should render a select-multi field unselected if the stored value is malformed', async () => {
+		await db.setObjectField(`user:${highRepUid}`, 'favouriteLanguages', 'not json');
+		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
+		const field = body.customUserFields.find(f => f.key === 'favouriteLanguages');
+		assert.ok(field['select-options'].every(opt => !opt.selected));
+	});
 });

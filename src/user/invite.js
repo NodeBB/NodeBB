@@ -196,7 +196,6 @@ module.exports = function (User) {
 		const subject = await translator.translate(`[[email:invite, ${title}]]`, meta.config.defaultLang);
 
 		return {
-			...emailer._defaultPayload, // Append default data to this email payload
 			site_title: title,
 			registerLink: registerLink,
 			subject: subject,

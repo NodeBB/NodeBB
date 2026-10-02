@@ -165,8 +165,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		return fields;
 	}
 
-	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	const allFields = await user.customFields.getFields();
 
 	const isSelf = String(callerUID) === String(userData.uid);
 	const [isAdmin, isModOfAny] = await Promise.all([
@@ -190,13 +189,13 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 	fields.forEach((f) => {
 		let userValue = userData[f.key];
 		if (f.type === 'select-multi' && userValue) {
-			userValue = JSON.parse(userValue || '[]');
+			userValue = user.customFields.parseValue(f, userValue) || [];
 		}
 		if (f.type === 'input-link' && userValue) {
 			userValue = utils.isSafeHref(userValue) ? userValue : '';
 			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
-		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
+		f['select-options'] = user.customFields.getOptions(f);
 		if (f.type === 'select') {
 			f['select-options'].unshift('');
 		}

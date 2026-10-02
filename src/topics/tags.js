@@ -129,10 +129,10 @@ module.exports = function (Topics) {
 	};
 
 	async function renameTag(tag, newTagName) {
+		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
 		if (!newTagName || tag === newTagName) {
 			return;
 		}
-		newTagName = utils.cleanUpTag(newTagName, meta.config.maximumTagLength);
 
 		await Topics.createEmptyTag(newTagName);
 		const allCids = {};

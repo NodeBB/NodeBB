@@ -91,8 +91,8 @@ post:
 put:
   tags:
     - chats
-  summary: rename a chat room
-  description: This operation renames a chat room.
+  summary: update a chat room
+  description: This operation updates a chat room's name and, for administrators, its settings.
   parameters:
     - in: path
       name: roomId
@@ -112,9 +112,22 @@ put:
               type: string
               description: the new name of the room
               example: 'casper the friendly room'
+            groups:
+              type: array
+              items:
+                type: string
+              description: the groups allowed to join the room (public rooms and administrators only)
+            notificationSetting:
+              type: number
+              enum: [1, 2, 3]
+              description: the default notification setting for the room, `1` for none, `2` for mentions only, `3` for all messages (administrators only)
+            joinLeaveMessages:
+              type: number
+              enum: [0, 1]
+              description: whether to post a system message when a user joins or leaves the room (administrators only)
   responses:
     '200':
-      description: Chat room renamed
+      description: Chat room updated
       content:
         application/json:
           schema:

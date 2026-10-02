@@ -14,7 +14,7 @@ const ratelimit = require('../middleware/ratelimit');
 const blacklist = require('../meta/blacklist');
 const als = require('../als');
 const apiHelpers = require('../api/helpers');
-const socketIp = require('./utils/ip');
+const socketIp = require('../ip');
 
 const Namespaces = Object.create(null);
 
@@ -151,7 +151,7 @@ async function onConnect(socket) {
 function deserializePayload(payload) {
 	if (!Array.isArray(payload) || !payload.length) {
 		winston.warn('[socket.io] Empty payload');
-		return {};
+		return { params: {}, callback: () => {} };
 	}
 	const params = typeof payload[0] === 'function' ? {} : payload[0];
 	const callback = typeof payload[payload.length - 1] === 'function' ? payload[payload.length - 1] : function () {};

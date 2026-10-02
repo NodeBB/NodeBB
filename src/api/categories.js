@@ -36,11 +36,12 @@ categoriesAPI.list = async (caller) => {
 };
 
 categoriesAPI.get = async function (caller, data) {
-	const [userPrivileges, category] = await Promise.all([
+	const [userPrivileges, category, isAdmin] = await Promise.all([
 		privileges.categories.get(data.cid, caller.uid),
 		categories.getCategoryData(data.cid),
+		user.isAdministrator(caller.uid),
 	]);
-	if (!category || !userPrivileges.read) {
+	if (!category || !userPrivileges.read || (category.disabled && !isAdmin)) {
 		return null;
 	}
 

@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const upload_path = nconf.get('upload_path');
-	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
+	const searchRegex = /\/assets\/uploads(\/files\/[^\s")@?]+\.?[\w]*)/g;
 
 	const _getFullPath = relativePath => path.join(upload_path, relativePath);
 	const _filterValidPaths = async function (filePaths) {
@@ -90,7 +90,12 @@ module.exports = function (Posts) {
 		let match = searchRegex.exec(content);
 		const uploads = new Set();
 		while (match) {
-			uploads.add(match[1].replace('-resized', ''));
+			// Normalize so stored/hashed keys match the canonical path; reject any
+			// path that escapes the uploads root (e.g. traversal via `..` segments)
+			const relPath = path.posix.normalize(match[1].replace('-resized', ''));
+			if (relPath.startsWith('/files/')) {
+				uploads.add(relPath);
+			}
 			match = searchRegex.exec(content);
 		}
 		return uploads;
@@ -203,7 +208,9 @@ module.exports = function (Posts) {
 		if (!filePaths.length) {
 			return;
 		}
-		let currentUploads = await Posts.uploads.list(pid);
+		// Normalize so md5 keys and orphan checks use the canonical path
+		filePaths = filePaths.map(p => path.posix.normalize(p));
+		let currentUploads = (await Posts.uploads.list(pid)).map(p => path.posix.normalize(p));
 		currentUploads = currentUploads.filter(upload => !filePaths.includes(upload));
 		const bulkRemove = filePaths.map(path => [`upload:${md5(path)}:pids`, pid]);
 		const promises = [

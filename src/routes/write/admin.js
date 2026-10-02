@@ -12,6 +12,8 @@ module.exports = function () {
 
 	setupApiRoute(router, 'put', '/settings/:setting', [...middlewares, middleware.checkRequired.bind(null, ['value'])], controllers.write.admin.updateSetting);
 
+	setupApiRoute(router, 'put', '/users/custom-fields', [...middlewares, middleware.checkRequired.bind(null, ['fields'])], controllers.write.admin.saveCustomUserFields);
+
 	setupApiRoute(router, 'get', '/analytics', [...middlewares], controllers.write.admin.getAnalyticsKeys);
 	setupApiRoute(router, 'get', '/analytics/:set', [...middlewares], controllers.write.admin.getAnalyticsData);
 	const requireAPIReAuth = middleware.requireAPIReAuth();

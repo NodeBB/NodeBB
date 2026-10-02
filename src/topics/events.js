@@ -12,6 +12,7 @@ const tx = require('../translator');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const helpers = require('../helpers');
+const languages = require('../languages');
 
 const relative_path = nconf.get('relative_path');
 
@@ -54,27 +55,39 @@ Events._types = {
 	},
 	move: {
 		icon: 'fa-arrow-circle-right',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), renderCategory(event.fromCategory), renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-moved-topic-from', renderUser(event), renderCategory(event.fromCategory, language), renderTimeago(event)
+		),
 	},
 	share: {
 		icon: 'fa-share-alt',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-shared-topic', renderUser(event), renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-shared-topic', renderUser(event), renderTimeago(event)
+		),
 	},
 	'post-queue': {
 		icon: 'fa-history',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)
+		),
 	},
 	backlink: {
 		icon: 'fa-link',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)
+		),
 	},
 	fork: {
 		icon: 'fa-code-fork',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)
+		),
 	},
 	crosspost: {
 		icon: 'fa-square-arrow-up-right',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-crossposted-topic', renderUser(event), renderCategory(event.toCategory), renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-crossposted-topic', renderUser(event), renderCategory(event.toCategory, language), renderTimeago(event)
+		),
 	},
 };
 
@@ -124,8 +137,12 @@ function renderUser(event) {
 	return `${avatar} ${link}`;
 }
 
-function renderCategory(category) {
-	return `${helpers.buildCategoryLabel(category, 'a')}`;
+function renderCategory(category, language = 'en-GB') {
+	// category names can be tx tokens so need the translation context here
+	const context = {
+		_i18n: languages.getFull(language),
+	};
+	return `${helpers.buildCategoryLabel.call(context, category, 'a')}`;
 }
 
 function renderTimeago(event) {

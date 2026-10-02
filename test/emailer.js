@@ -45,6 +45,13 @@ describe('emailer', () => {
 		server.listen(4000, done);
 	});
 
+	it('should return wellknownservices', () => {
+		const services = Emailer.listServices();
+		assert(Array.isArray(services));
+		assert(services.length > 0);
+		assert(services.includes('SES'), services);
+	});
+
 	// TODO: test sendmail here at some point
 
 	it('plugin hook should work', (done) => {
@@ -68,6 +75,29 @@ describe('emailer', () => {
 			Plugins.hooks.unregister('emailer-test', 'static:email.send', method);
 			done();
 		});
+	});
+
+	it('should let a plugin cancel a direct sendToEmail call', async () => {
+		let sent = false;
+		const sendMethod = async () => {
+			sent = true;
+		};
+		const cancelMethod = async (data) => {
+			data.cancel = data.template === template;
+			return data;
+		};
+
+		Plugins.hooks.register('emailer-test', { hook: 'static:email.send', method: sendMethod });
+		Plugins.hooks.register('emailer-test', { hook: 'filter:email.cancel', method: cancelMethod });
+
+		try {
+			await Emailer.sendToEmail(template, email, language, params);
+		} finally {
+			Plugins.hooks.unregister('emailer-test', 'static:email.send', sendMethod);
+			Plugins.hooks.unregister('emailer-test', 'filter:email.cancel', cancelMethod);
+		}
+
+		assert.strictEqual(sent, false);
 	});
 
 	it('should build custom template on config change', (done) => {

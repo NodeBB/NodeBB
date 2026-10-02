@@ -627,11 +627,10 @@ async function canEditQueue(uid, data, action) {
 		posts.canEditQueue(uid, data, action),
 		posts.getFromQueue(data.id),
 	]);
-	if (!queuedPost) {
+	if (!queuedPost || !canEditQueue) {
+		// Respond 404 (not 403) for both missing and restricted items so
+		// unauthenticated callers cannot distinguish the two (existence oracle)
 		throw new Error('[[error:no-post]]');
-	}
-	if (!canEditQueue) {
-		throw new Error('[[error:no-privileges]]');
 	}
 }
 

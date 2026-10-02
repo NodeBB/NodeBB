@@ -509,18 +509,21 @@ Notifications.prune = async function () {
 
 Notifications.merge = async function (notifications) {
 	// When passed a set of notification objects, merge any that can be merged
-	const mergeIds = [
-		'notifications:upvoted-your-post-in',
-		'notifications:user-started-following-you',
-		'notifications:user-posted-to',
-		'notifications:user-flagged-post-in',
-		'notifications:user-flagged-user',
-		'new-chat',
-		'notifications:user-posted-in-public-room',
-		'new-register',
-		'post-queue',
-		'notifications:activitypub.announce',
-	];
+	const { mergeIds } = await plugins.hooks.fire('filter:notifications.mergeIds', {
+		mergeIds: [
+			'notifications:upvoted-your-post-in',
+			'notifications:user-started-following-you',
+			'notifications:user-posted-to',
+			'notifications:user-flagged-post-in',
+			'notifications:user-flagged-user',
+			'notifications:user-flagged-message',
+			'new-chat',
+			'notifications:user-posted-in-public-room',
+			'new-register',
+			'post-queue',
+			'notifications:activitypub.announce',
+		],
+	});
 
 	notifications = mergeIds.reduce((notifications, mergeId) => {
 		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
@@ -539,18 +542,15 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
-			let set;
-			if (differentiator === 0 && differentiators.length === 1) {
-				set = isolated;
-			} else {
-				set = isolated.filter(n => n.mergeId === (`${mergeId}|${differentiator}`));
-			}
+			const target = differentiator === 0 ? mergeId : `${mergeId}|${differentiator}`;
+			const set = isolated.filter(n => n.mergeId === target);
 
 			const modifyIndex = notifications.indexOf(set[0]);
 			if (modifyIndex === -1 || set.length === 1) {
 				return notifications;
 			}
 			const notifObj = notifications[modifyIndex];
+			notifObj.mergeCount = set.length;
 			switch (mergeId) {
 				case 'new-chat': {
 					const { roomId, roomName, type, user } = set[0];
@@ -561,9 +561,22 @@ Notifications.merge = async function (notifications) {
 					break;
 				}
 
+				case 'notifications:user-flagged-message': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.roomName),
+					]);
+					break;
+				}
+
 				case 'notifications:user-posted-in-public-room': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						notifObj.roomIcon, tx.escape(notifObj.roomName),
+					]);
+					break;
+				}
+				case 'notifications:user-flagged-user': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.targetDisplayname),
 					]);
 					break;
 				}
@@ -571,7 +584,6 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						tx.escape(notifObj.topicTitle),
@@ -580,7 +592,12 @@ Notifications.merge = async function (notifications) {
 				}
 
 				case 'new-register':
+				case 'post-queue':
 					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
+					break;
+
+				default:
+					notifObj.bodyShort = `[[notifications:merged-notifications, ${set.length}]]`;
 					break;
 			}
 
@@ -590,7 +607,7 @@ Notifications.merge = async function (notifications) {
 					return true;
 				}
 
-				return !(notifObj.mergeId === (mergeId + (differentiator ? `|${differentiator}` : '')) && idx !== modifyIndex);
+				return !(notifObj.mergeId === target && idx !== modifyIndex);
 			});
 		});
 

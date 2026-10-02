@@ -38,6 +38,12 @@ Admin.updateSetting = async (req, res) => {
 	helpers.formatApiResponse(200, res);
 };
 
+Admin.saveCustomUserFields = async (req, res) => {
+	await api.admin.users.saveCustomFields(req, { fields: req.body.fields });
+
+	helpers.formatApiResponse(200, res);
+};
+
 Admin.getAnalyticsKeys = async (req, res) => {
 	helpers.formatApiResponse(200, res, {
 		keys: await api.admin.getAnalyticsKeys(),

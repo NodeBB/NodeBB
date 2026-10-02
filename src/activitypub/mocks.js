@@ -226,6 +226,7 @@ Mocks.profile = async (actors) => {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, inbox, endpoints, tag,
 		} = actor;
+		tag = Array.isArray(tag) ? tag : (tag ? [tag] : []);
 		preferredUsername = slugify(preferredUsername || name);
 		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
 
@@ -351,6 +352,7 @@ Mocks.category = async (actors) => {
 			name, summary, followers, inbox, endpoints, tag,
 			postingRestrictedToMods,
 		} = actor;
+		tag = Array.isArray(tag) ? tag : (tag ? [tag] : []);
 		preferredUsername = slugify(preferredUsername || name);
 		/*
 		const {
