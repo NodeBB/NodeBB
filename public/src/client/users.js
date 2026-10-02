@@ -52,7 +52,7 @@ define('forum/users', [
 		const activeSection = getActiveSection();
 
 		const query = {
-			section: activeSection || 'users',
+			section: activeSection || 'sort-posts',
 			page: 1,
 		};
 
@@ -89,16 +89,15 @@ define('forum/users', [
 	}
 
 	function getSortBy() {
-		let sortBy;
-		const activeSection = getActiveSection();
+		const activeSection = getActiveSection() || 'sort-posts';
 		if (activeSection === 'sort-posts') {
-			sortBy = 'postcount';
+			return 'postcount';
 		} else if (activeSection === 'sort-reputation') {
-			sortBy = 'reputation';
+			return 'reputation';
 		} else if (activeSection === 'users') {
-			sortBy = 'joindate';
+			return 'joindate';
 		}
-		return sortBy;
+		return undefined;
 	}
 
 
