@@ -8,6 +8,7 @@ const util = require('util');
 const db = require('./mocks/databasemock');
 const meta = require('../src/meta');
 const user = require('../src/user');
+const posts = require('../src/posts');
 const topics = require('../src/topics');
 const categories = require('../src/categories');
 const notifications = require('../src/notifications');
@@ -206,6 +207,120 @@ describe('Notifications', () => {
 		const notifications = await user.notifications.get(watcherUid);
 		assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
 		assert.equal(`${nconf.get('relative_path')}/post/${pid}`, notifications.unread[0].path, 'the notification should link to the first unread post');
+	});
+
+	it('should link to the first unread post when a merged notification exceeds the dropdown limit', async () => {
+		const watcherUid = await user.create({ username: 'watcher-over-limit' });
+		const { cid } = await categories.create({
+			name: 'Notification limit test category',
+			description: 'Test category created by testing script',
+		});
+		const { topicData } = await topics.post({
+			uid: watcherUid,
+			cid: cid,
+			title: 'Notification limit test topic',
+			content: 'The topic content.',
+		});
+		const { tid } = topicData;
+		await topics.unfollow(tid, watcherUid);
+
+		const replies = [];
+		for (let index = 0; index < 52; index += 1) {
+			// eslint-disable-next-line no-await-in-loop
+			replies.push(await topics.reply({
+				uid: uid,
+				content: `Reply ${index + 1}.`,
+				tid: tid,
+			}));
+		}
+
+		const timestamp = Date.now();
+		const unrelated = await notifications.create({
+			type: 'new-reply',
+			bodyShort: 'Unrelated notification',
+			nid: 'notification-limit:unrelated',
+			mergeId: 'notifications:user-posted-to|unrelated',
+			path: '/post/unrelated',
+			pid: 'unrelated',
+			tid: 'unrelated',
+			from: uid,
+		});
+		await db.sortedSetAdd(`uid:${watcherUid}:notifications:unread`, timestamp - 1, unrelated.nid);
+		const createdNotifications = await Promise.all(replies.map(async ({ pid }, index) => {
+			const notification = await notifications.create({
+				type: 'new-reply',
+				bodyShort: tx.compile('notifications:user-posted-to', 'poster', topicData.title),
+				nid: `notification-limit:tid:${tid}:pid:${pid}`,
+				mergeId: `notifications:user-posted-to|${tid}`,
+				path: `/post/${pid}`,
+				pid: pid,
+				tid: tid,
+				from: uid,
+				topicTitle: topicData.title,
+			});
+			await db.sortedSetAdd(`uid:${watcherUid}:notifications:unread`, timestamp + index, notification.nid);
+			return notification;
+		}));
+
+		const result = await user.notifications.get(watcherUid);
+		assert.equal(result.unread.length, 1, 'there should be 1 merged unread notification');
+		assert.equal(
+			result.unread[0].path,
+			`${nconf.get('relative_path')}/post/${replies[0].pid}`,
+			'the merged notification should link to the first unread post even when it is outside the loaded batch'
+		);
+		assert.strictEqual(result.unread[0].pid, replies[0].pid, 'the first unread pid should remain a number');
+
+		await Promise.all([
+			db.sortedSetRemove(`uid:${watcherUid}:notifications:unread`, createdNotifications[0].nid),
+			db.sortedSetAdd(`uid:${watcherUid}:notifications:read`, timestamp, createdNotifications[0].nid),
+		]);
+		const afterReadingOldest = await user.notifications.get(watcherUid);
+		assert.equal(afterReadingOldest.unread.length, 1, 'there should still be 1 merged unread notification');
+		assert.equal(
+			afterReadingOldest.unread[0].path,
+			`${nconf.get('relative_path')}/post/${replies[1].pid}`,
+			'the merged notification should advance to the next oldest unread post'
+		);
+		assert.strictEqual(
+			afterReadingOldest.unread[0].pid,
+			replies[1].pid,
+			'the next unread pid should remain a number'
+		);
+
+		await db.delete(`notifications:${createdNotifications[1].nid}`);
+		const afterPruningOldest = await user.notifications.get(watcherUid);
+		assert.equal(afterPruningOldest.unread[0].path, `${nconf.get('relative_path')}/post/${replies[2].pid}`);
+		assert.strictEqual(afterPruningOldest.unread[0].pid, replies[2].pid);
+
+		await posts.delete(replies[2].pid, uid);
+		const afterDeletingOldestPost = await user.notifications.get(watcherUid);
+		assert.equal(afterDeletingOldestPost.unread[0].path, `${nconf.get('relative_path')}/post/${replies[3].pid}`);
+		assert.strictEqual(afterDeletingOldestPost.unread[0].pid, replies[3].pid);
+	});
+
+	it('should keep the unread dropdown limited to 50 notifications', async () => {
+		const watcherUid = await user.create({ username: 'watcher-unmerged-limit' });
+		const timestamp = Date.now();
+		const nids = await Promise.all(Array.from({ length: 51 }, async (_, index) => {
+			const notification = await notifications.create({
+				nid: `notification-unmerged-limit:${index}`,
+				bodyShort: `Notification ${index}`,
+				path: '/notifications',
+				from: uid,
+			});
+			await db.sortedSetAdd(`uid:${watcherUid}:notifications:unread`, timestamp + index, notification.nid);
+			return notification.nid;
+		}));
+
+		const result = await user.notifications.get(watcherUid);
+		assert.strictEqual(result.unread.length, 50);
+		assert.strictEqual(result.read.length, 0);
+		assert(!result.unread.some(n => n.nid === nids[0]), 'the lookahead ID should not be displayed');
+		await db.sortedSetRemove(`uid:${watcherUid}:notifications:unread`, nids[0]);
+		const exactlyFifty = await user.notifications.get(watcherUid);
+		assert.strictEqual(exactlyFifty.unread.length, 50);
+		assert.deepStrictEqual(exactlyFifty.unread.map(n => n.nid), result.unread.map(n => n.nid));
 	});
 
 	it('should get notification by nid', async () => {
