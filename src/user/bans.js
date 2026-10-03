@@ -39,7 +39,7 @@ module.exports = function (User) {
 
 		// Leaving all other groups to have privileges constrained to the "banned-users" group
 		// user is added back to the groups they were a member of originally after being unbanned if the group still exists
-		let [userGroups] = (await groups.getUserGroupMembership('groups:createtime', [uid]));
+		let [userGroups] = await groups.getUserGroupMembership('groups:createtime', [uid]);
 		userGroups = userGroups.filter(group => !groups.systemGroups.includes(group));
 		const groupsToLeave = [...new Set([
 			...userGroups,
