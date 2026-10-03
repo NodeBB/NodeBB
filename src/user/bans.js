@@ -37,14 +37,25 @@ module.exports = function (User) {
 			banData.reason = reason;
 		}
 
-		// Leaving all other system groups to have privileges constrained to the "banned-users" group
-		const systemGroups = groups.systemGroups.filter(group => group !== groups.BANNED_USERS);
-		await groups.leave(systemGroups, uid);
+		// Leaving all other groups to have privileges constrained to the "banned-users" group
+		// user is added back to the groups they were a member of originally after being unbanned if the group still exists
+		let [userGroups] = (await groups.getUserGroupMembership('groups:createtime', [uid]));
+		userGroups = userGroups.filter(group => !groups.systemGroups.includes(group));
+		const groupsToLeave = [...new Set([
+			...userGroups,
+			...groups.systemGroups.filter(group => group !== groups.BANNED_USERS),
+		])];
+
+		await groups.leave(groupsToLeave, uid);
 		await groups.join(groups.BANNED_USERS, uid);
 		await db.sortedSetAdd('users:banned', now, uid);
 		await db.sortedSetAdd(`uid:${uid}:bans:timestamp`, now, banKey);
 		await db.setObject(banKey, banData);
-		await User.setUserFields(uid, { banned: 1, 'banned:expire': banData.expire });
+		await User.setUserFields(uid, {
+			banned: 1,
+			'banned:expire': banData.expire,
+			groupMembershipOnBan: JSON.stringify(userGroups),
+		});
 		if (until > now) {
 			await db.sortedSetAdd('users:banned:expire', until, uid);
 		} else {
@@ -76,7 +87,7 @@ module.exports = function (User) {
 	User.bans.unban = async function (uids, reason = '') {
 		const isArray = Array.isArray(uids);
 		uids = isArray ? uids : [uids];
-		const userData = await User.getUsersFields(uids, ['email:confirmed']);
+		const userData = await User.getUsersFields(uids, ['uid', 'email:confirmed', 'groupMembershipOnBan']);
 
 		await db.setObject(uids.map(uid => `user:${uid}`), { banned: 0, 'banned:expire': 0 });
 		const now = Date.now();
@@ -87,6 +98,9 @@ module.exports = function (User) {
 				'registered-users',
 				(parseInt(user['email:confirmed'], 10) === 1 ? 'verified-users' : 'unverified-users'),
 			];
+			const previousGroups = await getGroupsToRejoin(user);
+			const groupsToRejoin = [...new Set([...previousGroups, ...systemGroupsToJoin])];
+
 			const unbanKey = `uid:${user.uid}:unban:${now}`;
 			const unbanData = {
 				type: 'unban',
@@ -98,15 +112,26 @@ module.exports = function (User) {
 				db.sortedSetAdd(`uid:${user.uid}:unbans:timestamp`, now, unbanKey),
 				db.setObject(unbanKey, unbanData),
 				groups.leave(groups.BANNED_USERS, user.uid),
-				// An unbanned user would lost its previous "Global Moderator" status
-				groups.join(systemGroupsToJoin, user.uid),
+				groups.join(groupsToRejoin, user.uid),
 			]);
+			await db.deleteObjectField(`user:${user.uid}`, 'groupMembershipOnBan');
 			unbanDataArray.push(unbanData);
 		}
 
 		await db.sortedSetRemove(['users:banned', 'users:banned:expire'], uids);
 		return isArray ? unbanDataArray : unbanDataArray[0];
 	};
+
+	async function getGroupsToRejoin(user) {
+		try {
+			const groupsToRejoin = JSON.parse(user.groupMembershipOnBan || '[]');
+			const exists = await groups.exists(groupsToRejoin);
+			return groupsToRejoin.filter((group, index) => exists[index]);
+		} catch (err) {
+			winston.error(`[getGroupsToRejoin] uid:${user.uid} ${err.message}`);
+			return [];
+		}
+	}
 
 	User.bans.isBanned = async function (uids) {
 		const isArray = Array.isArray(uids);

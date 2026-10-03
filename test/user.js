@@ -1436,6 +1436,28 @@ describe('User', () => {
 			assert.strictEqual(membership.get(groups.GLOBAL_MODERATORS), false);
 		});
 
+		it('should remove user from regular group on ban and rejoin after unban', async () => {
+			const uid = await User.create({ username: utils.generateUUID().slice(0, 8) });
+			const specialGroup = await groups.create({ name: utils.generateUUID().slice(0, 8) });
+			await groups.join(specialGroup.name, uid);
+
+			await User.bans.ban(uid);
+
+			const isMemberBeforeUnban = await groups.isMember(uid, specialGroup.name);
+			assert.strictEqual(isMemberBeforeUnban, false);
+
+			const hasMembershipOnBanFieldAfterBan = await db.isObjectField(`user:${uid}`, 'groupMembershipOnBan');
+			assert.strictEqual(hasMembershipOnBanFieldAfterBan, true);
+
+			await User.bans.unban(uid);
+
+			const isMemberAfterUnban = await groups.isMember(uid, specialGroup.name);
+			assert.strictEqual(isMemberAfterUnban, true);
+
+			const hasMembershipOnBanFieldAfterUnban = await db.isObjectField(`user:${uid}`, 'groupMembershipOnBan');
+			assert.strictEqual(hasMembershipOnBanFieldAfterUnban, false);
+		});
+
 		it('should restore system group memberships after an unban (for a verified user)', async () => {
 			await User.bans.ban(verifiedTestUserUid);
 			await User.bans.unban(verifiedTestUserUid);
