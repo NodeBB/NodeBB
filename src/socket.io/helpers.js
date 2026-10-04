@@ -54,8 +54,9 @@ async function notifyUids(uid, uids, type, result) {
 	post.ip = undefined;
 
 	await Promise.all(data.uidsTo.map(async (toUid) => {
-		const copyResult = _.cloneDeep(result);
-		const postToUid = copyResult.posts[0];
+		const postData = await topics.getNewPostDataForUser(post.pid, toUid);
+		// keep properties that were set by src/topics/create.js, overwrite rest by per user data
+		const postToUid = { ...post, ...postData };
 		postToUid.categoryWatchState = categoryWatchStates[toUid];
 		postToUid.topic.isFollowing = topicFollowState[toUid];
 
@@ -65,14 +66,17 @@ async function notifyUids(uid, uids, type, result) {
 			post: postToUid,
 		});
 
-		websockets.in(`uid_${toUid}`).emit('event:new_post', copyResult);
-		if (copyResult.topic && type === 'newTopic') {
+		websockets.in(`uid_${toUid}`).emit('event:new_post', { ...result, posts: [postToUid] });
+		if (result.topic && type === 'newTopic') {
+			const [topicData] = await topics.getTopicsByTids([result.topic.tid], toUid);
+			// keep properties that were set by src/topics/create.js, overwrite rest by per user data
+			const sendTopic = { ...result.topic, ...topicData };
 			await plugins.hooks.fire('filter:sockets.sendNewTopicToUid', {
 				uid: toUid,
 				uidFrom: uid,
-				topic: copyResult.topic,
+				topic: sendTopic,
 			});
-			websockets.in(`uid_${toUid}`).emit('event:new_topic', copyResult.topic);
+			websockets.in(`uid_${toUid}`).emit('event:new_topic', sendTopic);
 		}
 	}));
 }

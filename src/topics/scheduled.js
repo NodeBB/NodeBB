@@ -48,7 +48,7 @@ async function postTids(tids) {
 	await Promise.all(topicsData.map(t => topics.updateLastPostTimeFromLastPid(t.tid)));
 
 	await Promise.all([
-		sendNotifications(uids, topicsData),
+		sendNotifications(topicsData),
 		updateUserLastposttimes(uids, topicsData),
 		updateGroupPosts(topicsData),
 	]);
@@ -112,10 +112,7 @@ async function unpin(tid, topicData) {
 	]);
 }
 
-async function sendNotifications(uids, topicsData) {
-	const userData = await posts.getUserInfoForPosts(uids, 0);
-	const uidToUserData = Object.fromEntries(uids.map((uid, idx) => [uid, userData[idx]]));
-
+async function sendNotifications(topicsData) {
 	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
 	const topicsAndPosts = topicsData.map((topic, idx) => ({
 		topic,
@@ -125,11 +122,9 @@ async function sendNotifications(uids, topicsData) {
 	await Promise.all(topicsAndPosts.map(({ post }) => posts.parsePost(post)));
 
 	const notifications = topicsAndPosts.map(({ topic, post }) => {
-		post.user = uidToUserData[topic.uid];
 		post.topic = { ...topic };
 		post.isMain = true;
 		topic.mainPost = { ...post };
-		topic.user = post.user;
 		return { topic, post };
 	});
 

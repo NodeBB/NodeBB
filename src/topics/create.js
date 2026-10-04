@@ -255,29 +255,35 @@ module.exports = function (Topics) {
 		return postData;
 	};
 
-	async function onNewPost({ pid, tid, content, uid: postOwner }, { uid, handle }) {
-		const [[postData], [userInfo]] = await Promise.all([
-			posts.getPostSummaryByPids([pid], uid, { extraFields: ['attachments'] }),
-			posts.getUserInfoForPosts([postOwner], uid),
+	Topics.getNewPostDataForUser = async function (pid, callerUid) {
+		const [postData] = await posts.getPostSummaryByPids([pid], callerUid, { extraFields: ['attachments'] });
+		const [[userInfo]] = await Promise.all([
+			posts.getUserInfoForPosts([postData.uid], callerUid),
+			Topics.addParentPosts([postData], callerUid),
 		]);
+
+		// Returned data is a superset of post summary data
+		postData.user = userInfo;
+		postData.index = postData.topic.postcount - 1;
+		postData.bookmarked = false;
+		postData.selfPost = String(postData.uid) === String(callerUid);
+		// the below values get recalculated client side with correct privileges before rendering
+		postData.display_edit_tools = true;
+		postData.display_delete_tools = true;
+		postData.display_moderator_tools = true;
+		postData.display_move_tools = true;
+		return postData;
+	};
+
+	async function onNewPost({ pid, tid, content, uid: postOwner }, { uid, handle }) {
+		const postData = await Topics.getNewPostDataForUser(pid, uid);
 		await Promise.all([
-			Topics.addParentPosts([postData], uid),
 			Topics.syncBacklinks({ ...postData, content }),
 			Topics.markAsRead([tid], uid),
 		]);
 		if (utils.isNumber(postOwner) && postData.category.cid === -1) {
 			activitypub.notes.syncUserInboxes(tid, uid);
 		}
-
-		// Returned data is a superset of post summary data
-		postData.user = userInfo;
-		postData.index = postData.topic.postcount - 1;
-		postData.bookmarked = false;
-		postData.display_edit_tools = true;
-		postData.display_delete_tools = true;
-		postData.display_moderator_tools = true;
-		postData.display_move_tools = true;
-		postData.selfPost = false;
 		posts.overrideGuestHandle(postData, handle);
 		return postData;
 	}
