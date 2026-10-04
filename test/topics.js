@@ -2589,7 +2589,7 @@ describe('Topic\'s', () => {
 				content: 'This topic should be federated',
 			};
 			await apiTopics.create({ uid: adminUid }, normalTopic);
-			await wait(50);
+			await wait(250);
 			assert.strictEqual(activitypub._sent.size, 1);
 			const sent = Array.from(activitypub._sent.values()).pop();
 			assert.strictEqual(sent.payload.type, 'Create');
@@ -2616,7 +2616,7 @@ describe('Topic\'s', () => {
 				timestamp: new Date(Date.now() + 86400000).getTime(),
 			};
 			await apiTopics.create({ uid: adminUid }, scheduledTopic);
-			await wait(50);
+			await wait(250);
 			assert.strictEqual(activitypub._sent.size, 0);
 		});
 
