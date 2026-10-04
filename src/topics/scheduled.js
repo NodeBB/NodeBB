@@ -113,30 +113,34 @@ async function unpin(tid, topicData) {
 }
 
 async function sendNotifications(uids, topicsData) {
-	const userData = await user.getUsersData(uids);
+	const userData = await posts.getUserInfoForPosts(uids, 0);
 	const uidToUserData = Object.fromEntries(uids.map((uid, idx) => [uid, userData[idx]]));
 
-	let postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
-	topicsData = topicsData.filter((t, i) => t && postsData[i]);
-	postsData = postsData.filter(Boolean);
-	postsData = await Promise.all(postsData.map(p => posts.parsePost(p)));
-	postsData.forEach((postData, idx) => {
-		if (postData) {
-			postData.user = uidToUserData[topicsData[idx].uid];
-			postData.topic = topicsData[idx];
-		}
+	const postsData = await posts.getPostsData(topicsData.map(t => t && t.mainPid));
+	const topicsAndPosts = topicsData.map((topic, idx) => ({
+		topic,
+		post: postsData[idx],
+	})).filter(({ topic, post }) => topic && post);
+
+	await Promise.all(topicsAndPosts.map(({ post }) => posts.parsePost(post)));
+
+	const notifications = topicsAndPosts.map(({ topic, post }) => {
+		post.user = uidToUserData[topic.uid];
+		post.topic = { ...topic };
+		post.isMain = true;
+		topic.mainPost = { ...post };
+		topic.user = post.user;
+		return { topic, post };
 	});
 
-	await Promise.all(topicsData.map(
-		(t, idx) => user.notifications.sendTopicNotificationToFollowers(t.uid, t, postsData[idx])
-	).concat(
-		topicsData.map(
-			(t, idx) => socketHelpers.notifyNew(t.uid, 'newTopic', { posts: [postsData[idx]], topic: t })
-		)
-	));
+	await Promise.all(notifications.flatMap(({ topic, post }) => [
+		user.notifications.sendTopicNotificationToFollowers(topic.uid, topic, post),
+		socketHelpers.notifyNew(topic.uid, 'newTopic', { posts: [post], topic }),
+	]));
+
 	plugins.hooks.fire('action:topics.scheduled.notify', {
-		posts: postsData,
-		topics: topicsData,
+		posts: notifications.map(({ post }) => post),
+		topics: notifications.map(({ topic }) => topic),
 	});
 }
 
