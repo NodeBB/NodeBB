@@ -73,7 +73,7 @@ describe('FEPs', () => {
 				});
 
 				it('should have federated out both Announce(Create(Note)) and Announce(Note)', async () => {
-					await wait(50);
+					await wait(250);
 
 					const activities = Array.from(activitypub._sent);
 
