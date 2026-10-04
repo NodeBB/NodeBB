@@ -22,8 +22,13 @@ SocketHelpers.notifyNew = async function (uid, type, result) {
 	if (post && post.topic && parseInt(post.topic.cid, 10) === -1) {
 		return;
 	}
-	let uids = await user.getUidsFromSet('users:online', 0, -1);
-	uids = uids.filter(toUid => parseInt(toUid, 10) !== uid);
+	const [activeUids, onlineUids] = await Promise.all([
+		user.getUidsFromSet('users:online', 0, -1),
+		websockets.getUidsInRoom('online_users'),
+	]);
+	const onlineUidsSet = new Set(onlineUids);
+	uid = String(uid);
+	const uids = activeUids.filter(toUid => toUid !== uid && onlineUidsSet.has(toUid));
 	await batch.processArray(uids, async (uids) => {
 		await notifyUids(uid, uids, type, result);
 	}, {
