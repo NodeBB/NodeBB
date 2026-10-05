@@ -313,11 +313,16 @@ Sockets.getUidsInRoom = async function (room) {
 	const ioRoom = Sockets.server.in(room);
 	const uids = new Set();
 	if (ioRoom) {
-		const sockets = await ioRoom.fetchSockets();
-		for (const s of sockets) {
-			if (s && s.data && s.data.uid > 0) {
-				uids.add(s.data.uid);
+		try {
+			const sockets = await ioRoom.fetchSockets();
+			for (const s of sockets) {
+				if (s && s.data && s.data.uid > 0) {
+					uids.add(s.data.uid);
+				}
 			}
+		} catch (err) {
+			winston.error(err);
+			return [];
 		}
 	}
 	return [...uids];
