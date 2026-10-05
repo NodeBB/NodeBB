@@ -8,9 +8,12 @@ const winston = require('winston');
 
 const db = require('../database');
 const validator = require('validator');
-const { check } = require('../ssrf');
+const request = require('../request');
 
 const emojiLookupKey = 'emoji:ap:lookup';
+
+// The only extensions we are willing to persist for a cached emoji image.
+const ALLOWED_EMOJI_EXTS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'svg']);
 
 function getEmojiDir() {
 	const uploadPath = nconf.get('upload_path') || nconf.get('base_dir') || '.';
@@ -100,35 +103,46 @@ async function cacheEmoji(emojiTag) {
 		return existing;
 	}
 
-	// Determine file extension from content or URL
-	const ext = mime.getExtension(icon.mediaType || '') || path.extname(new URL(icon.url).pathname).slice(1) || 'png';
-	const cleanName = shortcode.replace(/^:+|:+$/g, '');
+	let ext = (mime.getExtension(icon.mediaType || '') || path.extname(new URL(icon.url).pathname).slice(1) || 'png').toLowerCase();
+	if (!ALLOWED_EMOJI_EXTS.has(ext)) {
+		ext = 'png';
+	}
+
+	const cleanName = shortcode.replace(/^:+|:+$/g, '').replace(/[/\\]+/g, '_').replace(/\0/g, '');
+	if (!cleanName) {
+		return null;
+	}
 	const filename = `${cleanName}.${ext}`;
-	const dirPath = path.join(getEmojiDir(), hostname);
+	const baseDir = getEmojiDir();
+	const dirPath = path.join(baseDir, hostname);
 	const localPath = path.join(dirPath, filename);
+
+	const resolvedBase = path.resolve(baseDir);
+	const resolved = path.resolve(localPath);
+	if (resolved !== resolvedBase && !resolved.startsWith(resolvedBase + path.sep)) {
+		return null;
+	}
 
 	try {
 		// Ensure directory exists
 		await fs.mkdir(dirPath, { recursive: true });
 
-		// SSRF check before fetching remote image
-		const { ok } = await check(icon.url);
-		if (!ok) {
-			winston.warn(`[activitypub:emoji] Blocked SSRF attempt for emoji ${shortcode}: ${icon.url}`);
+		// Fetch the remote image through the SSRF-protected request layer. This
+		// pins DNS to the already-validated address (no rebind TOCTOU),
+		// revalidates every redirect hop, and caps the response size.
+		let buffer;
+		let response;
+		try {
+			({ body: buffer, response } = await request.getBuffer(icon.url, { timeout: 5000 }));
+			if (!response.ok) {
+				winston.warn(`[activitypub:emoji] Failed to fetch emoji ${shortcode} from ${hostname}: HTTP ${response.status}`);
+				return null;
+			}
+		} catch (err) {
+			winston.warn(`[activitypub:emoji] Failed to fetch emoji ${shortcode} from ${hostname}: ${err.message}`);
 			return null;
 		}
 
-		// Fetch the remote image
-		const fetchResponse = await fetch(icon.url, {
-			signal: AbortSignal.timeout(5000),
-		});
-
-		if (!fetchResponse.ok) {
-			winston.warn(`[activitypub:emoji] Failed to fetch emoji ${shortcode} from ${hostname}: HTTP ${fetchResponse.status}`);
-			return null;
-		}
-
-		const buffer = Buffer.from(await fetchResponse.arrayBuffer());
 		await fs.writeFile(localPath, buffer);
 
 		const mediaType = icon.mediaType || mime.getType(ext) || 'image/png';

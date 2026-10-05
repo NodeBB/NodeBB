@@ -81,7 +81,7 @@ function getInsecureDispatcher() {
 }
 
 async function call(url, method, {
-	body, timeout, jar, sizeLimit = 10 * 1024 * 1024, rejectUnauthorized, ...config
+	body, timeout, jar, sizeLimit = 10 * 1024 * 1024, rejectUnauthorized, binary = false, ...config
 } = {}) {
 	const originalUrl = url;
 	let currentUrl = url;
@@ -165,6 +165,20 @@ async function call(url, method, {
 			throw new Error(`Response size (${buffer.byteLength} bytes) exceeds limit (${sizeLimit} bytes)`);
 		}
 
+		if (binary) {
+			return {
+				body: Buffer.from(buffer),
+				response: {
+					ok: response.ok,
+					status: response.status,
+					statusCode: response.status,
+					statusText: response.statusText,
+					headers: Object.fromEntries(response.headers.entries()),
+				},
+				url: currentUrl,
+			};
+		}
+
 		let respBody = new TextDecoder().decode(buffer);
 
 		if (isJSON && respBody) {
@@ -210,6 +224,7 @@ const { body, response } = await request.get('someurl?foo=1&baz=2')
 exports.check = check;
 
 exports.get = async (url, config) => call(url, 'GET', config);
+exports.getBuffer = async (url, config) => call(url, 'GET', { ...config, binary: true });
 
 exports.head = async (url, config) => call(url, 'HEAD', config);
 exports.del = async (url, config) => call(url, 'DELETE', config);
