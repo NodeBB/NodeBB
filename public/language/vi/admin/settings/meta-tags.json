@@ -1,8 +1,8 @@
 {
-	"custom-tags": "Custom Meta Tags",
-	"description": "Add global <code>&lt;meta&gt;</code> tags to every page. These are appended to the default tags and can be overridden per-page. Page-specific tags take precedence over the ones defined here. Open Graph keys (e.g. <code>og:title</code>) use the <code>property</code> attribute, all others use <code>name</code>.",
-	"key": "Key",
-	"content": "Content",
-	"remove": "Remove",
-	"add-tag": "Add Tag"
+	"custom-tags": "Thẻ Meta Tùy Chỉnh",
+	"description": "Thêm thẻ <code>&lt;meta&gt;</code> toàn cục vào mọi trang. Các thẻ này được thêm vào sau các thẻ mặc định và có thể được ghi đè cho từng trang. Các thẻ dành riêng cho trang sẽ được ưu tiên hơn các thẻ được định nghĩa ở đây. Các khóa Open Graph (ví dụ: <code>og:title</code>) sử dụng thuộc tính <code>property</code>, tất cả các khóa khác sử dụng <code>name</code>.",
+	"key": "Khóa",
+	"content": "Nội dung",
+	"remove": "Xóa",
+	"add-tag": "Thêm Thẻ"
 }
