@@ -220,4 +220,65 @@ describe('User.search()', () => {
 			assert.ok(hasRemote, 'remote user should be in results');
 		});
 	});
+
+	describe('exact unicode (internationalized) webfinger query resolves to single user', () => {
+		let localUid;
+
+		before(async () => {
+			// A local caller so the webfinger branch of User.search() is exercised
+			localUid = await user.create({
+				username: 'unicode_searcher',
+				password: 'password123',
+				email: 'unicode-searcher@example.com',
+			});
+		});
+
+		it('should resolve an accented (non-ASCII) webfinger handle to the remote user', async () => {
+			const preferredUsername = 'josé';
+			const { id } = helpers.mocks.person({ preferredUsername });
+			await activitypub.actors.assert([id]);
+
+			const hostname = new URL(id).hostname;
+			const webfinger = `${preferredUsername}@${hostname}`;
+			activitypub.helpers._webfingerCache.set(webfinger, {
+				actorUri: id,
+				subject: `acct:${webfinger}`,
+				username: preferredUsername,
+				hostname,
+			});
+
+			const result = await user.search({
+				query: webfinger,
+				searchBy: 'username',
+				uid: localUid,
+			});
+
+			assert.ok(result.users.length >= 1, 'should find the remote user');
+			assert.ok(result.users.some(u => u.uid === id), 'accented webfinger handle should resolve to the remote user');
+		});
+
+		it('should resolve a CJK (non-Latin) webfinger handle to the remote user', async () => {
+			const preferredUsername = '用户';
+			const { id } = helpers.mocks.person({ preferredUsername });
+			await activitypub.actors.assert([id]);
+
+			const hostname = new URL(id).hostname;
+			const webfinger = `${preferredUsername}@${hostname}`;
+			activitypub.helpers._webfingerCache.set(webfinger, {
+				actorUri: id,
+				subject: `acct:${webfinger}`,
+				username: preferredUsername,
+				hostname,
+			});
+
+			const result = await user.search({
+				query: webfinger,
+				searchBy: 'username',
+				uid: localUid,
+			});
+
+			assert.ok(result.users.length >= 1, 'should find the remote user');
+			assert.ok(result.users.some(u => u.uid === id), 'CJK webfinger handle should resolve to the remote user');
+		});
+	});
 });
