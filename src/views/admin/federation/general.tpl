@@ -27,6 +27,11 @@
 						<label class="form-check-label">{{tx("admin/settings/activitypub:allowSplitDomain")}}</label>
 						<p class="form-text">{{tx("admin/settings/activitypub:allowSplitDomain-help")}}</p>
 					</div>
+					<div class="form-check form-switch mb-3">
+						<input class="form-check-input" type="checkbox" data-field="activitypubIntegrityProofs">
+						<label class="form-check-label">{{tx("admin/settings/activitypub:integrityProofs")}}</label>
+						<p class="form-text">{{tx("admin/settings/activitypub:integrityProofs-help")}}</p>
+					</div>
 					<div class="mb-3">
 						<label class="form-label" for="activitypubParentTraversalDepth">{{tx("admin/settings/activitypub:parentTraversalDepth")}}</label>
 						<input type="number" id="activitypubParentTraversalDepth" name="activitypubParentTraversalDepth" data-field="activitypubParentTraversalDepth" title="{{tx("admin/settings/activitypub:parentTraversalDepth")}}" class="form-control" />
