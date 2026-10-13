@@ -210,6 +210,62 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 			});
 		});
 
+		describe('world privileges only (no category-level grant)', () => {
+			// Regression test: a Note addressed (to/cc/audience) to a local category
+			// must not be asserted when the fediverse pseudo-group lacks topics:create
+			// in that specific category, even if it retains the world (-1) grant.
+			let cid;
+
+			before(async () => {
+				({ cid } = await categories.create({ name: utils.generateUUID() }));
+				// categories.create() grants fediverse the default category privileges;
+				// rescind them so only the world (-1) grant remains.
+				const privsToRemove = await privileges.categories.getGroupPrivilegeList();
+				await privileges.categories.rescind(privsToRemove, [cid], ['fediverse']);
+			});
+
+			after(async () => {
+				// Restore the default category-level grant (matches categories/create.js)
+				await privileges.categories.give([
+					'groups:find',
+					'groups:read',
+					'groups:topics:read',
+					'groups:topics:create',
+					'groups:topics:reply',
+					'groups:topics:crosspost',
+					'groups:topics:tag',
+					'groups:posts:edit',
+					'groups:posts:history',
+					'groups:posts:delete',
+					'groups:posts:upvote',
+					'groups:posts:downvote',
+					'groups:topics:delete',
+				], cid, ['fediverse']);
+			});
+
+			it('should not assert a Note addressed to the category via cc', async () => {
+				const { note } = helpers.mocks.note({
+					cc: [`${nconf.get('url')}/category/${cid}`],
+				});
+				const { activity } = helpers.mocks.create(note);
+				await activitypub.inbox.create({ body: activity });
+
+				const exists = await posts.exists(note.id);
+				assert.strictEqual(exists, false);
+			});
+
+			it('should not assert a Note addressed to the category via audience', async () => {
+				const { note } = helpers.mocks.note({
+					audience: `${nconf.get('url')}/category/${cid}`,
+				});
+				const { activity } = helpers.mocks.create(note);
+				await activitypub.inbox.create({ body: activity });
+
+				const exists = await posts.exists(note.id);
+				assert.strictEqual(exists, false);
+			});
+		});
+
 		describe('regular privilege set', () => {
 			let cid;
 			let handle;
@@ -474,6 +530,35 @@ describe('Privilege masking', () => {
 
 			assert(set);
 			assert(!set['topics:create']);
+		});
+	});
+
+	describe('Topics.post into a postingRestrictedToMods remote category', () => {
+		// Regression test for the mask-key fix: Topics.post must check the mask at
+		// cid:${remoteCid}:privilegeMask (not cid:-1:privilegeMask) when a remote
+		// user posts into a restricted remote category. Passing -1 for remote cids
+		// (isRemoteCid ? -1 : cid) bypasses the restriction; passing the remote cid
+		// directly is safe because helpers.isAllowedTo() maps non-numeric cids to
+		// the world (-1) privileges for the lookup while keeping the original cid
+		// for the mask key.
+		let cid;
+
+		before(async () => {
+			({ id: cid } = helpers.mocks.group({
+				postingRestrictedToMods: true,
+			}));
+			await activitypub.actors.assertGroup([cid]);
+		});
+
+		it('should not assert a note from a remote user into the restricted category', async () => {
+			const { id, note } = helpers.mocks.note({
+				cc: [cid],
+			});
+			const assertion = await activitypub.notes.assert(0, id, { cid });
+
+			assert.strictEqual(assertion, null);
+			const exists = await posts.exists(note.id);
+			assert.strictEqual(exists, false);
 		});
 	});
 });
