@@ -104,7 +104,7 @@ module.exports = function (Topics) {
 		const [categoryExists, [canCreate, canTag], isAdmin] = await Promise.all([
 			isRemoteCid ? true : categories.exists(cid),
 			privileges.categories.can(
-				['topics:create', 'topics:tag'], remoteUid ? -1 : cid, remoteUid ? -2 : uid
+				['topics:create', 'topics:tag'], cid, remoteUid ? -2 : uid
 			),
 			privileges.users.isAdministrator(uid),
 		]);
