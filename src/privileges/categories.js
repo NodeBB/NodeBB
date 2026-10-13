@@ -150,7 +150,7 @@ privsCategories.isAdminOrMod = async function (cid, uid) {
 	}
 	const [isAdmin, isMod] = await Promise.all([
 		user.isAdministrator(uid),
-		user.isModerator(uid, cid),
+		user.isModerator(uid, String(cid)),
 	]);
 	return isAdmin || isMod;
 };

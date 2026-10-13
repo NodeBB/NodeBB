@@ -207,6 +207,7 @@ async function setupMockDefaults() {
 	meta.config.autoDetectLang = 0;
 	meta.config.activitypubProbeTimeout = 30000;
 	meta.config.postQueue = 0;
+	meta.config.ipLoginAttempts = 1000000;
 
 	require('../../src/cache/tracker').resetAll();
 	require('../../src/middleware/uploads').clearCache(); // lazily created; explicit clear still req'd.

@@ -11,7 +11,27 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = async function (uid, ip) {
-		// Use a fixed dummy key for non-existent users to prevent username enumeration (CWE-203)
+		const onHourMs = 60 * 60 * 1000;
+		const ipLocked = await db.exists(`lockout:ip:${ip}`);
+		if (ipLocked) {
+			throw new Error('[[error:ip-locked]]');
+		}
+		const ipAttempts = await db.increment(`loginAttempts:ip:${ip}`);
+		if (ipAttempts <= meta.config.ipLoginAttempts) {
+			await db.pexpire(`loginAttempts:ip:${ip}`, onHourMs);
+		} else {
+			// Lock the IP
+			await db.set(`lockout:ip:${ip}`, '');
+			await db.pexpire(`lockout:ip:${ip}`, onHourMs);
+			await db.delete(`loginAttempts:ip:${ip}`);
+			await events.log({
+				type: 'ip-locked',
+				ip: ip,
+			});
+			throw new Error('[[error:ip-locked]]');
+		}
+
+		// Use a fixed dummy key for non‑existent users to prevent username enumeration (CWE-203)
 		const targetKey = parseInt(uid, 10) > 0 ? uid : 'dummy';
 
 		const exists = await db.exists(`lockout:${targetKey}`);
