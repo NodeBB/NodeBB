@@ -1,0 +1,27 @@
+src/controllers/activitypub/emoji.js
+  s_ffa987876451b6::t_38198e08ace1fc 9,59
+  s_ffa987876451b6::t_a30e0b7eec4557 58
+  s_ffa987876451b6::t_7f5a0bf667b115 60
+src/middleware/uploads.js
+  s_ffa987876451b6::t_0f28aba3cfd725 74,78-80,86-92
+  s_ffa987876451b6::t_8894f17e836f1a 93
+test/uploads.js
+  s_ffa987876451b6::t_e84e1136512793 20,802-834
+  s_ffa987876451b6::t_dd685f00f2dbfd 835-836
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "be02fad0936079c51d9bd37e1e10b3f921b1c928",
+  "prompts": {},
+  "sessions": {
+    "s_ffa987876451b6": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1358b-4c8a-720e-a643-eb8dea2120de",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
