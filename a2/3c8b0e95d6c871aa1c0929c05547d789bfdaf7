@@ -1,0 +1,21 @@
+test/activitypub/signatures.js
+  s_e7ced21162d4ea::t_82678092ebbdf5 354,387
+src/activitypub/signatures.js
+  s_e7ced21162d4ea::t_3c4fe8bfe03f61 170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a23c8b0e95d6c871aa1c0929c05547d789bfdaf7",
+  "prompts": {},
+  "sessions": {
+    "s_e7ced21162d4ea": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a135e5-4f63-72c5-a201-3ca41c8644df",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
