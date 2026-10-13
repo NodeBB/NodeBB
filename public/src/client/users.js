@@ -7,6 +7,7 @@ define('forum/users', [
 	const Users = {};
 
 	let searchResultCount = 0;
+	let searchRequestId = 0;
 
 	Users.init = function () {
 		app.enterRoom('user_list');
@@ -95,7 +96,7 @@ define('forum/users', [
 			sortBy = 'postcount';
 		} else if (activeSection === 'sort-reputation') {
 			sortBy = 'reputation';
-		} else if (activeSection === 'users') {
+		} else if (activeSection === 'users' || !activeSection) {
 			sortBy = 'joindate';
 		}
 		return sortBy;
@@ -103,8 +104,13 @@ define('forum/users', [
 
 
 	function loadPage(query) {
+		const requestId = ++searchRequestId;
 		api.get('/api/users', query)
-			.then(renderSearchResults)
+			.then((data) => {
+				if (requestId === searchRequestId) {
+					renderSearchResults(data);
+				}
+			})
 			.catch(alerts.error);
 
 		// Update query string
