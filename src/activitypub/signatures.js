@@ -167,7 +167,7 @@ function getDraftAlgoString(key) {
 		return 'rsa-sha256';
 	}
 	if (name === 'ECDSA' || name === 'EC') {
-		return 'ecdsa-p256-sha256';
+		return 'ecdsa-sha256';
 	}
 	if (name === 'Ed25519' || name === 'Ed448') {
 		return 'ed25519-sha512';

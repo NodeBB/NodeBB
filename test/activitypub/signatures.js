@@ -351,7 +351,7 @@ describe('http signature signing and verification', () => {
 			const headers = await activitypub.signatures.sign({ key: privPem, keyId }, endpoint, 'GET');
 
 			// The header must advertise an EC algorithm, not rsa-sha256
-			assert(headers.signature.includes('algorithm="ecdsa-p256-sha256"'),
+			assert(headers.signature.includes('algorithm="ecdsa-sha256"'),
 				`unexpected draft algorithm string: ${headers.signature}`);
 
 			const req = {
@@ -384,7 +384,7 @@ describe('http signature signing and verification', () => {
 			const date = new Date().toUTCString();
 			const reqHeaders = { date, host: nconf.get('url_parsed').host };
 			const includeHeaders = ['(request-target)', 'host', 'date'];
-			const ALGO = 'ecdsa-p256-sha256';
+			const ALGO = 'ecdsa-sha256';
 
 			// The attacker signs with THEIR key; the signing string uses the attacker keyId.
 			const signingString = genDraftSigningString(
