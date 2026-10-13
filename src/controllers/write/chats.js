@@ -33,7 +33,8 @@ Chats.search = async (req, res) => {
 		return Chats.list(req, res);
 	}
 
-	const rooms = await messaging.searchRecentChats(req.uid, req.uid, query);
+	const uid = isFinite(req.query.uid) && parseInt(req.query.uid, 10);
+	const rooms = await messaging.searchRecentChats(req.uid, uid || req.uid, query);
 	helpers.formatApiResponse(200, res, rooms);
 };
 
