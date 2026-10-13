@@ -264,6 +264,20 @@ describe('Privilege logic for remote users/content (ActivityPub)', () => {
 				const exists = await posts.exists(note.id);
 				assert.strictEqual(exists, false);
 			});
+
+			it('should not assert a Note addressed to the category via to', async () => {
+				const { note } = helpers.mocks.note({
+					to: [
+						'https://www.w3.org/ns/activitystreams#Public',
+						`${nconf.get('url')}/category/${cid}`,
+					],
+				});
+				const { activity } = helpers.mocks.create(note);
+				await activitypub.inbox.create({ body: activity });
+
+				const exists = await posts.exists(note.id);
+				assert.strictEqual(exists, false);
+			});
 		});
 
 		describe('regular privilege set', () => {
