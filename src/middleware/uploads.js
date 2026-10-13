@@ -71,19 +71,25 @@ exports.addUploadHeaders = helpers.try(function addUploadHeaders(req, res, next)
 	const requestedPath = normalizeUploadRequestPath(req.path);
 	if (requestedPath.startsWith('/uploads/')) {
 		let basename = path.basename(requestedPath);
-		const extname = path.extname(requestedPath).trim().toLowerCase();
-		// Trim uploaded files' timestamps when downloading + force download if unsafe
+		// Trim uploaded files' timestamps when downloading
 		if (timestampedUploadRegex.test(basename)) {
 			basename = basename.slice(14);
 		}
-		res.setHeader('X-Content-Type-Options', 'nosniff');
-		if (unsafeExtensions.has(extname)) {
-			res.attachment(basename);
-		}
+
+		// Force download if unsafe
+		exports.setSafeFileHeaders(res, basename);
 	}
 
 	next();
 });
+
+exports.setSafeFileHeaders = function (res, basename) {
+	const extname = path.extname(basename).trim().toLowerCase();
+	res.setHeader('X-Content-Type-Options', 'nosniff');
+	if (unsafeExtensions.has(extname)) {
+		res.attachment(basename);
+	}
+};
 
 function normalizeUploadRequestPath(requestPath) {
 	let decodedPath;

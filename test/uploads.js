@@ -17,6 +17,7 @@ const socketUser = require('../src/socket.io/user');
 const helpers = require('./helpers');
 const file = require('../src/file');
 const image = require('../src/image');
+const uploads = require('../src/middleware/uploads');
 const request = require('../src/request');
 
 const emptyUploadsFolder = async () => {
@@ -796,6 +797,41 @@ describe('Upload Controllers', () => {
 		});
 
 		after(emptyUploadsFolder);
+	});
+
+	describe('middleware.setSafeFileHeaders()', () => {
+		function mockRes() {
+			const headers = {};
+			return {
+				headers,
+				setHeader(name, value) {
+					headers[name.toLowerCase()] = value;
+					return this;
+				},
+				attachment(filename) {
+					this.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+					return this;
+				},
+			};
+		}
+
+		it('should always set X-Content-Type-Options: nosniff', () => {
+			const res = mockRes();
+			uploads.setSafeFileHeaders(res, 'test.png');
+			assert.strictEqual(res.headers['x-content-type-options'], 'nosniff');
+		});
+
+		it('should force a download for unsafe extensions (SVG)', () => {
+			const res = mockRes();
+			uploads.setSafeFileHeaders(res, 'pwn.svg');
+			assert.strictEqual(res.headers['content-disposition'], 'attachment; filename="pwn.svg"');
+		});
+
+		it('should not force a download for safe image extensions', () => {
+			const res = mockRes();
+			uploads.setSafeFileHeaders(res, 'test.png');
+			assert.strictEqual(res.headers['content-disposition'], undefined);
+		});
 	});
 
 	describe('library methods', () => {
