@@ -1,0 +1,21 @@
+test/activitypub/privileges.js
+  s_825a747ac6186e::t_1dca613fa672ec 267-274
+  s_825a747ac6186e::t_18b717c180cd02 264-266
+  s_825a747ac6186e::t_639a5e26275e50 261-263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bfcaf2bc17f13af45dbbf57586450bc09ea143a4",
+  "prompts": {},
+  "sessions": {
+    "s_825a747ac6186e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a13311-c104-720e-a643-eb89de1a9fe4",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
