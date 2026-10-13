@@ -265,7 +265,7 @@ module.exports = function (Topics) {
 			Topics.syncBacklinks({ ...postData, content }),
 			Topics.markAsRead([tid], uid),
 		]);
-		if (utils.isNumber(postOwner) && postData.category.cid === -1) {
+		if (utils.isNumber(postOwner) && postData.category?.cid === -1) {
 			activitypub.notes.syncUserInboxes(tid, uid);
 		}
 
