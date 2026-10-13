@@ -1,0 +1,30 @@
+test/activitypub/inbox.js
+  s_fcb97b820a5fee::t_32f29b4973011a 1522-1524,1527-1530,1583,1595-1596
+  s_fcb97b820a5fee::t_4a95ea6be51007 1454-1458
+  s_fcb97b820a5fee::t_4a550fa425a005 1531
+  s_fcb97b820a5fee::t_f6f087b40e18d4 1420-1453,1459-1499
+src/activitypub/relays.js
+  s_fcb97b820a5fee::t_12b3369ca5e432 11-12,137-138,157-158
+  s_fcb97b820a5fee::t_c72203a3580327 127-128,130-134
+  s_fcb97b820a5fee::t_749dafe69481fd 129
+  s_fcb97b820a5fee::t_df364856283a7b 136
+  s_fcb97b820a5fee::t_028c14c3a4ed0b 156
+test/activitypub/relays.js
+  s_fcb97b820a5fee::t_888bd64b81321a 24-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7334616ec2bf5230b7b90ead578b9c269cfa5955",
+  "prompts": {},
+  "sessions": {
+    "s_fcb97b820a5fee": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a13367-fdcd-720e-a643-eb8b781d1b41",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
