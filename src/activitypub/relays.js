@@ -8,7 +8,8 @@ const activitypub = module.parent.exports;
 const Relays = module.exports;
 
 Relays.is = async (actor) => {
-	return db.isSortedSetMember('relays:createtime', actor);
+	const score = await db.sortedSetScore('relays:state', actor);
+	return typeof score === 'number' && score >= 1;
 };
 
 Relays.list = async () => {
@@ -123,12 +124,18 @@ Relays.handshake = async (body) => {
 	if (type === 'Follow') {
 		// Check if NodeBB is the target of the follow (unsolicited relay subscription)
 		if (target === `${nconf.get('url')}/actor`) {
-			await db.sortedSetAdd('relays:state', -1, actor);
-			await db.sortedSetAdd('relays:createtime', now.getTime(), actor);
+			const score = await db.sortedSetScore('relays:state', actor);
+			if (score === null) {
+				// New follower
+				await db.sortedSetAdd('relays:state', -1, actor);
+				await db.sortedSetAdd('relays:createtime', now.getTime(), actor);
+			}
+			// Already a solicited relay: the follow-back completes the mutual
+			// relationship without altering the existing state.
 		} else {
-			// Confirm relay was added (NodeBB is the follower)
-			const exists = await db.isSortedSetMember('relays:createtime', actor);
-			if (!exists) {
+			// Only a pending, solicited relay (state 0) may be confirmed
+			const score = await db.sortedSetScore('relays:state', actor);
+			if (score !== 0) {
 				throw new Error('[[error:api.400]]');
 			}
 			await db.sortedSetIncrBy('relays:state', 1, actor);
@@ -146,9 +153,9 @@ Relays.handshake = async (body) => {
 			object: body,
 		});
 	} else if (type === 'Accept') {
-		const isSolicited = await db.isSortedSetMember('relays:createtime', actor);
-		if (!isSolicited) {
-			// Unsolicited Accept — should not happen, but handle gracefully
+		// Only a pending, solicited relay (state 0) may be accepted
+		const score = await db.sortedSetScore('relays:state', actor);
+		if (score !== 0) {
 			return;
 		}
 		await db.sortedSetIncrBy('relays:state', 1, actor);
