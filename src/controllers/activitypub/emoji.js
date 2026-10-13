@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 
 const emoji = require('../../activitypub/emoji');
+const uploads = require('../../middleware/uploads');
 
 const Controller = module.exports;
 
@@ -53,6 +54,9 @@ Controller.serve = async (req, res) => {
 		res.setHeader('Content-Type', mediaType);
 		res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
 		res.setHeader('Expires', new Date(Date.now() + 31536000000).toUTCString());
+
+		// SVG protections, etc.
+		uploads.setSafeFileHeaders(res, path.basename(filePath));
 
 		// Stream the file
 		const { createReadStream } = require('fs');
