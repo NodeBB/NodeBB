@@ -1,0 +1,23 @@
+src/topics/create.js
+  s_825a747ac6186e::t_811b59cb873802 107
+test/activitypub/privileges.js
+  s_825a747ac6186e::t_4550e3cd7c811c 213-246,248,251-257,259,262-268
+  s_825a747ac6186e::t_97b95bbe01a84f 247,249-250,258,260-261
+  s_825a747ac6186e::t_a808e71f7b9db1 535-563
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b9a7430fec5d725b9b121ca32be19ed04ee8eaea",
+  "prompts": {},
+  "sessions": {
+    "s_825a747ac6186e": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a13311-c104-720e-a643-eb89de1a9fe4",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
