@@ -1288,6 +1288,86 @@ describe('Inbox', () => {
 				assert.strictEqual(score, -1);
 			});
 
+			it('should not report an unsolicited follower as a relay', async () => {
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+
+				await activitypub.inbox.follow({ body: activity });
+
+				// State -1 ("Follower") must not confer relay trust
+				assert.strictEqual(await activitypub.relays.is(relayActor), false);
+
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
+			});
+
+			it('should not create a post from an Announce(Create(Note)) by an unsolicited follower', async () => {
+				// Attacker writes itself into the relay list with a signed Follow of the instance actor
+				const { activity: followActivity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+				await activitypub.inbox.follow({ body: followActivity });
+
+				// Announce a Create(Note) with no category in to/cc, no local follower, no local mention
+				const { note } = helpers.mocks.note({
+					attributedTo: relayActor,
+					cc: [`${relayActor}/followers`],
+				});
+				const { activity: createActivity } = helpers.mocks.create({ actor: relayActor, object: note });
+				const { activity: announceActivity } = helpers.mocks.announce({
+					actor: relayActor,
+					object: createActivity,
+				});
+
+				// Must be dropped as orphan content, not written to the database
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				const exists = await posts.exists(note.id);
+				assert.strictEqual(exists, false, 'Announce from an unsolicited follower must not create a post');
+
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
+			});
+
+			it('should not escalate an unsolicited follower\'s state via a crafted Accept', async () => {
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const body = {
+					type: 'Accept',
+					actor: relayActor,
+					object: {
+						id: `${nconf.get('url')}/actor`,
+						type: 'Follow',
+						object: { id: `${nconf.get('url')}/actor` },
+					},
+				};
+
+				await activitypub.inbox.accept({ body });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, -1);
+				assert.strictEqual(await activitypub.relays.is(relayActor), false);
+			});
+
+			it('should not demote a solicited relay\'s state when it follows back', async () => {
+				// NodeBB followed the relay first (pending, state 0)
+				await db.sortedSetAdd('relays:state', 0, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+				await activitypub.inbox.follow({ body: activity });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, 0);
+			});
+
 			it('should remove a follower when a Follow activity is undone', async () => {
 				await db.sortedSetAdd('relays:state', -1, relayActor);
 				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
@@ -1310,8 +1390,15 @@ describe('Inbox', () => {
 			});
 
 			it('should broadcast a public activity received via announce to relay followers', async () => {
-				await db.sortedSetAdd('relays:state', -1, relayActor);
+				// The announcing actor must be a trusted relay (state >= 1) for an unaddressed
+				// Announce(Create) to be processed; unsolicited followers no longer confer relay trust.
+				await db.sortedSetAdd('relays:state', 1, relayActor);
 				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				// A separate unsolicited follower is the outbound broadcast target
+				const followerActor = 'https://follower.example.com/actor';
+				await db.sortedSetAdd('relays:state', -1, followerActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), followerActor);
 
 				const { note, id } = helpers.mocks.note();
 				const { activity: createActivity } = helpers.mocks.create(note);
@@ -1364,7 +1451,7 @@ describe('Inbox', () => {
 				// We expect a broadcast to relay followers
 				// Feps.announce will call activitypub.send
 				assert(sentTo.length > 0);
-				const broadcast = sentTo.find(s => s.targets.includes(relayActor));
+				const broadcast = sentTo.find(s => s.targets.includes(followerActor));
 				assert(broadcast, 'Should have broadcast to relay follower');
 
 				activitypub.send = originalSend;
@@ -1376,6 +1463,8 @@ describe('Inbox', () => {
 				activitypub.relays.list = originalRelaysList;
 				await db.sortedSetRemove('relays:state', relayActor);
 				await db.sortedSetRemove('relays:createtime', relayActor);
+				await db.sortedSetRemove('relays:state', followerActor);
+				await db.sortedSetRemove('relays:createtime', followerActor);
 			});
 		});
 	});

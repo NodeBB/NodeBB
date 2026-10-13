@@ -21,6 +21,28 @@ describe('ActivityPub Relays', () => {
 		assert.strictEqual(score, -1);
 	});
 
+	it('should only report relays with a completed solicited handshake (state >= 1) as relays', async () => {
+		// Unknown actor
+		assert.strictEqual(await activitypub.relays.is(actor), false);
+
+		// Unsolicited follower (wrote itself in with a signed Follow of the instance actor)
+		await db.sortedSetAdd('relays:state', -1, actor);
+		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
+		assert.strictEqual(await activitypub.relays.is(actor), false);
+
+		// Pending solicited relay (handshake not yet completed)
+		await db.sortedSetAdd('relays:state', 0, actor);
+		assert.strictEqual(await activitypub.relays.is(actor), false);
+
+		// Confirmed relay ("Receiving only")
+		await db.sortedSetAdd('relays:state', 1, actor);
+		assert.strictEqual(await activitypub.relays.is(actor), true);
+
+		// Active relay
+		await db.sortedSetAdd('relays:state', 2, actor);
+		assert.strictEqual(await activitypub.relays.is(actor), true);
+	});
+
 	it('should remove a relay follower', async () => {
 		await db.sortedSetAdd('relays:state', -1, actor);
 		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
