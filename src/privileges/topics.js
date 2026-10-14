@@ -225,7 +225,7 @@ privsTopics.isAdminOrMod = async function (tid, uid) {
 		return false;
 	}
 	const cid = await topics.getTopicField(tid, 'cid');
-	return await privsCategories.isAdminOrMod(cid, uid);
+	return await privsCategories.isAdminOrMod(String(cid), uid);
 };
 
 privsTopics.canViewDeletedScheduled = function (topic, privileges = {}, viewDeleted = false, viewScheduled = false) {

@@ -304,12 +304,8 @@ function continueLogin(strategy, req, res, next) {
 			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
 		} else {
 			delete req.query.lang;
-			// Capture whether this is a forced re-login before clearing forceLogin.
-			// We clear forceLogin BEFORE doLogin so that passport's session
-			// regenerate + merge doesn't carry the stale flag into the new session.
-			const wasForceLogin = !!req.session.forceLogin;
-			delete req.session.forceLogin;
-			await authenticationController.doLogin(req, userData.uid, wasForceLogin);
+
+			await authenticationController.doLogin(req, userData.uid);
 			let destination;
 			if (req.session.returnTo) {
 				destination = req.session.returnTo.startsWith('http') ?
@@ -337,10 +333,15 @@ function redirectAfterLogin(req, res, destination) {
 	}
 }
 
-authenticationController.doLogin = async function (req, uid, wasForceLogin) {
+authenticationController.doLogin = async function (req, uid) {
 	if (!uid) {
 		return;
 	}
+	// Capture whether this is a forced re-login before clearing forceLogin.
+	// We clear forceLogin BEFORE doLogin so that passport's session
+	// regenerate + merge doesn't carry the stale flag into the new session.
+	const wasForceLogin = !!req.session.forceLogin;
+	delete req.session.forceLogin;
 	const isSelf = parseInt(req.uid, 10) === parseInt(uid, 10);
 	const loginAsync = util.promisify(req.login).bind(req);
 	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && (!req.loggedIn || isSelf);

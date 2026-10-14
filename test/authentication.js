@@ -839,6 +839,50 @@ describe('authentication', () => {
 		assert(locked);
 	});
 
+	it('should lockout IP after 5 failed login attempts', async () => {
+		const ip = '1.2.3.4';
+		const jar = request.jar();
+		const oldIpLoginAttempts = meta.config.ipLoginAttempts;
+		meta.config.ipLoginAttempts = 5;
+		const oldLoginAttempts = meta.config.loginAttempts;
+		meta.config.loginAttempts = 1000;
+		const csrf_token = await helpers.getCsrfToken(jar);
+		const payload = { username: 'nonexistent', password: 'wrongpassword' };
+		const headers = {
+			'x-forwarded-for': ip,
+			'x-csrf-token': csrf_token,
+		};
+
+		// 5 attempts should not lock out yet
+		for (let i = 0; i < 5; i++) {
+			// eslint-disable-next-line no-await-in-loop
+			const { response, body } = await request.post(`${nconf.get('url')}/login`, {
+				jar,
+				body: payload,
+				headers,
+			});
+			assert.strictEqual(response.statusCode, 403);
+			assert.strictEqual(body, '[[error:invalid-login-credentials]]');
+		}
+
+		// 6th attempt should lock out
+		const { response: res21, body: body21 } = await request.post(`${nconf.get('url')}/login`, {
+			jar,
+			body: payload,
+			headers,
+		});
+		assert.strictEqual(res21.statusCode, 403);
+		assert.strictEqual(body21, '[[error:ip-locked]]');
+
+		// verify lockout key exists
+		const locked = await db.exists(`lockout:ip:${ip}`);
+		assert(locked);
+
+		meta.config.loginAttempts = oldLoginAttempts;
+		meta.config.ipLoginAttempts = oldIpLoginAttempts;
+	});
+
+
 	it('should clear all reset tokens upon successful login', async () => {
 		const code = await user.reset.generate(regularUid);
 		await helpers.loginUser('regular', 'regularpwd');

@@ -22,9 +22,17 @@ const sleep = util.promisify(setTimeout);
 describe('Notifications', () => {
 	let uid;
 	let notification;
+	let pid;
 
 	before(async () => {
 		uid = await user.create({ username: 'poster' });
+		const { cid } = await categories.create({ name: 'Notification Category' });
+		({ postData: { pid } } = await topics.post({
+			uid: uid,
+			cid: cid,
+			title: 'Notification Topic Title',
+			content: 'The content of notification topic',
+		}));
 	});
 
 	it('should fail to create notification without a nid', (done) => {
@@ -39,7 +47,7 @@ describe('Notifications', () => {
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
-			pid: 1,
+			pid: pid,
 		});
 
 		assert(notification);
@@ -83,7 +91,7 @@ describe('Notifications', () => {
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
-			pid: 1,
+			pid: pid,
 			importance: 1,
 		});
 		assert.strictEqual(notification, null);
@@ -294,6 +302,28 @@ describe('Notifications', () => {
 	it('should return 0 for falsy uid', async () => {
 		const count = await user.notifications.getUnreadCount(0);
 		assert.equal(count, 0);
+	});
+
+	it('should not count unread notifications that are not shown in the list', async () => {
+		const ownerUid = await user.create({ username: 'countowner' });
+		const { cid } = await categories.create({ name: 'Count Category' });
+		const { postData } = await topics.post({
+			uid: uid,
+			cid: cid,
+			title: 'Count Topic Title',
+			content: 'The content of count topic',
+		});
+		const visible = await notifications.create({ bodyShort: 'visible', nid: 'count:visible' });
+		const purged = await notifications.create({ bodyShort: 'purged', nid: 'count:purged', pid: postData.pid });
+		await notifications.push(visible, [ownerUid]);
+		await notifications.push(purged, [ownerUid]);
+		await sleep(2000);
+		assert.strictEqual(await user.notifications.getUnreadCount(ownerUid), 2);
+
+		await topics.purgePostsAndTopic(postData.tid, uid);
+		const { unread } = await user.notifications.get(ownerUid);
+		assert.strictEqual(unread.length, 1);
+		assert.strictEqual(await user.notifications.getUnreadCount(ownerUid), 1);
 	});
 
 	it('should not do anything if uid is falsy', async () => {

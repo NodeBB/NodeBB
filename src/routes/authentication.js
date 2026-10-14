@@ -147,9 +147,11 @@ Auth.reloadRoutes = async function (params) {
 				next();
 			})(req, res, next);
 		}, Auth.middleware.validateAuth, (req, res, next) => {
+			const wasForceLogin = !!req.session.forceLogin;
+			delete req.session.forceLogin;
 			async.waterfall([
 				async.apply(req.login.bind(req), res.locals.user, { keepSessionInfo: true }),
-				async.apply(controllers.authentication.onSuccessfulLogin, req, res.locals.user.uid),
+				async.apply(controllers.authentication.onSuccessfulLogin, req, res.locals.user.uid, true, wasForceLogin),
 			], (err) => {
 				if (err) {
 					return next(err);

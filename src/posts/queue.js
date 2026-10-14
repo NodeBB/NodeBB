@@ -483,22 +483,22 @@ module.exports = function (Posts) {
 		}
 
 		if (editData.content !== undefined) {
-			data.data.content = editData.content;
+			data.data.content = String(editData.content);
 		}
 		if (editData.title !== undefined) {
-			data.data.title = editData.title;
+			data.data.title = String(editData.title);
 		}
 		if (editData.cid !== undefined) {
-			data.data.cid = editData.cid;
+			data.data.cid = String(editData.cid);
 		}
-		if (editData.tags !== undefined) {
-			data.data.tags = editData.tags;
+		if (Array.isArray(editData.tags)) {
+			data.data.tags = editData.tags.map(String);
 		}
-		if (editData.thumbs !== undefined) {
-			data.data.thumbs = editData.thumbs;
+		if (Array.isArray(editData.thumbs)) {
+			data.data.thumbs = editData.thumbs.map(String);
 		}
 		if (editData.crosspostCid !== undefined) {
-			data.data.crosspostCid = editData.crosspostCid;
+			data.data.crosspostCid = String(editData.crosspostCid);
 		}
 		await db.setObjectField(`post:queue:${editData.id}`, 'data', JSON.stringify(data.data));
 		cache.del('post-queue');
@@ -526,10 +526,10 @@ module.exports = function (Posts) {
 		} else if (data.type === 'reply') {
 			cid = await topics.getTopicField(data.data.tid, 'cid');
 		}
-		const isModerator = await user.isModerator(uid, cid);
+		const isModerator = await user.isModerator(uid, String(cid));
 		let isModeratorOfTargetCid = true;
 		if (editData.cid) {
-			isModeratorOfTargetCid = await user.isModerator(uid, editData.cid);
+			isModeratorOfTargetCid = await user.isModerator(uid, String(editData.cid));
 		}
 		return isModerator && isModeratorOfTargetCid;
 	};

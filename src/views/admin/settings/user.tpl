@@ -71,6 +71,13 @@
 					</p>
 				</div>
 				<div class="mb-3">
+					<label class="form-label" for="ipLoginAttempts">{{tx("admin/settings/user:ip-login-attempts")}}</label>
+					<input id="ipLoginAttempts" type="text" class="form-control" data-field="ipLoginAttempts" placeholder="5" />
+					<p class="form-text">
+						{{tx("admin/settings/user:ip-login-attempts-help")}}
+					</p>
+				</div>
+				<div class="mb-3">
 					<label class="form-label" for="lockoutDuration">{{tx("admin/settings/user:lockout-duration")}}</label>
 					<input id="lockoutDuration" type="text" class="form-control" data-field="lockoutDuration" placeholder="60" />
 				</div>

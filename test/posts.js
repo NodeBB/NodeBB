@@ -1140,6 +1140,22 @@ describe('Post\'s', () => {
 			await apiPosts.editQueuedPost({ uid: globalModUid }, { id: topicQueueId, cid: cid });
 		});
 
+
+		it('should fail to approve self post', async () => {
+			const { id, queued} = await apiTopics.create({ uid: uid }, { title: 'should be queued', content: 'queued topic content', cid });
+			assert.strictEqual(queued, true);
+
+			await assert.rejects(
+				apiPosts.acceptQueuedPost({ uid: uid }, { id: id }),
+				{ message: '[[error:no-post]]' },
+			);
+			await apiPosts.editQueuedPost({ uid: uid }, { id: id, cid: [2] });
+			await assert.rejects(
+				apiPosts.acceptQueuedPost({ uid: uid }, { id: id }),
+				{ message: '[[error:no-post]]' },
+			);
+		});
+
 		it('should prevent regular users from approving posts', async () => {
 			// Restricted and missing queue entries respond identically (no existence oracle)
 			await assert.rejects(

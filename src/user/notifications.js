@@ -184,7 +184,12 @@ UserNotifications.getUnreadCount = async function (uid) {
 	let nids = await db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 99);
 	nids = await notifications.filterExists(nids);
 	const keys = nids.map(nid => `notifications:${nid}`);
-	const notifData = await db.getObjectsFields(keys, ['mergeId']);
+	let notifData = await db.getObjectsFields(keys, ['nid', 'mergeId', 'pid']);
+	notifData = notifData.filter(n => n && n.nid);
+
+	const pids = _.uniq(notifData.filter(n => n.pid).map(n => String(n.pid)));
+	const visiblePids = new Set(await privileges.posts.filter('topics:read', pids, uid));
+	notifData = notifData.filter(n => !n.pid || visiblePids.has(String(n.pid)));
 	const mergeIds = notifData.map(n => n.mergeId);
 
 	// Collapse any notifications with identical mergeIds

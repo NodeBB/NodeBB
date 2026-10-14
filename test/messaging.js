@@ -12,6 +12,7 @@ const meta = require('../src/meta');
 const User = require('../src/user');
 const Groups = require('../src/groups');
 const Messaging = require('../src/messaging');
+const plugins = require('../src/plugins');
 const api = require('../src/api');
 const helpers = require('./helpers');
 const request = require('../src/request');
@@ -1023,6 +1024,34 @@ describe('Messaging Library', () => {
 			assert.equal(response.statusCode, 200);
 			assert.equal(response.headers['x-redirect'], encodeURIComponent('/user/herp/chats'));
 			assert.equal(body, '/user/herp/chats');
+		});
+
+		it('should search the chats of the uid passed in', async () => {
+			const method = async (data) => {
+				data.canGet = true;
+				return data;
+			};
+			plugins.hooks.register('test', { hook: 'filter:messaging.canGetRecentChats', method });
+			try {
+				const query = 'ba';
+				const [ownRooms, fooRooms] = await Promise.all([
+					Messaging.searchRecentChats(mocks.users.herp.uid, mocks.users.herp.uid, query),
+					Messaging.searchRecentChats(mocks.users.foo.uid, mocks.users.foo.uid, query),
+				]);
+				const { body } = await request.get(`${nconf.get('url')}/api/v3/chats/search?query=${query}&uid=${mocks.users.foo.uid}`, { jar });
+
+				const roomIds = body.response.rooms.map(room => room.roomId);
+				assert.deepStrictEqual(roomIds, fooRooms.rooms.map(room => room.roomId));
+				assert.notDeepStrictEqual(roomIds, ownRooms.rooms.map(room => room.roomId));
+			} finally {
+				plugins.hooks.unregister('test', 'filter:messaging.canGetRecentChats', method);
+			}
+		});
+
+		it('should not search the chats of another user without privileges', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/v3/chats/search?query=ba&uid=${mocks.users.foo.uid}`, { jar });
+
+			assert.notStrictEqual(response.statusCode, 200);
 		});
 
 		it('should return 404 if user is not in room', async () => {
