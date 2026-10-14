@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "ایک مخصوص وقت کے بعد ایڈمنسٹریٹو سیکشن تک رسائی کے لیے دوبارہ لاگ ان کی ضرورت ہوگی۔ اسے غیر فعال کرنے کے لیے 0 سیٹ کریں۔",
 	"login-attempts": "ایک گھنٹے میں لاگ ان کی کوششوں کی تعداد",
 	"login-attempts-help": "اگر صارف کی لاگ ان کوششیں اس حد سے تجاوز کر جاتی ہیں، تو اکاؤنٹ ایک مخصوص وقت کے لیے مقفل ہو جائے گا۔",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "اکاؤنٹ کے مقفل ہونے کی مدت (منٹوں میں)",
 	"login-days": "صارف کے لاگ ان سیشن کو یاد رکھنے کے دنوں کی تعداد",
 	"password-expiry-days": "ایک مخصوص مدت کے دنوں میں پاس ورڈ کی تبدیلی کی ضرورت",

@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "管理画面へのアクセスから設定時間（分）が経過すると再ログインが必要になります。無効にするには0に設定します。",
 	"login-attempts": "1時間あたりのログイン試行回数",
 	"login-attempts-help": "ユーザーのアカウントへのログイン試行回数がこの値を超えた場合、そのアカウントはあらかじめ設定された時間だけロックされます。",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "アカウントロックアウト期間(分)",
 	"login-days": "ユーザーのログインセッションを覚える日数",
 	"password-expiry-days": "指定した日数後にパスワードを強制的にリセットする",

@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Após um determinado período de tempo, o acesso ao painel administrativo exigirá um novo login. Defina como 0 para desabilitar.",
 	"login-attempts": "Tentativas de login por hora",
 	"login-attempts-help": "Se as tentativas de login na conta de um usuário ultrapassar este limite, essa conta será bloqueada por um período de tempo pré-determinado.",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Duração do Bloqueio de Conta (em minutos)",
 	"login-days": "Dias para lembrar as sessões de login dos usuários",
 	"password-expiry-days": "Forçar a redefinição de senha após um determinado número de dias",

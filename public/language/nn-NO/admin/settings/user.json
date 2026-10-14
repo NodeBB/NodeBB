@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Angi kor lenge administratorar skal vere pålogga før dei må logge inn på nytt.",
 	"login-attempts": "Tal på innloggingsforsøk",
 	"login-attempts-help": "Angi talet på forsøk før kontoen vert låst.",
+	"ip-login-attempts": "Innloggingsforsøk per IP per time",
+	"ip-login-attempts-help": "Dersom talet på innloggingsforsøk frå éi IP-adresse overstig denne terskelen, blir IP-adressa mellombels låst",
 	"lockout-duration": "Varigheit for låsing",
 	"login-days": "Innloggingsdagar",
 	"password-expiry-days": "Utløpstid for passord (dagar)",

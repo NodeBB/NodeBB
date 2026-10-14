@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Після встановленої кількості часу для доступу до розділу адміністрування потрібно буде знову ввійти, встановити значення 0 для вимкнення",
 	"login-attempts": "Кількість спроб входу за годину",
 	"login-attempts-help": "Якщо кількість спроб входу в акаунт користувача перевищить цей ліміт, акаунт буде заблоковано на задану кількість часу",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Тривалість блокування акаунту (хвилин)",
 	"login-days": "Скільки днів пам'ятати сесію користувача",
 	"password-expiry-days": "Скидати пароль користувачам після заданої кількості днів",

@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "بعد مرور وقت معين، يتوجب إعادة تسجيل الدخول للوصول إلى قسم الإدارة، قم بتعيين القيمة الى 0 لتعطيل الخيار",
 	"login-attempts": "عدد محاولات تسجيل الدخول في الساعة",
 	"login-attempts-help": "إذا تجاوزت محاولات تسجيل الدخول لمستخدم معين العدد المحدد، فسوف يتم تأمين الحساب ومنعه من الدخول لمدة من الوقت",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "مدة تأمين الحساب (دقائق)",
 	"login-days": "عدد الأيام لتذكر جلسات تسجيل دخول المستخدم",
 	"password-expiry-days": "فرض عملية تغيير كلمة المرور بعد مرور عدد محدد من الأيام",

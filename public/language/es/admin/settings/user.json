@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Después de un determinado tiempo accediendo la sección de admin requiere volver a iniciar sesión, poner a 0 para desactivar",
 	"login-attempts": "Intentos de inicio de sesión por hora",
 	"login-attempts-help": "Si los intentos de acceso a la cuenta de un usuario superan este límite, esa cuenta será bloqueada durante un periodo de tiempo pre-configurado",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Duración del Bloqueo de una Cuenta (minutos)",
 	"login-days": "Días para recordar los sesiones de inicio de usuario",
 	"password-expiry-days": "Forzar reseteo de contraseña después de un número de días determinado",

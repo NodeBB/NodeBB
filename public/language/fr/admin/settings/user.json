@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Après un certain temps, l'accessibilité à la section d'administration nécessitera une reconnexion, fixer le nombre à 0 pour désactiver cet effet.",
 	"login-attempts": "Tentatives de connexions par heure",
 	"login-attempts-help": "Si le nombre de tentatives de connexion à un compte dépasse ce seuil, le compte sera bloqué pour une durée pré-configurée",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Durée du blocage (minutes)",
 	"login-days": "Nombre de jours pendant lesquels se souvenir des sessions d'identification utilisateurs",
 	"password-expiry-days": "Imposer un changement de mot de passe après un certain nombre de jours",

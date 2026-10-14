@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Dopo un determinato periodo di tempo l'accesso alla sezione amministratore richiederà un nuovo accesso, impostandolo a 0 si disabilita",
 	"login-attempts": "Tentativi di accesso all'ora",
 	"login-attempts-help": "Se il numero di tentativi di accesso a un account supera questa soglia, l'account sarà bloccato per un periodo di tempo preconfigurato.",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Account Lockout Duration (minuti)",
 	"login-days": "Giorni per ricordare le sessioni di accesso utente",
 	"password-expiry-days": "Forza il reset della password a un numero di giorni",

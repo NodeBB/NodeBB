@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Dozvoljeno logovanje po satu",
 	"login-attempts-help": "Ako broj logovanja prema user&apos;s predje određenu granicu, taj nalog može biti zaključan na određeno prekonfigurisano vreme",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Trajanje dok se nalog ne otključa (minuta)",
 	"login-days": "Days to remember user login sessions",
 	"password-expiry-days": "Forsiraj resetovanje lozinke nakon odredjenog broja dana",

@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "A megadott idő után az adminisztrációs felület eléréséhez újra be kell jelentkezni. Állítsd ezt 0-ra, ha nem szeretnéd ezt.",
 	"login-attempts": "Óránkénti bejelentkezések száma",
 	"login-attempts-help": "Ha az óránkénti bejelentkezések száma meghaladja ezt a küszöb értéket, akkor a fiók lezárásra kerül az előre megadott időtartamra.",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Fiók lezárás időtartama (percben)",
 	"login-days": "Hány napig maradjon meg egy felhasználói munkamenet",
 	"password-expiry-days": "Jelszóváltoztatás kényszerítése ennyi nap után",

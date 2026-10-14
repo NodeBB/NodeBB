@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Po nastavení počtu přístupu do správcovské části, bude vyžadováno opětovné přihlášení. Pro zakázání, nastavte na 0.",
 	"login-attempts": "Počet pokusů o přihlášení za hodinu",
 	"login-attempts-help": "Překročí-li pokusy o přihlášení uživatele/ů  tuto hranici, účet bude uzamknut na určený čas",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Délka blokování účtu (v minutách)",
 	"login-days": "Počet dní na zapamatování relace přihlášení uživatele",
 	"password-expiry-days": "Vynutit reset hesla po určitém počtu dní",

@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Pēc noteiktā laika, piekļuvei administratora sadaļai būs nepieciešams atkārtoti ielogoties, iestatīt 0, lai atspējotu",
 	"login-attempts": "Ielogošanās mēģinājumi stundā",
 	"login-attempts-help": "Ja ielogošanās mēģinājumi no lietotāja konta pārsniedz šo slieksni, konts tiks bloķēts uz konfigurētā laika",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Konta bloķēšanas ilgums (minūtes)",
 	"login-days": "Cik dienas, lai atcerētos lietotāju aktīvās sesijas",
 	"password-expiry-days": "Piespiest paroles atiestatīšanu pēc noteiktā dienu skaita",

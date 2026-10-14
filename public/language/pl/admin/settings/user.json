@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Po zdefiniowanym czasie dostęp do sekcji administracyjnej będzie wymagał ponownego logowania, ustaw 0 by wyłączyć.",
 	"login-attempts": "Maksymalna liczba prób logowania na godzinę",
 	"login-attempts-help": "Jeśli liczba prób logowania na konto użytkownika przekroczy ten próg, to konto zostanie zablokowane na zdefiniowany wcześniej czas",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Czas trwania blokady konta (minuty)",
 	"login-days": "Liczba dni zapamiętywania sesji logowania użytkownika",
 	"password-expiry-days": "Wymuś resetowanie hasła po określonej liczbie dni",

@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Etter denne tiden kreves ny pålogging for tilgang til administrasjonspanelet. Sett til 0 for å deaktivere.",
 	"login-attempts": "Innloggingsforsøk per time",
 	"login-attempts-help": "Hvis antall innloggingsforsøk overskrider denne terskelen, låses kontoen midlertidig.",
+	"ip-login-attempts": "Innloggingsforsøk per IP per time",
+	"ip-login-attempts-help": "Hvis antall innloggingsforsøk fra én IP-adresse overskrider denne terskelen, låses IP-adressen midlertidig",
 	"lockout-duration": "Varighet på kontolåsing (minutter)",
 	"login-days": "Dager å huske brukerens innloggingsøkter",
 	"password-expiry-days": "Tving passordtilbakestilling etter angitt antall dager",

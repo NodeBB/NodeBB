@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Որոշ ժամանակ անց ադմինիստրատորի բաժին մուտք գործելու համար կպահանջվի նորից մուտք գործել, անջատելու համար սահմանեք 0",
 	"login-attempts": "Մուտքի փորձեր մեկ ժամում",
 	"login-attempts-help": "Գաղտնաբառի նվազագույն երկարությունը, եթե օգտատիրոջ հաշիվ մուտք գործելու փորձերը գերազանցում են այս շեմը, այդ հաշիվը կկողպվի նախապես կազմաձևված ժամանակով",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Հաշվի արգելափակման տևողությունը (րոպե)",
 	"login-days": "Օգտատիրոջ մուտքի նիստերը հիշելու օրեր",
 	"password-expiry-days": "Ստիպել գաղտնաբառի վերակայում որոշակի օրերից հետո",

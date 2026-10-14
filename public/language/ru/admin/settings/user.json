@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Укажите продолжительность периода неактивности, после которого потребуется снова ввести логин и пароль администратора. Введите 0, чтобы отключить эту опцию",
 	"login-attempts": "Попыток входа в час",
 	"login-attempts-help": "Если это значение будет превышено, учётная запись пользователя будет заблокирована на указанный промежуток времени",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Длительность блокировки (в минутах)",
 	"login-days": "На сколько дней сохранять сессию авторизованного пользователя",
 	"password-expiry-days": "Принудительно сбрасывать пароли через указанное кол-во дней",

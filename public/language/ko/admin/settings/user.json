@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "해당 시간 이후 관리자 섹션에 접속하려면 다시 로그인이 필요합니다. 비활성화는 0으로 설정",
 	"login-attempts": "시간당 로그인 시도 횟수",
 	"login-attempts-help": "사용자 계정의 로그인 시도가 이 값을 초과하면 해당 계정이 일정 기간 동안 잠깁니다",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "계정 잠금 기간(분)",
 	"login-days": "사용자 로그인 세션 기억일수",
 	"password-expiry-days": "일정 일수 후 비밀번호 재설정 강제",

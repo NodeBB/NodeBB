@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Beliril bir süreden sonra yönetici bölümüne erişmek için yeniden giriş yapılması gerekir, devre dışı bırakmak için 0 olarak ayarlayın",
 	"login-attempts": "Saatlik giriş deneme sayısı",
 	"login-attempts-help": "Bir kullanıcının hesabına giriş denemesi bu sınırı aşarsa, bu hesap önceden belirlenmiş olan bir süre için kilitlenir.",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Hesap Kilitleme Süresi (dakika)",
 	"login-days": "Kullanıcı oturumlarının hatırlanacağı gün sayısı",
 	"password-expiry-days": "Belirli bir süre sonunda parola sıfırlamayı zorla",

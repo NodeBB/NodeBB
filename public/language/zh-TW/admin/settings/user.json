@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "訪問控制面板一段時間後需要重新登入以保證控制面板的安全，設定為0以停用。",
 	"login-attempts": "每小時嘗試登入次數",
 	"login-attempts-help": "如果使用者的嘗試登入次數超過此界限，該帳戶將會被被鎖定預設的時間。",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "帳戶鎖定時間(分鐘)",
 	"login-days": "記錄使用者會話天數",
 	"password-expiry-days": "強制重設密碼天數",

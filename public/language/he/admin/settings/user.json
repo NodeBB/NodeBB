@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "לאחר פרק זמן מוגדר של גישה למקטע הניהול ידרש כניסה מחדש, הגדר ל- 0 על-מנת להפוך ללא זמין",
 	"login-attempts": "נסיונות כניסה לשעה",
 	"login-attempts-help": "אם ניסיונות כניסה ל user&apos;s חורג מסף זה, החשבון יינעל לפרק זמן שנקבע מראש",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "משך נעילת חשבון (דקות)",
 	"login-days": "ימים לזכירת התחברות כניסה של משתמשים",
 	"password-expiry-days": "כפיית איפוס סיסמה לאחר מספר ימים מוגדר",

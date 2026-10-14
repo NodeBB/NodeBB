@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Login attempts per hour",
 	"login-attempts-help": "If login attempts to a user&apos;s account exceeds this threshold, that account will be locked for a pre-configured amount of time",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Account Lockout Duration (minutes)",
 	"login-days": "Käyttäjän kirjautumisistuntojen säilytysaika päivinä",
 	"password-expiry-days": "Pakota salasanojen vaihto määritetyn päivämäärän kuluttua",

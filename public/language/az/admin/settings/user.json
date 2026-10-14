@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "Müəyyən vaxtdan sonra admin bölməsinə daxil olmaq üçün yenidən giriş tələb olunacaq, onu söndürmək üçün 0-a təyin edin",
 	"login-attempts": "Hər saatda daxil olmaq cəhdləri",
 	"login-attempts-help": "Əgər istifadəçinin hesabına giriş cəhdləri bu həddi keçərsə, həmin hesab əvvəlcədən konfiqurasiya edilmiş müddət ərzində kilidlənəcək.",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "Hesabın kilidlənməsi müddəti (dəqiqələr)",
 	"login-days": "İstifadəçinin giriş seanslarını xatırlamaq üçün günlər",
 	"password-expiry-days": "Müəyyən günlərdən sonra parol sıfırlamağa məcbur et",

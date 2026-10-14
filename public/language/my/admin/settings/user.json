@@ -30,6 +30,8 @@
 	"admin-relogin-duration-help": "အက်ဒမင် ပြန်ဝင်ရောက်ရမည့်အချိန် အကူအညီ",
 	"login-attempts": "ဝင်ရောက်ရန်ကြိုးစားမှုများ",
 	"login-attempts-help": "ဝင်ရောက်ရန်ကြိုးစားမှု အကူအညီ",
+	"ip-login-attempts": "Login attempts per IP per hour",
+	"ip-login-attempts-help": "If login attempts from a single IP address exceed this threshold, that IP will be temporarily locked out",
 	"lockout-duration": "လော့ခ်ချထားမည့်ကြာချိန်",
 	"login-days": "ဝင်ရောက်နိုင်သည့်ရက်",
 	"password-expiry-days": "စကားဝှက်သက်တမ်းကုန်ရက်",
