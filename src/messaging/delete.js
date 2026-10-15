@@ -17,6 +17,7 @@ module.exports = function (Messaging) {
 		}
 		await db.delete(`message:${mid}`);
 		await db.sortedSetRemove(`chat:room:${msgData.roomId}:mids`, mid);
+		await db.decrObjectField(`chat:room:${msgData.roomId}`, 'messageCount');
 
 		plugins.hooks.fire('action:messaging.delete', { message: msgData });
 	};

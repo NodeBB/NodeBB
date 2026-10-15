@@ -942,6 +942,37 @@ describe('Messaging Library', () => {
 			assert.strictEqual(body.status.message, 'This chat message has already been restored.');
 		});
 
+		it('should reduce messageCount property of chat room when a message is purged', async () => {
+			const { body: roomBody } = await callv3API('post', '/chats', {
+				uids: [mocks.users.baz.uid],
+			}, 'foo');
+			const purgeRoomId = roomBody.response.roomId;
+
+			// Send 3 messages
+			const { body: msg1 } = await callv3API('post', `/chats/${purgeRoomId}`, {
+				roomId: purgeRoomId, message: 'message one',
+			}, 'foo');
+			const { body: msg2 } = await callv3API('post', `/chats/${purgeRoomId}`, {
+				roomId: purgeRoomId, message: 'message two',
+			}, 'foo');
+			const { body: msg3 } = await callv3API('post', `/chats/${purgeRoomId}`, {
+				roomId: purgeRoomId, message: 'message three',
+			}, 'foo');
+
+			const mids = [msg1.response.messageId, msg2.response.messageId, msg3.response.messageId];
+
+			// Verify messageCount is 3
+			let msgCount = await db.getObjectField(`chat:room:${purgeRoomId}`, 'messageCount');
+			assert.strictEqual(parseInt(msgCount, 10), 3);
+
+			// Purge one message
+			await Messaging.purgeMessage(mids[1]);
+
+			// Verify messageCount is now 2
+			msgCount = await db.getObjectField(`chat:room:${purgeRoomId}`, 'messageCount');
+			assert.strictEqual(parseInt(msgCount, 10), 2);
+		});
+
 		describe('disabled via ACP', () => {
 			before(async () => {
 				meta.config.disableChatMessageEditing = true;
