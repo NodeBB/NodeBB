@@ -23,6 +23,7 @@ Actors.application = async function (req, res) {
 		'@context': [
 			'https://www.w3.org/ns/activitystreams',
 			'https://w3id.org/security/v1',
+			'https://www.w3.org/ns/did/v1',
 		],
 		id: `${nconf.get('url')}/actor`,
 		url: `${nconf.get('url')}/actor`,
@@ -40,6 +41,10 @@ Actors.application = async function (req, res) {
 				href: 'https://w3id.org/fep/baf5',
 				name: 'FEP-baf5: Administrator Collection',
 			},
+			...(meta.config.activitypubIntegrityProofs ? [{
+				href: 'https://w3id.org/fep/8b32',
+				name: 'FEP-8b32: Object Integrity Proofs',
+			}] : []),
 		],
 
 		publicKey: {
@@ -47,6 +52,11 @@ Actors.application = async function (req, res) {
 			owner: `${nconf.get('url')}/actor`,
 			publicKeyPem: publicKey,
 		},
+
+		// FEP-8b32: verification method for object integrity proofs (FEP-521a)
+		...(meta.config.activitypubIntegrityProofs && {
+			assertionMethod: activitypub.proofs._keyUrl('uid', 0),
+		}),
 	});
 };
 
@@ -78,6 +88,21 @@ Actors.user = async function (req, res) {
 	const payload = await activitypub.mocks.actors.user(req.params.uid);
 
 	res.status(200).json(payload);
+};
+
+// FEP-8b32: standalone key document for object integrity proofs
+Actors.key = async function (req, res) {
+	const type = req.params.uid !== undefined ? 'uid' : 'cid';
+	const id = req.params.uid !== undefined ? req.params.uid : req.params.cid;
+	const document = await activitypub.proofs.getKeyDocument(type, id);
+
+	res.status(200).json(document);
+};
+
+Actors.instanceKey = async function (req, res) {
+	const document = await activitypub.proofs.getKeyDocument('uid', 0);
+
+	res.status(200).json(document);
 };
 
 Actors.userBySlug = async function (req, res) {
