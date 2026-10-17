@@ -17,7 +17,7 @@ Intents.create = async (req, res, next) => {
 
 	if (!req.uid) {
 		req.session.returnTo = req.originalUrl;
-		helpers.redirect(res, '/login');
+		return helpers.redirect(res, '/login');
 	}
 
 	const intent = req.params?.intent || 'create';
