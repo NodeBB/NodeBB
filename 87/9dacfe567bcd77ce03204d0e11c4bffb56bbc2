@@ -1,0 +1,19 @@
+src/controllers/intents.js
+  s_8f0849bf009210::t_fb5f044a333011 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "879dacfe567bcd77ce03204d0e11c4bffb56bbc2",
+  "prompts": {},
+  "sessions": {
+    "s_8f0849bf009210": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a1472d-f26b-74ba-b129-6c08d96720c4",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
