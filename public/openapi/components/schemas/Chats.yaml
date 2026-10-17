@@ -24,6 +24,11 @@ RoomObject:
     groups:
       type: array
       description: list of groups that can access the room
+    memberGroups:
+      type: array
+      items:
+        type: string
+      description: list of groups whose members are members of the room (private rooms only)
     timestamp:
       type: number
       description: Timestamp of when room was created
@@ -165,6 +170,9 @@ RoomUserList:
             example: "#f44336"
           isOwner:
             type: boolean
+          viaGroup:
+            type: boolean
+            description: Whether the user is a member of the room through one of its member groups
           canKick:
             type: boolean
           canToggleOwner:
@@ -214,6 +222,8 @@ RoomObjectFull:
                   auto-generated icon
                 example: "#f44336"
               isOwner:
+                type: boolean
+              viaGroup:
                 type: boolean
         canReply:
           type: boolean
