@@ -41,7 +41,7 @@ describe('Middlewares', () => {
 
 		it('should expose privileges in res.locals.privileges and isSelf=true', (done) => {
 			const middleware = require('../src/middleware');
-			const reqMock = { user: { uid: adminUid }, params: { uid: adminUid } };
+			const reqMock = { uid: adminUid, user: { uid: adminUid }, params: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivileges(reqMock, resMock, () => {
 				assert(resMock.locals.privileges);
@@ -55,7 +55,7 @@ describe('Middlewares', () => {
 
 		it('should expose privileges in res.locals.privileges and isSelf=false', (done) => {
 			const middleware = require('../src/middleware');
-			const reqMock = { user: { uid: 0 }, params: { uid: adminUid } };
+			const reqMock = { uid: 0, user: { uid: 0 }, params: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivileges(reqMock, resMock, () => {
 				assert(resMock.locals.privileges);
