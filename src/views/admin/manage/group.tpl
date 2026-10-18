@@ -118,6 +118,16 @@
 
 				<div class="mb-3">
 					<div class="form-check form-switch">
+						<input class="form-check-input" id="group-chatContactable" name="chatContactable" data-property type="checkbox"{{{ if group.chatContactable }}} checked{{{ end }}}>
+						<label class="form-check-label" for="group-chatContactable">{{tx("admin/manage/groups:edit.chat-contactable")}}</label>
+						<p class="form-text">
+							{{tx("admin/manage/groups:edit.chat-contactable-help")}}
+						</p>
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<div class="form-check form-switch">
 						<input class="form-check-input" id="group-hidden" name="hidden" data-property type="checkbox"{{{ if group.hidden }}} checked{{{ end }}}>
 						<label class="form-check-label" for="group-hidden">{{tx("admin/manage/groups:edit.hidden")}}</label>
 						<p class="form-text">

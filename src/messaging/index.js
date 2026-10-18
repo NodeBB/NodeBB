@@ -262,6 +262,7 @@ Messaging.searchRecentChats = async (callerUid, uid, query) => {
 
 async function modifyChatRooms(uid, results) {
 	const danglingRoomIds = [];
+	const chatWith = await Messaging.getMemberGroupsChatWith(results.roomData, uid);
 	await Promise.all(results.roomData.map(async (room, index) => {
 		// Hide rooms the viewer cannot actually open, mirroring Messaging.loadRoom's
 		// visibility check. A private room the viewer is no longer a member of would
@@ -284,8 +285,8 @@ async function modifyChatRooms(uid, results) {
 			});
 			room.users = room.users.filter(user => user && (parseInt(user.uid, 10) || activitypub.helpers.isUri(user.uid)));
 			room.lastUser = room.users[0];
-			room.usernames = Messaging.generateUsernames(room, uid);
-			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid);
+			room.usernames = Messaging.generateUsernames(room, uid, chatWith[index]);
+			room.chatWithMessage = await Messaging.generateChatWithMessage(room, uid, chatWith[index]);
 		}
 	}));
 
@@ -301,36 +302,66 @@ async function modifyChatRooms(uid, results) {
 	return results.roomData.filter(Boolean);
 }
 
-Messaging.generateUsernames = function (room, excludeUid) {
-	const users = room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid);
-	const usernames = users.map(u => u.displayname);
-	if (users.length > 3) {
+Messaging.getMemberGroupsChatWith = async (rooms, callerUid) => Promise.all(rooms.map(async (room) => {
+	if (!room || !Array.isArray(room.memberGroups) || !room.memberGroups.length) {
+		return null;
+	}
+	const [uids, groupUids, groupsData] = await Promise.all([
+		db.getSortedSetRange(`chat:room:${room.roomId}:uids`, 0, -1),
+		db.getSetMembers(`chat:room:${room.roomId}:uids:groups`),
+		groups.getGroupsFields(room.memberGroups, ['name', 'displayName', 'slug']),
+	]);
+	const directUids = uids.filter(uid => !groupUids.includes(String(uid)) && String(uid) !== String(callerUid));
+	const usersData = await user.getUsersFields(directUids.slice(0, 3), ['uid', 'username', 'displayname']);
+	const existingGroups = groupsData.filter(group => group && group.name);
+	return {
+		entries: [
+			...existingGroups.map(group => ({
+				href: `${relative_path}/groups/${group.slug}`,
+				displayname: String(group.displayName),
+			})),
+			...usersData.map(getChatWithEntry),
+		],
+		count: existingGroups.length + directUids.length,
+	};
+}));
+
+function getChatWithEntry(u) {
+	const href = utils.isNumber(u.uid) ?
+		`${relative_path}/uid/${u.uid}` :
+		`${relative_path}/user/${u.username}`;
+
+	return {
+		href,
+		displayname: String(u.displayname),
+	};
+}
+
+Messaging.generateUsernames = function (room, excludeUid, chatWith) {
+	const usernames = chatWith ?
+		chatWith.entries.map(entry => entry.displayname) :
+		room.users.filter(u => u && parseInt(u.uid, 10) !== excludeUid).map(u => u.displayname);
+	const count = chatWith ? chatWith.count : usernames.length;
+	if (count > 3) {
 		return tx.compile(
 			'modules:chat.usernames-and-x-others',
 			usernames.slice(0, 2).map(name => tx.escape(utils.escapeHTML(name))).join(', '),
-			room.userCount - 2
+			(chatWith ? count : room.userCount) - 2
 		);
 	}
 	return usernames.join(', ');
 };
 
-Messaging.generateChatWithMessage = async function (room, callerUid) {
-	let users = room.users.filter(u => u && String(u.uid) !== String(callerUid));
-	if (!users.length) {
+Messaging.generateChatWithMessage = async function (room, callerUid, chatWith) {
+	const entries = chatWith ?
+		chatWith.entries :
+		room.users.filter(u => u && String(u.uid) !== String(callerUid)).map(getChatWithEntry);
+	if (!entries.length) {
 		return '[[modules:chat.no-users-in-room]]';
 	}
-	const moreThan3 = users.length > 3;
-	users = moreThan3 ? users.slice(0, 2) : users;
-	const userData = users.map((u) => {
-		const href = utils.isNumber(u.uid) ?
-			`${relative_path}/uid/${u.uid}` :
-			`${relative_path}/user/${u.username}`;
-
-		return {
-			href,
-			displayname: String(u.displayname),
-		};
-	});
+	const count = chatWith ? chatWith.count : entries.length;
+	const moreThan3 = count > 3;
+	const userData = moreThan3 ? entries.slice(0, 2) : entries;
 
 	let compiled;
 	const txArgs = [];
@@ -338,7 +369,7 @@ Messaging.generateChatWithMessage = async function (room, callerUid) {
 		txArgs.push(userData.href, tx.escape(utils.escapeHTML(userData.displayname)));
 	});
 	if (moreThan3) {
-		txArgs.push(room.userCount - 2);
+		txArgs.push((chatWith ? count : room.userCount) - 2);
 		compiled = tx.compile(
 			'modules:chat.chat-with-usernames-and-x-others',
 			...txArgs
