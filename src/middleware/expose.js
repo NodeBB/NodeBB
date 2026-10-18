@@ -32,7 +32,7 @@ module.exports = function (middleware) {
 			isAdmin,
 			isGmod,
 			isPrivileged,
-			isSelf: req.params.uid ? req.params.uid === String(req.uid) : false,
+			isSelf: req.params.uid ? String(req.params.uid) === String(req.uid) : false,
 		};
 		next();
 	};
