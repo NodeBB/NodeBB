@@ -117,6 +117,33 @@ describe('Notes', () => {
 				assert(exists);
 			});
 
+			it('should extract emoji metadata when the tag property is a single object rather than an array', async () => {
+				const { id } = helpers.mocks.note({
+					name: null, // no name so the title is generated from the content
+					content: '<p>Hello :test: world</p>',
+					tag: {
+						type: 'Emoji',
+						name: 'test',
+						icon: { url: 'https://example.com/emoji.png' },
+					},
+				});
+				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
+				assert.strictEqual(count, 1);
+
+				const exists = await topics.exists(tid);
+				assert(exists);
+
+				// A single-object "tag" must still yield emoji metadata (#15023)
+				const titleEmoji = await topics.getTopicField(tid, 'titleEmoji');
+				assert(Array.isArray(titleEmoji));
+				assert.strictEqual(titleEmoji.length, 1);
+				assert.strictEqual(titleEmoji[0].code, ':test:');
+			});
+
 			describe('Content warnings', () => {
 				it('should store contentWarning for Note with summary and sensitive: true', async () => {
 					const cwText = 'Spoiler: major plot twist';
