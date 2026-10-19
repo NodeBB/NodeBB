@@ -112,14 +112,10 @@ apiController.loadConfig = async function (req) {
 		},
 	};
 
-	let settings = config;
-	let isAdminOrGlobalMod;
-	if (req.loggedIn) {
-		([settings, isAdminOrGlobalMod] = await Promise.all([
-			user.getSettings(req.uid),
-			user.isAdminOrGlobalMod(req.uid),
-		]));
-	}
+	const [settings, isAdminOrGlobalMod] = await Promise.all([
+		user.getSettings(req.uid),
+		req.loggedIn ? user.isAdminOrGlobalMod(req.uid) : false,
+	]);
 
 	// Handle old skin configs
 	const oldSkins = ['default'];
