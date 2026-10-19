@@ -13,6 +13,7 @@ const posts = require('../../src/posts');
 const topics = require('../../src/topics');
 const api = require('../../src/api');
 const activitypub = require('../../src/activitypub');
+const privileges = require('../../src/privileges');
 const utils = require('../../src/utils');
 
 const helpers = require('./helpers');
@@ -365,6 +366,8 @@ describe('Notes', () => {
 
 			before(async () => {
 				recipientUid = await user.create({ username: utils.generateUUID().slice(0, 8) });
+				//  this file run in isolation would fail due to missing priv. granting it here
+				await privileges.global.give(['groups:chat'], 'fediverse');
 			});
 
 			it('should NOT create a new topic or post when asserting a private note', async () => {
