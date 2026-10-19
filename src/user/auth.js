@@ -10,7 +10,7 @@ const utils = require('../utils');
 module.exports = function (User) {
 	User.auth = {};
 
-	User.auth.logAttempt = async function (uid, ip) {
+	User.auth.logIPAttempt = async function (ip) {
 		const onHourMs = 60 * 60 * 1000;
 		const ipLocked = await db.exists(`lockout:ip:${ip}`);
 		if (ipLocked) {
@@ -30,6 +30,10 @@ module.exports = function (User) {
 			});
 			throw new Error('[[error:ip-locked]]');
 		}
+	};
+
+	User.auth.logAttempt = async function (uid, ip) {
+		await User.auth.logIPAttempt(ip);
 
 		// Use a fixed dummy key for non‑existent users to prevent username enumeration (CWE-203)
 		const targetKey = parseInt(uid, 10) > 0 ? uid : 'dummy';

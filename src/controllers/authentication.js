@@ -434,6 +434,10 @@ authenticationController.localLogin = async function (req, username, password, n
 	}
 
 	const uid = await user.getUidByUserslug(userslug);
+	if (!parseInt(uid, 10) && await user.isRegistrationPending(username, password, req.ip)) {
+		throw new Error('[[error:registration-pending]]');
+	}
+
 	try {
 		const [userData, isAdminOrGlobalMod, canLoginIfBanned] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'passwordExpiry']),
