@@ -24,6 +24,7 @@
     "invalid-user-data": "Nederīgi lietotāja dati",
     "invalid-password": "Nederīga parole",
     "invalid-login-credentials": "Nederīgi ielogošanās dati",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Lūdzu, norādi gan lietotājvārdu, gan paroli",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

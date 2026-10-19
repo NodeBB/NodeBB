@@ -24,6 +24,7 @@
     "invalid-user-data": "ข้อมูลผู้ใช้งานไม่ถูกต้อง",
     "invalid-password": "รหัสผ่านไม่ถูกต้อง",
     "invalid-login-credentials": "เซสชันการเข้าสู้ระบบหมดอายุ",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "กรุณาระบุชื่อผู้ใช้และรหัสผ่าน",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

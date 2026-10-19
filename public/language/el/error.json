@@ -24,6 +24,7 @@
     "invalid-user-data": "Άκυρα Δεδομένα Χρήστη",
     "invalid-password": "Άκυρος Κωδικός",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Παρακαλώ γράψε το όνομα χρήστη και τον κωδικό",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

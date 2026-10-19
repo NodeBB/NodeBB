@@ -24,6 +24,7 @@
     "invalid-user-data": "Geçersiz Kullanıcı Verisi",
     "invalid-password": "Geçersiz Şifre",
     "invalid-login-credentials": "Geçersiz giriş bilgileri",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve şifre girin.",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

@@ -24,6 +24,7 @@
     "invalid-user-data": "داده‌های کاربر نامعتبر است.",
     "invalid-password": "کلمه عبور نامعتبر است.",
     "invalid-login-credentials": "نام کاربری یا گذرواژه صحیح نیست",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

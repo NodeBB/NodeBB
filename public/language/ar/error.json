@@ -24,6 +24,7 @@
     "invalid-user-data": "بيانات المستخدم غير صحيحة",
     "invalid-password": "كلمة السر غير مقبولة",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "المرجود تحديد اسم مستخدم و كلمة مرور",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

@@ -24,6 +24,7 @@
     "invalid-user-data": "Data Pengguna Tak Sah",
     "invalid-password": "Kata laluan salah!",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Sila tentukan kedua-dua nama pengguna dan kata laluan",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

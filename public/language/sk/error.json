@@ -24,6 +24,7 @@
     "invalid-user-data": "Neplatné používateľské údaje",
     "invalid-password": "Nesprávne heslo",
     "invalid-login-credentials": "Neplatné prihlasovacie údaje",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Prosím upresnite používateľské meno a heslo",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

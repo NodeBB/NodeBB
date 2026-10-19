@@ -24,6 +24,7 @@
     "invalid-user-data": "ভুল ব্যবহারকারী তথ্য",
     "invalid-password": "ভুল পাসওয়ার্ড",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "অনুগ্রহ পূর্বক ইউজারনেম এবং পাসওয়ার্ড উভয়ই প্রদান করুন",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

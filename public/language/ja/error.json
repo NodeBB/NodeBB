@@ -24,6 +24,7 @@
     "invalid-user-data": "無効なユーザーデータ",
     "invalid-password": "無効なパスワード",
     "invalid-login-credentials": "ログイン資格情報が無効です",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "ユーザー名とパスワードの両方を指定してください",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

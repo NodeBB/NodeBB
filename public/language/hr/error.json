@@ -24,6 +24,7 @@
     "invalid-user-data": "Netočni korisnički podatci",
     "invalid-password": "Netočna lozinka",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Upišite oboje, korisničko ime i lozinku",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

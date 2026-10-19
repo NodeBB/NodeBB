@@ -24,6 +24,7 @@
     "invalid-user-data": "Некорректные пользовательские данные",
     "invalid-password": "Неправильный пароль",
     "invalid-login-credentials": "Неправильный логин или пароль",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Пожалуйста, укажите имя пользователя и пароль",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

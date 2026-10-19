@@ -24,6 +24,7 @@
     "invalid-user-data": "Օգտվողի անվավեր տվյալներ",
     "invalid-password": "Անվավեր գաղտնաբառ",
     "invalid-login-credentials": "Անվավեր մուտքի հավատարմագրեր",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Նշեք օգտվողի  և՛ անունը, և՛ գաղտնաբառը",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

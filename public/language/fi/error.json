@@ -24,6 +24,7 @@
     "invalid-user-data": "Virheellinen käyttäjätieto",
     "invalid-password": "Virheellinen salasana",
     "invalid-login-credentials": "Virheelliset kirjautumistiedot",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Syötä molemmat, käyttäjätunnus ja salasana",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

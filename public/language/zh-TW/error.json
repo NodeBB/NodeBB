@@ -24,6 +24,7 @@
     "invalid-user-data": "無效使用者資料",
     "invalid-password": "無效密碼",
     "invalid-login-credentials": "無效登入憑證",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "請確認使用者名稱和密碼",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

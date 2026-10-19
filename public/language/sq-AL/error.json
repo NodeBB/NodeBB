@@ -24,6 +24,7 @@
     "invalid-user-data": "Të dhënat e anëtarit janë të pasakta",
     "invalid-password": "Fjalëkalim i pasaktë",
     "invalid-login-credentials": "Kredencialet e hyrjes të pasakta",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Ju lutemi specifikoni një emër përdoruesi dhe fjalëkalimin.",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

@@ -24,6 +24,7 @@
     "invalid-user-data": "Vigased kasutaja andmed",
     "invalid-password": "Vigane parool",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Palun täpsusta kasutajanime ja parooli",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

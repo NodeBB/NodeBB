@@ -24,6 +24,7 @@
     "invalid-user-data": "Érvénytelen felhasználói adatok",
     "invalid-password": "Érvénytelen jelszó",
     "invalid-login-credentials": "Érvénytelen belépési hitelesítés",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Kérlek, adj meg egy felhasználónevet és egy jelszót",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

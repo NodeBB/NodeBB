@@ -24,6 +24,7 @@
     "invalid-user-data": "Невірні користувацькі дані",
     "invalid-password": "Невірний пароль",
     "invalid-login-credentials": "Невірне ім'я користувача або пароль",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Вкажіть, будь ласка, ім'я користувача та пароль",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

@@ -24,6 +24,7 @@
     "invalid-user-data": "Date utilizator invalide",
     "invalid-password": "Parolă Invalidă",
     "invalid-login-credentials": "Invalid login credentials",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Te rugăm să specifici atât un nume de utilizator cât si o parolă",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

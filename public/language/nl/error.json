@@ -24,6 +24,7 @@
     "invalid-user-data": "Ongeldige gebruikersgegevens",
     "invalid-password": "Ongeldig wachtwoord",
     "invalid-login-credentials": "Ongeldige aanmeldingsreferenties",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Geef zowel een gebruikersnaam als wachtwoord op",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

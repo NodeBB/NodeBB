@@ -24,6 +24,7 @@
     "invalid-user-data": "Datos de usuario no válidos",
     "invalid-password": "Contraseña no válida",
     "invalid-login-credentials": "Datos de acceso no válidos",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "Por favor especifica tanto un usuario como contraseña",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",

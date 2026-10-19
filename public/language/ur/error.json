@@ -24,6 +24,7 @@
     "invalid-user-data": "غلط صارف ڈیٹا",
     "invalid-password": "غلط پاس ورڈ",
     "invalid-login-credentials": "غلط تصدیقی معلومات",
+    "registration-pending": "Registration is still pending",
     "invalid-username-or-password": "براہ کرم صارف نام اور پاس ورڈ درج کریں",
     "username-required": "Please enter your username",
     "password-required": "Please enter your password",
