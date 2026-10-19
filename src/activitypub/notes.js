@@ -223,7 +223,9 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 			// Extract emoji metadata for title rendering
 			const titleEmoji = [];
-			const emojiTags = (_activitypub.tag || []).filter(tag => tag.type === 'Emoji');
+			const emojiTags = Array.isArray(_activitypub.tag) ?
+				_activitypub.tag.filter(tag => tag?.type === 'Emoji') :
+				[];
 			for (const tag of emojiTags) {
 				const { name, icon } = tag;
 				if (!name || !icon?.url) continue;
