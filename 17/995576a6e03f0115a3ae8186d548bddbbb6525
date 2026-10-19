@@ -1,0 +1,20 @@
+test/activitypub/notes.js
+  s_4a49867a36c296::t_47d7b2274e5f7f 16,327
+  s_4a49867a36c296::t_72c7c1cb57a64a 326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "17995576a6e03f0115a3ae8186d548bddbbb6525",
+  "prompts": {},
+  "sessions": {
+    "s_4a49867a36c296": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a15504-345f-777b-93c1-e5169817b470",
+        "model": "Qwen3.8"
+      },
+      "human_author": "Julian Lam <julian@nodebb.org>"
+    }
+  }
+}
