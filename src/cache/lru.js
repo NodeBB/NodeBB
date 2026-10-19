@@ -66,6 +66,8 @@ module.exports = function (opts) {
 		max: Math.max(10000, opts.max ? Math.floor(opts.max / 5) : 10000),
 	});
 
+	const inflight = new Map();
+
 	cache.has = function (key) {
 		if (!cache.enabled) {
 			return false;
@@ -100,15 +102,22 @@ module.exports = function (opts) {
 		if (!loader) {
 			return undefined;
 		}
+		if (inflight.has(key)) {
+			return inflight.get(key);
+		}
+
 		const version = getInvalidationVersion(key);
-		return Promise.resolve()
+		const promise = Promise.resolve()
 			.then(() => loader())
 			.then((value) => {
 				if (getInvalidationVersion(key) === version) {
 					cache.set(key, value);
 				}
 				return value;
-			});
+			}).finally(() => inflight.delete(key));
+
+		inflight.set(key, promise);
+		return promise;
 	};
 
 	cache.getMany = function (keys, loader) {
@@ -121,35 +130,73 @@ module.exports = function (opts) {
 		const data = new Array(keys.length);
 		const uncachedKeys = [];
 		const uncachedIndexes = [];
-		const getManyVersions = new Map();
+		const pendingPromises = [];
 
 		keys.forEach((key, index) => {
-			data[index] = cache.get(key);
+			const cachedValue = lruCache.get(key);
 
-			if (data[index] === undefined) {
+			if (cachedValue !== undefined) {
+				cache.hits += 1;
+				data[index] = cachedValue;
+			} else if (inflight.has(key)) {
+				// Re-use active in-flight promise for key
+				cache.hits += 1;
+				const keyPromise = inflight.get(key).then((val) => {
+					data[index] = val;
+				});
+				pendingPromises.push(keyPromise);
+			} else {
+				cache.misses += 1;
 				uncachedKeys.push(key);
 				uncachedIndexes.push(index);
-				getManyVersions.set(key, getInvalidationVersion(key));
 			}
 		});
 
-		if (!loader || !uncachedKeys.length) {
+		// If no loader provided or all keys resolved synchronously from LRU cache
+		if (!loader || (uncachedKeys.length === 0 && pendingPromises.length === 0)) {
 			return data;
 		}
 
-		return Promise.resolve()
+		// Fast-path: no missing keys, but waiting on in-flight promises from other calls
+		if (uncachedKeys.length === 0) {
+			return Promise.all(pendingPromises).then(() => data);
+		}
+
+		// Execute loader for keys not currently cached or in-flight
+		const loaderPromise = Promise.resolve()
 			.then(() => loader(uncachedKeys, uncachedIndexes))
 			.then((values) => {
-				uncachedKeys.forEach((key, index) => {
-					const value = values[index];
-					data[uncachedIndexes[index]] = value;
-					if (getInvalidationVersion(key) === getManyVersions.get(key)) {
+				const resultMap = new Map();
+				uncachedKeys.forEach((key, i) => {
+					const value = values[i];
+					resultMap.set(key, value);
+				});
+				return resultMap;
+			});
+
+		// Register individual keys into inflight map
+		uncachedKeys.forEach((key, i) => {
+			const targetIndex = uncachedIndexes[i];
+			const version = getInvalidationVersion(key);
+
+			const keyPromise = loaderPromise
+				.then((resultMap) => {
+					const value = resultMap.get(key);
+					if (getInvalidationVersion(key) === version) {
 						cache.set(key, value);
 					}
+					data[targetIndex] = value;
+					return value;
+				})
+				.finally(() => {
+					inflight.delete(key);
 				});
 
-				return data;
-			});
+			inflight.set(key, keyPromise);
+			pendingPromises.push(keyPromise);
+		});
+
+		return Promise.all(pendingPromises).then(() => data);
 	};
 
 	cache.del = function (keys) {

@@ -4,7 +4,7 @@
 	<div class="flex-shrink-0 d-flex flex-column gap-3 border-end-md text-sm mb-3 pe-4" style="flex-basis: 240px !important;">
 		<div class="d-grid gap-1">
 			{{{ if !type_bool.message }}}
-			<a class="btn btn-ghost btn-sm ff-secondary border d-flex gap-2 align-items-center" href="{config.relative_path}/{type_path}/{targetId}">
+			<a class="btn btn-ghost btn-sm ff-secondary border d-flex gap-2 align-items-center" href="{config.relative_path}/{type_path}/{encodeURIComponent(targetId)}">
 				<i class="fa fa-fw fa-external-link text-primary"></i>
 				{{tx("flags:go-to-target")}}
 			</a>
