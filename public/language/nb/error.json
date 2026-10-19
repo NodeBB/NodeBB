@@ -24,7 +24,7 @@
     "invalid-user-data": "Ugyldig brukerdata",
     "invalid-password": "Ugyldig passord",
     "invalid-login-credentials": "Ugyldige innloggingsdata",
-    "registration-pending": "Registration is still pending",
+    "registration-pending": "Registreringen venter fortsatt på godkjenning",
     "invalid-username-or-password": "Vennligst spesifiser både et brukernavn og passord",
     "username-required": "Skriv inn brukernavnet ditt",
     "password-required": "Skriv inn passordet ditt",
