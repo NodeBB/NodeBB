@@ -10,6 +10,7 @@ const groups = require('../groups');
 const utils = require('../utils');
 const slugify = require('../slugify');
 const plugins = require('../plugins');
+const Password = require('../password');
 const tx = require('../translator');
 
 module.exports = function (User) {
@@ -215,5 +216,21 @@ module.exports = function (User) {
 				await removeFromQueue(user.value);
 			}
 		}
+	};
+
+	User.isRegistrationPending = async (username, password, ip) => {
+		const hashedPassword = await db.getObjectField(`registration:queue:name:${username.trim()}`, 'hashedPassword');
+		if (!hashedPassword) {
+			return false;
+		}
+		password = password || '';
+		try {
+			User.isPasswordValid(password, 0);
+		} catch (e) {
+			return false;
+		}
+
+		await User.auth.logIPAttempt(ip);
+		return await Password.compare(password, hashedPassword, 1);
 	};
 };
