@@ -117,5 +117,5 @@ chatsController.redirectToMessage = async function (req, res, next) {
 		return next();
 	}
 
-	helpers.redirect(res, `/user/${userslug}/chats/${roomId}/${index + 1}`, true);
+	helpers.redirect(res, `/user/${userslug}/chats/${roomId}/${index + 1}`, false);
 };
