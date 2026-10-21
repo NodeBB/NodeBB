@@ -227,7 +227,7 @@ Topics.getCrossposts = async (req, res) => {
 };
 
 Topics.crosspost = async (req, res) => {
-	const { cid } = req.body;
+	const cid = String(req.body.cid);
 	const crossposts = await topics.crossposts.add(req.params.tid, cid, req.uid);
 	await activitypub.out.announce.topic(req.params.tid, req.uid, cid);
 
@@ -235,7 +235,7 @@ Topics.crosspost = async (req, res) => {
 };
 
 Topics.uncrosspost = async (req, res) => {
-	const cid = req.body.cid || req.query.cid;
+	const cid = String(req.body.cid || req.query.cid);
 	const crossposts = await topics.crossposts.remove(req.params.tid, cid, req.uid);
 
 	await activitypub.out.undo.announce('uid', req.uid, req.params.tid);

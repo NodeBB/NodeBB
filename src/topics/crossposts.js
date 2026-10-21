@@ -99,7 +99,7 @@ Crossposts.add = async function (tid, cid, uid) {
 	 * NOTE: If uid is 0, the assumption is that it is a "system" crosspost, not a guest!
 	 * (Normally guest uid is 0)
 	 */
-
+	cid = String(cid);
 	// Target cid must exist
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
@@ -191,6 +191,7 @@ Crossposts.queue = async function (tid, cid, uid) {
 };
 
 Crossposts.remove = async function (tid, cid, uid) {
+	cid = String(cid);
 	let crossposts = await Crossposts.get(tid);
 	const [isPrivileged, isMod] = await Promise.all([
 		user.isAdminOrGlobalMod(uid),

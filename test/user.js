@@ -213,30 +213,21 @@ describe('User', () => {
 	});
 
 	describe('.isModerator()', () => {
-		it('should return false', (done) => {
-			User.isModerator(testUid, testCid, (err, isModerator) => {
-				assert.equal(err, null);
-				assert.equal(isModerator, false);
-				done();
-			});
+		it('should return false', async () => {
+			const isModerator = await User.isModerator(testUid, testCid);
+			assert.strictEqual(isModerator, false);
 		});
 
-		it('should return two false results', (done) => {
-			User.isModerator([testUid, testUid], testCid, (err, isModerator) => {
-				assert.equal(err, null);
-				assert.equal(isModerator[0], false);
-				assert.equal(isModerator[1], false);
-				done();
-			});
+		it('should return two false results', async () => {
+			const isModerator = await User.isModerator([testUid, testUid], testCid);
+			assert.strictEqual(isModerator[0], false);
+			assert.strictEqual(isModerator[1], false);
 		});
 
-		it('should return two false results', (done) => {
-			User.isModerator(testUid, [testCid, testCid], (err, isModerator) => {
-				assert.equal(err, null);
-				assert.equal(isModerator[0], false);
-				assert.equal(isModerator[1], false);
-				done();
-			});
+		it('should return two false results', async () => {
+			const isModerator = await User.isModerator(testUid, [testCid, testCid]);
+			assert.strictEqual(isModerator[0], false);
+			assert.strictEqual(isModerator[1], false);
 		});
 	});
 
