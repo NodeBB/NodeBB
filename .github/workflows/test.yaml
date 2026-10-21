@@ -79,6 +79,12 @@ jobs:
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
+        # set health checks to wait until mongo has started
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v7
