@@ -320,14 +320,6 @@ describe('Categories', () => {
 			});
 		});
 
-		it('should check if user is moderator', (done) => {
-			socketCategories.isModerator({ uid: posterUid }, {}, (err, isModerator) => {
-				assert.ifError(err);
-				assert(!isModerator);
-				done();
-			});
-		});
-
 		it('should get category data', async () => {
 			const data = await apiCategories.get({ uid: posterUid }, { cid: categoryObj.cid });
 			assert.equal(categoryObj.cid, data.cid);

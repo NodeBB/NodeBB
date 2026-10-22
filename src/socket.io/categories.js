@@ -135,12 +135,6 @@ async function ignoreOrWatch(fn, socket, data) {
 	return cids;
 }
 
-SocketCategories.isModerator = async function (socket, cid) {
-	sockets.warnDeprecated(socket);
-
-	return await user.isModerator(socket.uid, cid);
-};
-
 SocketCategories.loadMoreSubCategories = async function (socket, data) {
 	sockets.warnDeprecated(socket, `GET /api/v3/categories/:cid/children`);
 
