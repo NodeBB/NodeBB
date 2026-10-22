@@ -24,7 +24,7 @@
     "invalid-user-data": "Dữ Liệu Người Dùng Không Hợp Lệ",
     "invalid-password": "Mật Khẩu Không Hợp Lệ",
     "invalid-login-credentials": "Thông tin đăng nhập không hợp lệ",
-    "registration-pending": "Registration is still pending",
+    "registration-pending": "Việc đăng ký vẫn đang chờ xử lý.",
     "invalid-username-or-password": "Hãy nhập tên đăng nhập và mật khẩu cụ thể",
     "username-required": "Vui lòng nhập tên người dùng của bạn",
     "password-required": "Vui lòng nhập mật khẩu của bạn",
