@@ -157,7 +157,7 @@ define('search', [
 					}
 					data.posts.forEach(function (p) {
 						const text = $('<div>' + p.content + '</div>').text();
-						const query = inputEl.val().toLowerCase().replace(/^in:topic-\d+/, '');
+						const query = inputEl.val().toLowerCase().replace(/^in:topic-\S+/, '');
 						const start = Math.max(0, text.toLowerCase().indexOf(query) - 40);
 						p.snippet = utils.escapeHTML((start > 0 ? '...' : '') +
 							text.slice(start, start + 80) +
