@@ -99,7 +99,7 @@ Crossposts.add = async function (tid, cid, uid) {
 	 * NOTE: If uid is 0, the assumption is that it is a "system" crosspost, not a guest!
 	 * (Normally guest uid is 0)
 	 */
-
+	cid = String(cid);
 	// Target cid must exist
 	if (!utils.isNumber(cid)) {
 		await activitypub.actors.assert(cid);
@@ -191,6 +191,7 @@ Crossposts.queue = async function (tid, cid, uid) {
 };
 
 Crossposts.remove = async function (tid, cid, uid) {
+	cid = String(cid);
 	let crossposts = await Crossposts.get(tid);
 	const [isPrivileged, isMod] = await Promise.all([
 		user.isAdminOrGlobalMod(uid),
@@ -207,17 +208,17 @@ Crossposts.remove = async function (tid, cid, uid) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [author, pids, tags] = await Promise.all([
-		topics.getTopicField(tid, 'uid'),
+	const [topicData, pids] = await Promise.all([
+		topics.getTopicFields(tid, ['uid', 'tags']),
 		topics.getPids(tid),
-		topics.getTopicTags(tid),
 	]);
+	const tags = topicData.tags.map(t => t.value);
 	let bulkRemove = [
 		`cid:${cid}:tids`,
 		`cid:${cid}:tids:create`,
 		`cid:${cid}:tids:lastposttime`,
 		`cid:${cid}:tids:pinned`,
-		`cid:${cid}:uid:${author}:tids`,
+		`cid:${cid}:uid:${topicData.uid}:tids`,
 		`cid:${cid}:tids:votes`,
 		`cid:${cid}:tids:posts`,
 		`cid:${cid}:tids:views`,

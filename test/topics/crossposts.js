@@ -124,7 +124,7 @@ describe('Crossposting (& related logic)', () => {
 			}, {
 				uid,
 				tid,
-				cid: cid2,
+				cid: String(cid2),
 			});
 		});
 

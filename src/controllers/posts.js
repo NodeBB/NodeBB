@@ -35,10 +35,7 @@ postsController.redirectToPost = async function (req, res, next) {
 		privileges.posts.can('topics:read', pid, req.uid),
 		posts.generatePostPath(pid, req.uid),
 	]);
-	if (!path) {
-		return next();
-	}
-	if (!canRead) {
+	if (!path || !canRead) {
 		return next();
 	}
 
@@ -48,7 +45,7 @@ postsController.redirectToPost = async function (req, res, next) {
 	}
 
 	const qs = querystring.stringify(req.query);
-	helpers.redirect(res, qs ? `${path}?${qs}` : path, true);
+	helpers.redirect(res, qs ? `${path}?${qs}` : path, false);
 };
 
 postsController.getRecentPosts = async function (req, res) {

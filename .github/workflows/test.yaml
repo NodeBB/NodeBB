@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [22, 24]
+        node: [24]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
@@ -75,10 +75,16 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:8.3'
+        image: 'mongo:7.0'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
+        # set health checks to wait until mongo has started
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v7

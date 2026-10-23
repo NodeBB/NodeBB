@@ -716,7 +716,7 @@ Flags.canView = async (flagId, uid) => {
 
 	if (type === 'post') {
 		const cid = await Flags.getTargetCid(type, targetId);
-		const isModerator = await user.isModerator(uid, cid);
+		const isModerator = await user.isModerator(uid, String(cid));
 
 		return isAdminOrGlobalMod || isModerator;
 	}

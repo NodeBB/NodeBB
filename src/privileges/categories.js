@@ -118,7 +118,7 @@ privsCategories.get = async function (cid, uid) {
 		'topics:create', 'topics:read', 'topics:schedule',
 		'topics:tag', 'read', 'posts:view_deleted',
 	];
-
+	cid = String(cid);
 	let [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
 		user.isAdministrator(uid),
@@ -251,7 +251,7 @@ privsCategories.rescind = async function (privileges, cid, members) {
 privsCategories.canMoveAllTopics = async function (currentCid, targetCid, uid) {
 	const [isAdmin, isModerators] = await Promise.all([
 		user.isAdministrator(uid),
-		user.isModerator(uid, [currentCid, targetCid]),
+		user.isModerator(uid, [String(currentCid), String(targetCid)]),
 	]);
 	return isAdmin || !isModerators.includes(false);
 };

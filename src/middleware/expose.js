@@ -7,7 +7,6 @@
 
 const user = require('../user');
 const privileges = require('../privileges');
-const utils = require('../utils');
 
 module.exports = function (middleware) {
 	middleware.exposeAdmin = async (req, res, next) => {
@@ -23,27 +22,27 @@ module.exports = function (middleware) {
 	};
 
 	middleware.exposePrivileges = async (req, res, next) => {
-		// Exposes a hash of user's ranks (admin, gmod, etc.)
-		const hash = await utils.promiseParallel({
-			isAdmin: user.isAdministrator(req.user.uid),
-			isGmod: user.isGlobalModerator(req.user.uid),
-			isPrivileged: user.isPrivileged(req.user.uid),
-		});
+		const [isAdmin, isGmod, isPrivileged] = await Promise.all([
+			user.isAdministrator(req.uid),
+			user.isGlobalModerator(req.uid),
+			user.isPrivileged(req.uid),
+		]);
 
-		if (req.params.uid) {
-			hash.isSelf = parseInt(req.params.uid, 10) === req.user.uid;
-		}
-
-		res.locals.privileges = hash;
+		res.locals.privileges = {
+			isAdmin,
+			isGmod,
+			isPrivileged,
+			isSelf: req.params.uid ? String(req.params.uid) === String(req.uid) : false,
+		};
 		next();
 	};
 
 	middleware.exposePrivilegeSet = async (req, res, next) => {
-		// Exposes a user's global/admin privilege set
-		res.locals.privileges = {
-			...await privileges.global.get(req.user.uid),
-			...await privileges.admin.get(req.user.uid),
-		};
+		const [globalPrivs, adminPrivs] = await Promise.all([
+			privileges.global.get(req.uid),
+			privileges.admin.get(req.uid),
+		]);
+		res.locals.privileges = { ...globalPrivs, ...adminPrivs };
 		next();
 	};
 };
