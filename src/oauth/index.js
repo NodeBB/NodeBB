@@ -33,6 +33,14 @@ const SUPPORTED_PKCE_METHODS = ['S256'];
  * gate.
  */
 oauth.scopes = {
+	// OpenID Connect scopes: gate the userinfo endpoint and control which
+	// claims it returns. `openid` is the canonical scope (it alone is enough
+	// to call userinfo and receive the subject identifier); `email` and
+	// `profile` add further claims. This is what makes a client's default
+	// `openid email profile` scope work out of the box.
+	'openid': '[[oauth:scope.openid]]',
+	'email': '[[oauth:scope.email]]',
+	'profile': '[[oauth:scope.profile]]',
 	'account:read': '[[oauth:scope.account-read]]',
 	'account:write': '[[oauth:scope.account-write]]',
 	'categories:read': '[[oauth:scope.categories-read]]',
@@ -72,10 +80,8 @@ oauth.scopes.has = (tokenObj, ...required) => {
 	return required.every(scope => tokenObj.scopes.includes(scope));
 };
 
-// Maps Write API requests to the scope(s) they require. The resource name and
-// verb come from the route mount path: `/api/v3/topics` + `POST /` =>
-// `topics:write`. Routes under `/api/` (v3, v3/admin, write, write/... ) all
-// resolve through `path.join(req.baseUrl, req.path)`.
+// map of v3 API prefixes to oauth scopes
+// ... to be expanded in the future
 const ROUTE_SCOPES = {
 	users: { read: 'account:read', write: 'account:write' },
 	categories: { read: 'categories:read', write: 'categories:write' },
@@ -94,7 +100,8 @@ oauth.scopes.forRequest = (req) => {
 
 	const mapping = ROUTE_SCOPES[segments[2]];
 	if (!mapping) {
-		return null;
+		//  deny by default
+		return 'unscoped';
 	}
 
 	const isWrite = ['POST', 'PUT', 'PATCH', 'DELETE'].includes((req.method || '').toUpperCase());
@@ -113,8 +120,13 @@ oauth.scopes.enforce = () => {
 		}
 
 		const required = oauth.scopes.forRequest(req);
-		if (!required) {
+		if (required === null) {
+			// Not a Write API route — nothing to gate.
 			return next();
+		}
+
+		if (required === 'unscoped') {
+			return controllersHelpers.formatApiResponse(403, res, '[[error:api.route-not-scoped]]');
 		}
 
 		if (!oauth.scopes.has(req.oauth, ...required)) {
@@ -566,6 +578,7 @@ oauth.getMetadata = async () => {
 		issuer: url,
 		authorization_endpoint: `${url}/oauth/authorize`,
 		token_endpoint: `${url}/oauth/token`,
+		userinfo_endpoint: `${url}/oauth/userinfo`,
 		registration_endpoint: `${url}/oauth/register`,
 		revocation_endpoint: `${url}/oauth/revoke`,
 		response_types_supported: ['code'],
@@ -577,5 +590,26 @@ oauth.getMetadata = async () => {
 		state_parameter_supported: true,
 		request_parameter_supported: false,
 		request_uri_parameter_supported: true,
+	};
+};
+
+/**
+ * OpenID Connect Discovery 1.0 document, served at
+ * `/.well-known/openid-configuration`. It is a superset of the RFC 8414
+ * metadata: the same endpoints plus the OIDC-specific fields (subject types,
+ * supported claims, ID-token signing algs). NodeBB does not issue signed ID
+ * tokens, so `jwks_uri` is omitted and clients are expected to use the
+ * userinfo endpoint for identity.
+ */
+oauth.getOpenIdMetadata = async () => {
+	const base = await oauth.getMetadata();
+	return {
+		...base,
+		subject_types_supported: ['public'],
+		id_token_signing_alg_values_supported: ['RS256'],
+		claims_supported: [
+			'sub', 'name', 'preferred_username', 'picture',
+			'given_name', 'family_name', 'email', 'email_verified', 'roles',
+		],
 	};
 };

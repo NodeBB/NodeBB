@@ -2,6 +2,7 @@
   "invalid-data": "Invalid Data",
   "no-such-client": "No such OAuth client",
   "api.insufficient-scopes": "The provided token does not carry the required scopes: %1",
+  "api.route-not-scoped": "The requested route is not accessible with the provided token.",
   "api.no-such-client": "No such OAuth client",
   "invalid-config-field-value": "Invalid value for config field \"%1\": %2",
   "invalid-json": "Invalid JSON",

@@ -5,6 +5,8 @@ const winston = require('winston');
 
 const api = require('../api');
 const oauth = require('../oauth');
+const user = require('../user');
+const groups = require('../groups');
 
 const controller = module.exports;
 
@@ -106,6 +108,74 @@ controller.authorize = {
 			codeChallenge: areq.codeChallenge || '',
 		});
 	},
+};
+
+/**
+ * OpenID Connect userinfo endpoint (OpenID Connect Core 3.1). Returns the
+ * profile of the user the access token was issued for.
+ *
+ * A Bearer token is gated by its scopes: `openid` is required, and `email` /
+ * `profile` control which additional claims are returned. A cookie session
+ * (the user's own browser, `req.uid` set with no `req.oauth`) sees their full
+ * profile, since they are acting on their own behalf.
+ */
+controller.userinfo = async (req, res) => {
+	// A guest (no session, no valid Bearer token) has no profile to return.
+	if (req.uid <= 0) {
+		res.set('WWW-Authenticate', 'Bearer realm="oauth", error="invalid_token"');
+		return res.status(401).json({
+			error: 'invalid_token',
+			error_description: 'A Bearer access token with the "openid" scope is required',
+		});
+	}
+
+	const isBearer = !!req.oauth;
+	const scopes = isBearer ? req.oauth.scopes : ['openid', 'email', 'profile'];
+
+	if (isBearer && !scopes.includes('openid')) {
+		res.set('WWW-Authenticate', 'Bearer realm="oauth", error="insufficient_scope"');
+		return res.status(403).json({
+			error: 'insufficient_scope',
+			error_description: 'The "openid" scope is required',
+		});
+	}
+
+	const userData = await user.getUserData(req.uid);
+	if (!userData) {
+		res.set('WWW-Authenticate', 'Bearer realm="oauth", error="invalid_token"');
+		return res.status(401).json({
+			error: 'invalid_token',
+			error_description: 'The token is not associated with a known user',
+		});
+	}
+
+	const payload = { sub: String(req.uid) };
+
+	if (scopes.includes('email')) {
+		payload.email = userData.email || null;
+		payload.email_verified = userData['email:confirmed'] === 1 || userData['email:confirmed'] === '1';
+	}
+
+	if (scopes.includes('profile')) {
+		payload.preferred_username = userData.username;
+		if (userData.fullname) {
+			payload.name = userData.fullname;
+			const parts = userData.fullname.trim().split(/\s+/);
+			payload.given_name = parts[0];
+			if (parts.length > 1) {
+				payload.family_name = parts.slice(1).join(' ');
+			}
+		}
+		if (userData.picture) {
+			payload.picture = /^https?:\/\//.test(userData.picture) ?
+				userData.picture :
+				`${nconf.get('url')}${userData.picture}`;
+		}
+		const memberOf = await groups.getUserGroups([req.uid]);
+		payload.roles = (memberOf[0] || []).map(group => group.name);
+	}
+
+	res.json(payload);
 };
 
 /**

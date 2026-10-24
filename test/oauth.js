@@ -229,14 +229,27 @@ describe('OAuth provider (live)', () => {
 		assert.ok([400, 403].includes(badVerify.response.statusCode), `wrong verifier status ${badVerify.response.statusCode}`);
 		assert.strictEqual(badVerify.body.error, 'invalid_grant');
 
-		// bearer token authenticates against the write API
-		const apiRes = await request.post(`${url}/api/v3/ping`, {
-			body: { hello: 'world' },
+		// bearer token reaches a scoped write API route (posts:read)
+		const categories = require('../src/categories');
+		const privileges = require('../src/privileges');
+		const topics = require('../src/topics');
+		const { cid } = await categories.create({ name: 'OAuth Scope', slug: 'oauth-scope' });
+		await privileges.categories.give(['groups:topics:create', 'groups:topics:read'], cid, 'registered-users');
+		const { postData } = await topics.post({ uid, cid, title: 'Scope check', content: 'Bearer token scope test' });
+
+		const apiRes = await request.get(`${url}/api/v3/posts/${postData.pid}`, {
 			headers: { Authorization: `Bearer ${tok.body.access_token}` },
 		});
 		assert.strictEqual(apiRes.response.statusCode, 200, JSON.stringify(apiRes.body));
-		assert.strictEqual(String(apiRes.body.response.uid), String(uid), `api uid ${apiRes.body.response.uid}`);
-		assert.deepStrictEqual(apiRes.body.response.received, { hello: 'world' }, 'body echoed');
+		assert.strictEqual(String(apiRes.body.response.pid), String(postData.pid), `post pid ${apiRes.body.response.pid}`);
+		assert.strictEqual(String(apiRes.body.response.uid), String(uid), `post author ${apiRes.body.response.uid}`);
+
+		// an unscoped write API route is denied by default
+		const unscoped = await request.post(`${url}/api/v3/ping`, {
+			body: { hello: 'world' },
+			headers: { Authorization: `Bearer ${tok.body.access_token}` },
+		});
+		assert.strictEqual(unscoped.response.statusCode, 403, JSON.stringify(unscoped.body));
 	});
 
 	it('denies consent without issuing a code', async () => {
@@ -717,7 +730,7 @@ describe('authorization code flow end-to-end (real consent screen)', function ()
 			name: 'E2E App',
 			redirectUris: [REDIRECT],
 			grants: ['authorization_code', 'refresh_token'],
-			scopes: ['topics:read', 'posts:write'],
+			scopes: ['topics:read', 'topics:write', 'posts:write'],
 		}));
 		global.e2eUid = await user.create({ username: 'e2euser', email: 'e2euser@e2e.com', password: 'Password7777777' });
 		await db.sortedSetAdd('users:confirmed', Date.now(), global.e2eUid);
@@ -729,7 +742,7 @@ describe('authorization code flow end-to-end (real consent screen)', function ()
 	it('renders the consent screen with client name, scopes, transaction id', async () => {
 		authorizePath = '/oauth/authorize?client_id=' + client.id +
 			'&redirect_uri=' + encodeURIComponent(REDIRECT) +
-			'&response_type=code&state=xyz42&scope=' + encodeURIComponent('topics:read posts:write') +
+			'&response_type=code&state=xyz42&scope=' + encodeURIComponent('topics:read topics:write posts:write') +
 			'&code_challenge=' + challenge + '&code_challenge_method=S256';
 		const res = await request.get(`${url}${authorizePath}`, { jar, headers: { accept: 'text/html' } });
 		assert.strictEqual(res.response.statusCode, 200);
@@ -792,10 +805,19 @@ describe('authorization code flow end-to-end (real consent screen)', function ()
 	});
 
 	it('bearer access token authenticates the read API as the user', async () => {
-		const res = await request.get(`${url}/api/v3/ping`, {
+		// create a topic via core modules (bypassing the scope layer) to read back
+		const categories = require('../src/categories');
+		const privileges = require('../src/privileges');
+		const topics = require('../src/topics');
+		const { cid } = await categories.create({ name: 'OAuth E2E Read', slug: 'oauth-e2e-read' });
+		await privileges.categories.give(['groups:topics:create', 'groups:topics:read'], cid, 'registered-users');
+		const { topicData } = await topics.post({ uid: global.e2eUid, cid, title: 'Read check', content: 'Bearer read test' });
+
+		const res = await request.get(`${url}/api/v3/topics/${topicData.tid}`, {
 			headers: { authorization: `Bearer ${global.e2eTokens.access_token}` },
 		});
-		assert.strictEqual(res.response.statusCode, 200);
+		assert.strictEqual(res.response.statusCode, 200, JSON.stringify(res.body));
+		assert.strictEqual(String(res.body.response.tid), String(topicData.tid), `topic tid ${res.body.response.tid}`);
 	});
 
 	it('write API accepts the bearer token (cookie session not required)', async () => {
@@ -863,17 +885,128 @@ describe('scope enforcement on write routes (e2e)', function () {
 		assert.strictEqual(await oauth.clients.count(), 1, 'no client created by the token');
 	});
 
-	it('documents that scope middleware is not wired into any core route', () => {
-		// The middleware supports requireScopes, and the doc comment in
-		// src/middleware/user.js says session (cookie) requests carry no scopes
-		// and are therefore rejected. Nothing in core applies requireScopes to a
-		// route, so no route is scope-gated today. If this test ever fails, the
-		// middleware is wired up and the doc comment should be re-checked.
-		const routesDir = path.join(__dirname, '..', 'src', 'routes');
-		const files = fs.readdirSync(routesDir).filter(f => f.endsWith('.js'));
-		const used = files.filter(f => fs.readFileSync(path.join(routesDir, f), 'utf8').includes('requireScopes'));
-		console.log('routes applying requireScopes:', JSON.stringify(used));
-		assert.deepStrictEqual(used, [], 'scope middleware is unused in core routes');
+	it('denies unscoped write API routes by default (Bearer token)', async () => {
+		// /api/v3/ping has no scope mapping, so a Bearer/OAuth token is denied
+		// even though it carries posts:read / posts:write.
+		const res = await write('/api/v3/ping', { hello: 'world' }, tokens.access_token);
+		assert.strictEqual(res.response.statusCode, 403, JSON.stringify(res.body));
 	});
 
+	it('wires scope enforcement (deny-by-default) into the write API', () => {
+		// setupApiRoute injects oauth.scopes.enforce() after authenticateRequest,
+		// so every /api/v3/* route is scope-gated for Bearer/OAuth tokens
+		// (deny-by-default for unscoped routes). Cookie sessions and ACP tokens
+		// (req.oauth null) pass through. This is deliberate — see OAUTH-TODO.md.
+		const helpersSrc = fs.readFileSync(path.join(__dirname, '..', 'src', 'routes', 'helpers.js'), 'utf8');
+		assert.ok(helpersSrc.includes('oauth.scopes.enforce()'), 'setupApiRoute wires in scope enforcement');
+	});
+
+});
+
+describe('userinfo + OIDC discovery', function () {
+	this.timeout(30000);
+	let uid;
+	let jar;
+	let clientId;
+	let clientSecret;
+
+	const verifier = b64url(crypto.randomBytes(32));
+	const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
+
+	before(async () => {
+		uid = await user.create({ username: 'userinfouser', password: 'GoodPassword123!' });
+		await user.setUserField(uid, 'email', 'userinfo@nodebb.org');
+		await user.email.confirmByUid(uid);
+		await user.setUserField(uid, 'fullname', 'Jane Doe');
+		({ jar } = await helpers.loginUser('userinfouser', 'GoodPassword123!'));
+		({ client: { id: clientId }, secret: clientSecret } = await oauth.clients.create({
+			name: 'Userinfo App',
+			redirectUris: [REDIRECT],
+			grants: ['authorization_code', 'refresh_token'],
+			scopes: ['openid', 'email', 'profile', 'posts:read'],
+			ownerUid: uid,
+		}));
+	});
+
+	// Runs the authorization code flow for the given scope and returns the
+	// resulting access token.
+	async function getToken(scope) {
+		const { tid } = await authorizeFlow({
+			client_id: clientId, redirect_uri: REDIRECT, response_type: 'code',
+			scope, state: 'u', code_challenge: challenge, code_challenge_method: 'S256',
+		}, jar);
+		assert.ok(tid, 'transaction id present');
+		const decision = await postForm('/oauth/authorize', { transaction_id: tid, allow: true }, { jar });
+		const code = new URL(decision.response.headers.location).searchParams.get('code');
+		assert.ok(code, 'code issued');
+		const tok = await postForm('/oauth/token', {
+			grant_type: 'authorization_code', code,
+			redirect_uri: REDIRECT, client_id: clientId, client_secret: clientSecret,
+			code_verifier: verifier,
+		});
+		assert.strictEqual(tok.response.statusCode, 200, JSON.stringify(tok.body));
+		return tok.body.access_token;
+	}
+
+	it('serves OIDC discovery at /.well-known/openid-configuration', async () => {
+		const { response, body } = await getJson('/.well-known/openid-configuration');
+		assert.strictEqual(response.statusCode, 200);
+		assert.strictEqual(body.issuer, url);
+		assert.strictEqual(body.authorization_endpoint, `${url}/oauth/authorize`);
+		assert.strictEqual(body.token_endpoint, `${url}/oauth/token`);
+		assert.strictEqual(body.userinfo_endpoint, `${url}/oauth/userinfo`);
+		assert.deepStrictEqual(body.subject_types_supported, ['public']);
+		assert.ok(body.claims_supported.includes('sub'));
+		assert.ok(body.claims_supported.includes('email'));
+		assert.ok(body.scopes_supported.includes('openid'));
+	});
+
+	it('returns the full profile for an `openid email profile` token', async () => {
+		const token = await getToken('openid email profile');
+		const { response, body } = await request.get(`${url}/oauth/userinfo`, {
+			headers: { authorization: `Bearer ${token}` },
+		});
+		assert.strictEqual(response.statusCode, 200, JSON.stringify(body));
+		assert.strictEqual(body.sub, String(uid));
+		assert.strictEqual(body.preferred_username, 'userinfouser');
+		assert.strictEqual(body.name, 'Jane Doe');
+		assert.strictEqual(body.given_name, 'Jane');
+		assert.strictEqual(body.family_name, 'Doe');
+		assert.strictEqual(body.email, 'userinfo@nodebb.org');
+		assert.strictEqual(body.email_verified, true);
+		assert.ok(Array.isArray(body.roles));
+	});
+
+	it('gates claims on the granted scopes', async () => {
+		// `openid` alone → only `sub`
+		const token = await getToken('openid');
+		const { body } = await request.get(`${url}/oauth/userinfo`, {
+			headers: { authorization: `Bearer ${token}` },
+		});
+		assert.strictEqual(body.sub, String(uid));
+		assert.strictEqual(body.email, undefined, 'no email without the email scope');
+		assert.strictEqual(body.preferred_username, undefined, 'no profile without the profile scope');
+	});
+
+	it('rejects a token without the `openid` scope', async () => {
+		const token = await getToken('posts:read');
+		const { response, body } = await request.get(`${url}/oauth/userinfo`, {
+			headers: { authorization: `Bearer ${token}` },
+		});
+		assert.strictEqual(response.statusCode, 403, JSON.stringify(body));
+		assert.strictEqual(body.error, 'insufficient_scope');
+	});
+
+	it('rejects a request with no bearer token', async () => {
+		const { response, body } = await getJson('/oauth/userinfo');
+		assert.strictEqual(response.statusCode, 401, JSON.stringify(body));
+		assert.strictEqual(body.error, 'invalid_token');
+	});
+
+	it('serves the profile to a cookie session (Read API)', async () => {
+		const { response, body } = await getJson('/api/oauth/userinfo', { jar });
+		assert.strictEqual(response.statusCode, 200, JSON.stringify(body));
+		assert.strictEqual(body.sub, String(uid));
+		assert.strictEqual(body.preferred_username, 'userinfouser');
+	});
 });

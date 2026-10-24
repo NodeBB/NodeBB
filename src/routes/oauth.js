@@ -14,6 +14,12 @@ module.exports = function (app, router, mw, ctrls) {
 		res.json(await oauth.getMetadata());
 	});
 
+	// OpenID Connect Discovery 1.0 (a superset of the RFC 8414 metadata), at
+	// the canonical OIDC well-known URL.
+	app.get('/.well-known/openid-configuration', async (req, res) => {
+		res.json(await oauth.getOpenIdMetadata());
+	});
+
 	// -----------------------------------------------------------------------
 	// Authorization endpoint
 	// -----------------------------------------------------------------------
@@ -122,6 +128,15 @@ module.exports = function (app, router, mw, ctrls) {
 		checkTokenRequest,
 		oauth.getServer().token(),
 		oauth.tokenErrorHandler());
+
+	// -----------------------------------------------------------------------
+	// Userinfo endpoint (OpenID Connect Core 3.1)
+	// -----------------------------------------------------------------------
+
+	// Bearer-token (and cookie-session) authenticated. `/api/oauth/userinfo`
+	// serves the same payload as JSON for the Read API.
+	router.get('/oauth/userinfo', middleware.authenticateRequest, ctrls.oauth.userinfo);
+	router.get('/api/oauth/userinfo', middleware.authenticateRequest, ctrls.oauth.userinfo);
 
 	// -----------------------------------------------------------------------
 	// Revocation endpoint (RFC 7009)

@@ -72,6 +72,8 @@ paths:
     $ref: 'read/ping.yaml'
   /api/oauth/authorize:
     $ref: 'read/oauth/authorize.yaml'
+  /api/oauth/userinfo:
+    $ref: 'read/oauth/userinfo.yaml'
   /api/:
     $ref: 'read/index.yaml'
   /api/admin:

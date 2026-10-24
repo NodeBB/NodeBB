@@ -1,0 +1,67 @@
+get:
+  tags:
+    - oauth
+  summary: OpenID Connect userinfo endpoint
+  description: >-
+    Returns the profile of the user the access token was issued for. A Bearer
+    token is gated by its scopes (`openid` is required; `email` and `profile`
+    add further claims). A cookie session sees the user's full profile.
+
+    See also the OpenID Connect Discovery document at
+    `GET /.well-known/openid-configuration`.
+  responses:
+    "200":
+      description: The user's profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sub:
+                type: string
+                description: The user's unique identifier (their uid)
+              name:
+                type: string
+                description: The user's full name
+              preferred_username:
+                type: string
+                description: The user's username (handle)
+              given_name:
+                type: string
+              family_name:
+                type: string
+              picture:
+                type: string
+                description: The user's avatar URL
+              email:
+                type: string
+                nullable: true
+              email_verified:
+                type: boolean
+              roles:
+                type: array
+                description: The groups the user is a member of
+                items:
+                  type: string
+    "401":
+      description: The access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              error_description:
+                type: string
+    "403":
+      description: The access token lacks the `openid` scope
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              error_description:
+                type: string

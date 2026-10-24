@@ -59,11 +59,17 @@ helpers.setupApiRoute = function (...args) {
 	let middlewares = args.length > 4 ? args[args.length - 2] : [];
 	const controller = args[args.length - 1];
 	const upload = require('../middleware/multer');
+	// Lazy require: breaks any potential routes/helpers <-> oauth cycle.
+	const oauth = require('../oauth');
 	const uploadVerbs = new Set(['post', 'put', 'patch']);
 	middlewares = [
 		middleware.autoLocale,
 		middleware.applyBlacklist,
 		middleware.authenticateRequest,
+		// Scope enforcement for Bearer/OAuth tokens (deny-by-default for
+		// unscoped routes). Runs after authenticateRequest so req.oauth is set;
+		// cookie sessions and ACP tokens (req.oauth null) pass through.
+		oauth.scopes.enforce(),
 		middleware.maintenanceMode,
 		middleware.registrationComplete,
 		middleware.pluginHooks,
