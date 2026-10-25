@@ -416,29 +416,29 @@ const destroyAsync = util.promisify((req, callback) => req.session.destroy(callb
 const logoutAsync = util.promisify((req, callback) => req.logout(callback));
 
 authenticationController.localLogin = async function (req, username, password, next) {
-	if (!username) {
-		return next(new Error('[[error:invalid-username]]'));
-	}
-
-	if (!password || !utils.isPasswordValid(password)) {
-		return next(new Error('[[error:invalid-password]]'));
-	}
-
-	if (password.length > 512) {
-		return next(new Error('[[error:password-too-long]]'));
-	}
-
-	const userslug = slugify(username);
-	if (!utils.isUserNameValid(username) || !userslug) {
-		return next(new Error('[[error:invalid-username]]'));
-	}
-
-	const uid = await user.getUidByUserslug(userslug);
-	if (!parseInt(uid, 10) && await user.isRegistrationPending(username, password, req.ip)) {
-		throw new Error('[[error:registration-pending]]');
-	}
-
 	try {
+		if (!username) {
+			throw new Error('[[error:invalid-username]]');
+		}
+
+		if (!password || !utils.isPasswordValid(password)) {
+			throw new Error('[[error:invalid-password]]');
+		}
+
+		if (password.length > 512) {
+			throw new Error('[[error:password-too-long]]');
+		}
+
+		const userslug = slugify(username);
+		if (!utils.isUserNameValid(username) || !userslug) {
+			throw new Error('[[error:invalid-username]]');
+		}
+
+		const uid = await user.getUidByUserslug(userslug);
+		if (!parseInt(uid, 10) && await user.isRegistrationPending(username, password, req.ip)) {
+			throw new Error('[[error:registration-pending]]');
+		}
+
 		const [userData, isAdminOrGlobalMod, canLoginIfBanned] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'passwordExpiry']),
 			user.isAdminOrGlobalMod(uid),

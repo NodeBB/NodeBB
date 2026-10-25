@@ -38,6 +38,7 @@ const als = require('./als');
 const app = express();
 
 app.renderAsync = async (tpl, data) => {
+	let renderData = data;
 	if (!Object.hasOwn(data, '_i18n')) {
 		const store = als.getStore();
 		if (!store) {
@@ -46,10 +47,13 @@ app.renderAsync = async (tpl, data) => {
 		}
 		const uid = store?.uid || 0;
 		const { userLang, acpLang } = await user.getSettings(uid);
-		data._i18n = languages.getFull(tpl.startsWith('admin/') ? acpLang : userLang);
+		renderData = {
+			...renderData,
+			_i18n: languages.getFull(tpl.startsWith('admin/') ? acpLang : userLang),
+		};
 	}
 	return new Promise((resolve, reject) => {
-		app.render(tpl, data, (err, html) => {
+		app.render(tpl, renderData, (err, html) => {
 			if (err) return reject(err);
 			resolve(html);
 		});

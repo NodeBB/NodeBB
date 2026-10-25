@@ -1,3 +1,47 @@
+#### v4.16.4 (2026-10-23)
+
+##### Chores
+
+*  incrementing version number - v4.16.4 (38b0bbac)
+*  up dbsearch (820c5fce)
+*  up dbsearch (ba45dd7e)
+*  up harmony (4408f117)
+*  update changelog for v4.16.3 (5aae7e17)
+
+##### New Features
+
+*  add inflight request handling to lru/ttl cache (3b778b9b)
+*  return registration pending message (31f883f9)
+
+##### Bug Fixes
+
+*  another security fix for body-parser (de3e7731)
+*  update multer to address CVE (d7502b92)
+*  crosspost remove bypass via cid type manipulation (1a90f8a4)
+*  closes #15029, apply default user settings set in acp to guests as well (73334d7b)
+*  closes #15023 (b609bd3f)
+*  closes #15022, encode targetId, fixed AP urls (387099dd)
+*  missing return in intents.create (2f74bfa3)
+*  closes #15011, update messageCount on message purge (4e4051fa)
+*  remove extraneous chore lines from changelog (8d2af9ea)
+* **search:**  support federated (UUID) tids in in-topic search (#15043) (1169aff5)
+* **activitypub:**  keep emoji tags when tag is a single object (740511cf)
+
+##### Refactors
+
+*  tags are stored in topic hash (acca7f34)
+*  use promise.all, use req.uid, always set isSelf (dbf9cc66)
+*  single return (80d6a165)
+
+##### Tests
+
+*  remove node 22 (d497a866)
+*  mongodb7.0 (ea09832c)
+*  add healthcheck to mongodb (c8c2b24d)
+*  fix crosspost test (abe2c263)
+*  fix tests again (084dfd27)
+*  fix tests (8d725cb6)
+
 #### v4.16.3 (2026-10-14)
 
 ##### Chores
