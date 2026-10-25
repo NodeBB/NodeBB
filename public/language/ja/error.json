@@ -7,6 +7,7 @@
     "reserved-ip-address": "予約済みIPレンジへのネットワークリクエストは許可されていません。",
     "not-logged-in": "ログインしていません。",
     "account-locked": "あなたのアカウントは一時的にロックされています",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "検索するにはアカウントが必要です - ログインするかアカウントを作成してください。",
     "goback": "戻るを押すと、前のページに戻ります",
     "invalid-cid": "無効なカテゴリID",

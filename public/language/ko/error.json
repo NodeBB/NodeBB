@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "로그인되지 않았습니다.",
     "account-locked": "계정이 일시적으로 잠겼습니다.",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "검색에는 계정이 필요합니다. 로그인하거나 등록하세요.",
     "goback": "이전 페이지로 돌아가려면 뒤로 가기를 누르세요",
     "invalid-cid": "잘못된 카테고리 ID",

@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Du verkar inte vara inloggad.",
     "account-locked": "Ditt konto har tillfälligt blivit låst",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "Sökning kräver ett konto, var god logga in eller registrera dig.",
     "goback": "Tryck på tillbakaknappen för att återgå till förra sidan",
     "invalid-cid": "Ogiltigt id för kategori",

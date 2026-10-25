@@ -7,6 +7,7 @@
     "reserved-ip-address": "אין לבקש בקשות רשת לטווחי IP שמורים.",
     "not-logged-in": "נראה שאינכם מחוברים למערכת.",
     "account-locked": "חשבונכם נחסם באופן זמני",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "חיפוש מצריך חשבון - אנא הירשמו או התחברו.",
     "goback": "לחצו back לחזור לעמוד הקודם",
     "invalid-cid": "מזהה קטגוריה לא תקין",

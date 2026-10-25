@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Giriş yapmamış görünüyorsunuz.",
     "account-locked": "Hesabınız geçici olarak kilitlendi",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "Arama yapmak için üyelik hesabı gerekiyor. Lütfen giriş yapın ya da kaydolun.",
     "goback": "Bir önceki sayfaya dönmek için geri tuşuna basın",
     "invalid-cid": "Geçersiz Kategori ID",
