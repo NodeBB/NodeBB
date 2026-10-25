@@ -190,7 +190,7 @@
         "sass-embedded": "1.104.1"
     },
     "resolutions": {
-        "*/jquery": "3.7.1"
+        "jquery": "3.7.1"
     },
     "bugs": {
         "url": "https://github.com/NodeBB/NodeBB/issues"
