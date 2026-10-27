@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Изгледа да нисте пријављени.",
     "account-locked": "Ваш налог је привремено закључан",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "Претраживање захтева налог — пријавите се или се региструјте.",
     "goback": "Притисните назад за повратак на претходну страну",
     "invalid-cid": "Неисправан ID категорије",

@@ -169,7 +169,7 @@ app.onDomReady = function () {
 	};
 
 	app.leaveCurrentRoom = function () {
-		if (!socket || config.maintenanceMode) {
+		if (!socket || !socket.connected || config.maintenanceMode) {
 			return;
 		}
 		const previousRoom = app.currentRoom;

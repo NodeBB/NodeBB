@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "No has iniciado sesión.",
     "account-locked": "Tu cuenta ha sido bloqueada temporalmente.",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "¡Buscar requiere estar registrado! Por favor, entra o regístrate.",
     "goback": "Pulsa \"atrás\" para volver a la página previa",
     "invalid-cid": "Identificador de categoría no válido",

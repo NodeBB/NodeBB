@@ -129,6 +129,7 @@ module.exports = function (module) {
 			_key: key, members: value,
 		}, {
 			projection: { _id: 0, _key: 1 },
+			hint: { members: 1, _key: 1 },
 		});
 
 		return item !== null && item !== undefined;
@@ -161,7 +162,11 @@ module.exports = function (module) {
 			},
 		];
 
-		const [doc] = await module.client.collection('objects').aggregate(pipeline).toArray();
+		const [doc] = await module.client.collection('objects')
+			.aggregate(
+				pipeline,
+				{ hint: { members: 1, _key: 1 } }
+			).toArray();
 		return doc ? doc.results : values.map(() => false);
 	};
 
@@ -175,6 +180,7 @@ module.exports = function (module) {
 			_key: { $in: sets }, members: value,
 		}, {
 			projection: { _id: 0, _key: 1 },
+			hint: { members: 1, _key: 1 },
 		}).toArray();
 
 		const foundMembers = new Set(result.map(item => item._key));
@@ -190,6 +196,7 @@ module.exports = function (module) {
 			_key: key,
 		}, {
 			projection: { _id: 0, members: 1 },
+			hint: { _key:1, score: -1 },
 		});
 		return data ? data.members : [];
 	};
@@ -202,6 +209,7 @@ module.exports = function (module) {
 			_key: { $in: keys },
 		}, {
 			projection: { _id: 0 },
+			hint: { _key: 1, score: -1 },
 		}).toArray();
 
 		const sets = Object.create(null);
@@ -219,7 +227,7 @@ module.exports = function (module) {
 		const data = await module.client.collection('objects').aggregate([
 			{ $match: { _key: key } },
 			{ $project: { _id: 0, count: { $size: '$members' } } },
-		]).toArray();
+		], { hint: { _key: 1, score: -1 } }).toArray();
 		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
 
@@ -227,7 +235,7 @@ module.exports = function (module) {
 		const data = await module.client.collection('objects').aggregate([
 			{ $match: { _key: { $in: keys } } },
 			{ $project: { _id: 0, _key: 1, count: { $size: '$members' } } },
-		]).toArray();
+		], { hint: { _key: 1, score: -1 } }).toArray();
 		const map = _.keyBy(data, '_key');
 		return keys.map(key => (map.hasOwnProperty(key) ? map[key].count : 0));
 	};

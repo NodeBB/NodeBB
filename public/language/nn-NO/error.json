@@ -7,6 +7,7 @@
     "reserved-ip-address": "Nettverksførespurnader til reserverte IP-område er ikkje tillatne.",
     "not-logged-in": "Du ser ikkje ut til å vere logga inn.",
     "account-locked": "Kontoen din har blitt midlertidig låst",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "Søk krev ein konto - ver venleg å logge inn eller registrer deg.",
     "goback": "Trykk tilbake for å gå til førre side",
     "invalid-cid": "Ugyldig kategori-ID",

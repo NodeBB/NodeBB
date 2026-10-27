@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Atrodo, kad jūs neesate prisijungęs.",
     "account-locked": "Jūsų paskyra buvo laikinai užrakinta",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "Paieška reikalauja vartotojo - prašome prisijungti arba užsiregistruoti",
     "goback": "Spauskite atgal, norėdami grįžti į praeitą puslapį",
     "invalid-cid": "Klaidingas kategorijos ID",

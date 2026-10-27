@@ -7,6 +7,7 @@
     "reserved-ip-address": "Network requests to reserved IP ranges are not allowed.",
     "not-logged-in": "Šķiet, ka neesi ielogojies.",
     "account-locked": "Tavs konts ir uz laiku bloķēts",
+    "ip-locked": "Your IP has been temporarily locked",
     "search-requires-login": "Meklēšanai nepieciešams konts - lūdzu, ielogojies vai reģistrējies.",
     "goback": "Nospiedi atpakaļ, lai atgrieztos iepriekšējā lapā",
     "invalid-cid": "Nederīgs kategorijas ID",
