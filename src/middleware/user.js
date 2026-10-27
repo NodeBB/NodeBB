@@ -164,16 +164,16 @@ module.exports = function (middleware) {
 		controllers.helpers.notAllowed(req, res);
 	});
 
-	middleware.oauth = {
-		/**
-		 * Require the bearer token to carry all of the given OAuth scopes.
-		 * Requests authenticated via session (cookie) never carry OAuth
-		 * scopes and are therefore rejected.
-		 */
-		requireScopes: (...requiredScopes) => {
-			const { requireScopes } = require('../oauth');
-			return helpers.try(requireScopes(...requiredScopes));
-		},
+	middleware.oauth = {};
+
+	/**
+	 * Require the bearer token to carry all of the given OAuth scopes.
+	 * Requests authenticated via session (cookie) never carry OAuth
+	 * scopes and are therefore rejected.
+	 */
+	middleware.oauth.requireScopes = (...requiredScopes) => {
+		const { requireScopes } = require('../oauth');
+		return helpers.try(requireScopes(...requiredScopes));
 	};
 
 	middleware.canChat = helpers.try(async (req, res, next) => {
