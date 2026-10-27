@@ -94,7 +94,7 @@
         "lodash": "4.18.1",
         "logrotate-stream": "0.2.9",
         "lru-cache": "11.5.3",
-        "mime": "4.1.1",
+        "mime": "4.1.2",
         "minimizer-webpack-plugin": "5.13.1",
         "mkdirp": "3.0.1",
         "mongodb": "7.7.0",
