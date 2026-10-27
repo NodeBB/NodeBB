@@ -12,6 +12,7 @@ module.exports = function (module) {
 		}
 		let items = await objects.find({ _key: counts.smallestSet }, {
 			projection: { _id: 0, value: 1 },
+			hint: { _key: 1, value: -1 },
 		}).batchSize(counts.minCount + 1).toArray();
 
 		const otherSets = keys.filter(s => s !== counts.smallestSet);
@@ -19,9 +20,14 @@ module.exports = function (module) {
 			/* eslint-disable no-await-in-loop */
 			const query = { _key: otherSets[i], value: { $in: items.map(i => i.value) } };
 			if (i === otherSets.length - 1) {
-				return await objects.countDocuments(query);
+				return await objects.countDocuments(query, {
+					hint: { _key: 1, value: -1 },
+				});
 			}
-			items = await objects.find(query, { projection: { _id: 0, value: 1 } }).batchSize(items.length + 1).toArray();
+			items = await objects.find(query, {
+				projection: { _id: 0, value: 1 },
+				hint: { _key: 1, value: -1 },
+			}).batchSize(items.length + 1).toArray();
 		}
 	};
 
@@ -30,6 +36,7 @@ module.exports = function (module) {
 		const counts = await Promise.all(
 			sets.map(s => objects.countDocuments({ _key: s }, {
 				limit: limit || 25000,
+				hint: { _key: 1, value: -1 },
 			}))
 		);
 		const minCount = Math.min(...counts);
@@ -97,7 +104,9 @@ module.exports = function (module) {
 		otherSets.push(otherSets.splice(otherSets.indexOf(sortSet), 1)[0]);
 		for (let i = 0; i < otherSets.length; i++) {
 			/* eslint-disable no-await-in-loop */
-			const cursor = objects.find({ _key: otherSets[i], value: { $in: items.map(i => i.value) } });
+			const cursor = objects.find({ _key: otherSets[i], value: { $in: items.map(i => i.value) } }, {
+				hint: { _key: 1, value: -1 },
+			});
 			cursor.batchSize(items.length + 1);
 			// at the last step sort by sortSet
 			if (i === otherSets.length - 1) {
@@ -123,6 +132,7 @@ module.exports = function (module) {
 		const cursor = await module.client.collection('objects')
 			.find({ _key: sortSet }, { projection: project })
 			.sort({ score: params.sort })
+			.hint({ _key: 1, score: -1 })
 			.batchSize(batchSize);
 
 		const otherSets = params.sets.filter(s => s !== sortSet);
@@ -145,6 +155,7 @@ module.exports = function (module) {
 					_key: s, value: { $in: items.map(i => i.value) },
 				}, {
 					projection: { _id: 0, value: 1 },
+					hint: { _key: 1, value: -1 },
 				}).batchSize(items.length + 1).toArray();
 				return new Set(data.map(i => i.value));
 			}));
