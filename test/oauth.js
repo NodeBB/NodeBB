@@ -1003,8 +1003,8 @@ describe('userinfo + OIDC discovery', function () {
 		assert.strictEqual(body.error, 'invalid_token');
 	});
 
-	it('serves the profile to a cookie session (Read API)', async () => {
-		const { response, body } = await getJson('/api/oauth/userinfo', { jar });
+	it('serves the profile to a cookie session (Write API)', async () => {
+		const { response, body } = await getJson('/api/v3/oauth/userinfo', { jar });
 		assert.strictEqual(response.statusCode, 200, JSON.stringify(body));
 		assert.strictEqual(body.sub, String(uid));
 		assert.strictEqual(body.preferred_username, 'userinfouser');

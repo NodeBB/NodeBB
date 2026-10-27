@@ -95,7 +95,7 @@ const mocks = {
 				example: '', // to be defined later...
 			},
 		],
-		'/api/oauth/authorize': [
+		'/oauth/authorize': [
 			{
 				in: 'query',
 				name: 'client_id',
@@ -495,7 +495,7 @@ async function setupData() {
 	mocks.put['/admin/oauth/clients/{clientId}'][0].example = oauthClient.id;
 	mocks.delete['/admin/oauth/clients/{clientId}'][0].example = oauthClient.id;
 	mocks.post['/admin/oauth/clients/{clientId}/secret'][0].example = oauthSecretClient.id;
-	mocks.get['/api/oauth/authorize'][0].example = oauthClient.id;
+	mocks.get['/oauth/authorize'][0].example = oauthClient.id;
 
 	// Attach a search hook so /api/search is enabled
 	plugins.hooks.register('core', {

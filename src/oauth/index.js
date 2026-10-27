@@ -569,6 +569,38 @@ oauth.resolveRequestUri = () => {
 };
 
 // ---------------------------------------------------------------------------
+// Authorization endpoint middleware
+// ---------------------------------------------------------------------------
+
+// Redirects unauthenticated users to the login page, preserving the original
+// URL as the `next` parameter so the OAuth flow resumes after login.
+oauth.requireLogin = (req, res, next) => {
+	if (req.loggedIn) {
+		return next();
+	}
+	const relativePath = nconf.get('relative_path') || '';
+	const nextUrl = encodeURIComponent(req.originalUrl.replace(relativePath, ''));
+	return res.redirect(`${relativePath}/login?next=${nextUrl}`);
+};
+
+/**
+ * The middleware chain for the authorization endpoint (GET), up to and
+ * including the final controller. Shared by the root-level
+ * `/oauth/authorize` (HTML consent screen) and the Write API
+ * `/api/v3/oauth/authorize` (the same payload served as JSON).
+ *
+ * `middleware` is passed in (rather than imported) to avoid a circular
+ * dependency between the middleware and oauth modules.
+ */
+oauth.getAuthorizeMiddlewares = (middleware, authorizeController) => [
+	middleware.authenticateRequest,
+	oauth.requireLogin,
+	oauth.resolveRequestUri(),
+	oauth.getServer().authorize({}, oauth.validateAuthorizationRequest, undefined, oauth.completeAuthorizationRequest),
+	authorizeController,
+];
+
+// ---------------------------------------------------------------------------
 // RFC 8414 authorization server metadata
 // ---------------------------------------------------------------------------
 

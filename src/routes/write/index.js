@@ -47,6 +47,7 @@ Write.reload = async (params) => {
 	router.use('/api/v3/admin', require('./admin')());
 	router.use('/api/v3/files', require('./files')());
 	router.use('/api/v3/utilities', require('./utilities')());
+	router.use('/api/v3/oauth', require('./oauth')());
 
 	setupApiRoute(router, 'get', '/api/v3/ping', writeControllers.utilities.ping.get);
 	setupApiRoute(router, 'post', '/api/v3/ping', writeControllers.utilities.ping.post);

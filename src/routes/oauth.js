@@ -1,13 +1,9 @@
 'use strict';
 
-const nconf = require('nconf');
-
 const middleware = require('../middleware');
 const oauth = require('../oauth');
 
 module.exports = function (app, router, mw, ctrls) {
-	const relativePath = nconf.get('relative_path') || '';
-
 	// RFC 8414 authorization server metadata (mounted at the instance root,
 	// like the other /.well-known routes)
 	app.get('/.well-known/oauth-authorization-server', async (req, res) => {
@@ -24,14 +20,6 @@ module.exports = function (app, router, mw, ctrls) {
 	// Authorization endpoint
 	// -----------------------------------------------------------------------
 
-	const requireLogin = (req, res, next) => {
-		if (req.loggedIn) {
-			return next();
-		}
-		const nextUrl = encodeURIComponent(req.originalUrl.replace(relativePath, ''));
-		return res.redirect(`${relativePath}/login?next=${nextUrl}`);
-	};
-
 	// csrf-sync signals a CSRF failure by forwarding its `EBADCSRFTOKEN`
 	// error, whose code is not an OAuth registered error. Intercept it here so
 	// the consent POST answers with the standard `invalid_request` shape, and
@@ -47,22 +35,14 @@ module.exports = function (app, router, mw, ctrls) {
 		});
 	};
 
-	const authorizeMiddlewares = [
-		middleware.authenticateRequest,
-		requireLogin,
-		oauth.resolveRequestUri(),
-		oauth.getServer().authorize({}, oauth.validateAuthorizationRequest, undefined, oauth.completeAuthorizationRequest),
-		ctrls.oauth.authorize.get,
-	];
-
-	// `/oauth/authorize` serves the HTML consent screen; `/api/oauth/authorize`
-	// serves the same payload as JSON (via the render middleware's isAPI check).
-	router.get('/oauth/authorize', authorizeMiddlewares, oauth.authorizationErrorHandler());
-	router.get('/api/oauth/authorize', authorizeMiddlewares, oauth.authorizationErrorHandler());
+	// `/oauth/authorize` serves the HTML consent screen. The Write API exposes
+	// the same payload as JSON at `/api/v3/oauth/authorize` (see
+	// src/routes/write/oauth.js).
+	router.get('/oauth/authorize', oauth.getAuthorizeMiddlewares(middleware, ctrls.oauth.authorize.get), oauth.authorizationErrorHandler());
 
 	router.post('/oauth/authorize',
 		middleware.authenticateRequest,
-		requireLogin,
+		oauth.requireLogin,
 		mw.applyCSRF,
 		csrfErrorHandler,
 		...oauth.getServer().decision({ userProperty: 'user' }, oauth.parseAuthorizationDecision, oauth.completeAuthorizationRequest),
@@ -133,10 +113,10 @@ module.exports = function (app, router, mw, ctrls) {
 	// Userinfo endpoint (OpenID Connect Core 3.1)
 	// -----------------------------------------------------------------------
 
-	// Bearer-token (and cookie-session) authenticated. `/api/oauth/userinfo`
-	// serves the same payload as JSON for the Read API.
+	// Bearer-token (and cookie-session) authenticated. The Write API exposes
+	// the same payload as JSON at `/api/v3/oauth/userinfo` (see
+	// src/routes/write/oauth.js).
 	router.get('/oauth/userinfo', middleware.authenticateRequest, ctrls.oauth.userinfo);
-	router.get('/api/oauth/userinfo', middleware.authenticateRequest, ctrls.oauth.userinfo);
 
 	// -----------------------------------------------------------------------
 	// Revocation endpoint (RFC 7009)
