@@ -8,8 +8,8 @@
 	"hint-1": "Përcaktoni një adresë IP të vetme për rresht. Mund të shtoni blloqe IP për sa kohë që ato ndjekin formatin CIDR (p.sh. <code>192.168.100.0/22</code>).",
 	"hint-2": "Mund të shtoni në komente duke filluar rreshtat me simbolin <code>#</code>.",
 
-	"validate.x-valid": "<strong>% 1</strong> nga <strong>%2</strong> rregull(e) të vlefshme.",
-	"validate.x-invalid": "Rregullat e mëposhtme <strong>% 1</strong> janë të pavlefshme:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Lista e zezë u aplikua",
 

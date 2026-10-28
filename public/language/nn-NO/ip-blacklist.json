@@ -8,8 +8,8 @@
 	"hint-1": "Definer éi IP-adresse per linje. Du kan leggje til IP-blokker så lenge dei følger CIDR-formatet (t.d. 192.168.100.0/22).",
 	"hint-2": "Pass på å validere reglane før du tek dei i bruk.",
 
-	"validate.x-valid": "<strong>%1</strong> av <strong>%2</strong> reglar er gyldige.",
-	"validate.x-invalid": "Følgjande <strong>%1</strong> reglar er ugyldige. ",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Blacklist brukt",
 

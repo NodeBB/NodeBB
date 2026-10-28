@@ -66,10 +66,10 @@
 	"blocklists.add-help": "请输入您要添加的封禁列表的 URL。NodeBB 支持符合 <a href=\"https://iftas.org\">IFTAS</a> 所用格式的封禁列表。",
 	"blocklists.refreshed": "黑名单已更新——现在包含 %1 条记录",
 	"blocklists.view.title": "查看黑名单",
-	"blocklists.view.intro": "以下是该屏蔽列表所屏蔽的 %1 个域名：",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "过滤",
-	"count": "该 NodeBB 目前可检测到 <strong>%1</strong> 台服务器",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "指定您希望限制其与 NodeBB 进行交互的服务器。或者，您也可以选择性地 <em>允许</em> 与特定服务器进行交互。这两种选项均受支持，但它们是互斥的。<br /><br /><strong>注意:</strong> 目前，<em>“静音”</em> 和 <em>“暂停”</em> 的管控级别被视为相同——两者都会完全阻止交互。<em>“过滤”</em> 允许交互，但会将内容放入队列以待审核。",
 	"server.filter-allow-list": "将其用作允许列表",
 	"server.filter-allow-list-help": "启用此功能后，仅允许核心列表中的域名进行联合。在白名单模式下，管控级别设置将被忽略。",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "暂无活动记录。",
 	"analytics.activities-by-type-not-filterable": "<strong>注:</strong> 此细分是全局的，未按所选主机名进行筛选。",
 
-	"errors.intro": "该实例在过去 24 小时内记录了以下 %1 个错误。",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "此错误的负载已不存在。",
 	"errors.hostname": "主机名",
 	"errors.type": "类型",

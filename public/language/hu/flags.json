@@ -4,7 +4,7 @@
 	"reports": "Jelentés",
 	"first-reported": "Először jelentve",
 	"no-flags": "Hurrá! Nincs megjelölés.",
-	"x-flags-found": "%1 megjelölés találva.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Engedményes",
 	"update": "Frissítés",
 	"updated": "Frissítve",

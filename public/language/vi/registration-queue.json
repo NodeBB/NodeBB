@@ -9,7 +9,7 @@
 	"reject-all": "",
 	"reject-all-confirm": "Bạn có muốn từ chối tất cả yêu cầu đăng ký trên trang này không?",
 	"reject-selected": "Từ Chối Đã Chọn",
-	"reject-selected-confirm": "Bạn có muốn từ chối %1 yêu cầu đăng ký đã chọn không?",
+	"reject-selected-confirm": "{count, plural, one {Do you want to reject {count} selected registration request?} other {Do you want to reject {count} selected registration requests?}}",
 	"list.name": "Tên",
 	"list.email": "Thư điện tử",
 	"list.ip": "IP",

@@ -4,7 +4,7 @@
 	"reports": "신고",
 	"first-reported": "첫 번째 신고",
 	"no-flags": "우와! 신고된 내용이 없습니다.",
-	"x-flags-found": "%1개의 신고 찾음.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "담당자",
 	"update": "업데이트",
 	"updated": "업데이트됨",

@@ -8,8 +8,8 @@
 	"hint-1": "每行定義一個獨立 IP 地址。您可以添加 IP 範圍，只要它們滿足 CIDR 格式(e.g. <code>192.168.100.0/22</code>)。",
 	"hint-2": "您可以通過以<code>#</code>標誌開頭的行來添加註解。",
 
-	"validate.x-valid": "<strong>%1</strong> / <strong>%2</strong>的規則有效。",
-	"validate.x-invalid": "下列 <strong>%0</strong> 個規則無效：",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "黑名單生效",
 

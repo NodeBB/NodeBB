@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Skriv inn URL-en til blokkeringslisten du vil legge til. NodeBB støtter blokkeringslister som følger formatet brukt av  <a href=\"https://iftas.org\">IFTAS</a>.",
 	"blocklists.refreshed": "Blokkeringslisten er oppdatert. Den inneholder nå %1 oppføringer",
 	"blocklists.view.title": "Vis blokkeringsliste",
-	"blocklists.view.intro": "Dette er de %1 domenene som blokkeres av denne blokkeringslisten:",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "Filtrering",
-	"count": "Denne NodeBB-installasjonen kjenner for øyeblikket til <strong>%1</strong> server(e)",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "Angi servere du vil begrense fra å samhandle med NodeBB. Alternativt kan du velge å bare <em>tillate</em> samhandling med bestemte servere i stedet. Begge alternativene støttes, selv om de utelukker hverandre. <br /><br /><strong>Merk</strong> <em>Demp</em> og <em>Suspender</em> blir for øyeblikket behandlet likt – begge blokkerer all samhandling. <em>Filtrer</em> tillater samhandling, men sender innhold til kø for gjennomgang.",
 	"server.filter-allow-list": "Bruk dette som en tillatelsesliste i stedet",
 	"server.filter-allow-list-help": "Når dette er aktivert, kan bare domener i kjernelisten føderere. Innstillinger for alvorlighetsgrad ignoreres i tillatelseslistemodus.",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "Ingen aktiviteter registrert ennå.",
 	"analytics.activities-by-type-not-filterable": "<strong>Merk:</strong> Denne oversikten er global og filtreres ikke etter valgt vertsnavn.",
 
-	"errors.intro": "Denne instansen registrerte følgende feil de siste 24 timene (%1):",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "Dataene knyttet til denne feilen finnes ikke lenger.",
 	"errors.hostname": "Vertsnavn",
 	"errors.type": "Type",

@@ -66,10 +66,10 @@
 	"blocklists.add-help": "הזינו את כתובת האתר של רשימת החסימה שברצונכם להוסיף. NodeBB מבינה רשימת חסימות התואמות את הפורמט שבו משתמשת <a href=\"https://iftas.org\">IFTAS</a>.",
 	"blocklists.refreshed": "רשימת החסימות התעדכנה - היא מכילה כעת %1 ערכים",
 	"blocklists.view.title": "הצגת רשימת חסימות",
-	"blocklists.view.intro": "אלו הם %1 הדומיינים שנחסמו על ידי רשימת חסימות זו:",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "סינון",
-	"count": "NodeBB זה מודע כרגע ל-<strong>%1</strong> שרתים",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "ציינו שרתים שתרצו להגביל מאינטראקציה עם ה-NodeBB שלכם. לחלופין, תוכלו לבחור <em>לאפשר</em> באופן סלקטיבי אינטראקציה עם שרתים ספציפיים, במקום זאת. שתי האפשרויות נתמכות, למרות שהן סותרות זו את זו.<br /><br /><strong>הערה:</strong> חומרות <em>השתקה</em> ו- <em>השהייה</em> מטופלות באופן זהה כרגע- שתיהן חוסמות אינטראקציה מלאה. <em>מסנן</em> מאפשר אינטראקציה אך מעמיד תוכן בתור לבדיקה.",
 	"server.filter-allow-list": "השתמשו בזה בתור רשימת אישורים במקום זאת",
 	"server.filter-allow-list-help": "כאשר מופעל, רק דומיינים ברשימת הליבה רשאים להתאחד. מתעלמים מהגדרות חומרה במצב רשימת ההיתרים.",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "No activities recorded yet.",
 	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
-	"errors.intro": "השגיאות הבאות %1 נרשמו במקרה זה במהלך 24 השעות האחרונות.",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "ה-payload עבור שגיאה זו אינו קיים עוד.",
 	"errors.hostname": "שם מארח",
 	"errors.type": "סוג",

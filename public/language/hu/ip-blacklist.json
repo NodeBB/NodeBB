@@ -8,8 +8,8 @@
 	"hint-1": "Soronként egy IP címet tüntess fel. Megadhatsz IP cím blokkokat is amíg azok követik a CIDR formátumot (e.g. <code>192.168.100.0/22</code>).",
 	"hint-2": "Adhatsz hozzá megjegyzést, hogyha a <code>#</code> szimbólumot a szöveg elé rakod.",
 
-	"validate.x-valid": "<strong>%1</strong> kívül <strong>%2</strong> szabály(ok) érvényesek.",
-	"validate.x-invalid": "A következő szabályok érvénytelenek: <strong>%1</strong> ",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Tiltólista alkalmazva",
 

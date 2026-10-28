@@ -4,7 +4,7 @@
 	"reports": "報告",
 	"first-reported": "最初の報告",
 	"no-flags": "おめでとう!フラグは見つかりませんでした。",
-	"x-flags-found": "%1件のフラグが見つかりました。",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "担当者",
 	"update": "更新",
 	"updated": "更新されました",

@@ -4,7 +4,7 @@
 	"reports": "Raportet",
 	"first-reported": "Raportuar për herë të parë",
 	"no-flags": "Juhu! Nuk u gjet asnje gabim.",
-	"x-flags-found": "%1 flag(s) found.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Përfituesi",
 	"update": "Përditëso",
 	"updated": "I përditësuar",

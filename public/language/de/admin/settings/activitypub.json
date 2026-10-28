@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Gib die URL der Sperrliste ein, die du hinzufügen möchtest. NodeBB erkennt Sperrlisten, die dem von <a href=\"https://iftas.org\">IFTAS</a>.verwendeten Format entsprechen.",
 	"blocklists.refreshed": "Die Sperrliste wurde aktualisiert – sie enthält nun %1 Einträge",
 	"blocklists.view.title": "Sperrliste anzeigen",
-	"blocklists.view.intro": "Dies sind die %1 Domains, die von dieser Blockliste gesperrt wurden:",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "Filterung",
-	"count": "Dieses NodeBB kennt derzeit <strong>%1</strong> Server",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "Gib die Server an, deren Interaktion mit deinem NodeBB du einschränken möchtest. Alternativ kannst du stattdessen auch die Interaktion mit bestimmten Servern selektiv <em>zulassen.</em> Beide Optionen werden unterstützt, schließen sich jedoch gegenseitig aus. <br /><br /><strong>Hinweis:</strong> Die Schweregrade <em>Stumm</em> and <em>Aussetzen</em> werden derzeit identisch behandelt – beide blockieren die Interaktion vollständig. <em>Filter</em> lässt die Interaktion zu, stellt Inhalte jedoch zur Überprüfung in die Warteschlange.",
 	"server.filter-allow-list": "Stattdessen als Allow-Liste verwenden",
 	"server.filter-allow-list-help": "Wenn diese Option aktiviert ist, dürfen nur Domänen aus der Kernliste eine Föderation bilden. Die Schweregradeinstellungen werden im Zulassungslistenmodus ignoriert.",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "Es wurden noch keine Aktivitäten erfasst.",
 	"analytics.activities-by-type-not-filterable": "<strong>Hinweis:</strong> Diese Aufschlüsselung ist weltweit und nicht nach dem ausgewählten Hostnamen gefiltert.",
 
-	"errors.intro": "Folgende(r) %1 Fehler wurden von dieser Instanz in den letzten 24 Stunden protokolliert.",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden.",
 	"errors.hostname": "Hostname",
 	"errors.type": "Typ",

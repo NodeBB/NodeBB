@@ -8,8 +8,8 @@
 	"hint-1": "Дефинишите једну IP адресу по реду. Можете додати IP блокове све док следе формат CIDR  (нпр. <code>192.168.100.0/22</code>).",
 	"hint-2": "У коментаре можете додавати почетне редове са симболом <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> од <strong>%2</strong> правила важеће.",
-	"validate.x-invalid": "Следећа правила (укупно <strong>%1</strong>) су неважећа:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Црна листа је примењена",
 

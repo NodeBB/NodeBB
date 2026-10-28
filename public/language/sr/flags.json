@@ -4,7 +4,7 @@
 	"reports": "Извештаји",
 	"first-reported": "Прво пријављено",
 	"no-flags": "Ура! Нема заставица.",
-	"x-flags-found": "Пронађено заставица: %1.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Заступник",
 	"update": "Ажурирај",
 	"updated": "Ажурирано",

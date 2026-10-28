@@ -9,7 +9,7 @@
 	"reject-all": "Отхвърляне на всички",
 	"reject-all-confirm": "Наистина ли искате да отхвърлите всички заявки за регистрация на тази страница?",
 	"reject-selected": "Отхвърляне на избраните",
-	"reject-selected-confirm": "Наистина ли искате да отхвърлите избраните (%1) заявки за регистрация?",
+	"reject-selected-confirm": "{count, plural, one {Do you want to reject {count} selected registration request?} other {Do you want to reject {count} selected registration requests?}}",
 	"list.name": "Няма",
 	"list.email": "Е-поща",
 	"list.ip": "IP адрес",

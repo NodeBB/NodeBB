@@ -8,8 +8,8 @@
 	"hint-1": "Určete jednotlivou IP adresu na řádek. Můžete přidat IP bloky splňují-li formát CIDR (tj. <code>192.168.100.0/22</code>).",
 	"hint-2": "Můžete přidat i komentáře, bude-li řádek začínat symbolem <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> z <strong>%2</strong> pravidel je platných.",
-	"validate.x-invalid": "Následujících <strong>%1</strong> pravidel není platných:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Černá listina byla použita",
 

@@ -4,7 +4,7 @@
 	"reports": "报告",
 	"first-reported": "首次报告",
 	"no-flags": "啊哈！没发现任何的举报。",
-	"x-flags-found": "发现%1个标志。",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "受委托人",
 	"update": "更新",
 	"updated": "已更新",

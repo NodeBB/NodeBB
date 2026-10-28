@@ -4,7 +4,7 @@
 	"reports": "Báo cáo",
 	"first-reported": "Được báo cáo đầu tiên",
 	"no-flags": "Hoan hô! Không tìm thấy cờ.",
-	"x-flags-found": "%1 cờ tìm thấy.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Ủy nhiệm",
 	"update": "Cập nhật",
 	"updated": "Đã cập nhật",

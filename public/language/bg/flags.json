@@ -4,7 +4,7 @@
 	"reports": "Доклади",
 	"first-reported": "Първо докладване",
 	"no-flags": "Ура! Няма намерени доклади.",
-	"x-flags-found": "Намерени доклади: %1.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Назначен",
 	"update": "Обновяване",
 	"updated": "Обновено",

@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Saisissez l’URL de la liste de blocage à ajouter. NodeBB prend en charge les listes de blocage conformes au format <a href=\"https://iftas.org\">IFTAS</a>. ",
 	"blocklists.refreshed": "Liste de blocage actualisée — elle contient désormais %1 entrées",
 	"blocklists.view.title": "Afficher la liste de blocage",
-	"blocklists.view.intro": "Voici les %1 domaine(s) bloqués par cette liste de blocage : ",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "Filtrage",
-	"count": "Ce NodeBB connaît actuellement <strong>%1</strong> serveur(s)",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "Indiquez les serveurs dont vous souhaitez restreindre l'interaction avec votre NodeBB. Vous pouvez également choisir <em>d'autoriser</em> de manière sélective l'interaction avec certains serveurs. Ces deux options sont prises en charge, mais elles s'excluent mutuellement.<br /><br /><strong>Remarque:</strong> Les niveaux de gravité <em>Silence</em> et <em>Suspension</em> sont actuellement traités de la même manière : ils bloquent tous deux complètement l'interaction. Le niveau <em>Filtre</em> autorise l'interaction mais place le contenu en file d'attente pour examen.",
 	"server.filter-allow-list": "Utiliser comme liste blanche",
 	"server.filter-allow-list-help": "Lorsque cette option est activée, seuls les domaines figurant dans la liste principale sont autorisés à se fédérer. Les paramètres de niveau de gravité sont ignorés en mode « liste blanche ».",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "Aucune activité enregistrée pour le moment.",
 	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
-	"errors.intro": "Les %1 erreur(s) suivantes ont été enregistrées par cette instance au cours des dernières 24 heures.",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "Les données de cette erreur n’existent plus.",
 	"errors.hostname": "Nom d'hôte",
 	"errors.type": "Type",

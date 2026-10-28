@@ -66,10 +66,10 @@
 	"blocklists.add-help": "追加したいブロックリストの URL を入力してください。NodeBB は <a href=\"https://iftas.org\">IFTAS</a> で使われている形式のブロックリストを認識できます。",
 	"blocklists.refreshed": "ブロックリストを更新しました。現在は %1 件のエントリがあります",
 	"blocklists.view.title": "ブロックリストを表示",
-	"blocklists.view.intro": "このブロックリストでブロックされている %1 件のドメインは次のとおりです:",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "フィルタリング",
-	"count": "このNodeBBは現在<strong>%1</strong>台のサーバーを認識しています",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "NodeBB とのやり取りを制限したいサーバーを指定できます。代わりに、特定のサーバーとのやり取りのみを選択的に<em>許可</em>することも可能です。どちらの方法も利用できますが、同時には使用できません。<br /><br /><strong>注意:</strong> 現時点では、<em>Silence</em> と <em>Suspend</em> の重要度は同じ扱いです — どちらもやり取りを完全にブロックします。<em>Filter</em> はやり取りを許可しますが、コンテンツはレビュー用の投稿キューに入れられます。",
 	"server.filter-allow-list": "これを許可リストとして使用",
 	"server.filter-allow-list-help": "有効にすると、リストに登録されたドメインのみがフェデレーションできます。許可リストモードでは、重大度設定は無視されます。",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "No activities recorded yet.",
 	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
-	"errors.intro": "このインスタンスでは、過去 24 時間以内に次の %1 件のエラーが記録されました。",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "このエラーのペイロードは既に存在しません。",
 	"errors.hostname": "ホスト名",
 	"errors.type": "タイプ",

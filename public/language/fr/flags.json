@@ -4,7 +4,7 @@
 	"reports": "Rapports",
 	"first-reported": "Premier rapport",
 	"no-flags": "Excellent ! Aucun signalement trouvé.",
-	"x-flags-found": "%1 signalement(s) trouvé(s).",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Assigné",
 	"update": "Mettre à jour",
 	"updated": "Mis à jour",

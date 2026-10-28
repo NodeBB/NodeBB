@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Inserisci l'URL della lista di blocco che desideri aggiungere. NodeBB supporta le liste di blocco che corrispondono al formato usato da <a href=\"https://iftas.org\">IFTAS</a>.",
 	"blocklists.refreshed": "Lista di blocco aggiornata — ora contiene %1 voci",
 	"blocklists.view.title": "Visualizza lista dei blocchi",
-	"blocklists.view.intro": "Questi sono i %1 dominio(i) bloccati da questa lista di blocco:",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "Filtraggio",
-	"count": "Questo NodeBB è attualmente a conoscenza di <strong>%1</strong> server",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "Specifica i server a cui desideri impedire l'interazione con il tuo NodeBB. In alternativa, puoi scegliere di <em>consentire</em> in modo selettivo l'interazione con server specifici. Entrambe le opzioni sono supportate, sebbene si escludano a vicenda. <br /><br /><strong>Nota:</strong> Attualmente, le opzioni <em>Silenzia</em> e <em>Sospendi</em> sono trattate allo stesso modo: entrambe bloccano completamente l'interazione. L'opzione <em>Filtro</em> consente l'interazione ma mette in coda il contenuto per la revisione.",
 	"server.filter-allow-list": "Usa invece questo come Elenco permessi",
 	"server.filter-allow-list-help": "Quando abilitata, solo i domini presenti nell'elenco principale possono federarsi. Le impostazioni di gravità sono ignorate in modalità elenco consentito.",
@@ -107,7 +107,7 @@
 	"analytics.activities-by-type-empty": "Non sono state registrate attività.",
 	"analytics.activities-by-type-not-filterable": "<strong>Nota:</strong> Questa ripartizione è globale e non è filtrata per il nome host selezionato.",
 
-	"errors.intro": "Nelle ultime 24 ore, questa istanza ha registrato il seguente %1 errore(i).",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "Il payload per questo errore non esiste più.",
 	"errors.hostname": "Nome host",
 	"errors.type": "Tipo",

@@ -4,7 +4,7 @@
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "帥！沒發現任何的舉報。",
-	"x-flags-found": "%1 flag(s) found.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "受指派人",
 	"update": "更新",
 	"updated": "已更新",

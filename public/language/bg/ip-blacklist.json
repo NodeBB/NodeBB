@@ -8,8 +8,8 @@
 	"hint-1": "Въвеждайте по един IP адрес на ред. Можете да добавяте групи от IP адреси, ако спазват формата на CIDR (напр. <code>192.168.100.0/22</code>).",
 	"hint-2": "Можете да добавяте коментари, като в началото на реда поставите знака <code>#</code>.",
 
-	"validate.x-valid": "Правилни правила: <strong>%1</strong> от <strong>%2</strong>.",
-	"validate.x-invalid": "Следните <strong>%1</strong> правила са грешни:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Черният списък е приложен",
 
