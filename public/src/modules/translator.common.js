@@ -1,5 +1,10 @@
 'use strict';
 
+const icu = require('./icu.common');
+
+// matches the outer argument of an ICU plural/select, e.g. `{%1, plural, …}`
+const ICU_PATTERN = /\{(?:%\d+|[A-Za-z_][A-Za-z0-9_]*)\s*,\s*(?:plural|select)\b/;
+
 module.exports = function (utils, load, warn) {
 	const assign = Object.assign || jQuery.extend;
 
@@ -260,6 +265,54 @@ module.exports = function (utils, load, warn) {
 		};
 
 		/**
+		 * Render a translation value, using ICU MessageFormat (plural/select) when
+		 * the value contains one, and plain %1/%2 substitution otherwise.
+		 * @param {string} translation - Raw translation value
+		 * @param {string[]} args - Already-escaped arguments for %1, %2, …
+		 * @param {string} [locale] - BCP-47 locale for plural category selection
+		 * @returns {string}
+		 */
+		Translator.prototype.renderICU = function (translation, args, locale) {
+			if (typeof translation !== 'string' || !ICU_PATTERN.test(translation)) {
+				return replaceArguments(translation, args);
+			}
+			locale = locale || Translator.getLanguage();
+			const icuArgs = {};
+			args.forEach((arg, index) => {
+				const n = index + 1;
+				icuArgs[`arg${n}`] = arg;
+				// braced positional references like `{%1}` inside a branch
+				icuArgs[`%${n}`] = arg;
+			});
+			// Named arguments (e.g. `{count, plural, …}`) have no %N to rewrite,
+			// so bind each to the positional args by order of first appearance.
+			// NodeBB passes arguments positionally, but Transifex round-trips
+			// named ICU strings.
+			const namedArgs = [];
+			const namedRe = /\{([A-Za-z_][A-Za-z0-9_]*)\s*[,}]/g;
+			let namedMatch;
+			while ((namedMatch = namedRe.exec(translation)) !== null) {
+				if (!namedArgs.includes(namedMatch[1])) {
+					namedArgs.push(namedMatch[1]);
+				}
+			}
+			namedArgs.forEach((name, index) => {
+				if (args[index] !== undefined && icuArgs[name] === undefined) {
+					icuArgs[name] = args[index];
+				}
+			});
+			try {
+				// Only the outer argument name is rewritten to a valid ICU identifier,
+				// bare %N placeholders inside the selected branch are substituted afterwards
+				const rendered = icu.renderICU(translation.replace(/%(\d+)/, 'arg$1'), icuArgs, locale);
+				return replaceArguments(rendered, args);
+			} catch (e) {
+				warn(`ICU translation failed, falling back to plain substitution: ${e.message}`);
+				return replaceArguments(translation, args);
+			}
+		};
+
+		/**
 		 * Translates a specific key and array of arguments
 		 * @param {string} name - Translation key (ex. 'global:home')
 		 * @param {string[]} args - Arguments for `%1`, `%2`, etc
@@ -290,7 +343,7 @@ module.exports = function (utils, load, warn) {
 				}
 
 				return self.txArgs(args).then(function (translatedArgs) {
-					return replaceArguments(translated, translatedArgs);
+					return self.renderICU(translated, translatedArgs, self.lang);
 				});
 			});
 		};
@@ -483,6 +536,9 @@ module.exports = function (utils, load, warn) {
 		Translator: Translator,
 
 		compile: Translator.compile,
+		renderICU: function (translation, args, locale) {
+			return Translator.create(locale).renderICU(translation, args, locale);
+		},
 		escape: Translator.escape,
 		unescape: Translator.unescape,
 		escapeArg: Translator.escapeArg,
