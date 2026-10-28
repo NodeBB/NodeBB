@@ -9,6 +9,9 @@ module.exports = function (module) {
 	const util = require('util');
 	const sleep = util.promisify(setTimeout);
 
+	const hintKeyScore = { _key: 1, score: -1 };
+	const hintKeyValue = { _key: 1, value: -1 };
+
 	require('./sorted/add')(module);
 	require('./sorted/remove')(module);
 	require('./sorted/union')(module);
@@ -89,6 +92,7 @@ module.exports = function (module) {
 				.sort({ score: sort })
 				.skip(skip)
 				.limit(limit)
+				.hint(hintKeyScore)
 				.toArray();
 		}
 
@@ -156,14 +160,18 @@ module.exports = function (module) {
 			query.score.$lte = max;
 		}
 
-		return await module.client.collection('objects').countDocuments(query);
+		return await module.client.collection('objects').countDocuments(query, {
+			hint: hintKeyScore,
+		});
 	};
 
 	module.sortedSetCard = async function (key) {
 		if (!key) {
 			return 0;
 		}
-		return await module.client.collection('objects').countDocuments({ _key: key });
+		return await module.client.collection('objects').countDocuments({ _key: key }, {
+			hint: hintKeyScore,
+		});
 	};
 
 	module.sortedSetsCard = async function (keys) {
@@ -188,7 +196,9 @@ module.exports = function (module) {
 			query.score.$lte = max;
 		}
 
-		return await module.client.collection('objects').countDocuments(query);
+		return await module.client.collection('objects').countDocuments(query, {
+			hint: hintKeyScore,
+		});
 	};
 
 	module.sortedSetRank = async function (key, value) {
@@ -273,7 +283,10 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 		const result = await module.client.collection('objects').findOne(
 			{ _key: key, value: value },
-			{ projection: { _id: 0, _key: 0, value: 0 } }
+			{
+				projection: { _id: 0, _key: 0, value: 0 },
+				hint: hintKeyValue,
+			}
 		);
 		return result ? result.score : null;
 	};
@@ -285,7 +298,10 @@ module.exports = function (module) {
 		value = helpers.valueToString(value);
 		const result = await module.client.collection('objects').find(
 			{ _key: { $in: keys }, value: value },
-			{ projection: { _id: 0, value: 0 } }
+			{
+				projection: { _id: 0, value: 0 },
+				hint: hintKeyValue,
+			}
 		).toArray();
 		const scoreMap = Object.create(null);
 		result.forEach((item) => {
@@ -304,7 +320,10 @@ module.exports = function (module) {
 		values = values.map(helpers.valueToString);
 		const result = await module.client.collection('objects').find(
 			{ _key: key, value: { $in: values } },
-			{ projection: { _id: 0, _key: 0 } }
+			{
+				projection: { _id: 0, _key: 0 },
+				hint: hintKeyValue,
+			}
 		).toArray();
 
 		const valueToScore = Object.create(null);
@@ -324,6 +343,7 @@ module.exports = function (module) {
 			_key: key, value: value,
 		}, {
 			projection: { _id: 0, value: 1 },
+			hint: hintKeyValue,
 		});
 		return !!result;
 	};
@@ -340,6 +360,7 @@ module.exports = function (module) {
 			_key: key, value: { $in: values },
 		}, {
 			projection: { _id: 0, value: 1 },
+			hint: hintKeyValue,
 		}).toArray();
 
 		const foundMembers = new Set(results.map(item => item.value));
@@ -355,6 +376,7 @@ module.exports = function (module) {
 			_key: { $in: keys }, value: value,
 		}, {
 			projection: { _id: 0, _key: 1, value: 1 },
+			hint: hintKeyValue,
 		}).toArray();
 
 		const keysWithMember = new Set(results.map(item => item._key));
@@ -395,6 +417,7 @@ module.exports = function (module) {
 			_key: arrayOfKeys ? { $in: keys } : keys[0],
 		}, { projection: projection })
 			.sort({ score: 1 })
+			.hint(hintKeyScore)
 			.toArray();
 
 		if (!arrayOfKeys) {
@@ -434,6 +457,7 @@ module.exports = function (module) {
 				returnDocument: 'after',
 				includeResultMetadata: true,
 				upsert: true,
+				hint: hintKeyValue,
 			});
 			return result && result.value ? result.value.score : null;
 		} catch (err) {
@@ -456,17 +480,21 @@ module.exports = function (module) {
 		const aggregated = dbHelpers.aggregateIncrByBulk(data);
 		const findQuery = { $or: [] };
 
-		const bulk = module.client.collection('objects').initializeUnorderedBulkOp();
-		aggregated.forEach(([key, incr, value]) => {
+		const operations = aggregated.map(([key, incr, value]) => {
 			const query = { _key: key, value: value };
 			findQuery.$or.push(query);
-			bulk.find(query)
-				.upsert()
-				.update({ $inc: { score: parseFloat(incr) } });
+			return {
+				updateOne: {
+					filter: query,
+					update: { $inc: { score: parseFloat(incr) } },
+					upsert: true,
+					hint: hintKeyValue,
+				},
+			};
 		});
 
 		try {
-			await bulk.execute();
+			await module.client.collection('objects').bulkWrite(operations);
 		} catch (err) {
 			// retry failed e11000 operations
 			if (err.code === 11000 || (err.writeErrors && err.writeErrors.some(e => e.code === 11000))) {
@@ -482,7 +510,10 @@ module.exports = function (module) {
 
 		const result = await module.client.collection('objects').find(
 			findQuery,
-			{ projection: { _id: 0, _key: 1, value: 1, score: 1 } },
+			{
+				projection: { _id: 0, _key: 1, value: 1, score: 1 },
+				hint: hintKeyValue,
+			},
 		).toArray();
 
 		const map = Object.create(null);
@@ -514,8 +545,10 @@ module.exports = function (module) {
 		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
 
-		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, value: 1 } })
-			.sort({ value: sort })
+		const data = await module.client.collection('objects').find(query, {
+			projection: { _id: 0, value: 1 },
+			hint: hintKeyValue,
+		}).sort({ value: sort })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
 			.toArray();
@@ -527,7 +560,9 @@ module.exports = function (module) {
 		const query = { _key: key };
 		buildLexQuery(query, min, max);
 
-		await module.client.collection('objects').deleteMany(query);
+		await module.client.collection('objects').deleteMany(query, {
+			hint: hintKeyValue,
+		});
 	};
 
 	function buildLexQuery(query, min, max) {
@@ -568,7 +603,10 @@ module.exports = function (module) {
 
 		const cursor = module.client.collection('objects').find({
 			_key: params.key, value: { $regex: regex },
-		}, { projection: project });
+		}, {
+			projection: project,
+			hint: hintKeyValue,
+		});
 
 		if (params.limit) {
 			cursor.limit(params.limit);
@@ -601,6 +639,7 @@ module.exports = function (module) {
 		const cursor = await module.client.collection('objects')
 			.find(query, { projection: project })
 			.sort({ score: sort })
+			.hint(hintKeyScore)
 			.batchSize(options.batch);
 
 		if (processFn && processFn.constructor && processFn.constructor.name !== 'AsyncFunction') {
