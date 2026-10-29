@@ -163,7 +163,7 @@
 					<label class="form-label" for="cid-{category.cid}-imageClass">
 						{{tx("admin/manage/categories:bg-image-size")}}
 					</label>
-					<select id="cid-{category.cid}-imageClass" class="form-select w-auto" data-name="imageClass" data-value="{category.imageClass}">
+					<select id="cid-{category.cid}-imageClass" class="form-select w-auto" data-name="imageClass" data-value="{category.imageClass}" data-tpl-lint-ignore>
 						<option value="auto">auto</option>
 						<option value="cover">cover</option>
 						<option value="contain">contain</option>

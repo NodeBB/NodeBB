@@ -21,7 +21,7 @@
 						<td class="d-flex gap-2 align-items-center">
 							<a href="{config.relative_path}/uid/{./user.uid}">{{buildAvatar(./user, "18px", true)}}</a>
 							<a href="{config.relative_path}/uid/{./user.uid}">{./user.username}</a>
-							{{userAgentIcons(@value)}} {../browser} {../version} on {../platform}
+							{{userAgentIcons(@value)}} {{tx("admin/dashboard:logins.user-agent", ../browser, ../version, ../platform)}}
 						</td>
 						<td class="text-nowrap"><span class="timeago" title="{./datetimeISO}"></span></td>
 					</tr>
