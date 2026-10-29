@@ -119,6 +119,7 @@ function main() {
 	}
 
 	if (total > 0) {
+		console.log(`\n↳ internationalize: wrap the text in {{tx("file:key")}}`);
 		process.exit(1);
 	}
 }
