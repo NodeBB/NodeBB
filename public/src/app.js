@@ -139,7 +139,7 @@ app.onDomReady = function () {
 					_module = await import(/* webpackChunkName: "modules/[request]" */ 'modules/' + moduleName);
 				}
 			} catch (err) {
-				console.warn(`error loading ${moduleName}\n${err.stack}`);
+				console.debug(`error loading ${moduleName}\n${err.stack}`);
 			}
 			return _module && _module.default ? _module.default : _module;
 		}
