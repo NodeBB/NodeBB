@@ -42,7 +42,7 @@
 						<div class="col-6">
 							<label class="form-label" for="hostFilter">{{tx("admin/settings/activitypub:analytics.by-hostname")}} ({relays.length})</label>
 							<select class="form-select" autocomplete="off" id="hostFilter">
-								<option value="">All relays</option>
+								<option value="">{{tx("admin/settings/activitypub:relays.all")}}</option>
 								{{{ each relays }}}
 								<option value="{./url}">{./url}</option>
 								{{{ end }}}

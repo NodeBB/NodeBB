@@ -5,20 +5,20 @@
 
 <form role="form">
 	<div class="mb-3">
-		<label class="form-label" for="type">Type</label>
+		<label class="form-label" for="type">{{tx("admin/settings/activitypub:rules.type")}}</label>
 		<select class="form-control" name="type" id="type">
-			<option value="hashtag">Hashtag</option>
-			<option value="user">User</option>
+			<option value="hashtag">{{tx("admin/settings/activitypub:rules.type-hashtag")}}</option>
+			<option value="user">{{tx("admin/settings/activitypub:rules.type-user")}}</option>
 			<!--<option value="content">Content contains...</option>-->
 		</select>
 	</div>
 	<div class="mb-3">
-		<label class="form-label" for="value">Value</label>
+		<label class="form-label" for="value">{{tx("admin/settings/activitypub:rules.value")}}</label>
 		<input type="text" id="value" name="value" title="Value" class="form-control" placeholder="forum" required>
 		<p class="form-text" id="help-text"></p>
 	</div>
 	<div class="mb-3">
-		<label class="form-label">Category</label>
+		<label class="form-label">{{tx("admin/settings/activitypub:rules.cid")}}</label>
 		<div class="d-block">
 			<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 		</div>

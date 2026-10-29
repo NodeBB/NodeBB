@@ -134,7 +134,7 @@
 				</div>
 
 				<div class="mb-3">
-					<label class="form-label" for="og_image">og:image</label>
+					<label class="form-label" for="og_image" data-tpl-lint-ignore>og:image</label>
 					<div class="d-flex gap-1">
 						<input id="og_image" type="text" class="form-control" placeholder="" data-field="og:image" />
 

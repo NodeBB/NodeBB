@@ -11,7 +11,7 @@
 					<div class="col-6">
 						<label class="form-label" for="hostFilter">{{tx("admin/settings/activitypub:analytics.by-hostname")}} ({instances.length})</label>
 						<select class="form-select" autocomplete="off" id="hostFilter">
-							<option value="">All instances</option>
+							<option value="">{{tx("admin/settings/activitypub:analytics.all-instances")}}</option>
 							{{{ each instances }}}
 							<option value="{@value}">{@value}</option>
 							{{{ end }}}
