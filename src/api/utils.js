@@ -70,6 +70,10 @@ utils.tokens.get = async (tokens) => {
 		tokenObj.token = tokens[idx];
 		tokenObj.uid = parseInt(tokenObj.uid, 10);
 		tokenObj.timestamp = parseInt(tokenObj.timestamp, 10);
+		tokenObj.type = tokenObj.type || 'api';
+		tokenObj.clientId = tokenObj.clientId || null;
+		tokenObj.scopes = tokenObj.scopes ? JSON.parse(tokenObj.scopes) : [];
+		tokenObj.expires = tokenObj.expires ? parseInt(tokenObj.expires, 10) : 0;
 		tokenObj.lastSeen = lastSeen[idx];
 		tokenObj.lastSeenISO = lastSeen[idx] ? new Date(lastSeen[idx]).toISOString() : null;
 		tokenObj.timestampISO = new Date(tokenObj.timestamp).toISOString();
@@ -97,13 +101,13 @@ utils.tokens.generate = async ({ uid, description }) => {
 	return utils.tokens.add({ token, uid, description, timestamp });
 };
 
-utils.tokens.add = async ({ token, uid, description = '', timestamp = Date.now() }) => {
+utils.tokens.add = async ({ token, uid, description = '', timestamp = Date.now(), extra = {} }) => {
 	if (!token || uid === undefined || !srcUtils.isNumber(uid)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
 	await Promise.all([
-		db.setObject(`token:${token}`, { uid, description, timestamp }),
+		db.setObject(`token:${token}`, { uid, description, timestamp, ...extra }),
 		db.sortedSetAdd(`tokens:createtime`, timestamp, token),
 		db.sortedSetAdd(`tokens:uid`, uid, token),
 	]);
@@ -115,8 +119,9 @@ utils.tokens.update = async (token, { uid, description }) => {
 	if (!srcUtils.isNumber(uid)) {
 		throw new Error('[[error:invalid-uid]]');
 	}
+	const existing = (await db.getObject(`token:${token}`)) || {};
 	await Promise.all([
-		db.setObject(`token:${token}`, { uid, description }),
+		db.setObject(`token:${token}`, { ...existing, uid, description }),
 		db.sortedSetAdd(`tokens:uid`, uid, token),
 	]);
 

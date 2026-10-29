@@ -34,6 +34,7 @@ const messaging = require('../../src/messaging');
 const plugins = require('../../src/plugins');
 const api = require('../../src/api');
 const activitypub = require('../../src/activitypub');
+const oauth = require('../../src/oauth');
 const helpers = require('../helpers');
 
 const ajv = new Ajv({ allErrors: true, strict: false });
@@ -87,6 +88,50 @@ const mocks = {
 				example: '', // to be defined later...
 			},
 		],
+		'/admin/oauth/clients/{clientId}': [
+			{
+				in: 'path',
+				name: 'clientId',
+				example: '', // to be defined later...
+			},
+		],
+		'/oauth/authorize': [
+			{
+				in: 'query',
+				name: 'client_id',
+				example: '', // to be defined later...
+			},
+			{
+				in: 'query',
+				name: 'redirect_uri',
+				example: 'https://example.com/callback',
+			},
+			{
+				in: 'query',
+				name: 'response_type',
+				example: 'code',
+			},
+			{
+				in: 'query',
+				name: 'state',
+				example: 'xyz',
+			},
+			{
+				in: 'query',
+				name: 'scope',
+				example: 'topics:read posts:read',
+			},
+			{
+				in: 'query',
+				name: 'code_challenge',
+				example: 'E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM',
+			},
+			{
+				in: 'query',
+				name: 'code_challenge_method',
+				example: 'S256',
+			},
+		],
 	},
 	post: {
 		'/admin/tokens/{token}/roll': [
@@ -96,8 +141,22 @@ const mocks = {
 				example: '', // to be defined later...
 			},
 		],
+		'/admin/oauth/clients/{clientId}/secret': [
+			{
+				in: 'path',
+				name: 'clientId',
+				example: '', // to be defined later...
+			},
+		],
 	},
 	put: {
+		'/admin/oauth/clients/{clientId}': [
+			{
+				in: 'path',
+				name: 'clientId',
+				example: '', // to be defined later...
+			},
+		],
 		'/groups/{slug}/pending/{uid}': [
 			{
 				in: 'path',
@@ -120,6 +179,13 @@ const mocks = {
 	},
 	patch: {},
 	delete: {
+		'/admin/oauth/clients/{clientId}': [
+			{
+				in: 'path',
+				name: 'clientId',
+				example: '', // to be defined later...
+			},
+		],
 		'/users/{uid}/tokens/{token}': [
 			{
 				in: 'path',
@@ -407,6 +473,29 @@ async function setupData() {
 		throw new Error('Export files were not created or finished writing in time');
 	};
 	await checkFiles();
+
+	// Create OAuth 2.0 clients for the admin OAuth routes
+	// `client` is used for the GET/PUT/DELETE client routes, `secretClient`
+	// for the secret rotation route (a separate client, since DELETE removes it).
+	const { client: oauthClient } = await oauth.clients.create({
+		name: 'Schema Test Client',
+		description: 'A client for schema testing',
+		redirectUris: ['https://example.com/callback'],
+		grants: ['authorization_code', 'refresh_token'],
+		scopes: ['topics:read', 'posts:read'],
+	});
+	const { client: oauthSecretClient } = await oauth.clients.create({
+		name: 'Schema Test Secret Client',
+		description: 'A confidential client for secret rotation testing',
+		redirectUris: ['https://example.com/callback'],
+		grants: ['authorization_code', 'refresh_token'],
+		scopes: ['topics:read'],
+	});
+	mocks.get['/admin/oauth/clients/{clientId}'][0].example = oauthClient.id;
+	mocks.put['/admin/oauth/clients/{clientId}'][0].example = oauthClient.id;
+	mocks.delete['/admin/oauth/clients/{clientId}'][0].example = oauthClient.id;
+	mocks.post['/admin/oauth/clients/{clientId}/secret'][0].example = oauthSecretClient.id;
+	mocks.get['/oauth/authorize'][0].example = oauthClient.id;
 
 	// Attach a search hook so /api/search is enabled
 	plugins.hooks.register('core', {

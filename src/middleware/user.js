@@ -45,6 +45,7 @@ module.exports = function (middleware) {
 			await controllers.authentication.onSuccessfulLogin(req, user.uid, false);
 			req.uid = parseInt(user.uid, 10);
 			req.loggedIn = req.uid > 0;
+			req.oauth = user.oauth || null;
 			return true;
 		}
 
@@ -162,6 +163,18 @@ module.exports = function (middleware) {
 		}
 		controllers.helpers.notAllowed(req, res);
 	});
+
+	middleware.oauth = {
+		/**
+		 * Require the bearer token to carry all of the given OAuth scopes.
+		 * Requests authenticated via session (cookie) never carry OAuth
+		 * scopes and are therefore rejected.
+		 */
+		requireScopes: (...requiredScopes) => {
+			const { requireScopes } = require('../oauth');
+			return helpers.try(requireScopes(...requiredScopes));
+		},
+	};
 
 	middleware.canChat = helpers.try(async (req, res, next) => {
 		const canChat = await privileges.global.can(['chat', 'chat:privileged'], req.uid);

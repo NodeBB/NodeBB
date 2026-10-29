@@ -1,0 +1,32 @@
+get:
+  tags:
+    - admin
+  summary: Get OAuth 2.0 client settings
+  description: Returns the administration page payload for managing OAuth 2.0 clients.
+  responses:
+    "200":
+      description: "A JSON object containing the OAuth 2.0 clients and available grant/scope options"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              clients:
+                type: array
+                items:
+                  $ref: ../../../components/schemas/admin/oauthClient.yaml#/OAuthClient
+              grants:
+                type: array
+                items:
+                  type: string
+              scopes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string

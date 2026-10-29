@@ -314,6 +314,13 @@
 	"api.503": "The route you are trying to call is not currently available due to a server configuration",
 	"api.reauth-required": "The resource you are trying to access requires (re-)authentication.",
 
+	"no-such-client": "No such OAuth client",
+	"api.insufficient-scopes": "The provided token does not carry the required scopes: %1",
+	"api.route-not-scoped": "The requested route is not accessible with the provided token.",
+	"api.no-such-client": "No such OAuth client",
+	"api.missing-token": "This endpoint requires an access token",
+	"oauth.unsupported-grant": "This client is not registered for the requested response type",
+
 	"activitypub.not-enabled": "Federation is not enabled on this server",
 	"activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",
 	"activitypub.invalid-content-type": "An unexpected content-type was associated with the returned content",

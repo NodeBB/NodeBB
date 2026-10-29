@@ -1,0 +1,127 @@
+get:
+  tags:
+    - admin
+  summary: Get an OAuth 2.0 client
+  description: Returns a single OAuth 2.0 client by its id.
+  parameters:
+    - name: clientId
+      schema:
+        type: string
+      in: path
+      required: true
+      description: The client identifier
+      example: "my-client-id"
+  responses:
+    '200':
+      description: The client
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              client:
+                $ref: ../../../../components/schemas/admin/oauthClient.yaml#/OAuthClient
+    '404':
+      $ref: ../../../../components/responses/404.yaml#/404
+put:
+  tags:
+    - admin
+  summary: Update an OAuth 2.0 client
+  description: Updates an existing OAuth 2.0 client.
+  parameters:
+    - name: clientId
+      schema:
+        type: string
+      in: path
+      required: true
+      description: The client identifier
+      example: "my-client-id"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: A human-readable name for the client
+              example: "My Application"
+            description:
+              type: string
+              description: Optional description of the client
+              example: "My awesome application"
+            redirectUris:
+              type: array
+              description: The URIs the client is allowed to redirect to after authorization
+              items:
+                type: string
+              example:
+                - "https://example.com/callback"
+            grants:
+              type: array
+              description: The grant types the client may use
+              items:
+                type: string
+                enum:
+                  - authorization_code
+                  - refresh_token
+                  - client_credentials
+              example:
+                - "authorization_code"
+                - "refresh_token"
+            scopes:
+              type: array
+              description: The scopes the client may request
+              items:
+                type: string
+              example:
+                - "topics:read"
+                - "posts:read"
+            public:
+              type: boolean
+              description: Whether the client is public (no client secret, PKCE required)
+              example: false
+            disabled:
+              type: boolean
+              description: Whether the client is disabled
+              example: false
+  responses:
+    '200':
+      description: Client updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              client:
+                $ref: ../../../../components/schemas/admin/oauthClient.yaml#/OAuthClient
+    '400':
+      $ref: ../../../../components/responses/400.yaml#/400
+    '404':
+      $ref: ../../../../components/responses/404.yaml#/404
+delete:
+  tags:
+    - admin
+  summary: Delete an OAuth 2.0 client
+  description: Deletes an OAuth 2.0 client and revokes all tokens issued to it.
+  parameters:
+    - name: clientId
+      schema:
+        type: string
+      in: path
+      required: true
+      description: The client identifier
+      example: "my-client-id"
+  responses:
+    '200':
+      description: Client deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../components/schemas/Status.yaml#/Status
+    '404':
+      $ref: ../../../../components/responses/404.yaml#/404

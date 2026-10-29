@@ -47,6 +47,7 @@ Write.reload = async (params) => {
 	router.use('/api/v3/admin', require('./admin')());
 	router.use('/api/v3/files', require('./files')());
 	router.use('/api/v3/utilities', require('./utilities')());
+	router.use('/api/v3/oauth', require('./oauth')());
 
 	setupApiRoute(router, 'get', '/api/v3/ping', writeControllers.utilities.ping.get);
 	setupApiRoute(router, 'post', '/api/v3/ping', writeControllers.utilities.ping.post);
@@ -63,7 +64,12 @@ Write.reload = async (params) => {
 		helpers,
 	});
 	winston.info(`[api] Adding ${pluginRouter.stack.length} route(s) to \`api/v3/plugins\``);
-	router.use('/api/v3/plugins', pluginRouter);
+	// Authenticate Bearer tokens and enforce scopes on plugin routes too.
+	// Plugin routes have no scope mapping, so a Bearer/OAuth token is denied
+	// by default (deny-by-default posture). Cookie sessions and ACP tokens
+	// (req.oauth null) pass through. See OAUTH-TODO.md for plugin scope handling.
+	const oauth = require('../../oauth');
+	router.use('/api/v3/plugins', middleware.authenticateRequest, oauth.scopes.enforce(), pluginRouter);
 
 	// 404 handling
 	router.use('/api/v3', (req, res) => {

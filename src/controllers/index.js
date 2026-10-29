@@ -31,6 +31,7 @@ Controllers.users = require('./users');
 Controllers.groups = require('./groups');
 Controllers.accounts = require('./accounts');
 Controllers.authentication = require('./authentication');
+Controllers.oauth = require('./oauth');
 Controllers.api = require('./api');
 Controllers.admin = require('./admin');
 Controllers.globalMods = require('./globalmods');
