@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 
 const file = require('../src/file');
+const icu = require('../public/src/modules/icu.common');
 
 const db = require('./mocks/databasemock');
 
@@ -53,6 +54,55 @@ describe('i18n', () => {
 				} catch (e) {
 					assert(!e, `Invalid JSON found: ${e.message}`);
 				}
+			});
+
+			it('should have well-formed ICU plural strings in the source language', () => {
+				// A source string is an ICU message when it is a whole-string plural:
+				// it starts with `{` and carries the `plural` type.
+				const isICU = (value) => typeof value === 'string' && value.startsWith('{') && value.includes('plural');
+
+				// Collect the argument names a string references via braced constructs
+				// (the outer `{name, …}` selector plus inner `{name}` / `{%N}`), ignoring
+				// category names and free text. Bare %N placeholders are not braced and are
+				// substituted after rendering, so they are not arguments here.
+				const argNames = (str) => {
+					const names = [];
+					const re = /\{([A-Za-z_%][A-Za-z0-9_%]*)\s*[,}]/g;
+					let m;
+					while ((m = re.exec(str)) !== null) {
+						if (!names.includes(m[1])) {
+							names.push(m[1]);
+						}
+					}
+					return names;
+				};
+
+				sourceStrings.forEach((hash, relPath) => {
+					Object.keys(hash).forEach((key) => {
+						const value = hash[key];
+						if (!isICU(value)) {
+							return;
+						}
+						const names = argNames(value);
+						// The first referenced name is the plural selector and must be numeric;
+						// the rest are free-text values. Exercise both the "one" and "other"
+						// branches so a malformed category in either is caught.
+						const makeArgs = (count) => {
+							const args = {};
+							names.forEach((name, i) => {
+								args[name] = i === 0 ? String(count) : `sample${i}`;
+							});
+							return args;
+						};
+						['1', '5'].forEach((count) => {
+							try {
+								icu.renderICU(value, makeArgs(count), 'en');
+							} catch (e) {
+								assert.fail(`${relPath.slice(1)}:${key} is not a well-formed ICU string: ${e.message}\n  ${value}`);
+							}
+						});
+					});
+				});
 			});
 
 			describe('should only contain lowercase or numeric language keys separated by either dashes or periods', async () => {
