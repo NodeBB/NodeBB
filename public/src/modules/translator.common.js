@@ -2,9 +2,6 @@
 
 const icu = require('./icu.common');
 
-// matches the outer argument of an ICU plural/select, e.g. `{%1, plural, …}`
-const ICU_PATTERN = /\{(?:%\d+|[A-Za-z_][A-Za-z0-9_]*)\s*,\s*(?:plural|select)\b/;
-
 module.exports = function (utils, load, warn) {
 	const assign = Object.assign || jQuery.extend;
 
@@ -265,15 +262,17 @@ module.exports = function (utils, load, warn) {
 		};
 
 		/**
-		 * Render a translation value, using ICU MessageFormat (plural/select) when
-		 * the value contains one, and plain %1/%2 substitution otherwise.
+		 * Render a translation value, using ICU MessageFormat (plural) when the
+		 * value is a whole-string plural, and plain %1/%2 substitution otherwise.
 		 * @param {string} translation - Raw translation value
 		 * @param {string[]} args - Already-escaped arguments for %1, %2, …
 		 * @param {string} [locale] - BCP-47 locale for plural category selection
 		 * @returns {string}
 		 */
 		Translator.prototype.renderICU = function (translation, args, locale) {
-			if (typeof translation !== 'string' || !ICU_PATTERN.test(translation)) {
+			// Whole-string ICU plurals (the Transifex convention): the value starts
+			// with `{` and carries the `plural` type. Everything else is plain %N.
+			if (typeof translation !== 'string' || !translation.startsWith('{') || !translation.includes('plural')) {
 				return replaceArguments(translation, args);
 			}
 			locale = locale || Translator.getLanguage();
