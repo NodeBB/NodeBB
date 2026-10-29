@@ -702,6 +702,48 @@ describe('authentication', () => {
 			assert.strictEqual(redirect.searchParams.get('register'), '[[register:invite.error-invite-only]]');
 			assert.strictEqual(await user.getUidByUsername(username), null);
 		});
+
+		it('should ignore a client-supplied uid in the registration body', async () => {
+			meta.config.requireEmailAddress = 0;
+
+			// Victim: an account with a confirmed email and no password (e.g. SSO-created)
+			const suffix = utils.generateUUID().slice(0, 8);
+			const victimUid = await user.create({
+				username: `victim${suffix}`,
+				email: `victim${suffix}@example.org`,
+			}, { emailVerification: 'verify' });
+
+			const username = `mallory${suffix}`;
+			const jar = request.jar();
+			const { response, body } = await helpers.request('post', '/register', {
+				jar,
+				body: {
+					username,
+					password: 'pending-registration-password',
+					'password-confirm': 'pending-registration-password',
+					uid: victimUid,
+				},
+			});
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
+
+			const formData = new FormData();
+			formData.append('email', '');
+			formData.append('gdpr_agree_data', 'on');
+			formData.append('gdpr_agree_email', 'on');
+			const { response: res2 } = await helpers.request('post', '/register/complete', {
+				jar,
+				body: formData,
+				redirect: 'manual',
+			});
+			assert.strictEqual(res2.status, 302);
+
+			const victimData = await user.getUserFields(victimUid, ['email', 'email:confirmed']);
+			assert.strictEqual(victimData.email, `victim${suffix}@example.org`);
+			assert.strictEqual(victimData['email:confirmed'], 1);
+
+			meta.config.requireEmailAddress = 1;
+		});
 	});
 
 	it('should fail to register if username is falsy or too short', async () => {

@@ -465,6 +465,31 @@ describe('Controllers', () => {
 				meta.config.requireEmailAddress = 1;
 			});
 
+			it('should not remove the email of a user other than the caller', async () => {
+				meta.config.requireEmailAddress = 0;
+
+				// Passwordless account with a confirmed email (e.g. SSO-created)
+				const uid = await user.create({
+					username: 'interstiuser-guest-uid', email: 'interstiuser-guest-uid@nodebb.org',
+				}, { emailVerification: 'verify' });
+
+				const result = await user.interstitials.email({
+					userData: { uid: uid, updateEmail: true },
+					req: { uid: 0, session: { id: 0 } },
+					interstitials: [],
+				});
+
+				await assert.rejects(result.interstitials[0].callback({ uid }, {
+					email: '',
+				}), { message: '[[error:no-privileges]]' });
+
+				const userData = await user.getUserData(uid);
+				assert.strictEqual(userData.email, 'interstiuser-guest-uid@nodebb.org');
+				assert.strictEqual(userData['email:confirmed'], 1);
+
+				meta.config.requireEmailAddress = 1;
+			});
+
 			it('should require a password (if one is set) for email change', async () => {
 				try {
 					const [username, password] = [utils.generateUUID().slice(0, 10), utils.generateUUID()];

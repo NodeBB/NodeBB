@@ -119,9 +119,15 @@ Interstitials.email = async (data) => {
 						throw new Error('[[error:invalid-email]]');
 					}
 
-					if (current.length && (!hasPassword || (hasPassword && isPasswordCorrect))) {
-						// User explicitly clearing their email
-						await user.email.remove(userData.uid, isSelf ? data.req.session.id : null);
+					if (current.length) {
+						if (!isSelf) {
+							throw new Error('[[error:no-privileges]]');
+						}
+
+						if (!hasPassword || isPasswordCorrect) {
+							// User explicitly clearing their email
+							await user.email.remove(userData.uid, data.req.session.id);
+						}
 					}
 				}
 			} else {

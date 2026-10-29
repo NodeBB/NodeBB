@@ -21,6 +21,13 @@ const sockets = require('../socket.io');
 const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
+	// Never trust a client-supplied uid; only the session's own uid is valid
+	if (req.uid) {
+		userData.uid = req.uid;
+	} else {
+		delete userData.uid;
+	}
+
 	if (!userData.hasOwnProperty('email')) {
 		userData.updateEmail = true;
 	}
