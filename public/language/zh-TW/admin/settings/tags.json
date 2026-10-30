@@ -8,6 +8,8 @@
     "max-per-topic": "每話題的最大標籤數",
     "min-length": "最短標籤長度",
     "max-length": "最大標籤長度",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "相關主題",
     "max-related-topics": "最大相關主題顯示量(如果主題支持)"
 }

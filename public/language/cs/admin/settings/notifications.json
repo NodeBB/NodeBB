@@ -1,5 +1,6 @@
 {
 	"notifications": "Oznámení",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Uvítání",
 	"welcome-notification-link": "Odkaz na uvítání",
 	"welcome-notification-uid": "Uvítání uživatele (UID)",

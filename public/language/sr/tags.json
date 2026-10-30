@@ -13,5 +13,6 @@
     "watching.description": "Обавести ме о новим темама.",
     "not-watching.description": "Не обавештавај ме о новим темама.",
     "following-tag.message": "Сада ћете добијати обавештења када неко објави тему са овом ознаком.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Нећете добијати обавештења када неко објави тему са овом ознаком."
 }

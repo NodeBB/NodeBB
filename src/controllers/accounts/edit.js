@@ -6,7 +6,6 @@ const helpers = require('../helpers');
 const groups = require('../../groups');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
-const file = require('../../file');
 const accountHelpers = require('./helpers');
 
 const editController = module.exports;
@@ -95,11 +94,21 @@ editController.email = async function (req, res, next) {
 		return next();
 	}
 
+	const isAdmin = await privileges.admin.can('admin:users', req.uid);
+	if (meta.config['email:disableEdit'] && !isAdmin) {
+		return helpers.notAllowed(req, res);
+	}
+
 	req.session.returnTo = `/uid/${targetUid}`;
 	req.session.registration = req.session.registration || {};
 	req.session.registration.updateEmail = true;
 	req.session.registration.uid = targetUid;
-	helpers.redirect(res, '/register/complete');
+	req.session.save((err) => {
+		if (err) {
+			return next(err);
+		}
+		helpers.redirect(res, '/register/complete');
+	});
 };
 
 async function renderRoute(name, req, res) {
@@ -160,7 +169,5 @@ editController.uploadPicture = async function (req, res, next) {
 		}]);
 	} catch (err) {
 		next(err);
-	} finally {
-		await file.delete(userPhoto.path);
 	}
 };

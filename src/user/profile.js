@@ -19,11 +19,12 @@ module.exports = function (User) {
 		let fields = [
 			'username', 'email', 'fullname',
 			'groupTitle', 'birthday', 'signature', 'aboutme',
-			...await db.getSortedSetRange('user-custom-fields', 0, -1),
+			...await User.customFields.getKeys(),
 		];
 		if (Array.isArray(extraFields)) {
-			fields = _.uniq(fields.concat(extraFields));
+			fields = fields.concat(extraFields);
 		}
+		fields = _.uniq(fields).filter(field => !User.protectedFields.includes(field));
 		if (!data.uid) {
 			throw new Error('[[error:invalid-update-uid]]');
 		}
@@ -83,71 +84,27 @@ module.exports = function (User) {
 		await isSignatureValid(callerUid, data);
 		isFullnameValid(data);
 		isBirthdayValid(data);
-		isGroupTitleValid(data);
+		await isGroupTitleValid(data);
 		await validateCustomFields(data);
 	}
 
 	async function validateCustomFields(data) {
-		const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-		const fields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+		const fields = await User.customFields.getFields();
 		const reputation = await User.getUserField(data.uid, 'reputation');
 
 		fields.forEach((field) => {
-			const { key, type } = field;
-			if (data.hasOwnProperty(key)) {
-				const value = data[key];
-				const minRep = field['min:rep'] || 0;
-				if (reputation < minRep && !meta.config['reputation:disabled']) {
-					throw new Error(tx.compile(
-						'error:not-enough-reputation-custom-field', minRep, field.name
-					));
-				}
-
-				if (typeof value === 'string' && value.length > 255) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-value-too-long', field.name
-					));
-				}
-
-				const isUrl = value && validator.isURL(String(value).trim(), {
-					require_protocol: true,
-					require_valid_protocol: true,
-					require_tld: true,
-				});
-
-				if (type === 'input-number' && !utils.isNumber(value)) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-number', field.name
-					));
-				} else if (value && type === 'input-text' && isUrl) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-text', field.name
-					));
-				} else if (value && type === 'input-date' && !validator.isDate(value)) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-date', field.name
-					));
-				} else if (value && field.type === 'input-link' && !isUrl) {
-					throw new Error(tx.compile(
-						'error:custom-user-field-invalid-link', field.name
-					));
-				} else if (field.type === 'select') {
-					const opts = field['select-options'].split('\n').filter(Boolean);
-					if (!opts.includes(value) && value !== '') {
-						throw new Error(tx.compile(
-							'error:custom-user-field-select-value-invalid', field.name
-						));
-					}
-				} else if (field.type === 'select-multi') {
-					const opts = field['select-options'].split('\n').filter(Boolean);
-					const values = JSON.parse(value || '[]');
-					if (!Array.isArray(values) || !values.every(value => opts.includes(value))) {
-						throw new Error(tx.compile(
-							'error:custom-user-field-select-value-invalid', field.name
-						));
-					}
-				}
+			if (!data.hasOwnProperty(field.key)) {
+				return;
 			}
+
+			const minRep = field['min:rep'] || 0;
+			if (reputation < minRep && !meta.config['reputation:disabled']) {
+				throw new Error(tx.compile(
+					'error:not-enough-reputation-custom-field', minRep, field.name
+				));
+			}
+
+			User.customFields.validate(field, data[field.key]);
 		});
 	}
 
@@ -254,7 +211,7 @@ module.exports = function (User) {
 		}
 	}
 
-	function isGroupTitleValid(data) {
+	async function isGroupTitleValid(data) {
 		function checkTitle(title) {
 			if (title === 'registered-users' || groups.isPrivilegeGroup(title)) {
 				throw new Error('[[error:invalid-group-title]]');
@@ -276,6 +233,12 @@ module.exports = function (User) {
 		}
 		if (!meta.config.allowMultipleBadges && groupTitles.length > 1) {
 			data.groupTitle = JSON.stringify(groupTitles[0]);
+			groupTitles = [groupTitles[0]];
+		}
+		// Ensure the user is actually a member of each selected group (prevents badge spoofing via the API)
+		const memberships = await groups.isMemberOfGroups(data.uid, groupTitles);
+		if (memberships.includes(false)) {
+			throw new Error('[[error:invalid-group-title]]');
 		}
 	}
 
@@ -359,9 +322,12 @@ module.exports = function (User) {
 		if (uid <= 0 || !data || !data.uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
+		uid = String(uid);
+		data.uid = String(data.uid);
 		User.isPasswordValid(data.newPassword);
-		const [isAdmin, hasPassword] = await Promise.all([
+		const [isAdmin, isTargetAdmin, hasPassword] = await Promise.all([
 			User.isAdministrator(uid),
+			User.isAdministrator(data.uid),
 			User.hasPassword(uid),
 		]);
 
@@ -369,9 +335,9 @@ module.exports = function (User) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
-		if (!isAdmin && !isSelf) {
+		const isSelf = uid === data.uid;
+		const allowedToChange = isSelf || (isAdmin && !isTargetAdmin);
+		if (!allowedToChange) {
 			throw new Error('[[user:change-password-error-privileges]]');
 		}
 
@@ -388,18 +354,21 @@ module.exports = function (User) {
 		}
 
 		const hashedPassword = await User.hashPassword(data.newPassword);
-		await Promise.all([
-			User.setUserFields(data.uid, {
-				password: hashedPassword,
-				'password:shaWrapped': 1,
-				rss_token: utils.generateUUID(),
-			}),
-			User.reset.cleanByUid(data.uid),
-			User.reset.updateExpiry(data.uid),
-			User.auth.revokeAllSessions(data.uid),
-			User.email.expireValidation(data.uid),
-		]);
+		await User.setUserFields(data.uid, {
+			password: hashedPassword,
+			'password:shaWrapped': 1,
+			rss_token: utils.generateUUID(),
+		}),
+		await User.onPasswordChange(uid, data.uid);
+	};
 
-		plugins.hooks.fire('action:password.change', { uid: uid, targetUid: data.uid });
+	User.onPasswordChange = async function (uid, targetUid) {
+		await Promise.all([
+			User.reset.cleanByUid(targetUid),
+			User.reset.updateExpiry(targetUid),
+			User.auth.revokeAllSessions(targetUid),
+			User.email.expireValidation(targetUid),
+		]);
+		plugins.hooks.fire('action:password.change', { uid, targetUid });
 	};
 };

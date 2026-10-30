@@ -23,15 +23,10 @@ SocketGroups.before = async (socket, method, data) => {
 };
 
 SocketGroups.search = async (socket, data) => {
-	data.options = data.options || {};
+	sockets.warnDeprecated(socket, 'GET /api/v3/groups');
 
-	if (!data.query) {
-		const groupsPerPage = 15;
-		const groupData = await groups.getGroupsBySort(data.options.sort, 0, groupsPerPage - 1);
-		return groupData;
-	}
-	data.options.filterHidden = data.options.filterHidden || !await user.isAdministrator(socket.uid);
-	return await groups.search(data.query, data.options);
+	const { groups } = await api.groups.list(socket, data);
+	return groups;
 };
 
 SocketGroups.loadMore = async (socket, data) => {

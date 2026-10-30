@@ -27,6 +27,8 @@
     "details.invited": "Ahli yang dijemput",
     "details.has-no-posts": "Kumpulan ahli kumpulan ini belum membuat sebarang kiriman.",
     "details.latest-posts": "Kiriman Terkini",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privasi",
     "details.disableJoinRequests": "Batalkan permintaan sertai",
     "details.disableLeave": "Disallow users from leaving the group",
@@ -64,6 +66,7 @@
     "membership.reject": "Tolak",
     "new-group.group-name": "Nama Kumpulan:",
     "upload-group-cover": "Upload group cover",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Bulk Invite",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"

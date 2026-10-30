@@ -22,5 +22,12 @@
     "unread-topics": "Sujets Non-Lus",
     "categories": "Catégories",
     "tags": "Mots-clés",
-    "no-users-found": "Aucun utilisateur trouvé !"
+    "no-users-found": "Aucun utilisateur trouvé !",
+    "temp-ban.length": "Durée",
+    "temp-ban.reason": "Motif <span class=\"text-muted\">(Optionnel)</span>",
+    "temp-ban.select-reason": "Sélectionnez un motif",
+    "temp-ban.hours": "Heures",
+    "temp-ban.days": "Jours",
+    "temp-ban.explanation": "Indiquez la durée du bannissement. Notez qu'une durée égale à 0 sera considérée comme un bannissement définitif.",
+    "temp-mute.explanation": "Indiquez la durée de la mise en sourdine. Notez qu'une durée égale à 0 sera considérée comme une mise en sourdine permanente."
 }

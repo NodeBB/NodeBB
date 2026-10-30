@@ -147,6 +147,7 @@ async function resetPlugins() {
 		process.exit(1);
 	}
 	await db.delete('plugins:active');
+	await db.setObjectField('config', 'theme:id', '');
 	winston.info('[reset] All Plugins De-activated');
 }
 

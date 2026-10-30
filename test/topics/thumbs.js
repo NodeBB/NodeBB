@@ -350,7 +350,7 @@ describe('Topic thumbs', () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${this.tid}/thumbs`, path.join(__dirname, '../files/503.html'), {}, this.jar, this.csrf);
 			assert.strictEqual(response.statusCode, 500);
 			assert(body && body.status);
-			assert.strictEqual(body.status.message, 'Invalid File');
+			assert.strictEqual(body.status.message, 'Invalid file type .html. Allowed types are: .png, .jpg, .bmp, .txt, .webp, .webm, .mp4, .gif, .jpeg');
 		});
 	});
 

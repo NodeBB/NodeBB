@@ -1,10 +1,13 @@
 'use strict';
 
+const crypto = require('crypto');
 const nconf = require('nconf');
 const mime = require('mime').default;
 const path = require('path');
 const sanitize = require('sanitize-html');
 const tokenizer = require('sbd');
+
+const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -39,6 +42,58 @@ const sanitizeConfig = {
 		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
 		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
 	},
+};
+
+Mocks._buildAttachments = (attachment, source) => {
+	attachment = attachment.map(({ mediaType, url, width, height }) => {
+		let type;
+
+		switch (true) {
+			case mediaType && mediaType.startsWith('image'): {
+				type = 'Image';
+				break;
+			}
+
+			default: {
+				type = 'Link';
+				break;
+			}
+		}
+
+		const payload = { type, mediaType, url };
+
+		if (width || height) {
+			payload.width = width;
+			payload.height = height;
+		}
+
+		return payload;
+	});
+
+	// Retrieve alt text from content (if found)
+	if (source?.content && source?.mediaType === 'text/markdown') {
+		const mdImageRegex = /!\[(.+?)\]\(([^\\)]+)\)/g;
+		const found = new Map();
+		let current = mdImageRegex.exec(source.content);
+		while (current !== null) {
+			const [, alt, src] = current;
+			found.set(src.replace('-resized', ''), alt);
+			current = mdImageRegex.exec(source.content);
+		}
+
+		attachment = attachment.map((entry) => {
+			if (found.has(entry.url)) {
+				entry.name = found.get(entry.url);
+			}
+
+			return entry;
+		});
+	}
+
+	// 'image' seems to be used as the preview image in lemmy/piefed, use the first one.
+	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
+
+	return { attachment, image };
 };
 
 Mocks._normalize = async (object) => {
@@ -171,6 +226,7 @@ Mocks.profile = async (actors) => {
 			url, preferredUsername, published, icon, image,
 			name, summary, followers, inbox, endpoints, tag,
 		} = actor;
+		tag = Array.isArray(tag) ? tag : (tag ? [tag] : []);
 		preferredUsername = slugify(preferredUsername || name);
 		const { followers: followerCount, following: followingCount } = await activitypub.actors.getLocalFollowCounts(uid);
 
@@ -180,6 +236,13 @@ Mocks.profile = async (actors) => {
 			return null;
 		}
 
+		// For split-domain: use the canonical domain (domain A) for the handle
+		// instead of the actor's id hostname (domain B)
+		const canonicalHost = actor._canonicalHandle ?
+			actor._canonicalHandle.split('@').slice(1).join('@') :
+			hostname;
+		const canonicalHostname = canonicalHost;
+
 		let picture;
 		if (icon) {
 			picture = typeof icon === 'string' ? icon : icon.url;
@@ -187,7 +250,27 @@ Mocks.profile = async (actors) => {
 		const iconBackgrounds = await user.getIconBackgrounds();
 		let bgColor = Array.prototype.reduce.call(preferredUsername, (cur, next) => cur + next.charCodeAt(), 0);
 		bgColor = iconBackgrounds[bgColor % iconBackgrounds.length];
-		summary = activitypub.helpers.renderEmoji(summary || '', tag);
+		summary = await activitypub.helpers.renderEmoji(summary || '', tag);
+
+		// Extract emoji metadata for fullname rendering
+		const nameEmoji = [];
+		const emojiTags = (tag || []).filter(tag => tag.type === 'Emoji');
+		for (const emojiTag of emojiTags) {
+			const { name: emojiName, icon } = emojiTag;
+			if (!emojiName || !icon?.url) continue;
+			let code = emojiName;
+			if (!code.startsWith(':')) code = `:${code}`;
+			if (!code.endsWith(':')) code = `${code}:`;
+			if (name && name.includes(code)) {
+				try {
+					const { hostname } = new URL(icon.url);
+					const clean = code.replace(/^:+|:+$/g, '');
+					nameEmoji.push({ code, hostname, clean });
+				} catch {
+					// skip invalid icon URLs
+				}
+			}
+		}
 
 		// Add custom fields into user hash
 		const customFields = actor.attachment && Array.isArray(actor.attachment) && actor.attachment.length ?
@@ -223,10 +306,11 @@ Mocks.profile = async (actors) => {
 
 		const payload = {
 			uid,
-			username: `${preferredUsername}@${hostname}`,
-			userslug: `${preferredUsername}@${hostname}`,
+			username: `${preferredUsername}@${canonicalHostname}`,
+			userslug: `${preferredUsername}@${canonicalHostname}`.toLowerCase(),
 			displayname: name,
 			fullname: name,
+			fullnameEmoji: nameEmoji.length ? JSON.stringify(nameEmoji) : undefined,
 			joindate: new Date(published).getTime() || Date.now(),
 			picture,
 			status: 'offline',
@@ -239,11 +323,14 @@ Mocks.profile = async (actors) => {
 			followerCount,
 			followingCount,
 
-			url,
+			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
 			customFields: customFields && new URLSearchParams(customFields).toString(),
+
+			// Store the canonical webfinger handle for split-domain identity verification
+			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 
 		return payload;
@@ -265,6 +352,7 @@ Mocks.category = async (actors) => {
 			name, summary, followers, inbox, endpoints, tag,
 			postingRestrictedToMods,
 		} = actor;
+		tag = Array.isArray(tag) ? tag : (tag ? [tag] : []);
 		preferredUsername = slugify(preferredUsername || name);
 		/*
 		const {
@@ -279,6 +367,12 @@ Mocks.category = async (actors) => {
 			return null;
 		}
 
+		// For split-domain: use the canonical domain (domain A) for the handle
+		const canonicalHost = actor._canonicalHandle ?
+			actor._canonicalHandle.split('@').slice(1).join('@') :
+			hostname;
+		const canonicalHostname = canonicalHost;
+
 		// No support for category avatars yet ;(
 		// let picture;
 		// if (image) {
@@ -290,13 +384,15 @@ Mocks.category = async (actors) => {
 
 		const backgroundImage = !icon || typeof icon === 'string' ? icon : icon.url;
 
+		const descriptionParsed = posts.sanitize(await activitypub.helpers.renderEmoji(summary || '', tag));
+
 		const payload = {
 			cid,
 			name,
-			handle: `${preferredUsername}@${hostname}`,
-			slug: `${preferredUsername}@${hostname}`,
+			handle: `${preferredUsername}@${canonicalHostname}`,
+			slug: `${preferredUsername}@${canonicalHostname}`,
 			description: summary,
-			descriptionParsed: posts.sanitize(activitypub.helpers.renderEmoji(summary || '', tag)),
+			descriptionParsed,
 			icon: backgroundImage ? 'fa-nbb-none' : 'fa-comments',
 			color: '#fff',
 			bgColor,
@@ -306,7 +402,7 @@ Mocks.category = async (actors) => {
 			// followerCount,
 			// followingCount,
 
-			url,
+			url: activitypub.helpers.isUri(url) ? url : null,
 			inbox,
 			sharedInbox: endpoints ? endpoints.sharedInbox : null,
 			followersUrl: followers,
@@ -314,6 +410,9 @@ Mocks.category = async (actors) => {
 			_activitypub: {
 				postingRestrictedToMods,
 			},
+
+			// Store the canonical webfinger handle for split-domain identity verification
+			webfinger: canonicalHostname === hostname ? undefined : `acct:${preferredUsername}@${canonicalHostname}`,
 		};
 
 		return payload;
@@ -345,7 +444,7 @@ Mocks.post = async (objects) => {
 			attributedTo: uid,
 			inReplyTo: toPid,
 			published, updated, name, content, sourceContent,
-			to, cc, audience, attachment, tag, image,
+			to, cc, audience, attachment, tag, image, summary, sensitive,
 		} = object;
 
 		await activitypub.actors.assert(uid);
@@ -372,6 +471,8 @@ Mocks.post = async (objects) => {
 
 			edited,
 			editor: edited ? uid : undefined,
+			// Store contentWarning only for Note + sensitive + summary (Fediverse CW convention)
+			...(object.type === 'Note' && sensitive && summary && { contentWarning: summary }),
 			_activitypub: { to, cc, audience, attachment, tag, url, image },
 		};
 
@@ -385,7 +486,7 @@ Mocks.message = async (object) => {
 	object = await Mocks._normalize(object);
 
 	let content = object.sourceContent || object.content;
-	content = activitypub.helpers.renderEmoji(content, object.tag);
+	content = await activitypub.helpers.renderEmoji(content, object.tag);
 
 	const message = {
 		mid: object.id,
@@ -696,30 +797,6 @@ Mocks.notes.public = async (post) => {
 	}
 
 	let attachment = await posts.attachments.get(post.pid) || [];
-	const normalizeAttachment = attachment => attachment.map(({ mediaType, url, width, height }) => {
-		let type;
-
-		switch (true) {
-			case mediaType && mediaType.startsWith('image'): {
-				type = 'Image';
-				break;
-			}
-
-			default: {
-				type = 'Link';
-				break;
-			}
-		}
-
-		const payload = { type, mediaType, url };
-
-		if (width || height) {
-			payload.width = width;
-			payload.height = height;
-		}
-
-		return payload;
-	});
 
 	// Special handling for main posts (as:Article w/ as:Note preview)
 	const isArticle = post.pid === post.topic.mainPid && !generatedTitle;
@@ -753,30 +830,8 @@ Mocks.notes.public = async (post) => {
 		match = posts.imgRegex.exec(post.content);
 	}
 
-	attachment = normalizeAttachment(attachment);
-
-	// Retrieve alt text from content (if found)
-	if (source?.content && source?.mediaType === 'text/markdown') {
-		const mdImageRegex = /!\[(.+?)\]\(([^\\)]+)\)/g;
-		const found = new Map();
-		let current = mdImageRegex.exec(source.content);
-		while (current !== null) {
-			const [, alt, src] = current;
-			found.set(src.replace('-resized', ''), alt);
-			current = mdImageRegex.exec(source.content);
-		}
-
-		attachment = attachment.map((attachment) => {
-			if (found.has(attachment.url)) {
-				attachment.name = found.get(attachment.url);
-			}
-
-			return attachment;
-		});
-	}
-
-	// 'image' seems to be used as the preview image in lemmy/piefed, use the first one.
-	const image = attachment.filter(entry => entry.type === 'Image')?.shift();
+	const { attachment: normalizedAttachment, image } = Mocks._buildAttachments(attachment, source);
+	attachment = normalizedAttachment;
 	let preview;
 	let summary = null;
 	let sensitive = null;
@@ -897,8 +952,8 @@ Mocks.notes.private = async ({ messageObj }) => {
 	const published = messageObj.timestampISO;
 	const updated = messageObj.edited ? messageObj.editedISO : undefined;
 
-	const content = await messaging.getMessageField(messageObj.mid, 'content');
-	messageObj.content = content; // re-send raw content into parsePost
+	const rawContent = await messaging.getMessageField(messageObj.mid, 'content');
+	messageObj.content = rawContent; // re-send raw content into parsePost
 	const parsed = await posts.parsePost(messageObj, 'activitypub.note');
 	messageObj.content = sanitize(parsed.content, sanitizeConfig);
 	messageObj.content = posts.relativeToAbsolute(messageObj.content, posts.urlRegex);
@@ -907,7 +962,9 @@ Mocks.notes.private = async ({ messageObj }) => {
 	let source;
 	const markdownEnabled = await plugins.isActive('nodebb-plugin-markdown');
 	if (markdownEnabled) {
-		let { content } = messageObj;
+		const _messageObj = { ...messageObj };
+		_messageObj.content = rawContent;
+		let { content } = await posts.parsePost(_messageObj, 'markdown');
 		content = posts.relativeToAbsolute(content, posts.mdImageUrlRegex);
 
 		source = {
@@ -942,6 +999,36 @@ Mocks.notes.private = async ({ messageObj }) => {
 		}
 	}
 
+	// Build attachments from image URLs found in content
+	const imageUrls = [];
+	let match = posts.imgRegex.exec(messageObj.content);
+	while (match !== null) {
+		if (match[1]) {
+			const { pathname, href: url } = new URL(match[1]);
+			imageUrls.push({ pathname, url });
+		}
+		match = posts.imgRegex.exec(messageObj.content);
+	}
+
+	const sizeObjs = await Promise.all(imageUrls.map(({ pathname }) => {
+		return db.getObject(`upload:${md5(pathname)}`);
+	}));
+
+	let attachment = imageUrls.map(({ pathname, url }, idx) => {
+		const mediaType = mime.getType(pathname);
+		const sizeObj = sizeObjs[idx];
+
+		const entry = { mediaType, url };
+		if (sizeObj?.width || sizeObj?.height) {
+			entry.width = sizeObj.width;
+			entry.height = sizeObj.height;
+		}
+		return entry;
+	});
+
+	const { attachment: normalizedAttachment, image } = Mocks._buildAttachments(attachment, source);
+	attachment = normalizedAttachment;
+
 	let object = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id,
@@ -960,7 +1047,8 @@ Mocks.notes.private = async ({ messageObj }) => {
 		content: messageObj.content,
 		source,
 		tag,
-		// attachment: [], // todo
+		attachment,
+		image,
 		// replies: `${id}/replies`, // todo
 	};
 
@@ -1026,13 +1114,14 @@ Mocks.activities.dislike = async (pid, uid) => {
 	};
 };
 
-Mocks.activities.announce = async (tid, uid) => {
+Mocks.activities.announce = async (tid, uid, overrideCid) => {
 	const { mainPid: pid, cid } = await topics.getTopicFields(tid, ['mainPid', 'cid']);
+	const announceCid = overrideCid || cid;
 	const authorUid = await posts.getPostField(pid, 'uid'); // author
 	const { to, cc, targets } = await activitypub.buildRecipients({
 		id: pid,
 		to: [activitypub._constants.publicAddress],
-	}, uid ? { uid } : { cid });
+	}, uid ? { uid } : { cid: announceCid });
 	if (!utils.isNumber(authorUid)) {
 		cc.push(authorUid);
 		targets.add(authorUid);
@@ -1043,9 +1132,9 @@ Mocks.activities.announce = async (tid, uid) => {
 		type: 'Announce',
 		actor: `${nconf.get('url')}/uid/${uid}`,
 	} : {
-		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${cid}`,
+		id: `${nconf.get('url')}/post/${encodeURIComponent(pid)}#activity/announce/cid/${announceCid}`,
 		type: 'Announce',
-		actor: `${nconf.get('url')}/category/${cid}`,
+		actor: `${nconf.get('url')}/category/${announceCid}`,
 	};
 
 	return {

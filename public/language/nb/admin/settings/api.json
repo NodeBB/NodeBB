@@ -26,5 +26,10 @@
 	"roll": "Regenerer",
 
 	"delete-confirm": "Er du sikker på at du vil slette dette tokenet? Det vil ikke kunne gjenopprettes.",
-	"roll-confirm": "Er du sikker på at du vil regenerere dette tokenet? Det gamle tokenet vil umiddelbart bli tilbakekalt og kan ikke gjenopprettes."
+	"roll-confirm": "Er du sikker på at du vil regenerere dette tokenet? Det gamle tokenet vil umiddelbart bli tilbakekalt og kan ikke gjenopprettes.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

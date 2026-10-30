@@ -61,5 +61,8 @@
 	"auto-detect": "自動檢測訪客的語言設定",
 	"default-language-help": "預設語言會決定所有使用者的語言設定。 <br />單一使用者可以各自在帳戶設定中覆蓋此項設定。",
 	"post-sharing": "貼文分享",
-	"info-plugins-additional": "外掛可以增加額外用於分享貼文的社群媒體。"
+	"info-plugins-additional": "外掛可以增加額外用於分享貼文的社群媒體。",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

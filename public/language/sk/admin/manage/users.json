@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Pre hľadanie, zadajte ID používateľa",
 	"search.username": "Podľa mena používateľa",
 	"search.username-placeholder": "Zadajte hľadané používateľské meno",
+	"search.fullname": "By Full Name",
 	"search.email": "Podľa e-mailu",
 	"search.email-placeholder": "Zadajte hľadaný e-mail",
 	"search.ip": "Podľa IP adresy",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "E-mail od tohto používateľa",
 	"create.password": "Heslo",
 	"create.password-confirm": "Potvrdiť heslo",
-
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Dôvod <span class=\"text-muted\">(voliteľné)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Hodiny",
-	"temp-ban.days": "Dni",
-	"temp-ban.explanation": "Zadajte dĺžku trvania pre zákaz. Nezabudnite, že 0 je považovaná ako trvalý zákaz.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Naozaj chcete <strong>trvalo</strong> zablokovať tohto používateľa?",
 	"alerts.confirm-ban-multi": "Naozaj chcete <strong>trvalo</strong> zablokovať týchto používateľov? ",

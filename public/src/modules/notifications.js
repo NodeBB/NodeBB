@@ -38,13 +38,24 @@ define('notifications', [
 		}
 		callback = callback || function () {};
 		api.get('/notifications').then((data) => {
+			// resync the unread count in case a socket push was missed
+			// or a notification was rescinded server-side
+			Notifications.updateNotifCount(data.unread.length);
 			const notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
 
 			hooks.fire('filter:notifications.load', { notifications: notifs }).then(({ notifications }) => {
 				app.parseAndTranslate('partials/notifications_list', { notifications }, function (html) {
+					const listEl = notifList.get(0);
+					const prevFirstNotif = listEl.querySelector('[data-nid]');
+					const prevFirstNotifKey = prevFirstNotif && `${prevFirstNotif.getAttribute('data-nid')}:${prevFirstNotif.classList.contains('unread')}`;
 					notifList.html(html);
+					const firstNotif = listEl.querySelector('[data-nid]');
+					const firstNotifKey = firstNotif && `${firstNotif.getAttribute('data-nid')}:${firstNotif.classList.contains('unread')}`;
+					if (prevFirstNotifKey && prevFirstNotifKey !== firstNotifKey) {
+						listEl.scrollTop = 0;
+					}
 					notifList.off('click').on('click', '[component="notifications/item/link"]', function (ev) {
 						const notifEl = $(this).parents('[data-nid]');
 						if (scrollToPostIndexIfOnPage(notifEl)) {
@@ -80,7 +91,7 @@ define('notifications', [
 						notifications: notifs,
 						list: notifList,
 					});
-					callback();
+					callback({ unread: data.unread, read: data.read });
 				});
 			});
 		}).catch(alerts.error);
@@ -100,12 +111,18 @@ define('notifications', [
 		});
 	};
 
-	Notifications.onNewNotification = async function (notifData) {
+	Notifications.onNewNotification = async function (data) {
+		const { notification: notifData, unreadCount } = data;
 		if (ajaxify.currentPage === 'notifications') {
 			ajaxify.refresh();
 		}
 		const { template } = ajaxify.data;
 		if (template.chats && String(ajaxify.data.roomId) === String(notifData.roomId)) {
+			// user is already looking at this room, mark the notification read
+			// instead of leaving it unread until the next room load
+			if (notifData.nid) {
+				markNotification(notifData.nid, true);
+			}
 			return;
 		}
 
@@ -114,8 +131,9 @@ define('notifications', [
 			return;
 		}
 
-		const { unread } = await api.get('/notifications/count');
-		Notifications.updateNotifCount(unread);
+		if (unreadCount !== undefined) {
+			Notifications.updateNotifCount(unreadCount);
+		}
 
 		if (!unreadNotifs[notifData.nid]) {
 			unreadNotifs[notifData.nid] = notifData;

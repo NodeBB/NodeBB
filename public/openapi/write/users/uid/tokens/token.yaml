@@ -29,3 +29,5 @@ delete:
                 $ref: ../../../../components/schemas/Status.yaml#/Status
               response:
                 type: object
+    '401':
+      $ref: ../../../../components/responses/401.yaml#/401

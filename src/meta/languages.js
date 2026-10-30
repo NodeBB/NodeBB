@@ -85,8 +85,11 @@ async function buildTranslations(ref) {
 
 async function buildNamespaceLanguage(lang, namespace, plugins) {
 	const translations = {};
-	// core first
-	await assignFileToTranslations(translations, path.join(coreLanguagesPath, lang, `${namespace}.json`));
+	// core first, en-GB fills keys that are missing or untranslated in lang
+	await assignFileToTranslations(translations, path.join(coreLanguagesPath, 'en-GB', `${namespace}.json`));
+	if (lang !== 'en-GB') {
+		await assignFileToTranslations(translations, path.join(coreLanguagesPath, lang, `${namespace}.json`));
+	}
 
 	await Promise.all(plugins.map(pluginData => addPlugin(translations, pluginData, lang, namespace)));
 
@@ -130,7 +133,9 @@ async function addPlugin(translations, pluginData, lang, namespace) {
 async function assignFileToTranslations(translations, path) {
 	try {
 		const fileData = await fs.promises.readFile(path, 'utf8');
-		Object.assign(translations, JSON.parse(fileData));
+		// Transifex exports untranslated strings as "", which must not override a fallback
+		const entries = Object.entries(JSON.parse(fileData)).filter(([, value]) => value !== '');
+		Object.assign(translations, Object.fromEntries(entries));
 	} catch (err) {
 		if (err.code !== 'ENOENT') {
 			throw err;

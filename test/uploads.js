@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const assert = require('assert');
 const nconf = require('nconf');
 const path = require('path');
@@ -18,6 +17,7 @@ const socketUser = require('../src/socket.io/user');
 const helpers = require('./helpers');
 const file = require('../src/file');
 const image = require('../src/image');
+const uploads = require('../src/middleware/uploads');
 const request = require('../src/request');
 
 const emptyUploadsFolder = async () => {
@@ -102,6 +102,19 @@ describe('Upload Controllers', () => {
 			assert(Array.isArray(body.response.images));
 			assert(body.response.images[0].url);
 			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
+		});
+
+		it('should upload an image with -resized.png in its filename', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test-resized.png'), {}, jar, csrf_token);
+			assert.equal(response.statusCode, 200);
+			const image = body.response.images[0];
+			// image name is unchanged
+			assert.strictEqual(image.name, 'test-resized.png');
+			// saved file has no -resized at the end ie test-resized.png becomes test.png
+			assert(image.url.endsWith('-test.png'));
+			// user record doesn't have -resized at the end
+			const [userUpload] = await db.getSortedSetRevRange(`uid:${regularUid}:uploads`, 0, 0);
+			assert(image.url.endsWith(userUpload), userUpload);
 		});
 
 		it('should upload an svg image to a post', async () => {
@@ -190,6 +203,16 @@ describe('Upload Controllers', () => {
 			assert.deepStrictEqual(Object.keys(body.response.images[0]), ['url', 'name']);
 		});
 
+		it('should keep the original name when the file has no extension', async () => {
+			const oldValue = meta.config.allowedFileExtensions;
+			meta.config.allowedFileExtensions = '';
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/noextension'), {}, jar, csrf_token);
+			meta.config.allowedFileExtensions = oldValue;
+
+			assert.strictEqual(response.statusCode, 200);
+			assert(body.response.images[0].url.endsWith('-noextension'));
+		});
+
 		it('should upload a file with utf8 characters in the name to a post', async () => {
 			const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/测试.jpg'), {}, jar, csrf_token);
 
@@ -262,6 +285,56 @@ describe('Upload Controllers', () => {
 			}
 		});
 
+		it('should block NTFS stream ::$DATA and . bypass', async () => {
+			const oldPrivateUploads = meta.config.privateUploads;
+			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
+			const uploadPath = nconf.get('upload_path');
+			const filename = `private-ext-${Date.now()}.pdf`;
+			const filePath = path.join(uploadPath, 'files', filename);
+
+			meta.config.privateUploads = 1;
+			meta.config.privateUploadsExtensions = 'pdf';
+
+			try {
+				await fs.writeFile(filePath, 'PDFSECRET', 'utf8');
+
+				const relativePath = nconf.get('relative_path') || '';
+				const publicPath = `${relativePath}/assets/uploads/files/${filename}`;
+				const directUrl = new URL(publicPath, nconf.get('base_url')).href;
+				const streamUrl = new URL(publicPath.replace(/\.pdf$/, '.pdf::$DATA'), nconf.get('base_url')).href;
+				const percentEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%3A%3A%24DATA'), nconf.get('base_url')).href;
+				const extraDot = new URL(publicPath.replace(/\.pdf$/, '.pdf.'), nconf.get('base_url')).href;
+				const extraDotEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%2E'), nconf.get('base_url')).href;
+				const space = new URL(publicPath.replace(/\.pdf$/, '.pdf '), nconf.get('base_url')).href;
+				const spaceEncoded = new URL(publicPath.replace(/\.pdf$/, '.pdf%20'), nconf.get('base_url')).href;
+
+				const { response: directResponse } = await request.get(directUrl);
+				assert.strictEqual(directResponse.statusCode, 403, `Failed for url: ${directUrl}`);
+
+				const { response: streamResponse } = await request.get(streamUrl);
+				assert.strictEqual(streamResponse.statusCode, 403, `Failed for url: ${streamUrl}`);
+
+				const { response: percentEncodedResponse } = await request.get(percentEncoded);
+				assert.strictEqual(percentEncodedResponse.statusCode, 403, `Failed for url: ${percentEncoded}`);
+
+				const { response: extraDotResponse } = await request.get(extraDot);
+				assert.strictEqual(extraDotResponse.statusCode, 403, `Failed for url: ${extraDot}`);
+
+				const { response: extraDotEncodedResponse } = await request.get(extraDotEncoded);
+				assert.strictEqual(extraDotEncodedResponse.statusCode, 403, `Failed for url: ${extraDotEncoded}`);
+
+				const { response: spaceResponse } = await request.get(space);
+				assert.strictEqual(spaceResponse.statusCode, 403, `Failed for url: ${space}`);
+
+				const { response: spaceEncodedResponse } = await request.get(spaceEncoded);
+				assert.strictEqual(spaceEncodedResponse.statusCode, 403, `Failed for url: ${spaceEncoded}`);
+			} finally {
+				await file.delete(filePath);
+				meta.config.privateUploads = oldPrivateUploads;
+				meta.config.privateUploadsExtensions = oldPrivateUploadsExtensions;
+			}
+		});
+
 		it('should block path traversal and double slashes for unauthenticated users', async () => {
 			const oldPrivateUploads = meta.config.privateUploads;
 			const oldPrivateUploadsExtensions = meta.config.privateUploadsExtensions;
@@ -283,6 +356,8 @@ describe('Upload Controllers', () => {
 					`/assets/x/../uploads/files/${filename}`,
 					`/assets/uploads/%2e%2e/uploads/files/${filename}`,
 					`/assets/uploads/%2e/files/${filename}`,
+					`/assets/uploads%5cfiles%5c${filename}`,
+					`/assets/uploads/files/test-%G1.pdf`, // invalid percent encoding, should be blocked
 				];
 				for (const p of requestPathsToCheck) {
 					// eslint-disable-next-line no-await-in-loop
@@ -586,13 +661,28 @@ describe('Upload Controllers', () => {
 				`/assets/x/../uploads/xss-dirty.xml`,
 				`/assets/uploads/%2e%2e/uploads/xss-dirty.xml`,
 				`/assets/uploads/%2e/xss-dirty.xml`,
+				`/assets/uploads/xss-dirty.xml `,
+			];
+
+			const urlsTo403 = [
+				`/assets/uploads/xss-dirty.xml::$DATA`,
+				`/assets/uploads/xss-dirty.xml%3A%3A%24DATA`,
+				`/assets/uploads/xss-dirty.xml.`,
+				`/assets/uploads/xss-dirty.xml%2E`,
+				`/assets/uploads/xss-dirty.xml%20`,
 			];
 
 			for (const url of urlsToTest) {
 				// eslint-disable-next-line no-await-in-loop
 				const { response: fileResponse } = await request.get(`${nconf.get('url')}${url}`);
-				assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"');
-				assert.equal(fileResponse.statusCode, 200);
+				assert.equal(fileResponse.statusCode, 200, `Failed for url: ${url}`);
+				assert.strictEqual(fileResponse.headers['content-disposition'], 'attachment; filename="xss-dirty.xml"', `Failed for url: ${url}`);
+			}
+
+			for (const url of urlsTo403) {
+				// eslint-disable-next-line no-await-in-loop
+				const { response: fileResponse } = await request.get(`${nconf.get('url')}${url}`);
+				assert.equal(fileResponse.statusCode, 403, `Failed for url: ${url}`);
 			}
 		});
 
@@ -618,6 +708,17 @@ describe('Upload Controllers', () => {
 			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
 				params: JSON.stringify({
 					folder: '../../system',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:invalid-path]]');
+		});
+
+		it('should fail to upload regular file to an existing directory outside of upload_path', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
+				params: JSON.stringify({
+					folder: '../',
 				}),
 			}, jar, csrf_token);
 
@@ -698,6 +799,41 @@ describe('Upload Controllers', () => {
 		after(emptyUploadsFolder);
 	});
 
+	describe('middleware.setSafeFileHeaders()', () => {
+		function mockRes() {
+			const headers = {};
+			return {
+				headers,
+				setHeader(name, value) {
+					headers[name.toLowerCase()] = value;
+					return this;
+				},
+				attachment(filename) {
+					this.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+					return this;
+				},
+			};
+		}
+
+		it('should always set X-Content-Type-Options: nosniff', () => {
+			const res = mockRes();
+			uploads.setSafeFileHeaders(res, 'test.png');
+			assert.strictEqual(res.headers['x-content-type-options'], 'nosniff');
+		});
+
+		it('should force a download for unsafe extensions (SVG)', () => {
+			const res = mockRes();
+			uploads.setSafeFileHeaders(res, 'pwn.svg');
+			assert.strictEqual(res.headers['content-disposition'], 'attachment; filename="pwn.svg"');
+		});
+
+		it('should not force a download for safe image extensions', () => {
+			const res = mockRes();
+			uploads.setSafeFileHeaders(res, 'test.png');
+			assert.strictEqual(res.headers['content-disposition'], undefined);
+		});
+	});
+
 	describe('library methods', () => {
 		describe('.getOrphans()', () => {
 			before(async () => {
@@ -761,6 +897,38 @@ describe('Upload Controllers', () => {
 			after(async () => {
 				await emptyUploadsFolder();
 				meta.config.orphanExpiryDays = _orphanExpiryDays;
+			});
+		});
+
+		describe('.getUploadsForPost() should ignore ? suffixes after file path', () => {
+			let relPath;
+			const relativePath = nconf.get('relative_path') || '';
+			before(async () => {
+				const { jar, csrf_token } = await helpers.loginUser('regular', 'zugzug');
+				const { body } = await helpers.uploadFile(`${nconf.get('url')}/api/post/upload`, path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token);
+				relPath = body.response.images[0].url.slice(body.response.images[0].url.indexOf('/files/'));
+			});
+
+			it('should strip a width x height suffix (?w=1920&h=1080)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}?w=1920&h=1080)`;
+				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
+				assert.deepStrictEqual(uploads, [relPath]);
+			});
+
+			it('should strip a percentage suffix (?w=50%)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}?w=50%)`;
+				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
+				assert.deepStrictEqual(uploads, [relPath]);
+			});
+
+			it('should strip a width-only/multiplier suffix (?w=200)', async () => {
+				const content = `![alt](${relativePath}/assets/uploads${relPath}?w=200)`;
+				const uploads = await posts.uploads.getUploadsForPost({ tid: 0, content }, false);
+				assert.deepStrictEqual(uploads, [relPath]);
+			});
+
+			after(async () => {
+				await emptyUploadsFolder();
 			});
 		});
 	});

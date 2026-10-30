@@ -170,7 +170,9 @@ define('forum/topic/threadTools', [
 			api[method](`/topics/${tid}/${type}`, {}, () => {
 				let message = '';
 				if (type === 'follow') {
-					message = state ? '[[topic:following-topic.message]]' : '[[topic:not-following-topic.message]]';
+					message = state && config['notificationType_new-reply'] === 'none' ?
+						'[[topic:following-topic.message-no-notifications]]' :
+						(state ? '[[topic:following-topic.message]]' : '[[topic:not-following-topic.message]]');
 				} else if (type === 'ignore') {
 					message = state ? '[[topic:ignoring-topic.message]]' : '[[topic:not-following-topic.message]]';
 				}

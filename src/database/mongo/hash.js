@@ -98,11 +98,12 @@ module.exports = function (module) {
 		if (!key || !field) {
 			return null;
 		}
-		const cachedData = {};
-		cache.getUnCachedKeys([key], cachedData);
-		if (cachedData[key]) {
-			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
+
+		const cachedData = cache.get(key);
+		if (cachedData !== undefined) {
+			return cachedData?.hasOwnProperty(field) ? cachedData[field] : null;
 		}
+
 		field = helpers.fieldToString(field);
 		const item = await module.client.collection('objects').findOne({
 			_key: key,
@@ -127,28 +128,22 @@ module.exports = function (module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		const cachedData = {};
-		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
-
-		if (unCachedKeys.length >= 1) {
+		const cachedData = await cache.getMany(keys, async (unCachedKeys) => {
 			let data = await module.client.collection('objects').find(
 				{ _key: unCachedKeys.length === 1 ? unCachedKeys[0] : { $in: unCachedKeys } },
 				{ projection: { _id: 0 } }
 			).toArray();
-			data = data.map(helpers.deserializeData);
 
+			data = data.map(helpers.deserializeData);
 			const map = helpers.toMap(data);
-			unCachedKeys.forEach((key) => {
-				cachedData[key] = map[key] || null;
-				cache.set(key, cachedData[key]);
-			});
-		}
+			return unCachedKeys.map(key => map[key] || null);
+		});
 
 		if (!Array.isArray(fields) || !fields.length) {
-			return keys.map(key => (cachedData[key] ? { ...cachedData[key] } : null));
+			return cachedData.map(data => (data ? { ...data } : null));
 		}
-		return keys.map((key) => {
-			const item = cachedData[key] || {};
+		return cachedData.map((data) => {
+			const item = data || {};
 			const result = {};
 			fields.forEach((field) => {
 				result[field] = item[field] !== undefined ? item[field] : null;

@@ -3,7 +3,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">{{tx(title)}}</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="[[global:buttons.close]]"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{tx("global:buttons.close")}}"></button>
 			</div>
 			<div class="modal-body">
 				<form class="mb-3" id="uploadForm" action="" method="post" enctype="multipart/form-data">
@@ -15,10 +15,10 @@
 						{{{ if showHelp }}}
 						<p class="form-text">
 							{{{ if accept }}}
-							[[global:allowed-file-types, {accept}]]
+							{{tx("global:allowed-file-types", accept)}}
 							{{{ end }}}
 
-							{{{ if fileSize }}}<span id="file-size-block">([[uploads:maximum-file-size, {fileSize}]])</span>{{{ end }}}
+							{{{ if fileSize }}}<span id="file-size-block">({{tx("uploads:maximum-file-size", fileSize)}})</span>{{{ end }}}
 						</p>
 						{{{ end }}}
 					</div>
@@ -27,7 +27,7 @@
 
 				<div id="upload-progress-box" class="progress progress-striped hide mb-3">
 					<div id="upload-progress-bar" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0">
-						<span class="visually-hidden"> [[success:success]]</span>
+						<span class="visually-hidden"> {{tx("success:success")}}</span>
 					</div>
 				</div>
 
@@ -36,7 +36,7 @@
 				<div id="alert-error" class="alert alert-danger hide"></div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">[[global:close]]</button>
+				<button class="btn btn-outline-secondary" data-bs-dismiss="modal">{{tx("global:close")}}</button>
 				<button id="fileUploadSubmitBtn" class="btn btn-primary">{{tx(button)}}</button>
 			</div>
 		</div>

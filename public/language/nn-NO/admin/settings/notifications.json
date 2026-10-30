@@ -1,5 +1,6 @@
 {
 	"notifications": "Varsel",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Velkomstvarsel",
 	"welcome-notification-link": "Lenkje til velkomstvarsel",
 	"welcome-notification-uid": "Velkomstvarsel brukar-ID",

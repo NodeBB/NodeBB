@@ -9,7 +9,7 @@ export function init(searchEl, listEl) {
 	}
 
 	searchEl.addEventListener('keyup', utils.debounce(async function (e) {
-		const data = await get(`/chats/search?query=${e.target.value}`);
+		const data = await get('/chats/search', { query: e.target.value, uid: ajaxify.data.uid });
 		const html = await app.parseAndTranslate('chats', 'rooms', data);
 		$(listEl).html(html);
 	}, 300));

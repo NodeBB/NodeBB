@@ -29,13 +29,16 @@ define('forum/account/edit', [
 
 		if (!ajaxify.data.isSelf && ajaxify.data.canEdit) {
 			$(`a[href="${config.relative_path}/user/${ajaxify.data.userslug}/edit/email"]`).on('click', () => {
-				changeEmail.init({
-					uid: ajaxify.data.uid,
-					email: ajaxify.data.email,
-					onSuccess: function () {
-						alerts.success('[[user:email-updated]]');
-					},
-				});
+				api.post(`/users/reauth/verify`).then(() => {
+					changeEmail.init({
+						uid: ajaxify.data.uid,
+						email: ajaxify.data.email,
+						onSuccess: function (newEmail) {
+							ajaxify.data.email = newEmail;
+							alerts.success('[[user:email-updated]]');
+						},
+					});
+				}).catch(alerts.error);
 				return false;
 			});
 		}

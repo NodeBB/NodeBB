@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Enter a user ID to search",
 	"search.username": "By User Name",
 	"search.username-placeholder": "Enter a username to search",
+	"search.fullname": "By Full Name",
 	"search.email": "By Email",
 	"search.email-placeholder": "Enter a email to search",
 	"search.ip": "By IP Address",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "Email of this user",
 	"create.password": "Password",
 	"create.password-confirm": "Confirm Password",
-
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Hours",
-	"temp-ban.days": "Days",
-	"temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Do you really want to ban this user <strong>permanently</strong>?",
 	"alerts.confirm-ban-multi": "Do you really want to ban these users <strong>permanently</strong>?",

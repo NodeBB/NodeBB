@@ -27,6 +27,8 @@
     "details.invited": "Dəvət olunmuş üzvlər",
     "details.has-no-posts": "Bu qrupun üzvləri heç bir paylaşım etməyiblər.",
     "details.latest-posts": "Son istifadəçilər",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Şəxsi",
     "details.disableJoinRequests": "Qoşulma sorğularını deaktiv edin",
     "details.disableLeave": "İstifadəçilərin qrupdan çıxmasına icazə verməyin",
@@ -64,6 +66,7 @@
     "membership.reject": "Rədd et",
     "new-group.group-name": "Qrupun adı:",
     "upload-group-cover": "Qrup örtüyü yükləyin",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Bu qrupa dəvət etmək üçün vergüllə ayrılmış istifadəçi adlarının siyahısını daxil edin",
     "bulk-invite": "Toplu dəvət",
     "remove-group-cover-confirm": "Örtük şəklini silmək istədiyinizə əminsiniz?"

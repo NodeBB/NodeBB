@@ -37,6 +37,23 @@ describe('custom user fields', () => {
 		await adminUser.saveCustomFields({ uid: adminUid }, fields);
 	});
 
+	it('should fail to create custom user fields for reserved fields', async () => {
+		const protectedFields = [
+			...await user.getUserFieldWhitelist(),
+			...user.protectedFields,
+		];
+		for (const field of protectedFields) {
+			// eslint-disable-next-line no-await-in-loop
+			await assert.rejects(
+				adminUser.saveCustomFields({ uid: adminUid }, [
+					{ key: field },
+				]),
+				{ message: `[[error:invalid-custom-user-field, ${field}]]` },
+				`Failed for ${field}`
+			);
+		}
+	});
+
 	it('should fail to update a field if user does not have enough reputation', async () => {
 		await assert.rejects(
 			user.updateProfile(lowRepUid, {
@@ -126,5 +143,22 @@ describe('custom user fields', () => {
 
 		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
 		assert.strictEqual(body.website, 'https://nodebb.org');
+	});
+
+	it('should render a select-multi field from its stored json', async () => {
+		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
+		const field = body.customUserFields.find(f => f.key === 'favouriteLanguages');
+		assert.strictEqual(field.value, 'Javascript, Python');
+		assert.deepStrictEqual(
+			field['select-options'].filter(opt => opt.selected).map(opt => opt.value),
+			['Javascript', 'Python']
+		);
+	});
+
+	it('should render a select-multi field unselected if the stored value is malformed', async () => {
+		await db.setObjectField(`user:${highRepUid}`, 'favouriteLanguages', 'not json');
+		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
+		const field = body.customUserFields.find(f => f.key === 'favouriteLanguages');
+		assert.ok(field['select-options'].every(opt => !opt.selected));
 	});
 });

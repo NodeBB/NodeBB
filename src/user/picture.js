@@ -4,6 +4,7 @@ const winston = require('winston');
 const mime = require('mime').default;
 const path = require('path');
 const nconf = require('nconf');
+const { fileTypeFromFile } = require('file-type');
 
 const db = require('../database');
 const file = require('../file');
@@ -44,11 +45,13 @@ module.exports = function (User) {
 				return await User.updateCoverPosition(data.uid, data.position);
 			}
 
-			validateUpload(data, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);
+			const imageData = await image.validateBase64(
+				data.imageData, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']
+			);
 
-			picture.path = await image.writeImageDataToTempFile(data.imageData);
+			picture.path = await image.writeImageDataToTempFile(imageData);
 
-			const extension = file.typeToExtension(image.mimeFromBase64(data.imageData));
+			const { extension } = imageData;
 			const filename = `${data.uid}-profilecover-${Date.now()}${extension}`;
 			const uploadData = await image.uploadImage(filename, `profile/uid-${data.uid}`, picture);
 
@@ -56,11 +59,10 @@ module.exports = function (User) {
 				await deletePicture(data.uid, 'cover:url');
 			}
 
-			await User.setUserField(data.uid, 'cover:url', uploadData.url);
-
-			if (data.position) {
-				await User.updateCoverPosition(data.uid, data.position);
-			}
+			await User.setUserFields(data.uid, {
+				'cover:url': uploadData.url,
+				...(data.position ? { 'cover:position': data.position } : {}),
+			});
 
 			return {
 				url: uploadData.url,
@@ -80,19 +82,19 @@ module.exports = function (User) {
 		if (userPhoto.size > meta.config.maximumProfileImageSize * 1024) {
 			throw new Error(`[[error:file-too-big, ${meta.config.maximumProfileImageSize}]]`);
 		}
-
-		if (!userPhoto.type || !User.getAllowedImageTypes().includes(userPhoto.type)) {
+		const detected = await fileTypeFromFile(userPhoto.path);
+		if (!detected || !User.getAllowedImageTypes().includes(detected.mime)) {
 			throw new Error('[[error:invalid-image]]');
 		}
 
-		const extension = file.typeToExtension(userPhoto.type);
+		const extension = detected ? `.${detected.ext}` : '';
 		if (!extension) {
 			throw new Error('[[error:invalid-image-extension]]');
 		}
 
 		return await storeUserUploadedPicture(data.callerUid, data.uid, {
 			path: userPhoto.path,
-			type: userPhoto.type,
+			type: detected.mime,
 			extension,
 		});
 	};
@@ -108,19 +110,19 @@ module.exports = function (User) {
 			if (!meta.config.allowProfileImageUploads) {
 				throw new Error('[[error:profile-image-uploads-disabled]]');
 			}
-
-			validateUpload(data, meta.config.maximumProfileImageSize, User.getAllowedImageTypes());
-			const type = image.mimeFromBase64(data.imageData);
-			const extension = file.typeToExtension(type);
+			const imageData = await image.validateBase64(
+				data.imageData, meta.config.maximumProfileImageSize, User.getAllowedImageTypes()
+			);
+			const { mime, extension } = imageData;
 			if (!extension) {
 				throw new Error('[[error:invalid-image-extension]]');
 			}
 
-			picture.path = await image.writeImageDataToTempFile(data.imageData);
+			picture.path = await image.writeImageDataToTempFile(imageData);
 
 			return await storeUserUploadedPicture(data.callerUid, data.uid, {
 				path: picture.path,
-				type,
+				type: mime,
 				extension,
 			});
 		} finally {
@@ -180,21 +182,6 @@ module.exports = function (User) {
 		const uploadPath = await getPicturePathFromUserField(uid, field);
 		if (uploadPath) {
 			await file.delete(uploadPath);
-		}
-	}
-
-	function validateUpload(data, maxSize, allowedTypes) {
-		if (!data.imageData) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		const size = image.sizeFromBase64(data.imageData);
-		if (size > maxSize * 1024) {
-			throw new Error(`[[error:file-too-big, ${maxSize}]]`);
-		}
-
-		const type = image.mimeFromBase64(data.imageData);
-		if (!type || !allowedTypes.includes(type)) {
-			throw new Error('[[error:invalid-image]]');
 		}
 	}
 
@@ -267,7 +254,9 @@ module.exports = function (User) {
 			return false;
 		}
 		const filename = value.split('/').pop();
-		return path.join(nconf.get('upload_path'), `profile/uid-${uid}`, filename);
+		const resolved = path.join(nconf.get('upload_path'), `profile/uid-${uid}`, filename);
+		return file.isPathInside(nconf.get('upload_path'), resolved) ?
+			resolved :
+			false;
 	}
-
 };

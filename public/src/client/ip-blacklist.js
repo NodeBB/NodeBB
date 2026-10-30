@@ -41,7 +41,6 @@ export function init() {
 		}).catch(alerts.error);
 
 		const html = await Benchpress.render('admin/partials/blacklist-validate', data);
-		console.log('html', html);
 		modals.alert(html);
 	});
 

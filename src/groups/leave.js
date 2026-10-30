@@ -7,6 +7,7 @@ const user = require('../user');
 const plugins = require('../plugins');
 const cache = require('../cache');
 const messaging = require('../messaging');
+const utils = require('../utils');
 
 module.exports = function (Groups) {
 	Groups.leave = async function (groupNames, uid) {
@@ -77,11 +78,14 @@ module.exports = function (Groups) {
 			roomData.map(r => r.roomId),
 			await Promise.all(roomData.map(r => Groups.isMemberOfAny(uid, r.groups)))
 		);
-		const roomIds = roomData.filter(r => isMemberOfAny[r.roomId]).map(r => r.roomId);
+		const roomIds = roomData.filter(r => !isMemberOfAny[r.roomId]).map(r => r.roomId);
 		await messaging.leaveRooms(uid, roomIds);
 	}
 
 	async function clearGroupTitleIfSet(groupNames, uid) {
+		if (!utils.isNumber(uid)) {
+			return;
+		}
 		groupNames = groupNames.filter(
 			groupName => groupName !== 'registered-users' &&
 			groupName !== 'unverified-users' &&

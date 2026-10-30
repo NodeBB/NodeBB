@@ -69,6 +69,7 @@ module.exports = () => {
 let db;
 let user;
 let groups;
+let events;
 let privileges;
 let privHelpers;
 let utils;
@@ -81,6 +82,7 @@ async function init() {
 
 	user = require('../user');
 	groups = require('../groups');
+	events = require('../events');
 	privileges = require('../privileges');
 	privHelpers = require('../privileges/helpers');
 	utils = require('../utils');
@@ -217,11 +219,20 @@ ${pwGenerated ? ` Generated password: ${password}` : ''}`);
 		const adminUid = await getAdminUidOrFail();
 
 		if (password) {
-			await user.setUserField(uid, 'password', '');
-			await user.changePassword(adminUid, {
-				newPassword: password,
-				uid,
+			user.isPasswordValid(password);
+			const hashedPassword = await user.hashPassword(password);
+			await user.setUserFields(uid, {
+				password: hashedPassword,
+				'password:shaWrapped': 1,
+				rss_token: utils.generateUUID(),
+			}),
+			await user.onPasswordChange(adminUid, uid);
+			await events.log({
+				type: 'password-change-from-cli',
+				uid: adminUid,
+				targetUid: uid,
 			});
+
 			winston.info(`[userCmd/reset] ${password ? 'User password changed.' : ''}${pwGenerated ? ` Generated password: ${password}` : ''}`);
 		}
 

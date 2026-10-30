@@ -76,8 +76,8 @@ put:
 delete:
   tags:
     - chats
-  summary: delete a chat message
-  description: This operation deletes a chat message
+  summary: purge a chat message
+  description: This operation purges a chat message, removing it from the database entirely
   parameters:
     - in: path
       name: roomId
@@ -95,7 +95,7 @@ delete:
       example: 2
   responses:
     '200':
-      description: Message successfully deleted
+      description: Message successfully purged
       content:
         application/json:
           schema:

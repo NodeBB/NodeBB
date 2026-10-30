@@ -61,5 +61,8 @@
 	"auto-detect": "Автоматично визначати мову для гостей",
 	"default-language-help": "Мова за замовчуванням задає мову для всіх користувачів, що відвідують форум.<br /> Кожен користувач може перевизначити мову в своїх налаштуваннях акаунта.",
 	"post-sharing": "Поширення постів",
-	"info-plugins-additional": "Плагіни можуть доповнювати набір доступних мереж для поширення постів"
+	"info-plugins-additional": "Плагіни можуть доповнювати набір доступних мереж для поширення постів",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

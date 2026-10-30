@@ -9,6 +9,7 @@
 
 	"not-logged-in": "You don't seem to be logged in.",
 	"account-locked": "Your account has been locked temporarily",
+	"ip-locked": "Your IP has been temporarily locked",
 	"search-requires-login": "Searching requires an account - please login or register.",
 	"goback": "Press back to return to the previous page",
 
@@ -28,7 +29,10 @@
 	"invalid-user-data": "Invalid User Data",
 	"invalid-password": "Invalid Password",
 	"invalid-login-credentials": "Invalid login credentials",
+	"registration-pending": "Registration is still pending",
 	"invalid-username-or-password": "Please specify both a username and password",
+	"username-required": "Please enter your username",
+	"password-required": "Please enter your password",
 	"invalid-search-term": "Invalid search term",
 	"invalid-url": "Invalid URL",
 	"invalid-event": "Invalid event: %1",
@@ -144,7 +148,7 @@
 	"cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
 	"account-deletion-disabled": "Account deletion is disabled",
 	"cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
-
+	"cant-remove-self-as-admin": "You can't remove yourself as an administrator.",
 	"already-deleting": "Already deleting",
 
 	"invalid-image": "Invalid image",
@@ -231,10 +235,13 @@
 	"invalid-custom-user-field": "Invalid custom user field, \"%1\" is already used by NodeBB",
 	"post-already-flagged": "You have already flagged this post",
 	"user-already-flagged": "You have already flagged this user",
+	"message-already-flagged": "You have already flagged this chat message",
 	"post-flagged-too-many-times": "This post has been flagged by others already",
 	"user-flagged-too-many-times": "This user has been flagged by others already",
+	"message-flagged-too-many-times": "This chat message has been flagged by others already",
 	"too-many-post-flags-per-day": "You can only flag %1 post(s) per day",
 	"too-many-user-flags-per-day": "You can only flag %1 user(s) per day",
+	"too-many-message-flags-per-day": "You can only flag %1 chat message(s) per day",
 	"cant-flag-privileged": "You are not allowed to flag the profiles or content of privileged users (moderators/global moderators/admins)",
 	"cant-locate-flag-report": "Cannot locate flag report",
 	"self-vote": "You cannot vote on your own post",

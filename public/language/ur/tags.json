@@ -13,5 +13,6 @@
     "watching.description": "میں نئے موضوعات کے لیے اطلاعات حاصل کرنا چاہتا ہوں۔",
     "not-watching.description": "میں نئے موضوعات کے لیے اطلاعات حاصل نہیں کرنا چاہتا۔",
     "following-tag.message": "اب آپ کو اطلاعات موصول ہوں گی جب کوئی اس ٹیگ کے ساتھ موضوع پوسٹ کرے گا۔",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "آپ کو اطلاعات موصول نہیں ہوں گی جب کوئی اس ٹیگ کے ساتھ موضوع پوسٹ کرے گا۔"
 }

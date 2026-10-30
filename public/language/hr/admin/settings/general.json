@@ -61,5 +61,8 @@
 	"auto-detect": "Auto Detect Language Setting for Guests",
 	"default-language-help": "Zadani jezik odlučuje o postavkama jezika za sve korisnike foruma. <br/> .Korisnici mogu sami odabrati jezik na stranici postavki jezika.",
 	"post-sharing": "Dijeljenje objave",
-	"info-plugins-additional": "Dodaci mogu dodati dodatne mreže za dijeljenje objava."
+	"info-plugins-additional": "Dodaci mogu dodati dodatne mreže za dijeljenje objava.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

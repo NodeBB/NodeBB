@@ -4,7 +4,6 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const nconf = require('nconf');
-const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const { setTimeout } = require('node:timers/promises');
 
@@ -214,30 +213,21 @@ describe('User', () => {
 	});
 
 	describe('.isModerator()', () => {
-		it('should return false', (done) => {
-			User.isModerator(testUid, testCid, (err, isModerator) => {
-				assert.equal(err, null);
-				assert.equal(isModerator, false);
-				done();
-			});
+		it('should return false', async () => {
+			const isModerator = await User.isModerator(testUid, testCid);
+			assert.strictEqual(isModerator, false);
 		});
 
-		it('should return two false results', (done) => {
-			User.isModerator([testUid, testUid], testCid, (err, isModerator) => {
-				assert.equal(err, null);
-				assert.equal(isModerator[0], false);
-				assert.equal(isModerator[1], false);
-				done();
-			});
+		it('should return two false results', async () => {
+			const isModerator = await User.isModerator([testUid, testUid], testCid);
+			assert.strictEqual(isModerator[0], false);
+			assert.strictEqual(isModerator[1], false);
 		});
 
-		it('should return two false results', (done) => {
-			User.isModerator(testUid, [testCid, testCid], (err, isModerator) => {
-				assert.equal(err, null);
-				assert.equal(isModerator[0], false);
-				assert.equal(isModerator[1], false);
-				done();
-			});
+		it('should return two false results', async () => {
+			const isModerator = await User.isModerator(testUid, [testCid, testCid]);
+			assert.strictEqual(isModerator[0], false);
+			assert.strictEqual(isModerator[1], false);
 		});
 	});
 
@@ -482,6 +472,22 @@ describe('User', () => {
 			assert.equal(data.users[0].username, 'baris');
 			assert.equal(data.users[1].username, 'brian');
 			assert.equal(data.users[2].username, 'bzari');
+		});
+
+		it('should not sort users by email', async () => {
+			await User.create({ username: 'crian1', email: 'd@c.com' }, { emailVerification: 'verify' });
+			await User.create({ username: 'caris2', email: 'c@c.com' }, { emailVerification: 'verify' });
+			await User.create({ username: 'czari3', email: 'a@c.com' }, { emailVerification: 'verify' });
+			const data = await User.search({
+				uid: testUid,
+				query: 'c',
+				sortBy: 'email',
+				paginate: false,
+			});
+			// sorted by username
+			assert.equal(data.users[0].username, 'caris2');
+			assert.equal(data.users[1].username, 'crian1');
+			assert.equal(data.users[2].username, 'czari3');
 		});
 	});
 
@@ -739,6 +745,7 @@ describe('User', () => {
 
 		describe('.updateProfile()', () => {
 			let uid;
+			let group;
 
 			it('should update a user\'s profile', async () => {
 				uid = await User.create({
@@ -747,12 +754,15 @@ describe('User', () => {
 					emailVerification: 'verify',
 				});
 
+				group = await groups.create({ name: 'updateProfileGroup' });
+				await groups.join(group.name, uid);
+
 				const data = {
 					uid: uid,
 					username: 'updatedUserName',
 					email: 'updatedEmail@me.com',
 					fullname: 'updatedFullname',
-					groupTitle: 'testGroup',
+					groupTitle: group.name,
 					birthday: '01/01/1980',
 					signature: 'nodebb is good',
 					password: '123456',
@@ -802,6 +812,19 @@ describe('User', () => {
 			it('should also generate an email confirmation code for the changed email', async () => {
 				const confirmSent = await User.email.isValidationPending(uid, 'updatedemail@me.com');
 				assert.strictEqual(confirmSent, true);
+			});
+
+			it('should reject a groupTitle for a group the user is not a member of', async () => {
+				const otherGroup = await groups.create({ name: 'notAMemberGroup' });
+				await assert.rejects(
+					apiUser.update({ uid: uid }, { uid: uid, groupTitle: otherGroup.name }),
+					{ message: '[[error:invalid-group-title]]' },
+				);
+				await groups.destroy(otherGroup.name);
+			});
+
+			after(async () => {
+				await groups.destroy(group.name);
 			});
 		});
 
@@ -1056,11 +1079,30 @@ describe('User', () => {
 			});
 		});
 
-		it('should return error if profile image has no mime type', (done) => {
+		it('should return error if profile image has invalid data URI', async () => {
+			await assert.rejects(
+				User.uploadCroppedPicture({
+					callerUid: uid,
+					uid: uid,
+					imageData: 'data:;base64,R0lGODlhPQBEAPeoAJosM/',
+				}),
+				{ message: '[[error:invalid-data]]' }
+			);
+			await assert.rejects(
+				User.uploadCroppedPicture({
+					callerUid: uid,
+					uid: uid,
+					imageData: 'not-a-data-uri',
+				}),
+				{ message: '[[error:invalid-data]]' }
+			);
+		});
+
+		it('should detect the actual image type instead of trusting the data URI mime type', (done) => {
 			User.uploadCroppedPicture({
 				callerUid: uid,
 				uid: uid,
-				imageData: 'data:image/invalid;base64,R0lGODlhPQBEAPeoAJosM/',
+				imageData: 'data:image/png;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEAAUAmJaQAA3AA/v89WAAAAA==',
 			}, (err) => {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
@@ -1087,9 +1129,20 @@ describe('User', () => {
 			assert.ok(metadata.pages > 1);
 		});
 
-		describe('user.uploadCroppedPicture', () => {
-			const badImage = 'data:audio/mp3;base64,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';
+		it('should fail to upload a non-image file as profile image', async () => {
+			await User.create({ username: 'invalidpicture', password: '123456' });
+			const { jar, csrf_token } = await helpers.loginUser('invalidpicture', '123456');
+			const pathToHtml = path.join(__dirname, '../test/files/503.html');
 
+			const { response, body } = await helpers.uploadFile(
+				`${nconf.get('url')}/api/user/invalidpicture/uploadpicture`,
+				pathToHtml, { }, jar, csrf_token
+			);
+			assert.strictEqual(response.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:invalid-image]]');
+		});
+
+		describe('user.uploadCroppedPicture', () => {
 			it('should upload cropped profile picture', async () => {
 				const result = await socketUser.uploadCroppedPicture({ uid: uid }, { uid: uid, imageData: goodImage });
 				assert(result.url);
@@ -1175,7 +1228,7 @@ describe('User', () => {
 				User.uploadCroppedPicture({
 					callerUid: uid,
 					uid: 1,
-					imageData: badImage,
+					imageData: 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEAAUAmJaQAA3AA/v89WAAAAA==',
 				}, (err) => {
 					assert.equal('[[error:invalid-image]]', err.message);
 					done();
@@ -1193,6 +1246,19 @@ describe('User', () => {
 					assert.equal(data[1].username, '[[user:uploaded-picture]]');
 					done();
 				});
+			});
+
+			it('should fail to get profile pictures of another user without privileges', async () => {
+				const anotherUid = await User.create({ username: 'anotheruser', password: '123456' });
+				await assert.rejects(
+					socketUser.getProfilePictures({ uid: uid }, { uid: anotherUid }),
+					{ message: '[[error:no-privileges]]' }
+				);
+
+				await assert.rejects(
+					socketUser.getProfilePictures({ uid: 0 }, { uid: anotherUid }),
+					{ message: '[[error:no-privileges]]' }
+				);
 			});
 
 			it('should get default profile avatar', (done) => {
@@ -1256,20 +1322,6 @@ describe('User', () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/api/user/updatedagain/edit`, { jar });
 			assert.equal(response.statusCode, 200);
 			assert(body);
-		});
-
-		it('should load edit/email page', async () => {
-			const { response, body } = await request.get(`${nconf.get('url')}/api/user/updatedagain/edit/email`, { jar });
-			assert.strictEqual(response.statusCode, 200);
-			assert(body);
-
-			// Accessing this page will mark the user's account as needing an updated email, below code undo's.
-			await request.post(`${nconf.get('url')}/register/abort`, {
-				jar,
-				headers: {
-					'x-csrf-token': csrf_token,
-				},
-			});
 		});
 
 		it('should load user\'s groups page', async () => {
@@ -1932,6 +1984,37 @@ describe('User', () => {
 			assert(body.includes('&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com'));
 		});
 
+		it('should split the queue into regular requests and suspected spam', async () => {
+			await helpers.registerUser({
+				username: 'spamqueued',
+				password: '123456',
+				email: 'spamqueued@me.com',
+				gdpr_consent: true,
+			});
+			const filterMethod = async (data) => {
+				data.users.forEach((user) => {
+					if (user.username === 'spamqueued') {
+						user.spamChecked = true;
+						user.ipSpam = true;
+					}
+				});
+				return data;
+			};
+			plugins.hooks.register('test-plugin', { hook: 'filter:user.getRegistrationQueue', method: filterMethod });
+			try {
+				const { jar } = await helpers.loginUser('admin', '123456');
+				const { body } = await request.get(`${nconf.get('url')}/api/registration-queue`, { jar });
+				assert.deepStrictEqual(body.spamUsers.map(u => u.username), ['spamqueued']);
+				assert(body.spamUsers.every(u => u.spamSuspected === true));
+				assert(!body.cleanUsers.some(u => u.username === 'spamqueued'));
+				assert(body.cleanUsers.every(u => u.spamSuspected === false));
+				assert.strictEqual(body.users.length, body.cleanUsers.length + body.spamUsers.length);
+			} finally {
+				plugins.hooks.unregister('test-plugin', 'filter:user.getRegistrationQueue', filterMethod);
+				await User.rejectRegistration('spamqueued');
+			}
+		});
+
 		it('should fail to add user to queue if username is taken', async () => {
 			const { body } = await helpers.registerUser({
 				username: 'rejectme',
@@ -1987,6 +2070,72 @@ describe('User', () => {
 
 			const users = await db.getSortedSetRange('registration:queue', 0, -1);
 			assert.equal(users[0], 'invalidname');
+		});
+
+		it('should match queued users against IPv4-mapped IPv6 addresses', async () => {
+			const matchUid = await User.create({ username: 'ipmatchtarget' });
+			await User.logIP(matchUid, '::ffff:10.0.0.7');
+			await User.addToApprovalQueue({
+				username: 'ipmatchqueued',
+				email: 'ipmatch@test.com',
+				password: '123456',
+				ip: '::ffff:10.0.0.7',
+			});
+
+			const users = await User.getRegistrationQueue(0, -1);
+			const queued = users.find(u => u.username === 'ipmatchqueued');
+			assert(queued);
+			assert.equal(queued.ip, '10.0.0.7');
+			assert(queued.ipMatch.map(u => u.uid).includes(matchUid));
+		});
+	});
+
+	describe('custom profile fields', () => {
+		let fieldUid;
+		const keys = ['favnumber', 'favcolour', 'langs'];
+
+		before(async () => {
+			fieldUid = await User.create({ username: 'customfielduser' });
+			await db.sortedSetAdd('user-custom-fields', [0, 1, 2], keys);
+			await db.setObjectBulk([
+				['user-custom-field:favnumber', { key: 'favnumber', name: 'Favourite number', type: 'input-number' }],
+				['user-custom-field:favcolour', { key: 'favcolour', name: 'Favourite colour', type: 'select' }],
+				['user-custom-field:langs', { key: 'langs', name: 'Languages', type: 'select-multi' }],
+			]);
+			await User.reloadCustomFieldWhitelist();
+		});
+
+		after(async () => {
+			await db.delete('user-custom-fields');
+			await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
+			await User.reloadCustomFieldWhitelist();
+		});
+
+		it('should allow a numeric field to be cleared', async () => {
+			await User.updateProfile(fieldUid, { uid: fieldUid, favnumber: '7' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'favnumber'), '7');
+
+			await User.updateProfile(fieldUid, { uid: fieldUid, favnumber: '' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'favnumber'), '');
+		});
+
+		it('should still reject a non-numeric value', async () => {
+			await assert.rejects(
+				User.updateProfile(fieldUid, { uid: fieldUid, favnumber: 'seven' }),
+				{ message: '[[error:custom-user-field-invalid-number, Favourite number]]' }
+			);
+		});
+
+		it('should not throw when a select field has no options configured', async () => {
+			await User.updateProfile(fieldUid, { uid: fieldUid, favcolour: '' });
+			assert.strictEqual(await User.getUserField(fieldUid, 'favcolour'), '');
+		});
+
+		it('should reject a select-multi value that is not valid json', async () => {
+			await assert.rejects(
+				User.updateProfile(fieldUid, { uid: fieldUid, langs: 'not json' }),
+				{ message: '[[error:custom-user-field-select-value-invalid, Languages]]' }
+			);
 		});
 	});
 
@@ -2567,6 +2716,26 @@ describe('User', () => {
 			assert.strictEqual(userData[1].email, '');
 		});
 
+		it('should respect admin setting in api.user.listEmails', async () => {
+			assert.strictEqual(
+				await apiUser.listEmails({ uid: regularUser.uid }, { uid: hidingUser.uid }),
+				null,
+			);
+		});
+
+		it('should respect admin setting in api.user.getEmail', async () => {
+			assert.strictEqual(
+				await apiUser.getEmail({ uid: regularUser.uid }, { uid: hidingUser.uid, email: hidingUser.email }),
+				false,
+			);
+		});
+
+		it('should respect admin setting in userController.getUserDataByField', async () => {
+			const userController = require('../src/controllers/user');
+			const userData = await userController.getUserDataByField({ uid: regularUser.uid }, 'email', hidingUser.email);
+			assert.strictEqual(userData, null);
+		});
+
 		it('should hide fullname in topic list and topic', async () => {
 			await Topics.post({
 				uid: hidingUser.uid,
@@ -2580,198 +2749,6 @@ describe('User', () => {
 
 			const { body: body2 } = await request.get(`${nconf.get('url')}/api/topic/${body1.topics[0].slug}`);
 			assert(!body2.posts[0].user.hasOwnProperty('fullname'));
-		});
-	});
-
-	describe('user blocking methods', (done) => {
-		let blockeeUid;
-		before((done) => {
-			User.create({
-				username: 'blockee',
-				email: 'blockee@example.org',
-				fullname: 'Block me',
-			}, (err, uid) => {
-				blockeeUid = uid;
-				done(err);
-			});
-		});
-
-		describe('.toggle()', () => {
-			it('should toggle block', (done) => {
-				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid, action: 'block' }, (err) => {
-					assert.ifError(err);
-					User.blocks.is(blockeeUid, 1, (err, blocked) => {
-						assert.ifError(err);
-						assert(blocked);
-						done();
-					});
-				});
-			});
-
-			it('should toggle block', (done) => {
-				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid, action: 'unblock' }, (err) => {
-					assert.ifError(err);
-					User.blocks.is(blockeeUid, 1, (err, blocked) => {
-						assert.ifError(err);
-						assert(!blocked);
-						done();
-					});
-				});
-			});
-		});
-
-		describe('.add()', () => {
-			it('should block a uid', (done) => {
-				User.blocks.add(blockeeUid, 1, (err) => {
-					assert.ifError(err);
-					User.blocks.list(1, (err, blocked_uids) => {
-						assert.ifError(err);
-						assert.strictEqual(Array.isArray(blocked_uids), true);
-						assert.strictEqual(blocked_uids.length, 1);
-						assert.strictEqual(blocked_uids.includes(blockeeUid), true);
-						done();
-					});
-				});
-			});
-
-			it('should automatically increment corresponding user field', (done) => {
-				db.getObjectField('user:1', 'blocksCount', (err, count) => {
-					assert.ifError(err);
-					assert.strictEqual(parseInt(count, 10), 1);
-					done();
-				});
-			});
-
-			it('should error if you try to block the same uid again', (done) => {
-				User.blocks.add(blockeeUid, 1, (err) => {
-					assert.equal(err.message, '[[error:already-blocked]]');
-					done();
-				});
-			});
-		});
-
-		describe('.remove()', () => {
-			it('should unblock a uid', (done) => {
-				User.blocks.remove(blockeeUid, 1, (err) => {
-					assert.ifError(err);
-					User.blocks.list(1, (err, blocked_uids) => {
-						assert.ifError(err);
-						assert.strictEqual(Array.isArray(blocked_uids), true);
-						assert.strictEqual(blocked_uids.length, 0);
-						done();
-					});
-				});
-			});
-
-			it('should automatically decrement corresponding user field', (done) => {
-				db.getObjectField('user:1', 'blocksCount', (err, count) => {
-					assert.ifError(err);
-					assert.strictEqual(parseInt(count, 10), 0);
-					done();
-				});
-			});
-
-			it('should error if you try to unblock the same uid again', (done) => {
-				User.blocks.remove(blockeeUid, 1, (err) => {
-					assert.equal(err.message, '[[error:already-unblocked]]');
-					done();
-				});
-			});
-		});
-
-		describe('.is()', () => {
-			before((done) => {
-				User.blocks.add(blockeeUid, 1, done);
-			});
-
-			it('should return a Boolean with blocked status for the queried uid', (done) => {
-				User.blocks.is(blockeeUid, 1, (err, blocked) => {
-					assert.ifError(err);
-					assert.strictEqual(blocked, true);
-					done();
-				});
-			});
-		});
-
-		describe('.list()', () => {
-			it('should return a list of blocked uids', (done) => {
-				User.blocks.list(1, (err, blocked_uids) => {
-					assert.ifError(err);
-					assert.strictEqual(Array.isArray(blocked_uids), true);
-					assert.strictEqual(blocked_uids.length, 1);
-					assert.strictEqual(blocked_uids.includes(blockeeUid), true);
-					done();
-				});
-			});
-		});
-
-		describe('.filter()', () => {
-			it('should remove entries by blocked uids and return filtered set', (done) => {
-				User.blocks.filter(1, [{
-					foo: 'foo',
-					uid: blockeeUid,
-				}, {
-					foo: 'bar',
-					uid: 1,
-				}, {
-					foo: 'baz',
-					uid: blockeeUid,
-				}], (err, filtered) => {
-					assert.ifError(err);
-					assert.strictEqual(Array.isArray(filtered), true);
-					assert.strictEqual(filtered.length, 1);
-					assert.equal(filtered[0].uid, 1);
-					done();
-				});
-			});
-
-			it('should allow property argument to be passed in to customise checked property', (done) => {
-				User.blocks.filter(1, 'fromuid', [{
-					foo: 'foo',
-					fromuid: blockeeUid,
-				}, {
-					foo: 'bar',
-					fromuid: 1,
-				}, {
-					foo: 'baz',
-					fromuid: blockeeUid,
-				}], (err, filtered) => {
-					assert.ifError(err);
-					assert.strictEqual(Array.isArray(filtered), true);
-					assert.strictEqual(filtered.length, 1);
-					assert.equal(filtered[0].fromuid, 1);
-					done();
-				});
-			});
-
-			it('should not process invalid sets', (done) => {
-				User.blocks.filter(1, [{ foo: 'foo' }, { foo: 'bar' }, { foo: 'baz' }], (err, filtered) => {
-					assert.ifError(err);
-					assert.strictEqual(Array.isArray(filtered), true);
-					assert.strictEqual(filtered.length, 3);
-					filtered.forEach((obj) => {
-						assert.strictEqual(obj.hasOwnProperty('foo'), true);
-					});
-					done();
-				});
-			});
-
-			it('should process plain sets that just contain uids', (done) => {
-				User.blocks.filter(1, [1, blockeeUid], (err, filtered) => {
-					assert.ifError(err);
-					assert.strictEqual(filtered.length, 1);
-					assert.strictEqual(filtered[0], 1);
-					done();
-				});
-			});
-
-			it('should filter uids that are blocking targetUid', (done) => {
-				User.blocks.filterUids(blockeeUid, [1, 2], (err, filtered) => {
-					assert.ifError(err);
-					assert.deepEqual(filtered, [2]);
-					done();
-				});
-			});
 		});
 	});
 

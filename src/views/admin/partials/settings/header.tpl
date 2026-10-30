@@ -4,7 +4,7 @@
 	</div>
 	{{{ if !hideSave }}}
 	<div class="col-12 col-md-4 px-0 px-md-3">
-		<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
+		<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">{{tx("admin/admin:save-changes")}}</button>
 	</div>
 	{{{ end }}}
 </div>

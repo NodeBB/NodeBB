@@ -2,6 +2,7 @@
 'use strict';
 
 const _ = require('lodash');
+const winston = require('winston');
 
 const user = require('../user');
 const groups = require('../groups');
@@ -30,6 +31,9 @@ const _privilegeMap = new Map([
 privsAdmin.init = async () => {
 	await plugins.hooks.fire('static:privileges.admin.init', {
 		privileges: _privilegeMap,
+		routeMap: privsAdmin.routeMap,
+		routePrefixMap: privsAdmin.routePrefixMap,
+		socketMap: privsAdmin.socketMap,
 	});
 
 	for (const [, value] of _privilegeMap) {
@@ -56,6 +60,7 @@ privsAdmin.routeMap = {
 	'manage/privileges': 'admin:privileges',
 	'manage/admins-mods': 'admin:admins-mods',
 	'manage/users': 'admin:users',
+	'manage/digest': 'admin:users',
 	'manage/groups': 'admin:groups',
 	'manage/tags': 'admin:tags',
 	'settings/tags': 'admin:tags',
@@ -76,6 +81,7 @@ privsAdmin.routePrefixMap = {
 	'dashboard/': 'admin:dashboard',
 	'manage/categories/': 'admin:categories',
 	'manage/privileges/': 'admin:privileges',
+	'manage/users/': 'admin:users',
 	'manage/groups/': 'admin:groups',
 	'settings/': 'admin:settings',
 	'appearance/': 'admin:settings',
@@ -93,19 +99,16 @@ privsAdmin.socketMap = {
 	'admin.categories.copyPrivilegesFrom': 'admin:privileges',
 	'admin.categories.copyPrivilegesToAllCategories': 'admin:privileges',
 
-	'admin.user.makeAdmins': 'admin:admins-mods',
-	'admin.user.removeAdmins': 'admin:admins-mods',
-
 	'admin.user.loadGroups': 'admin:users',
-	'admin.user.saveCustomFields': 'admin:users',
-	'admin.groups.join': 'admin:users',
-	'admin.groups.leave': 'admin:users',
 	'admin.user.resetLockouts': 'admin:users',
 	'admin.user.validateEmail': 'admin:users',
 	'admin.user.sendValidationEmail': 'admin:users',
 	'admin.user.sendPasswordResetEmail': 'admin:users',
 	'admin.user.forcePasswordReset': 'admin:users',
-	'admin.user.invite': 'admin:users',
+	'admin.user.saveCustomFields': 'admin:users',
+	'admin.user.saveCustomReasons': 'admin:users',
+	'admin.digest.resend': 'admin:users',
+	'admin.parseRaw': 'admin:users',
 
 	'admin.tags.create': 'admin:tags',
 	'admin.tags.rename': 'admin:tags',
@@ -129,6 +132,7 @@ privsAdmin.resolve = (path) => {
 		.filter(entry => path.startsWith(entry[0]))
 		.sort((entry1, entry2) => entry2[0].length - entry1[0].length);
 	if (!found.length) {
+		winston.verbose(`[privileges/admin] No privilege is mapped to admin route "${path}", so only administrators can reach it. Add an entry to privsAdmin.routeMap or privsAdmin.routePrefixMap to delegate it.`);
 		return undefined;
 	}
 	return found[0][1]; // [0] is path [1] is privilege

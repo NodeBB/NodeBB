@@ -38,6 +38,15 @@ define('forum/account/info', ['forum/account/header', 'alerts', 'forum/account/s
 			});
 		});
 
+		noteList.on('click', '[component="account/moderation-note/delete"]', async function () {
+			const parent = $(this).parents('[data-id]');
+			socket.emit('user.deleteModerationNote', {
+				uid: ajaxify.data.uid,
+				id: parent.attr('data-id'),
+			}).then(() => {
+				parent.remove();
+			}).catch(alerts.error);
+		});
 
 		noteList.on('click', '[component="account/moderation-note/edit"]', function () {
 			const parent = $(this).parents('[data-id]');

@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Որոնման համար մուտքագրեք օգտվողի ID",
 	"search.username": "Ըստ օգտատիրոջ անվան ",
 	"search.username-placeholder": "Մուտքագրեք օգտատիրոջ անուն որոնման համար",
+	"search.fullname": "By Full Name",
 	"search.email": "Էլ. փոստով",
 	"search.email-placeholder": "Որոնման համար մուտքագրեք էլ. փոստ",
 	"search.ip": "IP հասցեով",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "Տվյալ օգտատիրոջ էլ. փոստը",
 	"create.password": "Գաղտնաբառ",
 	"create.password-confirm": "Հաստատել գաղտնաբառը",
-
-	"temp-ban.length": "Երկարություն",
-	"temp-ban.reason": "Պատճառը (ըստ ցանկության)",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Ժամեր",
-	"temp-ban.days": "Օրեր",
-	"temp-ban.explanation": "Մուտքագրեք արգելքի ժամկետը: Նկատի ունեցեք, որ 0-ի ժամանակը համարվում է մշտական արգելք:",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Իսկապե՞ս ցանկանում եք ընդմիշտ արգելել այս օգտատիրոջը:",
 	"alerts.confirm-ban-multi": "Իսկապե՞ս ցանկանում եք ընդմիշտ արգելել այս օգտատերերին:",

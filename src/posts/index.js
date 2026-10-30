@@ -59,7 +59,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 Posts.getPostSummariesFromSet = async function (set, uid, start, stop) {
 	let pids = await db.getSortedSetRevRange(set, start, stop);
 	pids = await privileges.posts.filter('topics:read', pids, uid);
-	const posts = await Posts.getPostSummaryByPids(pids, uid, { stripTags: false });
+	const posts = await Posts.getPostSummaryByPids(pids, uid, { stripTags: false, extraFields: ['contentWarning'] });
 	return { posts: posts, nextStart: stop + 1 };
 };
 
@@ -98,13 +98,22 @@ Posts.getPostIndices = async function (posts, uid) {
 Posts.modifyPostByPrivilege = function (post, privileges) {
 	if (post && privileges) {
 		if (post.deleted && !(post.selfPost || privileges['posts:view_deleted'])) {
-			post.content = '[[topic:post-is-deleted]]';
-			post.txContent = true;
+			Posts.clearDeletedPostContent(post);
 			if (post.user) {
 				post.user.signature = '';
 			}
 		}
 		post.ip = privileges.isAdminOrMod ? post.ip : undefined;
+	}
+};
+
+Posts.clearDeletedPostContent = function (post) {
+	if (post) {
+		post.content = '[[topic:post-is-deleted]]';
+		if (Object.hasOwn(post, 'sourceContent')) {
+			post.sourceContent = '[[topic:post-is-deleted]]';
+		}
+		post.txContent = true;
 	}
 };
 

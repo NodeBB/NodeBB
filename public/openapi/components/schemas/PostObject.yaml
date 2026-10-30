@@ -3,7 +3,9 @@ PostObject:
   type: object
   properties:
     pid:
-      type: [number, string]
+      oneOf:
+        - type: number
+        - type: string
     tid:
       type: number
       description: A topic identifier
@@ -107,9 +109,14 @@ PostObject:
           description: The post id of the first post in this topic (also called the
             "original post")
         teaserPid:
-          type: [number, string]
+          anyOf:
+            - type: number
+            - type: string
+            - type: string
+              nullable: true
+              enum:
+                - null
           description: The post id of the teaser (the most recent post, depending on settings)
-          nullable: true
         titleRaw:
           type: string
         oldTitle:

@@ -25,10 +25,12 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		generateGroupDisplayName,
 		membershipBtn,
 		spawnPrivilegeStates,
+		cacheBustedUrl,
 		localeToHTML,
 		renderDigestAvatar,
 		userAgentIcons,
 		buildAvatar,
+		renderShortcodeEmoji,
 		increment,
 		lessthan,
 		greaterthan,
@@ -37,6 +39,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		clamp,
 		quote,
 		concat,
+		txDisplayname,
+		txUsername,
 		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
@@ -54,9 +58,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 	function escape(str) {
 		// decoding HTML entities before escaping to prevent double escaping
 		// and allow translators to use HTML entities in translations
-		return tx.escape(
-			utils.escapeHTML(utils.decodeHTMLEntities(str))
-		);
+		return utils.escapeHTML(utils.decodeHTMLEntities(str));
 	}
 
 	function _tx(token, ...args) {
@@ -74,8 +76,9 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			args = argsFromToken;
 		}
 		const [namespace, key] = txToken.split(':', 2);
-		if (!namespace || !key || !this?._i18n?.[namespace]?.[key]) {
-			return tx.escape(tx.fixDoubleEscaped(tx.escapeHTML(token)));
+		const translation = tx.resolveKey(this?._i18n?.[namespace], key);
+		if (!namespace || !key || !translation) {
+			return tx.fixDoubleEscaped(tx.escapeHTML(token));
 		}
 
 		const escapedArgs = args.map((arg) => {
@@ -87,18 +90,16 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			return escapedArg;
 		});
 
-		const translation = this._i18n[namespace][key];
-		const result = tx.replaceArguments(translation, escapedArgs);
-		// prevents the translator.translate() in
-		// app.parseAndTraslate and page render from translating again
-		// can be removed once whole page translation is removed
-		return tx.escape(result);
+		return tx.replaceArguments(translation, escapedArgs);
 	}
 
 	function buildMetaTag(tag) {
 		const name = tag.name ? `name="${escape(tag.name)}" ` : '';
 		const property = tag.property ? `property="${escape(tag.property)}" ` : '';
-		const content = tag.content ? `content="${escape(tag.content).replace(/\n/g, ' ')}" ` : '';
+		const tagContent = tag.content ?
+			tag.translate ? _tx.call(this, tag.content) : tag.content.replace(/\n/g, ' ') :
+			'';
+		const content = tagContent ? `content="${escape(tagContent)}" ` : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	}
@@ -144,29 +145,29 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			.replace(/"/g, '&quot;');
 	}
 
+	const routePrivilegeMap = new Map([
+		['/users', 'view:users'],
+		['/tags', 'view:tags'],
+		['/groups', 'view:groups'],
+	]);
 	function displayMenuItem(data, index) {
 		const item = data.navigation[index];
 		if (!item) {
 			return false;
 		}
-
-		if (item.route.match('/users') && data.user && !data.user.privileges['view:users']) {
-			return false;
-		}
-
-		if (item.route.match('/tags') && data.user && !data.user.privileges['view:tags']) {
-			return false;
-		}
-
-		if (item.route.match('/groups') && data.user && !data.user.privileges['view:groups']) {
-			return false;
+		if (data.user) {
+			for (const [route, privilege] of routePrivilegeMap) {
+				if (item.route.startsWith(route) && !data.user.privileges[privilege]) {
+					return false;
+				}
+			}
 		}
 
 		return true;
 	}
 
-	function stripTags(str) {
-		return utils.stripHTMLTags(str);
+	function stripTags(str, ...args) {
+		return utils.stripHTMLTags(str, [...args]);
 	}
 
 	function buildCategoryIcon(category, size, rounded) {
@@ -175,7 +176,8 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		const sizeEscaped = escape(size);
 		const fontSize = (parseInt(size, 10) / 2) || 16;
-		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${category.icon ? `<i class="fa fa-fw ${escape(category.icon)}"></i>` : ''}</span>`;
+		const icon = category.icon ? `<i class="fa fa-fw ${escape(category.icon)}" style="line-height: ${sizeEscaped};"></i>` : '';
+		return `<span class="icon d-inline-flex justify-content-center align-items-center align-middle ${rounded}" style="${generateCategoryBackground(category)} width:${sizeEscaped}; height: ${sizeEscaped}; font-size: ${fontSize}px;">${icon}</span>`;
 	}
 
 	function buildCategoryLabel(category, tag = 'a', className = '') {
@@ -213,7 +215,11 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 
 		if (category.backgroundImage) {
-			style.push(`background-image: url(${category.backgroundImage})`);
+			const backgroundUrl = utils.cacheBustedUrl(
+				category.backgroundImage,
+				category['backgroundImage:updatedAt']
+			);
+			style.push(`background-image: url(${backgroundUrl})`);
 			if (category.imageClass) {
 				style.push(`background-size: ${category.imageClass}`);
 			}
@@ -281,7 +287,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			const guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
 			const spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
 			const globalModDisabled = ['groups:moderate'];
-			let fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete'];
+			let fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete', 'groups:chat', 'groups:chat:privileged'];
 			if (cid === -1) {
 				fediverseEnabled = fediverseEnabled.slice(3);
 			}
@@ -294,11 +300,15 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			return `
 				<td data-privilege="${escape(priv.name)}" data-value="${escape(priv.state)}" data-type="${escape(priv.type)}">
 					<div class="form-check text-center">
-						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
+						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state === true ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
 					</div>
 				</td>
 			`;
 		}).join('');
+	}
+
+	function cacheBustedUrl(url, updatedAt) {
+		return escape(utils.cacheBustedUrl(url, updatedAt));
 	}
 
 	function localeToHTML(locale, fallback) {
@@ -389,7 +399,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		}
 		classNames = escape(classNames || '');
 		component = escape(component || '');
-		const displayname = escape(String(userObj.displayname || ''));
+		const displayname = txDisplayname.call(this, userObj);
 		const picture = escape(String(userObj.picture || ''));
 		const iconBgColor = escape(String(userObj['icon:bgColor'] || ''));
 		const iconText = escape(String(userObj['icon:text'] || ''));
@@ -407,7 +417,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		let output = '';
 
 		if (userObj.picture) {
-			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${style}" onError="this.remove()" itemprop="image" />`;
+			output += `<img${attr2String(attributes)} alt="${displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${picture}" style="${style}" onError="this.remove()" />`;
 		}
 		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${style} background-color: ${iconBgColor}">${iconText}</span>`;
 		return output;
@@ -443,6 +453,20 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 
 	function concat(...args) {
 		return args.join('');
+	}
+
+	function txDisplayname(user) {
+		return txUsernameOrDisplayname.call(this, user, 'displayname');
+	}
+
+	function txUsername(user) {
+		return txUsernameOrDisplayname.call(this, user, 'username');
+	}
+
+	function txUsernameOrDisplayname(user, field) {
+		const name = String(user?.[field] || '');
+		const shouldTranslate = user?.uid === 0 && (name === '[[global:former-user]]' || name === '[[global:guest]]');
+		return shouldTranslate ? _tx.call(this, name) : escape(name);
 	}
 
 	function generateWroteReplied(post, timeagoCutoff) {
@@ -524,6 +548,20 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 		});
 
 		return html.join('');
+	}
+
+	function renderShortcodeEmoji(text, emojiMeta) {
+		if (!text || !emojiMeta || !emojiMeta.length) {
+			return String(escape(text) || '');
+		}
+		let result = escape(text);
+		for (const { clean, hostname } of emojiMeta) {
+			const code = `:${clean}:`;
+			const proxyUrl = `/emoji/ap/${encodeURIComponent(clean)}/${encodeURIComponent(hostname)}`;
+			const imgTag = `<img class="not-responsive emoji" src="${escape(proxyUrl)}" title="${escape(code)}" />`;
+			result = result.split(code).join(imgTag);
+		}
+		return result;
 	}
 
 	function register() {

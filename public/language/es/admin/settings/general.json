@@ -35,7 +35,7 @@
 	"touch-icon.help": "Recommended size and format: 512x512, PNG format only. If no touch icon is specified, NodeBB will fall back to using the favicon.",
 	"maskable-icon": "Maskable (Homescreen) Icon",
 	"maskable-icon.help": "Recommended size and format: 512x512, PNG format only. If no maskable icon is specified, NodeBB will fall back to the Touch Icon.",
-	"screenshot": "Screenshot",
+	"screenshot": "Captura de Pantalla",
 	"screenshot.help": "Recommended size and format: between 320px and 3480px, JPG and PNG format only. If no screenshot is specified, NodeBB will fall back to a generic screenshot",
 	"outgoing-links": "Enlaces a sitios externos",
 	"outgoing-links.warning-page": "Usar Página de Advertencia para Enlaces a Sitios Externos",
@@ -61,5 +61,8 @@
 	"auto-detect": "Auto Detectar Configuración de Idioma para Visitantes",
 	"default-language-help": "El idioma por defecto determina la configuración del idioma usado para todos los usuarios que visiten el foro. <br />Los usuarios, a nivel individual, pueden sobreescribir el idioma por defecto en la página de configuración de su cuenta.",
 	"post-sharing": "Compartir entradas",
-	"info-plugins-additional": "Los plugins pueden añadir redes adicionales para compartir entradas/respuestas."
+	"info-plugins-additional": "Los plugins pueden añadir redes adicionales para compartir entradas/respuestas.",
+	"privacy": "Privacidad",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

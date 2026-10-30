@@ -21,6 +21,13 @@ const sockets = require('../socket.io');
 const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
+	// Never trust a client-supplied uid; only the session's own uid is valid
+	if (req.uid) {
+		userData.uid = req.uid;
+	} else {
+		delete userData.uid;
+	}
+
 	if (!userData.hasOwnProperty('email')) {
 		userData.updateEmail = true;
 	}
@@ -72,18 +79,23 @@ async function registerAndLoginUser(req, res, userData) {
 	return complete;
 }
 
+async function validateRegistrationPolicy(userData) {
+	const registrationType = meta.config.registrationType || 'normal';
+	if (registrationType === 'disabled') {
+		return false;
+	}
+	if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+		await user.verifyInvitation(userData);
+	}
+	return true;
+}
+
 // POST /register
 authenticationController.register = async function (req, res) {
-	const registrationType = meta.config.registrationType || 'normal';
-
-	if (registrationType === 'disabled') {
-		return res.sendStatus(403);
-	}
-
 	const userData = req.body;
 	try {
-		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-			await user.verifyInvitation(userData);
+		if (!await validateRegistrationPolicy(userData)) {
+			return res.sendStatus(403);
 		}
 
 		user.checkUsernameLength(userData.username);
@@ -114,6 +126,14 @@ authenticationController.register = async function (req, res) {
 // POST /register/complete
 authenticationController.registerComplete = async function (req, res) {
 	try {
+		if (
+			req.session.registration?.register === true &&
+			!await validateRegistrationPolicy(req.session.registration)
+		) {
+			delete req.session.registration;
+			return res.sendStatus(403);
+		}
+
 		// For the interstitials that respond, execute the callback with the form body
 		const data = await user.interstitials.get(req, req.session.registration);
 		const callbacks = data.interstitials.reduce((memo, cur) => {
@@ -196,11 +216,13 @@ authenticationController.registerAbort = async (req, res) => {
 
 		const { interstitials } = await user.interstitials.get(req, req.session.registration);
 		if (!interstitials.length) {
+			winston.info(`[register/abort] no intersitials ${JSON.stringify({ uid: req.uid, session: req.session })}`);
 			delete req.session.registration;
 			return res.redirect(nconf.get('relative_path') + (req.session.returnTo || '/'));
 		}
+		winston.info(`[register/abort] Found intersitials ${JSON.stringify({ uid: req.uid, session: req.session, interstitials })}`);
 	}
-
+	winston.info(`[register/abort] clearing session ${JSON.stringify({ uid: req.uid, session: req.session })}`);
 	// End the session and redirect to home
 	req.session.destroy(() => {
 		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
@@ -234,11 +256,8 @@ authenticationController.login = async (req, res, next) => {
 		const isUsernameLogin = loginWith.includes('username') && !validator.isEmail(req.body.username);
 		if (isEmailLogin) {
 			const username = await user.getUsernameByEmail(req.body.username);
-			if (username !== '[[global:guest]]') {
-				req.body.username = username;
-			} else {
-				return errorHandler(req, res, '[[error:invalid-email]]', 400);
-			}
+			// if no username, pass in dummy username for login purposes, otherwise oracle 🔮 if returning early here
+			req.body.username = (username && username !== '[[global:guest]]') ? username : '__dummy__';
 		}
 		if (isEmailLogin || isUsernameLogin) {
 			continueLogin(strategy, req, res, next);
@@ -289,6 +308,7 @@ function continueLogin(strategy, req, res, next) {
 			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
 		} else {
 			delete req.query.lang;
+
 			await authenticationController.doLogin(req, userData.uid);
 			let destination;
 			if (req.session.returnTo) {
@@ -307,7 +327,9 @@ function continueLogin(strategy, req, res, next) {
 
 function redirectAfterLogin(req, res, destination) {
 	if (req.body?.noscript === 'true') {
-		res.redirect(`${destination}?loggedin`);
+		req.session.save(() => {
+			res.redirect(`${destination}?loggedin`);
+		});
 	} else {
 		res.status(200).send({
 			next: destination,
@@ -319,19 +341,27 @@ authenticationController.doLogin = async function (req, uid) {
 	if (!uid) {
 		return;
 	}
+	// Capture whether this is a forced re-login before clearing forceLogin.
+	// We clear forceLogin BEFORE doLogin so that passport's session
+	// regenerate + merge doesn't carry the stale flag into the new session.
+	const wasForceLogin = !!req.session.forceLogin;
+	delete req.session.forceLogin;
+	const isSelf = parseInt(req.uid, 10) === parseInt(uid, 10);
 	const loginAsync = util.promisify(req.login).bind(req);
-	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && !(req.loggedIn && uid !== req.uid);
+	const keepSessionInfo = (req?.res?.locals?.reroll !== false) && (!req.loggedIn || isSelf);
 	await loginAsync({ uid: uid }, { keepSessionInfo });
-	await authenticationController.onSuccessfulLogin(req, uid);
+	await authenticationController.onSuccessfulLogin(req, uid, true, wasForceLogin);
 };
 
-authenticationController.onSuccessfulLogin = async function (req, uid, trackSession = true) {
+authenticationController.onSuccessfulLogin = async function (req, uid, trackSession = true, wasForceLogin) {
 	/*
 	 * Older code required that this method be called from within the SSO plugin.
 	 * That behaviour is no longer required, onSuccessfulLogin is now automatically
 	 * called in NodeBB core. However, if already called, return prematurely
+	 * only if the user is logging in as themselves and not forcing a reauth.
 	 */
-	if (req.loggedIn && !req.session.forceLogin) {
+	const isSelfRelogin = req.loggedIn && parseInt(req.uid, 10) === parseInt(uid, 10);
+	if (isSelfRelogin && !req.session.forceLogin && !wasForceLogin) {
 		return true;
 	}
 
@@ -346,7 +376,13 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		await user.reset.cleanByUid(uid);
 
 		req.session.meta = {};
-
+		const now = Date.now();
+		if (wasForceLogin) {
+			req.session.meta.reAuthAt = now;
+		} else {
+			delete req.session.meta.reAuthAt;
+		}
+		// Safety net: clear forceLogin if it somehow survived (e.g., from SSO paths)
 		delete req.session.forceLogin;
 		// Associate IP used during login with user account
 		req.session.meta.ip = req.ip;
@@ -354,7 +390,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 		// Associate metadata retrieved via user-agent
 		req.session.meta = _.extend(req.session.meta, {
 			uuid: uuid,
-			datetime: Date.now(),
+			datetime: now,
 			platform: req.useragent.platform,
 			browser: req.useragent.browser,
 			version: req.useragent.version,
@@ -365,7 +401,7 @@ authenticationController.onSuccessfulLogin = async function (req, uid, trackSess
 			}),
 			trackSession ? user.auth.addSession(uid, req.sessionID) : undefined,
 			user.updateLastOnlineTime(uid),
-			user.onUserOnline(uid, Date.now()),
+			user.onUserOnline(uid, now),
 			analytics.increment('logins'),
 			db.incrObjectFieldBy('global', 'loginCount', 1),
 		]);
@@ -384,25 +420,29 @@ const destroyAsync = util.promisify((req, callback) => req.session.destroy(callb
 const logoutAsync = util.promisify((req, callback) => req.logout(callback));
 
 authenticationController.localLogin = async function (req, username, password, next) {
-	if (!username) {
-		return next(new Error('[[error:invalid-username]]'));
-	}
-
-	if (!password || !utils.isPasswordValid(password)) {
-		return next(new Error('[[error:invalid-password]]'));
-	}
-
-	if (password.length > 512) {
-		return next(new Error('[[error:password-too-long]]'));
-	}
-
-	const userslug = slugify(username);
-	if (!utils.isUserNameValid(username) || !userslug) {
-		return next(new Error('[[error:invalid-username]]'));
-	}
-
-	const uid = await user.getUidByUserslug(userslug);
 	try {
+		if (!username) {
+			throw new Error('[[error:invalid-username]]');
+		}
+
+		if (!password || !utils.isPasswordValid(password)) {
+			throw new Error('[[error:invalid-password]]');
+		}
+
+		if (password.length > 512) {
+			throw new Error('[[error:password-too-long]]');
+		}
+
+		const userslug = slugify(username);
+		if (!utils.isUserNameValid(username) || !userslug) {
+			throw new Error('[[error:invalid-username]]');
+		}
+
+		const uid = await user.getUidByUserslug(userslug);
+		if (!parseInt(uid, 10) && await user.isRegistrationPending(username, password, req.ip)) {
+			throw new Error('[[error:registration-pending]]');
+		}
+
 		const [userData, isAdminOrGlobalMod, canLoginIfBanned] = await Promise.all([
 			user.getUserFields(uid, ['uid', 'passwordExpiry']),
 			user.isAdminOrGlobalMod(uid),

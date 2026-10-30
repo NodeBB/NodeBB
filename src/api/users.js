@@ -141,7 +141,15 @@ usersAPI.updateSettings = async function (caller, data) {
 		chatDenyList: '[]',
 	};
 	// load raw settings without parsing values to booleans
-	const current = await db.getObject(`user:${data.uid}:settings`);
+	const current = await db.getObject(`user:${data.uid}:settings`) || {};
+
+	if (Object.hasOwn(current, 'postsPerPage')) {
+		current.postsPerPage = Math.max(2, Math.min(parseInt(current.postsPerPage, 10), meta.config.maxPostsPerPage));
+	}
+	if (Object.hasOwn(current, 'topicsPerPage')) {
+		current.topicsPerPage = Math.max(2, Math.min(parseInt(current.topicsPerPage, 10), meta.config.maxTopicsPerPage));
+	}
+
 	const payload = { ...defaults, ...current, ...data.settings };
 	delete payload.uid;
 
@@ -348,6 +356,13 @@ usersAPI.generateToken = async (caller, { uid, description }) => {
 	}
 
 	const tokenObj = await api.utils.tokens.generate({ uid, description });
+	await events.log({
+		type: 'token-add',
+		uid: caller.uid,
+		ip: caller.ip,
+		_tokenUid: uid,
+		description,
+	});
 	return tokenObj.token;
 };
 
@@ -359,6 +374,11 @@ usersAPI.deleteToken = async (caller, { uid, token }) => {
 	}
 
 	await api.utils.tokens.delete(token);
+	await events.log({
+		type: 'token-delete',
+		uid: caller.uid,
+		ip: caller.ip,
+	});
 	return true;
 };
 
@@ -442,8 +462,8 @@ usersAPI.getInviteGroups = async (caller, { uid }) => {
 
 usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
 	const isSelf = parseInt(caller.uid, 10) === parseInt(uid, 10);
-	const canEdit = await privileges.users.canEdit(caller.uid, uid);
-	if (skipConfirmation && canEdit && !isSelf) {
+	const canManage = await privileges.admin.can('admin:users', caller.uid);
+	if (skipConfirmation && canManage && !isSelf) {
 		if (!email.length) {
 			await user.email.remove(uid);
 		} else {
@@ -475,14 +495,14 @@ usersAPI.listEmails = async (caller, { uid }) => {
 };
 
 usersAPI.getEmail = async (caller, { uid, email }) => {
-	const [isPrivileged, { showemail }, emailUid] = await Promise.all([
+	const [isPrivileged, { showemail }, ownerUid] = await Promise.all([
 		user.isAdminOrGlobalMod(caller.uid),
 		user.getSettings(uid),
 		db.sortedSetScore('email:uid', String(email).toLowerCase()),
 	]);
-
 	const isSelf = caller.uid === parseInt(uid, 10);
-	const exists = parseInt(emailUid, 10) === parseInt(uid, 10);
+	const exists = parseInt(ownerUid, 10) === parseInt(uid, 10);
+
 	return exists && (isSelf || isPrivileged || showemail);
 };
 
@@ -600,7 +620,7 @@ usersAPI.search = async function (caller, data) {
 	}
 	const [allowed, isPrivileged] = await Promise.all([
 		privileges.global.can('search:users', caller.uid),
-		user.isPrivileged(caller.uid),
+		user.isAdminOrGlobalMod(caller.uid),
 	]);
 	let filters = data.filters || [];
 	filters = Array.isArray(filters) ? filters : [filters];
@@ -611,7 +631,8 @@ usersAPI.search = async function (caller, data) {
 			searchBy === 'email' ||
 			filters.includes('banned') ||
 			filters.includes('muted') ||
-			filters.includes('flagged')
+			filters.includes('flagged') ||
+			data.sortBy === 'flags'
 		) && !isPrivileged)
 	) {
 		throw new Error('[[error:no-privileges]]');

@@ -33,24 +33,15 @@ topicsAPI._checkThumbPrivileges = async function ({ tid, uid }) {
 };
 
 topicsAPI.get = async function (caller, data) {
-	const [userPrivileges, topic] = await Promise.all([
-		privileges.topics.get(data.tid, caller.uid),
-		topics.getTopicData(data.tid),
-	]);
-	if (
-		!topic ||
-		!userPrivileges['topics:read'] ||
-		userPrivileges.disabled ||
-		!privileges.topics.canViewDeletedScheduled(topic, userPrivileges)
-	) {
+	const canReadTopic = await privileges.topics.canRead(data.tid, caller.uid);
+	if (!canReadTopic) {
 		return null;
 	}
-
-	return topic;
+	return await topics.getTopicData(data.tid);
 };
 
 topicsAPI.create = async function (caller, data) {
-	if (!data) {
+	if (!data || (!Number.isInteger(data.cid) && typeof data.cid !== 'string')) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -184,7 +175,7 @@ topicsAPI.unfollow = async function (caller, data) {
 };
 
 topicsAPI.updateTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -195,7 +186,7 @@ topicsAPI.updateTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.addTags = async (caller, { tid, tags }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -208,7 +199,7 @@ topicsAPI.addTags = async (caller, { tid, tags }) => {
 };
 
 topicsAPI.deleteTags = async (caller, { tid }) => {
-	if (!await privileges.topics.canEdit(tid, caller.uid)) {
+	if (!await privileges.topics.canTag(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -253,7 +244,8 @@ topicsAPI.reorderThumbs = async (caller, { tid, path, order }) => {
 };
 
 topicsAPI.getEvents = async (caller, { tid }) => {
-	if (!await privileges.topics.can('topics:read', tid, caller.uid)) {
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
+	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -261,7 +253,8 @@ topicsAPI.getEvents = async (caller, { tid }) => {
 };
 
 topicsAPI.deleteEvent = async (caller, { tid, eventId }) => {
-	if (!await privileges.topics.isAdminOrMod(tid, caller.uid)) {
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
+	if (!canRead || !await privileges.topics.isAdminOrMod(tid, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -296,10 +289,13 @@ topicsAPI.bump = async (caller, { tid }) => {
 
 	await topics.markAsUnreadForAll(tid);
 	topics.pushUnreadCount(caller.uid);
+
+	activitypub.out.announce.topic(tid, caller.uid);
 };
 
 topicsAPI.move = async (caller, { tid, cid }) => {
 	const tids = Array.isArray(tid) ? tid : [tid];
+	cid = String(cid);
 	const [isAdmin, isModOfDestination, [canCreate, canRead], uids] = await Promise.all([
 		privileges.users.isAdministrator(caller.uid),
 		privileges.users.isModerator(caller.uid, cid),
@@ -327,7 +323,11 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 			const isModOfSourceAndDestination = isModOfDestination && isModOfTopicCid[index];
 			if (!isAdmin && !isModOfSourceAndDestination) {
 				const isOwnerOfTopic = parseInt(topicData.uid, 10) === parseInt(caller.uid, 10);
-				if (!isOwnerOfTopic || !canCreateAndReadDestination || topicData.locked || topicData.deleted) {
+				const canReadSource = await privileges.topics.can('topics:read', tid, caller.uid);
+				if (
+					!isOwnerOfTopic || !canCreateAndReadDestination ||
+					!canReadSource || topicData.locked || topicData.deleted
+				) {
 					throw new Error('[[error:no-privileges]]');
 				}
 				if (maxOwnerPosts > 0 && topicData.postcount > maxOwnerPosts) {
@@ -356,7 +356,9 @@ topicsAPI.move = async (caller, { tid, cid }) => {
 						activitypub.out.move.context(caller.uid, tid);
 						activitypub.out.announce.topic(tid);
 					}
-					activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+					if (utils.isNumber(topicData.cid) && parseInt(topicData.cid, 10) > 0) {
+						activitypub.out.undo.announce('cid', topicData.cid, tid); // microblogs
+					}
 				});
 			}
 

@@ -11,6 +11,8 @@ const activitypub = require('../activitypub');
 const utils = require('../utils');
 
 module.exports = function (User) {
+	const validSorts = new Set(['joindate', 'lastonline', 'postcount', 'reputation', 'flags']);
+
 	const filterFnMap = {
 		online: user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000),
 		flagged: user => parseInt(user.flags, 10) > 0,
@@ -50,7 +52,14 @@ module.exports = function (User) {
 					} else {
 						const assertion = await activitypub.actors.assert([handle || data.query]);
 						if (assertion === true) {
-							uids = [handle ? await User.getUidByUserslug(handle) : query];
+							const resolved = handle ? await db.getObjectField('handle:uid', handle.toLowerCase()) : null;
+							if (resolved) {
+								uids = [resolved];
+							} else {
+								const wfKey = handle ? activitypub.helpers._webfingerKey(handle) : false;
+								const cached = wfKey ? activitypub.helpers._webfingerCache.get(wfKey) : null;
+								uids = cached ? [cached.actorUri] : [handle ? await User.getUidByUserslug(handle) : query];
+							}
 						} else if (Array.isArray(assertion) && assertion.length) {
 							uids = assertion.map(u => u.id);
 						}
@@ -58,8 +67,21 @@ module.exports = function (User) {
 				}
 			}
 
+			// For partial queries, search both local and remote users in parallel
 			if (!uids.length) {
-				uids = await (data.findUids || findUids)(query, searchBy, data.hardCap);
+				const searchMethod = data.findUids || findUids;
+				const promises = [
+					searchMethod(query, searchBy, data.hardCap),
+				];
+
+				const mapping = {
+					username: 'ap.preferredUsername',
+					fullname: 'ap.name',
+				};
+				if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
+					promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
+				}
+				uids = (await Promise.all(promises)).flat();
 			}
 		}
 
@@ -68,23 +90,6 @@ module.exports = function (User) {
 			query, searchBy, uids, uid, hardCap: data.hardCap,
 		});
 		uids = hookResult.uids;
-
-		// Only run fallback if still empty
-		if (!uids.length) {
-			const searchMethod = data.findUids || findUids;
-			const promises = [
-				searchMethod(query, searchBy, data.hardCap),
-			];
-
-			const mapping = {
-				username: 'ap.preferredUsername',
-				fullname: 'ap.name',
-			};
-			if (meta.config.activitypubEnabled && Object.hasOwn(mapping, searchBy)) {
-				promises.push(searchMethod(query, mapping[searchBy], data.hardCap));
-			}
-			uids = (await Promise.all(promises)).flat();
-		}
 
 		uids = await filterAndSortUids(uids, data);
 		if (data.hardCap > 0) {
@@ -114,7 +119,7 @@ module.exports = function (User) {
 		if (blocks.length) {
 			userData.forEach((user) => {
 				if (user) {
-					user.isBlocked = blocks.includes(user.uid);
+					user.isBlocked = blocks.includes(String(user.uid));
 				}
 			});
 		}
@@ -152,9 +157,9 @@ module.exports = function (User) {
 		let filters = data.filters || [];
 		filters = Array.isArray(filters) ? filters : [data.filters];
 		const fields = [];
-
-		if (data.sortBy) {
-			fields.push(data.sortBy);
+		const sortBy = validSorts.has(data.sortBy) ? data.sortBy : null;
+		if (sortBy) {
+			fields.push(sortBy);
 		}
 
 		filters.forEach((filter) => {
@@ -192,8 +197,8 @@ module.exports = function (User) {
 			}
 		});
 
-		if (data.sortBy) {
-			sortUsers(userData, data.sortBy, data.sortDirection);
+		if (sortBy) {
+			sortUsers(userData, sortBy, data.sortDirection);
 		}
 
 		return userData.map(user => user.uid);

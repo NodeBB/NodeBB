@@ -8,7 +8,7 @@ const nconf = require('nconf');
 
 const db = require('../database');
 const file = require('../file');
-const { paths } = require('../constants');
+const { paths, pluginNamePattern } = require('../constants');
 
 const Data = module.exports;
 
@@ -25,8 +25,9 @@ async function getActiveIds() {
 
 Data.getPluginPaths = async function () {
 	const plugins = await getActiveIds();
-	const pluginPaths = plugins.filter(plugin => plugin && typeof plugin === 'string')
-		.map(plugin => path.join(paths.nodeModules, plugin));
+	const pluginPaths = plugins.filter(
+		p => typeof p === 'string' && pluginNamePattern.test(p)
+	).map(plugin => path.join(paths.nodeModules, plugin));
 	const exists = await Promise.all(pluginPaths.map(file.exists));
 	exists.forEach((exists, i) => {
 		if (!exists) {

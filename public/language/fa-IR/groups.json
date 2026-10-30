@@ -27,6 +27,8 @@
     "details.invited": "اعضای دعوت شده",
     "details.has-no-posts": "اعضای این گروه هیچ پستی ایجاد نکرده اند",
     "details.latest-posts": "آخرین پست ها",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "خصوصی",
     "details.disableJoinRequests": "غیر فعال کردن درخواستهای عضویت",
     "details.disableLeave": "به کاربران اجازه خروج از این گروه را نده",
@@ -64,6 +66,7 @@
     "membership.reject": "رد",
     "new-group.group-name": "نام گروه:",
     "upload-group-cover": "آپلود کاور گروه",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "برای دعوت به این گروه فهرستی از نام‌کاربری که با کاما جدا کنید را وارد کنید",
     "bulk-invite": "دعوت گروهی",
     "remove-group-cover-confirm": "آیا شما مطمئن هستید که می خواهید عکس کاور را حذف کنید؟"

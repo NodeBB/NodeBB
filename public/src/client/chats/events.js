@@ -5,8 +5,7 @@ define('forum/chats/events', [
 	'forum/chats/messages',
 	'chat',
 	'components',
-	'helpers',
-], function (messages, chatModule, components, helpers) {
+], function (messages, chatModule, components) {
 	const Events = {};
 
 	const events = {
@@ -18,12 +17,14 @@ define('forum/chats/events', [
 		'event:chats.typing': onChatTyping,
 	};
 	let chatNavWrapper = null;
+	let chatMainWrapper = null;
 
 	let Chats = null;
 
 	Events.init = async function () {
 		Chats = await app.require('forum/chats');
 		chatNavWrapper = $('[component="chat/nav-wrapper"]');
+		chatMainWrapper = $('[component="chat/main-wrapper"]');
 		Events.removeListeners();
 		for (const [eventName, handler] of Object.entries(events)) {
 			socket.on(eventName, handler);
@@ -42,8 +43,7 @@ define('forum/chats/events', [
 		}
 		data.self = parseInt(app.user.uid, 10) === parseInt(data.fromUid, 10) ? 1 : 0;
 		data.message.self = data.self;
-		data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-		data.message.timestampISO = utils.toISOString(data.message.timestamp);
+		data.message.timestampISO = utils.toISOString(Math.min(Date.now(), data.message.timestamp));
 		const isMessageForCurrentRoom = parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10);
 
 		if (isMessageForCurrentRoom) {
@@ -51,7 +51,10 @@ define('forum/chats/events', [
 				Chats.newMessage = data.self === 0;
 			}
 
-			messages.appendChatMessage($('[component="chat/message/content"]'), data.message);
+			messages.appendChatMessage(
+				chatMainWrapper.find('[component="chat/message/content"]'),
+				data.message
+			);
 		}
 
 		if (!data.message.system) {
@@ -99,13 +102,7 @@ define('forum/chats/events', [
 		}
 
 		const titleEl = $(`[component="chat/main-wrapper"][data-roomid="${data.roomId}"] [component="chat/header/title"]`);
-		if (titleEl.length) {
-			titleEl.translateHtml(
-				data.newName ?
-					`<i class="fa ${helpers.escape(ajaxify.data.icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
-					data.chatWithMessage
-			);
-		}
+		chatModule.updateRoomName(titleEl, ajaxify.data.icon, data.newName, data.chatWithMessage);
 	}
 
 	function markChatState({ roomId, state }) {

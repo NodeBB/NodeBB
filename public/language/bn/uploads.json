@@ -5,5 +5,7 @@
     "maximum-file-size": "সর্বোচ্চ %1 কিবিট",
     "no-uploads-found": "কোনো আপলোড নেই",
     "public-uploads-info": "সব আপলোড গণ দৃশ্যমান, সব দর্শক তা দেখতে পারবে।",
-    "private-uploads-info": "সব আপলোড ব্যক্তিগত, কেবল প্রবেশরত ব্যবহারকারী তা দেখতে পারবে।"
+    "private-uploads-info": "সব আপলোড ব্যক্তিগত, কেবল প্রবেশরত ব্যবহারকারী তা দেখতে পারবে।",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

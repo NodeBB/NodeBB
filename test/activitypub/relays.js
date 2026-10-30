@@ -1,0 +1,120 @@
+'use strict';
+
+const assert = require('assert');
+const nconf = require('nconf');
+
+const db = require('../mocks/databasemock');
+const activitypub = require('../../src/activitypub');
+
+describe('ActivityPub Relays', () => {
+	const actor = 'https://example.com/actor';
+
+	afterEach(async () => {
+		await db.sortedSetRemove('relays:state', actor);
+		await db.sortedSetRemove('relays:createtime', actor);
+	});
+
+	it('should add a relay follower', async () => {
+		await db.sortedSetAdd('relays:state', -1, actor);
+		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
+		const score = await db.sortedSetScore('relays:state', actor);
+		assert.strictEqual(score, -1);
+	});
+
+	it('should only report relays with a completed solicited handshake (state >= 1) as relays', async () => {
+		// Unknown actor
+		assert.strictEqual(await activitypub.relays.is(actor), false);
+
+		// Unsolicited follower (wrote itself in with a signed Follow of the instance actor)
+		await db.sortedSetAdd('relays:state', -1, actor);
+		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
+		assert.strictEqual(await activitypub.relays.is(actor), false);
+
+		// Pending solicited relay (handshake not yet completed)
+		await db.sortedSetAdd('relays:state', 0, actor);
+		assert.strictEqual(await activitypub.relays.is(actor), false);
+
+		// Confirmed relay ("Receiving only")
+		await db.sortedSetAdd('relays:state', 1, actor);
+		assert.strictEqual(await activitypub.relays.is(actor), true);
+
+		// Active relay
+		await db.sortedSetAdd('relays:state', 2, actor);
+		assert.strictEqual(await activitypub.relays.is(actor), true);
+	});
+
+	it('should remove a relay follower', async () => {
+		await db.sortedSetAdd('relays:state', -1, actor);
+		await db.sortedSetAdd('relays:createtime', Date.now(), actor);
+		await activitypub.relays.removeFollower(actor);
+		const score = await db.sortedSetScore('relays:state', actor);
+		assert.strictEqual(score, null);
+	});
+
+	it('should get relay followers', async () => {
+		const actor2 = 'https://example2.com/actor';
+		await Promise.all([
+			db.sortedSetAdd('relays:state', -1, actor),
+			db.sortedSetAdd('relays:createtime', Date.now(), actor),
+			db.sortedSetAdd('relays:state', -1, actor2),
+			db.sortedSetAdd('relays:createtime', Date.now(), actor2),
+		]);
+
+		const followers = await activitypub.relays.getFollowers();
+		assert.strictEqual(followers.length, 2);
+		assert.ok(followers.includes(actor));
+		assert.ok(followers.includes(actor2));
+
+		await db.sortedSetRemove('relays:state', actor2);
+		await db.sortedSetRemove('relays:createtime', actor2);
+	});
+
+	it('should broadcast created objects to relay followers', async () => {
+		const object = {
+			id: `${nconf.get('url')}/post/123`,
+			type: 'Note',
+		};
+		const payload = {
+			id: `${object.id}#activity/create/123456`,
+			type: 'Create',
+			object,
+		};
+		const followers = ['https://f1.com/actor', 'https://f2.com/actor'];
+
+		// Mock activitypub.send
+		const originalSend = activitypub.send;
+		const sentTo = [];
+		activitypub.send = async (type, id, targets, payload) => {
+			sentTo.push({ targets, payload });
+			return true;
+		};
+
+		await Promise.all([
+			db.sortedSetAdd('relays:state', -1, followers[0]),
+			db.sortedSetAdd('relays:createtime', Date.now(), followers[0]),
+			db.sortedSetAdd('relays:state', -1, followers[1]),
+			db.sortedSetAdd('relays:createtime', Date.now(), followers[1]),
+		]);
+
+		await activitypub.relays.broadcast(payload);
+
+		assert.strictEqual(sentTo.length, 1);
+		assert.ok(sentTo[0].targets.includes(followers[0]));
+		assert.ok(sentTo[0].targets.includes(followers[1]));
+		const sentPayload = sentTo[0].payload;
+		assert.strictEqual(sentPayload.type, 'Announce');
+		assert.strictEqual(sentPayload.actor, `${nconf.get('url')}/actor`);
+		assert.deepStrictEqual(sentPayload.object, object);
+		assert.strictEqual(sentPayload.object.id, `${nconf.get('url')}/post/123`);
+		assert.ok(!sentPayload.object.id.includes('#activity/create/'));
+		assert.deepStrictEqual(sentPayload.to, ['https://www.w3.org/ns/activitystreams#Public']);
+		assert.ok(sentPayload.id.startsWith(`${nconf.get('url')}/post/${encodeURIComponent(payload.id)}#activity/announce/relay/`));
+
+		// Cleanup
+		activitypub.send = originalSend;
+		await db.sortedSetRemove('relays:state', followers[0]);
+		await db.sortedSetRemove('relays:createtime', followers[0]);
+		await db.sortedSetRemove('relays:state', followers[1]);
+		await db.sortedSetRemove('relays:createtime', followers[1]);
+	});
+});

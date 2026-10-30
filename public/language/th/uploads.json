@@ -5,5 +5,7 @@
     "maximum-file-size": "มากที่สุดได้ %1 kb",
     "no-uploads-found": "ไม่พบการอัพโหลด",
     "public-uploads-info": "อัพโหลดเป็นสาธารณะ ทุกคนสามารถมองเห็นได้",
-    "private-uploads-info": "อัพโหลดเป็นส่วนตัว เฉพาะผู้ใช้ที่ล็อกอินเท่านั้นที่จะมองเห็น"
+    "private-uploads-info": "อัพโหลดเป็นส่วนตัว เฉพาะผู้ใช้ที่ล็อกอินเท่านั้นที่จะมองเห็น",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

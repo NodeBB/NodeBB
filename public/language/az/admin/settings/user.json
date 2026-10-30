@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Yalnız admin dəvəti ilə",
 	"registration-type.disabled": "Qeydiyyat bağlıdır",
 	"registration-type.help": "Normal - İstifadəçilər /register səhifəsindən qeydiyyatdan keçə bilərlər.<br/>\nYalnız Dəvət Et - İstifadəçilər <a href=\"%1/users\" target=\"_blank\">istifadəçilər</a> səhifəsindən başqalarını dəvət edə bilərlər.<br/>\nYalnız Admin Dəvət - Yalnız administratorlar <a href=\"%1/users\" target=\"_blank\">istifadəçilərdən</a> və <a href=\"%1/admin/manage/users\">admin/idarə/istifadəçi</a> səhifələrindən başqalarını dəvət edə bilər<br/>\nQeydiyyat yoxdur - İstifadəçi qeydiyyatı yoxdur.<br/>",
-	"registration-approval-type.help": "Normal - İstifadəçilər dərhal qeydiyyatdan keçirlər<br/>.\nAdmin Təsdiqi - İstifadəçi qeydiyyatları administratorlar üçün <a href=\"%1/admin/manage/registration\">təsdiq növbəsinə</a> yerləşdirilir<br/>.\nIP-lər üçün Admin Təsdiqi - Yeni istifadəçilər üçün normal, artıq hesabı olan IP ünvanları üçün Admin Təsdiqi.<br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "Avtomatik təsdiqləmə vaxtı",
 	"registration-queue-auto-approve-time-help": "İstifadəçinin avtomatik təsdiqlənməsindən bir neçə saat əvvəl. Deaktiv etmək üçün 0.",
 	"registration-queue-show-average-time": "İstifadəçilərə yeni istifadəçinin təsdiqlənməsi üçün tələb olunan orta vaxtı göstər",

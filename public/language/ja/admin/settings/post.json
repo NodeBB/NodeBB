@@ -59,6 +59,8 @@
 	"backlinks": "バックリンク",
 	"backlinks.enabled": "スレッドバックリンクを有効にする",
 	"backlinks.help": "投稿が別のスレッドを参照している場合、その時点で参照されたスレッドに投稿へのリンクが挿入されます。",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IPトラッキング",
 	"ip-tracking.each-post": "各投稿のトラックIPアドレス",
 	"enable-post-history": "投稿履歴を有効にする"

@@ -1,15 +1,15 @@
 {
 	"alert.confirm-rebuild-and-restart": "האם אתם בטוחים שברצונכם לבנות ולהפעיל מחדש את NodeBB?",
 	"alert.confirm-restart": "האם אתם בטוחים שברצונכם להפעיל מחדש את NodeBB?",
-	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
-	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
-	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
-	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.title": "בניה מחדש... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "בונה מחדש נכסי חזית (css, javascript, etc).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> הצליח",
+	"rebuilding.success.message": "NodeBB נבנה מחדש והופעל מחדש בהצלחה.",
+	"build.complete": "הבניה הושלמה!... <i class=\"fa fa-spin fa-refresh\"></i>",
 
-	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"restarting.message": "NodeBB is restarting.",
-	"restarting.success.message": "NodeBB has restarted successfully.",
+	"restarting.title": "מפעיל מחדש... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB מופעל מחדש.",
+	"restarting.success.message": "NodeBB הופעל מחדש בהצלחה.",
 
 
 	"acp-title": "%1 | לוח בקרה למנהלי הפורום NodeBB",

@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "Deaktiv etmək üçün 0-a təyin edin, (defolt: 10)",
 	"flags.limit-user-flags-per-day": "Bir istifadəçinin gündə maksimum neçə dəfə istifadəçiləri işarələyə bilər",
 	"flags.limit-user-flags-per-day-help": "Deaktiv etmək üçün 0-a təyin edin, (defolt: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "Avtomatik bayraq yazılarına mənfi səslərin sayı",
 	"flags.auto-flag-on-downvote-threshold-help": "Deaktiv etmək üçün 0-a təyin edin, (defolt: 0)",
 	"flags.auto-resolve-on-ban": "İstifadəçinin bütün biletləri qadağan olunduqda onları avtomatik həll edin",

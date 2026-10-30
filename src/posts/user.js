@@ -25,10 +25,6 @@ module.exports = function (Posts) {
 		userData.forEach((userData, index) => {
 			userData.fullname = userSettings[index].showfullname ? userData.fullname || '' : undefined;
 			userData.selectedGroups = [];
-
-			if (meta.config.hideFullname) {
-				userData.fullname = undefined;
-			}
 		});
 
 		const result = await Promise.all(userData.map(async (userData) => {
@@ -100,7 +96,7 @@ module.exports = function (Posts) {
 
 	async function getUserData(uids, uid) {
 		const fields = [
-			'uid', 'username', 'fullname', 'userslug',
+			'uid', 'username', 'fullname', 'fullnameEmoji', 'userslug',
 			'reputation', 'postcount', 'topiccount', 'picture',
 			'signature', 'banned', 'banned:expire', 'status',
 			'lastonline', 'groupTitle', 'muted', 'mutedUntil',

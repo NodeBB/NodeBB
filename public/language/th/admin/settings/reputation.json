@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": "ตั้งค่าเป็น 0 ถ้าสามารถทำได้ไม่จำกัด (ค่าเริ่มต้น: 10)",
 	"flags.limit-user-flags-per-day": "จำนวนครั้งสูงสุดที่ผู้ใช้งานหนึ่งสามารถรายงานผู้ใช้งานอื่นได้ใน 1 วัน",
 	"flags.limit-user-flags-per-day-help": "ตั้งค่าเป็น 0 ถ้าสามารถทำได้ไม่จำกัด (ค่าเริ่มต้น: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "จำนวนการโหวดลงที่ทำให้ระบบรายงานโพสต์โดยอัตโนมัติทำงาน",
 	"flags.auto-flag-on-downvote-threshold-help": "ตั้งค่าเป็น 0 ถ้าสามารถทำได้ไม่จำกัด (ค่าเริ่มต้น: 10)",
 	"flags.auto-resolve-on-ban": "ถือว่ารายงานทั้งหมดของผู้ใช้งานถูกจัดการแล้วเมื่อผู้ใช้งานนั้นโดนแบน",

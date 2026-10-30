@@ -17,14 +17,14 @@
 	"description.placeholder": "Eine kurze Beschreibung der Community",
 	"description": "Seitenbeschreibung",
 	"keywords": "Forum Schlüsselworte",
-	"keywords-placeholder": "Schlüsselworte, die ihre Community beschreiben, mit Komma getrennt",
+	"keywords-placeholder": "Schlüsselworte, die deine Community beschreiben, mit Komma getrennt",
 	"logo-and-icons": "Medien & Branding",
 	"logo.image": "Bild",
 	"logo.image-placeholder": "Pfad zu einem Logo, welches im Header des Forums angezeigt werden soll",
 	"logo.upload": "Hochladen",
 	"logo.url": "Logo Link-URL",
 	"logo.url-placeholder": "Die URL des Logos",
-	"logo.url-help": "Wenn das Logo angeklickt wird, werden die Benutzer an diese Adresse weitergeleitet. Wenn Sie nichts angeben, wird der Benutzer zum Forum-Index weitergeleitet. <br> Hinweis: Dies ist nicht die externe URL, die in E-Mails etc. verwendet wird. Diese wird über die Eigenschaft <code>url</code> in config.json festgelegt.",
+	"logo.url-help": "Wenn das Logo angeklickt wird, werden die Benutzer an diese Adresse weitergeleitet. Wenn du nichts angibst, wird der Benutzer zum Forum-Index weitergeleitet. <br> Hinweis: Dies ist nicht die externe URL, die in E-Mails etc. verwendet wird. Diese wird über die Eigenschaft <code>url</code> in config.json festgelegt.",
 	"logo.alt-text": "Alt Text",
 	"log.alt-text-placeholder": "Alternativer Text, falls das Bild nicht angezeigt werden kann",
 	"favicon": "Favicon",
@@ -61,5 +61,8 @@
 	"auto-detect": "Sprach-Einstellung bei Gästen automatisch ermitteln",
 	"default-language-help": "Die Standardsprache bestimmt die Spracheinstellungen für alle Benutzer, die das Forum besuchen. <br />Einzelne Benutzer können die Standardsprache auf ihrer Kontoeinstellungsseite überschreiben.",
 	"post-sharing": "Beitragsfreigabe",
-	"info-plugins-additional": "Plugins können zusätzliche Netzwerke zum Teilen von Beiträgen hinzufügen."
+	"info-plugins-additional": "Plugins können zusätzliche Netzwerke zum Teilen von Beiträgen hinzufügen.",
+	"privacy": "Datenschutz",
+	"log-ips": "IP-Adressen protokollieren",
+	"log-ips-help": "Wenn diese Funktion aktiviert ist, werden die IP-Adressen aller Besucher zu Analysezwecken in einer sortierten Menge gespeichert. Dies dient dazu, die Anzahl der eindeutigen Besucher zu ermitteln."
 }

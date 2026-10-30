@@ -1,12 +1,16 @@
 'use strict';
 
 define('forum/account/edit/password', [
-	'forum/account/header', 'translator', 'zxcvbn', 'api', 'alerts',
-], function (header, translator, zxcvbn, api, alerts) {
+	'forum/account/header', 'translator', 'api', 'alerts',
+], function (header, translator, api, alerts) {
 	const AccountEditPassword = {};
+	let zxcvbn = null;
 
 	AccountEditPassword.init = function () {
 		header.init();
+		import('zxcvbn').then((module) => {
+			zxcvbn = module.default || module;
+		}).catch(() => {});
 
 		handlePasswordChange();
 	};

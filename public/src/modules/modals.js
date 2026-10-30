@@ -64,6 +64,26 @@ export async function prompt(opts, callback) {
 	return bootbox.prompt({ ...opts, title, message, callback });
 }
 
+export async function promptPassword(opts) {
+	if (typeof opts === 'string') {
+		opts = { title: opts };
+	}
+	opts = opts || {
+		title: '[[user:current-password]]',
+		message: '[[user:emailUpdate.password-challenge]]',
+	};
+
+	return await new Promise((resolve) => {
+		prompt({
+			...opts,
+			inputType: 'password',
+			required: true,
+			value: '',
+			callback: resolve,
+		});
+	});
+}
+
 function normalizeMessage(opts) {
 	const msg = opts && opts.message ? opts.message : opts;
 	if (msg instanceof jQuery) {

@@ -35,6 +35,7 @@
     "digest.subject": "%1 အတွက် အကျဉ်းချုပ်",
     "digest.title.day": "သင်၏ နေ့စဉ်အကျဉ်းချုပ်",
     "digest.title.week": "သင်၏ အပတ်စဉ်အကျဉ်းချုပ်",
+    "digest.title.biweek": "Your Bi-Weekly Digest",
     "digest.title.month": "သင်၏ လစဉ်အကျဉ်းချုပ်",
     "notif.chat.new-message-from-user": "\"%1\" ထံမှ မက်ဆေ့ချ်အသစ်",
     "notif.chat.new-message-from-user-in-room": "အခန်း %2 ရှိ %1 မှ မက်ဆေ့ချ်အသစ်",

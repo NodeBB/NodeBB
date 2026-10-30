@@ -94,6 +94,10 @@ export async function refresh(handle) {
 }
 
 export async function register() {
+	if (!config.activitypub.enabled) {
+		return;
+	}
+
 	let map = list();
 	let handles = await Promise.all(Array.from(map.entries()).map(async ([handle, intents]) => ({
 		handle,
@@ -164,6 +168,10 @@ const INTENTS_GUEST_SELECTORS = '[component="topic/reply/guest"], [component="ca
 
 // called by various init scripts in different pages' js to add handlers for "Log in to post" buttons, et al.
 export function addHandlers() {
+	if (!config.activitypub.enabled) {
+		return;
+	}
+
 	document.removeEventListener('click', _intentsHandler);
 	document.addEventListener('click', _intentsHandler, true); // capture phase
 }
@@ -190,6 +198,10 @@ function _intentsHandler(e) {
 }
 
 export async function trigger(intent, parameters) {
+	if (!config.activitypub.enabled) {
+		return;
+	}
+
 	const map = list();
 	const requiredIntent = intent.toLowerCase();
 	const displayKey = INTENT_DISPLAY_MAP[requiredIntent];

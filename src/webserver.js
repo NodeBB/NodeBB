@@ -38,17 +38,22 @@ const als = require('./als');
 const app = express();
 
 app.renderAsync = async (tpl, data) => {
+	let renderData = data;
 	if (!Object.hasOwn(data, '_i18n')) {
 		const store = als.getStore();
 		if (!store) {
-			winston.warn(`[app.renderAsync] No ALS store found, unable to determine user language for template rendering, using default language instead.`);
+			const stack = new Error().stack.split('\n')[2];
+			winston.warn(`[app.renderAsync] No ALS store found, unable to determine user language for template rendering, using default language instead. Template: ${tpl}\n${stack}`);
 		}
 		const uid = store?.uid || 0;
 		const { userLang, acpLang } = await user.getSettings(uid);
-		data._i18n = languages.getFull(tpl.startsWith('admin/') ? acpLang : userLang);
+		renderData = {
+			...renderData,
+			_i18n: languages.getFull(tpl.startsWith('admin/') ? acpLang : userLang),
+		};
 	}
 	return new Promise((resolve, reject) => {
-		app.render(tpl, data, (err, html) => {
+		app.render(tpl, renderData, (err, html) => {
 			if (err) return reject(err);
 			resolve(html);
 		});
@@ -274,6 +279,7 @@ function configureBodyParser(app) {
 			'application/ld+json',
 			'application/activity+json',
 		],
+		limit: '1mb',
 		verify: (req, res, buf) => {
 			req.rawBody = buf;
 		},
@@ -317,7 +323,7 @@ async function listen() {
 		winston.warn("[startup] 'trust_proxy' is not configured, so Express proxy trust is disabled by default. Set 'trust_proxy' in config.json only when NodeBB is behind a reverse proxy that strips or overwrites X-Forwarded-For from untrusted clients.");
 	}
 	if (trust_proxy != null) {
-		const trustProxyPrefix = trust_proxy === true ? '🤝' : '❌';
+		const trustProxyPrefix = trust_proxy ? '🤝' : '❌';
 		winston.info(`${trustProxyPrefix} Setting 'trust proxy' to ${JSON.stringify(trust_proxy)}`);
 		app.set('trust proxy', trust_proxy);
 	}

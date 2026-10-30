@@ -5,5 +5,7 @@
     "maximum-file-size": "အများဆုံး %1 kb",
     "no-uploads-found": "တင်ထားသည်များမတွေ့ပါ",
     "public-uploads-info": "အပ်လုဒ်များသည် အများသုံး၊ လာရောက်သူအားလုံးမြင်နိုင်သည်။",
-    "private-uploads-info": "အပ်လုဒ်များသည် သီးသန့်၊ အကောင့်ဝင်ထားသူများသာ မြင်နိုင်သည်။"
+    "private-uploads-info": "အပ်လုဒ်များသည် သီးသန့်၊ အကောင့်ဝင်ထားသူများသာ မြင်နိုင်သည်။",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

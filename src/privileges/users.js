@@ -73,8 +73,10 @@ async function filterIsModerator(cid, uid, isModerator) {
 	return data.isModerator;
 }
 
-privsUsers.canEdit = async function (callerUid, uid) {
-	if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+privsUsers.canEdit = async function (callerUid, uid, allowSelfEdit = true) {
+	callerUid = String(callerUid);
+	uid = String(uid);
+	if (allowSelfEdit && callerUid === uid) {
 		return true;
 	}
 

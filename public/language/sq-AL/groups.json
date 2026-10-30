@@ -27,6 +27,8 @@
     "details.invited": "Anëtarët e ftuar",
     "details.has-no-posts": "Anëtarët e këtij grupi nuk kanë bërë asnjë postim.",
     "details.latest-posts": "Postimet e fundit",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Private",
     "details.disableJoinRequests": "Çaktivizo kërkesat për bashkim",
     "details.disableLeave": "Mos lejoni përdoruesit të largohen nga grupi",
@@ -64,6 +66,7 @@
     "membership.reject": "Refuzo",
     "new-group.group-name": "Emri i grupit:",
     "upload-group-cover": "Ngarko foton e coverit për grupin",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Futni një listë të emrave të përdoruesve të ndarë me presje për t'i ftuar në këtë grup",
     "bulk-invite": "Ftesë me shumicë",
     "remove-group-cover-confirm": "Jeni i sigurt që dëshironi ta hiqni foton e coverit?"

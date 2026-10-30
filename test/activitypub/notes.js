@@ -16,12 +16,19 @@ const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 
 const helpers = require('./helpers');
-const wait = util.promisify(setTimeout);
+const wait = require('timers/promises').setTimeout;
 
 describe('Notes', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('Assertion', () => {
@@ -65,6 +72,128 @@ describe('Notes', () => {
 
 				const exists = await topics.exists(tid);
 				assert(exists);
+			});
+
+			it('should extract emoji metadata when the tag property is a single object rather than an array', async () => {
+				const { id } = helpers.mocks.note({
+					name: null, // no name so the title is generated from the content
+					content: '<p>Hello :test: world</p>',
+					tag: {
+						type: 'Emoji',
+						name: 'test',
+						icon: { url: 'https://example.com/emoji.png' },
+					},
+				});
+				const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+				assert(assertion);
+
+				const { tid, count } = assertion;
+				assert(tid);
+				assert.strictEqual(count, 1);
+
+				const exists = await topics.exists(tid);
+				assert(exists);
+
+				// A single-object "tag" must still yield emoji metadata (#15023)
+				const titleEmoji = await topics.getTopicField(tid, 'titleEmoji');
+				assert(Array.isArray(titleEmoji));
+				assert.strictEqual(titleEmoji.length, 1);
+				assert.strictEqual(titleEmoji[0].code, ':test:');
+			});
+
+			describe('Content warnings', () => {
+				it('should store contentWarning for Note with summary and sensitive: true', async () => {
+					const cwText = 'Spoiler: major plot twist';
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: cwText,
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, cwText);
+				});
+
+				it('should use contentWarning as topic title to prevent content leaks', async () => {
+					const cwText = 'Trigger warning: graphic content';
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: cwText,
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const topicTitle = await topics.getTopicField(assertion.tid, 'title');
+					assert.strictEqual(topicTitle, cwText);
+
+					const generatedTitle = await topics.getTopicField(assertion.tid, 'generatedTitle');
+					assert.strictEqual(generatedTitle, 1);
+				});
+
+				it('should NOT store contentWarning for Note with summary but no sensitive', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: 'Some summary text',
+						sensitive: false,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+
+				it('should NOT store contentWarning for Note with sensitive but no summary', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: 'remove',
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+
+				it('should NOT store contentWarning for Article with summary and sensitive: true', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Article',
+						summary: 'Article preview text',
+						sensitive: true,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
+
+				it('should NOT store contentWarning for Note without summary or sensitive', async () => {
+					const { id } = helpers.mocks.note({
+						type: 'Note',
+						summary: 'remove',
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
+					assert(assertion);
+					assert.strictEqual(assertion.count, 1);
+
+					const mainPid = await topics.getTopicField(assertion.tid, 'mainPid');
+					const storedCw = await posts.getPostField(mainPid, 'contentWarning');
+					assert.strictEqual(storedCw, null);
+				});
 			});
 
 			describe('Category-specific behaviours', () => {
@@ -161,6 +290,7 @@ describe('Notes', () => {
 					const unread = await topics.getTotalUnread(uid);
 					assert.strictEqual(unread, 1);
 
+					await wait(500); // notification is created without waiting for topics.post() to complete
 					// Notification inbox delivery is async so can't test directly
 					const exists = await db.exists(`notifications:new_topic:tid:${assertion.tid}:uid:${note.attributedTo}`);
 					assert(exists);
@@ -249,7 +379,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: 'Guaranteed to be more than 500 characters.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. In vel convallis felis. Phasellus porta erat a elit dignissim efficitur. Sed at sollicitudin erat, finibus sodales ante. Nunc ullamcorper, urna a pulvinar tempor, nunc risus venenatis nunc, id aliquam purus dui ut ante. Nulla sit amet risus sem. Praesent sit amet justo finibus, laoreet odio nec, varius diam. Nullam congue rhoncus lorem, eu accumsan leo aliquam sit amet. Suspendisse fringilla nec libero a tincidunt. Phasellus sapien justo, lacinia ac enim sit amet, pellentesque fermentum neque. Proin sit amet felis vitae libero aliquam pharetra at id nisi. Donec vitae mauris est. Sed hendrerit nisi et nibh auctor hendrerit. Praesent feugiat tortor a dignissim sagittis. Cras sit amet ante justo. Cras consectetur magna vitae volutpat placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae',
 					});
-					await wait(50);
+					await wait(500);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
@@ -296,7 +426,7 @@ describe('Notes', () => {
 						tid,
 						content: utils.generateUUID(),
 					});
-					await wait(50);
+					await wait(500);
 
 					const key = Array.from(activitypub._sent.keys())[0];
 					activity = activitypub._sent.get(key);
@@ -328,7 +458,7 @@ describe('Notes', () => {
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
 					});
-					await wait(50);
+					await wait(500);
 
 					assert(tid);
 					assert.strictEqual(activitypub._sent.size, 1);
@@ -775,7 +905,7 @@ describe('Notes', () => {
 			// Create a local target category
 			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
 			// Add a hashtag-type auto-categorization rule with filter (queue) enabled
-			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, true);
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, 1);
 			meta.config.postQueue = 1;
 		});
 
@@ -819,6 +949,206 @@ describe('Notes', () => {
 			const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
 			assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
 			assert.strictEqual(parsedData.tid, assertion.tid);
+		});
+	});
+
+	describe('auto-categorization age cutoff', () => {
+		let remoteCid;
+		let targetCid;
+		let rid;
+		const tagName = utils.generateUUID().slice(0, 8);
+
+		before(async () => {
+			// Create a remote group actor
+			({ id: remoteCid } = helpers.mocks.group());
+			// Create a local target category
+			({ cid: targetCid } = await categories.create({ name: utils.generateUUID().slice(0, 8) }));
+			// Add a hashtag-type auto-categorization rule with filter (queue=true)
+			rid = await activitypub.rules.upsert('hashtag', tagName, targetCid, 1);
+			meta.config.postQueue = 1;
+		});
+
+		after(async () => {
+			delete meta.config.postQueue;
+			delete meta.config.activitypubRulesCutoffDays;
+			if (rid) {
+				await activitypub.rules.delete(rid);
+			}
+		});
+
+		beforeEach(async () => {
+			// Clear the queue
+			const queuedIds = await db.getSortedSetMembers('post:queue');
+			await Promise.all(queuedIds.map(async (id) => {
+				await db.delete(`post:queue:${id}`);
+			}));
+			await db.delete('post:queue');
+		});
+
+		describe('cutoff disabled (0)', () => {
+			beforeEach(() => {
+				meta.config.activitypubRulesCutoffDays = 0;
+			});
+
+			afterEach(() => {
+				delete meta.config.activitypubRulesCutoffDays;
+			});
+
+			it('should queue crosspost for old posts when cutoff is 0', async () => {
+				// Create a very old post (365 days ago)
+				const publishedDate = new Date(Date.now() - (365 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify crosspost was queued despite post age
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+
+				const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+				assert.strictEqual(queueData.type, 'crosspost');
+				const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+				assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			});
+		});
+
+		describe('cutoff enabled', () => {
+			const cutoffDays = 30;
+
+			beforeEach(() => {
+				meta.config.activitypubRulesCutoffDays = cutoffDays;
+			});
+
+			afterEach(() => {
+				delete meta.config.activitypubRulesCutoffDays;
+			});
+
+			it('should queue crosspost for recent posts when within cutoff', async () => {
+				// Create a recent post (1 day old)
+				const publishedDate = new Date(Date.now() - (1 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+
+				const queueData = await db.getObject(`post:queue:${queueIds[0]}`);
+				assert.strictEqual(queueData.type, 'crosspost');
+				const parsedData = typeof queueData.data === 'string' ? JSON.parse(queueData.data) : queueData.data;
+				assert.strictEqual(parseInt(parsedData.crosspostCid, 10), targetCid);
+			});
+
+			it('should queue crosspost for posts at the cutoff boundary', async () => {
+				// Create a post just under the cutoff (29 days old, leaving room for test timing)
+				const publishedDate = new Date(Date.now() - ((cutoffDays - 1) * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should be created');
+
+				// Verify crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 1, 'Crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for posts older than cutoff', async () => {
+				// Create a post older than cutoff (31 days old)
+				const publishedDate = new Date(Date.now() - ((cutoffDays + 1) * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should still be created');
+				assert.strictEqual(assertion.queued, 0, 'Topic should not be queued');
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for very old posts (60 days)', async () => {
+				// Create a post older than cutoff (60 days old)
+				const publishedDate = new Date(Date.now() - (60 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
+
+			it('should NOT queue crosspost for very old posts (1 year)', async () => {
+				// Create a very old post (365 days old)
+				const publishedDate = new Date(Date.now() - (365 * 24 * 60 * 60 * 1000)).toISOString();
+				const { id: noteId } = helpers.mocks.note({
+					audience: [remoteCid],
+					published: publishedDate,
+					tag: [
+						{ type: 'Hashtag', name: `#${tagName}` },
+					],
+				});
+				const assertion = await activitypub.notes.assert(0, noteId, {
+					skipChecks: true,
+				});
+
+				assert(assertion);
+				assert(assertion.tid, 'Topic should still be created');
+
+				// Verify no crosspost was queued
+				const queueIds = await db.getSortedSetMembers('post:queue');
+				assert.strictEqual(queueIds.length, 0, 'No crosspost should be queued');
+			});
 		});
 	});
 });

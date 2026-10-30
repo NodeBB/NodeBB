@@ -2,14 +2,12 @@
 
 const nconf = require('nconf');
 const winston = require('winston');
-const { createHash, getHashes, sign, verify } = require('crypto');
-const { cpus } = require('os');
-const { promisify } = require('util');
-const signAsync = promisify(sign);
-const verifyAsync = promisify(verify);
+const { createHash } = require('crypto');
 
 const request = require('../request');
 const db = require('../database');
+const SendPool = require('./send');
+const pubsub = require('../pubsub');
 const meta = require('../meta');
 const categories = require('../categories');
 const posts = require('../posts');
@@ -19,12 +17,15 @@ const utils = require('../utils');
 const ttl = require('../cache/ttl');
 const lru = require('../cache/lru');
 const batch = require('../batch');
-const crypto = require('crypto');
-
 const requestCache = ttl({
 	name: 'ap-request-cache',
 	max: 5000,
 	ttl: 1000 * 60 * 5, // 5 minutes
+});
+const serveCache = ttl({
+	name: 'ap-serve-cache',
+	max: 5000,
+	ttl: 1000 * 60, // 1 minute
 });
 const probeCache = ttl({
 	name: 'ap-probe-cache',
@@ -69,7 +70,14 @@ ActivityPub._constants = Object.freeze({
 	},
 });
 ActivityPub._cache = requestCache;
+ActivityPub.serveCache = serveCache;
 ActivityPub._sent = new Map(); // used only in local tests
+
+// Invalidate serve cache on post lifecycle events
+pubsub.on('post:edit', pid => ActivityPub.serveCache.del(`/post/${pid}`));
+pubsub.on('post:delete', pid => ActivityPub.serveCache.del(`/post/${pid}`));
+pubsub.on('post:purge', pid => ActivityPub.serveCache.del(`/post/${pid}`));
+
 
 ActivityPub.helpers = require('./helpers');
 ActivityPub.inbox = require('./inbox');
@@ -82,9 +90,12 @@ ActivityPub.blocklists = require('./blocklists');
 ActivityPub.feps = require('./feps');
 ActivityPub.rules = require('./rules');
 ActivityPub.relays = require('./relays');
+ActivityPub.hashtags = require('./hashtags');
 ActivityPub.out = require('./out');
 ActivityPub.jobs = require('./jobs');
 ActivityPub.analytics = require('./analytics');
+ActivityPub.signatures = require('./signatures');
+ActivityPub.emoji = require('./emoji');
 
 ActivityPub.resolveId = async (uid, id) => {
 	try {
@@ -248,9 +259,10 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 
 	try {
 		// Use request.get with built-in SSRF protections
-		// Set reasonable timeout
+		// Set reasonable timeout and response size limit
 		const { body } = await request.get(uri, {
 			timeout: 5000, // 5 seconds
+			sizeLimit: 1024 * 1024, // 1MB — public keys are typically <10KB
 			headers: {
 				'accept': ActivityPub._constants.acceptableTypes.at(1),
 			},
@@ -292,100 +304,31 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 };
 
 ActivityPub.sign = async ({ key, keyId }, url, digest) => {
-	// Returns string for use in 'Signature' header
-	const { host, pathname } = new URL(url);
-	const date = new Date().toUTCString();
-
-	let headers = '(request-target) host date';
-	let signed_string = `(request-target): ${digest ? 'post' : 'get'} ${pathname}\nhost: ${host}\ndate: ${date}`;
-
-	// Calculate payload hash if payload present
-	if (digest) {
-		headers += ' digest';
-		signed_string += `\ndigest: ${digest}`;
-	}
-
-	// Sign string using private key
-	let signature = await signAsync('sha256', Buffer.from(signed_string), key);
-	signature = signature.toString('base64');
-
-	// Construct signature header
-	return {
-		date,
-		...(digest && { digest }),
-		signature: `keyId="${keyId}",headers="${headers}",signature="${signature}",algorithm="hs2019"`,
-	};
+	// Determines HTTP method based on digest presence
+	const method = digest ? 'POST' : 'GET';
+	return await ActivityPub.signatures.sign({ key, keyId }, url, method, digest);
 };
 
 ActivityPub.verify = async (req) => {
 	ActivityPub.helpers.log('[activitypub/verify] Starting signature verification...');
-	if (!req.headers.hasOwnProperty('signature')) {
-		ActivityPub.helpers.log('[activitypub/verify]   Failed, no signature header.');
-		return false;
+
+	const verified = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
+	if (!verified) {
+		ActivityPub.helpers.log('[activitypub/verify] Signature verification failed.');
+	} else {
+		ActivityPub.helpers.log('[activitypub/verify] Signature verification succeeded.');
 	}
 
-	// Verify the signature string via public key
-	try {
-		// Break the signature apart
-		let { keyId, headers, signature, algorithm, created, expires } = req.headers.signature.split(',').reduce((memo, cur) => {
-			const split = cur.split('="');
-			const key = split.shift();
-			const value = split.join('="');
-			memo[key] = value.slice(0, -1);
-			return memo;
-		}, {});
+	return verified;
+};
 
-		const acceptableHashes = getHashes();
-		if (algorithm === 'hs2019' || !acceptableHashes.includes(algorithm)) {
-			algorithm = 'sha256';
-		}
-
-		// Verify Digest header matches request body
-		if (headers.includes('digest')) {
-			const receivedDigest = req.headers.digest;
-			const bodyData = req.rawBody || (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
-			const bodyDigest = `SHA-256=${createHash('sha256').update(bodyData).digest('base64')}`;
-			if (receivedDigest !== bodyDigest) {
-				ActivityPub.helpers.log('[activitypub/verify]   Failed, digest mismatch.');
-				return false;
-			}
-		}
-
-		// Re-construct signature string
-		const signed_string = headers.split(' ').reduce((memo, cur) => {
-			switch (cur) {
-				case '(request-target)': {
-					memo.push(`${cur}: ${String(req.method).toLowerCase()} ${req.baseUrl}${req.path}`);
-					break;
-				}
-
-				case '(created)': {
-					memo.push(`${cur}: ${created}`);
-					break;
-				}
-
-				case '(expires)': {
-					memo.push(`${cur}: ${expires}`);
-					break;
-				}
-
-				default: {
-					memo.push(`${cur}: ${req.headers[cur]}`);
-					break;
-				}
-			}
-
-			return memo;
-		}, []).join('\n');
-
-		// Retrieve public key from remote instance
-		ActivityPub.helpers.log(`[activitypub/verify] Retrieving pubkey for ${keyId}`);
-		const publicKeyPem = await ActivityPub.fetchPublicKey(keyId, req.ip);
-
-		return await verifyAsync('sha256', Buffer.from(signed_string), publicKeyPem, Buffer.from(signature, 'base64'));
-	} catch (e) {
-		ActivityPub.helpers.log('[activitypub/verify]   Failed, key retrieval or verification failure.');
-		return false;
+async function _checkFederationPolicy(hostname, url) {
+	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
+	if (!allowed) {
+		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${url}, domain is blocked.`);
+		const e = new Error(`[[error:activitypub.get-failed]]`);
+		e.code = `ap_get_domain_blocked`;
+		throw e;
 	}
 };
 
@@ -395,13 +338,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 
 	const { hostname } = new URL(uri);
-	const { allowed } = await ActivityPub.instances.isAllowed(hostname);
-	if (!allowed) {
-		ActivityPub.helpers.log(`[activitypub/get] Not retrieving ${uri}, domain is blocked.`);
-		const e = new Error(`[[error:activitypub.get-failed]]`);
-		e.code = `ap_get_domain_blocked`;
-		throw e;
-	}
+	await _checkFederationPolicy(hostname, uri);
 
 	options = {
 		cache: true,
@@ -421,7 +358,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 
 	ActivityPub.helpers.log(`[activitypub/get] ${uri}`);
 	try {
-		const { response, body } = await request.get(uri, {
+		const { response, body, url: resolvedUrl } = await request.get(uri, {
 			headers: {
 				...headers,
 				...options.headers,
@@ -429,6 +366,9 @@ ActivityPub.get = async (type, id, uri, options) => {
 			},
 			timeout: 5000,
 		});
+
+		const { hostname: resolvedHostname } = new URL(resolvedUrl);
+		await _checkFederationPolicy(resolvedHostname, resolvedUrl);
 
 		if (!String(response.statusCode).startsWith('2')) {
 			ActivityPub.helpers.log(`[activitypub/get] Received ${response.statusCode} when querying ${uri}`);
@@ -460,43 +400,7 @@ ActivityPub.get = async (type, id, uri, options) => {
 	}
 };
 
-ActivityPub._sendMessage = async function (uri, keyData, payload, digest) {
-	try {
-		const headers = await ActivityPub.sign(keyData, uri, digest);
-
-		const { response, body } = await request.post(uri, {
-			headers: {
-				...headers,
-				'content-type': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-			},
-			body: payload,
-			timeout: 10000, // configurable?
-		});
-
-		if (String(response.statusCode).startsWith('2')) {
-			ActivityPub.analytics.send({
-				type: payload.type,
-				target: uri,
-			});
-			ActivityPub.helpers.log(`[activitypub/send] Successfully sent ${payload.type} to ${uri}`);
-			return true;
-		}
-		if (typeof body === 'object') {
-			throw new Error(JSON.stringify(body));
-		}
-		throw new Error(String(body));
-	} catch (e) {
-		ActivityPub.helpers.log(`[activitypub/send] Could not send ${payload.type} to ${uri}; error: ${e.message}`);
-		ActivityPub.analytics.sendError({
-			payload,
-			uri,
-			error: e,
-		});
-		return false;
-	}
-};
-
-ActivityPub.send = async (type, id, targets, payload) => {
+ActivityPub.send = async (type, id, targets, payload, { delayMs = 0 } = {}) => {
 	if (!meta.config.activitypubEnabled) {
 		return ActivityPub.helpers.log('[activitypub/send] Federation not enabled; not sending.');
 	}
@@ -525,44 +429,36 @@ ActivityPub.send = async (type, id, targets, payload) => {
 	payloadHash.update(JSON.stringify(payload));
 	const digest = `SHA-256=${payloadHash.digest('base64')}`;
 
-	const oneMinute = 1000 * 60;
-	const numCores = cpus().length;
-	const batchSettings = {
-		batch: Math.max(8, numCores * 8),
-		interval: numCores === 1 ? 500 : 100,
-	};
-	const keyData = await ActivityPub.getPrivateKey(type, id);
+	// Push all inboxes to the Redis retry queue and dispatch to workers
 	setImmediate(() => {
-		batch.processArray(inboxes, async (inboxBatch) => {
-			const retryQueueAdd = [];
-			const retryQueuedSet = [];
+		const retryQueueAdd = [];
+		const retryQueuedSet = [];
+		const nextTryOn = Date.now() + (delayMs || 0);
 
-			await Promise.all(inboxBatch.map(async (uri) => {
-				const ok = await ActivityPub._sendMessage(uri, keyData, payload, digest);
-				if (!ok) {
-					const queueId = crypto.createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
-					const nextTryOn = Date.now() + oneMinute;
-					retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
-					retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
-						queueId,
-						uri,
-						id,
-						type,
-						attempts: 1,
-						timestamp: nextTryOn,
-						digest,
-						payload: JSON.stringify(payload),
-					}]);
-				}
-			}));
+		inboxes.forEach((uri) => {
+			const queueId = createHash('sha256').update(`${type}:${id}:${uri}`).digest('hex');
+			retryQueueAdd.push(['ap:retry:queue', nextTryOn, queueId]);
+			retryQueuedSet.push([`ap:retry:queue:${queueId}`, {
+				queueId,
+				uri,
+				id,
+				type,
+				attempts: 1,
+				timestamp: nextTryOn,
+				digest,
+				payload: JSON.stringify(payload),
+			}]);
+		});
 
-			if (retryQueueAdd.length) {
-				await Promise.all([
-					db.sortedSetAddBulk(retryQueueAdd),
-					db.setObjectBulk(retryQueuedSet),
-				]);
+		if (retryQueueAdd.length) {
+			db.sortedSetAddBulk(retryQueueAdd);
+			db.setObjectBulk(retryQueuedSet);
+
+			// Start the drain loop if not already draining
+			if (SendPool.pool > 0) {
+				SendPool.drainLoop();
 			}
-		}, batchSettings).catch(err => winston.error(err.stack));
+		}
 	});
 };
 
@@ -794,3 +690,17 @@ ActivityPub.probe = async ({ uid, url }) => {
 	probeCache.set(url, false);
 	return false;
 };
+
+// ---------------------------------------------------------------------------
+// Shutdown — called during graceful NodeBB shutdown
+// ---------------------------------------------------------------------------
+
+ActivityPub.shutdown = function () {
+	if (SendPool.pool > 0) {
+		SendPool.shutdown();
+	}
+};
+
+// Initialize the send pool now that ActivityPub is fully defined
+SendPool.init(ActivityPub);
+ActivityPub.SendPool = SendPool;

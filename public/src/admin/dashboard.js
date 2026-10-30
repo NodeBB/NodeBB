@@ -358,15 +358,10 @@ function setupGraphs(callback) {
 				return;
 			}
 			const units = amount === '1' ? 'hours' : 'days';
-			let until = new Date();
-			if (amount !== '1') {
-				until.setHours(0, 0, 0, 0);
-			}
 			if (amount === '1') { // change 1 day to 24 hours
 				amount = '24';
 			}
-			until = until.getTime();
-			updateTrafficGraph(units, until, amount);
+			updateTrafficGraph(units, new Date().getTime(), amount);
 			$('[data-action="updateGraph"] option[value="range"]').addClass('hidden');
 		});
 

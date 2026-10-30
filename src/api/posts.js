@@ -35,10 +35,9 @@ postsAPI.get = async function (caller, data) {
 	Object.assign(post, voted);
 	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
 
-	const selfPost = caller.uid && caller.uid === parseInt(post.uid, 10);
+	const selfPost = caller.uid && String(caller.uid) === String(post.uid);
 	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
-		post.content = '[[topic:post-is-deleted]]';
-		post.txContent = true;
+		posts.clearDeletedPostContent(post);
 	}
 
 	return post;
@@ -73,8 +72,8 @@ postsAPI.getRaw = async (caller, { pid }) => {
 		return null;
 	}
 
-	const postData = await posts.getPostFields(pid, ['content', 'sourceContent', 'deleted']);
-	const selfPost = caller.uid && caller.uid === parseInt(postData.uid, 10);
+	const postData = await posts.getPostFields(pid, ['uid', 'content', 'sourceContent', 'deleted']);
+	const selfPost = caller.uid && String(caller.uid) === String(postData.uid);
 
 	if (postData.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
 		return null;
@@ -120,7 +119,7 @@ postsAPI.edit = async function (caller, data) {
 
 	const editResult = await posts.edit(data);
 
-	const selfPost = parseInt(caller.uid, 10) === parseInt(editResult.post.uid, 10);
+	const selfPost = String(caller.uid) === String(editResult.post.uid);
 	if (!selfPost && editResult.post.changed) {
 		await events.log({
 			type: `post-edit`,
@@ -142,17 +141,17 @@ postsAPI.edit = async function (caller, data) {
 			newTitle: editResult.topic.title,
 		});
 	}
-	const postObj = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
+	const [postObj] = await posts.getPostSummaryByPids([editResult.post.pid], caller.uid, { parse: false, extraFields: ['edited'] });
 	postObj.content = editResult.post.content; // re-use already parsed html
-	const returnData = { ...postObj[0], ...editResult.post };
-	returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
+	const returnData = { ...postObj, ...editResult.post };
+	returnData.topic = { ...postObj.topic, ...editResult.post.topic };
 
-	if (!editResult.post.deleted) {
+	if (!postObj.deleted) {
 		const topicScheduled = await topics.getTopicField(editResult.topic.tid, 'scheduled');
 		websockets.in(`topic_${editResult.topic.tid}`).emit('event:post_edited', editResult);
 		if (!topicScheduled) {
 			setImmediate(() => {
-				activitypub.out.update.note(caller.uid, postObj[0]);
+				activitypub.out.update.note(caller.uid, postObj);
 			});
 		}
 
@@ -354,10 +353,9 @@ postsAPI.getVoters = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { pid } = data;
-	const cid = await posts.getCidByPid(pid);
 	const [canSeeUpvotes, canSeeDownvotes] = await Promise.all([
-		canSeeVotes(caller.uid, cid, 'upvoteVisibility'),
-		canSeeVotes(caller.uid, cid, 'downvoteVisibility'),
+		canSeeVotes(caller.uid, pid, 'upvoteVisibility'),
+		canSeeVotes(caller.uid, pid, 'downvoteVisibility'),
 	]);
 
 	if (!canSeeUpvotes && !canSeeDownvotes) {
@@ -391,8 +389,7 @@ postsAPI.getUpvoters = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { pid } = data;
-	const cid = await posts.getCidByPid(pid);
-	if (!await canSeeVotes(caller.uid, cid, 'upvoteVisibility')) {
+	if (!await canSeeVotes(caller.uid, pid, 'upvoteVisibility')) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -431,8 +428,8 @@ postsAPI.getAnnouncers = async (caller, data) => {
 		return [];
 	}
 	const { pid } = data;
-	const cid = await posts.getCidByPid(pid);
-	if (!await privileges.categories.isUserAllowedTo('topics:read', cid, caller.uid)) {
+	const canRead = await privileges.posts.canRead(pid, caller.uid);
+	if (!canRead) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	const notes = require('../activitypub/notes');
@@ -447,31 +444,23 @@ postsAPI.getAnnouncers = async (caller, data) => {
 	};
 };
 
-async function canSeeVotes(uid, cids, type) {
-	const isArray = Array.isArray(cids);
-	if (!isArray) {
-		cids = [cids];
-	}
-	const uniqCids = _.uniq(cids);
+async function canSeeVotes(uid, pid, type) {
+	const tid = await posts.getPostField(pid, 'tid');
+	const cid = await topics.getTopicField(tid, 'cid');
 	const [canRead, isAdmin, isMod] = await Promise.all([
-		privileges.categories.isUserAllowedTo(
-			'topics:read', uniqCids, uid
-		),
+		privileges.topics.canRead(tid, uid),
 		privileges.users.isAdministrator(uid),
-		privileges.users.isModerator(uid, cids),
+		privileges.users.isModerator(uid, cid),
 	]);
-	const cidToAllowed = _.zipObject(uniqCids, canRead);
-	const checks = cids.map(
-		(cid, index) => isAdmin || isMod[index] ||
-		(
-			cidToAllowed[cid] &&
-			(
+
+	return (
+		isAdmin || isMod || (
+			canRead && (
 				meta.config[type] === 'all' ||
 				(meta.config[type] === 'loggedin' && parseInt(uid, 10) > 0)
 			)
 		)
 	);
-	return isArray ? checks : checks[0];
 }
 
 postsAPI.bookmark = async function (caller, data) {
@@ -638,11 +627,10 @@ async function canEditQueue(uid, data, action) {
 		posts.canEditQueue(uid, data, action),
 		posts.getFromQueue(data.id),
 	]);
-	if (!queuedPost) {
+	if (!queuedPost || !canEditQueue) {
+		// Respond 404 (not 403) for both missing and restricted items so
+		// unauthenticated callers cannot distinguish the two (existence oracle)
 		throw new Error('[[error:no-post]]');
-	}
-	if (!canEditQueue) {
-		throw new Error('[[error:no-privileges]]');
 	}
 }
 
@@ -675,7 +663,7 @@ async function sendQueueNotification(type, targetUid, path, notificationText) {
 		tx.compile(`notifications:${type}`);
 	const notifData = {
 		type: type,
-		nid: `${type}-${targetUid}-${path}`,
+		nid: `${type}-${targetUid}-${Date.now()}`,
 		bodyShort: bodyShort,
 		path: path,
 	};

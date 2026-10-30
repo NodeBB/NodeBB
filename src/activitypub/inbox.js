@@ -42,6 +42,32 @@ inbox._reject = function (type, object, target, senderType = 'uid', id = 0) {
 inbox.create = async (req) => {
 	const { object, actor } = req.body;
 
+	// attributedTo must be same-origin
+	if (actor && object.attributedTo) {
+		// Normalize `attributedTo` — only handle single values (string or object with id)
+		let { attributedTo } = object;
+		if (Array.isArray(attributedTo)) {
+			activitypub.helpers.log('[activitypub/inbox.create] attributedTo is an array, rejecting.');
+			return null;
+		}
+		if (typeof attributedTo === 'object' && attributedTo.id) {
+			attributedTo = attributedTo.id;
+		}
+
+		if (typeof attributedTo === 'string') {
+			try {
+				const actorHostname = typeof actor === 'string' ? new URL(actor).hostname : new URL(actor[0]).hostname;
+				const attributedToHostname = new URL(attributedTo).hostname;
+				if (actorHostname !== attributedToHostname) {
+					activitypub.helpers.log(`[activitypub/inbox.create] attributedTo origin mismatch (${attributedToHostname} !== ${actorHostname}).`);
+					return null;
+				}
+			} catch (e) {
+				return null;
+			}
+		}
+	}
+
 	// Alternative logic for non-public objects
 	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 	if (!isPublic) {
@@ -135,7 +161,7 @@ inbox.move = async (req) => {
 	// Ensure that cid is same-origin as the actor
 	const tid = await posts.getPostField(mainPid, 'tid');
 	const cid = await topics.getTopicField(tid, 'cid');
-	if (utils.isNumber(cid)) {
+	if (utils.isNumber(cid) || cid !== fromCid) {
 		// remote removal of topic in local cid, or resolved cid does not match
 		return;
 	}
@@ -154,7 +180,21 @@ inbox.move = async (req) => {
 };
 
 inbox.update = async (req) => {
-	const { actor, object } = req.body;
+	let { actor, object } = req.body;
+
+	// Refetch object by id if Update was announce-wrapped
+	if (req?.res?.locals?.apAnnounced) {
+		try {
+			const refetched = await activitypub.get('uid', 0, object.id);
+			if (refetched) {
+				object = refetched;
+			}
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/inbox.update] Failed to refetch object ${object.id}: ${e.message}`);
+			return null;
+		}
+	}
+
 	const isPublic = publiclyAddressed([...(object.to || []), ...(object.cc || [])]);
 
 	// Origin checking
@@ -162,6 +202,32 @@ inbox.update = async (req) => {
 	const objectHostname = new URL(object.id).hostname;
 	if (actorHostname !== objectHostname) {
 		throw new Error('[[error:activitypub.origin-mismatch]]');
+	}
+
+	// attributedTo must be same-origin
+	if (actor && object.attributedTo) {
+		// Normalize `attributedTo` — only handle single values (string or object with id)
+		let { attributedTo } = object;
+		if (Array.isArray(attributedTo)) {
+			activitypub.helpers.log('[activitypub/inbox.update] attributedTo is an array, rejecting.');
+			return null;
+		}
+		if (typeof attributedTo === 'object' && attributedTo.id) {
+			attributedTo = attributedTo.id;
+		}
+
+		if (typeof attributedTo === 'string') {
+			try {
+				const actorHostname = typeof actor === 'string' ? new URL(actor).hostname : new URL(actor[0]).hostname;
+				const attributedToHostname = new URL(attributedTo).hostname;
+				if (actorHostname !== attributedToHostname) {
+					activitypub.helpers.log(`[activitypub/inbox.update] attributedTo origin mismatch (${attributedToHostname} !== ${actorHostname}).`);
+					return null;
+				}
+			} catch (e) {
+				return null;
+			}
+		}
 	}
 
 	switch (true) {
@@ -174,33 +240,49 @@ inbox.update = async (req) => {
 			switch (true) {
 				case isNote: {
 					const cid = await posts.getCidByPid(object.id);
-					const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
+					const [allowed, isDeleted, postUid] = await Promise.all([
+						privileges.categories.can('posts:edit', cid, activitypub._constants.uid),
+						posts.getPostField(object.id, 'deleted'),
+						posts.getPostField(object.id, 'uid'),
+					]);
 					if (!allowed) {
 						throw new Error('[[error:no-privileges]]');
+					}
+					// Only the post's author (the verified signer) may edit it. The
+					// fediverse group's blanket posts:edit must not let one remote
+					// actor edit another's federated post.
+					if (postUid !== actor) {
+						throw new Error('[[error:no-privileges]]');
+					}
+					if (isDeleted) { // fediverse users can't edit deleted posts
+						await api.posts.restore({ uid: actor }, { pid: object.id });
 					}
 
 					const postData = await activitypub.mocks.post(object);
 					postData.tags = await activitypub.notes._normalizeTags(postData._activitypub.tag, postData.cid);
 					await posts.edit(postData);
+					await activitypub.feps.announce(object.id, req.body);
 					const tid = await posts.getPostField(object.id, 'tid');
 					const isMain = await posts.isMain(object.id);
 					if (isMain) {
 						const { generatedTitle } = await topics.getTopicFields(tid, ['generatedTitle']);
 						if (generatedTitle && (!postData.title || !postData.title.trim())) {
 							const newTitle = activitypub.helpers.generateTitle(postData.sourceContent || postData.content);
-							await topics.setTopicField(tid, 'title', newTitle);
-							await topics.setTopicField(tid, 'slug', `${tid}/${slugify(newTitle) || 'topic'}`);
+							await topics.setTopicFields(tid, {
+								title: newTitle,
+								slug: `${tid}/${slugify(newTitle) || 'topic'}`,
+							});
 						}
-					}
-					const isDeleted = await posts.getPostField(object.id, 'deleted');
-					if (isDeleted) {
-						await api.posts.restore({ uid: actor }, { pid: object.id });
 					}
 					break;
 				}
 
 				case isMessage: {
-					const { roomId, deleted } = await messaging.getMessageFields(object.id, ['roomId', 'deleted']);
+					const { roomId, deleted, fromuid } = await messaging.getMessageFields(object.id, ['roomId', 'deleted', 'fromuid']);
+					// Only the message's author (the verified signer) may edit it.
+					if (fromuid !== actor) {
+						throw new Error('[[error:no-privileges]]');
+					}
 					await messaging.editMessage(actor, object.id, roomId, object.content);
 					if (deleted) {
 						await api.chats.restoreMessage({ uid: actor }, { mid: object.id });
@@ -309,6 +391,10 @@ inbox.delete = async (req) => {
 			}
 
 			const uid = await posts.getPostField(id, 'uid');
+			// Only the post's author (the verified signer) may delete it.
+			if (uid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			await activitypub.feps.announce(id, req.body);
 			try {
 				await api.posts[method]({ uid }, { pid: id });
@@ -329,17 +415,28 @@ inbox.delete = async (req) => {
 				return;
 			}
 			const { tid, uid } = await posts.getPostFields(pid, ['tid', 'uid']);
+			// Only the topic's author (the verified signer) may delete it.
+			if (uid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			activitypub.helpers.log(`[activitypub/inbox.delete] Deleting tid ${tid}.`);
 			await api.topics[method]({ uid }, { tids: [tid] });
 			break;
 		}
 
 		case isMessage: {
-			const deleted = await messaging.getMessageField(id, 'deleted');
+			const [deleted, fromuid] = await Promise.all([
+				messaging.getMessageField(id, 'deleted'),
+				messaging.getMessageField(id, 'fromuid'),
+			]);
 			if (deleted) {
 				return;
 			}
 
+			// Only the message's author (the verified signer) may delete it.
+			if (fromuid !== actor) {
+				throw new Error('[[error:no-privileges]]');
+			}
 			await api.chats.deleteMessage({ uid: actor }, { mid: id });
 			break;
 		}
@@ -452,6 +549,22 @@ inbox.dislike = async (req) => {
 
 inbox.announce = async (req) => {
 	let { actor, object, published, to, cc } = req.body;
+
+	// Collapse nested Announces: unwrap until we reach a non-Announce object
+	while (object.type === 'Announce') {
+		object = object.object;
+	}
+
+	// Resolve string object references (e.g., Announce wrapping a post URL)
+	if (typeof object === 'string') {
+		try {
+			object = await activitypub.helpers.resolveObjects(object);
+		} catch (e) {
+			activitypub.helpers.log(`[activitypub/inbox.announce] Failed to resolve object, using raw id: ${object}`);
+			object = { id: object };
+		}
+	}
+
 	activitypub.helpers.log(`[activitypub/inbox/announce] Parsing Announce(${object.type}) from ${actor}`);
 	let timestamp = new Date(published);
 	timestamp = timestamp.toString() !== 'Invalid Date' ? timestamp.getTime() : Date.now();
@@ -478,8 +591,34 @@ inbox.announce = async (req) => {
 	// Received via relay?
 	const fromRelay = await activitypub.relays.is(actor);
 
+	// Protections for non-Creates from category actors
+	const createish =
+		!object.type || object.type === 'Create' ||
+		activitypub._constants.acceptedPostTypes.includes(object.type);
+	if (!createish && cid) {
+		let id = object?.object?.id || object.object; // expecting object reference
+		const { id: localId } = await activitypub.helpers.resolveLocalId(id);
+		id = localId || id;
+
+		const exists = await posts.exists(id);
+		if (!exists) {
+			activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
+			return;
+		}
+
+		// Category actors can only publish activities concerning objects in said category
+		const _cid = await posts.getCidByPid(id);
+		if (_cid !== cid) {
+			return;
+		}
+	}
+
 	switch(true) {
 		case object.type === 'Like': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			const assertion = await activitypub.actors.assert(object.actor);
 			if (!assertion) {
 				throw new Error('[[error:activitypub.invalid-id]]');
@@ -501,21 +640,30 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Update': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			req.body = object;
+
+			if (process.env.hasOwnProperty('CI')) { // just for tests
+				req.res = {
+					locals: {},
+				};
+			}
+			req.res.locals.apAnnounced = true;
 			await inbox.update(req);
 			break;
 		}
 
 		case object.type === 'Delete': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			let id = object.object.id || object.object; // expecting object reference
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			id = localId || id;
-
-			const exists = await posts.exists(id);
-			if (!exists) {
-				activitypub.helpers.log(`[activitypub/inbox.announce] Object (${id}) does not exist locally. Doing nothing.`);
-				break;
-			}
 
 			/**
 			 * Deletions must be made by:
@@ -531,13 +679,16 @@ inbox.announce = async (req) => {
 				throw new Error('[[error:activitypub.origin-mismatch]]');
 			}
 
-			const _cid = await posts.getCidByPid(id);
-			if (!utils.isNumber(cid) && _cid !== cid) { // matching & remote categories only
-				throw new Error('[[error:invalid-cid]]');
+			const allowed = await privileges.categories.can('posts:edit', cid, activitypub._constants.uid);
+			if (!allowed) {
+				throw new Error('[[error:no-privileges]]');
 			}
 
-			const allowed = await privileges.categories.can('posts:edit', _cid, activitypub._constants.uid);
-			if (!allowed) {
+			// Self-deletion requires the delete's actor to be the post's author; a
+			// group (moderator) announcer may delete on behalf of moderators.
+			const isGroupAnnouncer = await db.exists(`categoryRemote:${actor}`);
+			const postUid = await posts.getPostField(id, 'uid');
+			if (!isGroupAnnouncer && postUid !== object.actor) {
 				throw new Error('[[error:no-privileges]]');
 			}
 
@@ -562,6 +713,10 @@ inbox.announce = async (req) => {
 		}
 
 		case object.type === 'Create': {
+			if (!cid && !fromRelay) {
+				return;
+			}
+
 			object = object.object;
 			// falls through
 		}
@@ -618,6 +773,11 @@ inbox.announce = async (req) => {
 				await activitypub.notes.announce.add(pid, actor, timestamp);
 			}
 		}
+	}
+
+	// Broadcast to relay followers if we have a pid
+	if (pid) {
+		await activitypub.feps.announce(pid, object, { fromRelay });
 	}
 };
 
@@ -714,12 +874,19 @@ inbox.isFollowed = async (actorId, uid) => {
 
 inbox.accept = async (req) => {
 	const { actor, object } = req.body;
-	const { type } = object;
+	let { type } = object;
 
-	const { type: localType, id } = await helpers.resolveLocalId(object.actor);
 	if (object.id === `${nconf.get('url')}/actor`) {
-		return activitypub.relays.handshake(req.body);
-	} else if (!['user', 'category'].includes(localType)) {
+		// If the accepting actor is a known relay, handle as relay handshake
+		const isRelay = await db.isSortedSetMember('relays:createtime', actor);
+		if (isRelay) {
+			return activitypub.relays.handshake(req.body);
+		}
+		type = 'Follow'; // treat as Follow acceptance for hashtag/instance follows
+	}
+
+	const { type: localType, id } = await helpers.resolveLocalId(object.actor || object.id);
+	if (!['user', 'category', 'application'].includes(localType)) {
 		throw new Error('[[error:invalid-data]]');
 	}
 
@@ -753,6 +920,20 @@ inbox.accept = async (req) => {
 				db.sortedSetAdd(`cid:${id}:following`, timestamp, actor),
 				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, `cid|${id}`), // for notes assertion checking
 			]);
+		} else if (localType === 'application') {
+			// Instance actor follow acceptance
+			if (!await db.isSortedSetMember('followRequests:uid.0', actor)) {
+				if (await db.isSortedSetMember('followingRemote:0', actor)) return; // already following
+				throw new Error('[[error:invalid-data]]'); // not following, not requested, so reject to hopefully stop retries
+			}
+			const timestamp = await db.sortedSetScore('followRequests:uid.0', actor);
+			await Promise.all([
+				db.sortedSetRemove('followRequests:uid.0', actor),
+				db.sortedSetAdd('followingRemote:0', timestamp, actor),
+				db.sortedSetAdd(`followersRemote:${actor}`, timestamp, 0), // for followers backreference
+			]);
+			// Transition hashtag follow state to active
+			await activitypub.hashtags.updateState(actor, 'active');
 		}
 
 		activitypub.actors._followerCache.del(actor);
@@ -769,13 +950,39 @@ inbox.undo = async (req) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	let { type: localType, id } = await helpers.resolveLocalId(object.object);
+	// The original activity's object may be embedded as a full object or a bare URL
+	const subjectId = (object.object && typeof object.object === 'object' && !Array.isArray(object.object)) ?
+		object.object.id : object.object;
+
+	let { type: localType, id } = await helpers.resolveLocalId(subjectId);
+
+	// If object is a Follow activity, check if the target is the instance actor (relay follow)
+	if (!localType && object?.type === 'Follow') {
+		const followTarget = typeof object.object === 'object' ? object.object.id : object.object;
+		if (followTarget === `${nconf.get('url')}/actor`) {
+			localType = 'application';
+		}
+	}
 
 	activitypub.helpers.log(`[activitypub/inbox/undo] ${type} ${localType && id ? `${localType} ${id}` : object.object} via ${actor}`);
 
 	switch (type) {
 		case 'Follow': {
 			switch (localType) {
+				case 'application': {
+					// Relay unfollow
+					await activitypub.relays.removeFollower(actor);
+					// Generic instance-actor unfollow
+					await Promise.all([
+						db.sortedSetRemove('followingRemote:0', actor),
+						db.sortedSetRemove('followRequests:uid.0', actor),
+						db.sortedSetRemove(`followersRemote:${actor}`, 0),
+					]);
+					// Transition hashtag follow state to error
+					await activitypub.hashtags.updateState(actor, 'error');
+					break;
+				}
+
 				case 'user': {
 					const exists = await user.exists(id);
 					if (!exists) {
@@ -822,13 +1029,13 @@ inbox.undo = async (req) => {
 			}
 
 			await posts.unvote(id, actor);
-			activitypub.feps.announce(object.object, req.body);
+			activitypub.feps.announce(subjectId, req.body);
 			notifications.rescind(`upvote:post:${id}:uid:${actor}`);
 			break;
 		}
 
 		case 'Announce': {
-			id = id || object.object; // remote announces
+			id = id || subjectId; // remote announces
 			const exists = await posts.exists(id);
 			if (!exists) {
 				activitypub.helpers.log(`[activitypub/inbox/undo] Attempted to undo announce of ${id} but couldn't find it, so doing nothing.`);
@@ -844,7 +1051,11 @@ inbox.undo = async (req) => {
 				object.object = [object.object];
 			}
 			await Promise.all(object.object.map(async (subject) => {
-				const { type, id } = await activitypub.helpers.resolveLocalId(subject.id);
+				const subjectId = typeof subject === 'string' ? subject : subject?.id;
+				const { type, id } = await activitypub.helpers.resolveLocalId(subjectId);
+				if (!type || !id) {
+					return;
+				}
 				try {
 					await flags.rescindReport(type, id, actor);
 				} catch (e) {
@@ -865,16 +1076,20 @@ inbox.flag = async (req) => {
 	}
 
 	await Promise.all(objects.map(async (subject, index) => {
+		const subjectId = typeof subject === 'string' ? subject : subject?.id;
 		let type, id;
 		try {
-			({ type, id } = await activitypub.helpers.resolveObjects(subject.id));
+			({ type, id } = await activitypub.helpers.resolveLocalId(subjectId));
+			if (!type || !id) {
+				throw new Error('[[error:invalid-data]]');
+			}
 		} catch (e) {
-			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subject.id}`);
+			activitypub.helpers.log(`[activitypub/inbox.flag] Failed to resolve flagged object, skipping: ${subjectId}`);
 			inbox._reject('Flag', objects[index], actor);
 			return;
 		}
 		try {
-			await flags.create(activitypub.helpers.mapToLocalType(type), id, actor, content);
+			await flags.create(type, id, actor, content);
 		} catch (e) {
 			inbox._reject('Flag', objects[index], actor);
 		}
@@ -892,4 +1107,9 @@ inbox.reject = async (req) => {
 		db.sortedSetRemove('ap:retry:queue', queueId),
 		db.delete(`ap:retry:queue:${queueId}`),
 	]);
+
+	// Transition hashtag follow state to error if this is a rejected Follow from instance actor
+	if (type === 'Follow' && id === `${nconf.get('url')}/actor`) {
+		await activitypub.hashtags.updateState(actor, 'error');
+	}
 };

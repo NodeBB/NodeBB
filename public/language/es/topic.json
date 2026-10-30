@@ -81,6 +81,7 @@
     "forked-message": "This topic was forked from <a href=\"%1\">%2</a>",
     "deleted-message": "Este tema ha sido borrado. Solo los usuarios que tengan privilegios de administración de temas pueden verlo.",
     "following-topic.message": "Ahora recibiras notificaciones cuando alguien publique en este tema.",
+    "following-topic.message-no-notifications": "You are now following this topic, but your notification setting is set to none.",
     "not-following-topic.message": "Podras ver este tema en la lista de no leidos, pero no recibirás notificaciones cuando alguien escriba en él.",
     "ignoring-topic.message": "Ya no verás este tema en no leídos. Serás notificado si te mencionan o te votan.",
     "login-to-subscribe": "Por favor, conéctate para subscribirte a este tema.",
@@ -101,7 +102,7 @@
     "not-watching.description": "No notificarme de nuevas respuestas.<br/>No mostrar tema en no leídos.",
     "ignoring.description": "No notificarme de nuevas respuestas.<br/>No mostrar tema en no leídos.",
     "thread-tools.title": "Herramientas",
-    "thread-tools.markAsUnreadForAll": "Marcar todo como no leído",
+    "thread-tools.markAsUnreadForAll": "Bump (Mark Unread For All)",
     "thread-tools.pin": "Adherir tema",
     "thread-tools.unpin": "Despegar tema",
     "thread-tools.lock": "Cerrar tema",
@@ -169,7 +170,7 @@
     "move-posts-instruction": "Click the posts you want to move then enter a topic ID or go to the target topic",
     "move-topic-instruction": "Select the target category and then click move",
     "change-owner-instruction": "Haz click en los mensajes que quieres asignar a otro usuario",
-    "manage-editors-instruction": "Gestionar abajo los usuarios que pueden editar esta entrada.",
+    "manage-editors-instruction": "Manage the users and groups who can edit this post below.",
     "crossposts.instructions": "Select one or more categories to cross-post to. Topic(s) will be accessible from the original category and all cross-posted categories.",
     "crossposts.listing": "This topic has been cross-posted to the following local categories:",
     "crossposts.none": "This topic has not been cross-posted to any additional categories",
@@ -237,7 +238,7 @@
     "thumb-image": "Imagen miniatura del tema",
     "announcers": "Comparte",
     "announcers-x": "Comparte (%1)",
-    "guest-cta.title": "Hello! It looks like you're interested in this conversation, but you don't have an account yet.",
-    "guest-cta.message": "Getting fed up of having to scroll through the same posts each visit? When you register for an account, you'll always come back to exactly where you were before, and choose to be notified of new replies (either via email, or push notification). You'll also be able to save bookmarks and upvote posts to show your appreciation to other community members.",
-    "guest-cta.closing": "With your input, this post could be even better 💗"
+    "guest-cta.title": "¡Hola! Parece que estás interesado en este tema pero aún no tienes una cuenta.",
+    "guest-cta.message": "¿Te cansas de tener que ver las mismas publicaciones en cada visita? Al registrarte, siempre volverás al punto exacto donde estabas y podrás elegir recibir notificaciones de nuevas respuestas (por correo electrónico o notificaciones push). También podrás guardar marcadores y votar positivamente las publicaciones para mostrar tu aprecio a otros miembros de la comunidad.",
+    "guest-cta.closing": "Con tu ayuda, esta publicación podría ser aún mejor 💗"
 }

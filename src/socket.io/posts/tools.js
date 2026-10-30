@@ -1,10 +1,12 @@
 'use strict';
 
 const nconf = require('nconf');
+const _ = require('lodash');
 
 const db = require('../../database');
 const posts = require('../../posts');
 const flags = require('../../flags');
+const groups = require('../../groups');
 const privileges = require('../../privileges');
 const plugins = require('../../plugins');
 const social = require('../../social');
@@ -19,6 +21,9 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		const cid = await posts.getCidByPid(data.pid);
+		if (!await privileges.posts.can('topics:read', data.pid, socket.uid)) {
+			throw new Error('[[error:no-privileges]]');
+		}
 		const results = await utils.promiseParallel({
 			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId', 'url']),
 			isAdmin: user.isAdministrator(socket.uid),
@@ -87,19 +92,48 @@ module.exports = function (SocketPosts) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		await checkEditorPrivilege(socket.uid, data.pid);
-		const editorUids = await db.getSetMembers(`pid:${data.pid}:editors`);
-		const userData = await user.getUsersFields(editorUids, ['username', 'userslug', 'picture']);
-		return userData;
+		const [editorUids, groupNames] = await Promise.all([
+			db.getSetMembers(`pid:${data.pid}:editors`),
+			db.getSetMembers(`pid:${data.pid}:editors:groups`),
+		]);
+		const users = await user.getUsersFields(editorUids, ['username', 'userslug', 'picture']);
+		return { users: users, groups: groupNames.sort() };
 	};
 
 	SocketPosts.saveEditors = async function (socket, data) {
-		if (!data || !data.pid || !Array.isArray(data.uids)) {
+		if (!data || !data.pid || !Array.isArray(data.uids) || (data.groups !== undefined && !Array.isArray(data.groups))) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		await checkEditorPrivilege(socket.uid, data.pid);
-		await db.delete(`pid:${data.pid}:editors`);
-		await db.setAdd(`pid:${data.pid}:editors`, data.uids);
+		const groupNames = await filterEditorGroups(data.groups || []);
+		const currentGroups = await db.getSetMembers(`pid:${data.pid}:editors:groups`);
+		const addedGroups = groupNames.filter(name => !currentGroups.includes(name));
+		const removedGroups = currentGroups.filter(name => !groupNames.includes(name));
+
+		await Promise.all([
+			db.delete(`pid:${data.pid}:editors`),
+			db.delete(`pid:${data.pid}:editors:groups`),
+			db.sortedSetRemove(removedGroups.map(name => `group:${name}:editor:pids`), data.pid),
+		]);
+		await Promise.all([
+			db.setAdd(`pid:${data.pid}:editors`, data.uids),
+			db.setAdd(`pid:${data.pid}:editors:groups`, groupNames),
+			db.sortedSetAddBulk(addedGroups.map(name => [`group:${name}:editor:pids`, Date.now(), data.pid])),
+		]);
 	};
+
+	async function filterEditorGroups(groupNames) {
+		groupNames = _.uniq(groupNames.filter(
+			name => name && typeof name === 'string' &&
+				!groups.isPrivilegeGroup(name) &&
+				!groups.ephemeralGroups.includes(name)
+		));
+		if (!groupNames.length) {
+			return [];
+		}
+		const exists = await groups.exists(groupNames);
+		return groupNames.filter((name, index) => exists[index]);
+	}
 
 	async function checkEditorPrivilege(uid, pid) {
 		const cid = await posts.getCidByPid(pid);

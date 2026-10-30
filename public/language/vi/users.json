@@ -22,5 +22,12 @@
     "unread-topics": "Chủ Đề Chưa Đọc",
     "categories": "Danh mục",
     "tags": "Thẻ",
-    "no-users-found": "Không có ai!"
+    "no-users-found": "Không có ai!",
+    "temp-ban.length": "Dài",
+    "temp-ban.reason": "Lý do <span class=\"text-muted\">(Không bắt buộc)</span>",
+    "temp-ban.select-reason": "Chọn lý do",
+    "temp-ban.hours": "Giờ",
+    "temp-ban.days": "Ngày",
+    "temp-ban.explanation": "Nhập khoảng thời gian cấm. Lưu ý rằng thời điểm 0 sẽ được coi là lệnh cấm vĩnh viễn.",
+    "temp-mute.explanation": "Nhập khoảng thời gian tắt tiếng. Lưu ý rằng thời gian bằng 0 sẽ được coi là tắt tiếng vĩnh viễn."
 }

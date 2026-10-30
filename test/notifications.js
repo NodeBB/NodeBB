@@ -11,6 +11,7 @@ const user = require('../src/user');
 const topics = require('../src/topics');
 const categories = require('../src/categories');
 const notifications = require('../src/notifications');
+const plugins = require('../src/plugins');
 const socketNotifications = require('../src/socket.io/notifications');
 const api = require('../src/api');
 const utils = require('../src/utils');
@@ -21,9 +22,17 @@ const sleep = util.promisify(setTimeout);
 describe('Notifications', () => {
 	let uid;
 	let notification;
+	let pid;
 
 	before(async () => {
 		uid = await user.create({ username: 'poster' });
+		const { cid } = await categories.create({ name: 'Notification Category' });
+		({ postData: { pid } } = await topics.post({
+			uid: uid,
+			cid: cid,
+			title: 'Notification Topic Title',
+			content: 'The content of notification topic',
+		}));
 	});
 
 	it('should fail to create notification without a nid', (done) => {
@@ -38,7 +47,7 @@ describe('Notifications', () => {
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
-			pid: 1,
+			pid: pid,
 		});
 
 		assert(notification);
@@ -82,7 +91,7 @@ describe('Notifications', () => {
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
-			pid: 1,
+			pid: pid,
 			importance: 1,
 		});
 		assert.strictEqual(notification, null);
@@ -295,6 +304,28 @@ describe('Notifications', () => {
 		assert.equal(count, 0);
 	});
 
+	it('should not count unread notifications that are not shown in the list', async () => {
+		const ownerUid = await user.create({ username: 'countowner' });
+		const { cid } = await categories.create({ name: 'Count Category' });
+		const { postData } = await topics.post({
+			uid: uid,
+			cid: cid,
+			title: 'Count Topic Title',
+			content: 'The content of count topic',
+		});
+		const visible = await notifications.create({ bodyShort: 'visible', nid: 'count:visible' });
+		const purged = await notifications.create({ bodyShort: 'purged', nid: 'count:purged', pid: postData.pid });
+		await notifications.push(visible, [ownerUid]);
+		await notifications.push(purged, [ownerUid]);
+		await sleep(2000);
+		assert.strictEqual(await user.notifications.getUnreadCount(ownerUid), 2);
+
+		await topics.purgePostsAndTopic(postData.tid, uid);
+		const { unread } = await user.notifications.get(ownerUid);
+		assert.strictEqual(unread.length, 1);
+		assert.strictEqual(await user.notifications.getUnreadCount(ownerUid), 1);
+	});
+
 	it('should not do anything if uid is falsy', async () => {
 		await user.notifications.deleteAll(0);
 	});
@@ -394,5 +425,123 @@ describe('Notifications', () => {
 
 		const data = await notifications.get(notification.nid);
 		assert(!data);
+	});
+
+	describe('.merge()', () => {
+		it('should expose how many notifications were merged', async () => {
+			const merged = await notifications.merge([
+				{ nid: 'n1', mergeId: 'new-register', bodyShort: 'one' },
+				{ nid: 'n2', mergeId: 'new-register', bodyShort: 'two' },
+				{ nid: 'n3', mergeId: 'new-register', bodyShort: 'three' },
+			]);
+
+			assert.strictEqual(merged.length, 1);
+			assert.strictEqual(merged[0].mergeCount, 3);
+		});
+
+		it('should let a plugin register its own mergeId', async () => {
+			const method = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'p1', mergeId: 'plugin-merge|7', bodyShort: 'one' },
+					{ nid: 'p2', mergeId: 'plugin-merge|7', bodyShort: 'two' },
+					{ nid: 'p3', mergeId: 'unregistered-merge', bodyShort: 'three' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', method);
+			}
+
+			assert.strictEqual(merged.length, 2);
+			const survivor = merged.find(n => n.mergeId === 'plugin-merge|7');
+			assert.strictEqual(survivor.bodyShort, '[[notifications:merged-notifications, 2]]');
+			assert.strictEqual(survivor.mergeCount, 2);
+		});
+
+		it('should merge undifferentiated notifications alongside differentiated ones', async () => {
+			const method = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'b1', mergeId: 'plugin-merge', bodyShort: 'bare one' },
+					{ nid: 'b2', mergeId: 'plugin-merge', bodyShort: 'bare two' },
+					{ nid: 'd1', mergeId: 'plugin-merge|7', bodyShort: 'seven one' },
+					{ nid: 'd2', mergeId: 'plugin-merge|7', bodyShort: 'seven two' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', method);
+			}
+
+			assert.strictEqual(merged.length, 2);
+			const bare = merged.find(n => n.mergeId === 'plugin-merge');
+			assert.strictEqual(bare.bodyShort, '[[notifications:merged-notifications, 2]]');
+			assert.strictEqual(bare.mergeCount, 2);
+			const differentiated = merged.find(n => n.mergeId === 'plugin-merge|7');
+			assert.strictEqual(differentiated.mergeCount, 2);
+		});
+
+		it('should give a plugin-registered mergeId a generic bodyShort with the merged count', async () => {
+			const method = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'g1', mergeId: 'plugin-merge|3', bodyShort: 'first' },
+					{ nid: 'g2', mergeId: 'plugin-merge|3', bodyShort: 'second' },
+					{ nid: 'g3', mergeId: 'plugin-merge|3', bodyShort: 'third' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', method);
+			}
+
+			assert.strictEqual(merged.length, 1);
+			assert.strictEqual(merged[0].mergeCount, 3);
+			assert.strictEqual(merged[0].bodyShort, '[[notifications:merged-notifications, 3]]');
+		});
+
+		it('should let filter:notifications.merge override the generic bodyShort', async () => {
+			const mergeIdsMethod = async (data) => {
+				data.mergeIds.push('plugin-merge');
+				return data;
+			};
+			const mergeMethod = async (data) => {
+				data.notifications.forEach((n) => {
+					if (n.mergeId === 'plugin-merge') {
+						n.bodyShort = `custom ${n.mergeCount}`;
+					}
+				});
+				return data;
+			};
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.mergeIds', method: mergeIdsMethod });
+			plugins.hooks.register('notifications-merge-test', { hook: 'filter:notifications.merge', method: mergeMethod });
+
+			let merged;
+			try {
+				merged = await notifications.merge([
+					{ nid: 'o1', mergeId: 'plugin-merge', bodyShort: 'first' },
+					{ nid: 'o2', mergeId: 'plugin-merge', bodyShort: 'second' },
+				]);
+			} finally {
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.mergeIds', mergeIdsMethod);
+				plugins.hooks.unregister('notifications-merge-test', 'filter:notifications.merge', mergeMethod);
+			}
+
+			assert.strictEqual(merged.length, 1);
+			assert.strictEqual(merged[0].bodyShort, 'custom 2');
+		});
 	});
 });

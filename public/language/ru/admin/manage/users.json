@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Введите ID пользователя для поиска",
 	"search.username": "По имени пользователя",
 	"search.username-placeholder": "Введите имя пользователя для поиска",
+	"search.fullname": "By Full Name",
 	"search.email": "По адресу электронной почты",
 	"search.email-placeholder": "Введите адрес электронной почты для поиска",
 	"search.ip": "По IP-адресу",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "Адрес электронной почты пользователя",
 	"create.password": "Пароль",
 	"create.password-confirm": "Подтвердите пароль",
-
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Причина <span class=\"text-muted\">(Необязательно)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Часов",
-	"temp-ban.days": "Дней",
-	"temp-ban.explanation": "Укажите продолжительность блокировки. Имейте в виду, что «0» означает заблокировать навсегда.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Вы действительно хотите заблокировать пользователя <strong>навсегда</strong>?",
 	"alerts.confirm-ban-multi": "Вы действительно хотите заблокировать этих пользователей <strong>навсегда</strong>?",

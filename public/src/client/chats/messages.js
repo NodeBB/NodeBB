@@ -161,8 +161,18 @@ define('forum/chats/messages', [
 		if (containerEl.length && msgEl.length) {
 			const msgBodyEls = containerEl[0].querySelectorAll('[component="chat/message/body"]');
 			imagesLoaded(msgBodyEls, () => {
-				msgEl[0].scrollIntoView(true);
+				messages.scrollToMessage(msgEl);
 			});
+		}
+	};
+
+	messages.scrollToMessage = function (msgEl) {
+		if (msgEl && msgEl.length) {
+			msgEl[0].scrollIntoView(true);
+			msgEl.addClass('highlight-pulse');
+			setTimeout(() => {
+				msgEl.removeClass('highlight-pulse');
+			}, 5000);
 		}
 	};
 

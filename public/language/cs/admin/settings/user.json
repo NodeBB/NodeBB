@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Jen na pozvání správce",
 	"registration-type.disabled": "Bez registrace",
 	"registration-type.help": "Normální - uživatel se může registrovat ze stránky Registrace<br/>\nJen pro pozvané - uživatel může pozvat jiné ze stránky<a href=\"%1/users\" target=\"_blank\">Uživatelé</a>.<br/>♥\nJen pro pozvané správcem - jen správci mohou pozvat jiné  ze stránky <a href=\"%1/users\" target=\"_blank\">Uživatelé</a>a ze stránky <a href=\"%1/admin/manage/users\">admin/manage/users</a>.<br/>\nBez registrace - žádná registrace uživatelů.<br/>•",
-	"registration-approval-type.help": "Normální - uživatel se může hned registrovat.<br/>\nSchválení správcem - uživatelská registrace je zařazena do <a href=\"%1/admin/manage/registration\">fronty pro schválení</a> správcem.<br/>\nSchválení správcem dle IP - pro nové uživatele stav Normální, Schválení správcem pro adresy IP, které již mají účet.<br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "Automatic Approval Time",
 	"registration-queue-auto-approve-time-help": "Hours before user is approved automatically. 0 to disable.",
 	"registration-queue-show-average-time": "Show users average time it takes to approve a new user",

@@ -6,7 +6,6 @@ const user = require('../user');
 const groups = require('../groups');
 const meta = require('../meta');
 const posts = require('../posts');
-const db = require('../database');
 const flags = require('../flags');
 const analytics = require('../analytics');
 const plugins = require('../plugins');
@@ -33,17 +32,20 @@ modsController.flags.list = async function (req, res) {
 		quick: ['mine'],
 		sort: ['newest', 'oldest', 'reports', 'upvotes', 'downvotes', 'replies'],
 		state: ['open', 'wip', 'resolved', 'rejected'],
-		type: ['post', 'user'],
+		type: ['post', 'user', 'message'],
 	};
 
-	const [isAdminOrGlobalMod, moderatedCids, { filters: allFilters }, { sorts: allSorts }] = await Promise.all([
+	const [
+		isAdminOrGlobalMod, moderatedCids, visibleSets, { filters: allFilters }, { sorts: allSorts },
+	] = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
+		flags.getVisibleSets(req.uid),
 		plugins.hooks.fire('filter:flags.validateFilters', { filters: coreFilters, validation }),
 		plugins.hooks.fire('filter:flags.validateSort', { sorts: validation.sort }),
 	]);
 
-	if (!(isAdminOrGlobalMod || !!moderatedCids.length)) {
+	if (visibleSets && !visibleSets.length) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -54,16 +56,19 @@ modsController.flags.list = async function (req, res) {
 	const validFilters = helpers.validateParameters(req.query, allFilters, validation);
 
 	let hasFilter = !!Object.keys(validFilters).length;
+	let cidIsDefault = false;
 
 	if (res.locals.cids) {
 		if (!validFilters.cid) {
 			// If mod and no cid filter, add filter for their modded categories
 			validFilters.cid = res.locals.cids;
+			cidIsDefault = true;
 		} else if (Array.isArray(validFilters.cid)) {
 			// Remove cids they do not moderate
 			validFilters.cid = validFilters.cid.filter(cid => res.locals.cids.includes(String(cid)));
 		} else if (!res.locals.cids.includes(String(validFilters.cid))) {
 			validFilters.cid = res.locals.cids;
+			cidIsDefault = true;
 			hasFilter = false;
 		}
 	}
@@ -82,9 +87,17 @@ modsController.flags.list = async function (req, res) {
 
 	hasFilter = hasFilter || !!sort;
 
+	const listFilters = { ...validFilters };
+	if (cidIsDefault) {
+		delete listFilters.cid;
+	}
+	if (visibleSets) {
+		listFilters.visible = visibleSets;
+	}
+
 	const [flagsData, analyticsData, selectData] = await Promise.all([
 		flags.list({
-			filters: validFilters,
+			filters: listFilters,
 			sort: sort,
 			uid: req.uid,
 			query: req.query,
@@ -125,33 +138,14 @@ modsController.flags.list = async function (req, res) {
 };
 
 modsController.flags.detail = async function (req, res, next) {
+	if (!await flags.canView(req.params.flagId, req.uid)) {
+		return next(); // 404
+	}
 	const results = await utils.promiseParallel({
-		isAdminOrGlobalMod: user.isAdminOrGlobalMod(req.uid),
-		moderatedCids: user.getModeratedCids(req.uid),
 		flagData: flags.get(req.params.flagId),
 		privileges: Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	});
 	results.privileges = { ...results.privileges[0], ...results.privileges[1] };
-	if (!results.flagData || (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length))) {
-		return next(); // 404
-	}
-
-	// extra checks for plain moderators
-	if (!results.isAdminOrGlobalMod) {
-		if (results.flagData.type === 'user') {
-			return next();
-		}
-		if (results.flagData.type === 'post') {
-			const isFlagInModeratedCids = await db.isMemberOfSortedSets(
-				results.moderatedCids.map(cid => `flags:byCid:${cid}`),
-				results.flagData.flagId
-			);
-			if (!isFlagInModeratedCids.includes(true)) {
-				return next();
-			}
-		}
-	}
-
 
 	async function getAssignees(flagData, uid) {
 		let uids = [];
@@ -169,23 +163,31 @@ modsController.flags.detail = async function (req, res, next) {
 				const modUids = (await privileges.categories.getUidsWithPrivilege([cid], 'moderate'))[0];
 				uids = _.uniq(uids.concat(modUids));
 			}
+		} else if (flagData.type === 'message') {
+			uids = admins;
 		}
 		const userData = await user.getUsersData(uids);
 		return await user.hidePrivateData(userData.filter(u => u && u.userslug), uid);
 	}
 
-	const assignees = await getAssignees(results.flagData, req.uid);
-	results.flagData.history = await flags.getHistory(req.params.flagId);
+	const [assignees, history] = await Promise.all([
+		getAssignees(results.flagData, req.uid),
+		flags.getHistory(req.params.flagId),
+		flags.markNotificationsRead(req.params.flagId, req.uid),
+	]);
+	results.flagData.history = history;
 
 	if (results.flagData.type === 'user') {
 		results.flagData.type_path = 'uid';
 	} else if (results.flagData.type === 'post') {
 		results.flagData.type_path = 'post';
+	} else if (results.flagData.type === 'message') {
+		results.flagData.type_path = 'message';
 	}
 
 	res.render('flags/detail', Object.assign(results.flagData, {
 		assignees: assignees,
-		type_bool: ['post', 'user', 'empty'].reduce((memo, cur) => {
+		type_bool: ['post', 'user', 'message', 'empty'].reduce((memo, cur) => {
 			if (cur !== 'empty') {
 				memo[cur] = results.flagData.type === cur && (
 					!results.flagData.target ||
@@ -225,11 +227,15 @@ modsController.postQueue = async function (req, res, next) {
 		Promise.all(['global', 'admin'].map(async type => privileges[type].get(req.uid))),
 	]);
 	_privileges = { ..._privileges[0], ..._privileges[1] };
+	let customReasons = [];
+	if (isAdmin || isGlobalMod || moderatedCids.length) {
+		customReasons = await user.bans.getCustomReasons({ type: 'post-queue' });
+	}
 
 	postData = postData
 		.filter(p => p &&
-			(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.category.cid)) &&
-			(isAdmin || isGlobalMod || moderatedCids.includes(Number(p.category.cid)) || req.uid === p.user.uid))
+			(!categoriesData.selectedCids.length || categoriesData.selectedCids.includes(p.topic?.cid)) &&
+			(isAdmin || isGlobalMod || moderatedCids.map(String).includes(String(p.topic?.cid)) || req.uid === p.user.uid))
 		.map((post) => {
 			const isSelf = post.user.uid === req.uid;
 			post.canAccept = !isSelf && (isAdmin || isGlobalMod || !!moderatedCids.length);
@@ -263,5 +269,6 @@ modsController.postQueue = async function (req, res, next) {
 		enabled: meta.config.postQueue,
 		singlePost: !!id,
 		privileges: _privileges,
+		customReasons,
 	});
 };

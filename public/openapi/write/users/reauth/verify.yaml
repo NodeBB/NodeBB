@@ -1,0 +1,17 @@
+post:
+  tags:
+    - users
+  summary: verify reauthentication
+  responses:
+    '200':
+      description: reauthentication verified
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              verified:
+                type: boolean
+                example: true
+    '401':
+      $ref: ../../../components/responses/401.yaml#/401

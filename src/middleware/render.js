@@ -47,9 +47,7 @@ module.exports = function (middleware) {
 				options.url = options.url || (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
 
-				if (req.loggedIn) {
-					res.set('cache-control', 'private');
-				}
+				res.set('cache-control', 'private, no-cache');
 
 				const buildResult = await plugins.hooks.fire(`filter:${template}.build`, {
 					req: req,
@@ -73,7 +71,7 @@ module.exports = function (middleware) {
 				options._header = {
 					tags: await meta.tags.parse(req, renderResult, res.locals.metaTags, res.locals.linkTags),
 				};
-				res.locals._i18n = languages.getFull(getLang(req, res));
+				res.locals._i18n = languages.getFull(await getLang(req, res));
 				options.widgets = await widgets.render(req.uid, {
 					template: `${template}.tpl`,
 					url: options.url,
@@ -104,9 +102,7 @@ module.exports = function (middleware) {
 				const str = `${header +
 					(res.locals.postHeader || '') +
 					content
-				}<script id="ajaxify-data" type="application/json">${
-					optionsString
-				}</script>${
+				}<script id="ajaxify-data">window._ajaxifyData=${optionsString}</script>${
 					res.locals.preFooter || ''
 				}${footer}`;
 
@@ -162,6 +158,7 @@ module.exports = function (middleware) {
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 			'brand:logo:display': meta.config['brand:logo'] ? '' : 'hide',
+			'brand:logo:updatedAt': meta.config['brand:logo:updatedAt'] || '',
 			allowRegistration: registrationType === 'normal',
 			searchEnabled: plugins.hooks.hasListeners('filter:search.query'),
 			postQueueEnabled: !!meta.config.postQueue,
@@ -172,7 +169,7 @@ module.exports = function (middleware) {
 			widgets: options.widgets,
 		};
 
-		templateValues.configJSON = jsesc(translator.escape(JSON.stringify(res.locals.config)), { isScriptContext: true });
+		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
 		const results = await utils.promiseParallel({
 			isAdmin: user.isAdministrator(req.uid),
@@ -225,7 +222,7 @@ module.exports = function (middleware) {
 		templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
 		templateValues.canChat = (results.privileges.chat || results.privileges['chat:privileged']) && meta.config.disableChat !== 1;
 		templateValues.user = results.user;
-		templateValues.userJSON = jsesc(translator.escape(JSON.stringify(results.user)), { isScriptContext: true });
+		templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 		templateValues.useCustomCSS = meta.config.useCustomCSS && meta.config.customCSS;
 		templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
 		templateValues.useCustomHTML = meta.config.useCustomHTML;
@@ -282,18 +279,22 @@ module.exports = function (middleware) {
 
 		const version = nconf.get('version');
 
-		res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
 		const langDirection = translator.languageDirection(res.locals.config.acpLang);
 		res.locals.config.isRTL = langDirection === 'rtl';
+		const config = {
+			...res.locals.config,
+			// override so the config.userLang client side is the acpLang for the admin panel
+			userLang: res.locals.config.acpLang || res.locals.config.userLang,
+		};
 		const templateValues = {
-			config: res.locals.config,
-			configJSON: jsesc(translator.escape(JSON.stringify(res.locals.config)), { isScriptContext: true }),
-			relative_path: res.locals.config.relative_path,
+			config: config,
+			configJSON: jsesc(JSON.stringify(config), { isScriptContext: true }),
+			relative_path: config.relative_path,
 			adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 			metaTags: results.tags.meta,
 			linkTags: results.tags.link,
 			user: userData,
-			userJSON: jsesc(translator.escape(JSON.stringify(userData)), { isScriptContext: true }),
+			userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
 			plugins: results.custom_header.plugins,
 			authentication: results.custom_header.authentication,
 			scripts: results.scripts,
@@ -319,7 +320,7 @@ module.exports = function (middleware) {
 		return new Promise((resolve, reject) => {
 			render.call(res, tpl, options, async (err, str) => {
 				if (err) reject(err);
-				else resolve(await translate(str, getLang(req, res)));
+				else resolve(str);
 			});
 		});
 	}
@@ -398,18 +399,10 @@ module.exports = function (middleware) {
 		return str;
 	}
 
-	function getLang(req, res) {
-		let language = (res.locals.config && res.locals.config.userLang) || 'en-GB';
-		if (res.locals.renderHeaderType === 'admin') {
-			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
-		}
-		return req.query.lang ? req.query.lang : language;
-	}
-
-	async function translate(str, language) {
-		// TODO: remove once all tx tokens are migrated to tx("") helper
-		const translated = await translator.translate(str, language);
-		return translator.unescape(translated);
+	async function getLang(req, res) {
+		if (req.query.lang) return req.query.lang;
+		const config = res.locals.config ?? await user.getSettings(req.uid);
+		return res.locals.isAdminPage ? config.acpLang : config.userLang;
 	}
 
 	async function appendUnreadCounts({ uid, navigation, unreadData, query }) {
@@ -419,17 +412,18 @@ module.exports = function (middleware) {
 			unreadChatCount: messaging.getUnreadCount(uid),
 			unreadNotificationCount: user.notifications.getUnreadCount(uid),
 			unreadFlagCount: (async function () {
-				if (routes.includes('/flags') && await user.isPrivileged(uid)) {
-					return flags.getCount({
-						uid,
-						query,
-						filters: {
-							quick: 'unresolved',
-							cid: (await user.isAdminOrGlobalMod(uid)) ? [] : (await user.getModeratedCids(uid)),
-						},
-					});
+				if (!routes.includes('/flags')) {
+					return 0;
 				}
-				return 0;
+				const visibleSets = await flags.getVisibleSets(uid);
+				if (visibleSets && !visibleSets.length) {
+					return 0;
+				}
+				const filters = { quick: 'unresolved' };
+				if (visibleSets) {
+					filters.visible = visibleSets;
+				}
+				return flags.getCount({ uid, query, filters });
 			}()),
 		};
 		const results = await utils.promiseParallel(calls);
@@ -456,7 +450,8 @@ module.exports = function (middleware) {
 		const { tidsByFilter } = results.unreadData;
 		navigation = navigation.map((item) => {
 			function modifyNavItem(item, route, filter, content) {
-				if (item && item.route === route) {
+				// navigation routes are prefixed with relative_path in navigation.get
+				if (item && item.route === relative_path + route) {
 					unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 					item.content = content;
 					unreadCount.mobileUnread = content;
@@ -472,7 +467,7 @@ module.exports = function (middleware) {
 			modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
 
 			['flags'].forEach((prop) => {
-				if (item && item.route === `/${prop}` && unreadCount[prop] > 0) {
+				if (item && item.route === `${relative_path}/${prop}` && unreadCount[prop] > 0) {
 					item.iconClass += ' unread-count';
 					item.content = unreadCount.flags;
 				}

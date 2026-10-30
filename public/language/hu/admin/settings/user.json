@@ -43,7 +43,7 @@
 	"registration-type.admin-invite-only": "Csak adminisztrátori meghívóval",
 	"registration-type.disabled": "Nincs regisztráció",
 	"registration-type.help": "Normális - A felhasználók regisztrálhatnak a regisztrációs oldalon.<br/>\nCsak meghívóval - A felhasználók meghívhatnak másokat a <a href=\"%1/users\" target=\"_blank\">felhasználók</a> oldalon.<br/>\nCsak adminisztrátori meghívóval - Csak adminisztrátorok képesek meghívni másokat a <a href=\"%1/users\" target=\"_blank\">felhasználók</a> és <a href=\"%1/admin/manage/users\">admin/kezelés/felhasználók</a> oldalakon.<br/>\nNincs regisztráció - Nem regisztrálhat senki.<br/>",
-	"registration-approval-type.help": "Normális - A felhasználók regisztrációja azonnali.<br/>\nAdminisztrátori jóváhagyás - A felhasználói regisztrációk felkerülnek egy <a href=\"%1/admin/manage/registration\">jóváhagyási várólistára</a>, amit az adminisztrátorok kezelhetnek.<br/>\nAdminisztrátori jóváhagyás IP címekre - Új felhasználóknak normális, Adminisztrátori jóváhagyás azon IP címeknek, amikre már van fiók bejegyezve.<br/>",
+	"registration-approval-type.help": "Normal - Users are registered immediately.<br/>\nAdmin Approval - User registrations are placed in an <a href=\"%1/registration-queue\">approval queue</a> for administrators.<br/>\nAdmin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>",
 	"registration-queue-auto-approve-time": "Automatikus jóváhagyás ideje",
 	"registration-queue-auto-approve-time-help": "Hány óra elteltével kerüljön automatikusan jóváhagyásra egy regisztráció. Állítsd 0-ra, hogy ne legyen automatikus jóváhagyás.",
 	"registration-queue-show-average-time": "Jelenjen meg a felhasználóknak az átlagos jóváhagyási idő",

@@ -1,8 +1,8 @@
 
-<input class="form-control" type="text" placeholder="[[global:search]]"/>
+<input class="form-control" type="text" placeholder="{{tx("global:search")}}"/>
 
 <div class="list-group" id="search-result">
     {{{each users}}}
-    <a href="#" class="list-group-item" data-username="{users.username}" data-uid="{users.uid}"><i class="fa fa-fw fa-check invisible"></i> {users.username}</a>
+    <a href="#" class="list-group-item list-group-item-action" data-username="{users.username}" data-uid="{users.uid}">{users.username} <i class="fa fa-fw fa-check invisible"></i></a>
     {{{end}}}
 </div>

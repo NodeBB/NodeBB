@@ -12,6 +12,7 @@ const user = require('../../src/user');
 const categories = require('../../src/categories');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
+const privileges = require('../../src/privileges');
 
 describe('Outbox', () => {
 	let uid;
@@ -183,6 +184,46 @@ describe('Outbox', () => {
 			assert(resBody.first);
 			assert(resBody.last);
 			assert(resBody.partOf);
+		});
+
+		it('should not expose posts from private categories', async () => {
+			const privateMarker = 'PRIVATE-' + utils.generateUUID();
+			// Create a private category
+			const { cid: privateCid } = await categories.create({ name: utils.generateUUID() });
+			// Rescind read and topics:read from all public-facing groups
+			for (const group of ['guests', 'spiders', 'registered-users', 'fediverse']) {
+				// eslint-disable-next-line no-await-in-loop
+				await privileges.categories.rescind(['groups:read', 'groups:topics:read'], privateCid, group);
+			}
+			// Create a post in the private category with a unique marker
+			const { postData } = await topics.post({
+				uid,
+				cid: privateCid,
+				title: utils.generateUUID(),
+				content: privateMarker,
+			});
+			const privatePid = postData.pid;
+
+			// Confirm the safe post-set reader also filters this post
+			const summaries = await posts.getPostSummariesFromSet(`uid:${uid}:posts`, 0, 0, 100);
+			const visiblePids = summaries.posts.map(p => p.pid);
+			assert(!visiblePids.includes(privatePid), 'getPostSummariesFromSet should filter private posts');
+
+			// Call the outbox controller directly
+			const req = { params: { uid }, query: {} };
+			const res = collectResponse();
+			await controllers.activitypub.getOutbox(req, res);
+
+			// The private marker must not appear anywhere in the response
+			const responseStr = JSON.stringify(resBody);
+			assert(!responseStr.includes(privateMarker), 'Outbox must not contain private category post content');
+
+			// Verify the private post's pid is not referenced in any activity object
+			const privatePostUrl = `/post/${privatePid}`;
+			for (const activity of resBody.orderedItems) {
+				const activityStr = JSON.stringify(activity);
+				assert(!activityStr.includes(privatePostUrl), `Outbox must not reference private post ${privatePid}`);
+			}
 		});
 	});
 });

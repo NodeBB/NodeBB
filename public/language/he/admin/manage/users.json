@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "הזינו מזהה משתמש (ID) לחיפוש",
 	"search.username": "לפי שם משתמש",
 	"search.username-placeholder": "הזינו שם משתמש לחיפוש",
+	"search.fullname": "By Full Name",
 	"search.email": "לפי דוא\"ל",
 	"search.email-placeholder": "הזינו דוא\"ל לחיפוש",
 	"search.ip": "לפי כתובת IP",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "דוא\"ל של משתמש זה",
 	"create.password": "סיסמה",
 	"create.password-confirm": "אישור סיסמה",
-
-	"temp-ban.length": "זמן הרחקה",
-	"temp-ban.reason": "סיבה <span class=\"text-muted\">(אופציונאלי)</span>",
-	"temp-ban.select-reason": "בחר סיבה",
-	"temp-ban.hours": "שעות",
-	"temp-ban.days": "ימים",
-	"temp-ban.explanation": "הזינו זמן הרחקה. שימו לב הזנת מספר 0 מהווה הרחקה לצמיתות.",
-	"temp-mute.explanation": "הזן את משך ההשתקה. שים לב שזמן 0 ייחשב כהשתקה לצמיתות.",
 
 	"alerts.confirm-ban": "האם אתם רוצים להרחיק משתמש זה <strong>לצמיתות</strong>?",
 	"alerts.confirm-ban-multi": "האם אתם רוצים להרחיק את המשתמשים <strong>לצמיתות</strong>?",

@@ -1,4 +1,3 @@
-<div class="dropdown bottom-sheet{{{ if !filters.length }}} hidden{{{ end }}}">
 	<button type="button" class="btn btn-ghost btn-sm ff-secondary d-flex gap-2 align-items-center dropdown-toggle h-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		<i class="fa fa-fw fa-filter text-primary"></i>
 		<span class="visible-md-inline visible-lg-inline fw-semibold">{{tx(selectedFilter.name)}}</span>
@@ -13,4 +12,3 @@
 		</li>
 		{{{end}}}
 	</ul>
-</div>

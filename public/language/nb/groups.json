@@ -27,6 +27,8 @@
     "details.invited": "Inviterte medlemmer",
     "details.has-no-posts": "Medlemmene i denne gruppen har ikke skrevet noen innlegg.",
     "details.latest-posts": "Siste innlegg",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Privat",
     "details.disableJoinRequests": "Deaktiver forespørsler om å bli med",
     "details.disableLeave": "Tillat brukere å forlate gruppen",
@@ -64,6 +66,7 @@
     "membership.reject": "Avslå",
     "new-group.group-name": "Gruppenavn:",
     "upload-group-cover": "Last opp et omslagsbilde for gruppen",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Skriv inn en liste over kommaseparerte brukernavn for å invitere til denne gruppen",
     "bulk-invite": "Inviter i bulk",
     "remove-group-cover-confirm": "Er du sikker på at du vil fjerne omslagsbildet?"

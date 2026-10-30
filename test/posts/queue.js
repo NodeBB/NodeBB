@@ -3,6 +3,10 @@
 const assert = require('assert');
 
 const db = require('../mocks/databasemock');
+const meta = require('../../src/meta');
+const install = require('../../src/install');
+const topics = require('../../src/topics');
+const activitypub = require('../../src/activitypub');
 
 const categories = require('../../src/categories');
 const posts = require('../../src/posts');
@@ -103,6 +107,87 @@ describe('Post Queue', () => {
 
 			const queue = await posts.getQueuedPosts();
 			assert.strictEqual(queue.length, 2);
+		});
+	});
+
+	describe('submitFromQueue opportunistic backfill', () => {
+		let originalBackfill;
+
+		before(async () => {
+			meta.config.activitypubEnabled = 1;
+			await install.giveWorldPrivileges();
+		});
+
+		beforeEach(() => {
+			originalBackfill = activitypub.notes.backfill;
+		});
+
+		afterEach(async () => {
+			activitypub.notes.backfill = originalBackfill;
+			const queue = await posts.getQueuedPosts();
+			await Promise.all(queue.map(q => posts.removeFromQueue(q.id)));
+		});
+
+		it('should trigger backfill for remote topics on approval', async () => {
+			const remotePid = 'https://example.org/post/remote-1';
+			let backfillCalled = false;
+			let backfillArg;
+			activitypub.notes.backfill = async (pid) => {
+				backfillCalled = true;
+				backfillArg = pid;
+			};
+
+			await posts.addToQueue({
+				uid,
+				cid,
+				pid: remotePid,
+				title: 'Remote topic',
+				timestamp: Date.now(),
+				content: '<p>remote content</p>',
+			});
+
+			const queue = await posts.getQueuedPosts();
+			assert.strictEqual(queue.length, 1);
+
+			const result = await posts.submitFromQueue(queue[0].id);
+
+			// Wait for setImmediate to fire
+			await new Promise(resolve => setImmediate(resolve));
+
+			assert.ok(result.tid, 'topic was created');
+			const mainPid = await topics.getTopicField(result.tid, 'mainPid');
+			assert.ok(mainPid, 'topic has mainPid');
+			assert.ok(!utils.isNumber(mainPid), 'mainPid is remote');
+			assert.ok(backfillCalled, 'backfill was called');
+			assert.strictEqual(backfillArg, mainPid, 'backfill was called with mainPid');
+		});
+
+		it('should not trigger backfill for local topics on approval', async () => {
+			let backfillCalled = false;
+			activitypub.notes.backfill = async () => {
+				backfillCalled = true;
+			};
+
+			await posts.addToQueue({
+				uid,
+				cid,
+				title: 'Local topic',
+				timestamp: Date.now(),
+				content: '<p>local content</p>',
+			});
+
+			const queue = await posts.getQueuedPosts();
+			assert.strictEqual(queue.length, 1);
+
+			const result = await posts.submitFromQueue(queue[0].id);
+
+			// Wait for setImmediate to fire
+			await new Promise(resolve => setImmediate(resolve));
+
+			assert.ok(result.tid, 'topic was created');
+			const mainPid = await topics.getTopicField(result.tid, 'mainPid');
+			assert.ok(utils.isNumber(mainPid), 'mainPid is local');
+			assert.ok(!backfillCalled, 'backfill was not called for local topic');
 		});
 	});
 });

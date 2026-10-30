@@ -78,6 +78,14 @@ async function getNotices(req) {
 		});
 	}
 
+	if (req && !nconf.get('trust_proxy') && req.get('x-forwarded-for')) {
+		notices.push({
+			done: false,
+			notDoneText: '[[admin/dashboard:trust-proxy-warning]]',
+			tooltip: '[[admin/dashboard:trust-proxy-tooltip]]',
+		});
+	}
+
 	const configuredUrl = nconf.get('url');
 	if (configuredUrl === 'http://localhost:4567') {
 		notices.push({
@@ -216,10 +224,7 @@ async function getStatsForSet(set, field) {
 }
 
 async function getStatsFromAnalytics(set, field) {
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
-
-	const data = await analytics.getDailyStatsForSet(`analytics:${set}`, today, 60);
+	const data = await analytics.getDailyStatsForSet(`analytics:${set}`, Date.now(), 60);
 	const sum = arr => arr.reduce((memo, cur) => memo + cur, 0);
 	const results = {
 		yesterday: sum(data.slice(-2)),

@@ -220,9 +220,13 @@ describe('upload methods', () => {
 		});
 
 		it('should purge the images from disk if the post is purged', async () => {
+			const currentUploads = await posts.uploads.list(postData.pid);
+			assert.strictEqual(currentUploads.length, 2, 'Post should have 2 uploads before purge');
+
 			await posts.purge(postData.pid, uid);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), false);
-			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), false);
+
+			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), false, `current uploads ${currentUploads}`);
+			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'test.bmp')), false, `current uploads ${currentUploads}`);
 		});
 
 		it('should leave the images behind if `preserveOrphanedUploads` is enabled', async () => {
@@ -245,6 +249,45 @@ describe('upload methods', () => {
 
 			await posts.purge(secondPost.pid, uid);
 			assert.strictEqual(await file.exists(path.resolve(nconf.get('upload_path'), 'files', 'abracadabra.png')), true);
+		});
+
+		it('should fail to delete from sibling uploads folder', async () => {
+			const siblingFolderPath = path.resolve(nconf.get('upload_path'), '../uploads-sibling');
+			const siblingFilePath = path.join(siblingFolderPath, 'dummy.txt');
+			let createdPost;
+
+			try {
+				await fs.promises.mkdir(siblingFolderPath, { recursive: true });
+				await fs.promises.writeFile(siblingFilePath, 'dummy');
+
+				createdPost = await topics.post({
+					uid,
+					cid,
+					title: 'Traversal to sibling upload folder',
+					content: '/assets/uploads/files/../../uploads-sibling/dummy.txt',
+				});
+
+				const mainPid = createdPost.postData.pid;
+				const uploads = await posts.uploads.list(mainPid);
+
+				assert.deepStrictEqual(uploads, []);
+
+				await posts.edit({
+					pid: mainPid,
+					uid,
+					content: 'post removed',
+				});
+
+				assert.strictEqual(await file.exists(siblingFilePath), true);
+			} finally {
+				if (await file.exists(siblingFilePath)) {
+					await file.delete(siblingFilePath);
+				}
+
+				if (await file.exists(siblingFolderPath)) {
+					await fs.promises.rm(siblingFolderPath, { recursive: true, force: true });
+				}
+			}
 		});
 	});
 

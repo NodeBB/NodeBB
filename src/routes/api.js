@@ -28,9 +28,9 @@ module.exports = function (app, middleware, controllers) {
 	const postMiddlewares = [
 		middleware.maintenanceMode,
 		upload.array('files[]', 20),
+		middleware.applyCSRF,
 		middleware.validateFiles,
 		middleware.uploads.ratelimit,
-		middleware.applyCSRF,
 	];
 
 	router.post('/post/upload', postMiddlewares, helpers.tryRoute(uploadsController.uploadPost));

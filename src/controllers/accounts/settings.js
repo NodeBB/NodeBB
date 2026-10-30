@@ -51,6 +51,7 @@ settingsController.get = async function (req, res, next) {
 	userData.bootswatchSkinOptions = bsSkinOptions;
 	userData.notificationSettings = notificationSettings;
 	userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions;
+	userData.disableNotificationEmails = meta.config.disableNotificationEmails;
 
 	userData.dailyDigestFreqOptions = [
 		{ value: 'off', name: '[[user:digest-off]]', selected: userData.settings.dailyDigestFreq === 'off' },
@@ -178,6 +179,9 @@ async function getNotificationSettings(userData) {
 	}
 	if (privileges.isAdmin || privileges.isGlobalMod) {
 		privilegedTypes.push('notificationType_new-user-flag');
+	}
+	if (privileges.isAdmin) {
+		privilegedTypes.push('notificationType_new-message-flag');
 	}
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
 		types: notifications.baseTypes.slice(),

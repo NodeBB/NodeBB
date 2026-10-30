@@ -59,6 +59,7 @@ process.on('message', async (msg) => {
 			getSetData(`following:${targetUid}`, 'user:', targetUid),
 		]);
 		delete userData.password;
+		delete userData.rss_token;
 
 		let chatData = [];
 		await batch.processSortedSet(`uid:${targetUid}:chat:rooms`, async (roomIds) => {

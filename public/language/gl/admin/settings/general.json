@@ -61,5 +61,8 @@
 	"auto-detect": "Auto Detectar Opcións de Idioma para Invitados",
 	"default-language-help": "O idioma por defecto determina as opcións de idioma para tódolos usuarios que visitan o foro. Os usuarios poden mudar manualmente o idioma nas opcións de conta.",
 	"post-sharing": "Post Sharing",
-	"info-plugins-additional": "Plugins can add additional networks for sharing posts."
+	"info-plugins-additional": "Plugins can add additional networks for sharing posts.",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

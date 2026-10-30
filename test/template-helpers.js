@@ -70,9 +70,9 @@ describe('helpers', () => {
 		done();
 	});
 
-	it('should escape html and translation tokens', (done) => {
+	it('should escape html', (done) => {
 		const str = helpers.escape('gdkfhgk < some > and & [[global:posts]] foo');
-		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp; &lsqb;&lsqb;global:posts&rsqb;&rsqb; foo');
+		assert.equal(str, 'gdkfhgk &lt; some &gt; and &amp; [[global:posts]] foo');
 		done();
 	});
 
@@ -93,8 +93,8 @@ describe('helpers', () => {
 				backgroundImage: '/assets/uploads/image.png',
 				imageClass: 'auto',
 				icon: 'fa-book',
-			}, 16, 'rounded-circle'),
-			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16; height: 16; font-size: 8px;"><i class="fa fa-fw fa-book"></i></span>'
+			}, '16px', 'rounded-circle'),
+			'<span class="icon d-inline-flex justify-content-center align-items-center align-middle rounded-circle" style="background-color: #ff0000; border-color: #ff0000 !important; color: #00ff00; background-image: url(/assets/uploads/image.png); background-size: auto; width:16px; height: 16px; font-size: 8px;"><i class="fa fa-fw fa-book" style="line-height: 16px;"></i></span>'
 		);
 		done();
 	});
@@ -358,7 +358,7 @@ describe('helpers', () => {
 				'icon:bgColor': '#ff0000',
 			};
 			const html = helpers.buildAvatar(user, 32, true);
-			assert.strictEqual(html, `<img title="john" data-uid="1" class="avatar  avatar-rounded" alt="john" loading="lazy" component="avatar/picture" src="/uploads/1.png" style="--avatar-size: 32;" onError="this.remove()" itemprop="image" /><span title="john" data-uid="1" class="avatar  avatar-rounded" component="avatar/icon" style="--avatar-size: 32; background-color: #ff0000">J</span>`);
+			assert.strictEqual(html, `<img title="john" data-uid="1" class="avatar  avatar-rounded" alt="john" loading="lazy" component="avatar/picture" src="/uploads/1.png" style="--avatar-size: 32;" onError="this.remove()" /><span title="john" data-uid="1" class="avatar  avatar-rounded" component="avatar/icon" style="--avatar-size: 32; background-color: #ff0000">J</span>`);
 		});
 
 		it('should escape all attributes', () => {
@@ -370,7 +370,7 @@ describe('helpers', () => {
 				'icon:bgColor': '"#ff0000',
 			};
 			const html = helpers.buildAvatar(user, 32, true, '"custom-class', '"component');
-			assert.strictEqual(html, `<img title="&quot;remoteusername" data-uid="&quot;remoteuid" class="avatar &quot;custom-class avatar-rounded" alt="&quot;remoteusername" loading="lazy" component="&quot;component" src="&quot;/uploads/1.png" style="--avatar-size: 32;" onError="this.remove()" itemprop="image" /><span title="&quot;remoteusername" data-uid="&quot;remoteuid" class="avatar &quot;custom-class avatar-rounded" component="&quot;component" style="--avatar-size: 32; background-color: &quot;#ff0000">&quot;icon</span>`);
+			assert.strictEqual(html, `<img title="&quot;remoteusername" data-uid="&quot;remoteuid" class="avatar &quot;custom-class avatar-rounded" alt="&quot;remoteusername" loading="lazy" component="&quot;component" src="&quot;/uploads/1.png" style="--avatar-size: 32;" onError="this.remove()" /><span title="&quot;remoteusername" data-uid="&quot;remoteuid" class="avatar &quot;custom-class avatar-rounded" component="&quot;component" style="--avatar-size: 32; background-color: &quot;#ff0000">&quot;icon</span>`);
 		});
 	});
 });

@@ -2,6 +2,7 @@
 
 const nconf = require('nconf');
 const path = require('path');
+const winston = require('winston');
 const qs = require('querystring');
 const validator = require('validator');
 
@@ -17,6 +18,12 @@ const utils = require('../utils');
 const analytics = require('../analytics');
 const activitypub = require('../activitypub');
 const translator = require('../translator');
+const cacheCreate = require('../cache/lru');
+const crosspostCache = cacheCreate({
+	name: 'crosspost',
+	max: 500,
+	ttl: 3600000,
+});
 
 const topicsController = module.exports;
 
@@ -65,7 +72,8 @@ topicsController.get = async function getTopic(req, res, next) {
 		(!topicData.scheduled && topicData.deleted && !userPrivileges.view_deleted) ||
 		await shouldHideTopicFromGuest(req.uid, tid, topicData.cid)
 	) {
-		return helpers.notAllowed(req, res);
+		// Respond 404 (not 403) so restricted topics are indistinguishable from missing ones
+		return next();
 	}
 
 	if (req.params.post_index === 'unread') {
@@ -73,7 +81,7 @@ topicsController.get = async function getTopic(req, res, next) {
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== `${tid}/${req.params.slug}`) && (topicData.slug && topicData.slug !== `${tid}/`)) {
-		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}${generateQueryString(req.query)}`, true);
+		return helpers.redirect(res, `/topic/${topicData.slug}${postIndex ? `/${postIndex}` : ''}${generateQueryString(req.query)}`, false);
 	}
 
 	if (utils.isNumber(postIndex) && topicData.postcount > 0 && (postIndex < 1 || postIndex > topicData.postcount)) {
@@ -134,9 +142,10 @@ topicsController.get = async function getTopic(req, res, next) {
 		p => parseInt(p.index, 10) === parseInt(Math.max(0, postIndex - 1), 10)
 	);
 
-	const [author, crossposts] = await Promise.all([
+	const [author, crossposts, canCrosspost] = await Promise.all([
 		user.getUserFields(topicData.uid, ['username', 'userslug']),
-		topics.crossposts.get(topicData.tid),
+		topics.crossposts.get(topicData.tid, req.uid),
+		loadCrosspostPrivilege(req, topicData.cid),
 		buildBreadcrumbs(topicData),
 		addOldCategory(topicData, userPrivileges, settings.userLang),
 		addTags(topicData, req, res, currentPage, postAtIndex),
@@ -147,6 +156,12 @@ topicsController.get = async function getTopic(req, res, next) {
 
 	topicData.author = author;
 	topicData.crossposts = crossposts;
+	topicData.canCrosspost = canCrosspost;
+
+	// not awaited on purpose so topic loading is not blocked
+	topics.crossposts.syncCrosspostedTopicCids(crossposts, topicData)
+		.catch(err => winston.error(err.stack));
+
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach((rel) => {
 		rel.href = `${url}/topic/${topicData.slug}${rel.href}`;
@@ -209,6 +224,15 @@ async function markAsRead(req, tid) {
 		}
 		await Promise.all(promises);
 	}
+}
+
+async function loadCrosspostPrivilege(req, excludeCid) {
+	excludeCid = String(excludeCid || '');
+	const cidsUserCanCrosspost = await crosspostCache.get(`uid:${req.uid}`, async () => {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		return await privileges.categories.filterCids('topics:crosspost', cids, req.uid);
+	});
+	return cidsUserCanCrosspost.some(cid => cid !== excludeCid);
 }
 
 async function buildBreadcrumbs(topicData) {
@@ -406,13 +430,13 @@ topicsController.teaser = async function (req, res, next) {
 	}
 	const canRead = await privileges.topics.can('topics:read', tid, req.uid);
 	if (!canRead) {
-		return res.status(403).json('[[error:no-privileges]]');
+		return res.status(404).json('not-found');
 	}
 	const pid = await topics.getLatestUndeletedPid(tid);
 	if (!pid) {
 		return res.status(404).json('not-found');
 	}
-	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false });
+	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false, extraFields: ['contentWarning'] });
 	if (!postData.length) {
 		return res.status(404).json('not-found');
 	}
@@ -430,15 +454,11 @@ topicsController.pagination = async function (req, res, next) {
 	if (!topic) {
 		return next();
 	}
-	const [userPrivileges, settings] = await Promise.all([
-		privileges.topics.get(tid, req.uid),
-		user.getSettings(req.uid),
-	]);
-
-	if (!userPrivileges.read || !privileges.topics.canViewDeletedScheduled(topic, userPrivileges)) {
-		return helpers.notAllowed(req, res);
+	if (!await privileges.topics.canRead(tid, req.uid)) {
+		return next();
 	}
 
+	const settings = await user.getSettings(req.uid);
 	const postCount = topic.postcount;
 	const pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 

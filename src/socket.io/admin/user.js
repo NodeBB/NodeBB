@@ -11,48 +11,9 @@ const user = require('../../user');
 const events = require('../../events');
 const utils = require('../../utils');
 const sockets = require('..');
+const api = require('../../api');
 
 const User = module.exports;
-
-User.makeAdmins = async function (socket, uids) {
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	const isMembersOfBanned = await groups.isMembers(uids, groups.BANNED_USERS);
-	if (isMembersOfBanned.includes(true)) {
-		throw new Error('[[error:cant-make-banned-users-admin]]');
-	}
-	for (const uid of uids) {
-		/* eslint-disable no-await-in-loop */
-		await groups.join('administrators', uid);
-		await events.log({
-			type: 'user-makeAdmin',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-		});
-	}
-};
-
-User.removeAdmins = async function (socket, uids) {
-	if (!Array.isArray(uids)) {
-		throw new Error('[[error:invalid-data]]');
-	}
-	for (const uid of uids) {
-		/* eslint-disable no-await-in-loop */
-		const count = await groups.getMemberCount('administrators');
-		if (count === 1) {
-			throw new Error('[[error:cant-remove-last-admin]]');
-		}
-		await groups.leave('administrators', uid);
-		await events.log({
-			type: 'user-removeAdmin',
-			uid: socket.uid,
-			targetUid: uid,
-			ip: socket.ip,
-		});
-	}
-};
 
 User.resetLockouts = async function (socket, uids) {
 	if (!Array.isArray(uids)) {
@@ -67,10 +28,13 @@ User.validateEmail = async function (socket, uids) {
 	}
 
 	for (const uid of uids) {
+		// eslint-disable-next-line no-await-in-loop
 		const email = await user.email.getEmailForValidation(uid);
 		if (email) {
+			// eslint-disable-next-line no-await-in-loop
 			await user.setUserField(uid, 'email', email);
 		}
+		// eslint-disable-next-line no-await-in-loop
 		await user.email.confirmByUid(uid, socket.uid);
 	}
 };
@@ -194,25 +158,7 @@ User.exportUsersCSV = async function (socket, data) {
 };
 
 User.saveCustomFields = async function (socket, fields) {
-	const userFields = await user.getUserFieldWhitelist();
-	for (const field of fields) {
-		if (userFields.includes(field.key) || userFields.includes(field.key.toLowerCase())) {
-			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
-		}
-	}
-	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	await db.delete('user-custom-fields');
-	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
-
-	await db.sortedSetAdd(
-		`user-custom-fields`,
-		fields.map((f, i) => i),
-		fields.map(f => f.key)
-	);
-	await db.setObjectBulk(
-		fields.map(field => [`user-custom-field:${field.key}`, field])
-	);
-	await user.reloadCustomFieldWhitelist();
+	await api.admin.users.saveCustomFields(socket, { fields });
 };
 
 User.saveCustomReasons = async function (socket, reasons) {

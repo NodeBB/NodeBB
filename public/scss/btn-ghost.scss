@@ -19,8 +19,8 @@ $btn-ghost-active-color-dark: lighten($btn-ghost-hover-color-dark, 5%)!default;
 	--bs-btn-border-color: transparent;
 	--bs-btn-box-shadow: none;
 	--bs-btn-hover-color: inherit;
-	--bs-btn-hover-bg: #{$btn-ghost-hover-color};
-	--bs-btn-hover-border-color: #{$btn-ghost-hover-color};
-	--bs-btn-active-bg: #{$btn-ghost-hover-color};
+	--bs-btn-hover-bg: var(--btn-ghost-hover-color);
+	--bs-btn-hover-border-color: var(--btn-ghost-hover-color);
+	--bs-btn-active-bg: var(--btn-ghost-hover-color);
 	--bs-btn-active-border-color: transparent;
 }

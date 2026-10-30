@@ -1,14 +1,14 @@
 <div class="admins-mods acp-page-container px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/manage/admins-mods:manage-admins-and-mods]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/manage/admins-mods:manage-admins-and-mods")}}</h4>
 		</div>
 	</div>
 
 	<div>
 		<div class="d-flex gap-2 justify-content-between align-items-center mb-2 flex-wrap">
-			<h4 class="mb-0">[[admin/manage/admins-mods:administrators]]</h4>
-			<input id="admin-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-administrator]]" />
+			<h4 class="mb-0">{{tx("admin/manage/admins-mods:administrators")}}</h4>
+			<input id="admin-search" class="form-control form-control-sm w-auto" placeholder="{{tx("admin/manage/admins-mods:add-administrator")}}" />
 		</div>
 		<div class="administrator-area d-flex flex-wrap">
 		{{{ each admins.members }}}
@@ -27,8 +27,8 @@
 
 	<div>
 		<div class="d-flex gap-2 justify-content-between align-items-center mb-2 flex-wrap">
-			<h4 class="mb-0">[[admin/manage/admins-mods:global-moderators]]</h4>
-			<input id="global-mod-search" class="form-control form-control-sm w-auto" placeholder="[[admin/manage/admins-mods:add-global-moderator]]" />
+			<h4 class="mb-0">{{tx("admin/manage/admins-mods:global-moderators")}}</h4>
+			<input id="global-mod-search" class="form-control form-control-sm w-auto" placeholder="{{tx("admin/manage/admins-mods:add-global-moderator")}}" />
 		</div>
 		<div class="global-moderator-area mb-2 d-flex flex-wrap">
 		{{{ each globalMods.members }}}
@@ -42,14 +42,14 @@
 		{{{ end }}}
 		</div>
 
-		<div id="no-global-mods-warning" class="text-sm text-muted mb-0 {{{ if globalMods.members.length }}}hidden{{{ end }}}">[[admin/manage/admins-mods:no-global-moderators]]</div>
+		<div id="no-global-mods-warning" class="text-sm text-muted mb-0 {{{ if globalMods.members.length }}}hidden{{{ end }}}">{{tx("admin/manage/admins-mods:no-global-moderators")}}</div>
 	</div>
 
 	<hr/>
 
 	<div>
 		<div class="d-flex gap-2 align-items-center">
-			<h4 class="mb-0" id="moderators-title">[[admin/manage/admins-mods:moderators]]</h4>
+			<h4 class="mb-0" id="moderators-title">{{tx("admin/manage/admins-mods:moderators")}}</h4>
 			<div class="">
 				<!-- IMPORT admin/partials/category/selector-dropdown-left.tpl -->
 			</div>
@@ -58,7 +58,7 @@
 		<!-- IMPORT admin/partials/breadcrumbs.tpl -->
 		</div>
 		{{{ if !categoryMods.length }}}
-		<p class="alert alert-info">[[admin/manage/admins-mods:no-sub-categories]]</p>
+		<p class="alert alert-info">{{tx("admin/manage/admins-mods:no-sub-categories")}}</p>
 		{{{ end }}}
 
 		{{{ each categoryMods }}}
@@ -73,11 +73,11 @@
 						<h5 class="mb-0">{categoryMods.name}</h5>
 					</div>
 					{{{ if categoryMods.subCategoryCount }}}
-					<a class="btn btn-light btn-sm" href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">[[admin/manage/admins-mods:view-children, {categoryMods.subCategoryCount}]]</a>
+					<a class="btn btn-light btn-sm" href="{config.relative_path}/admin/manage/admins-mods?cid={categoryMods.cid}#moderators-title">{{tx("admin/manage/admins-mods:view-children", categoryMods.subCategoryCount)}}</a>
 					{{{ end }}}
-					{{{if categoryMods.disabled}}}<span class="badge text-bg-warning">[[admin/manage/admins-mods:disabled]]</span>{{{end}}}
+					{{{if categoryMods.disabled}}}<span class="badge text-bg-warning">{{tx("admin/manage/admins-mods:disabled")}}</span>{{{end}}}
 				</div>
-				<input data-cid="{categoryMods.cid}" class="form-control form-control-sm moderator-search w-auto" placeholder="[[admin/manage/admins-mods:add-moderator]]" />
+				<input data-cid="{categoryMods.cid}" class="form-control form-control-sm moderator-search w-auto" placeholder="{{tx("admin/manage/admins-mods:add-moderator")}}" />
 			</div>
 
 
@@ -94,7 +94,7 @@
 				{{{ end }}}
 			</div>
 
-			<div data-cid="{categoryMods.cid}" class="no-moderator-warning text-sm text-muted {{{ if categoryMods.moderators.length }}}hidden{{{ end }}}">[[admin/manage/admins-mods:no-moderators]]</div>
+			<div data-cid="{categoryMods.cid}" class="no-moderator-warning text-sm text-muted {{{ if categoryMods.moderators.length }}}hidden{{{ end }}}">{{tx("admin/manage/admins-mods:no-moderators")}}</div>
 
 		</div>
 		<hr >

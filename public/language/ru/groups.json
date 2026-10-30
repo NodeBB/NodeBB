@@ -27,6 +27,8 @@
     "details.invited": "Приглашенные участники",
     "details.has-no-posts": "Участники этой группы ещё ничего не написали.",
     "details.latest-posts": "Последние сообщения",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Закрытая",
     "details.disableJoinRequests": "Отключить запросы на приглашение",
     "details.disableLeave": "Запретить участникам покидать группу",
@@ -64,6 +66,7 @@
     "membership.reject": "Отклонить",
     "new-group.group-name": "Название группы:",
     "upload-group-cover": "Загрузить обложку группы",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Введите через запятую имена пользователей, которых хотите пригласить в эту группу",
     "bulk-invite": "Массовое приглашение",
     "remove-group-cover-confirm": "Вы уверены, что хотите удалить изображение обложки?"

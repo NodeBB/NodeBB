@@ -12,6 +12,7 @@ const tx = require('../translator');
 const privileges = require('../privileges');
 const utils = require('../utils');
 const helpers = require('../helpers');
+const languages = require('../languages');
 
 const relative_path = nconf.get('relative_path');
 
@@ -54,27 +55,39 @@ Events._types = {
 	},
 	move: {
 		icon: 'fa-arrow-circle-right',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-moved-topic-from', renderUser(event), renderCategory(event.fromCategory, language), renderTimeago(event)
+		),
 	},
 	share: {
 		icon: 'fa-share-alt',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-shared-topic', renderUser(event), renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-shared-topic', renderUser(event), renderTimeago(event)
+		),
 	},
 	'post-queue': {
 		icon: 'fa-history',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)
+		),
 	},
 	backlink: {
 		icon: 'fa-link',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)
+		),
 	},
 	fork: {
 		icon: 'fa-code-fork',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)
+		),
 	},
 	crosspost: {
 		icon: 'fa-square-arrow-up-right',
-		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-crossposted-topic', renderUser(event), renderCategory(event.toCategory), renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(
+			event, language, 'topic:user-crossposted-topic', renderUser(event), renderCategory(event.toCategory, language), renderTimeago(event)
+		),
 	},
 };
 
@@ -89,7 +102,7 @@ async function translateEventArgs(event, language, prefix, ...args) {
 	const txArgs = args.map(arg => utils.escapeHTML(arg));
 	const compiled = tx.compile.apply(null, [key, ...txArgs]);
 	const translated = await tx.translateKey(compiled, [], language);
-	return utils.decodeHTMLEntities(translated);
+	return posts.sanitize(utils.decodeHTMLEntities(translated));
 }
 
 async function translateSimple(event, language, prefix) {
@@ -124,8 +137,12 @@ function renderUser(event) {
 	return `${avatar} ${link}`;
 }
 
-function renderCategory(category) {
-	return `${helpers.buildCategoryLabel(category, 'a')}`;
+function renderCategory(category, language = 'en-GB') {
+	// category names can be tx tokens so need the translation context here
+	const context = {
+		_i18n: languages.getFull(language),
+	};
+	return `${helpers.buildCategoryLabel.call(context, category, 'a')}`;
 }
 
 function renderTimeago(event) {
@@ -202,6 +219,23 @@ async function modifyEvent({ uid, events }) {
 		user.getSettings(uid),
 	]);
 
+	// Remove events whose fromCid/toCid the user cannot find
+	const allCids = _.uniq([
+		...events.map(e => e.fromCid).filter(Boolean),
+		...events.map(e => e.toCid).filter(Boolean),
+	]);
+	const allowedCids = await privileges.categories.filterCids('find', allCids, uid);
+	const allowedCidSet = new Set(allowedCids);
+	events = events.filter((e) => {
+		if (e.fromCid && !allowedCidSet.has(e.fromCid)) {
+			return false;
+		}
+		if (e.toCid && !allowedCidSet.has(e.toCid)) {
+			return false;
+		}
+		return true;
+	});
+
 	// Remove backlink events if backlinks are disabled
 	if (meta.config.topicBacklinks !== 1) {
 		events = events.filter(event => event.type !== 'backlink');
@@ -217,6 +251,12 @@ async function modifyEvent({ uid, events }) {
 
 	// Remove events whose types no longer exist (e.g. plugin uninstalled)
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
+
+	// Remove event types hidden via acp settings
+	const hiddenTypes = meta.config.hiddenTopicEventTypes || [];
+	if (hiddenTypes.length) {
+		events = events.filter(event => !hiddenTypes.includes(event.type));
+	}
 
 	// Add user & metadata
 	events.forEach((event) => {

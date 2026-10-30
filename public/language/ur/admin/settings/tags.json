@@ -8,6 +8,8 @@
     "max-per-topic": "موضوع کے لیے زیادہ سے زیادہ ٹیگز",
     "min-length": "ٹیگز کی کم سے کم لمبائی",
     "max-length": "ٹیگز کی زیادہ سے زیادہ لمبائی",
+    "case-sensitive": "Case-Sensitive Tags",
+    "case-sensitive-help": "When enabled, tags will be case-sensitive (#NodeBB and #nodebb will be treated as different tags). When disabled, tags are normalized to lowercase.",
     "related-topics": "متعلقہ موضوعات",
     "max-related-topics": "زیادہ سے زیادہ متعلقہ موضوعات جو دکھائے جائیں (اگر تھیم اس کی حمایت کرتی ہو)"
 }

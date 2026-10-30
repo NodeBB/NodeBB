@@ -9,5 +9,7 @@
 	"settings": "Ayarlar",
 	"cookie-domain": "Oturum çerezi alanı",
 	"max-user-sessions": "Kullanıcı başı maksimum aktif oturum ",
-	"blank-default": "Varsayılan için boş bırakın"
+	"blank-default": "Varsayılan için boş bırakın",
+	"revoke-all-sessions": "Revoke All Sessions",
+	"revoke-all-sessions-desc": "This will delete all sessions, you will be logged out and will have to login again!"
 }

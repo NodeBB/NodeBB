@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Введіть ID користувача для пошуку",
 	"search.username": "За іменем",
 	"search.username-placeholder": "Введіть ім'я для пошуку",
+	"search.fullname": "By Full Name",
 	"search.email": "За поштою",
 	"search.email-placeholder": "Введіть пошту для пошуку",
 	"search.ip": "За IP адресою",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "Електронна пошта користувача",
 	"create.password": "Пароль",
 	"create.password-confirm": "Пароль ще раз",
-
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Причина <span class=\"text-muted\">(необов'язково)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Години",
-	"temp-ban.days": "Дні",
-	"temp-ban.explanation": "Уведіть тривалість бану. 0 означатиме постійний бан.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Ви впевнені, що бажаєте забанити цього користувача <strong>напостійно</strong>?",
 	"alerts.confirm-ban-multi": "Ви впевнені, що бажаєте забанити цих користувачів <strong>напостійно</strong>?",

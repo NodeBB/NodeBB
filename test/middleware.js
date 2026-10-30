@@ -41,7 +41,7 @@ describe('Middlewares', () => {
 
 		it('should expose privileges in res.locals.privileges and isSelf=true', (done) => {
 			const middleware = require('../src/middleware');
-			const reqMock = { user: { uid: adminUid }, params: { uid: adminUid } };
+			const reqMock = { uid: adminUid, params: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivileges(reqMock, resMock, () => {
 				assert(resMock.locals.privileges);
@@ -55,7 +55,7 @@ describe('Middlewares', () => {
 
 		it('should expose privileges in res.locals.privileges and isSelf=false', (done) => {
 			const middleware = require('../src/middleware');
-			const reqMock = { user: { uid: 0 }, params: { uid: adminUid } };
+			const reqMock = { uid: 0, params: { uid: adminUid } };
 			const resMock = { locals: {} };
 			middleware.exposePrivileges(reqMock, resMock, () => {
 				assert(resMock.locals.privileges);
@@ -69,7 +69,7 @@ describe('Middlewares', () => {
 
 		it('should expose privilege set', (done) => {
 			const middleware = require('../src/middleware');
-			const reqMock = { user: { uid: adminUid } };
+			const reqMock = { uid: adminUid };
 			const resMock = { locals: {} };
 			middleware.exposePrivilegeSet(reqMock, resMock, () => {
 				assert(resMock.locals.privileges);
@@ -122,7 +122,7 @@ describe('Middlewares', () => {
 			assert(!Object.keys(response.headers).includes('cache-control'));
 		});
 
-		it('should be set to "private" on non-existent routes, for logged in users', async () => {
+		it('should be set to "private, no-cache" on non-existent routes, for logged in users', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/${utils.generateUUID()}`, {
 				jar,
 				headers: {
@@ -131,38 +131,42 @@ describe('Middlewares', () => {
 			});
 
 			assert.strictEqual(response.statusCode, 404);
-			assert(Object.keys(response.headers).includes('cache-control'));
-			assert.strictEqual(response.headers['cache-control'], 'private');
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be absent on regular routes, for guests', async () => {
+		it('should be set to "private, no-cache" on regular routes, for guests', async () => {
 			const { response } = await request.get(nconf.get('url'));
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(!Object.keys(response.headers).includes('cache-control'));
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be absent on api routes, for guests', async () => {
+		it('should be set to "private, no-cache" on api routes, for guests', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/api`);
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(!Object.keys(response.headers).includes('cache-control'));
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be set to "private" on regular routes, for logged-in users', async () => {
+		it('should be set to "private, no-cache" on the config route, for guests', async () => {
+			const { response } = await request.get(`${nconf.get('url')}/api/config`);
+
+			assert.strictEqual(response.statusCode, 200);
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
+		});
+
+		it('should be set to "private, no-cache" on regular routes, for logged-in users', async () => {
 			const { response } = await request.get(nconf.get('url'), { jar });
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(Object.keys(response.headers).includes('cache-control'));
-			assert.strictEqual(response.headers['cache-control'], 'private');
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
-		it('should be set to "private" on api routes, for logged-in users', async () => {
+		it('should be set to "private, no-cache" on api routes, for logged-in users', async () => {
 			const { response } = await request.get(`${nconf.get('url')}/api`, { jar });
 
 			assert.strictEqual(response.statusCode, 200);
-			assert(Object.keys(response.headers).includes('cache-control'));
-			assert.strictEqual(response.headers['cache-control'], 'private');
+			assert.strictEqual(response.headers['cache-control'], 'private, no-cache');
 		});
 
 		it('should be set to "private" on apiv3 routes, for logged-in users', async () => {

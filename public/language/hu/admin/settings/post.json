@@ -59,6 +59,8 @@
 	"backlinks": "Backlinks",
 	"backlinks.enabled": "Enable topic backlinks",
 	"backlinks.help": "If a post references another topic, a link back to the post will be inserted into the referenced topic at that point in time.",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IP nyomonkövetés",
 	"ip-tracking.each-post": "IP cím követése minden hozzászólásnál",
 	"enable-post-history": "Hozzászólás történetiség engedélyezése"

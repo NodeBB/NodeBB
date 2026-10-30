@@ -61,5 +61,8 @@
 	"auto-detect": "အလိုအလျောက် သိရှိပါ",
 	"default-language-help": "ပုံသေဘာသာစကား အကူအညီ",
 	"post-sharing": "ပို့စ် မျှဝေခြင်း",
-	"info-plugins-additional": "အပိုပလပ်ဂင်များအကြောင်း"
+	"info-plugins-additional": "အပိုပလပ်ဂင်များအကြောင်း",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

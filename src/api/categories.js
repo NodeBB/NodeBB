@@ -8,6 +8,7 @@ const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
+const utils = require('../utils');
 
 const categoriesAPI = module.exports;
 
@@ -35,11 +36,12 @@ categoriesAPI.list = async (caller) => {
 };
 
 categoriesAPI.get = async function (caller, data) {
-	const [userPrivileges, category] = await Promise.all([
+	const [userPrivileges, category, isAdmin] = await Promise.all([
 		privileges.categories.get(data.cid, caller.uid),
 		categories.getCategoryData(data.cid),
+		user.isAdministrator(caller.uid),
 	]);
-	if (!category || !userPrivileges.read) {
+	if (!category || !userPrivileges.read || (category.disabled && !isAdmin)) {
 		return null;
 	}
 
@@ -188,6 +190,8 @@ categoriesAPI.getPrivileges = async (caller, { cid }) => {
 
 	if (cid === 'admin') {
 		responsePayload = await privileges.admin.list(caller.uid);
+	} else if (cid === 'all') {
+		responsePayload = await privileges.categories.listAll();
 	} else if (!parseInt(cid, 10)) {
 		responsePayload = await privileges.global.list();
 	} else {
@@ -195,6 +199,38 @@ categoriesAPI.getPrivileges = async (caller, { cid }) => {
 	}
 
 	return responsePayload;
+};
+
+categoriesAPI.copyPrivileges = async (caller, data) => {
+	await hasAdminPrivilege(caller.uid, 'privileges');
+
+	if (!data || !utils.isNumber(data.fromCid) || !utils.isNumber(data.toCid)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (data.group !== undefined && typeof data.group !== 'string') {
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (data.filter !== undefined && typeof data.filter !== 'string') {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	const group = data.group || '';
+	const filter = data.filter || '';
+	const [[fromExists, toExists], groupExists] = await Promise.all([
+		categories.exists([data.fromCid, data.toCid]),
+		group ? groups.exists(group) : true,
+	]);
+	if (!fromExists || !toExists) {
+		throw new Error('[[error:no-category]]');
+	}
+	if (!groupExists) {
+		throw new Error('[[error:no-group]]');
+	}
+	if (filter && !privileges.categories.getPrivilegesByFilter(filter).length) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	await categories.copyPrivilegesFrom(data.fromCid, data.toCid, group, filter);
 };
 
 categoriesAPI.setPrivilege = async (caller, data) => {
@@ -213,7 +249,12 @@ categoriesAPI.setPrivilege = async (caller, data) => {
 	if (!privs.length) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	if (parseInt(data.cid, 10) === 0) {
+	if (data.cid === 'all') {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const categoryPrivList = await privileges.categories.getPrivilegeList();
+		const categoryPrivs = privs.filter(priv => categoryPrivList.includes(priv));
+		await privileges.categories[type](categoryPrivs, cids, data.member);
+	} else if (parseInt(data.cid, 10) === 0) {
 		const adminPrivList = await privileges.admin.getPrivilegeList();
 		const adminPrivs = privs.filter(priv => adminPrivList.includes(priv));
 		if (adminPrivs.length) {

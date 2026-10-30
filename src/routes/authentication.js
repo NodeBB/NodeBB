@@ -98,7 +98,10 @@ Auth.reloadRoutes = async function (params) {
 					opts.state = req.session.ssoState;
 				}
 				if (req.query.next) {
-					req.session.next = req.query.next;
+					const next = helpers.normalizeReturnToPath(req.query.next);
+					if (next) {
+						req.session.next = next;
+					}
 				}
 
 				// Allow SSO plugins to override/append options (for use in passport prototype authorizationParams)
@@ -113,7 +116,7 @@ Auth.reloadRoutes = async function (params) {
 				return next();
 			}
 
-			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
+			next((!req.session.ssoState || req.query.state !== req.session.ssoState) ? new Error('[[error:csrf-invalid]]') : null);
 		}, (req, res, next) => {
 			// Trigger registration interstitial checks
 			req.session.registration = req.session.registration || {};
@@ -144,9 +147,11 @@ Auth.reloadRoutes = async function (params) {
 				next();
 			})(req, res, next);
 		}, Auth.middleware.validateAuth, (req, res, next) => {
+			const wasForceLogin = !!req.session.forceLogin;
+			delete req.session.forceLogin;
 			async.waterfall([
 				async.apply(req.login.bind(req), res.locals.user, { keepSessionInfo: true }),
-				async.apply(controllers.authentication.onSuccessfulLogin, req, res.locals.user.uid),
+				async.apply(controllers.authentication.onSuccessfulLogin, req, res.locals.user.uid, true, wasForceLogin),
 			], (err) => {
 				if (err) {
 					return next(err);

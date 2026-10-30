@@ -68,6 +68,9 @@ utils.assertPasswordValidity = (password, zxcvbn) => {
 		throw new Error('[[error:password-too-long]]');
 	}
 
+	if (typeof zxcvbn !== 'function') {
+		return;
+	}
 	const passwordStrength = zxcvbn(password);
 	if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
 		throw new Error('[[user:weak-password]]');

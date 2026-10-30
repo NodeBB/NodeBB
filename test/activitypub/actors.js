@@ -9,6 +9,7 @@ const install = require('../../src/install');
 const categories = require('../../src/categories');
 const user = require('../../src/user');
 const topics = require('../../src/topics');
+const posts = require('../../src/posts');
 const activitypub = require('../../src/activitypub');
 const utils = require('../../src/utils');
 const request = require('../../src/request');
@@ -19,7 +20,15 @@ const helpers = require('./helpers');
 describe('as:Person (Actor asserton)', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
+		meta.config.activitypubAllowLoopback = 1;
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('happy path', () => {
@@ -79,6 +88,68 @@ describe('as:Person (Actor asserton)', () => {
 	});
 
 	describe('less happy paths', () => {
+		describe('actor.id hostname mismatch (spoofed id)', () => {
+			it('should reject an actor whose id hostname does not match the queried URL', async () => {
+				const queriedId = `https://example.org/user/${utils.generateUUID()}`;
+				const spoofedId = `https://malicious.org/user/${utils.generateUUID()}`;
+
+				// Cache a spoofed actor: queried from example.org but id points to malicious.org
+				activitypub._cache.set(`0;${queriedId}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: spoofedId,
+					url: spoofedId,
+					type: 'Person',
+					name: 'spoofed',
+					preferredUsername: 'spoofed',
+					inbox: `${spoofedId}/inbox`,
+					outbox: `${spoofedId}/outbox`,
+					publicKey: {
+						id: `${spoofedId}#key`,
+						owner: spoofedId,
+						publicKeyPem: 'somekey',
+					},
+				});
+
+				const result = await activitypub.actors.assert([queriedId]);
+				assert.deepStrictEqual(result, []);
+
+				// Ensure no user data was created for either the queried or spoofed id
+				const queriedExists = await db.exists(`userRemote:${queriedId}`);
+				const spoofedExists = await db.exists(`userRemote:${spoofedId}`);
+				assert.strictEqual(queriedExists, false);
+				assert.strictEqual(spoofedExists, false);
+			});
+
+			it('should reject a group whose id hostname does not match the queried URL', async () => {
+				const queriedId = `https://example.org/group/${utils.generateUUID()}`;
+				const spoofedId = `https://malicious.org/group/${utils.generateUUID()}`;
+
+				activitypub._cache.set(`0;${queriedId}`, {
+					'@context': 'https://www.w3.org/ns/activitystreams',
+					id: spoofedId,
+					url: spoofedId,
+					type: 'Group',
+					name: 'spoofed group',
+					preferredUsername: 'spoofed-group',
+					inbox: `${spoofedId}/inbox`,
+					outbox: `${spoofedId}/outbox`,
+					publicKey: {
+						id: `${spoofedId}#key`,
+						owner: spoofedId,
+						publicKeyPem: 'somekey',
+					},
+				});
+
+				const result = await activitypub.actors.assertGroup([queriedId]);
+				assert.deepStrictEqual(result, []);
+
+				const queriedExists = await db.exists(`categoryRemote:${queriedId}`);
+				const spoofedExists = await db.exists(`categoryRemote:${spoofedId}`);
+				assert.strictEqual(queriedExists, false);
+				assert.strictEqual(spoofedExists, false);
+			});
+		});
+
 		describe('actor with `preferredUsername` that is not all lowercase', () => {
 			it('should save a handle-to-uid association', async () => {
 				const preferredUsername = 'nameWITHCAPS';
@@ -125,6 +196,7 @@ describe('as:Person (Actor asserton)', () => {
 		const userslug = utils.generateUUID().slice(0, 8);
 		before(async () => {
 			uid = await user.create({ username: userslug });
+			meta.config.activitypubAllowLoopback = true;
 		});
 
 		it('should return true but not actually assert the handle into the database', async () => {
@@ -151,6 +223,15 @@ describe('as:Person (Actor asserton)', () => {
 });
 
 describe('as:Group', () => {
+	before(() => {
+		meta.config.activitypubAllowLoopback = 1;
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
+	});
+
 	describe('assertion', () => {
 		let actorUri;
 		let actorData;
@@ -344,6 +425,14 @@ describe('as:Group', () => {
 });
 
 describe('Inbox resolution', () => {
+	before(() => {
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
+	});
+
 	describe('remote users', () => {
 		it('should return an inbox if present', async () => {
 			const { id, actor } = helpers.mocks.person();
@@ -401,6 +490,14 @@ describe('Inbox resolution', () => {
 });
 
 describe('Controllers', () => {
+	before(() => {
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
+	});
+
 	describe('User Actor endpoint', () => {
 		let uid;
 		let slug;
@@ -652,6 +749,33 @@ describe('Controllers', () => {
 				assert.strictEqual(response.statusCode, 404);
 			});
 		});
+
+		describe('Soft deleted', () => {
+			let topicData;
+			let response;
+			let body;
+
+			before(async () => {
+				({ topicData } = await topics.post({
+					uid,
+					cid,
+					title: 'Lorem "Lipsum" Ipsum',
+					content: 'Lorem ipsum dolor sit amet',
+					deleted: 1,
+				}));
+
+				({ response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`, {
+					headers: {
+						Accept: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+					},
+				}));
+			});
+
+			it('should respond with a 404 Not Found', async () => {
+				assert(response);
+				assert.strictEqual(response.statusCode, 404);
+			});
+		});
 	});
 
 	describe('Post Object endpoint', () => {
@@ -730,10 +854,14 @@ describe('Pruning', () => {
 		await install.giveWorldPrivileges();
 
 		meta.config.activitypubUserPruneDays = 0; // trigger immediate pruning
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
 	});
 
 	after(() => {
 		meta.config.activitypubUserPruneDays = 7;
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('Users', () => {
@@ -782,6 +910,20 @@ describe('Pruning', () => {
 			assert.strictEqual(result.counts.deleted, 0);
 			assert.strictEqual(result.counts.preserved, this.current.counts.preserved + 1);
 			assert.strictEqual(result.counts.missing, 0);
+		});
+
+		it('should not purge a banned user even if they have no content', async () => {
+			const { id: uid } = helpers.mocks.person();
+			await activitypub.actors.assert([uid]);
+			await user.bans.ban(uid);
+
+			const result = await activitypub.actors.prune();
+
+			assert.strictEqual(result.counts.deleted, 0);
+			assert(result.preserved.has(uid));
+
+			await user.bans.unban(uid);
+			await user.deleteAccount(uid);
 		});
 	});
 

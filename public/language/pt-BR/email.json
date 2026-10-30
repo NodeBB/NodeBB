@@ -35,6 +35,7 @@
     "digest.subject": "Resumo de %1",
     "digest.title.day": "Seu Resumo Diário",
     "digest.title.week": "Seu Resumo Semanal",
+    "digest.title.biweek": "Your Bi-Weekly Digest",
     "digest.title.month": "Seu Resumo Mensal",
     "notif.chat.new-message-from-user": "New message from \"%1\"",
     "notif.chat.new-message-from-user-in-room": "New message from %1 in room %2",

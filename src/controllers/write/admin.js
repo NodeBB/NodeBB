@@ -10,11 +10,36 @@ const utils = require('../../utils');
 
 const Admin = module.exports;
 
+function formatTokenForAdmin(tokenObj, { includeSecret = false } = {}) {
+	if (!tokenObj) {
+		return null;
+	}
+
+	const { token, ...rest } = tokenObj;
+	const payload = {
+		...rest,
+		tokenId: api.utils.tokens.fingerprint(token),
+		tokenMasked: utils.maskToken(token),
+	};
+
+	if (includeSecret) {
+		payload.secret = token;
+	}
+
+	return payload;
+}
+
 Admin.updateSetting = async (req, res) => {
 	await api.admin.updateSetting(req, {
 		setting: req.params.setting,
 		value: req.body.value,
 	});
+
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.saveCustomUserFields = async (req, res) => {
+	await api.admin.users.saveCustomFields(req, { fields: req.body.fields });
 
 	helpers.formatApiResponse(200, res);
 };
@@ -35,32 +60,52 @@ Admin.getAnalyticsData = async (req, res) => {
 };
 
 Admin.generateToken = async (req, res) => {
-	const { uid, description } = req.body;
+	const uid = String(req.body.uid).trim();
+	const { description } = req.body;
 	const token = await api.utils.tokens.generate({ uid, description });
-	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
+	const tokenObj = await api.utils.tokens.get(token);
+	await events.log({
+		type: 'token-add',
+		uid: req.uid,
+		ip: req.ip,
+		_tokenUid: uid,
+		description,
+	});
+	helpers.formatApiResponse(200, res, formatTokenForAdmin(tokenObj, { includeSecret: true }));
 };
 
 Admin.getToken = async (req, res) => {
-	helpers.formatApiResponse(200, res, await api.utils.tokens.get(req.params.token));
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
+	const tokenObj = await api.utils.tokens.get(token);
+	helpers.formatApiResponse(200, res, tokenObj ? {
+		uid: tokenObj.uid,
+		description: tokenObj.description,
+	} : null);
 };
 
 Admin.updateToken = async (req, res) => {
 	const { uid, description } = req.body;
-	const { token } = req.params;
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
 
-	helpers.formatApiResponse(200, res, await api.utils.tokens.update(token, { uid, description }));
+	helpers.formatApiResponse(200, res, formatTokenForAdmin(await api.utils.tokens.update(token, { uid, description })));
 };
 
 Admin.rollToken = async (req, res) => {
-	let { token } = req.params;
-
-	token = await api.utils.tokens.roll(token);
-	helpers.formatApiResponse(200, res, await api.utils.tokens.get(token));
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
+	const newToken = await api.utils.tokens.roll(token);
+	const tokenObj = await api.utils.tokens.get(newToken);
+	helpers.formatApiResponse(200, res, formatTokenForAdmin(tokenObj, { includeSecret: true }));
 };
 
 Admin.deleteToken = async (req, res) => {
-	const { token } = req.params;
-	helpers.formatApiResponse(200, res, await api.utils.tokens.delete(token));
+	const token = await api.utils.tokens.resolveIdentifier(req.params.token);
+	await api.utils.tokens.delete(token);
+	await events.log({
+		type: 'token-delete',
+		uid: req.uid,
+		ip: req.ip,
+	});
+	helpers.formatApiResponse(200, res);
 };
 
 Admin.chats = {};
@@ -89,7 +134,7 @@ Admin.listGroups = async (req, res) => {
 Admin.activitypub = {};
 
 Admin.activitypub.addRule = async (req, res) => {
-	let { type, value, cid, filter } = req.body;
+	let { type, value, cid, action } = req.body;
 
 	let exists = true;
 	const parsedCid = parseInt(cid, 10);
@@ -104,7 +149,7 @@ Admin.activitypub.addRule = async (req, res) => {
 		return helpers.formatApiResponse(400, res);
 	}
 
-	await activitypub.rules.upsert(type, value, cid, filter === 'true');
+	await activitypub.rules.upsert(type, value, cid, action);
 	helpers.formatApiResponse(200, res, await activitypub.rules.list());
 };
 
@@ -198,4 +243,74 @@ Admin.activitypub.removeCoreDomain = async (req, res) => {
 
 	await activitypub.blocklists.core.remove(domain);
 	helpers.formatApiResponse(200, res, await activitypub.blocklists.get('core'));
+};
+
+Admin.activitypub.getHashtags = async (req, res) => {
+	const hashtags = await activitypub.hashtags.list();
+	const relay = await activitypub.hashtags.getRelay();
+	helpers.formatApiResponse(200, res, { hashtags, relay });
+};
+
+Admin.activitypub.addHashtag = async (req, res) => {
+	let { tag, cid } = req.body;
+
+	if (!tag || !tag.trim()) {
+		return helpers.formatApiResponse(400, res);
+	}
+	tag = tag.trim().toLowerCase();
+
+	if (cid) {
+		cid = parseInt(cid, 10);
+		const categories = require('../../categories');
+		const exists = await categories.exists(cid);
+		if (!exists) {
+			return helpers.formatApiResponse(400, res);
+		}
+	}
+
+	await activitypub.hashtags.follow(tag, cid);
+	helpers.formatApiResponse(200, res, await activitypub.hashtags.list());
+};
+
+Admin.activitypub.removeHashtag = async (req, res) => {
+	const { tag } = req.params;
+	await activitypub.hashtags.unfollow(tag);
+	helpers.formatApiResponse(200, res, await activitypub.hashtags.list());
+};
+
+Admin.activitypub.getHashtagRelay = async (req, res) => {
+	const relay = await activitypub.hashtags.getRelay();
+	helpers.formatApiResponse(200, res, { relay });
+};
+
+Admin.activitypub.setHashtagRelay = async (req, res) => {
+	const { host } = req.body;
+	if (!host || !host.trim()) {
+		return helpers.formatApiResponse(400, res);
+	}
+
+	await activitypub.hashtags.setRelay(host);
+	helpers.formatApiResponse(200, res, { relay: host });
+};
+
+Admin.plugins = {};
+
+Admin.plugins.install = async (req, res) => {
+	await api.admin.plugins.install(req, { id: req.params.pluginId, version: req.body.version });
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.plugins.uninstall = async (req, res) => {
+	await api.admin.plugins.uninstall(req, { id: req.params.pluginId });
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.plugins.setActive = async (req, res) => {
+	await api.admin.plugins.setActive(req, { id: req.params.pluginId, active: req.body.active });
+	helpers.formatApiResponse(200, res);
+};
+
+Admin.plugins.upgrade = async (req, res) => {
+	await api.admin.plugins.upgrade(req, { id: req.params.pluginId, version: req.body.version });
+	helpers.formatApiResponse(200, res);
 };

@@ -144,7 +144,7 @@ Assert.room = helpers.try(async (req, res, next) => {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:chat-room-does-not-exist]]'));
 	}
 
-	if (!inRoom) {
+	if (!inRoom && !await user.isAdministrator(req.uid)) {
 		return controllerHelpers.formatApiResponse(403, res, new Error('[[error:no-privileges]]'));
 	}
 

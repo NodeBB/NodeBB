@@ -14,6 +14,7 @@ define('autocomplete', [
 		const { input, onSelect } = acParams;
 		app.loadJQueryUI(function () {
 			input.autocomplete({
+				position: getMenuPosition(),
 				...acParams,
 				open: function () {
 					$(this).autocomplete('widget').css('z-index', 100005);
@@ -76,14 +77,14 @@ define('autocomplete', [
 			input,
 			onSelect,
 			source: (request, response) => {
-				socket.emit('groups.search', {
+				api.get('/groups', {
 					query: request.term,
-				}, function (err, results) {
+				}, function (err, result) {
 					if (err) {
 						return alerts.error(err);
 					}
-					if (results && results.length) {
-						const names = results.map(function (group) {
+					if (result && result.groups.length) {
+						const names = result.groups.map(function (group) {
 							return group && {
 								label: group.name,
 								value: group.name,
@@ -119,6 +120,17 @@ define('autocomplete', [
 			},
 		});
 	};
+
+	// jquery-ui defaults to anchoring the menu on the left edge of the input,
+	// which is the wrong edge in rtl
+	function getMenuPosition() {
+		const edge = document.querySelector('html').getAttribute('data-dir') === 'rtl' ? 'right' : 'left';
+		return {
+			my: `${edge} top`,
+			at: `${edge} bottom`,
+			collision: 'none',
+		};
+	}
 
 	function handleOnSelect(input, onselect, event, ui) {
 		onselect = onselect || function () { };

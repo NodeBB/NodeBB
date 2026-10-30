@@ -22,7 +22,9 @@ define('forum/tag', [
 			api[method](`/tags/${ajaxify.data.tag}/follow`, {}).then(() => {
 				let message = '';
 				if (type === 'follow') {
-					message = '[[tags:following-tag.message]]';
+					message = config['notificationType_new-topic-with-tag'] === 'none' ?
+						'[[tags:following-tag.message-no-notifications]]' :
+						'[[tags:following-tag.message]]';
 				} else if (type === 'unfollow') {
 					message = '[[tags:not-following-tag.message]]';
 				}

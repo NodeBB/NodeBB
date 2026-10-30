@@ -163,29 +163,33 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
+		// crossposted categories hold the same zsets, so they pin and unpin alongside the topic's own
+		const crossposts = await Topics.crossposts.get(tid);
+		const cids = [topicData.cid, ...crossposts.map(crosspost => crosspost.cid)];
+
 		const promises = [
 			Topics.setTopicField(tid, 'pinned', pin ? 1 : 0),
 			Topics.events.log(tid, { type: pin ? 'pin' : 'unpin', uid }),
 		];
 		if (pin) {
-			promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid));
-			promises.push(db.sortedSetsRemove([
-				`cid:${topicData.cid}:tids`,
-				`cid:${topicData.cid}:tids:create`,
-				`cid:${topicData.cid}:tids:posts`,
-				`cid:${topicData.cid}:tids:votes`,
-				`cid:${topicData.cid}:tids:views`,
-			], tid));
+			promises.push(db.sortedSetsAdd(cids.map(cid => `cid:${cid}:tids:pinned`), Date.now(), tid));
+			promises.push(db.sortedSetsRemove(cids.flatMap(cid => [
+				`cid:${cid}:tids`,
+				`cid:${cid}:tids:create`,
+				`cid:${cid}:tids:posts`,
+				`cid:${cid}:tids:votes`,
+				`cid:${cid}:tids:views`,
+			]), tid));
 		} else {
-			promises.push(db.sortedSetRemove(`cid:${topicData.cid}:tids:pinned`, tid));
+			promises.push(db.sortedSetsRemove(cids.map(cid => `cid:${cid}:tids:pinned`), tid));
 			promises.push(Topics.deleteTopicField(tid, 'pinExpiry'));
-			promises.push(db.sortedSetAddBulk([
-				[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
-				[`cid:${topicData.cid}:tids:create`, topicData.timestamp, tid],
-				[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
-				[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
-				[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
-			]));
+			promises.push(db.sortedSetAddBulk(cids.flatMap(cid => [
+				[`cid:${cid}:tids`, topicData.lastposttime, tid],
+				[`cid:${cid}:tids:create`, topicData.timestamp, tid],
+				[`cid:${cid}:tids:posts`, topicData.postcount, tid],
+				[`cid:${cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
+				[`cid:${cid}:tids:views`, topicData.viewcount, tid],
+			])));
 			topicData.pinExpiry = undefined;
 			topicData.pinExpiryISO = undefined;
 		}

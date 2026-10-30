@@ -5,5 +5,7 @@
     "maximum-file-size": "حداکثر %1 کیلوبایت",
     "no-uploads-found": "هیچ بارگزاری یافت نشد",
     "public-uploads-info": "بارگزاری‌ها عمومی هستند، همه کاربران می توانند آن ها را ببینند.",
-    "private-uploads-info": "براگزاری‌ها خصوصی هستند، فقط کاربرانی که وارد شده اند می توانند آنها را ببینند."
+    "private-uploads-info": "براگزاری‌ها خصوصی هستند، فقط کاربرانی که وارد شده اند می توانند آنها را ببینند.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

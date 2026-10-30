@@ -3,6 +3,7 @@
 const validator = require('validator');
 const nconf = require('nconf');
 const _ = require('lodash');
+const path = require('path');
 
 const db = require('../database');
 const meta = require('../meta');
@@ -27,11 +28,16 @@ const intFields = [
 module.exports = function (User) {
 	const fieldWhitelist = [
 		'uid', 'username', 'userslug', 'url', 'email', 'email:confirmed', 'joindate',
-		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'birthday',
+		'lastonline', 'picture', 'icon:bgColor', 'fullname', 'fullnameEmoji', 'birthday',
 		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
 		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
 		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
 		'cover:position', 'groupTitle', 'muted', 'mutedUntil', 'mutedReason',
+	];
+
+	User.protectedFields = [
+		'_id', '_key', 'password', 'password:shaWrapped', 'passwordExpiry',
+		'lastqueuetime', 'rss_token', 'blocksCount', 'gdpr_consent',
 	];
 
 	let customFieldWhiteList = null;
@@ -61,7 +67,7 @@ module.exports = function (User) {
 	let iconBackgrounds;
 
 	User.reloadCustomFieldWhitelist = async () => {
-		customFieldWhiteList = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		customFieldWhiteList = await User.customFields.getKeys();
 	};
 
 	User.getUserFieldWhitelist = async function () {
@@ -236,10 +242,10 @@ module.exports = function (User) {
 			const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
 			const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
 
-			if (!privilegedOrSelf && (!userSettings[idx].showemail || meta.config.hideEmail)) {
+			if (!privilegedOrSelf && !userSettings[idx].showemail) {
 				_userData.email = '';
 			}
-			if (!privilegedOrSelf && (!userSettings[idx].showfullname || meta.config.hideFullname)) {
+			if (!privilegedOrSelf && !userSettings[idx].showfullname) {
 				_userData.fullname = '';
 			}
 			return _userData;
@@ -249,14 +255,10 @@ module.exports = function (User) {
 	};
 
 	async function modifyUserData(users, requestedFields, fieldsToRemove) {
-		let uidToSettings = {};
-		if (meta.config.showFullnameAsDisplayName) {
-			const uids = users.map(user => user.uid);
-			uidToSettings = _.zipObject(uids, await db.getObjectsFields(
-				uids.map(uid => `user:${uid}:settings`),
-				['showfullname']
-			));
+		if (!requestedFields.length || requestedFields.includes('fullname')) {
+			await parseDisplayNames(users);
 		}
+
 		if (!iconBackgrounds) {
 			iconBackgrounds = await User.getIconBackgrounds();
 		}
@@ -270,14 +272,19 @@ module.exports = function (User) {
 
 			db.parseIntFields(user, intFields, requestedFields);
 
+			// Parse fullnameEmoji from JSON
+			if (user.hasOwnProperty('fullnameEmoji')) {
+				user.fullnameEmoji = user.fullnameEmoji ? JSON.parse(String(user.fullnameEmoji)) : [];
+			}
+
 			if (user.hasOwnProperty('username')) {
-				parseDisplayName(user, uidToSettings);
 				user.username = String(user.username || '');
 			}
 
 			// works around renderOverride supplying `url` to templates
 			if (user.url) {
-				user.remoteUrl = String(user.url);
+				user.url = utils.isSafeHref(user.url) ? user.url : '';
+				user.remoteUrl = user.url;
 			} else {
 				delete user.url;
 			}
@@ -303,7 +310,7 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
-
+			
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :
@@ -405,36 +412,53 @@ module.exports = function (User) {
 			require_tld: false,
 		});
 
-		if (isHttpUrl || trimmedValue.startsWith(upload_url)) {
+		if (isHttpUrl) {
 			return true;
 		}
 
-		if (relative_path && trimmedValue.startsWith(relative_path)) {
-			return trimmedValue.slice(relative_path.length).startsWith(upload_url);
+		let relativeCandidate = trimmedValue;
+		if (relative_path && relativeCandidate.startsWith(relative_path)) {
+			relativeCandidate = relativeCandidate.slice(relative_path.length);
 		}
-
-		return false;
+		const normalizedPath = path.posix.normalize(relativeCandidate);
+		// old user profile images are stored as `/uploads/profile` instead of `/assets/uploads/profile`
+		const legacyUploadUrl = upload_url.replace(/^\/assets/, '');
+		return normalizedPath === upload_url || normalizedPath.startsWith(`${upload_url}/`) ||
+			normalizedPath === legacyUploadUrl || normalizedPath.startsWith(`${legacyUploadUrl}/`);
 	};
 
-	function parseDisplayName(user, uidToSettings) {
-		let showfullname = parseInt(meta.config.showfullname, 10) === 1;
-		if (uidToSettings[user.uid]) {
-			const userSetting = parseInt(uidToSettings[user.uid].showfullname, 10);
-			if (userSetting === 0 || userSetting === 1) {
-				showfullname = userSetting === 1;
-			}
+
+	async function parseDisplayNames(users) {
+		if (meta.config.hideFullname || !meta.config.showFullnameAsDisplayName) {
+			users.forEach((user) => {
+				if (user) {
+					user.displayname = String(user.username || '');
+				}
+			});
+			return;
 		}
 
-		// Always show full name for remote users
-		if (!utils.isNumber(user.uid)) {
-			showfullname = true;
-		}
-
-		user.displayname = String(
-			meta.config.showFullnameAsDisplayName && showfullname && user.fullname ?
-				utils.stripBidiControls(user.fullname) :
-				user.username
+		// otherwise check user setting showfullname and set displayname accordingly
+		const userAcpDefault = parseInt(meta.config.showfullname, 10) === 1;
+		const userSettings = await db.getObjectsFields(
+			users.map(u => `user:${u.uid}:settings`),
+			['showfullname']
 		);
+
+		users.forEach((user, index) => {
+			if (user) {
+				const userSetting = parseInt(userSettings[index].showfullname, 10);
+				const showfullname = utils.isNumber(user.uid) ?
+					(userSetting === 0 || userSetting === 1 ? userSetting : userAcpDefault) :
+					1; // Always show full name for remote users
+
+				user.displayname = String(
+					showfullname && user.fullname ?
+						utils.stripBidiControls(user.fullname) :
+						user.username || ''
+				);
+			}
+		});
 	}
 
 	function parseGroupTitle(user) {
@@ -482,7 +506,8 @@ module.exports = function (User) {
 		if (!meta.config.defaultAvatar) {
 			return '';
 		}
-		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : relative_path + meta.config.defaultAvatar;
+		const src = utils.cacheBustedUrl(meta.config.defaultAvatar, meta.config['defaultAvatar:updatedAt']);
+		return src.startsWith('http') ? src : relative_path + src;
 	};
 
 	User.setUserField = async function (uid, field, value) {

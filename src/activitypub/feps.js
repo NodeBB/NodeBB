@@ -9,7 +9,9 @@ const utils = require('../utils');
 const activitypub = module.parent.exports;
 const Feps = module.exports;
 
-Feps.announce = async function announce(id, activity) {
+Feps.announce = async function announce(id, activity, options = {}) {
+	const { fromRelay } = options;
+
 	let localId;
 	if (String(id).startsWith(nconf.get('url'))) {
 		({ id: localId } = await activitypub.helpers.resolveLocalId(id));
@@ -24,25 +26,29 @@ Feps.announce = async function announce(id, activity) {
 	const cid = await topics.getTopicField(tid, 'cid');
 	const localCid = utils.isNumber(cid) && cid > 0;
 	const addressed = activitypub.helpers.addressed(cid, activity);
-	const shouldAnnounce = localCid || (utils.isNumber(tid) && !addressed);
+	const shouldAnnounce = localCid || (tid && utils.isNumber(tid) && !addressed);
 	if (!shouldAnnounce) { // inverse conditionals can kiss my ass.
 		return;
 	}
 
 	let relays = await activitypub.relays.list();
 	relays = relays.reduce((memo, { state, url }) => {
-		if (state === 2) {
+		if (state === 2 && !fromRelay) {
 			memo.push(url);
 		}
 		return memo;
 	}, []);
 	const followers = localCid ? await activitypub.notes.getCategoryFollowers(cid) : (cid ? [cid] : []);
 	const targets = relays.concat(followers);
+
+	// Broadcast raw activity to relay followers (always, even when fromRelay — relay followers still need it)
+	await activitypub.relays.broadcast(activity);
+
 	if (!targets.length) {
 		return;
 	}
 
-	const { actor } = activity;
+	const actor = activity.actor || activity.attributedTo;
 	if (localCid && actor && !actor.startsWith(nconf.get('url'))) {
 		targets.unshift(actor);
 	}

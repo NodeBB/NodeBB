@@ -2,6 +2,7 @@
 
 const path = require('path');
 const crypto = require('crypto');
+const nconf = require('nconf');
 const workerpool = require('workerpool');
 
 const pool = workerpool.pool(
@@ -29,9 +30,7 @@ async function getFakeHash() {
 	if (fakeHashCache) {
 		return fakeHashCache;
 	}
-	const length = 18;
-	fakeHashCache = crypto.randomBytes(Math.ceil(length / 2))
-		.toString('hex').slice(0, length);
+	fakeHashCache = await exports.hash(nconf.get('bcrypt_rounds') || 12, crypto.randomBytes(16).toString('hex'));
 	return fakeHashCache;
 }
 

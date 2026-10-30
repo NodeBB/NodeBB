@@ -7,6 +7,7 @@
     "sessionDuration": 0,
     "loginAttempts": 5,
     "lockoutDuration": 60,
+    "ipLoginAttempts": 20,
     "adminReloginDuration": 60,
     "postDelay": 10,
     "initialPostDelay": 10,
@@ -17,6 +18,7 @@
     "movingTopicsMaxPosts": 5,
     "enablePostHistory": 1,
     "topicBacklinks": 1,
+    "hiddenTopicEventTypes": [],
     "postCacheSize": 20971520,
     "disableChat": 0,
     "chatEditDuration": 0,
@@ -86,6 +88,7 @@
     "unreadCutoff": 2,
     "bookmarkThreshold": 5,
     "autoDetectLang": 1,
+    "logIPs": 1,
     "reputation:disabled": 0,
     "downvote:disabled": 0,
     "disableSignatures": 0,
@@ -168,6 +171,7 @@
     "emailConfirmInterval": 10,
     "emailConfirmExpiry": 24,
     "removeEmailNotificationImages": 0,
+    "disableNotificationEmails": 0,
     "sendValidationEmail": 1,
     "includeUnverifiedEmails": 0,
     "emailPrompt": 1,
@@ -206,6 +210,7 @@
     "tinyconBackground": "#ff0000",
     "activitypubEnabled": 1,
     "activitypubAllowLoopback": 0,
+    "activitypubAllowSplitDomain": 1,
     "activitypubParentTraversalDepth": 50,
     "activitypubPublicKeyFetchRateLimit": 256,
     "activitypubProbe": 1,
@@ -215,5 +220,7 @@
     "activitypubFilter": 0,
     "activitypubSummaryLimit": 500,
     "activitypubBreakString": "[...]",
-    "activitypubWorldDefaultCid": -1
+    "activitypubWorldDefaultCid": -1,
+    "activitypubRulesCutoffDays": 30,
+    "caseSensitiveTags": 1
 }

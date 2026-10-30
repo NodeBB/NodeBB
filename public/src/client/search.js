@@ -229,12 +229,13 @@ define('forum/search', [
 			});
 			storage.setItem('search-preferences', JSON.stringify(saveData));
 			alerts.success('[[search:search-preferences-saved]]');
+			searchModule.query(data);
 			return false;
 		});
 
 		$('#clear-preferences').on('click', async function () {
 			storage.removeItem('search-preferences');
-			const html = await app.parseAndTranslate('partials/search-filters', {});
+			const html = await app.parseAndTranslate('partials/search/filters', {});
 			$('[component="search/filters"]').replaceWith(html);
 			$('#search-in').val(ajaxify.data.searchDefaultIn);
 			$('#post-sort-by').val(ajaxify.data.searchDefaultSortBy);
@@ -294,7 +295,7 @@ define('forum/search', [
 		selectedUsers = _selectedUsers || [];
 		userFilter.init(el, {
 			selectedUsers: _selectedUsers,
-			template: 'partials/search-filters',
+			template: 'partials/search/filters',
 			onSelect: function (_selectedUsers) {
 				selectedUsers = _selectedUsers;
 			},
@@ -316,7 +317,7 @@ define('forum/search', [
 	function tagFilterDropdown(el, _selectedTags) {
 		selectedTags = _selectedTags;
 		async function renderSelectedTags() {
-			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterSelected', {
+			const html = await app.parseAndTranslate('partials/search/filters', 'tagFilterSelected', {
 				tagFilterSelected: selectedTags,
 			});
 			el.find('[component="tag/filter/selected"]').html(html);
@@ -354,7 +355,7 @@ define('forum/search', [
 				tagMap[tag.value] = tag;
 			});
 
-			const html = await app.parseAndTranslate('partials/search-filters', 'tagFilterResults', {
+			const html = await app.parseAndTranslate('partials/search/filters', 'tagFilterResults', {
 				tagFilterResults: result.tags,
 			});
 			el.find('[component="tag/filter/results"]').html(html);

@@ -27,6 +27,8 @@
     "details.invited": "مدعو اراکین",
     "details.has-no-posts": "اس گروپ کے اراکین نے کچھ بھی پوسٹ نہیں کیا۔",
     "details.latest-posts": "حالیہ پوسٹس",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "نجی",
     "details.disableJoinRequests": "شامل ہونے کی درخواستوں کو غیر فعال کریں",
     "details.disableLeave": "صارفین کو گروپ چھوڑنے سے روکیں",
@@ -64,6 +66,7 @@
     "membership.reject": "مسترد کریں",
     "new-group.group-name": "گروپ کا نام:",
     "upload-group-cover": "گروپ کی ڈسپلے تصویر اپ لوڈ کریں",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "کوموں سے الگ کردہ صارف ناموں کی فہرست درج کریں",
     "bulk-invite": "اجتماعی دعوت",
     "remove-group-cover-confirm": "کیا آپ واقعی کور تصویر ہٹانا چاہتے ہیں؟"

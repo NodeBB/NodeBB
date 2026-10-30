@@ -47,7 +47,7 @@
 	"subscriptions": "Email Zusammenfassungen",
 	"subscriptions.disable": "Deaktivierung der Email Zusammenfassungen",
 	"subscriptions.hour": "Sende Zeit",
-	"subscriptions.hour-help": "Bitte geben Sie eine Nummer ein, welche die Stunde repräsentiert zu welcher geplante Emails versandt werden sollen (z.B. <code>0</code> für Mitternacht, <code>17</code> für 5 Uhr Nachmittags). Beachten Sie, dass die Zeit auf der Serverzeit basiert und daher nicht umbedingt mit ihrer Systemzeit übereinstimmen muss.<br>Die ungefähre Serverzeit ist: <span id=\"serverTime\"></span><br>Die nächste tägliche Sendung ist um <span id=\"nextDigestTime\"></span> geplant",
+	"subscriptions.hour-help": "Bitte gebe eine Nummer ein, welche die Stunde repräsentiert zu welcher geplante Emails versandt werden sollen (z.B. <code>0</code> für Mitternacht, <code>17</code> für 5 Uhr Nachmittags). Beachte, dass die Zeit auf der Serverzeit basiert und daher nicht unbedingt mit ihrer Systemzeit übereinstimmen muss.<br>Die ungefähre Serverzeit ist: <span id=\"serverTime\"></span><br>Die nächste tägliche Sendung ist um <span id=\"nextDigestTime\"></span> geplant",
 	"notifications.remove-images": "Bilder aus E-Mail-Benachrichtigungen entfernen",
 	"require-email-address": "Neue Benutzer auffordern, eine E-Mail-Adresse anzugeben",
 	"require-email-address-warning": "Standardmäßig können Benutzer die Eingabe einer E-Mail-Adresse ablehnen, indem sie das Feld leer lassen. Wenn Du diese Option aktivierst, müssen neue Benutzer eine E-Mail-Adresse eingeben und <strong>diese bestätigen</strong>, um mit der Registrierung fortzufahren und Zugang zum Forum zu erhalten. <strong>Es stellt weder sicher, dass der Benutzer eine echte E-Mail-Adresse eingibt, noch, dass eine Adresse ihm gehört.</strong>",

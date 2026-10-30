@@ -1,5 +1,6 @@
 {
 	"notifications": "Ilmoitukset",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Tervetuloilmoitus",
 	"welcome-notification-link": "Tervetuloilmoituksen linkki",
 	"welcome-notification-uid": "Tervetuloilmoituksen käyttäjä (UID)",

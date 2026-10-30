@@ -9,5 +9,7 @@
 	"settings": "Cài đặt",
 	"cookie-domain": "Tên miền phiên cookie",
 	"max-user-sessions": "Số phiên hoạt động tối đa cho mỗi người dùng",
-	"blank-default": "Để trống mặc định"
+	"blank-default": "Để trống mặc định",
+	"revoke-all-sessions": "Thu Hồi Tất Cả Các Phiên",
+	"revoke-all-sessions-desc": "Thao tác này sẽ xóa tất cả phiên đăng nhập, bạn sẽ bị đăng xuất và phải đăng nhập lại!"
 }

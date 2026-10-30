@@ -156,4 +156,9 @@ module.exports = function (User) {
 	User.setModerationNote = async ({ uid, noteData }) => {
 		await db.setObject(`uid:${uid}:moderation:note:${noteData.timestamp}`, noteData);
 	};
+
+	User.deleteModerationNote = async ({ uid, noteData }) => {
+		await db.delete(`uid:${uid}:moderation:note:${noteData.timestamp}`);
+		await db.sortedSetRemove(`uid:${uid}:moderation:notes`, noteData.timestamp);
+	};
 };

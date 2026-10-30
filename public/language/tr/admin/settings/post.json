@@ -59,6 +59,8 @@
 	"backlinks": "Geri bağlantılar",
 	"backlinks.enabled": "Konu geri bağlantılarını etkinleştir",
 	"backlinks.help": "Bir gönderi başka bir konuya atıfta bulunuyorsa, o anda referans verilen konuya gönderiye geri bir bağlantı eklenir.",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IP İzleme",
 	"ip-tracking.each-post": "Her ileti için IP Adresini takip et",
 	"enable-post-history": "Gönderi Geçmişini Etkinleştir"

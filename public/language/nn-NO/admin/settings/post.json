@@ -59,6 +59,8 @@
 	"backlinks": "Tilbakekoblingar",
 	"backlinks.enabled": "Tilbakekoblingar aktivert",
 	"backlinks.help": "Hjelp for tilbakekoblingar",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IP-sporing",
 	"ip-tracking.each-post": "Spor IP for kvart innlegg",
 	"enable-post-history": "Aktiver historikk for innlegg"

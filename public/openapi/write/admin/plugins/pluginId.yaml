@@ -1,0 +1,67 @@
+post:
+  tags:
+    - admin
+  summary: install a plugin
+  description: This operation installs a nodebb plugin
+  parameters:
+    - in: path
+      name: pluginId
+      schema:
+        type: string
+      required: true
+      description: a nodebb plugin id
+      example: nodebb-plugin-imgur
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - version
+          properties:
+            version:
+              type: string
+  responses:
+    '200':
+      description: plugin succesfully installed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400
+    '401':
+      $ref: ../../../components/responses/401.yaml#/401
+delete:
+  tags:
+    - admin
+  summary: uninstall a plugin
+  description: This operation uninstalls a nodebb plugin
+  parameters:
+    - in: path
+      name: pluginId
+      schema:
+        type: string
+      required: true
+      description: a nodebb plugin id
+      example: nodebb-plugin-imgur
+  responses:
+    '200':
+      description: plugin succesfully uninstalled
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400

@@ -83,7 +83,8 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			const { tid } = context;
 			return { tid, count: 0 };
 		} else if (context.context) {
-			const { type, id: tid } = await activitypub.helpers.resolveLocalId(context.context);
+			const { type } = await activitypub.helpers.resolveLocalId(context.context);
+			// Remote contexts only, if context is local, prefer parent chain traversal instead (to catch out-of-band replies)
 			if (type !== 'topic') {
 				chain = Array.from(await activitypub.contexts.getItems(uid, context.context, { input }));
 				if (chain && chain.length) {
@@ -97,18 +98,6 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 					// Context resolves, use in later topic creation
 					context = context.context;
-				}
-			} else {
-				// Local context, get local posts
-				const mainPid = await topics.getTopicField(tid, 'mainPid');
-				const pids = await db.getSortedSetMembers(`tid:${tid}:posts`);
-				pids.unshift(mainPid);
-				chain = await posts.getPostsData(pids);
-
-				// Add received object to chain if not present already
-				if (!pids.includes(input.id)) {
-					const mocked = await activitypub.mocks.post(input);
-					chain.push(mocked);
 				}
 			}
 		} else {
@@ -130,7 +119,17 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 		chain = chain.sort((a, b) => a.timestamp - b.timestamp);
 
 		const mainPost = chain[0];
-		let { pid: mainPid, tid, uid: authorId, timestamp, title, content, sourceContent, _activitypub } = mainPost;
+		let {
+			pid: mainPid,
+			tid,
+			uid: authorId,
+			timestamp,
+			title,
+			content,
+			sourceContent,
+			contentWarning,
+			_activitypub,
+		} = mainPost;
 		const hasTid = !!tid;
 
 		const authorBanned = await user.bans.isBanned(authorId);
@@ -193,14 +192,18 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 			}
 
 			// Auto-categorization (takes place only if all other categorization efforts fail)
-			const { cid, filter: ruleFilter } = await assignCategory(mainPost);
-			options.queue = ruleFilter;
+			const { cid, action: ruleAction } = await assignCategory(mainPost);
+			if (ruleAction === 2) {
+				activitypub.helpers.log(`[activitypub/notes.assert] Rule rejected post (${mainPid})`);
+				return null;
+			}
+			options.queue = ruleAction === 1;
 			crosspostCid = cid;
 			if (!options.cid) {
 				options.cid = crosspostCid;
 				crosspostCid = false;
 			}
-			// filter is used below to decide whether to queue or add the crosspost
+			// action is used below to decide whether to queue or add the crosspost
 
 			// mainPid ok to leave as-is
 			if (!title) {
@@ -213,8 +216,35 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 				generatedTitle = 1;
 			}
 
-			// Remove any custom emoji from title
-			title = activitypub.helpers.renderEmoji(title, _activitypub.tag, true);
+			if (contentWarning) {
+				title = contentWarning;
+				generatedTitle = 1;
+			}
+
+			// Extract emoji metadata for title rendering
+			const titleEmoji = [];
+			const rawTags = _activitypub.tag;
+			const tagList = Array.isArray(rawTags) ? rawTags : (rawTags ? [rawTags] : []);
+			const emojiTags = tagList.filter(tag => tag?.type === 'Emoji');
+			for (const tag of emojiTags) {
+				const { name, icon } = tag;
+				if (!name || !icon?.url) continue;
+				let code = name;
+				if (!code.startsWith(':')) code = `:${code}`;
+				if (!code.endsWith(':')) code = `${code}:`;
+				if (title.includes(code)) {
+					try {
+						const { hostname } = new URL(icon.url);
+						const clean = code.replace(/^:+|:+$/g, '');
+						titleEmoji.push({ code, hostname, clean });
+					} catch {
+						// skip invalid icon URLs
+					}
+				}
+			}
+			if (titleEmoji.length) {
+				mainPost.titleEmoji = JSON.stringify(titleEmoji);
+			}
 		}
 		mainPid = utils.isNumber(mainPid) ? parseInt(mainPid, 10) : mainPid;
 
@@ -280,9 +310,11 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					cid: options.cid || cid,
 					pid: mainPid,
 					title,
+					titleEmoji: mainPost.titleEmoji,
 					timestamp,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					contentWarning,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				};
@@ -303,10 +335,12 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 					cid: options.cid || cid,
 					pid: mainPid,
 					title,
+					titleEmoji: mainPost.titleEmoji,
 					timestamp,
 					tags,
 					content: mainPost.content,
 					sourceContent: mainPost.sourceContent,
+					contentWarning,
 					generatedTitle,
 					_activitypub: mainPost._activitypub,
 				});
@@ -366,6 +400,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 						pid: post.pid,
 						content: post.content,
 						sourceContent: post.sourceContent,
+						contentWarning: post.contentWarning,
 						timestamp: post.timestamp,
 						_activitypub: post._activitypub,
 					});
@@ -408,6 +443,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false, queue: false })
 
 		return { tid, count, queued };
 	} catch (e) {
+		console.log(e.stack);
 		winston.warn(`[activitypub/notes.assert] Could not assert ${id} (${e.message}).`);
 		return null;
 	} finally {
@@ -517,6 +553,22 @@ Notes.assertPrivate = async (object) => {
 		return null;
 	}
 
+	// Local recipients who cannot be messaged should be removed
+	const recipientUids = Array.from(recipients).filter(uid => utils.isNumber(uid));
+	const results = await Promise.all(recipientUids.map(async (uid) => {
+		try {
+			await messaging.canMessageUser(payload.uid, uid);
+			return { uid, valid: true };
+		} catch (e) {
+			return { uid, valid: false };
+		}
+	}));
+	const validUids = results.filter(r => r.valid).map(r => r.uid);
+	if (validUids.length === 0) {
+		return null;
+	}
+	results.filter(r => !r.valid).forEach(r => recipients.delete(r.uid));
+
 	if (!roomId) {
 		roomId = await messaging.newRoom(payload.uid, { uids: [...recipients] });
 	}
@@ -525,7 +577,10 @@ Notes.assertPrivate = async (object) => {
 	const added = Array.from(recipients).filter(uid => !participantUids.includes(uid));
 	const assertion = await activitypub.actors.assert(added);
 	if (assertion) {
-		await messaging.addUsersToRoom(payload.uid, added, roomId);
+		await Promise.all([
+			messaging.addUsersToRoom(payload.uid, added, roomId),
+			...added.map(uid => messaging.addSystemMessage('user-join', uid, roomId)),
+		]);
 	}
 
 	// Add message to room
@@ -574,33 +629,42 @@ async function assertRelation(post) {
 }
 
 async function assignCategory(post) {
+	const ageLimitDays = meta.config.activitypubRulesCutoffDays || 0;
+	if (ageLimitDays > 0 && post.timestamp) {
+		const ageDays = (Date.now() - post.timestamp) / (1000 * 60 * 60 * 24);
+		if (ageDays > ageLimitDays) {
+			activitypub.helpers.log(`[activitypub] Post ${post.pid} is ${ageDays.toFixed(1)} days old, skipping categorization (limit: ${ageLimitDays} days)`);
+			return { cid: undefined, filter: false };
+		}
+	}
+
 	activitypub.helpers.log('[activitypub] Checking auto-categorization rules.');
 	const rules = await activitypub.rules.list();
-	let tags = await Notes._normalizeTags(post._activitypub.tag || []);
-	tags = tags.map(tag => tag.toLowerCase());
+	const tags = await Notes._normalizeTags(post._activitypub.tag || []);
 
-	const matched = rules.reduce((matched, { type, value, cid: target, filter: ruleFilter }) => {
+	const matched = rules.reduce((matched, { type, value, cid: target, action: ruleAction }) => {
 		if (!matched.cid) {
 			switch (type) {
 				case 'hashtag': {
-					if (tags.includes(value.toLowerCase())) {
-						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}`);
-						return { cid: target, filter: ruleFilter };
+					const lowerValue = value.toLowerCase();
+					if (tags.some(tag => tag.toLowerCase() === lowerValue)) {
+						activitypub.helpers.log(`[activitypub]   - Rule match: #${value}; cid: ${target}, action: ${ruleAction}`);
+						return { cid: target, action: ruleAction };
 					}
 					break;
 				}
 
 				case 'user': {
 					if (post.uid === value) {
-						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}`);
-						return { cid: target, filter: ruleFilter };
+						activitypub.helpers.log(`[activitypub]   - Rule match: user ${value}; cid: ${target}, action: ${ruleAction}`);
+						return { cid: target, action: ruleAction };
 					}
 				}
 			}
 		}
 
 		return matched;
-	}, { cid: undefined, filter: false });
+	}, { cid: undefined, action: 0 });
 
 	return matched;
 }
@@ -814,6 +878,11 @@ Notes.announce.list = async ({ pid, tid }) => {
 };
 
 Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
+	const exists = await posts.exists(pid);
+	if (!exists) {
+		return;
+	}
+
 	const [tid] = await Promise.all([
 		posts.getPostField(pid, 'tid'),
 		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
@@ -826,6 +895,11 @@ Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
 };
 
 Notes.announce.remove = async (pid, actor) => {
+	const exists = await posts.exists(pid);
+	if (!exists) {
+		return;
+	}
+
 	await db.sortedSetRemove(`pid:${pid}:announces`, actor);
 	Notes.announce._cache.del(`pid:${pid}:announces`);
 

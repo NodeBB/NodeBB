@@ -184,6 +184,11 @@ before(async function () {
 			await setupMockDefaults();
 		});
 	});
+	// Attach a global afterAll that waits for pending minifier requests
+	// (e.g., from harmony theme's buildSkins scheduled via setTimeout)
+	this.test.parent.afterAll(async () => {
+		await require('../../src/meta/minifier').killAll();
+	});
 });
 
 async function setupMockDefaults() {
@@ -200,11 +205,10 @@ async function setupMockDefaults() {
 	meta.config.autoDetectLang = 0;
 	meta.config.activitypubProbeTimeout = 30000;
 	meta.config.postQueue = 0;
+	meta.config.ipLoginAttempts = 1000000;
 
-	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').getOrCreate().reset();
-	require('../../src/cache').reset();
-	require('../../src/middleware/uploads').clearCache();
+	require('../../src/cache/tracker').resetAll();
+	require('../../src/middleware/uploads').clearCache(); // lazily created; explicit clear still req'd.
 	// privileges must be given after cache reset
 	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();

@@ -59,6 +59,8 @@
 	"backlinks": "بیک لنکس",
 	"backlinks.enabled": "موضوعات میں بیک لنکس فعال کریں",
 	"backlinks.help": "اگر پوسٹ میں کسی دوسرے موضوع کی طرف حوالہ ہو تو اس پوسٹ کی طرف ایک لنک اس مخصوص وقت کے ساتھ رکھا جائے گا۔",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "آئی پی ایڈریس ریکارڈنگ",
 	"ip-tracking.each-post": "ہر پوسٹ کے لیے آئی پی ایڈریس ریکارڈ کریں",
 	"enable-post-history": "پوسٹس کی تاریخ فعال کریں"

@@ -27,6 +27,8 @@
     "details.invited": "Kutsutut jäsenet",
     "details.has-no-posts": "Tämän ryhmän jäsenet eivät ole luoneet vielä yhtään viestiä.",
     "details.latest-posts": "Uusimmat viestit",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Yksityinen",
     "details.disableJoinRequests": "Poista liittymispyynnöt",
     "details.disableLeave": "Estä käyttäjiä poistumasta ryhmästä",
@@ -64,6 +66,7 @@
     "membership.reject": "Hylkää",
     "new-group.group-name": "Ryhmän nimi",
     "upload-group-cover": "Upload group cover",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Massa kutsu",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"

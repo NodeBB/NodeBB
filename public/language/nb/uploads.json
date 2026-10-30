@@ -5,5 +5,7 @@
     "maximum-file-size": "Maksimal filstørrelse: %1 kb",
     "no-uploads-found": "Ingen opplastninger funnet",
     "public-uploads-info": "Opplastninger er offentlige. Alle besøkende kan se dem.",
-    "private-uploads-info": "Opplastninger er private. Kun innloggede brukere kan se dem."
+    "private-uploads-info": "Opplastninger er private. Kun innloggede brukere kan se dem.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

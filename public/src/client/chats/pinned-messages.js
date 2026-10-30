@@ -30,6 +30,7 @@ define('forum/chats/pinned-messages', ['api', 'alerts'], function (api, alerts) 
 				if (data && data.length) {
 					const html = await parseMessages(data);
 					container.find('[component="chat/messages/pinned"]').append(html);
+					html.find('.timeago').timeago();
 				}
 			}
 		}, 200));

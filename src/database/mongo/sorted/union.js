@@ -10,7 +10,9 @@ module.exports = function (module) {
 			{ $match: { _key: { $in: keys } } },
 			{ $group: { _id: { value: '$value' } } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
-		]).toArray();
+		], {
+			hint: { _key: 1, value: -1 },
+		}).toArray();
 		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
 
@@ -60,7 +62,9 @@ module.exports = function (module) {
 		}
 		pipeline.push({ $project: project });
 
-		let data = await module.client.collection('objects').aggregate(pipeline).toArray();
+		let data = await module.client.collection('objects').aggregate(pipeline, {
+			hint: { _key: 1, value: -1 },
+		}).toArray();
 		if (!params.withScores) {
 			data = data.map(item => item.value);
 		}

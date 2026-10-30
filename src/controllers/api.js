@@ -46,6 +46,7 @@ apiController.loadConfig = async function (req) {
 		maximumTagsPerTopic: meta.config.maximumTagsPerTopic || 5,
 		minimumTagLength: meta.config.minimumTagLength || 3,
 		maximumTagLength: meta.config.maximumTagLength || 15,
+		caseSensitiveTags: meta.config.caseSensitiveTags === 1,
 		undoTimeout: meta.config.undoTimeout || 0,
 		useOutgoingLinksPage: meta.config.useOutgoingLinksPage === 1,
 		outgoingLinksWhitelist: meta.config.useOutgoingLinksPage === 1 ? meta.config['outgoingLinks:whitelist'] : undefined,
@@ -101,6 +102,7 @@ apiController.loadConfig = async function (req) {
 			version: fontawesome_version,
 		},
 		activitypub: {
+			enabled: !!meta.config.activitypubEnabled,
 			probe: req.loggedIn ? meta.config.activitypubEnabled && meta.config.activitypubProbe : 0,
 			worldDefaultCid: meta.config.activitypubWorldDefaultCid,
 		},
@@ -110,14 +112,10 @@ apiController.loadConfig = async function (req) {
 		},
 	};
 
-	let settings = config;
-	let isAdminOrGlobalMod;
-	if (req.loggedIn) {
-		([settings, isAdminOrGlobalMod] = await Promise.all([
-			user.getSettings(req.uid),
-			user.isAdminOrGlobalMod(req.uid),
-		]));
-	}
+	const [settings, isAdminOrGlobalMod] = await Promise.all([
+		user.getSettings(req.uid),
+		req.loggedIn ? user.isAdminOrGlobalMod(req.uid) : false,
+	]);
 
 	// Handle old skin configs
 	const oldSkins = ['default'];
@@ -142,6 +140,8 @@ apiController.loadConfig = async function (req) {
 		}
 	}
 	config.hideReadNotifications = settings.hideReadNotifications;
+	config['notificationType_new-reply'] = settings['notificationType_new-reply'];
+	config['notificationType_new-topic-with-tag'] = settings['notificationType_new-topic-with-tag'];
 
 	// Overrides based on privilege
 	config.disableChatMessageEditing = isAdminOrGlobalMod ? false : config.disableChatMessageEditing;
@@ -151,6 +151,7 @@ apiController.loadConfig = async function (req) {
 
 apiController.getConfig = async function (req, res) {
 	const config = await apiController.loadConfig(req);
+	res.set('cache-control', 'private, no-cache');
 	res.json(config);
 };
 

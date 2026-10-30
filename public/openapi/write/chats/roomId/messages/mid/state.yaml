@@ -1,0 +1,66 @@
+put:
+  tags:
+    - chats
+  summary: restore a chat message
+  description: This operation restores a deleted chat message (clears the deleted flag)
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 2
+  responses:
+    '200':
+      description: Message successfully restored
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}
+delete:
+  tags:
+    - chats
+  summary: delete a chat message
+  description: This operation soft-deletes a chat message (sets the deleted flag)
+  parameters:
+    - in: path
+      name: roomId
+      schema:
+        type: number
+      required: true
+      description: a valid chat room id
+      example: 1
+    - in: path
+      name: mid
+      schema:
+        type: number
+      required: true
+      description: a valid message id
+      example: 2
+  responses:
+    '200':
+      description: Message successfully deleted
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: ../../../../../components/schemas/Status.yaml#/Status
+              response:
+                type: object
+                properties: {}

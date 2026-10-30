@@ -33,17 +33,18 @@ module.exports = function (app, middleware, controllers) {
 	];
 
 	app.get('/actor', middlewares, helpers.tryRoute(controllers.activitypub.actors.application));
+	app.get('/actor/following', middlewares, helpers.tryRoute(controllers.activitypub.actors.following));
 	app.get('/actor/admins', middlewares, helpers.tryRoute(controllers.activitypub.getAdmins));
 	app.post('/inbox', [...middlewares, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
 
-	app.get('/uid/:uid', [...middlewares, middleware.assert.user, middleware.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.user));
-	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user, middleware.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
-	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getInbox));
+	app.get('/uid/:uid', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.user));
+	app.get('/user/:userslug', [...middlewares, middleware.exposeUid, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.actors.userBySlug));
+	app.get('/uid/:uid/inbox', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.getInbox));
 	app.post('/uid/:uid/inbox', [...middlewares, middleware.assert.user, ...inboxMiddlewares], helpers.tryRoute(controllers.activitypub.postInbox));
-	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getOutbox));
+	app.get('/uid/:uid/outbox', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.getOutbox));
 	app.post('/uid/:uid/outbox', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.postOutbox));
-	app.get('/uid/:uid/following', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getFollowing));
-	app.get('/uid/:uid/followers', [...middlewares, middleware.assert.user], helpers.tryRoute(controllers.activitypub.getFollowers));
+	app.get('/uid/:uid/following', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.getFollowing));
+	app.get('/uid/:uid/followers', [...middlewares, middleware.assert.user, middleware.activitypub.canViewUsers], helpers.tryRoute(controllers.activitypub.getFollowers));
 
 	app.get('/post/:pid', [...middlewares, middleware.assert.post], helpers.tryRoute(controllers.activitypub.actors.note));
 	app.get('/post/:pid/replies', [...middlewares, middleware.assert.post], helpers.tryRoute(controllers.activitypub.actors.replies));
@@ -58,4 +59,6 @@ module.exports = function (app, middleware, controllers) {
 	app.get('/category/:cid/:slug?', [...middlewares, middleware.assert.category], helpers.tryRoute(controllers.activitypub.actors.category));
 
 	app.get('/message/:mid', [...middlewares, middleware.assert.message], helpers.tryRoute(controllers.activitypub.actors.message));
+
+	app.get('/emoji/ap/:shortcode/:hostname', helpers.tryRoute(controllers.activitypub.emoji.serve));
 };

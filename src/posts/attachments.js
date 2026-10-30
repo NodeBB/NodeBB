@@ -20,14 +20,13 @@ Attachments.get = async (pids) => {
 	const hashToAttachment = _.zipObject(allHashes, allAttachments);
 	const data = postData.map((post) => {
 		const pidHashes = post ? post.attachments : [];
-		return pidHashes.map(hash => hashToAttachment[hash]);
+		return pidHashes.map(hash => hashToAttachment[hash] || []);
 	});
 	return isArray ? data : data[0];
 };
 
 Attachments.getAttachments = async (hashes) => {
-	const keys = hashes.map(hash => `attachment:${hash}`);
-	return (await db.getObjects(keys)).filter(Boolean);
+	return await db.getObjects(hashes.map(hash => `attachment:${hash}`));
 };
 
 Attachments.update = async (pid, attachments) => {

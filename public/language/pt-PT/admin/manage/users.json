@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Digita um ID de utilizador para procurar",
 	"search.username": "Por Nome de Utilizador",
 	"search.username-placeholder": "Digita um nome de utilizador para procurar",
+	"search.fullname": "By Full Name",
 	"search.email": "Por E-mail",
 	"search.email-placeholder": "Digita um e-mail para procurar",
 	"search.ip": "Por Endereço IP",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "E-mail deste utilizador",
 	"create.password": "Palavra-passe",
 	"create.password-confirm": "Confirmar palavra-passe",
-
-	"temp-ban.length": "Length",
-	"temp-ban.reason": "Razão <span class=\"text-muted\">(Opcional)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Horas",
-	"temp-ban.days": "Dias",
-	"temp-ban.explanation": "Insere o tempo de duração para o banimento. Nota que um tempo de 0 irá ser considerado um banimento permanente.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Tens a certeza que queres banir este utilizador <strong>permanentemente</strong>?",
 	"alerts.confirm-ban-multi": "Tens a certeza que queres banir estes utilizadores <strong>permanentemente</strong>?",

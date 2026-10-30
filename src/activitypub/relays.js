@@ -8,7 +8,8 @@ const activitypub = module.parent.exports;
 const Relays = module.exports;
 
 Relays.is = async (actor) => {
-	return db.isSortedSetMember('relays:createtime', actor);
+	const score = await db.sortedSetScore('relays:state', actor);
+	return typeof score === 'number' && score >= 1;
 };
 
 Relays.list = async () => {
@@ -16,6 +17,16 @@ Relays.list = async () => {
 	relays = relays.reduce((memo, { value, score }) => {
 		let label = '[[admin/settings/activitypub:relays.state-0]]';
 		switch(score) {
+			case -2: {
+				label = '[[admin/settings/activitypub:relays.state--2]]';
+				break;
+			}
+
+			case -1: {
+				label = '[[admin/settings/activitypub:relays.state--1]]';
+				break;
+			}
+
 			case 1: {
 				label = '[[admin/settings/activitypub:relays.state-1]]';
 				break;
@@ -95,18 +106,41 @@ Relays.remove = async (url) => {
 	]);
 };
 
-Relays.handshake = async (object) => {
+Relays.handshake = async (body) => {
 	const now = new Date();
-	const { type, actor } = object;
+	const { type, actor } = body;
 
-	// Confirm relay was added
-	const exists = await db.isSortedSetMember('relays:createtime', actor);
-	if (!exists) {
+	// Resolve the original Follow activity
+	// If type is 'Follow', the activity is in body.object
+	// If type is 'Accept', the activity is in body.object.object
+	const followActivity = type === 'Follow' ? body.object : body.object?.object;
+
+	if (!followActivity) {
 		throw new Error('[[error:api.400]]');
 	}
 
+	const target = typeof followActivity === 'object' ? followActivity.id : followActivity;
+
 	if (type === 'Follow') {
-		await db.sortedSetIncrBy('relays:state', 1, actor);
+		// Check if NodeBB is the target of the follow (unsolicited relay subscription)
+		if (target === `${nconf.get('url')}/actor`) {
+			const score = await db.sortedSetScore('relays:state', actor);
+			if (score === null) {
+				// New follower
+				await db.sortedSetAdd('relays:state', -1, actor);
+				await db.sortedSetAdd('relays:createtime', now.getTime(), actor);
+			}
+			// Already a solicited relay: the follow-back completes the mutual
+			// relationship without altering the existing state.
+		} else {
+			// Only a pending, solicited relay (state 0) may be confirmed
+			const score = await db.sortedSetScore('relays:state', actor);
+			if (score !== 0) {
+				throw new Error('[[error:api.400]]');
+			}
+			await db.sortedSetIncrBy('relays:state', 1, actor);
+		}
+
 		await activitypub.send('uid', 0, actor, {
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
@@ -116,11 +150,44 @@ Relays.handshake = async (object) => {
 			type: 'Accept',
 			to: [actor],
 			published: now.toISOString(),
-			object,
+			object: body,
 		});
 	} else if (type === 'Accept') {
+		// Only a pending, solicited relay (state 0) may be accepted
+		const score = await db.sortedSetScore('relays:state', actor);
+		if (score !== 0) {
+			return;
+		}
 		await db.sortedSetIncrBy('relays:state', 1, actor);
 	} else {
 		throw new Error('[[error:api.400]]');
 	}
+};
+
+Relays.removeFollower = async (actor) => {
+	await db.sortedSetRemove('relays:state', actor);
+	await db.sortedSetRemove('relays:createtime', actor);
+};
+
+Relays.getFollowers = async () => {
+	const relays = await db.getSortedSetMembersWithScores('relays:state');
+	return relays.filter(({ score }) => score < 0).map(({ value }) => value);
+};
+
+Relays.broadcast = async (payload) => {
+	const followers = await Relays.getFollowers();
+	if (followers.length === 0) return;
+
+	// Create activities use fragment identifiers derived from the created object.
+	// A fragment is not sent during HTTP dereference, so relay followers must be
+	// given the created object itself rather than the non-dereferenceable Create.
+	const object = payload.type === 'Create' && payload.object ? payload.object : payload;
+
+	await activitypub.send('uid', 0, followers, {
+		id: `${nconf.get('url')}/post/${encodeURIComponent(payload.id)}#activity/announce/relay/${Date.now()}`,
+		type: 'Announce',
+		actor: `${nconf.get('url')}/actor`,
+		to: [activitypub._constants.publicAddress],
+		object,
+	});
 };

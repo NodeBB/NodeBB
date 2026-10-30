@@ -3,17 +3,17 @@
 		<thead class="text-xs">
 			<tr>
 				<th></th>
-				<th class="text-end text-nowrap">[[admin/dashboard:stats.yesterday]]</th>
-				<th class="text-end text-nowrap">[[admin/dashboard:stats.today]]</th>
+				<th class="text-end text-nowrap">{{tx("admin/dashboard:stats.yesterday")}}</th>
+				<th class="text-end text-nowrap">{{tx("admin/dashboard:stats.today")}}</th>
 				<th></th>
-				<th class="text-end text-nowrap">[[admin/dashboard:stats.last-week]]</th>
-				<th class="text-end text-nowrap">[[admin/dashboard:stats.this-week]]</th>
+				<th class="text-end text-nowrap">{{tx("admin/dashboard:stats.last-week")}}</th>
+				<th class="text-end text-nowrap">{{tx("admin/dashboard:stats.this-week")}}</th>
 				<th></th>
-				<th class="text-end text-nowrap">[[admin/dashboard:stats.last-month]]</th>
-				<th class="text-end text-nowrap">[[admin/dashboard:stats.this-month]]</th>
+				<th class="text-end text-nowrap">{{tx("admin/dashboard:stats.last-month")}}</th>
+				<th class="text-end text-nowrap">{{tx("admin/dashboard:stats.this-month")}}</th>
 				<th></th>
 				{{{ if !hideAllTime}}}
-				<th class="text-end">[[admin/dashboard:stats.all]]</th>
+				<th class="text-end">{{tx("admin/dashboard:stats.all")}}</th>
 				{{{ end }}}
 			</tr>
 		</thead>
@@ -24,7 +24,7 @@
 					{{{ if ./href }}}
 						<a href="{./href}">{{tx(./name)}}</a>
 					{{{ else }}}
-						{tx(./name)}
+						{{tx(./name)}}
 					{{{ end }}}
 				</td>
 				<td class="text-end">{formattedNumber(./yesterday)}</td>

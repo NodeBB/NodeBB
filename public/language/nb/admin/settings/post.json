@@ -59,6 +59,8 @@
 	"backlinks": "Tilbakekoblinger",
 	"backlinks.enabled": "Aktiver tilbakekoblinger for emner",
 	"backlinks.help": "Hvis et innlegg refererer til et annet emne, vil en lenke tilbake til innlegget bli satt inn i det refererte emnet på det aktuelle tidspunktet.",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IP-sporing",
 	"ip-tracking.each-post": "Spor IP-adresse for hvert innlegg",
 	"enable-post-history": "Aktiver historikk for innlegg"

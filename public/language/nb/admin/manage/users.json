@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Skriv inn en bruker-ID for å søke",
 	"search.username": "Etter brukernavn",
 	"search.username-placeholder": "Skriv inn et brukernavn for å søke",
+	"search.fullname": "By Full Name",
 	"search.email": "Etter e-post",
 	"search.email-placeholder": "Skriv inn en e-postadresse for å søke",
 	"search.ip": "Etter IP-adresse",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "E-post til denne brukeren",
 	"create.password": "Passord",
 	"create.password-confirm": "Bekreft passord",
-
-	"temp-ban.length": "Lengde",
-	"temp-ban.reason": "Årsak <span class=\"text-muted\">(Valgfritt)</span>",
-	"temp-ban.select-reason": "Velg en begrunnelse",
-	"temp-ban.hours": "Timer",
-	"temp-ban.days": "Dager",
-	"temp-ban.explanation": "Angi varigheten for utestengningen. Merk at en varighet på 0 vil bli betraktet som en permanent utestengning.",
-	"temp-mute.explanation": "Skriv inn hvor lenge dempingen skal vare. Merk at en varighet på 0 blir regnet som permanent demping.",
 
 	"alerts.confirm-ban": "Vil du virkelig utestenge denne brukeren <strong>permanent</strong>?",
 	"alerts.confirm-ban-multi": "Vil du virkelig utestenge disse brukerne <strong>permanent</strong>?",

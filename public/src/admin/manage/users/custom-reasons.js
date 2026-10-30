@@ -1,96 +1,37 @@
 define('admin/manage/user/custom-reasons', [
-	'benchpress', 'modals', 'alerts', 'jquery-ui/widgets/sortable',
-], function (benchpress, modals, alerts) {
+	'admin/modules/listEditor',
+], function (listEditor) {
 	const manageCustomReasons = {};
 
 	manageCustomReasons.init = function () {
-		const table = $('table');
-
-		$('#new').on('click', () => showModal());
-
-		table.on('click', '[data-action="edit"]', function () {
-			const row = $(this).parents('[data-key]');
-			showModal(getDataFromEl(row));
-		});
-
-		table.on('click', '[data-action="delete"]', function () {
-			const row = $(this).parents('[data-key]');
-			const title = row.attr('data-title');
-			modals.confirm(`[[admin/manage/custom-reasons:delete-reason-confirm-x, "${title}"]]`, function (ok) {
-				if (!ok) {
-					return;
+		listEditor.init({
+			attributes: {
+				key: 'key',
+				title: 'title',
+				type: 'type',
+				body: 'body',
+			},
+			modalTemplate: 'admin/partials/manage-custom-reasons-modal',
+			rowTemplate: 'admin/manage/users/custom-reasons',
+			rowBlock: 'reasons',
+			createTitle: '[[admin/manage/custom-reasons:create-reason]]',
+			editTitle: '[[admin/manage/custom-reasons:edit-reason]]',
+			savedMessage: '[[admin/manage/custom-reasons:custom-reasons-saved]]',
+			deleteConfirm: reason => `[[admin/manage/custom-reasons:delete-reason-confirm-x, "${reason.title}"]]`,
+			prepare: async function (formData, reason) {
+				formData.key = reason ? reason.key : Date.now();
+				formData.parsedBody = await socket.emit('admin.parseRaw', formData.body);
+				return formData;
+			},
+			onModalReady: function (modal, reason) {
+				// bootbox translates message we want the translation keys to be preseved.
+				if (reason && reason.body) {
+					modal.find('[name="body"]').val(reason.body);
 				}
-				row.remove();
-			});
-		});
-
-		$('tbody').sortable({
-			handle: '[component="sort/handle"]',
-			axis: 'y',
-			zIndex: 9999,
-		});
-
-		$('#save').on('click', () => {
-			const reasons = [];
-			$('tbody tr[data-key]').each((index, el) => {
-				reasons.push(getDataFromEl($(el)));
-			});
-			socket.emit('admin.user.saveCustomReasons', reasons, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				alerts.success('[[admin/manage/custom-reasons:custom-reasons-saved]]');
-			});
+			},
+			save: reasons => socket.emit('admin.user.saveCustomReasons', reasons),
 		});
 	};
 
-	function getDataFromEl(el) {
-		return {
-			key: el.attr('data-key'),
-			title: el.attr('data-title'),
-			type: el.attr('data-type'),
-			body: el.attr('data-body'),
-		};
-	}
-
-	async function showModal(reason = null) {
-		const html = await benchpress.render('admin/partials/manage-custom-reasons-modal', reason);
-		const modal = await modals.dialog({
-			message: html,
-			onEscape: true,
-			title: reason ?
-				'[[admin/manage/custom-reasons:edit-reason]]' :
-				'[[admin/manage/custom-reasons:create-reason]]',
-			buttons: {
-				submit: {
-					label: '[[global:save]]',
-					callback: async function () {
-						const formData = modal.find('form').serializeObject();
-						formData.key = reason ? reason.key : Date.now();
-						formData.parsedBody = await socket.emit('admin.parseRaw', formData.body);
-
-						app.parseAndTranslate('admin/manage/users/custom-reasons', 'reasons', {
-							reasons: [formData],
-						}, (html) => {
-							if (reason) {
-								const oldKey = reason.key;
-								$(`tbody [data-key="${oldKey}"]`).replaceWith(html);
-							} else {
-								$('tbody').append(html);
-							}
-						});
-					},
-				},
-			},
-		});
-		// bootbox translates message we want the translation keys to be preseved.
-		if (reason && reason.body) {
-			modal.find('[name="body"]').val(reason.body);
-		}
-	}
-
-
 	return manageCustomReasons;
 });
-
-

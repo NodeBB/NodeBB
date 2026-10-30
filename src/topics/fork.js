@@ -25,19 +25,20 @@ module.exports = function (Topics) {
 		if (!pids || !pids.length) {
 			throw new Error('[[error:invalid-pid]]');
 		}
-
-		if (pids.every(isFinite)) {
-			pids.sort((a, b) => a - b);
-		} else {
-			const pidsDatetime = (await db.sortedSetScores(`tid:${fromTid}:posts`, pids)).map(t => t || 0);
-			const map = pids.reduce((map, pid, idx) => map.set(pidsDatetime[idx], pid), new Map());
-			pidsDatetime.sort((a, b) => a - b);
-			pids = pidsDatetime.map(key => map.get(key));
+		const sourcePosts = await posts.getPostsFields(pids, ['pid', 'tid', 'timestamp']);
+		if (sourcePosts.some(p => !p?.tid || String(p.tid) !== String(fromTid))) {
+			throw new Error('[[error:invalid-pid]]');
 		}
+		pids = sourcePosts.sort((a, b) => a.timestamp - b.timestamp).map(p => p.pid);
 
 		const mainPid = pids[0];
 		if (!cid) {
 			cid = await posts.getCidByPid(mainPid);
+		}
+		// A one-element array cid would make isModerator return a (truthy) array,
+		// bypassing the isAdminOrMod gate below. Coerce to a scalar.
+		if (Array.isArray(cid)) {
+			cid = cid[0];
 		}
 
 		const [mainPost, isAdminOrMod] = await Promise.all([
@@ -65,15 +66,17 @@ module.exports = function (Topics) {
 			tid: mainPost.tid,
 		});
 
+		const canEditAll = await Promise.all(pids.map(pid => privileges.posts.canEdit(pid, uid)));
+		const failed = canEditAll.find(canEdit => !canEdit.flag);
+		if (failed) {
+			throw new Error(failed.message);
+		}
+
 		const tid = await Topics.create(result.params);
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
 		for (const pid of pids) {
 			/* eslint-disable no-await-in-loop */
-			const canEdit = await privileges.posts.canEdit(pid, uid);
-			if (!canEdit.flag) {
-				throw new Error(canEdit.message);
-			}
 			await Topics.movePostToTopic(uid, pid, tid, scheduled);
 		}
 
@@ -88,7 +91,7 @@ module.exports = function (Topics) {
 				forkTimestamp: now,
 			}),
 			db.sortedSetsAdd(['topics:votes', `cid:${cid}:tids:votes`], mainPost.votes, tid),
-			Topics.events.log(fromTid, { type: 'fork', uid, href: `/topic/${tid}` }),
+			Topics.events.log(fromTid, { type: 'fork', uid, toCid: cid, href: `/topic/${tid}` }),
 		]);
 
 		// ideally we should federate a "move" activity instead, then can capture remote posts too. tbd

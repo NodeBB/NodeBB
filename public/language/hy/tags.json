@@ -13,5 +13,6 @@
     "watching.description": "Ծանուցել ինձ նոր թեմաների մասին:",
     "not-watching.description": "Չծանուցել ինձ նոր թեմաների մասին:",
     "following-tag.message": "Այժմ դուք ծանուցումներ կստանաք, երբ ինչ-որ մեկը թեմա կտեղադրի այս պիտակով:",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Դուք ծանուցումներ չեք ստանա, երբ ինչ-որ մեկը թեմա է փակցնում այս պիտակով:"
 }

@@ -56,7 +56,7 @@ let error = false;
 let launchUrl;
 let timeStart = 0;
 const totalTime = 1000 * 60 * 3;
-
+const availableDbs = ['mongo', 'redis', 'postgres'];
 
 const viewsDir = path.join(paths.baseDir, 'build/public/templates');
 
@@ -126,6 +126,9 @@ async function testDatabase(req, res) {
 	try {
 		const keys = Object.keys(req.query);
 		const dbName = keys[0].split(':')[0];
+		if (!availableDbs.includes(dbName)) {
+			throw new Error(`Invalid database type: ${dbName}. Supported databases are: ${availableDbs.join(', ')}`);
+		}
 		db = require(`../src/database/${dbName}`);
 
 		const opts = {};
@@ -138,7 +141,7 @@ async function testDatabase(req, res) {
 		await db.close();
 		res.json({ success: 1, dbfull: !!global });
 	} catch (err) {
-		res.json({ error: err.stack });
+		res.json({ error: err.message });
 	}
 }
 
@@ -147,8 +150,8 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	const dbs = ['mongo', 'redis', 'postgres'];
-	const databases = dbs.map((databaseName) => {
+
+	const databases = availableDbs.map((databaseName) => {
 		const questions = require(`../src/database/${databaseName}`).questions.filter(question => question && !question.hideOnWebInstall);
 
 		return {

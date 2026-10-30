@@ -12,7 +12,6 @@ const utils = require('../../utils');
 const privileges = require('../../privileges');
 const messaging = require('../../messaging');
 const categories = require('../../categories');
-const posts = require('../../posts');
 const activitypub = require('../../activitypub');
 const flags = require('../../flags');
 const slugify = require('../../slugify');
@@ -54,10 +53,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID, query = {})
 		delete userData.reputation;
 	}
 
-	userData.age = Math.max(
-		0,
-		userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0
-	);
+	userData.age = Math.max(0, calculateAge(userData.birthday));
 
 	userData = await user.hidePrivateData(userData, callerUID);
 	userData.emailHidden = !userSettings.showemail;
@@ -150,6 +146,9 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 					require_valid_protocol: true,
 					require_tld: true,
 				});
+				if (isUrl && !utils.isSafeHref(value)) {
+					value = '';
+				}
 				memo.push({
 					key: slugify(name),
 					name,
@@ -166,8 +165,7 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		return fields;
 	}
 
-	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
-	const allFields = (await db.getObjects(keys.map(k => `user-custom-field:${k}`))).filter(Boolean);
+	const allFields = await user.customFields.getFields();
 
 	const isSelf = String(callerUID) === String(userData.uid);
 	const [isAdmin, isModOfAny] = await Promise.all([
@@ -191,12 +189,13 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 	fields.forEach((f) => {
 		let userValue = userData[f.key];
 		if (f.type === 'select-multi' && userValue) {
-			userValue = JSON.parse(userValue || '[]');
+			userValue = user.customFields.parseValue(f, userValue) || [];
 		}
 		if (f.type === 'input-link' && userValue) {
+			userValue = utils.isSafeHref(userValue) ? userValue : '';
 			f.linkValue = String(userValue.replace('http://', '').replace('https://', ''));
 		}
-		f['select-options'] = (f['select-options'] || '').split('\n').filter(Boolean);
+		f['select-options'] = user.customFields.getOptions(f);
 		if (f.type === 'select') {
 			f['select-options'].unshift('');
 		}
@@ -345,14 +344,27 @@ async function getProfileMenu(uid, callerUID) {
 	return data;
 }
 
+function calculateAge(birthday) {
+	if (!birthday) {
+		return 0;
+	}
+	const birthDate = new Date(birthday);
+	const today = new Date();
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const hasHadBirthdayThisYear = (
+		today.getMonth() > birthDate.getMonth() ||
+		(today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate())
+	);
+	if (!hasHadBirthdayThisYear) {
+		age -= 1;
+	}
+	return age;
+}
+
 async function parseAboutMe(userData) {
 	if (!userData.aboutme) {
 		userData.aboutme = '';
 		userData.aboutmeParsed = '';
-		return;
-	} else if (activitypub.helpers.isUri(userData.uid)) {
-		userData.aboutme = posts.sanitize(String(userData.aboutme));
-		userData.aboutmeParsed = userData.aboutme;
 		return;
 	}
 	userData.aboutmeParsed = await plugins.hooks.fire('filter:parse.aboutme', String(userData.aboutme || ''));

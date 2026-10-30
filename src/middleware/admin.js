@@ -16,6 +16,11 @@ const controllers = {
 
 const middleware = module.exports;
 
+middleware.isAdminPage = function (req, res, next) {
+	res.locals.isAdminPage = true;
+	next();
+};
+
 middleware.buildHeader = helpers.try(async (req, res, next) => {
 	await doBuildHeader(req, res);
 	next();

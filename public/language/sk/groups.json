@@ -27,6 +27,8 @@
     "details.invited": "Pozvaný členovia",
     "details.has-no-posts": "Používatelia tejto skupiny zatiaľ nepridali žiadne príspevky.",
     "details.latest-posts": "Najnovšie príspevky",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Súkromné",
     "details.disableJoinRequests": "Vypnúť požiadavky o prijatie",
     "details.disableLeave": "Disallow users from leaving the group",
@@ -64,6 +66,7 @@
     "membership.reject": "Odmietnuť",
     "new-group.group-name": "Názov skupiny:",
     "upload-group-cover": "Nahrať obrázok skupiny",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Zadajte zoznam užívateľských mien oddelených čiarkou, k pozvaniu do tejto skupiny",
     "bulk-invite": "Hromadné pozvanie",
     "remove-group-cover-confirm": "Ste si naozaj istý, že chcete odstrániť titulný obrázok?"

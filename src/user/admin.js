@@ -8,12 +8,13 @@ const { AsyncParser } = require('@json2csv/node');
 
 const { baseDir } = require('../constants').paths;
 const db = require('../database');
+const meta = require('../meta');
 const plugins = require('../plugins');
 const batch = require('../batch');
 
 module.exports = function (User) {
 	User.logIP = async function (uid, ip) {
-		if (!(parseInt(uid, 10) > 0)) {
+		if (!(parseInt(uid, 10) > 0) || !meta.config.logIPs) {
 			return;
 		}
 		const now = Date.now();
@@ -53,7 +54,7 @@ module.exports = function (User) {
 			fields: fieldsToExport,
 			showIps: fieldsToExport.includes('ip'),
 		});
-		const customUserFields = await db.getSortedSetRange('user-custom-fields', 0, -1);
+		const customUserFields = await User.customFields.getKeys();
 		if (!showIps && fields.includes('ip')) {
 			fields.splice(fields.indexOf('ip'), 1);
 		}

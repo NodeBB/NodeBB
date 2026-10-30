@@ -8,12 +8,14 @@ const cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 const db = require('../database');
 const user = require('../user');
+const groups = require('../groups');
 const logger = require('../logger');
 const plugins = require('../plugins');
 const ratelimit = require('../middleware/ratelimit');
 const blacklist = require('../meta/blacklist');
 const als = require('../als');
 const apiHelpers = require('../api/helpers');
+const socketIp = require('../ip');
 
 const Namespaces = Object.create(null);
 
@@ -85,10 +87,7 @@ Sockets.init = async function (server) {
 function onConnection(socket) {
 	socket.uid = socket.request.uid;
 	socket.data.uid = String(socket.uid); // socket.data is shared between nodes via fetchSockets
-	socket.ip = (
-		socket.request.headers['x-forwarded-for'] ||
-		socket.request.connection.remoteAddress || ''
-	).split(',')[0];
+	socket.ip = socketIp.getClientIp(socket.request);
 	socket.request.ip = socket.ip;
 	logger.io_one(socket, socket.uid);
 
@@ -153,7 +152,7 @@ async function onConnect(socket) {
 function deserializePayload(payload) {
 	if (!Array.isArray(payload) || !payload.length) {
 		winston.warn('[socket.io] Empty payload');
-		return {};
+		return { params: {}, callback: () => {} };
 	}
 	const params = typeof payload[0] === 'function' ? {} : payload[0];
 	const callback = typeof payload[payload.length - 1] === 'function' ? payload[payload.length - 1] : function () {};
@@ -237,8 +236,11 @@ async function checkMaintenance(socket) {
 	if (!meta.config.maintenanceMode) {
 		return;
 	}
-	const isAdmin = await user.isAdministrator(socket.uid);
-	if (isAdmin) {
+	const [isAdmin, isMemberOfExempt] = await Promise.all([
+		user.isAdministrator(socket.uid),
+		groups.isMemberOfAny(socket.uid, meta.config.groupsExemptFromMaintenanceMode),
+	]);
+	if (isAdmin || isMemberOfExempt) {
 		return;
 	}
 	throw new Error(`[[pages:maintenance.text, ${meta.config.title || 'NodeBB'}]]`);

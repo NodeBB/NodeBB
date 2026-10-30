@@ -27,6 +27,8 @@
     "details.invited": "Povabljeni člani",
     "details.has-no-posts": "Člani skupine še niso objavljali.",
     "details.latest-posts": "Zadnje objave",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Zasebno",
     "details.disableJoinRequests": "Onemogoči zahteve za pridružitev.",
     "details.disableLeave": "Disallow users from leaving the group",
@@ -64,6 +66,7 @@
     "membership.reject": "Zavrni",
     "new-group.group-name": "Ime skupine:",
     "upload-group-cover": "Upload group cover",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
     "bulk-invite": "Bulk Invite",
     "remove-group-cover-confirm": "Are you sure you want to remove the cover picture?"

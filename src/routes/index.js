@@ -43,7 +43,7 @@ _mounts.main = (app, middleware, controllers) => {
 	setupPageRoute(app, '/email/unsubscribe/:token', [], controllers.accounts.settings.unsubscribe);
 	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribePost);
 
-	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
+	app.post('/compose', [middleware.applyCSRF, middleware.pluginHooks], controllers.composer.post);
 };
 
 _mounts.mod = (app, middleware, controllers) => {
@@ -174,7 +174,8 @@ function addCoreRoutes(app, router, middleware, mounts) {
 		require('./debug')(app, middleware, controllers);
 	}
 
-	app.use(middleware.privateUploads);
+	app.use(`${relativePath}/assets`, middleware.uploads.privateUploads);
+	app.use(`${relativePath}/assets`, middleware.uploads.addUploadHeaders);
 
 	const statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
@@ -185,11 +186,11 @@ function addCoreRoutes(app, router, middleware, mounts) {
 	};
 
 	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
-		statics.unshift({ route: '/assets', path: path.join(nconf.get('upload_path'), '..') });
+		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
 
 	statics.forEach((obj) => {
-		app.use(relativePath + obj.route, middleware.addUploadHeaders, express.static(obj.path, staticOptions));
+		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
 	});
 	app.use(`${relativePath}/uploads`, (req, res) => {
 		res.redirect(`${relativePath}/assets/uploads${req.path}?${meta.config['cache-buster']}`);

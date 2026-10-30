@@ -1,6 +1,7 @@
 'use strict';
 
 const nconf = require('nconf');
+const validator = require('validator');
 
 const db = require('../database');
 const plugins = require('../plugins');
@@ -65,7 +66,14 @@ module.exports = function (Groups) {
 
 	Groups.setGroupField = async function (groupName, field, value) {
 		await db.setObjectField(`group:${groupName}`, field, value);
-		plugins.hooks.fire('action:group.set', { field: field, value: value, type: 'set' });
+		plugins.hooks.fire('action:group.set', { groupName, field, value, type: 'set' });
+	};
+
+	Groups.setGroupFields = async function (groupName, data) {
+		await db.setObject(`group:${groupName}`, data);
+		for (const [field, value] of Object.entries(data)) {
+			plugins.hooks.fire('action:group.set', { groupName, field, value, type: 'set' });
+		}
 	};
 
 	async function modifyGroups(groups, fields) {
@@ -101,11 +109,13 @@ module.exports = function (Groups) {
 				}
 
 				if (hasField('labelColor')) {
-					group.labelColor = String(group.labelColor || '#000000');
+					group.labelColor = validator.isHexColor(String(group.labelColor), { requireHash: true }) ?
+						group.labelColor : '#000000';
 				}
 
 				if (hasField('textColor')) {
-					group.textColor = String(group.textColor || '#ffffff');
+					group.textColor = validator.isHexColor(String(group.textColor), { requireHash: true }) ?
+						group.textColor : '#ffffff';
 				}
 
 				if (hasField('icon')) {

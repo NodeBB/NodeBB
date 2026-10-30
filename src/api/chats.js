@@ -163,6 +163,7 @@ chatsAPI.update = async (caller, data) => {
 	if (data.hasOwnProperty('groups')) {
 		if (roomData.public && isAdmin) {
 			await db.setObjectField(`chat:room:${data.roomId}`, 'groups', JSON.stringify(data.groups));
+			await messaging.removeUsersWithoutAccess(data.roomId);
 		}
 	}
 	if (isAdmin) {
@@ -269,10 +270,10 @@ chatsAPI.users = async (caller, data) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 	users.forEach((user) => {
-		const isSelf = parseInt(user.uid, 10) === parseInt(caller.uid, 10);
+		const isSelf = String(user.uid) === String(caller.uid);
 		user.canKick = isOwner && !isSelf;
 		user.canToggleOwner = utils.isNumber(user.uid) && (isAdmin || isOwner) && !isSelf;
-		user.online = parseInt(user.uid, 10) === parseInt(caller.uid, 10) || onlineUids.includes(String(user.uid));
+		user.online = isSelf || onlineUids.includes(String(user.uid));
 	});
 	return { users };
 };
@@ -399,17 +400,22 @@ chatsAPI.getRawMessage = async (caller, { mid, roomId } = {}) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const [isAdmin, canViewMessage, inRoom] = await Promise.all([
-		user.isAdministrator(caller.uid),
+	const [isAdminOrGlobalMod, canViewMessage, inRoom] = await Promise.all([
+		user.isAdminOrGlobalMod(caller.uid),
 		messaging.canViewMessage(mid, roomId, caller.uid),
 		messaging.isUserInRoom(caller.uid, roomId),
 	]);
 
-	if (!isAdmin && (!inRoom || !canViewMessage)) {
+	if (!isAdminOrGlobalMod && (!inRoom || !canViewMessage)) {
 		throw new Error('[[error:not-allowed]]');
 	}
 
-	const content = await messaging.getMessageField(mid, 'content');
+	const { content, deleted, fromuid } = await messaging.getMessageFields(mid, ['content', 'deleted', 'fromuid']);
+	const isSender = String(caller.uid) === String(fromuid);
+	if (deleted && !isSender && !isAdminOrGlobalMod) {
+		throw new Error('[[error:not-allowed]]');
+	}
+
 	return { content };
 };
 
@@ -445,6 +451,11 @@ chatsAPI.deleteMessage = async (caller, { mid }) => {
 chatsAPI.restoreMessage = async (caller, { mid }) => {
 	await messaging.canDelete(mid, caller.uid);
 	await messaging.restoreMessage(mid, caller.uid);
+};
+
+chatsAPI.purgeMessage = async (caller, { mid }) => {
+	await messaging.canDelete(mid, caller.uid);
+	await messaging.purgeMessage(mid);
 };
 
 chatsAPI.pinMessage = async (caller, { roomId, mid }) => {

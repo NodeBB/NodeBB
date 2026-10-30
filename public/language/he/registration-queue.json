@@ -1,7 +1,7 @@
 {
 	"queue": "תור",
-	"no-users-in-queue": "There are no users in the registration queue.",
-	"description": "To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"no-users-in-queue": "אין משתמשים בתור ההרשמה.",
+	"description": "כדי להפעיל תכונה זו, עבור אל<a href=\"%1\">הגדרות &rarr; משתמש &rarr; רישום משתמש</a> והגדירו<strong>סוג רישום</strong> ל\"אישור מנהל\".",
 	"reject-all": "",
 	"reject-all-confirm": "",
 	"list.name": "שם",

@@ -106,8 +106,15 @@ define('chat', [
 				const html = await app.parseAndTranslate('partials/chats/dropdown', { rooms: rooms });
 				const listEl = chatsListEl.get(0);
 
+				const prevFirstRoom = listEl.querySelector('[data-roomid]');
+				const prevFirstRoomKey = prevFirstRoom && `${prevFirstRoom.getAttribute('data-roomid')}:${prevFirstRoom.classList.contains('unread')}`;
 				chatsListEl.find('*').not('.navigation-link').remove();
 				chatsListEl.prepend(html);
+				const firstRoom = listEl.querySelector('[data-roomid]');
+				const firstRoomKey = firstRoom && `${firstRoom.getAttribute('data-roomid')}:${firstRoom.classList.contains('unread')}`;
+				if (prevFirstRoomKey && prevFirstRoomKey !== firstRoomKey) {
+					listEl.scrollTop = 0;
+				}
 				chatsListEl.off('click').on('click', '[data-roomid]', function (ev) {
 					if (['.user-link', '.mark-read'].some(className => ev.target.closest(className))) {
 						return;
@@ -163,7 +170,7 @@ define('chat', [
 	};
 
 	Chat.isFromBlockedUser = function (fromUid) {
-		return app.user.blocks.includes(parseInt(fromUid, 10));
+		return app.user.blocks.includes(String(fromUid));
 	};
 
 	Chat.isLookingAtRoom = function (roomId) {
@@ -182,7 +189,7 @@ define('chat', [
 	};
 
 	Chat.onChatMessageReceived = function (data) {
-		if (app.user.blocks.includes(parseInt(data.fromUid, 10))) {
+		if (Chat.isFromBlockedUser(data.fromUid)) {
 			return;
 		}
 		if (Chat.modalExists(data.roomId)) {
@@ -193,8 +200,7 @@ define('chat', [
 				modal.attr('new-message', data.self === 0 ? 1 : 0);
 			}
 			data.message.self = data.self;
-			data.message.timestamp = Math.min(Date.now(), data.message.timestamp);
-			data.message.timestampISO = utils.toISOString(data.message.timestamp);
+			data.message.timestampISO = utils.toISOString(Math.min(Date.now(), data.message.timestamp));
 			addMessageToModal(data);
 		}
 	};
@@ -233,19 +239,23 @@ define('chat', [
 		const modal = Chat.getModal(data.roomId);
 		const titleEl = modal.find('[component="chat/room/name"]');
 		const icon = titleEl.attr('data-icon');
-		if (titleEl.length) {
-			titleEl.html(
-				data.newName ?
-					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(data.newName)}` :
-					data.chatWithMessage
-			);
-		}
+		Chat.updateRoomName(titleEl, icon, data.newName, data.chatWithMessage);
 		taskbar.update('chat', modal.attr('data-uuid'), {
 			title: helpers.escape(data.newName),
 		});
 		hooks.fire('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));
+	};
+
+	Chat.updateRoomName = function (titleEl, icon, newName, chatWithMessage) {
+		if (titleEl.length) {
+			titleEl.translateHtml(
+				newName ?
+					`<i class="fa ${helpers.escape(icon)} text-muted"></i> ${helpers.escape(newName)}` :
+					chatWithMessage
+			);
+		}
 	};
 
 	Chat.onUserTyping = function (data) {
@@ -294,6 +304,16 @@ define('chat', [
 	Chat.getModal = function (roomId) {
 		return $('#chat-modal-' + roomId);
 	};
+
+	function bringModalToFront(chatModal) {
+		const chatModals = $('.chat-modal');
+		if (chatModals.length <= 1) {
+			return;
+		}
+		chatModals.css('zIndex', '');
+		const zIndex = parseInt(chatModal.css('zIndex'), 10) || 1055;
+		chatModal.css('zIndex', zIndex + 1);
+	}
 
 	Chat.modalExists = function (roomId) {
 		return $('#chat-modal-' + roomId).length !== 0;
@@ -367,6 +387,7 @@ define('chat', [
 				chatModal.attr('data-uuid', uuid);
 				chatModal.css('position', 'fixed');
 				chatModal.appendTo($('body'));
+				bringModalToFront(chatModal);
 				chatModal.find('.timeago').timeago();
 				chatModal.find('[data-bs-toggle="tooltip"]').tooltip({ trigger: 'hover', container: '#content' });
 				ChatsMessages.wrapImagesInLinks(chatModal.find('[component="chat/messages"] .chat-content'));
@@ -382,9 +403,9 @@ define('chat', [
 				});
 
 				function gotoChats() {
-					const text = components.get('chat/input').val();
+					const text = chatModal.find('[component="chat/input"]').val();
 					$(window).one('action:ajaxify.end', function () {
-						components.get('chat/input').val(text);
+						components.get('chat/main-wrapper').find('[component="chat/input"]').val(text);
 					});
 
 					ajaxify.go(`user/${app.user.userslug}/chats/${roomId}`);
@@ -396,6 +417,10 @@ define('chat', [
 				chatModal.find('button[data-action="minimize"]').on('click', function () {
 					const uuid = chatModal.attr('data-uuid');
 					Chat.minimize(uuid);
+				});
+
+				chatModal.on('mousedown', function () {
+					bringModalToFront(chatModal);
 				});
 
 				chatModal.on('mouseup', function () {
@@ -422,7 +447,7 @@ define('chat', [
 				Chats.addActionHandlers(chatModal.find('[component="chat/message/window"]'), roomId);
 				Chats.addRenameHandler(roomId, chatModal.find('[data-action="rename"]'));
 				Chats.addLeaveHandler(roomId, chatModal.find('[data-action="leave"]'));
-				Chats.addDeleteHandler(roomId, chatModal.find('[data-action="delete"]'));
+				Chats.addDeleteHandler(roomId, chatModal.find('[component="chat/controls"] [data-action="delete"]'));
 				Chats.addSendHandlers(roomId, chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 				Chats.addManageHandler(roomId, chatModal.find('[data-action="manage"]'));
 
@@ -506,6 +531,7 @@ define('chat', [
 
 	Chat.close = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', uuid);
@@ -513,15 +539,25 @@ define('chat', [
 		if (chatModal.attr('data-mobile')) {
 			Chat.disableMobileBehaviour(chatModal);
 		}
-		const roomId = chatModal.attr('data-roomid');
+
 		require(['forum/chats'], function (chats) {
-			chats.destroyAutoComplete(roomId);
+			chats.destroyAutoComplete(chatModal.find('[component="chat/input"]'));
 		});
-		socket.emit('modules.chats.leave', roomId);
+
+		Chat.leaveSocketRoom(chatModal.attr('data-roomid'));
 		hooks.fire('action:chat.closed', {
 			uuid: uuid,
 			modal: chatModal,
 		});
+	};
+
+	Chat.leaveSocketRoom = function (roomId) {
+		if (!roomId) return;
+		const isLookingAtRoom = ajaxify.data.template.chats && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10);
+		const isModalOpen = Chat.modalExists(roomId);
+		if (isLookingAtRoom !== isModalOpen) {
+			socket.emit('modules.chats.leave', roomId);
+		}
 	};
 
 	Chat.position = function (chatModal) {
@@ -549,6 +585,7 @@ define('chat', [
 		require(['forum/chats/messages'], function (ChatsMessages) {
 			const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
 			chatModal.removeClass('hide');
+			bringModalToFront(chatModal);
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottomAfterImageLoad(chatModal.find('.chat-content'));
 			Chat.focusInput(chatModal);
@@ -592,6 +629,7 @@ define('chat', [
 
 	Chat.minimize = function (uuid) {
 		const chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		chatModal.find('[data-bs-toggle="tooltip"]').tooltip('hide');
 		chatModal.addClass('hide');
 		taskbar.minimize('chat', uuid);
 		hooks.fire('action:chat.minimized', {

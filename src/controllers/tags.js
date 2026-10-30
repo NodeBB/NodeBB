@@ -31,7 +31,7 @@ tagsController.getTag = async function (req, res) {
 	};
 	const [settings, cids, categoryData, canPost, isPrivileged, rssToken, isFollowing] = await Promise.all([
 		user.getSettings(req.uid),
-		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
+		cid || getTagCids(req.uid),
 		helpers.getSelectedCategory(cid, req.uid),
 		privileges.categories.canPostTopic(req.uid),
 		user.isPrivileged(req.uid),
@@ -87,9 +87,13 @@ tagsController.getTag = async function (req, res) {
 	res.render('tag', templateData);
 };
 
+async function getTagCids(uid) {
+	const cids = await categories.getCidsByPrivilege('categories:cid', uid, 'topics:read');
+	return cids.filter(cid => cid !== -1);
+}
+
 tagsController.getTags = async function (req, res) {
-	let cids = await categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read');
-	cids = cids.filter(cid => cid !== -1);
+	const cids = await getTagCids(req.uid);
 	const [canSearch, tags] = await Promise.all([
 		privileges.global.can('search:tags', req.uid),
 		topics.getCategoryTagsData(cids, 0, 99),

@@ -61,5 +61,8 @@
 	"auto-detect": "Автоматически определять язык для гостей",
 	"default-language-help": "Язык по умолчанию определяет языковые настройки для всех посетителей форума. <br />Зарегистрированные пользователи могут выбрать другой язык в настройках своего профиля.",
 	"post-sharing": "Делиться сообщениями в",
-	"info-plugins-additional": "Плагины могут добавить дополнительные опции для функции «поделиться сообщением»"
+	"info-plugins-additional": "Плагины могут добавить дополнительные опции для функции «поделиться сообщением»",
+	"privacy": "Privacy",
+	"log-ips": "Log IP Addresses",
+	"log-ips-help": "When enabled, IP addresses of all visitors are stored in a sorted set for analytics purposes. This is used to calculate unique visitors."
 }

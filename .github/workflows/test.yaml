@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        node: [22, 24]
+        node: [24]
         database: [mongo-dev, mongo, redis, postgres]
         include:
           # only run coverage once
@@ -63,7 +63,7 @@ jobs:
           - 5432:5432
 
       redis:
-        image: 'redis:8.8.0'
+        image: 'redis:8.10.1'
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
@@ -75,10 +75,16 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:8.3'
+        image: 'mongo:7.0'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
+        # set health checks to wait until mongo has started
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v7
@@ -86,7 +92,7 @@ jobs:
       - run: cp install/package.json package.json
 
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
 
@@ -192,7 +198,7 @@ jobs:
         run: npm run coverage
 
       - name: Test coverage
-        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         if: matrix.coverage
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -207,7 +213,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2.3.6
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true

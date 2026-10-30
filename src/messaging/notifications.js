@@ -100,7 +100,7 @@ module.exports = function (Messaging) {
 				uid => utils.isNumber(uid) &&
 					(parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
 					String(fromUid) !== String(uid) &&
-					!realtimeUids.includes(parseInt(uid, 10))
+					!realtimeUids.includes(uid)
 			);
 			const hasRead = await Messaging.hasRead(uids, roomId);
 			uidsToNotify.push(...uids.filter((uid, index) => !hasRead[index]));

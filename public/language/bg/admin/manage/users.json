@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Въведете потребителски идентификатор, който да потърсите",
 	"search.username": "По име на потребител",
 	"search.username-placeholder": "Въведете потребителско име, което да потърсите",
+	"search.fullname": "По пълно име",
 	"search.email": "По е-поща",
 	"search.email-placeholder": "Въведете е-поща, която да потърсите",
 	"search.ip": "По IP адрес",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "Е-поща на този потребител",
 	"create.password": "Парола",
 	"create.password-confirm": "Потвърдете паролата",
-
-	"temp-ban.length": "Продължителност",
-	"temp-ban.reason": "Причина <span class=\"text-muted\">(незадължително)</span>",
-	"temp-ban.select-reason": "Изберете причина",
-	"temp-ban.hours": "Часове",
-	"temp-ban.days": "Дни",
-	"temp-ban.explanation": "Въведете продължителността на блокирането. Стойност от 0 ще направи блокирането за постоянно.",
-	"temp-mute.explanation": "Изберете продължителност за заглушаването. Имайте предвид, че дължина 0 означава заглушаване за неопределено време.",
 
 	"alerts.confirm-ban": "Наистина ли искате да блокирате този потребител <strong>за постоянно</strong>?",
 	"alerts.confirm-ban-multi": "Наистина ли искате да блокирате тези потребители <strong>за постоянно</strong>?",

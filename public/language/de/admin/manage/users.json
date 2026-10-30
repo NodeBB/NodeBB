@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Gib eine Benutzer-ID ein um danach zu suchen",
 	"search.username": "Nach Nutzernamen",
 	"search.username-placeholder": "Einen Nutzernamen eingeben, um danach zu suchen",
+	"search.fullname": "Nach vollem Namen",
 	"search.email": "Nach E-Mail",
 	"search.email-placeholder": "Eine E-Mail Adresse eingeben, um danach zu suchen",
 	"search.ip": "Nach IP-Adresse",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "E-Mail dieses Benutzers",
 	"create.password": "Passwort",
 	"create.password-confirm": "Passwort bestätigen",
-
-	"temp-ban.length": "Länge",
-	"temp-ban.reason": "Grund <span class=\"text-muted\">(optional)</span>",
-	"temp-ban.select-reason": "Wähle einen Grund aus",
-	"temp-ban.hours": "Stunden",
-	"temp-ban.days": "Tage",
-	"temp-ban.explanation": "Geben die dauer des Bans an. Beachte, dass eine Zeit von 0 als permanent interpretiert wird.",
-	"temp-mute.explanation": "Gebe die Dauer der Stummschaltung ein. Beachte, dass eine Zeit von 0 als permanente Stummschaltung angesehen wird.",
 
 	"alerts.confirm-ban": "Möchtest Du diesen Nutzer wirklich <strong>permanent</strong> bannen?",
 	"alerts.confirm-ban-multi": "Möchtest Du diese Nutzer wirklich <strong>permanent</strong> bannen?",
@@ -157,7 +150,7 @@
 	"export-field-signature": "Signatur",
 	"export-field-aboutme": "Über mich",
 
-	"export-users-started": "Der Export von Benutzern als CSV kann eine Weile dauern. Sie erhalten eine Benachrichtigung, wenn es abgeschlossen ist.",
+	"export-users-started": "Der Export von Benutzern als CSV kann eine Weile dauern. Du erhältst eine Benachrichtigung, wenn es abgeschlossen ist.",
 	"export-users-completed": "Benutzer wurden als CSV exportiert, klicke hier, um sie herunterzuladen.",
 	"email": "E-Mail",
 	"password": "Passwort",

@@ -55,7 +55,7 @@ async function renderList(blocklists) {
 }
 
 function throwModal() {
-	render('admin/partials/activitypub/blocklists', {}).then(async function (html) {
+	render('admin/partials/activitypub/blocklists/add', {}).then(async function (html) {
 		const submit = function () {
 			const formEl = modal.find('form').get(0);
 			if (!formEl.reportValidity()) {
@@ -165,11 +165,10 @@ async function removeDomain(domain) {
 async function view(url) {
 	try {
 		const { domains, count } = await get(`/admin/activitypub/blocklists/${encodeURIComponent(url)}`);
+		const message = await app.parseAndTranslate('admin/partials/activitypub/blocklists/view', { count, domains });
 		modals.dialog({
 			title: '[[admin/settings/activitypub:blocklists.view.title]]',
-			message: `\
-				<p>[[admin/settings/activitypub:blocklists.view.intro, ${count}]]</p> \
-				<ul>` + domains.map(domain => `<li>${domain}</li>`).join('\n') + '</ul>',
+			message,
 		});
 	} catch (e) {
 		error(e);

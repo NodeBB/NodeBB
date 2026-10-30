@@ -9,5 +9,7 @@
 	"settings": "Réglages",
 	"cookie-domain": "Domaine de session du cookie",
 	"max-user-sessions": "Nombre maximum de sessions actives par utilisateur",
-	"blank-default": "Laisser vide pour utiliser les réglages par défaut"
+	"blank-default": "Laisser vide pour utiliser les réglages par défaut",
+	"revoke-all-sessions": "Révoquer toutes les sessions",
+	"revoke-all-sessions-desc": "Cette opération supprimera toutes les sessions ; vous serez déconnecté et devrez vous reconnecter !"
 }

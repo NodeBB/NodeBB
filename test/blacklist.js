@@ -66,6 +66,13 @@ describe('blacklist', () => {
 		});
 	});
 
+	it('should fail ip test against blacklist with ipv6-mapped ipv4', (done) => {
+		blacklist.test('::ffff:1.1.1.1', (err) => {
+			assert.equal(err.message, '[[error:blacklisted-ip]]');
+			done();
+		});
+	});
+
 	it('should pass ip test and not crash with ipv6 address', (done) => {
 		blacklist.test('2001:db8:85a3:0:0:8a2e:370:7334', (err) => {
 			assert.ifError(err);

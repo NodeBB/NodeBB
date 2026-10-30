@@ -1,5 +1,6 @@
 {
 	"notifications": "Ծանուցումներ",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Ողջույնի ծանուցում",
 	"welcome-notification-link": "Ողջույնի ծանուցման հղում",
 	"welcome-notification-uid": "Welcome Notification User (UID)",

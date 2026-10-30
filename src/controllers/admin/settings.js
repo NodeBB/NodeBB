@@ -7,6 +7,7 @@ const groups = require('../../groups');
 const languages = require('../../languages');
 const navigationAdmin = require('../../navigation/admin');
 const social = require('../../social');
+const topics = require('../../topics');
 const helpers = require('../helpers');
 const plugins = require('../../plugins');
 
@@ -26,6 +27,7 @@ settingsController.general = async (req, res) => {
 		postSharing,
 		languages: languageData,
 		autoDetectLang: meta.config.autoDetectLang,
+		logIPs: meta.config.logIPs,
 	});
 };
 
@@ -95,6 +97,7 @@ settingsController.post = async (req, res) => {
 	res.render('admin/settings/post', {
 		title: '[[admin/menu:settings/post]]',
 		groupsExemptFromPostQueue: groupData,
+		topicEventTypes: Object.keys(topics.events._types).sort(),
 	});
 };
 

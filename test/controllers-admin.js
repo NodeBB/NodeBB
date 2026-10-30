@@ -234,6 +234,44 @@ describe('Admin Controllers', () => {
 		assert.strictEqual(body.users[0].username, 'admin');
 	});
 
+	it('should expose full name search in the ACP user selector', async () => {
+		await groups.join('administrators', adminUid);
+		({ jar } = await helpers.loginUser('admin', 'barbar'));
+		const { response, body } = await request.get(`${nconf.get('url')}/admin/manage/users`, { jar: jar });
+		assert.strictEqual(response.statusCode, 200);
+		assert(body.includes('<option value="fullname"'));
+		assert(body.includes('By Full Name'));
+	});
+
+	it('should search users by full name in the ACP', async () => {
+		await groups.join('administrators', adminUid);
+		({ jar } = await helpers.loginUser('admin', 'barbar'));
+		const uids = await Promise.all([
+			user.create({ username: 'fullnamesearch-acp-1', fullname: 'Profile Scanner Match' }),
+			user.create({ username: 'fullnamesearch-acp-2', fullname: 'Profile Scanner Match' }),
+		]);
+		const { response, body } = await request.get(
+			`${nconf.get('url')}/api/admin/manage/users?query=pRoFiLe%20ScAnNeR&searchBy=fullname`,
+			{ jar: jar, json: true }
+		);
+		assert.strictEqual(response.statusCode, 200);
+		assert.deepStrictEqual(body.users.map(user => user.uid).sort(), uids.sort());
+		assert.strictEqual(body.matchCount, 2);
+		assert.strictEqual(body.page, 1);
+		assert.strictEqual(body.pageCount, 1);
+		assert.strictEqual(body.resultsPerPage, 50);
+		assert.strictEqual(body.searchBy_fullname, true);
+	});
+
+	it('should keep ACP full name search restricted to administrators', async () => {
+		const { jar: regularJar } = await helpers.loginUser('regular', 'regularpwd');
+		const { response } = await request.get(
+			`${nconf.get('url')}/api/admin/manage/users?query=profile&searchBy=fullname`,
+			{ jar: regularJar, json: true }
+		);
+		assert.strictEqual(response.statusCode, 403);
+	});
+
 	it('should return empty results if query is too short', async () => {
 		const { response, body } = await request.get(`${nconf.get('url')}/api/admin/manage/users?query=a`, { jar: jar });
 		assert.strictEqual(response.statusCode, 200);
@@ -605,6 +643,51 @@ describe('Admin Controllers', () => {
 		plugins.hooks.unregister('somePlugin', 'filter:config.get', onConfigGet);
 	});
 
+	describe('custom user fields', () => {
+		after(async () => {
+			await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: jar,
+				body: { fields: [] },
+			});
+		});
+
+		it('should save custom user fields', async () => {
+			const { response } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: jar,
+				body: {
+					fields: [
+						{ key: 'pronouns', name: 'Pronouns', type: 'input-text' },
+						{ key: 'location', name: 'Location', type: 'input-text' },
+					],
+				},
+			});
+			assert.strictEqual(response.statusCode, 200);
+
+			const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+			assert.deepStrictEqual(keys, ['pronouns', 'location']);
+			const field = await db.getObject('user-custom-field:pronouns');
+			assert.strictEqual(field.name, 'Pronouns');
+		});
+
+		it('should reject a field that collides with a core user field', async () => {
+			const { response, body } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: jar,
+				body: { fields: [{ key: 'username', name: 'Username', type: 'input-text' }] },
+			});
+			assert.strictEqual(response.statusCode, 400);
+			assert.strictEqual(body.status.code, 'bad-request');
+		});
+
+		it('should not allow a regular user to save custom user fields', async () => {
+			const { jar: regularJar } = await helpers.loginUser('regular', 'regularpwd');
+			const { response } = await helpers.request('put', '/api/v3/admin/users/custom-fields', {
+				jar: regularJar,
+				body: { fields: [] },
+			});
+			assert.strictEqual(response.statusCode, 403);
+		});
+	});
+
 	describe('admin page privileges', () => {
 		let uid;
 		const privileges = require('../src/privileges');
@@ -672,6 +755,37 @@ describe('Admin Controllers', () => {
 
 					await privileges.admin.rescind([privileges.admin.routePrefixMap[route]], uid);
 				}
+			});
+		});
+
+		describe('static:privileges.admin.init', () => {
+			const plugins = require('../src/plugins');
+			const route = 'plugins/delegated-plugin-page';
+			const method = async (data) => {
+				data.routeMap[route] = 'admin:users';
+				return data;
+			};
+
+			before(async () => {
+				plugins.hooks.register('admin-init-test', { hook: 'static:privileges.admin.init', method });
+				await privileges.admin.init();
+			});
+
+			after(() => {
+				plugins.hooks.unregister('admin-init-test', 'static:privileges.admin.init', method);
+				delete privileges.admin.routeMap[route];
+			});
+
+			it('should let a plugin map its admin page to an admin privilege', async () => {
+				await privileges.admin.rescind(['admin:users'], uid);
+				let { response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts);
+				assert.strictEqual(res.statusCode, 403);
+
+				await privileges.admin.give(['admin:users'], uid);
+				({ response: res } = await request.get(`${nconf.get('url')}/api/admin/${route}`, requestOpts));
+				assert.strictEqual(res.statusCode, 404);
+
+				await privileges.admin.rescind(['admin:users'], uid);
 			});
 		});
 

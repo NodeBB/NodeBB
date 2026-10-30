@@ -18,6 +18,7 @@ const plugins = require('./plugins');
 const utils = require('./utils');
 const batch = require('./batch');
 const translator = require('./translator');
+const messaging = require('./messaging');
 
 const Flags = module.exports;
 
@@ -74,6 +75,9 @@ Flags.init = async function () {
 			cid: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byCid:', key);
 			},
+			visible: function (sets, orSets, key) {
+				orSets.push(key);
+			},
 			page: function () { /* noop */ },
 			perPage: function () { /* noop */ },
 			quick: function (sets, orSets, key, uid) {
@@ -111,18 +115,19 @@ Flags.get = async function (flagId) {
 	if (!base) {
 		throw new Error('[[error:no-flag]]');
 	}
+	const readableType = base.type === 'message' ? 'Chat message' : base.type.charAt(0).toUpperCase() + base.type.slice(1);
 	const flagObj = {
 		state: 'open',
 		assignee: null,
 		...base,
 		datetimeISO: utils.toISOString(base.datetime),
-		target_readable: `${base.type.charAt(0).toUpperCase() + base.type.slice(1)} ${base.targetId}`,
+		target_readable: `${readableType} ${base.targetId}`,
 		target: await Flags.getTarget(base.type, base.targetId, 0),
 		notes,
 		reports,
 	};
 	['flagId', 'targetUid', 'datetime', 'targetId'].forEach((prop) => {
-		if (flagObj?.[prop]) {
+		if (flagObj?.[prop] && utils.isNumber(flagObj[prop])) {
 			flagObj[prop] = parseInt(flagObj[prop], 10);
 		}
 	});
@@ -220,8 +225,9 @@ Flags.list = async function (data) {
 			}
 		});
 
+		const readableType = flagObj.type === 'message' ? 'Chat message' : flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1);
 		return Object.assign(flagObj, {
-			target_readable: `${flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1)} ${flagObj.targetId}`,
+			target_readable: `${readableType} ${flagObj.targetId}`,
 			datetimeISO: utils.toISOString(flagObj.datetime),
 		});
 	}));
@@ -321,6 +327,11 @@ Flags.validate = async function (payload) {
 		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
 			throw new Error(`[[error:not-enough-reputation-to-flag, ${meta.config['min:rep:flag']}]]`);
 		}
+	} else if (payload.type === 'message') {
+		const canView = await messaging.canViewMessage([payload.id], payload.roomId, payload.uid);
+		if (!canView[0]) {
+			throw new Error('[[error:no-privileges]]');
+		}
 	} else {
 		throw new Error('[[error:invalid-data]]');
 	}
@@ -356,6 +367,10 @@ Flags.getFlagIdByTarget = async function (type, id) {
 
 		case 'user':
 			method = user.getUserField;
+			break;
+
+		case 'message':
+			method = messaging.getMessageField;
 			break;
 
 		default:
@@ -473,6 +488,8 @@ Flags.create = async function (type, id, uid, reason, timestamp, forceFlag = fal
 		}
 	} else if (type === 'user') {
 		batched.push(user.setUserField(id, 'flagId', flagId));
+	} else if (type === 'message') {
+		batched.push(messaging.setMessageField(id, 'flagId', flagId));
 	}
 
 	// Run all the database calls in one single batched call...
@@ -496,6 +513,7 @@ Flags.purge = async function (flagIds) {
 	const flagData = (await db.getObjects(flagIds.map(flagId => `flag:${flagId}`))).filter(Boolean);
 	const postFlags = flagData.filter(flagObj => flagObj.type === 'post');
 	const userFlags = flagData.filter(flagObj => flagObj.type === 'user');
+	const messageFlags = flagData.filter(flagObj => flagObj.type === 'message');
 	const assignedFlags = flagData.filter(flagObj => !!flagObj.assignee);
 
 	const [allReports, cids] = await Promise.all([
@@ -521,8 +539,9 @@ Flags.purge = async function (flagIds) {
 			...assignedFlags.map(flagObj => ([`flags:byAssignee:${flagObj.assignee}`, flagObj.flagId])),
 			...userFlags.map(flagObj => ([`flags:byTargetUid:${flagObj.targetUid}`, flagObj.flagId])),
 		]),
-		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`, ['flagId'])),
-		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`, ['flagId'])),
+		db.deleteObjectFields(postFlags.map(flagObj => `post:${flagObj.targetId}`), ['flagId']),
+		db.deleteObjectFields(userFlags.map(flagObj => `user:${flagObj.targetId}`), ['flagId']),
+		db.deleteObjectFields(messageFlags.map(flagObj => `message:${flagObj.targetId}`), ['flagId']),
 		db.deleteAll([
 			...flagIds.map(flagId => `flag:${flagId}`),
 			...flagIds.map(flagId => `flag:${flagId}:notes`),
@@ -593,8 +612,12 @@ Flags.rescindReport = async (type, id, uid) => {
 	let reason;
 	reports.forEach((payload) => {
 		if (!reason) {
-			const [payloadUid, payloadReason] = payload.split(';');
-			if (parseInt(payloadUid, 10) === parseInt(uid, 10)) {
+			const [payloadUid, ...reasonParts] = payload.split(';');
+			const payloadReason = reasonParts.join(';');
+			const isMatch = utils.isNumber(uid) && utils.isNumber(payloadUid) ?
+				parseInt(payloadUid, 10) === parseInt(uid, 10) :
+				String(payloadUid) === String(uid);
+			if (isMatch) {
 				reason = payloadReason;
 			}
 		}
@@ -630,27 +653,6 @@ Flags.exists = async function (type, id, uid) {
 	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
-Flags.canView = async (flagId, uid) => {
-	const exists = await db.isSortedSetMember('flags:datetime', flagId);
-	if (!exists) {
-		return false;
-	}
-
-	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
-		db.getObject(`flag:${flagId}`),
-		user.isAdminOrGlobalMod(uid),
-	]);
-
-	if (type === 'post') {
-		const cid = await Flags.getTargetCid(type, targetId);
-		const isModerator = await user.isModerator(uid, cid);
-
-		return isAdminOrGlobalMod || isModerator;
-	}
-
-	return isAdminOrGlobalMod;
-};
-
 Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	const limit = meta.config['flags:limitPerTarget'];
 	if (!skipLimitCheck && limit > 0) {
@@ -670,7 +672,7 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 	if (!isPrivileged && allowedFlagsPerDay > 0) {
 		const flagData = await db.getObjects(flagIds.map(id => `flag:${id}`));
 		const flagsOfType = flagData.filter(f => f && f.type === type);
-		if (allowedFlagsPerDay > 0 && flagsOfType.length > allowedFlagsPerDay) {
+		if (flagsOfType.length >= allowedFlagsPerDay) {
 			throw new Error(`[[error:too-many-${type}-flags-per-day, ${allowedFlagsPerDay}]]`);
 		}
 	}
@@ -685,9 +687,60 @@ Flags.canFlag = async function (type, id, uid, skipLimitCheck = false) {
 			}
 			break;
 
+		case 'message':
+			return true;
+
 		default:
 			throw new Error('[[error:invalid-data]]');
 	}
+};
+
+Flags.canView = async (flagId, uid) => {
+	const exists = await db.isSortedSetMember('flags:datetime', flagId);
+	if (!exists) {
+		return false;
+	}
+
+	const [{ type, targetId }, isAdminOrGlobalMod] = await Promise.all([
+		db.getObject(`flag:${flagId}`),
+		user.isAdminOrGlobalMod(uid),
+	]);
+
+	if (type === 'message') {
+		return user.isAdministrator(uid);
+	}
+
+	if (type === 'user') {
+		return privileges.admin.can('admin:users', uid);
+	}
+
+	if (type === 'post') {
+		const cid = await Flags.getTargetCid(type, targetId);
+		const isModerator = await user.isModerator(uid, String(cid));
+
+		return isAdminOrGlobalMod || isModerator;
+	}
+
+	return isAdminOrGlobalMod;
+};
+
+Flags.getVisibleSets = async (uid) => {
+	const [isAdmin, isAdminOrGlobalMod, canManageUsers, moderatedCids] = await Promise.all([
+		user.isAdministrator(uid),
+		user.isAdminOrGlobalMod(uid),
+		privileges.admin.can('admin:users', uid),
+		user.getModeratedCids(uid),
+	]);
+	if (isAdmin) {
+		return null;
+	}
+	const sets = isAdminOrGlobalMod ?
+		['flags:byType:post'] :
+		moderatedCids.map(cid => `flags:byCid:${cid}`);
+	if (canManageUsers) {
+		sets.push('flags:byType:user');
+	}
+	return sets;
 };
 
 Flags.getTarget = async function (type, id, uid) {
@@ -703,6 +756,10 @@ Flags.getTarget = async function (type, id, uid) {
 		postData = await posts.parsePost(postData);
 		postData = await topics.addPostData([postData], uid);
 		return postData[0];
+	}
+	if (type === 'message') {
+		const message = await messaging.getMessageData(id, uid, await messaging.getRoomIdByMid(id));
+		return message && message[0] ? message[0] : {};
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -720,6 +777,8 @@ Flags.targetExists = async function (type, id) {
 			}
 		}
 		return await user.exists(id);
+	} else if (type === 'message') {
+		return await messaging.messageExists(id);
 	}
 	throw new Error('[[error:invalid-data]]');
 };
@@ -731,6 +790,14 @@ Flags.targetFlagged = async function (type, id) {
 Flags.getTargetUid = async function (type, id) {
 	if (type === 'post') {
 		return await posts.getPostField(id, 'uid');
+	}
+	if (type === 'message') {
+		const roomId = await messaging.getRoomIdByMid(id);
+		if (!roomId) {
+			return 0;
+		}
+		const uid = await messaging.getMessageField(id, 'fromuid');
+		return uid || 0;
 	}
 	return id;
 };
@@ -754,25 +821,14 @@ Flags.update = async function (flagId, uid, changeset) {
 		}
 		const notifObj = await notifications.create({
 			type: 'my-flags',
-			bodyShort: translator.compile(`[[notifications:flag-assigned-to-you, ${flagId}]]`),
+			bodyShort: translator.compile('notifications:flag-assigned-to-you', flagId),
 			path: `/flags/${flagId}`,
+			flagId: flagId,
 			nid: `flags:assign:${flagId}:uid:${assigneeId}`,
 			from: uid,
 		});
 		await notifications.push(notifObj, [assigneeId]);
 	};
-	const isAssignable = async function (assigneeId) {
-		let allowed = await user.isAdminOrGlobalMod(assigneeId);
-
-		// Mods are also allowed to be assigned, if flag target is post in uid's moderated cid
-		if (!allowed && current.type === 'post') {
-			const cid = await posts.getCidByPid(current.targetId);
-			allowed = await user.isModerator(assigneeId, cid);
-		}
-
-		return allowed;
-	};
-
 	async function rescindNotifications(match) {
 		const nids = await db.getSortedSetScan({ key: 'notifications', match: `${match}*` });
 		return notifications.rescind(nids);
@@ -798,11 +854,16 @@ Flags.update = async function (flagId, uid, changeset) {
 			}
 		} else if (prop === 'assignee') {
 			if (changeset[prop] === '') {
-				tasks.push(db.sortedSetRemove(`flags:byAssignee:${changeset[prop]}`, flagId));
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 			/* eslint-disable-next-line */
-			} else if (!await isAssignable(parseInt(changeset[prop], 10))) {
+			} else if (!await Flags.canView(flagId, parseInt(changeset[prop], 10))) {
 				delete changeset[prop];
 			} else {
+				if (current[prop]) {
+					tasks.push(db.sortedSetRemove(`flags:byAssignee:${current[prop]}`, flagId));
+				}
 				tasks.push(db.sortedSetAdd(`flags:byAssignee:${changeset[prop]}`, now, flagId));
 				tasks.push(notifyAssignee(changeset[prop]));
 			}
@@ -872,7 +933,9 @@ Flags.getHistory = async function (flagId) {
 	// turn assignee uids into usernames
 	await Promise.all(history.map(async (entry) => {
 		if (entry.fields.hasOwnProperty('assignee')) {
-			entry.fields.assignee = await user.getUserField(entry.fields.assignee, 'username');
+			entry.fields.assignee = entry.fields.assignee === '' ?
+				'[[flags:no-assignee]]' :
+				await user.getUserField(entry.fields.assignee, 'username');
 		}
 	}));
 
@@ -926,8 +989,8 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 	let uids = admins.concat(globalMods);
 	let notifObj;
 	const { reports } = flagObj;
-	const repoterUid = reports.length ? reports[reports.length - 1]?.reporter : 0;
-	const displayname = await user.getNotificationDisplayname(repoterUid);
+	const reporterUid = reports.at(-1)?.reporter?.uid ?? 0;
+	const displayname = await user.getNotificationDisplayname(reporterUid);
 	if (flagObj.type === 'post') {
 		const tid = await posts.getPostField(flagObj.targetId, 'tid');
 		const [title, cid] = await Promise.all([
@@ -943,6 +1006,7 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 			bodyLong: String(flagObj.target?.content || ''),
 			pid: flagObj.targetId,
 			path: `/flags/${flagObj.flagId}`,
+			flagId: flagObj.flagId,
 			nid: `flag:post:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-post-in|${flagObj.targetId}`,
@@ -950,15 +1014,38 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		});
 		uids = uids.concat(modUids[0]);
 	} else if (flagObj.type === 'user') {
+		uids = _.uniq(admins.concat(await privileges.admin.getUidsWithPrivilege('admin:users')));
 		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetId);
 		notifObj = await notifications.create({
 			type: 'new-user-flag',
 			bodyShort: translator.compile('notifications:user-flagged-user', displayname, targetDisplayname),
 			bodyLong: await plugins.hooks.fire('filter:parse.raw', String(flagObj.description || '')),
 			path: `/flags/${flagObj.flagId}`,
+			flagId: flagObj.flagId,
 			nid: `flag:user:${flagObj.targetId}:${uid}`,
 			from: uid,
 			mergeId: `notifications:user-flagged-user|${flagObj.targetId}`,
+			targetDisplayname: targetDisplayname,
+		});
+	} else if (flagObj.type === 'message') {
+		uids = admins;
+		const roomId = await messaging.getRoomIdByMid(flagObj.targetId);
+		const roomData = roomId ? await messaging.getRoomData(roomId) : null;
+		const targetDisplayname = await user.getNotificationDisplayname(flagObj.targetUid);
+		const roomName = roomData?.roomName || targetDisplayname;
+		let bodyLong = String(flagObj.target?.content || '');
+		if (bodyLong && bodyLong.length > 500) {
+			bodyLong = bodyLong.substring(0, 497) + '...';
+		}
+		notifObj = await notifications.create({
+			type: 'new-message-flag',
+			bodyShort: translator.compile('notifications:user-flagged-message', displayname, roomName),
+			bodyLong: bodyLong,
+			path: `/flags/${flagObj.flagId}`,
+			nid: `flag:message:${flagObj.targetId}:${uid}`,
+			from: uid,
+			mergeId: `notifications:user-flagged-message|${flagObj.targetId}`,
+			roomName: roomName,
 		});
 	} else {
 		throw new Error('[[error:invalid-data]]');
@@ -974,6 +1061,17 @@ Flags.notify = async function (flagObj, uid, notifySelf = false) {
 		uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
 	}
 	await notifications.push(notifObj, uids);
+};
+
+Flags.markNotificationsRead = async function (flagId, uid) {
+	if (!(parseInt(uid, 10) > 0)) {
+		return;
+	}
+	const nids = await user.notifications.getUnreadByField(uid, 'flagId', [flagId]);
+	if (nids.length) {
+		await notifications.markReadMultiple(nids, uid);
+		await user.notifications.pushCount(uid);
+	}
 };
 
 async function mergeBanHistory(history, targetUid, uids) {
@@ -1032,7 +1130,7 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-username]]',
+					key: changeObj.byUid ? '[[user:change-username]]' : '[[flags:registered-username]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},
@@ -1042,13 +1140,13 @@ async function mergeUsernameEmailChanges(history, targetUid, uids) {
 		});
 
 		return memo;
-	}, [])).concat(emailChanges.reduce((memo, changeObj) => {
+	}, [])).concat(emailChanges.reduce((memo, changeObj, idx) => {
 		uids.push(targetUid);
 		memo.push({
 			uid: targetUid,
 			meta: [
 				{
-					key: '[[user:change-email]]',
+					key: idx === emailChanges.length - 1 ? '[[flags:registered-email]]' : '[[user:change-email]]',
 					value: changeObj.value,
 					labelClass: 'primary',
 				},

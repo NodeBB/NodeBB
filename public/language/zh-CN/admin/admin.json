@@ -1,15 +1,15 @@
 {
 	"alert.confirm-rebuild-and-restart": "您确定想要重新部署并重启 NodeBB 吗？",
 	"alert.confirm-restart": "您确定要重启 NodeBB 吗？",
-	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
-	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
-	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
-	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.title": "重新部署中... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB 正在重新部署前端资产（css、javascript 等）。",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> 完成",
+	"rebuilding.success.message": "NodeBB 已成功重新部署并重启。",
+	"build.complete": "部署完成！... <i class=\"fa fa-spin fa-refresh\"></i>",
 
-	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"restarting.message": "NodeBB is restarting.",
-	"restarting.success.message": "NodeBB has restarted successfully.",
+	"restarting.title": "重启中... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB 正在重启。",
+	"restarting.success.message": "NodeBB 已成功重启。",
 
 
 	"acp-title": "%1 | NodeBB 管理员控制面板",

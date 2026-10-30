@@ -1,11 +1,11 @@
 <div class="navigation d-flex flex-column gap-2 px-lg-4">
 	<div class="d-flex border-bottom py-2 m-0 sticky-top acp-page-main-header align-items-center justify-content-between flex-wrap gap-2">
 		<div class="">
-			<h4 class="fw-bold tracking-tight mb-0">[[admin/settings/navigation:navigation]]</h4>
+			<h4 class="fw-bold tracking-tight mb-0">{{tx("admin/settings/navigation:navigation")}}</h4>
 		</div>
 		<div class="d-flex gap-1">
 
-			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">[[admin/admin:save-changes]]</button>
+			<button id="save" class="btn btn-primary btn-sm fw-semibold ff-secondary w-100 text-center text-nowrap">{{tx("admin/admin:save-changes")}}</button>
 		</div>
 	</div>
 
@@ -33,49 +33,49 @@
 					<form>
 						<div class="row mb-3">
 							<div class="col-sm-1">
-								<label class="form-label">[[admin/settings/navigation:icon]]</label>
+								<label class="form-label">{{tx("admin/settings/navigation:icon")}}</label>
 								<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
-									<a class="change-icon-link {{{ if enabled.iconClass }}}hidden{{{ end }}}" href="#">[[admin/settings/navigation:change-icon]]</a>
+									<a class="change-icon-link {{{ if enabled.iconClass }}}hidden{{{ end }}}" href="#">{{tx("admin/settings/navigation:change-icon")}}</a>
 									<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
 								</span>
 							</div>
 
 							<div class="col-sm-3">
-								<label class="form-label" for="nav:route">[[admin/settings/navigation:route]]</label>
+								<label class="form-label" for="nav:route">{{tx("admin/settings/navigation:route")}}</label>
 								<input id="nav:route" class="form-control" type="text" name="route" value="{enabled.route}" />
 							</div>
 
 							<div class="col-sm-4">
-								<label class="form-label" for="nav:class">[[admin/settings/navigation:class]]</label>
+								<label class="form-label" for="nav:class">{{tx("admin/settings/navigation:class")}}</label>
 								<input id="nav:class" class="form-control" type="text" name="class" value="{enabled.class}" />
 							</div>
 
 							<div class="col-sm-4">
-								<label class="form-label" for="nav:id">[[admin/settings/navigation:id]]</label>
+								<label class="form-label" for="nav:id">{{tx("admin/settings/navigation:id")}}</label>
 								<input id="nav:id" class="form-control" type="text" name="id" value="{enabled.id}" />
 							</div>
 						</div>
 
 						<div class="row mb-3">
 							<div class="col-sm-4">
-								<label class="form-label" for="nav:text">[[admin/settings/navigation:text]]</label>
+								<label class="form-label" for="nav:text">{{tx("admin/settings/navigation:text")}}</label>
 								<input id="nav:text" class="form-control" type="text" name="text" value="{enabled.text}" />
 							</div>
 
 							<div class="col-sm-4">
-								<label class="form-label" for="nav:text-class">[[admin/settings/navigation:text-class]]</label>
+								<label class="form-label" for="nav:text-class">{{tx("admin/settings/navigation:text-class")}}</label>
 								<input id="nav:text-class" class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 							</div>
 
 							<div class="col-sm-4">
-								<label class="form-label" for="nav:tooltip">[[admin/settings/navigation:tooltip]]</label>
+								<label class="form-label" for="nav:tooltip">{{tx("admin/settings/navigation:tooltip")}}</label>
 								<input id="nav:tooltip" class="form-control" type="text" name="title" value="{enabled.title}" />
 							</div>
 						</div>
 
 						<div class="row mb-3">
 							<div class="col-12">
-								<label class="form-label">[[admin/settings/navigation:show-to-groups]]</label>
+								<label class="form-label">{{tx("admin/settings/navigation:show-to-groups")}}</label>
 
 								<select name="groups" class="form-select" size="10" multiple>
 									{{{ each enabled.groups }}}
@@ -87,27 +87,27 @@
 
 						<div class="form-check form-switch mb-3">
 							<input class="form-check-input" type="checkbox" id="targetBlank-{./index}" name="targetBlank" {{{ if enabled.targetBlank }}}checked{{{ end }}}/>
-							<label for="targetBlank-{./index}" class="form-check-label">[[admin/settings/navigation:open-new-window]]</label>
+							<label for="targetBlank-{./index}" class="form-check-label">{{tx("admin/settings/navigation:open-new-window")}}</label>
 						</div>
 
 						<div class="form-check form-switch mb-3">
 							<input class="form-check-input" type="checkbox" id="dropdown-{./index}" name="dropdown" {{{ if enabled.dropdown }}}checked{{{ end }}}/>
-							<label for="dropdown-{./index}" class="form-check-label">[[admin/settings/navigation:dropdown]]</label>
+							<label for="dropdown-{./index}" class="form-check-label">{{tx("admin/settings/navigation:dropdown")}}</label>
 						</div>
 						<div class="mb-3">
 							<p class="form-text">
-								[[admin/settings/navigation:dropdown-placeholder]]
+								{{tx("admin/settings/navigation:dropdown-placeholder")}}
 							</p>
 							<textarea name="dropdownContent" rows="5" class="form-control">{enabled.dropdownContent}</textarea>
 						</div>
 						<div class="row">
 							<div class="col-sm-12 text-end">
 
-								<button class="btn btn-light btn-sm toggle disable {{{ if !enabled.enabled }}}hidden{{{ end }}}"><i class="fa fa-ban text-danger"></i> [[admin/settings/navigation:btn.disable]]</button>
+								<button class="btn btn-light btn-sm toggle disable {{{ if !enabled.enabled }}}hidden{{{ end }}}"><i class="fa fa-ban text-danger"></i> {{tx("admin/settings/navigation:btn.disable")}}</button>
 
-								<button class="btn btn-light btn-sm toggle enable {{{ if enabled.enabled }}}hidden{{{ end }}}"><i class="fa fa-check text-success"></i> [[admin/settings/navigation:btn.enable]]</button>
+								<button class="btn btn-light btn-sm toggle enable {{{ if enabled.enabled }}}hidden{{{ end }}}"><i class="fa fa-check text-success"></i> {{tx("admin/settings/navigation:btn.enable")}}</button>
 
-								<button class="btn btn-danger btn-sm delete">[[admin/settings/navigation:btn.delete]]</button>
+								<button class="btn btn-danger btn-sm delete">{{tx("admin/settings/navigation:btn.delete")}}</button>
 								<input type="hidden" name="enabled" value="{{{ if enabled.enabled }}}on{{{ end}}}" />
 							</div>
 						</div>
@@ -119,7 +119,7 @@
 
 		<div class="col-lg-3">
 			<div class="card">
-				<div class="card-header">[[admin/settings/navigation:available-menu-items]]</div>
+				<div class="card-header">{{tx("admin/settings/navigation:available-menu-items")}}</div>
 				<div class="card-body">
 					<ul id="available">
 						<li data-id="custom" class="clearfix d-flex align-items-center gap-3 mb-3">
@@ -127,7 +127,7 @@
 								<i class="fa fa-fw fa-plus-circle"></i>
 							</div>
 							<p>
-								<strong>[[admin/settings/navigation:custom-route]]</strong>
+								<strong>{{tx("admin/settings/navigation:custom-route")}}</strong>
 							</p>
 						</li>
 						{{{ each available }}}
@@ -141,9 +141,9 @@
 								</p>
 								<p class="mb-0">
 									{{{ if ./core }}}
-									<span class="badge bg-primary-subtle text-primary">[[admin/settings/navigation:core]]</span>
+									<span class="badge bg-primary-subtle text-primary">{{tx("admin/settings/navigation:core")}}</span>
 									{{{ else }}}
-									<span class="badge bg-secondary-subtle text-secondary">[[admin/settings/navigation:plugin]]</span>
+									<span class="badge bg-secondary-subtle text-secondary">{{tx("admin/settings/navigation:plugin")}}</span>
 									{{{ end }}}
 									<span class="badge text-bg-none"><code>{./route}</code></span>
 								</p>

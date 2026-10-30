@@ -104,7 +104,7 @@ define('admin/settings', [
 				if (err) {
 					return alerts.alert({
 						alert_id: 'config_status',
-						timeout: 5000,
+						timeout: 10000,
 						title: '[[admin/admin:changes-not-saved]]',
 						message: `[[admin/admin:changes-not-saved-message, ${err.message}]]`,
 						type: 'danger',

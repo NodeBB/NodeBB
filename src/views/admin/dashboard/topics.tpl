@@ -7,13 +7,13 @@
 				<tbody>
 					{{{ if !topics.length}}}
 					<tr>
-						<td colspan=4" class="text-center"><em>[[admin/dashboard:details.no-topics]]</em></td>
+						<td colspan="4" class="text-center"><em>{{tx("admin/dashboard:details.no-topics")}}</em></td>
 					</tr>
 					{{{ end }}}
 					{{{ each topics }}}
 					<tr>
 						<td><a href="{config.relative_path}/topic/{../slug}">{./title}</a></td>
-						<td>[[topic:posted-by, {./user.username}]]</td>
+						<td>{{tx("topic:posted-by", ./user.username)}}</td>
 						<td class="text-nowrap"><span class="timeago" title="{./timestampISO}"></span></td>
 					</tr>
 					{{{ end }}}

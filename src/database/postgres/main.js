@@ -12,6 +12,7 @@ module.exports = function (module) {
 
 	module.emptydb = async function () {
 		await module.pool.query(`DELETE FROM "legacy_object"`);
+		module.objectCache.reset();
 	};
 
 	module.exists = async function (key) {
@@ -137,6 +138,8 @@ DELETE FROM "legacy_object"
  WHERE "_key" = $1::TEXT`,
 			values: [key],
 		});
+
+		module.objectCache.del(key);
 	};
 
 	module.deleteAll = async function (keys) {
@@ -151,6 +154,8 @@ DELETE FROM "legacy_object"
  WHERE "_key" = ANY($1::TEXT[])`,
 			values: [keys],
 		});
+
+		module.objectCache.del(keys);
 	};
 
 	module.get = async function (key) {
@@ -257,6 +262,8 @@ WHERE "_key" = $1::TEXT`,
 				values: [oldKey, newKey],
 			});
 		});
+
+		module.objectCache.del([oldKey, newKey]);
 	};
 
 	module.type = async function (key) {

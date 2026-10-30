@@ -5,5 +5,7 @@
     "maximum-file-size": "Massimo %1 kb",
     "no-uploads-found": "Nessun caricamento trovato",
     "public-uploads-info": "I caricamenti sono pubblici, tutti i visitatori possono vederli.",
-    "private-uploads-info": "I caricamenti sono privati, solo gli utenti registrati possono vederli."
+    "private-uploads-info": "I caricamenti sono privati, solo gli utenti registrati possono vederli.",
+    "delete-upload": "Elimina caricamento",
+    "delete-upload-confirm": "Sei sicuro di voler eliminare questo caricamento?"
 }

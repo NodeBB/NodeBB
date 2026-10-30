@@ -1,0 +1,29 @@
+HashtagObject:
+  type: object
+  properties:
+    tag:
+      type: string
+      description: The hashtag name (without #)
+      example: nodebb
+    relay:
+      type: string
+      description: The relay host
+      example: relay.fedi.buzz
+    actor:
+      type: string
+      description: The actor URL
+      example: https://relay.fedi.buzz/tag/nodebb
+    state:
+      type: string
+      enum: [pending, active, error]
+      description: Follow state
+      example: active
+    createdAt:
+      type: number
+      description: Timestamp when the follow was created
+      example: 1725830000000
+
+HashtagsArray:
+  type: array
+  items:
+    $ref: '#/HashtagObject'

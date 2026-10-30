@@ -78,7 +78,7 @@ async function searchInContent(data) {
 	}
 	let pids;
 	let tids = [];
-	const inTopic = String(data.query || '').match(/^in:topic-([\d]+) /);
+	const inTopic = String(data.query || '').match(/^in:topic-([\S]+) /);
 	if (inTopic) {
 		const tid = inTopic[1];
 		const cleanedTerm = data.query.replace(inTopic[0], '');

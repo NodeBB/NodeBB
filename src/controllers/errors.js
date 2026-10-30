@@ -84,7 +84,7 @@ exports.handleErrors = async function handleErrors(err, req, res, next) { // esl
 			return helpers.formatApiResponse(status, res, err);
 		}
 
-		winston.error(`${req.method} ${req.originalUrl}\n${err.stack}`);
+		winston.error(`${req.method} ${req.originalUrl}${err.stack ? `\n${err.stack}` : ''}`);
 		res.status(status || 500);
 		const data = {
 			path: path,

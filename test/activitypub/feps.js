@@ -23,6 +23,13 @@ describe('FEPs', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('1b12', () => {
@@ -123,7 +130,7 @@ describe('FEPs', () => {
 
 				it('should federate out Announce(Like) on local vote', async () => {
 					activitypub._sent.clear();
-					await api.posts.upvote({ uid: adminUid }, { pid: topicData.mainPid, room_id: `topic_${topicData.tid}` });
+					await api.posts.upvote({ uid: adminUid }, { pid: topicData.mainPid });
 					await wait(50);
 					const activities = Array.from(activitypub._sent);
 
@@ -141,6 +148,7 @@ describe('FEPs', () => {
 				let topicData;
 
 				before(async () => {
+					meta.config.activitypubAllowLoopback = true;
 					topicData = await api.topics.create({ uid }, {
 						cid,
 						title: utils.generateUUID(),

@@ -122,7 +122,6 @@ module.exports = function (User) {
 			`uid:${uid}:bookmarks`,
 			`uid:${uid}:tids_read`,
 			`uid:${uid}:tids_unread`,
-			`uid:${uid}:blocked_uids`,
 			`user:${uid}:settings`,
 			`user:${uid}:usernames`,
 			`user:${uid}:emails`,
@@ -137,6 +136,7 @@ module.exports = function (User) {
 			`uid:${uid}:sessions`,
 			`uid:${uid}:shares`,
 			`uid:${uid}:profile:pictures`,
+			`uid:${uid}:keys`,
 			`invitation:uid:${uid}`,
 		];
 
@@ -161,6 +161,7 @@ module.exports = function (User) {
 			db.deleteAll(keys),
 			db.setRemove('invitation:uids', uid),
 			deleteUserIps(uid),
+			deleteBlocks(uid),
 			deleteUserFromFollowers(uid),
 			deleteUserFromFollowedTopics(uid),
 			deleteUserFromIgnoredTopics(uid),
@@ -221,6 +222,13 @@ module.exports = function (User) {
 			db.sortedSetsRemove(ips.map(ip => `ip:${ip}:uid`), uid),
 			db.delete(`uid:${uid}:ip`),
 		]);
+	}
+
+	async function deleteBlocks(uid) {
+		const blockerUids = await db.getSortedSetRange(`uid:${uid}:blocker_uids`, 0, -1);
+		await db.sortedSetsRemove(blockerUids.map(uid => `uid:${uid}:blocked_uids`), uid);
+		await db.deleteAll([`uid:${uid}:blocked_uids`, `uid:${uid}:blocker_uids`]);
+		User.blocks._cache.del([String(uid), ...blockerUids]);
 	}
 
 	async function deleteUserFromFollowers(uid) {

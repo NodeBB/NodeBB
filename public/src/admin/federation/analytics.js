@@ -8,6 +8,8 @@ import {
 	Tooltip,
 	Filler,
 	Legend,
+	PieController,
+	ArcElement,
 } from 'chart.js';
 
 import { get } from 'api';
@@ -21,7 +23,9 @@ Chart.register(
 	PointElement,
 	Tooltip,
 	Filler,
-	Legend
+	Legend,
+	PieController,
+	ArcElement
 );
 
 let charts;
@@ -34,8 +38,16 @@ const labels = new Map([
 	})],
 ]);
 
+const pieColors = [
+	'#5954e8', '#7892a4', '#a3b56c', '#ab4642',
+	'#d4a017', '#28a745', '#dc3545', '#6f42c1',
+	'#e83e8c', '#fd7e14', '#20c997', '#17a2b8',
+];
+
 export async function init() {
 	charts = await initializeCharts();
+
+	await renderActivitiesByTypeLegend();
 
 	const hostFilterEl = document.getElementById('hostFilter');
 	const termEl = document.getElementById('term');
@@ -59,6 +71,30 @@ async function updateCharts() {
 		chart.data.datasets[1].data = data.data[`${name}Err`];
 		chart.update();
 	});
+}
+
+async function renderActivitiesByTypeLegend() {
+	const legendEl = document.getElementById('activitiesByTypeLegend');
+	if (!legendEl) return;
+
+	const byType = ajaxify.data.data.byType;
+	const total = Object.values(byType).reduce((sum, v) => sum + v, 0);
+
+	const entries = Object.entries(byType)
+		.filter(([, count]) => count > 0)
+		.sort(([, a], [, b]) => b - a);
+
+	const items = entries.map(([type, count], idx) => {
+		const color = pieColors[idx % pieColors.length];
+		const pct = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+		return `<li class="mb-2">
+			<span class="badge me-2" style="background-color: ${color};">&nbsp;</span>
+			<span>${type}</span>
+			<span class="float-end ms-2">${count} (${pct}%)</span>
+		</li>`;
+	}).join('');
+
+	legendEl.innerHTML = items;
 }
 
 async function initializeCharts() {
@@ -129,6 +165,11 @@ async function initializeCharts() {
 	receivedCanvas.width = $(receivedCanvas).parent().width();
 	sentCanvas.width = $(sentCanvas).parent().width();
 
+	const pieCanvas = document.getElementById('activitiesByType');
+	if (pieCanvas) {
+		pieCanvas.width = $(pieCanvas).parent().width();
+	}
+
 	const chartOpts = {
 		responsive: true,
 		animation: false,
@@ -144,6 +185,34 @@ async function initializeCharts() {
 		},
 	};
 
+	const byType = ajaxify.data.data.byType;
+	const pieEntries = Object.entries(byType)
+		.filter(([, count]) => count > 0)
+		.sort(([, a], [, b]) => b - a);
+	const noDataContainer = $(pieCanvas).closest('.no-data-container');
+	const noDataMessage = noDataContainer.find('.no-data-message');
+
+	if (pieEntries.length === 0) {
+		pieCanvas.style.display = 'none';
+		noDataMessage.css('display', 'block');
+		noDataContainer.css({
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+		});
+	}
+
+	const pieData = {
+		labels: pieEntries.map(([type]) => type),
+		datasets: [{
+			data: pieEntries.map(([, count]) => count),
+			backgroundColor: Array.from(
+				pieEntries.keys(),
+				idx => pieColors[idx % pieColors.length]
+			),
+		}],
+	};
+
 	return new Map([
 		['received', new Chart(receivedCanvas.getContext('2d'), {
 			type: 'line',
@@ -154,6 +223,19 @@ async function initializeCharts() {
 			type: 'line',
 			data: data.sent,
 			options: chartOpts,
+		})],
+		['activitiesByType', new Chart(pieCanvas.getContext('2d'), {
+			type: 'pie',
+			data: pieData,
+			options: {
+				responsive: true,
+				animation: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+			},
 		})],
 	]);
 }

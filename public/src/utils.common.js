@@ -305,12 +305,15 @@ const utils = {
 	stripBidiControls: function (input) {
 		return input.replace(/[\u202A-\u202E\u2066-\u2069]/gi, '');
 	},
-	cleanUpTag: function (tag, maxLength) {
+	cleanUpTag: function (tag, maxLength, caseSensitive) {
 		if (typeof tag !== 'string' || !tag.length) {
 			return '';
 		}
 
-		tag = tag.trim().toLowerCase();
+		const doLowerCase = (caseSensitive === undefined) ?
+			(typeof config !== 'undefined' ? !config.caseSensitiveTags : true) :
+			!caseSensitive;
+		tag = doLowerCase ? tag.trim().toLowerCase() : tag.trim();
 		// see https://github.com/NodeBB/NodeBB/issues/4378
 		tag = utils.stripBidiControls(tag);
 		tag = tag.replace(/[,/#!$^*;:{}=_`<>'"~()?|]/g, '');
@@ -354,6 +357,10 @@ const utils = {
 	},
 
 	isNumber: function (n) {
+		const typeOf = typeof n;
+		if (typeOf !== 'number' && typeOf !== 'string') {
+			return false;
+		}
 		// `isFinite('') === true` so isNan parseFloat check is necessary
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	},
@@ -453,6 +460,13 @@ const utils = {
 		});
 	},
 
+	isSafeHref: function (href) {
+		const normalizedHref = String(href).trim().toLowerCase();
+		const isHttpUrl = normalizedHref.startsWith('https://') || normalizedHref.startsWith('http://');
+		const isRelativeUrl = normalizedHref.startsWith('/') && !normalizedHref.startsWith('//');
+		return isHttpUrl || isRelativeUrl;
+	},
+
 	// https://github.com/sindresorhus/is-absolute-url
 	isAbsoluteUrlRE: /^[a-zA-Z][a-zA-Z\d+\-.]*:/,
 	isWinPathRE: /^[a-zA-Z]:\\/,
@@ -465,6 +479,14 @@ const utils = {
 
 	isRelativeUrl: function (url) {
 		return !utils.isAbsoluteUrl(url);
+	},
+
+	cacheBustedUrl: function (url, updatedAt) {
+		if (!url || !updatedAt) {
+			return url;
+		}
+		const separator = url.includes('?') ? '&' : '?';
+		return `${url}${separator}v=${updatedAt}`;
 	},
 
 	makeNumberHumanReadable: function (num, toFixed = 1) {
@@ -496,7 +518,6 @@ const utils = {
 		try {
 			return new Date(parseInt(timestamp, 10)).toISOString();
 		} catch (err) {
-			console.error(err);
 			return timestamp;
 		}
 	},
@@ -710,6 +731,15 @@ const utils = {
 
 	rtrim: function (str) {
 		return str.replace(/\s+$/g, '');
+	},
+
+	maskToken: function (token) {
+		token = String(token || '');
+		if (!token) {
+			return '';
+		}
+
+		return `${token.slice(0, 4)}...${token.slice(-4)}`;
 	},
 
 	debounce: function (func, wait, immediate) {

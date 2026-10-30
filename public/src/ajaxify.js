@@ -7,6 +7,9 @@ const hooks = require('./modules/hooks');
 const { render } = require('./widgets');
 
 window.ajaxify = window.ajaxify || {};
+ajaxify.data = window._ajaxifyData || {};
+delete window._ajaxifyData;
+$('script#ajaxify-data').remove();
 ajaxify.widgets = { render: render };
 (function () {
 	let apiXHR = null;
@@ -257,12 +260,9 @@ ajaxify.widgets = { render: render };
 	function renderTemplate(url, tpl_url, data, callback) {
 		hooks.fire('action:ajaxify.loadingTemplates', {});
 		benchpress.render(tpl_url, data)
-			// TODO: remove once all tx tokens are migrated to tx("") helper
-			.then(rendered => translator.translate(rendered))
-			.then(function (translated) {
-				translated = translator.unescape(translated);
+			.then(function (html) {
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
-				$('#content').html(translated);
+				$('#content').html(html);
 
 				ajaxify.end(url, tpl_url);
 
@@ -365,20 +365,6 @@ ajaxify.widgets = { render: render };
 		hooks.fire('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
 		app.processPage();
-	};
-
-	ajaxify.parseData = () => {
-		const dataEl = document.getElementById('ajaxify-data');
-		if (dataEl) {
-			try {
-				ajaxify.data = JSON.parse(dataEl.textContent);
-			} catch (e) {
-				console.error(e);
-				ajaxify.data = {};
-			} finally {
-				dataEl.remove();
-			}
-		}
 	};
 
 	ajaxify.removeRelativePath = function (url) {
@@ -500,6 +486,12 @@ ajaxify.widgets = { render: render };
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
+		const base = new URL(`${config.asset_base_url}/templates/`, window.location.origin);
+		const url = new URL(`${template}.js`, base);
+		if (!url.pathname.startsWith(base.pathname)) {
+			callback(new Error('[[error:invalid-template-path]]'));
+			return;
+		}
 		$.ajax({
 			url: `${config.asset_base_url}/templates/${template}.js`,
 			cache: false,
@@ -516,14 +508,30 @@ ajaxify.widgets = { render: render };
 		});
 	};
 
+	ajaxify.destroyTooltips = () => {
+		$('.tooltip').each(function () {
+			const id = this.getAttribute('id');
+			const trigger = id ? document.querySelector(`[aria-describedby="${id}"]`) : null;
+			if (trigger && window.bootstrap && window.bootstrap.Tooltip) {
+				const tooltip = window.bootstrap.Tooltip.getInstance(trigger);
+				if (tooltip) {
+					tooltip.hide();
+				}
+			}
+			$(this).remove();
+		});
+	};
+
 	ajaxify.cleanup = (url, tpl_url) => {
 		app.leaveCurrentRoom();
 		$(window).off('scroll');
+		ajaxify.destroyTooltips();
 		hooks.fire('action:ajaxify.cleanup', { url, tpl_url });
 	};
 
 	ajaxify.handleTransientElements = () => {
 		// todo: modals?
+		ajaxify.destroyTooltips();
 
 		const elements = ['[component="notifications"]', '[component="chat/dropdown"]', '[component="sidebar/drafts"]', '[component="header/avatar"]']
 			.map(el => document.querySelector(`${el} .dropdown-menu.show`) || document.querySelector(`${el} + .dropdown-menu.show`))

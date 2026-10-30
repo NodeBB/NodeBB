@@ -60,11 +60,12 @@ Notifications.privilegedTypes = [
 	'notificationType_post-queue',
 	'notificationType_new-post-flag',
 	'notificationType_new-user-flag',
+	'notificationType_new-message-flag',
 ];
 
 const notificationPruneCutoff = 2592000000; // one month
 
-const intFields = ['datetime', 'from', 'importance', 'tid', 'pid', 'roomId'];
+const intFields = ['datetime', 'from', 'importance', 'tid', 'pid', 'roomId', 'flagId'];
 
 Notifications.getAllNotificationTypes = async function () {
 	const results = await plugins.hooks.fire('filter:user.notificationTypes', {
@@ -145,7 +146,9 @@ Notifications.getMultiple = async function (nids) {
 					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
 			} else if (notification.image === 'brand:logo' || !notification.image) {
-				notification.image = meta.config['brand:logo'] || `${nconf.get('relative_path')}/assets/logo.png`;
+				notification.image = meta.config['brand:logo'] ?
+					utils.cacheBustedUrl(meta.config['brand:logo'], meta.config['brand:logo:updatedAt']) :
+					`${nconf.get('relative_path')}/assets/logo.png`;
 			}
 		}
 	});
@@ -196,6 +199,9 @@ Notifications.create = async function (data) {
 	if (data.bodyShort) {
 		data.bodyShort = utils.stripBidiControls(data.bodyShort);
 	}
+	if (data.bodyLong && tx.isTranslationKey(data.bodyLong)) {
+		data.txBodyLong = 1;
+	}
 	await Promise.all([
 		db.sortedSetAdd('notifications', now, data.nid),
 		db.setObject(`notifications:${data.nid}`, data),
@@ -243,7 +249,13 @@ async function pushToUids(uids, notification) {
 					uid,
 					notification,
 				});
-				websockets.in(`uid_${uid}`).emit('event:new_notification', notification);
+				const uidsInRoom = await websockets.getUidsInRoom(`uid_${uid}`);
+				let unreadCount;
+				if (uidsInRoom.length) {
+					// only calculate the unread count for users connected right now
+					unreadCount = await User.notifications.getUnreadCount(uid);
+				}
+				websockets.in(`uid_${uid}`).emit('event:new_notification', { notification, unreadCount });
 			}));
 		}
 	}
@@ -259,11 +271,11 @@ async function pushToUids(uids, notification) {
 				uidsToNotify.push(userSettings.uid);
 			}
 
-			if (setting === 'email' || setting === 'notificationemail') {
+			if (!meta.config.disableNotificationEmails && (setting === 'email' || setting === 'notificationemail')) {
 				uidsToEmail.push(userSettings.uid);
 			}
 		});
-		return { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail };
+		return { uidsToNotify, uidsToEmail };
 	}
 
 	// Remove uid from recipients list if they have blocked the user triggering the notification
@@ -497,18 +509,21 @@ Notifications.prune = async function () {
 
 Notifications.merge = async function (notifications) {
 	// When passed a set of notification objects, merge any that can be merged
-	const mergeIds = [
-		'notifications:upvoted-your-post-in',
-		'notifications:user-started-following-you',
-		'notifications:user-posted-to',
-		'notifications:user-flagged-post-in',
-		'notifications:user-flagged-user',
-		'new-chat',
-		'notifications:user-posted-in-public-room',
-		'new-register',
-		'post-queue',
-		'notifications:activitypub.announce',
-	];
+	const { mergeIds } = await plugins.hooks.fire('filter:notifications.mergeIds', {
+		mergeIds: [
+			'notifications:upvoted-your-post-in',
+			'notifications:user-started-following-you',
+			'notifications:user-posted-to',
+			'notifications:user-flagged-post-in',
+			'notifications:user-flagged-user',
+			'notifications:user-flagged-message',
+			'new-chat',
+			'notifications:user-posted-in-public-room',
+			'new-register',
+			'post-queue',
+			'notifications:activitypub.announce',
+		],
+	});
 
 	notifications = mergeIds.reduce((notifications, mergeId) => {
 		const isolated = notifications.filter(n => n && n.hasOwnProperty('mergeId') && n.mergeId.split('|')[0] === mergeId);
@@ -527,18 +542,15 @@ Notifications.merge = async function (notifications) {
 		}, []);
 
 		differentiators.forEach((differentiator) => {
-			let set;
-			if (differentiator === 0 && differentiators.length === 1) {
-				set = isolated;
-			} else {
-				set = isolated.filter(n => n.mergeId === (`${mergeId}|${differentiator}`));
-			}
+			const target = differentiator === 0 ? mergeId : `${mergeId}|${differentiator}`;
+			const set = isolated.filter(n => n.mergeId === target);
 
 			const modifyIndex = notifications.indexOf(set[0]);
 			if (modifyIndex === -1 || set.length === 1) {
 				return notifications;
 			}
 			const notifObj = notifications[modifyIndex];
+			notifObj.mergeCount = set.length;
 			switch (mergeId) {
 				case 'new-chat': {
 					const { roomId, roomName, type, user } = set[0];
@@ -549,9 +561,22 @@ Notifications.merge = async function (notifications) {
 					break;
 				}
 
+				case 'notifications:user-flagged-message': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.roomName),
+					]);
+					break;
+				}
+
 				case 'notifications:user-posted-in-public-room': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						notifObj.roomIcon, tx.escape(notifObj.roomName),
+					]);
+					break;
+				}
+				case 'notifications:user-flagged-user': {
+					buildMergedNotif(mergeId, notifObj, set, [
+						tx.escape(notifObj.targetDisplayname),
 					]);
 					break;
 				}
@@ -559,7 +584,6 @@ Notifications.merge = async function (notifications) {
 				case 'notifications:user-started-following-you':
 				case 'notifications:user-posted-to':
 				case 'notifications:user-flagged-post-in':
-				case 'notifications:user-flagged-user':
 				case 'notifications:activitypub.announce': {
 					buildMergedNotif(mergeId, notifObj, set, [
 						tx.escape(notifObj.topicTitle),
@@ -568,7 +592,12 @@ Notifications.merge = async function (notifications) {
 				}
 
 				case 'new-register':
+				case 'post-queue':
 					notifObj.bodyShort = `[[notifications:${mergeId}-multiple, ${set.length}]]`;
+					break;
+
+				default:
+					notifObj.bodyShort = `[[notifications:merged-notifications, ${set.length}]]`;
 					break;
 			}
 
@@ -578,7 +607,7 @@ Notifications.merge = async function (notifications) {
 					return true;
 				}
 
-				return !(notifObj.mergeId === (mergeId + (differentiator ? `|${differentiator}` : '')) && idx !== modifyIndex);
+				return !(notifObj.mergeId === target && idx !== modifyIndex);
 			});
 		});
 

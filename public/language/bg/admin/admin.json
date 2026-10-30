@@ -1,15 +1,15 @@
 {
 	"alert.confirm-rebuild-and-restart": "Наистина ли искате да изградите повторно и да рестартирате NodeBB?",
 	"alert.confirm-restart": "Наистина ли искате да рестартирате NodeBB?",
-	"rebuilding.title": "Rebuilding... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"rebuilding.message": "NodeBB is rebuilding front-end assets (css, javascript, etc).",
-	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Success",
-	"rebuilding.success.message": "NodeBB has rebuilt and restarted successfully.",
-	"build.complete": "Build Complete!... <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.title": "Прекомпилиране… <i class=\"fa fa-spin fa-refresh\"></i>",
+	"rebuilding.message": "NodeBB прекомпилира клиентските ресурси (css, javascript и т.н.).",
+	"rebuildrestart.success.title": "<i class=\"fa fa-check\"></i> Успешно",
+	"rebuilding.success.message": "NodeBB прекомпилира и се рестартира успешно",
+	"build.complete": "Компилирането е завършено!… <i class=\"fa fa-spin fa-refresh\"></i>",
 
-	"restarting.title": "Restarting... <i class=\"fa fa-spin fa-refresh\"></i>",
-	"restarting.message": "NodeBB is restarting.",
-	"restarting.success.message": "NodeBB has restarted successfully.",
+	"restarting.title": "Рестартиране… <i class=\"fa fa-spin fa-refresh\"></i>",
+	"restarting.message": "NodeBB се рестартира.",
+	"restarting.success.message": "NodeBB се рестартира успешно.",
 
 
 	"acp-title": "%1 | Контролен панел за администратори на NodeBB",

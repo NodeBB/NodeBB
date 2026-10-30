@@ -5,5 +5,7 @@
     "maximum-file-size": "Máximo %1 kb",
     "no-uploads-found": "No se econtraron subidas",
     "public-uploads-info": "Las subidas son públicas, todos los usuarios pueden verlas.",
-    "private-uploads-info": "Las subidas son privadas, solo los usuarios conectados pueden verlas."
+    "private-uploads-info": "Las subidas son privadas, solo los usuarios conectados pueden verlas.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

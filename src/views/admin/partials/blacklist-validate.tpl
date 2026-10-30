@@ -1,10 +1,10 @@
 <p class="lead">
-	[[ip-blacklist:validate.x-valid, {valid.length}, {numRules}]]
+	{{tx("ip-blacklist:validate.x-valid", valid.length, numRules)}}
 </p>
 
 {{{ if invalid.length }}}
 <p>
-	[[ip-blacklist:validate.x-invalid, {invalid.length}]]
+	{{tx("ip-blacklist:validate.x-invalid", invalid.length)}}
 </p>
 <ul>
 	{{{ each invalid }}}

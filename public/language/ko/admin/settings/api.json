@@ -26,5 +26,10 @@
 	"roll": "재생성",
 
 	"delete-confirm": "이 토큰을 삭제하시겠습니까? 복구할 수 없습니다.",
-	"roll-confirm": "이 토큰을 다시 생성하시겠습니까? 이전 토큰은 즉시 폐기되어 복구할 수 없습니다."
+	"roll-confirm": "이 토큰을 다시 생성하시겠습니까? 이전 토큰은 즉시 폐기되어 복구할 수 없습니다.",
+	"token-once-title": "Copy Token Now",
+	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"copy-token": "Copy",
+	"token-copied": "Token copied to clipboard.",
+	"token-copy-failed": "Unable to copy token. Please copy it manually."
 }

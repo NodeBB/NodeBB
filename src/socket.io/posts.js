@@ -19,17 +19,21 @@ SocketPosts.getRawPost = async function (socket, pid) {
 	return await api.posts.getRaw(socket, { pid });
 };
 
+async function getPidByIndex(tid, index, sort) {
+	if (index === 0) {
+		return await topics.getTopicField(tid, 'mainPid');
+	}
+	const set = sort === 'most_votes' ? `tid:${tid}:posts:votes` : `tid:${tid}:posts`;
+	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
+	const pids = await db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, index - 1, index - 1);
+	return pids.length ? pids[0] : null;
+}
+
 SocketPosts.getPostSummaryByIndex = async function (socket, data) {
 	if (data.index < 0) {
 		data.index = 0;
 	}
-	let pid;
-	if (data.index === 0) {
-		pid = await topics.getTopicField(data.tid, 'mainPid');
-	} else {
-		pid = await db.getSortedSetRange(`tid:${data.tid}:posts`, data.index - 1, data.index - 1);
-	}
-	pid = Array.isArray(pid) ? pid[0] : pid;
+	const pid = await getPidByIndex(data.tid, data.index, data.sort);
 	if (!pid) {
 		return 0;
 	}
@@ -41,13 +45,7 @@ SocketPosts.getPostTimestampByIndex = async function (socket, data) {
 	if (data.index < 0) {
 		data.index = 0;
 	}
-	let pid;
-	if (data.index === 0) {
-		pid = await topics.getTopicField(data.tid, 'mainPid');
-	} else {
-		pid = await db.getSortedSetRange(`tid:${data.tid}:posts`, data.index - 1, data.index - 1);
-	}
-	pid = Array.isArray(pid) ? pid[0] : pid;
+	const pid = await getPidByIndex(data.tid, data.index, data.sort);
 	const [postPrivileges] = await privileges.posts.get([pid], socket.uid);
 	if (!postPrivileges.read || !postPrivileges['topics:read'] || postPrivileges.disabled) {
 		throw new Error('[[error:no-privileges]]');

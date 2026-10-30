@@ -48,6 +48,7 @@
 	"search.uid-placeholder": "Aramak için bir kullanıcı kimliği girin",
 	"search.username": "Kullanıcı Adına Göre",
 	"search.username-placeholder": "Aramak için bir kullanıcı adı girin",
+	"search.fullname": "By Full Name",
 	"search.email": "E-posta'ya göre",
 	"search.email-placeholder": "Aramak için bir e-posta adresi girin",
 	"search.ip": "IP Adresiyle",
@@ -82,14 +83,6 @@
 	"create.email-placeholder": "Bu kullanıcının e-posta adresi",
 	"create.password": "Parola",
 	"create.password-confirm": "Parolayı Onayla",
-
-	"temp-ban.length": "Uzunluk",
-	"temp-ban.reason": "Sebep<span class=\"text-muted\">(İsteğe Bağlı)</span>",
-	"temp-ban.select-reason": "Select a reason",
-	"temp-ban.hours": "Saat",
-	"temp-ban.days": "Gün",
-	"temp-ban.explanation": "Yasağın süresini girin. 0'lık bir zamanın kalıcı bir yasak olarak sayılacağını unutmayın.",
-	"temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute.",
 
 	"alerts.confirm-ban": "Bu kullanıcıyı <strong>kalıcı</strong> olarak yasaklamak istiyor musunuz?",
 	"alerts.confirm-ban-multi": "Bu kullanıcıları <strong>kalıcı</strong> olarak yasaklamak istiyor musunuz?",

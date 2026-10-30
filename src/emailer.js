@@ -242,11 +242,9 @@ Emailer.send = async (template, uid, params) => {
 
 	({ template, userData, params } = await Plugins.hooks.fire('filter:email.prepare', { template, uid, userData, params }));
 
-	if (!meta.config.sendEmailToBanned && template !== 'banned') {
-		if (userData.banned) {
-			winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
-			return;
-		}
+	if (userData.banned && !meta.config.sendEmailToBanned && template !== 'banned') {
+		winston.warn(`[emailer/send] User ${userData.username} (uid: ${uid}) is banned; not sending email due to system config.`);
+		return;
 	}
 
 	if (!userData || !userData.email) {
@@ -271,21 +269,17 @@ Emailer.send = async (template, uid, params) => {
 	params.displayname = userData.displayname;
 	params.rtl = translator.languageDirection(userSettings.userLang) === 'rtl';
 
-	const result = await Plugins.hooks.fire('filter:email.cancel', {
-		cancel: false, // set to true in plugin to cancel sending email
-		template: template,
-		params: params,
-	});
-
-	if (result.cancel) {
-		return;
-	}
 	await Emailer.sendToEmail(template, userData.email, userSettings.userLang, params);
 };
 
 Emailer.sendToEmail = async (template, email, language, params) => {
 	const lang = language || meta.config.defaultLang || 'en-GB';
 	const unsubscribable = ['digest', 'notification'];
+
+	params = { ...Emailer._defaultPayload, ...params };
+	if (!params.hasOwnProperty('rtl')) {
+		params.rtl = translator.languageDirection(lang) === 'rtl';
+	}
 
 	// Digests and notifications can be one-click unsubbed
 	let payload = {
@@ -309,6 +303,17 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 			...params.headers,
 		};
 		params.unsubUrl = unsubUrl;
+	}
+
+	const { cancel } = await Plugins.hooks.fire('filter:email.cancel', {
+		cancel: false, // set to true in plugin to cancel sending email
+		template: template,
+		params: params,
+	});
+
+	if (cancel) {
+		winston.info(`[emailer] "${template}" email to ${email} was cancelled by a plugin.`);
+		return;
 	}
 
 	const result = await Plugins.hooks.fire('filter:email.params', {
@@ -381,7 +386,7 @@ Emailer.renderAndTranslate = async (template, params, lang) => {
 		...params,
 		_i18n: languages.getFull(lang),
 	});
-	return await translator.translate(html, lang);
+	return html;
 };
 
 require('./promisify')(Emailer, ['transports']);

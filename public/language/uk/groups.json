@@ -27,6 +27,8 @@
     "details.invited": "Запрошені учасники",
     "details.has-no-posts": "Учасники групи не написали жодного посту.",
     "details.latest-posts": "Останні пости",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Приватна",
     "details.disableJoinRequests": "Вимкнути запити на приєднання",
     "details.disableLeave": "Забороніть користувачам покидати групу",
@@ -64,6 +66,7 @@
     "membership.reject": "Відхилити",
     "new-group.group-name": "Назва групи:",
     "upload-group-cover": "Завантажити обкладинку групи",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Уведіть список імен користувачів (розділених комами), котрих ви бажаєте запросити до групи",
     "bulk-invite": "Масове запрошення",
     "remove-group-cover-confirm": "Ви впевнені, що бажаєте видалити обкладинку?"

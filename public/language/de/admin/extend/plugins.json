@@ -11,7 +11,7 @@
 
 	"plugin-search": "Plugin Suche",
 	"plugin-search-placeholder": "Nach Plugin suchen...",
-	"submit-anonymous-usage": "Übermitteln Sie anonyme Plugin-Nutzungsdaten.",
+	"submit-anonymous-usage": "Anonyme Nutzungsdaten des Plugins übermitteln.",
 	"reorder-plugins": "Plugins neu sortieren",
 	"order-active": "Aktive Plugins sortieren",
 	"dev-interested": "Daran interessiert selbst Plugins für NodeBB zu schreiben?",
@@ -33,7 +33,7 @@
 	"plugin-item.unknown": "Unbekannt",
 	"plugin-item.unknown-explanation": "Der Status dieses Plugins konnte nicht bestimmt werden, möglicherweise aufgrund eines Konfigurationsfehlers.",
 	"plugin-item.compatible": "Dieses Plugin funktioniert mit NodeBB %1",
-	"plugin-item.not-compatible": "Dieses Plugin hat keine Kompatibilitätsdaten. Stellen Sie sicher, dass es funktioniert, bevor Sie es in Ihrer Produktionsumgebung installieren.",
+	"plugin-item.not-compatible": "Dieses Plugin hat keine Kompatibilitätsdaten. Stelle sicher, dass es funktioniert, bevor du es in deiner Produktionsumgebung installierst.",
 
 	"alert.enabled": "Plugin aktiviert",
 	"alert.disabled": "Plugin deaktiviert",
@@ -48,7 +48,7 @@
 	"alert.suggest-error": "<p>NodeBB konnte den Paket-Manager nicht erreichen. Willst Du mit der Installation der neuesten Version fortfahren</p><div class=\"alert alert-danger\"><strong>Der Server meldete (%1)</strong>: %2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBB konnte den Paket-Manager nicht erreichen, eine Aktualisierung wird momentan nicht empfohlen.</p>",
 	"alert.incompatible": "<p>NodeBB Version (v%1) ist nur für Aktualisierungen bis v%2 dieses Plugins bestimmt. Bitte aktualisiere NodeBB, wenn eine neuere Version dieses Plugins installiert werden soll.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Keine Kompatibilitätsinformationen gefunden</strong></p><p>Dieses Plugin legte keine spezifische NodeBB version fest, welche für die Installation benötigt wird. Volle Kompatibilität kann nicht gewährleistet werden, was dazu führen könnte, dass ihr NodeBB nicht mehr korrekt startet.</p></div><p>Für den Fall, dass NodeBB nicht mehr ordnungsgemäß startet:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Soll mit der installation der neuesten Version dieses Plugins fortgefahren werden?</p>",
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Keine Kompatibilitätsinformationen gefunden</strong></p><p>Dieses Plugin legte keine spezifische NodeBB version fest, welche für die Installation benötigt wird. Volle Kompatibilität kann nicht gewährleistet werden, was dazu führen könnte, dass dein NodeBB nicht mehr korrekt startet.</p></div><p>Für den Fall, dass NodeBB nicht mehr ordnungsgemäß startet:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Soll mit der installation der neuesten Version dieses Plugins fortgefahren werden?</p>",
 	"alert.reorder": "Plugins Neusortiert",
 	"alert.reorder-success": "Bitte starte dein NodeBB neu um diesen Prozess vollständig abzuschließen.",
 

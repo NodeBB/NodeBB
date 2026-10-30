@@ -5,5 +5,7 @@
     "maximum-file-size": "Maksimaalselt %1 kb",
     "no-uploads-found": "No uploads found",
     "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "private-uploads-info": "Uploads are private, only logged in users can see them.",
+    "delete-upload": "Delete Upload",
+    "delete-upload-confirm": "Are you sure you want to delete this upload?"
 }

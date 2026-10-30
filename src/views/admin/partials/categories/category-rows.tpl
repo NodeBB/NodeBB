@@ -24,41 +24,41 @@
 				</div>
 			</div>
 			<div class="flex-shrink-0 d-flex gap-1 align-items-start">
-				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{encodeURIComponent(./cid)}{{{end}}}" class="btn btn-light btn-sm d-none d-sm-block" target="_blank">[[admin/admin:view]]</a>
+				<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{encodeURIComponent(./cid)}{{{end}}}" class="btn btn-light btn-sm d-none d-sm-block" target="_blank">{{tx("admin/admin:view")}}</a>
 
 				{{{ if ./isLocal }}}
-				<a href="./categories/{./cid}" class="btn btn-light btn-sm d-none d-sm-block">[[admin/manage/categories:edit]]</a>
+				<a href="./categories/{./cid}" class="btn btn-light btn-sm d-none d-sm-block">{{tx("admin/manage/categories:edit")}}</a>
 				{{{ end }}}
 
 				<div class="category-tools">
 					<button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button"><i class="fa fa-fw fa-gear text-primary"></i></button>
 					<ul class="dropdown-menu dropdown-menu-end p-1" role="menu">
 						<li>
-							<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="dropdown-item rounded-1 d-block d-sm-none" target="_blank" role="menuitem">[[admin/admin:view]]</a>
+							<a href="{{{if ./link}}}{./link}{{{else}}}{config.relative_path}/category/{./cid}{{{end}}}" class="dropdown-item rounded-1 d-block d-sm-none" target="_blank" role="menuitem">{{tx("admin/admin:view")}}</a>
 						</li>
 
 						{{{ if ./isLocal }}}
-						<li><a href="./categories/{./cid}" class="dropdown-item rounded-1 d-block d-sm-none" role="menuitem">[[admin/manage/categories:edit]]</a></li>
+						<li><a href="./categories/{./cid}" class="dropdown-item rounded-1 d-block d-sm-none" role="menuitem">{{tx("admin/manage/categories:edit")}}</a></li>
 
-						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/analytics" role="menuitem">[[admin/manage/categories:analytics]]</a></li>
-						<li><a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/privileges/{categories.cid}" role="menuitem">[[admin/manage/categories:privileges]]</a></li>
-						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/federation" role="menuitem">[[admin/manage/categories:federation]]</a></li>
+						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/analytics" role="menuitem">{{tx("admin/manage/categories:analytics")}}</a></li>
+						<li><a class="dropdown-item rounded-1" href="{config.relative_path}/admin/manage/privileges/{categories.cid}" role="menuitem">{{tx("admin/manage/categories:privileges")}}</a></li>
+						<li><a class="dropdown-item rounded-1" href="./categories/{categories.cid}/federation" role="menuitem">{{tx("admin/manage/categories:federation")}}</a></li>
 						{{{ else }}}
-						<li><a class="dropdown-item rounded-1" href="#" data-cid="{./cid}" data-action="rename" role="menuitem">[[admin/manage/categories:rename]]</a></li>
+						<li><a class="dropdown-item rounded-1" href="#" data-cid="{./cid}" data-action="rename" role="menuitem">{{tx("admin/manage/categories:rename")}}</a></li>
 						{{{ end }}}
-						<li><a href="#" class="set-order dropdown-item rounded-1" data-cid="{categories.cid}" data-order="{categories.order}" role="menuitem">[[admin/manage/categories:set-order]]</a></li>
+						<li><a href="#" class="set-order dropdown-item rounded-1" data-cid="{categories.cid}" data-order="{categories.order}" role="menuitem">{{tx("admin/manage/categories:set-order")}}</a></li>
 						<li class="dropdown-divider"></li>
 						<li>
 							<a class="dropdown-item rounded-1" href="#" data-disable-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}" role="menuitem">
 							{{{if categories.disabled}}}
-							[[admin/manage/categories:enable]]
+							{{tx("admin/manage/categories:enable")}}
 							{{{else}}}
-							[[admin/manage/categories:disable]]
+							{{tx("admin/manage/categories:disable")}}
 							{{{end}}}
 							</a>
 						</li>
 						{{{ if !./isLocal }}}
-						<li><a class="dropdown-item rounded-1 text-danger" href="#" data-cid="{./cid}" data-action="remove" role="menuitem">[[admin/manage/categories:remove]]</a></li>
+						<li><a class="dropdown-item rounded-1 text-danger" href="#" data-cid="{./cid}" data-action="remove" role="menuitem">{{tx("admin/manage/categories:remove")}}</a></li>
 						{{{ end }}}
 					</ul>
 				</div>
@@ -70,7 +70,7 @@
 				<div class="invisible toggle text-center text-sm">
 					<i class="fa fa-chevron-down"></i>
 				</div>
-				<a href="{config.relative_path}/admin/manage/categories?cid={categories.cid}&page={categories.showMorePage}" class="btn btn-sm btn-light">[[category:x-more-categories, {../subCategoriesLeft}]]</a>
+				<a href="{config.relative_path}/admin/manage/categories?cid={categories.cid}&page={categories.showMorePage}" class="btn btn-sm btn-light">{{tx("category:x-more-categories", ../subCategoriesLeft)}}</a>
 			</li>
 		</ul>
 	</li>

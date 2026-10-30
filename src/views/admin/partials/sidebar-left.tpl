@@ -3,7 +3,7 @@
 
 		<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
 
-		<a href="{config.relative_path}/" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center fw-semibold text-decoration-none"><i class="fa fa-fw fa-home"></i> [[admin/menu:view-forum]]</a>
+		<a href="{config.relative_path}/" class="btn btn-ghost btn-sm d-flex gap-2 align-items-center fw-semibold text-decoration-none"><i class="fa fa-fw fa-home"></i> {{tx("admin/menu:view-forum")}}</a>
 
 		<!-- IMPORT admin/partials/search.tpl -->
 	</div>

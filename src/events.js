@@ -8,6 +8,7 @@ const batch = require('./batch');
 const user = require('./user');
 const utils = require('./utils');
 const plugins = require('./plugins');
+const meta = require('./meta');
 
 const events = module.exports;
 
@@ -76,6 +77,8 @@ events.types = [
 	'getUsersCSV',
 	'getGroupCSV',
 	'chat-room-deleted',
+	'token-add',
+	'token-delete',
 	// To add new types from plugins, just Array.push() to this array
 ];
 
@@ -84,16 +87,23 @@ events.types = [
  * Everything else gets stringified and shown as pretty JSON string
  */
 events.log = async function (data) {
-	const eid = await db.incrObjectField('global', 'nextEid');
-	data.timestamp = Date.now();
-	data.eid = eid;
 	const setKeys = [
 		'events:time',
 		`events:time:${data.type}`,
 	];
 	if (data.hasOwnProperty('uid') && data.uid) {
+		if (!utils.isNumber(data.uid)) {
+			return;
+		}
 		setKeys.push(`events:time:uid:${data.uid}`);
 	}
+	const eid = await db.incrObjectField('global', 'nextEid');
+	data.timestamp = Date.now();
+	data.eid = eid;
+	if (!meta.config.logIPs) {
+		delete data.ip;
+	}
+
 	await Promise.all([
 		db.sortedSetsAdd(setKeys, data.timestamp, eid),
 		db.setObject(`event:${eid}`, data),

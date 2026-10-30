@@ -91,12 +91,34 @@ privsCategories.list = async function (cid) {
 	return payload;
 };
 
+// Aggregated view across every category. Privileges granted in only some categories are
+// reported with the state 'mixed' so the admin UI can show an indeterminate checkbox.
+privsCategories.listAll = async function () {
+	const cids = await categories.getAllCidsFromSet('categories:cid');
+	const keys = await utils.promiseParallel({
+		users: privsCategories.getUserPrivilegeList(),
+		groups: privsCategories.getGroupPrivilegeList(),
+	});
+
+	const payload = await utils.promiseParallel({
+		labelData: Array.from(_privilegeMap.values()),
+		users: helpers.getUserPrivilegesAll(cids, keys.users),
+		groups: helpers.getGroupPrivilegesAll(cids, keys.groups),
+	});
+	payload.keys = keys;
+
+	payload.columnCountUserOther = payload.labelData.length - privsCategories._coreSize;
+	payload.columnCountGroupOther = payload.labelData.length - privsCategories._coreSize;
+
+	return payload;
+};
+
 privsCategories.get = async function (cid, uid) {
 	const privs = [
 		'topics:create', 'topics:read', 'topics:schedule',
 		'topics:tag', 'read', 'posts:view_deleted',
 	];
-
+	cid = String(cid);
 	let [userPrivileges, isAdministrator, isModerator, disabled] = await Promise.all([
 		helpers.isAllowedTo(privs, uid, cid),
 		user.isAdministrator(uid),
@@ -115,7 +137,7 @@ privsCategories.get = async function (cid, uid) {
 		cid: cid,
 		uid: uid,
 		editable: isAdminOrMod,
-		view_deleted: isAdminOrMod || privData['posts:view_deleted'],
+		view_deleted: isAdministrator || privData['posts:view_deleted'],
 		view_scheduled : isAdministrator || privData['topics:schedule'],
 		isAdminOrMod: isAdminOrMod,
 		disabled,
@@ -128,7 +150,7 @@ privsCategories.isAdminOrMod = async function (cid, uid) {
 	}
 	const [isAdmin, isMod] = await Promise.all([
 		user.isAdministrator(uid),
-		user.isModerator(uid, cid),
+		user.isModerator(uid, String(cid)),
 	]);
 	return isAdmin || isMod;
 };
@@ -152,8 +174,8 @@ privsCategories.isUserAllowedTo = async function (privilege, cid, uid) {
 };
 
 privsCategories.can = async function (privilege, cid, uid) {
-	if (!cid) {
-		return false;
+	if (!Number.isInteger(cid) && typeof cid !== 'string') {
+		return Array.isArray(privilege) ? privilege.map(() => false) : false;
 	}
 
 	const [disabled, isAdmin, isAllowed] = await Promise.all([
@@ -229,7 +251,7 @@ privsCategories.rescind = async function (privileges, cid, members) {
 privsCategories.canMoveAllTopics = async function (currentCid, targetCid, uid) {
 	const [isAdmin, isModerators] = await Promise.all([
 		user.isAdministrator(uid),
-		user.isModerator(uid, [currentCid, targetCid]),
+		user.isModerator(uid, [String(currentCid), String(targetCid)]),
 	]);
 	return isAdmin || !isModerators.includes(false);
 };

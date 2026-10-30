@@ -1,5 +1,6 @@
 {
 	"notifications": "Paziņojumi",
+	"disable-notification-emails": "Disable Notification Emails",
 	"welcome-notification": "Sveicināšanas paziņojums",
 	"welcome-notification-link": "Sveicināšanas paziņojuma saite",
 	"welcome-notification-uid": "Sveicināšanas paziņojuma lietotājs (UID)",

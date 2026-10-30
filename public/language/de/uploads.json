@@ -5,5 +5,7 @@
     "maximum-file-size": "Maximal %1 kb",
     "no-uploads-found": "Keine Uploads gefunden",
     "public-uploads-info": "Uploads sind öffentlich, alle Besucher können diese sehen.",
-    "private-uploads-info": "Uploads sind privat, nur eingeloggte Benutzer können diese sehen."
+    "private-uploads-info": "Uploads sind privat, nur eingeloggte Benutzer können diese sehen.",
+    "delete-upload": "Upload löschen",
+    "delete-upload-confirm": "Bist du sicher, dass du diesen Upload löschen möchtest?"
 }

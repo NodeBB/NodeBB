@@ -21,6 +21,13 @@ describe('Inbox', () => {
 	before(async () => {
 		meta.config.activitypubEnabled = 1;
 		await install.giveWorldPrivileges();
+
+		// Prevent real outbound requests (serve objects from the AP cache)
+		helpers.mocks.mockRequests();
+	});
+
+	after(() => {
+		helpers.mocks.restoreRequests();
 	});
 
 	describe('Inbox handling', () => {
@@ -180,6 +187,7 @@ describe('Inbox', () => {
 		describe('attributedTo validation', () => {
 			describe('private messages (non-public)', () => {
 				before(async function () {
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
 					this.uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
 				});
 
@@ -251,7 +259,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should not create a message when attributedTo is array of non-URI values', async () => {
+				it('should not create a message when attributedTo is an array of non-URI values', async () => {
 					const { note } = helpers.mocks.note({
 						attributedTo: [1, 'not-a-uri'],
 						to: [`${nconf.get('url')}/uid/${this.uid}`],
@@ -268,7 +276,7 @@ describe('Inbox', () => {
 					assert.strictEqual(await messaging.messageExists(note.id), false);
 				});
 
-				it('should accept a Create(Note) with valid URI attributedTo', async () => {
+				it('should accept a Create(Note) with valid URI attributedTo', async function () {
 					const { id: actor } = helpers.mocks.person();
 					const { note } = helpers.mocks.note({
 						attributedTo: actor,
@@ -534,8 +542,10 @@ describe('Inbox', () => {
 			describe('(Like)', () => {
 				it('should upvote a local post', async () => {
 					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: actor, actor: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(actor);
 					const { postData } = await topics.post({
-						cid,
+						cid: actor,
 						uid,
 						title: utils.generateUUID(),
 						content: utils.generateUUID(),
@@ -545,6 +555,7 @@ describe('Inbox', () => {
 						object: `${nconf.get('url')}/post/${postData.pid}`,
 					});
 					const { activity } = helpers.mocks.announce({
+						actor,
 						object: like,
 					});
 
@@ -557,12 +568,17 @@ describe('Inbox', () => {
 				});
 
 				it('should upvote an asserted remote post', async () => {
-					const { id } = helpers.mocks.note();
-					await activitypub.notes.assert(0, id, { skipChecks: true });
+					const { id: actor, actor: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(actor);
+					const { id, note } = helpers.mocks.note({
+						audience: actor,
+					});
+					const assertion = await activitypub.notes.assert(0, id, { skipChecks: true });
 					const { activity: like } = helpers.mocks.like({
 						object: id,
 					});
 					const { activity } = helpers.mocks.announce({
+						actor,
 						object: like,
 					});
 
@@ -579,16 +595,49 @@ describe('Inbox', () => {
 			describe('(Update)', () => {
 				it('should update a note\'s content', async () => {
 					const { id: actor } = helpers.mocks.person();
-					const { id, note } = helpers.mocks.note({ attributedTo: actor });
+					const { id: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(actor);
+					const { id, note } = helpers.mocks.note({
+						attributedTo: actor,
+						audience: groupActor,
+					});
 					await activitypub.notes.assert(0, id, { skipChecks: true });
 					note.content = utils.generateUUID();
-					const { activity: update } = helpers.mocks.update({ object: note });
-					const { activity } = helpers.mocks.announce({ object: update });
+					// The Update's actor must be the note's author (the verified signer).
+					const { activity: update } = helpers.mocks.update({ object: note, actor });
+					const { activity } = helpers.mocks.announce({
+						actor: groupActor,
+						object: update,
+					});
 
 					await activitypub.inbox.announce({ body: activity });
 
 					const content = await posts.getPostField(id, 'content');
 					assert.strictEqual(content, note.content);
+				});
+
+				it('should NOT allow a non-author to update a note', async () => {
+					const { id: author } = helpers.mocks.person();
+					const { id: groupActor } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(author);
+					const { id, note } = helpers.mocks.note({
+						attributedTo: author,
+						audience: groupActor,
+					});
+					await activitypub.notes.assert(0, id, { skipChecks: true });
+					const originalContent = await posts.getPostField(id, 'content');
+					note.content = utils.generateUUID();
+					// A different (non-author) actor attempts the update.
+					const { id: attacker } = helpers.mocks.person();
+					const { activity: update } = helpers.mocks.update({ object: note, actor: attacker });
+					const { activity } = helpers.mocks.announce({
+						actor: groupActor,
+						object: update,
+					});
+					await assert.rejects(activitypub.inbox.announce({ body: activity }), /no-privileges/);
+					// Content must be unchanged
+					const content = await posts.getPostField(id, 'content');
+					assert.strictEqual(content, originalContent);
 				});
 			});
 
@@ -624,6 +673,103 @@ describe('Inbox', () => {
 					const exists = await posts.exists(id);
 					const isDeleted = await posts.getPostField(id, 'deleted');
 					assert.strictEqual(isDeleted, 1);
+				});
+
+				it('should NOT allow a non-author to delete a post', async () => {
+					const { id: author } = helpers.mocks.person();
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { id } = helpers.mocks.note({
+						attributedTo: author,
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, id, { skipChecks: true });
+					const postUid = await posts.getPostField(id, 'uid');
+					assert.strictEqual(postUid, author);
+					// A different (non-author) actor attempts the delete.
+					const { id: attacker } = helpers.mocks.person();
+					const { activity: deleteActivity } = helpers.mocks.delete({ actor: attacker, object: id });
+					await assert.rejects(
+						activitypub.inbox.delete({ body: deleteActivity }),
+						/no-privileges/
+					);
+					// Post must NOT be deleted
+					const isDeleted = await posts.getPostField(id, 'deleted');
+					assert.notStrictEqual(isDeleted, 1);
+				});
+
+				it('should NOT allow a non-author to delete a topic via context', async () => {
+					// Regression: a remote Delete whose object resolves (via an
+					// attacker-served context) to a victim topic's OP must not purge
+					// that topic. The resolved post's author must be the verified signer.
+					const uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { postData } = await topics.post({
+						cid,
+						uid,
+						title: utils.generateUUID(),
+						content: utils.generateUUID(),
+					});
+
+					// Attacker serves a context object on their own server whose
+					// orderedItems reference the victim topic's OP (local pid).
+					const contextUrl = `${helpers.mocks._baseUrl}/context/${utils.generateUUID()}`;
+					activitypub._cache.set(`0;${contextUrl}`, {
+						type: 'OrderedCollection',
+						orderedItems: [postData.pid],
+					});
+
+					const { id: attacker } = helpers.mocks.person();
+					// Tombstone => soft delete (regular users have topics:delete, not purge),
+					// which is what made the pre-fix canDelete pass for the victim's OP.
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: attacker,
+						object: { id: contextUrl, type: 'Tombstone' },
+					});
+
+					await assert.rejects(
+						activitypub.inbox.delete({ body: deleteActivity }),
+						/no-privileges/
+					);
+
+					// Topic must NOT be deleted
+					const topicDeleted = await topics.getTopicField(postData.tid, 'deleted');
+					assert.notStrictEqual(topicDeleted, 1);
+				});
+
+				it('should allow the author to delete their own topic via context', async () => {
+					const { id: author } = helpers.mocks.person();
+					const { id: cid } = helpers.mocks.group();
+					await activitypub.actors.assertGroup(cid);
+					const { id: noteId } = helpers.mocks.note({
+						attributedTo: author,
+						audience: [cid],
+					});
+					await activitypub.notes.assert(0, noteId, { skipChecks: true });
+
+					// Local post is keyed by the remote URL for federated notes
+					const localPid = await activitypub.helpers.resolveLocalId(noteId).then(r => r.id || noteId);
+					const tid = await posts.getPostField(localPid, 'tid');
+					assert(await topics.exists(tid));
+
+					// Author serves a context object referencing their own OP.
+					const contextUrl = `${helpers.mocks._baseUrl}/context/${utils.generateUUID()}`;
+					activitypub._cache.set(`0;${contextUrl}`, {
+						type: 'OrderedCollection',
+						orderedItems: [localPid],
+					});
+
+					// Tombstone => soft delete (fediverse has topics:delete, not purge)
+					const { activity: deleteActivity } = helpers.mocks.delete({
+						actor: author,
+						object: { id: contextUrl, type: 'Tombstone' },
+					});
+
+					await activitypub.inbox.delete({ body: deleteActivity });
+
+					const topicDeleted = await topics.getTopicField(tid, 'deleted');
+					assert.strictEqual(topicDeleted, 1);
 				});
 
 				it('should delete the topic if the post is the only post in the topic', async () => {
@@ -724,6 +870,9 @@ describe('Inbox', () => {
 					this.remoteId = remote.id;
 					const result = await activitypub.actors.assert([remote.id]);
 
+					// Grant fediverse group global chat privileges for remote actor message deletion
+					await privileges.global.give(['groups:chat', 'groups:chat:privileged'], 'fediverse');
+
 					// Create a private chat room between the users
 					const { note } = helpers.mocks.note({
 						attributedTo: remote.id,
@@ -747,7 +896,7 @@ describe('Inbox', () => {
 						actor: this.remoteId,
 						object: this.mid,
 					});
-
+					await privileges.global.give(['groups:chat'], 'fediverse');
 					// Process the delete directly
 					await activitypub.inbox.delete({ body: deleteActivity });
 
@@ -1122,6 +1271,200 @@ describe('Inbox', () => {
 			it('should have a positive counter for the cid', async () => {
 				const score = await db.sortedSetScore(`uid:${remoteActor}:cids`, String(cid));
 				assert(score > 0);
+			});
+		});
+		describe('Relay', () => {
+			const relayActor = 'https://relay.example.com/actor';
+
+			it('should add a follower when the instance actor is followed', async () => {
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+
+				await activitypub.inbox.follow({ body: activity });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, -1);
+			});
+
+			it('should not report an unsolicited follower as a relay', async () => {
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+
+				await activitypub.inbox.follow({ body: activity });
+
+				// State -1 ("Follower") must not confer relay trust
+				assert.strictEqual(await activitypub.relays.is(relayActor), false);
+
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
+			});
+
+			it('should not create a post from an Announce(Create(Note)) by an unsolicited follower', async () => {
+				// Attacker writes itself into the relay list with a signed Follow of the instance actor
+				const { activity: followActivity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+				await activitypub.inbox.follow({ body: followActivity });
+
+				// Announce a Create(Note) with no category in to/cc, no local follower, no local mention
+				const { note } = helpers.mocks.note({
+					attributedTo: relayActor,
+					cc: [`${relayActor}/followers`],
+				});
+				const { activity: createActivity } = helpers.mocks.create({ actor: relayActor, object: note });
+				const { activity: announceActivity } = helpers.mocks.announce({
+					actor: relayActor,
+					object: createActivity,
+				});
+
+				// Must be dropped as orphan content, not written to the database
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				const exists = await posts.exists(note.id);
+				assert.strictEqual(exists, false, 'Announce from an unsolicited follower must not create a post');
+
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
+			});
+
+			it('should not escalate an unsolicited follower\'s state via a crafted Accept', async () => {
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const body = {
+					type: 'Accept',
+					actor: relayActor,
+					object: {
+						id: `${nconf.get('url')}/actor`,
+						type: 'Follow',
+						object: { id: `${nconf.get('url')}/actor` },
+					},
+				};
+
+				await activitypub.inbox.accept({ body });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, -1);
+				assert.strictEqual(await activitypub.relays.is(relayActor), false);
+			});
+
+			it('should not demote a solicited relay\'s state when it follows back', async () => {
+				// NodeBB followed the relay first (pending, state 0)
+				await db.sortedSetAdd('relays:state', 0, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const { activity } = helpers.mocks.follow({
+					actor: relayActor,
+					object: { id: `${nconf.get('url')}/actor` },
+				});
+				await activitypub.inbox.follow({ body: activity });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, 0);
+			});
+
+			it('should remove a follower when a Follow activity is undone', async () => {
+				await db.sortedSetAdd('relays:state', -1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				const followActivity = {
+					id: `${nconf.get('url')}/actor#activity/follow/${relayActor}`,
+					type: 'Follow',
+					actor: relayActor,
+					object: `${nconf.get('url')}/actor`,
+				};
+				const { activity: undoActivity } = helpers.mocks.undo({
+					actor: relayActor,
+					object: followActivity,
+				});
+
+				await activitypub.inbox.undo({ body: undoActivity });
+
+				const score = await db.sortedSetScore('relays:state', relayActor);
+				assert.strictEqual(score, null);
+			});
+
+			it('should broadcast a public activity received via announce to relay followers', async () => {
+				// The announcing actor must be a trusted relay (state >= 1) for an unaddressed
+				// Announce(Create) to be processed; unsolicited followers no longer confer relay trust.
+				await db.sortedSetAdd('relays:state', 1, relayActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), relayActor);
+
+				// A separate unsolicited follower is the outbound broadcast target
+				const followerActor = 'https://follower.example.com/actor';
+				await db.sortedSetAdd('relays:state', -1, followerActor);
+				await db.sortedSetAdd('relays:createtime', Date.now(), followerActor);
+
+				const { note, id } = helpers.mocks.note();
+				const { activity: createActivity } = helpers.mocks.create(note);
+				const { activity: announceActivity } = helpers.mocks.announce({
+					actor: relayActor,
+					object: createActivity,
+				});
+
+				// Mock activitypub.send to verify broadcast
+				const originalSend = activitypub.send;
+				const sentTo = [];
+				activitypub.send = async (type, id, targets, payload) => {
+					sentTo.push({ targets, payload });
+					return true;
+				};
+
+				// Mock resolveId so remote note IDs resolve to a local pid
+				const originalResolveId = activitypub.resolveId;
+				activitypub.resolveId = async () => 1;
+
+				// Mock notes.assert to return a valid assertion
+				const originalNotesAssert = activitypub.notes.assert;
+				activitypub.notes.assert = async () => ({ tid: 1 });
+
+				// Mock Notes.announce.add to avoid post/topic lookup errors
+				const originalAnnounceAdd = activitypub.notes.announce.add;
+				activitypub.notes.announce.add = async () => {};
+
+				// Mock posts.getPostField so Feps.announce can resolve tid/cid
+				const originalGetPostField = posts.getPostField;
+				posts.getPostField = async (id, field) => {
+					if (field === 'tid') return 1;
+					if (field === 'cid') return 1;
+					return originalGetPostField(id, field);
+				};
+
+				// Mock topics.getTopicField so Feps.announce can resolve cid
+				const originalGetTopicField = topics.getTopicField;
+				topics.getTopicField = async (id, field) => {
+					if (field === 'cid') return 1;
+					return originalGetTopicField(id, field);
+				};
+
+				// Mock relays.list so Feps.announce has relay targets
+				const originalRelaysList = activitypub.relays.list;
+				activitypub.relays.list = async () => [{ state: 2, url: relayActor }];
+
+				await activitypub.inbox.announce({ body: announceActivity });
+
+				// We expect a broadcast to relay followers
+				// Feps.announce will call activitypub.send
+				assert(sentTo.length > 0);
+				const broadcast = sentTo.find(s => s.targets.includes(followerActor));
+				assert(broadcast, 'Should have broadcast to relay follower');
+
+				activitypub.send = originalSend;
+				activitypub.resolveId = originalResolveId;
+				activitypub.notes.assert = originalNotesAssert;
+				activitypub.notes.announce.add = originalAnnounceAdd;
+				posts.getPostField = originalGetPostField;
+				topics.getTopicField = originalGetTopicField;
+				activitypub.relays.list = originalRelaysList;
+				await db.sortedSetRemove('relays:state', relayActor);
+				await db.sortedSetRemove('relays:createtime', relayActor);
+				await db.sortedSetRemove('relays:state', followerActor);
+				await db.sortedSetRemove('relays:createtime', followerActor);
 			});
 		});
 	});

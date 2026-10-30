@@ -33,6 +33,8 @@
 	"flags.limit-post-flags-per-day-help": " 비활성화하려면 0으로 설정, (기본값: 10)",
 	"flags.limit-user-flags-per-day": "하루에 사용자가 사용자를 신고할 수 있는 최대 횟수",
 	"flags.limit-user-flags-per-day-help": " 비활성화하려면 0으로 설정, (기본값: 10)",
+	"flags.limit-message-flags-per-day": "Maximum number of times a user can flag chat messages in a day",
+	"flags.limit-message-flags-per-day-help": "Set to 0 to disable, (default: 10)",
   	"flags.auto-flag-on-downvote-threshold": "게시물 자동 신고를 위한 반대표 수",
 	"flags.auto-flag-on-downvote-threshold-help": " 비활성화하려면 0으로 설정, (기본값: 0)",
 	"flags.auto-resolve-on-ban": "사용자가 차단되면 해당 사용자의 모든 신고를 자동으로 해결",

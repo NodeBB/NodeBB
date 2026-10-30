@@ -33,23 +33,45 @@ SocketAdmin.errors = require('./admin/errors');
 SocketAdmin.digest = require('./admin/digest');
 SocketAdmin.cache = require('./admin/cache');
 
-SocketAdmin.before = async function (socket, method) {
+async function checkAdminPrivileges(socket, method) {
 	const isAdmin = await user.isAdministrator(socket.uid);
 	if (isAdmin) {
-		return;
+		return true;
 	}
-
 	// Check admin privileges mapping (if not in mapping, deny access)
-	const privilegeSet = privileges.admin.socketMap.hasOwnProperty(method) ? privileges.admin.socketMap[method].split(';') : [];
+	const privilegeSet = privileges.admin.socketMap.hasOwnProperty(method) ?
+		privileges.admin.socketMap[method].split(';') :
+		[];
 	const hasPrivilege = (await Promise.all(privilegeSet.map(
 		async privilege => privileges.admin.can(privilege, socket.uid)
 	))).some(Boolean);
+
 	if (privilegeSet.length && hasPrivilege) {
+		return true;
+	}
+	return false;
+}
+
+SocketAdmin.before = async function (socket, method) {
+	if (!await checkAdminPrivileges(socket, method)) {
+		winston.warn(`[socket.io] Call to admin method ( ${method} ) blocked (accessed by uid ${socket.uid})`);
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	// match src/middleware/admin.js checkPrivileges behaviour
+	const hasPassword = await user.hasPassword(socket.uid);
+	if (!hasPassword) {
 		return;
 	}
 
-	winston.warn(`[socket.io] Call to admin method ( ${method} ) blocked (accessed by uid ${socket.uid})`);
-	throw new Error('[[error:no-privileges]]');
+	const session = socket.request?.session || {};
+	const loginTime = session?.meta ? session.meta.datetime : 0;
+	const adminReloginDuration = meta.config.adminReloginDuration * 60000;
+	const disabled = meta.config.adminReloginDuration === 0;
+	if (!disabled && (!loginTime || parseInt(loginTime, 10) <= Date.now() - adminReloginDuration)) {
+		socket.emit('event:admin.reloginRequired');
+		throw new Error('[[login:logged-out-due-to-inactivity]]');
+	}
 };
 
 SocketAdmin.restart = async function (socket) {

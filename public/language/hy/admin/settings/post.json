@@ -59,6 +59,8 @@
 	"backlinks": "Հետադարձ կապեր",
 	"backlinks.enabled": "Միացնել թեմայի հետադարձ կապերը",
 	"backlinks.help": "Եթե գրառումը հղում է կատարում մեկ այլ թեմայի, ապա այդ պահին հղումը դեպի գրառում կտեղադրվի նշված թեմայի մեջ:",
+	"topic-events.hidden": "Hidden topic event types",
+	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
 	"ip-tracking": "IP Հետևում",
 	"ip-tracking.each-post": "Հետևեք IP հասցեին յուրաքանչյուր գրառման համար",
 	"enable-post-history": "Միացնել գրառումների պատմությունը"

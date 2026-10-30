@@ -22,5 +22,12 @@
     "unread-topics": "읽지 않은 토픽",
     "categories": "카테고리",
     "tags": "태그",
-    "no-users-found": "사용자를 찾을 수 없습니다!"
+    "no-users-found": "사용자를 찾을 수 없습니다!",
+    "temp-ban.length": "Length",
+    "temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
+    "temp-ban.select-reason": "Select a reason",
+    "temp-ban.hours": "Hours",
+    "temp-ban.days": "Days",
+    "temp-ban.explanation": "Enter the length of time for the ban. Note that a time of 0 will be a considered a permanent ban.",
+    "temp-mute.explanation": "Enter the length of time for the mute. Note that a time of 0 will be a considered a permanent mute."
 }

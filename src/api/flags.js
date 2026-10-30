@@ -1,6 +1,5 @@
 'use strict';
 
-const user = require('../user');
 const flags = require('../flags');
 
 const flagsApi = module.exports;
@@ -11,12 +10,13 @@ flagsApi.create = async (caller, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	const { type, id, reason, notifyRemote } = data;
+	const { type, id, reason, notifyRemote, roomId } = data;
 
 	await flags.validate({
 		uid: caller.uid,
 		type: type,
 		id: id,
+		roomId: roomId,
 	});
 
 	const flagObj = await flags.create(type, id, caller.uid, reason, undefined, undefined, notifyRemote);
@@ -26,8 +26,7 @@ flagsApi.create = async (caller, data) => {
 };
 
 flagsApi.get = async (caller, { flagId }) => {
-	const isPrivileged = await user.isPrivileged(caller.uid);
-	if (!isPrivileged) {
+	if (!await flags.canView(flagId, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
@@ -35,12 +34,11 @@ flagsApi.get = async (caller, { flagId }) => {
 };
 
 flagsApi.update = async (caller, data) => {
-	const allowed = await user.isPrivileged(caller.uid);
-	if (!allowed) {
+	const { flagId } = data;
+	if (!await flags.canView(flagId, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	const { flagId } = data;
 	delete data.flagId;
 
 	await flags.update(flagId, caller.uid, data);
@@ -78,8 +76,7 @@ flagsApi.rescindUser = async ({ uid }, { uid: targetUid }) => {
 };
 
 flagsApi.appendNote = async (caller, data) => {
-	const allowed = await user.isPrivileged(caller.uid);
-	if (!allowed) {
+	if (!await flags.canView(data.flagId, caller.uid)) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	if (data.datetime && data.flagId) {

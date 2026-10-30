@@ -14,14 +14,21 @@ Rules.list = async () => {
 	rules = rules.map((rule, idx) => {
 		rule.rid = rids[idx];
 		rule.cid = parseInt(rule.cid, 10);
-		rule.filter = typeof rule.filter === 'string' ? rule.filter === 'true' : rule.filter;
+		// Normalize legacy filter boolean to action integer
+		if (rule.action === undefined || rule.action === null) {
+			rule.action = typeof rule.filter === 'string' ? (rule.filter === 'true' ? 1 : 0) : (rule.filter ? 1 : 0);
+		} else {
+			rule.action = parseInt(rule.action, 10);
+		}
 		return rule;
 	});
 
 	return rules;
 };
 
-Rules.upsert = async (type, value, cid, filter) => {
+Rules.upsert = async (type, value, cid, action) => {
+	action = parseInt(action, 10);
+
 	const rules = await Rules.list();
 	const existing = rules.find(rule => rule.type === type && rule.value === value);
 
@@ -37,7 +44,7 @@ Rules.upsert = async (type, value, cid, filter) => {
 	if (existing) {
 		await db.setObject(`rid:${existing.rid}`, {
 			cid,
-			filter: !!filter,
+			action,
 		});
 
 		return existing.rid;
@@ -45,7 +52,7 @@ Rules.upsert = async (type, value, cid, filter) => {
 
 	const uuid = utils.generateUUID();
 	await Promise.all([
-		db.setObject(`rid:${uuid}`, { type, value, cid, filter: !!filter }),
+		db.setObject(`rid:${uuid}`, { type, value, cid, action }),
 		db.sortedSetAdd('categorization:rid', Date.now(), uuid),
 	]);
 	return uuid;

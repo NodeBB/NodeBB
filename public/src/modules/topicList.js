@@ -101,7 +101,9 @@ define('topicList', [
 		const category = d.template.category &&
 			String(d.cid) !== String(data.cid);
 
-		const preventAlert = !!(categories || filterWatched || category || scheduledTopics.includes(data.tid));
+		const isOwn = app.user.uid && parseInt(data.uid, 10) === parseInt(app.user.uid, 10);
+
+		const preventAlert = !!(isOwn || categories || filterWatched || category || scheduledTopics.includes(data.tid));
 		hooks.fire('filter:topicList.onNewTopic', { topic: data, preventAlert }).then((result) => {
 			if (result.preventAlert) {
 				return;
@@ -135,7 +137,9 @@ define('topicList', [
 		const category = d.template.category &&
 			String(d.cid) !== String(post.topic.cid);
 
-		const preventAlert = !!(isMain || categories || filterNew || filterWatched || category);
+		const isOwn = app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
+
+		const preventAlert = !!(isMain || isOwn || categories || filterNew || filterWatched || category);
 		hooks.fire('filter:topicList.onNewPost', { post, preventAlert }).then((result) => {
 			if (result.preventAlert) {
 				return;

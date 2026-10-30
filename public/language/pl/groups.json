@@ -27,6 +27,8 @@
     "details.invited": "Zaproszeni członkowie",
     "details.has-no-posts": "Członkowie tej grupy nie napisali żadnych postów.",
     "details.latest-posts": "Ostatnie posty",
+    "details.created": "<span class=\"%1\">Created: <span class=\"timeago\" title=\"%2\"></span></span>",
+    "details.public": "Public",
     "details.private": "Prywatna",
     "details.disableJoinRequests": "Wyłączono prośbę o dołączenie",
     "details.disableLeave": "Wyłącz możliwość opuszczania użytkowników z grupy",
@@ -64,6 +66,7 @@
     "membership.reject": "Odrzuć",
     "new-group.group-name": "Nazwa grupy:",
     "upload-group-cover": "Prześlij zdjęcie tła grupy",
+    "invite-members": "Invite Members",
     "bulk-invite-instructions": "Wprowadź listę oddzielonych przecinkami nazw użytkowników, których chcesz zaprosić do tej grupy",
     "bulk-invite": "Masowe zaproszenie",
     "remove-group-cover-confirm": "Czy na pewno chcesz usunąć zdjęcie w tle?"

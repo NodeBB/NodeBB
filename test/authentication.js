@@ -13,6 +13,7 @@ const meta = require('../src/meta');
 const plugins = require('../src/plugins');
 const privileges = require('../src/privileges');
 const api = require('../src/api');
+const controllerHelpers = require('../src/controllers/helpers');
 const helpers = require('./helpers');
 
 describe('authentication', () => {
@@ -39,6 +40,228 @@ describe('authentication', () => {
 		plugins.hooks.unregister('authentication-test', 'static:email.send');
 	});
 
+	describe('x-return-to', () => {
+		it('should normalize URLs safely on a root installation', () => {
+			const configuredUrl = nconf.get('url');
+			const relativePath = nconf.get('relative_path');
+			try {
+				nconf.set('url', nconf.get('base_url'));
+				nconf.set('relative_path', '');
+				assert.strictEqual(controllerHelpers.normalizeReturnToPath('/topic/1?sort=newest#post-2'), '/topic/1?sort=newest#post-2');
+				assert.strictEqual(controllerHelpers.normalizeReturnToPath(`${nconf.get('base_url')}/topic/1`), '/topic/1');
+				assert.strictEqual(controllerHelpers.normalizeReturnToPath(`${nconf.get('base_url')}//attacker.example`), '');
+				assert.strictEqual(controllerHelpers.normalizeReturnToPath('//attacker.example'), '');
+				assert.strictEqual(controllerHelpers.normalizeReturnToPath('/api/v3/users'), '/api/v3/users');
+				assert.strictEqual(controllerHelpers.normalizeReturnToPath('/api/v3/users', { allowApi: false }), '');
+			} finally {
+				nconf.set('url', configuredUrl);
+				nconf.set('relative_path', relativePath);
+			}
+		});
+
+		async function getLoginDestination(page, returnTo) {
+			const requestJar = request.jar();
+			const { response: pageResponse } = await request.get(`${nconf.get('url')}/api/${page}`, {
+				jar: requestJar,
+				headers: {
+					'x-return-to': returnTo,
+				},
+			});
+			assert.strictEqual(pageResponse.statusCode, 200);
+
+			const csrf_token = await helpers.getCsrfToken(requestJar);
+			const { response, body } = await request.post(`${nconf.get('url')}/login`, {
+				jar: requestJar,
+				body: {
+					username: 'regular',
+					password: 'regularpwd',
+				},
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			});
+			assert.strictEqual(response.statusCode, 200);
+			return body.next;
+		}
+
+		const relativePath = nconf.get('relative_path');
+		const home = `${relativePath}/`;
+		const invalidTargets = [
+			{ name: 'an external absolute URL', value: 'https://attacker.example/topic/1' },
+			{ name: 'a scheme-relative URL', value: '//attacker.example/topic/1' },
+			{ name: 'an encoded scheme-relative URL', value: '%2F%2Fattacker.example/topic/1' },
+			{ name: 'an encoded external absolute URL', value: 'https%3A%2F%2Fattacker.example%2Ftopic%2F1' },
+			{ name: 'a backslash authority URL', value: '/\\attacker.example/topic/1' },
+			{ name: 'an encoded backslash authority URL', value: '/%5Cattacker.example/topic/1' },
+			{ name: 'an encoded control character', value: '/topic/1%0D%0AX-Test%3Avalue' },
+			{ name: 'a malformed encoded URL', value: '/topic/%' },
+			{ name: 'a same-origin URL that becomes scheme-relative after subfolder stripping', value: `${nconf.get('url')}//attacker.example/topic/1` },
+			{ name: 'an encoded path that becomes scheme-relative after subfolder stripping', value: `${relativePath}/%2F%2Fattacker.example/topic/1` },
+		];
+		const mountBoundaryTargets = [
+			{ name: 'a same-origin URL at the origin root', value: `${nconf.get('base_url')}/outside` },
+			{ name: 'a same-origin URL resolving to the origin root', value: `${nconf.get('url')}/../outside` },
+		];
+
+		['login', 'register'].forEach((page) => {
+			invalidTargets.forEach((target) => {
+				it(`should reject ${target.name} from the ${page} page`, async () => {
+					assert.strictEqual(await getLoginDestination(page, target.value), home);
+				});
+			});
+			mountBoundaryTargets.forEach((target) => {
+				const expected = relativePath ? home : '/outside';
+				const behavior = relativePath ? 'reject' : 'preserve';
+				it(`should ${behavior} ${target.name} from the ${page} page`, async () => {
+					assert.strictEqual(await getLoginDestination(page, target.value), expected);
+				});
+			});
+
+			it(`should preserve an internal URL with query and hash from the ${page} page`, async () => {
+				const target = '/topic/1?next=%2Fcategory%2F1#post-2';
+				assert.strictEqual(
+					await getLoginDestination(page, target),
+					`${nconf.get('relative_path')}${target}`
+				);
+			});
+
+			it(`should strip the configured subfolder from a same-origin URL on the ${page} page`, async () => {
+				const path = '/topic/1?sort=newest#post-2';
+				assert.strictEqual(await getLoginDestination(page, `${nconf.get('url')}${path}`), `${nconf.get('relative_path')}${path}`);
+			});
+
+			if (relativePath) {
+				it(`should not confuse a subfolder-prefix lookalike on the ${page} page`, async () => {
+					assert.strictEqual(
+						await getLoginDestination(page, `${relativePath}ish/topic/1`),
+						`${relativePath}${relativePath}ish/topic/1`
+					);
+				});
+			} else {
+				it(`should reject a path without a leading slash from the ${page} page`, async () => {
+					assert.strictEqual(await getLoginDestination(page, 'ish/topic/1'), home);
+				});
+			}
+		});
+
+		async function getApiReauthDestination(returnTo, expectedSessionReturnTo) {
+			const { jar: reauthJar } = await helpers.loginUser('regular', 'regularpwd');
+			let hookReturnTo;
+			const hookName = `x-return-to-reauth-${utils.generateUUID()}`;
+			plugins.hooks.register(hookName, {
+				hook: 'response:auth.relogin',
+				method: async ({ req }) => {
+					hookReturnTo = req.session.returnTo;
+				},
+			});
+
+			try {
+				const { response } = await helpers.request('post', '/api/v3/users/reauth/verify', {
+					jar: reauthJar,
+					body: {},
+					headers: {
+						'x-return-to': returnTo,
+					},
+				});
+				assert.strictEqual(response.statusCode, 401);
+				assert.strictEqual(hookReturnTo, expectedSessionReturnTo);
+			} finally {
+				plugins.hooks.unregister(hookName, 'response:auth.relogin');
+			}
+
+			const csrf_token = await helpers.getCsrfToken(reauthJar);
+			const { body } = await request.post(`${nconf.get('url')}/login`, {
+				jar: reauthJar,
+				body: {
+					username: 'regular',
+					password: 'regularpwd',
+				},
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			});
+			return body.next;
+		}
+
+		it('should normalize the return path before firing the API reauthentication hook', async () => {
+			const target = '/topic/1?sort=newest#post-2';
+			assert.strictEqual(
+				await getApiReauthDestination(`${nconf.get('url')}${target}`, target),
+				`${nconf.get('relative_path')}${target}`
+			);
+		});
+
+		it('should reject an external API reauthentication return URL', async () => {
+			assert.strictEqual(
+				await getApiReauthDestination('https://attacker.example/topic/1', '/'),
+				home
+			);
+		});
+
+		it('should not redirect a browser login back to an API route', async () => {
+			assert.strictEqual(
+				await getApiReauthDestination('/api/v3/admin/tokens', '/'),
+				home
+			);
+		});
+
+		it('should reject case and encoded variants of the API route', async () => {
+			assert.strictEqual(
+				await getApiReauthDestination('/API/v3/admin/tokens', '/'),
+				home
+			);
+			assert.strictEqual(
+				await getApiReauthDestination('/a%70i/v3/admin/tokens', '/'),
+				home
+			);
+		});
+
+		it('should let the registration-complete hook override a normalized internal target', async () => {
+			const requestJar = request.jar();
+			const target = '/topic/1?sort=newest#post-2';
+			const pluginTarget = 'https://plugin.example/return';
+			let hookNext;
+			const hookName = `x-return-to-register-${utils.generateUUID()}`;
+			plugins.hooks.register(hookName, {
+				hook: 'filter:register.complete',
+				method: async (data) => {
+					hookNext = data.next;
+					data.next = pluginTarget;
+					return data;
+				},
+			});
+
+			try {
+				await request.get(`${nconf.get('url')}/api/register`, {
+					jar: requestJar,
+					headers: {
+						'x-return-to': `${nconf.get('url')}${target}`,
+					},
+				});
+				const csrf_token = await helpers.getCsrfToken(requestJar);
+				const username = `returnto${utils.generateUUID().slice(0, 8)}`;
+				const { response, body } = await request.post(`${nconf.get('url')}/register`, {
+					jar: requestJar,
+					body: {
+						username,
+						email: `${username}@example.org`,
+						password: 'register-password',
+						'password-confirm': 'register-password',
+						gdpr_consent: true,
+					},
+					headers: {
+						'x-csrf-token': csrf_token,
+					},
+				});
+				assert.strictEqual(response.statusCode, 200);
+				assert.strictEqual(hookNext, target);
+				assert.strictEqual(body.next, pluginTarget);
+			} finally {
+				plugins.hooks.unregister(hookName, 'filter:register.complete');
+			}
+		});
+	});
+
 	it('should allow login with email for uid 1', async () => {
 		const oldValue = meta.config.allowLoginWith;
 		meta.config.allowLoginWith = 'username-email';
@@ -52,9 +275,34 @@ describe('authentication', () => {
 		meta.config.allowLoginWith = 'username-email';
 		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
 		const { response, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
-		assert.strictEqual(response.statusCode, 400);
-		assert.strictEqual(body, '[[error:invalid-email]]');
+		// Unconfirmed emails are not in the email:uid index, so they fall through the
+		// same non-existent-user path as any other bad credential (403, not 400).
+		assert.strictEqual(response.statusCode, 403);
+		assert.strictEqual(body, '[[error:invalid-login-credentials]]');
 		meta.config.allowLoginWith = oldValue;
+	});
+
+	it('should not leak whether an email is registered (email enumeration)', async () => {
+		const oldValue = meta.config.allowLoginWith;
+		meta.config.allowLoginWith = 'username-email';
+		try {
+			// Unregistered email
+			const { response: emailRes, body: emailBody } = await helpers.loginUser('unregistered-enum@example.com', 'SomePassword123');
+			// Non-existent username
+			const { response: userRes, body: userBody } = await helpers.loginUser('unregistered-enum-user', 'SomePassword123');
+			// Registered email with a wrong password
+			const { response: regRes, body: regBody } = await helpers.loginUser('regular@nodebb.org', 'WrongPassword123');
+
+			// All three must be indistinguishable: same status, same message
+			assert.strictEqual(emailRes.statusCode, 403);
+			assert.strictEqual(emailBody, '[[error:invalid-login-credentials]]');
+			assert.strictEqual(userRes.statusCode, 403);
+			assert.strictEqual(userBody, '[[error:invalid-login-credentials]]');
+			assert.strictEqual(regRes.statusCode, 403);
+			assert.strictEqual(regBody, '[[error:invalid-login-credentials]]');
+		} finally {
+			meta.config.allowLoginWith = oldValue;
+		}
 	});
 
 	it('should fail to create user if username is too short', async () => {
@@ -198,6 +446,29 @@ describe('authentication', () => {
 			const sessions = await db.getSortedSetRange(`uid:${uid}:sessions`, 0, -1);
 			assert(sessions);
 			assert(Object.keys(sessions).length > 0);
+		});
+
+		it('should track the new session when a logged-in user signs in as another user', async () => {
+			const firstUsername = utils.generateUUID().slice(0, 10);
+			const firstPassword = utils.generateUUID();
+			await user.create({ username: firstUsername, password: firstPassword });
+			const { jar, response: firstLoginResponse } = await helpers.loginUser(firstUsername, firstPassword);
+			assert.strictEqual(firstLoginResponse.statusCode, 200);
+			assert.strictEqual(await db.sortedSetCard(`uid:${uid}:sessions`), 0);
+
+			try {
+				const { response } = await helpers.request('post', '/login', {
+					jar,
+					body: { username, password },
+				});
+				assert.strictEqual(response.statusCode, 200);
+
+				const { body: self } = await request.get(`${nconf.get('url')}/api/self`, { jar });
+				assert.strictEqual(self.uid, uid);
+				assert.strictEqual((await user.auth.getSessions(uid)).length, 1);
+			} finally {
+				await helpers.logoutUser(jar);
+			}
 		});
 
 		it('should set a cookie that only lasts for the life of the browser session', async () => {
@@ -369,6 +640,137 @@ describe('authentication', () => {
 		assert.equal(body, '[[register:invite.error-invite-only]]');
 	});
 
+	describe('pending registrations', () => {
+		let previousConfig;
+
+		before(() => {
+			previousConfig = {
+				registrationType: meta.config.registrationType,
+				registrationApprovalType: meta.config.registrationApprovalType,
+				gdpr_enabled: meta.config.gdpr_enabled,
+				sendValidationEmail: meta.config.sendValidationEmail,
+			};
+		});
+
+		beforeEach(() => {
+			meta.config.registrationType = 'normal';
+			meta.config.registrationApprovalType = 'normal';
+			meta.config.gdpr_enabled = 1;
+			meta.config.sendValidationEmail = 0;
+		});
+
+		after(() => {
+			Object.assign(meta.config, previousConfig);
+		});
+
+		function registrationBody(username) {
+			return {
+				username,
+				email: `${username}@example.org`,
+				password: 'pending-registration-password',
+				'password-confirm': 'pending-registration-password',
+			};
+		}
+
+		async function parkRegistration(username) {
+			const jar = request.jar();
+			const { response, body } = await helpers.request('post', '/register', {
+				jar,
+				body: registrationBody(username),
+			});
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
+			assert.strictEqual(await user.getUidByUsername(username), null);
+			return jar;
+		}
+
+		async function completeRegistration(jar) {
+			const formData = new FormData();
+			formData.append('gdpr_agree_data', 'on');
+			formData.append('gdpr_agree_email', 'on');
+			return await helpers.request('post', '/register/complete', {
+				jar,
+				body: formData,
+				redirect: 'manual',
+			});
+		}
+
+		it('should complete if the registration policy still allows it', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 302);
+			assert(await user.getUidByUsername(username));
+		});
+
+		it('should reject a pending registration after registrations are disabled', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			meta.config.registrationType = 'disabled';
+
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 403);
+			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
+
+		it('should reject an uninvited pending registration after invite-only mode is enabled', async () => {
+			const username = `policy${utils.generateUUID().slice(0, 8)}`;
+			const jar = await parkRegistration(username);
+			meta.config.registrationType = 'invite-only';
+
+			const { response } = await completeRegistration(jar);
+
+			assert.strictEqual(response.status, 302);
+			const redirect = new URL(response.headers.location, nconf.get('url'));
+			assert.strictEqual(redirect.searchParams.get('register'), '[[register:invite.error-invite-only]]');
+			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
+
+		it('should ignore a client-supplied uid in the registration body', async () => {
+			meta.config.requireEmailAddress = 0;
+
+			// Victim: an account with a confirmed email and no password (e.g. SSO-created)
+			const suffix = utils.generateUUID().slice(0, 8);
+			const victimUid = await user.create({
+				username: `victim${suffix}`,
+				email: `victim${suffix}@example.org`,
+			}, { emailVerification: 'verify' });
+
+			const username = `mallory${suffix}`;
+			const jar = request.jar();
+			const { response, body } = await helpers.request('post', '/register', {
+				jar,
+				body: {
+					username,
+					password: 'pending-registration-password',
+					'password-confirm': 'pending-registration-password',
+					uid: victimUid,
+				},
+			});
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
+
+			const formData = new FormData();
+			formData.append('email', '');
+			formData.append('gdpr_agree_data', 'on');
+			formData.append('gdpr_agree_email', 'on');
+			const { response: res2 } = await helpers.request('post', '/register/complete', {
+				jar,
+				body: formData,
+				redirect: 'manual',
+			});
+			assert.strictEqual(res2.status, 302);
+
+			const victimData = await user.getUserFields(victimUid, ['email', 'email:confirmed']);
+			assert.strictEqual(victimData.email, `victim${suffix}@example.org`);
+			assert.strictEqual(victimData['email:confirmed'], 1);
+
+			meta.config.requireEmailAddress = 1;
+		});
+	});
+
 	it('should fail to register if username is falsy or too short', async () => {
 		const userData = [
 			{ username: '', password: 'somepassword' },
@@ -504,6 +906,50 @@ describe('authentication', () => {
 		assert(locked);
 	});
 
+	it('should lockout IP after 5 failed login attempts', async () => {
+		const ip = '1.2.3.4';
+		const jar = request.jar();
+		const oldIpLoginAttempts = meta.config.ipLoginAttempts;
+		meta.config.ipLoginAttempts = 5;
+		const oldLoginAttempts = meta.config.loginAttempts;
+		meta.config.loginAttempts = 1000;
+		const csrf_token = await helpers.getCsrfToken(jar);
+		const payload = { username: 'nonexistent', password: 'wrongpassword' };
+		const headers = {
+			'x-forwarded-for': ip,
+			'x-csrf-token': csrf_token,
+		};
+
+		// 5 attempts should not lock out yet
+		for (let i = 0; i < 5; i++) {
+			// eslint-disable-next-line no-await-in-loop
+			const { response, body } = await request.post(`${nconf.get('url')}/login`, {
+				jar,
+				body: payload,
+				headers,
+			});
+			assert.strictEqual(response.statusCode, 403);
+			assert.strictEqual(body, '[[error:invalid-login-credentials]]');
+		}
+
+		// 6th attempt should lock out
+		const { response: res21, body: body21 } = await request.post(`${nconf.get('url')}/login`, {
+			jar,
+			body: payload,
+			headers,
+		});
+		assert.strictEqual(res21.statusCode, 403);
+		assert.strictEqual(body21, '[[error:ip-locked]]');
+
+		// verify lockout key exists
+		const locked = await db.exists(`lockout:ip:${ip}`);
+		assert(locked);
+
+		meta.config.loginAttempts = oldLoginAttempts;
+		meta.config.ipLoginAttempts = oldIpLoginAttempts;
+	});
+
+
 	it('should clear all reset tokens upon successful login', async () => {
 		const code = await user.reset.generate(regularUid);
 		await helpers.loginUser('regular', 'regularpwd');
@@ -569,6 +1015,19 @@ describe('authentication', () => {
 
 			assert.strictEqual(response.statusCode, 200);
 			assert.strictEqual(body.username, 'apiUserTarget');
+		});
+
+		it('should return an error if master api token _uid points to a banned user', async () => {
+			await user.bans.ban(newUid);
+			const { response, body } = await helpers.request('get', `/api/categories?_uid=${newUid}`, {
+				headers: {
+					Authorization: `Bearer ${masterToken}`,
+				},
+			});
+
+			assert.strictEqual(response.statusCode, 403);
+			assert.strictEqual(body.error, '[[error:user-banned]]');
+			await user.bans.unban(newUid);
 		});
 	});
 });

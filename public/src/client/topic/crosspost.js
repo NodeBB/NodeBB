@@ -54,6 +54,7 @@ define('forum/topic/crosspost', [
 			}
 			categoryFilter.init($('[component="category/dropdown"]'), {
 				onHidden: onCategoriesSelected,
+				privilege: 'topics:crosspost',
 				hideAll: true,
 				hideUncategorized: true,
 				localOnly: true,

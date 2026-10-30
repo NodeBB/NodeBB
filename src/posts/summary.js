@@ -22,7 +22,9 @@ module.exports = function (Posts) {
 		options.escape = options.hasOwnProperty('escape') ? options.escape : false;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
-		const fields = ['pid', 'tid', 'toPid', 'url', 'content', 'sourceContent', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies', 'handle'].concat(options.extraFields);
+		// `uploads` is selected so parsing can size images without a second lookup,
+		// and is dropped again below to keep the summary payload unchanged
+		const fields = ['pid', 'tid', 'toPid', 'url', 'content', 'sourceContent', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes', 'replies', 'handle', 'uploads'].concat(options.extraFields);
 
 		let posts = await Posts.getPostsFields(pids, fields);
 		posts = posts.filter(Boolean);
@@ -32,7 +34,7 @@ module.exports = function (Posts) {
 		const tids = _.uniq(posts.map(p => p && p.tid));
 
 		const [users, topicsAndCategories] = await Promise.all([
-			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status']),
+			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'fullnameEmoji']),
 			getTopicAndCategories(tids),
 		]);
 
@@ -68,6 +70,9 @@ module.exports = function (Posts) {
 		posts = posts.filter(post => tidToTopic[post.tid]);
 
 		posts = await parsePosts(posts, options);
+		if (!options.extraFields.includes('uploads')) {
+			posts.forEach((post) => { post.uploads = undefined; });
+		}
 		const result = await plugins.hooks.fire('filter:post.getPostSummaryByPids', { posts: posts, uid: uid });
 		return result.posts;
 	};

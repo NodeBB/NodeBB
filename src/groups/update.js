@@ -1,6 +1,7 @@
 'use strict';
 
 const winston = require('winston');
+const validator = require('validator');
 
 const categories = require('../categories');
 const plugins = require('../plugins');
@@ -35,9 +36,15 @@ module.exports = function (Groups) {
 		const payload = {
 			description: values.description || '',
 			icon: values.icon || '',
-			labelColor: values.labelColor || '#000000',
-			textColor: values.textColor || '#ffffff',
 		};
+
+		if (values.hasOwnProperty('labelColor')) {
+			payload.labelColor = validateColor(values.labelColor, '#000000');
+		}
+
+		if (values.hasOwnProperty('textColor')) {
+			payload.textColor = validateColor(values.textColor, '#ffffff');
+		}
 
 		if (values.hasOwnProperty('userTitle')) {
 			payload.userTitle = values.userTitle || '';
@@ -88,6 +95,14 @@ module.exports = function (Groups) {
 			name: groupName,
 			values: values,
 		});
+	};
+
+	function validateColor(color, fallback) {
+		color = String(color || fallback);
+		if (!validator.isHexColor(color, { requireHash: true })) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		return color;
 	};
 
 	async function updateVisibility(groupName, hidden) {
@@ -207,6 +222,7 @@ module.exports = function (Groups) {
 		await db.rename(`group:${oldName}:pending`, `group:${newName}:pending`);
 		await db.rename(`group:${oldName}:invited`, `group:${newName}:invited`);
 		await db.rename(`group:${oldName}:member:pids`, `group:${newName}:member:pids`);
+		await updatePostEditorGroups(oldName, newName);
 
 		await renameGroupsMember(['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName);
 		await renameGroupsMember(['groups:visible:name'], `${oldName.toLowerCase()}:${oldName}`, `${newName.toLowerCase()}:${newName}`);
@@ -229,6 +245,15 @@ module.exports = function (Groups) {
 
 			await Promise.all(usersData.map(u => user.setUserField(u.uid, 'groupTitle', JSON.stringify(u.newTitleArray))));
 		}, {});
+	}
+
+	async function updatePostEditorGroups(oldName, newName) {
+		await batch.processSortedSet(`group:${oldName}:editor:pids`, async (pids) => {
+			const keys = pids.map(pid => `pid:${pid}:editors:groups`);
+			await db.setsRemove(keys, oldName);
+			await db.setsAdd(keys, newName);
+		}, { batch: 500 });
+		await db.rename(`group:${oldName}:editor:pids`, `group:${newName}:editor:pids`);
 	}
 
 	async function renameGroupsMember(keys, oldName, newName) {

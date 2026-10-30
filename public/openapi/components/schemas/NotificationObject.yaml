@@ -36,7 +36,10 @@ NotificationObject:
           description: A post id, if the notification pertains to a post
         tid:
           type: number
-          description: A post id, if the notification pertains to a topic
+          description: A topic id, if the notification pertains to a topic
+        flagId:
+          type: number
+          description: A flag id, if the notification pertains to a flag
         user:
           $ref: ./UserObject.yaml#/UserObjectTiny
         subject:

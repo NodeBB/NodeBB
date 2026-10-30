@@ -181,8 +181,86 @@ helpers.redirect = function (res, url, permanent) {
 	if (res.locals.isAPI) {
 		res.set('X-Redirect', encodeURIComponent(url)).status(200).json(url);
 	} else {
+		// Reject unsafe redirect URLs — fall back to home page
+		if (!helpers.normalizeReturnToPath(url)) {
+			winston.warn(`[security] Unsafe redirect attempted: ${url}`);
+			url = '/';
+		}
 		res.redirect(permanent ? 308 : 307, prependRelativePath(url));
 	}
+};
+
+helpers.normalizeReturnToPath = function (pathCandidate, { allowApi = true } = {}) {
+	if (typeof pathCandidate !== 'string') {
+		return '';
+	}
+
+	const raw = pathCandidate.trim();
+	let decoded;
+	let configuredUrl;
+	try {
+		decoded = decodeURIComponent(raw);
+		configuredUrl = new URL(nconf.get('url'));
+	} catch {
+		return '';
+	}
+
+	const rawIsAbsolute = /^[a-z][a-z\d+.-]*:/i.test(raw);
+	const decodedIsAbsolute = /^[a-z][a-z\d+.-]*:/i.test(decoded);
+	const rawPathCandidate = raw.split(/[?#]/, 1)[0];
+	const decodedPathCandidate = decoded.split(/[?#]/, 1)[0];
+	const hasControlCharacter = Array.from(decoded).some((character) => {
+		const codePoint = character.codePointAt(0);
+		return codePoint < 32 || codePoint === 127;
+	});
+	if (
+		!raw || raw.startsWith('//') || decoded.startsWith('//') ||
+		hasControlCharacter ||
+		rawPathCandidate.includes('\\') || decodedPathCandidate.includes('\\') ||
+		(!raw.startsWith('/') && !rawIsAbsolute) ||
+		(!decoded.startsWith('/') && !decodedIsAbsolute)
+	) {
+		return '';
+	}
+
+	let parsed;
+	let decodedParsed;
+	try {
+		parsed = new URL(raw, configuredUrl.origin);
+		decodedParsed = new URL(decoded, configuredUrl.origin);
+	} catch {
+		return '';
+	}
+
+	if (
+		parsed.origin !== configuredUrl.origin || decodedParsed.origin !== configuredUrl.origin ||
+		parsed.username || parsed.password || decodedParsed.username || decodedParsed.password
+	) {
+		return '';
+	}
+
+	const relativePath = nconf.get('relative_path') || '';
+	const isWithinRelativePath = pathname => !relativePath ||
+		pathname === relativePath || pathname.startsWith(`${relativePath}/`);
+	if (rawIsAbsolute && !isWithinRelativePath(parsed.pathname)) {
+		return '';
+	}
+	if (decodedIsAbsolute && !isWithinRelativePath(decodedParsed.pathname)) {
+		return '';
+	}
+
+	const stripRelativePath = pathname => relativePath && isWithinRelativePath(pathname) ?
+		(pathname.slice(relativePath.length) || '/') : pathname;
+	const pathname = stripRelativePath(parsed.pathname);
+	const decodedPathname = stripRelativePath(decodedParsed.pathname);
+	if (pathname.startsWith('//') || decodedPathname.startsWith('//')) {
+		return '';
+	}
+	if (!allowApi && (/^\/api(?:\/|$)/i.test(pathname) || /^\/api(?:\/|$)/i.test(decodedPathname))) {
+		return '';
+	}
+
+	return `${pathname}${parsed.search}${parsed.hash}`;
 };
 
 function prependRelativePath(url) {
@@ -252,9 +330,17 @@ helpers.buildTitle = async function (pageTitle, userLang, template) {
 	], userLang);
 
 	const titleLayout = meta.config.titleLayout || `${pageTitle ? '{pageTitle} | ' : ''}{browserTitle}`;
-	const title = titleLayout
+	let title = titleLayout
 		.replace('{pageTitle}', () => titleTranslated)
 		.replace('{browserTitle}', () => browserTitleTranslated);
+
+	// The browser tab has no dir attribute, so it picks the title's direction from
+	// its first strongly-directional character. An RTL user viewing a page whose
+	// title starts with a Latin string (e.g. a username) would otherwise get an
+	// LTR title. Prefix a right-to-left mark to keep the direction stable.
+	if (translator.languageDirection(userLang) === 'rtl' && !title.startsWith('\u200F')) {
+		title = `\u200F${title}`;
+	}
 
 	return utils.decodeHTMLEntities(title);
 };

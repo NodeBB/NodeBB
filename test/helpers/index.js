@@ -25,7 +25,9 @@ helpers.request = async function (method, uri, options = {}) {
 	}
 
 	options.headers = options.headers || {};
-	if (csrf_token) {
+	if (csrf_token && options.body instanceof FormData) {
+		options.body.append('csrf_token', csrf_token);
+	} else if (csrf_token) {
 		options.headers['x-csrf-token'] = csrf_token;
 	}
 	return await request[lowercaseMethod](`${nconf.get('url')}${uri}`, options);
@@ -59,7 +61,7 @@ helpers.logoutUser = async function (jar) {
 	return { response, body };
 };
 
-helpers.connectSocketIO = function (res, csrf_token) {
+helpers.connectSocketIO = function (res, csrf_token, extraHeaders = {}) {
 	const io = require('socket.io-client');
 	const cookie = res.headers['set-cookie'];
 	const socket = io(nconf.get('base_url'), {
@@ -67,6 +69,7 @@ helpers.connectSocketIO = function (res, csrf_token) {
 		extraHeaders: {
 			Origin: nconf.get('url'),
 			Cookie: cookie,
+			...extraHeaders,
 		},
 		query: {
 			_csrf: csrf_token,

@@ -84,7 +84,7 @@ module.exports = function (Posts) {
 			], pids),
 			Posts.attachments.empty(pids),
 			activitypub.notes.delete(pids),
-			db.deleteAll(pids.map(pid => `pid:${pid}:editors`)),
+			deleteFromEditors(pids),
 		]);
 
 		await resolveFlags(postData, uid);
@@ -222,6 +222,21 @@ module.exports = function (Posts) {
 		const parentPids = _.uniq(postsWithParents.map(p => p.toPid));
 		const counts = await db.sortedSetsCard(parentPids.map(pid => `pid:${pid}:replies`));
 		await db.setObjectBulk(parentPids.map((pid, index) => [`post:${pid}`, { replies: counts[index] }]));
+	}
+
+	async function deleteFromEditors(pids) {
+		const groupNames = await db.getSetsMembers(pids.map(pid => `pid:${pid}:editors:groups`));
+		const bulkRemove = [];
+		pids.forEach((pid, index) => {
+			groupNames[index].forEach((groupName) => {
+				bulkRemove.push([`group:${groupName}:editor:pids`, pid]);
+			});
+		});
+		await db.sortedSetRemoveBulk(bulkRemove);
+		await db.deleteAll([
+			...pids.map(pid => `pid:${pid}:editors`),
+			...pids.map(pid => `pid:${pid}:editors:groups`),
+		]);
 	}
 
 	async function deleteFromGroups(pids) {

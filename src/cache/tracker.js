@@ -39,6 +39,16 @@ exports.findCacheByName = function (name) {
 	return cacheList[name];
 };
 
+exports.resetCache = function (name) {
+	cacheList?.[name]?.reset();
+};
+
+exports.resetAll = function () {
+	for (const cache of Object.values(cacheList)) {
+		cache.reset();
+	}
+};
+
 function getInfo(cache, uptimeInSeconds) {
 	return {
 		name: cache.name,

@@ -13,5 +13,6 @@
     "watching.description": "Être notifier des nouveaux sujets.",
     "not-watching.description": "Ne pas être notifier des nouveaux sujets.",
     "following-tag.message": "Vous recevrez désormais des notifications lorsque quelqu'un publiera un sujet avec ce mot-clés.",
+    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
     "not-following-tag.message": "Vous ne recevrez plus de notifications lorsque quelqu'un publiera un sujet avec ce mot-clés."
 }

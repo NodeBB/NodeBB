@@ -21,9 +21,9 @@ define('admin/modules/change-email', [
 				change: {
 					label: '[[admin/manage/users:alerts.button-change]]',
 					className: 'btn-primary',
-					callback: function () {
+					callback: async function () {
 						const newEmail = modal.find('#newEmail').val();
-						api.post('/users/' + params.uid + '/emails', {
+						api.post(`/users/${params.uid}/emails`, {
 							skipConfirmation: true,
 							email: newEmail,
 						}).then(() => {
