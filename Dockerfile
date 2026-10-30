@@ -12,6 +12,7 @@ WORKDIR /usr/src/app/
 COPY . /usr/src/app/
 
 # Install corepack to allow usage of other package managers
+RUN npm install -g corepack
 RUN corepack enable
 
 # Removing unnecessary files for us
