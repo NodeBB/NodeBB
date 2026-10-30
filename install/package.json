@@ -101,7 +101,7 @@
         "mime": "4.1.2",
         "minimizer-webpack-plugin": "5.13.1",
         "mkdirp": "3.0.1",
-        "mongodb": "7.7.0",
+        "mongodb": "7.8.0",
         "morgan": "1.12.1",
         "mousetrap": "1.6.5",
         "multer": "2.5.0",
