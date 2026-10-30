@@ -1858,6 +1858,12 @@ describe('Controllers', () => {
 			assert.equal(result.body, '/recent');
 		});
 
+		it.only('should redirect to home if link is unsafe', async () => {
+			const result = await request.get(`${nconf.get('url')}/api/ap?resource=javascript:alert(origin)`, { jar });
+			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('/'));
+			assert.equal(result.body.external, '/');
+		});
+
 		it('should get recent topic replies from children categories', async () => {
 			const parentCategory = await categories.create({ name: 'parent category', backgroundImage: 'path/to/some/image' });
 			const childCategory1 = await categories.create({ name: 'child category 1', parentCid: category.cid });

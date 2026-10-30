@@ -169,6 +169,10 @@ helpers.redirect = function (res, url, permanent) {
 	// this is used by sso plugins to redirect to the auth route
 	// { external: '/auth/sso' } or { external: 'https://domain/auth/sso' }
 	if (url.hasOwnProperty('external')) {
+		if (!utils.isSafeHref(url.external)) {
+			winston.warn(`[security] Unsafe external redirect attempted: ${url.external}`);
+			url.external = '/';
+		}
 		const redirectUrl = prependRelativePath(url.external);
 		if (res.locals.isAPI) {
 			res.set('X-Redirect', encodeURIComponent(redirectUrl)).status(200).json({ external: redirectUrl });
