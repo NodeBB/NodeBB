@@ -199,15 +199,16 @@ function getRfc9421AlgoString(key) {
 // Mitra and other RFC 9530 implementations use Content-Digest instead of Digest
 function verifyContentDigest(bodyData, contentDigestHeader) {
 	if (!contentDigestHeader) return true; // no header to verify
-	// RFC 9530: sha-256=:base64:  (Mitra uses sha-256=:base64==)
-	const match = contentDigestHeader.match(/^sha-256=:(.+)[=:]$/i);
+	const match = contentDigestHeader.match(/^sha-256=:([a-z0-9+/]+={0,2}):$/i);
 	if (!match) {
 		winston.warn('[activitypub/signatures] Invalid Content-Digest format');
 		return false;
 	}
-	const expectedB64 = match[1];
-	const computedB64 = createHash('sha256').update(bodyData).digest('base64');
-	if (expectedB64 !== computedB64) {
+	// RFC 8941 section 4.2.7 allows missing padding and non-zero pad bits.
+	// Compare the decoded bytes, while rejecting invalid characters above.
+	const expected = Buffer.from(match[1], 'base64');
+	const computed = createHash('sha256').update(bodyData).digest();
+	if (!expected.equals(computed)) {
 		winston.warn('[activitypub/signatures] Content-Digest mismatch during request verification');
 		return false;
 	}
