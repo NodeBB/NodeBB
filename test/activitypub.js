@@ -117,7 +117,7 @@ describe('ActivityPub integration', () => {
 			request.get = async (url, options) => {
 				assert.strictEqual(url, uri);
 				({ headers } = options);
-				return { response: { statusCode: 200 }, body };
+				return { response: { statusCode: 200 }, body, url };
 			};
 
 			const result = await activitypub.get('uid', id, uri, { cache: false });
