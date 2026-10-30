@@ -1858,7 +1858,7 @@ describe('Controllers', () => {
 			assert.equal(result.body, '/recent');
 		});
 
-		it.only('should redirect to home if link is unsafe', async () => {
+		it('should redirect to home if link is unsafe', async () => {
 			const result = await request.get(`${nconf.get('url')}/api/ap?resource=javascript:alert(origin)`, { jar });
 			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('/'));
 			assert.equal(result.body.external, '/');
