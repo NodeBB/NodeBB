@@ -1860,8 +1860,8 @@ describe('Controllers', () => {
 
 		it('should redirect to home if link is unsafe', async () => {
 			const result = await request.get(`${nconf.get('url')}/api/ap?resource=javascript:alert(origin)`, { jar });
-			assert.equal(result.response.headers['x-redirect'], encodeURIComponent('/'));
-			assert.equal(result.body.external, '/');
+			assert.equal(result.response.headers['x-redirect'], encodeURIComponent(`${nconf.get('relative_path')}/`));
+			assert.equal(result.body.external, `${nconf.get('relative_path')}/`);
 		});
 
 		it('should get recent topic replies from children categories', async () => {
