@@ -242,13 +242,16 @@ ajaxify.widgets = { render: render };
 				if (data.responseJSON && data.responseJSON.external) {
 					// this is used by sso plugins to redirect to the auth route
 					// cant use ajaxify.go for /auth/sso routes
-					window.location.href = data.responseJSON.external;
+					window.location.href = utils.isSafeHref(data.responseJSON.external) ?
+						data.responseJSON.external : config.relative_path + '/';
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxifyTimer = undefined;
+					const targetHref = utils.isSafeHref(data.responseJSON) ?
+						data.responseJSON : config.relative_path + '/';
 					if (data.responseJSON.startsWith('http://') || data.responseJSON.startsWith('https://')) {
-						window.location.href = data.responseJSON;
+						window.location.href = targetHref;
 					} else {
-						ajaxify.go(data.responseJSON.slice(1), callback, quiet);
+						ajaxify.go(targetHref.slice(1), callback, quiet);
 					}
 				}
 			}

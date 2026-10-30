@@ -1,3 +1,26 @@
+#### v4.16.5 (2026-10-28)
+
+##### Chores
+
+*  incrementing version number - v4.16.5 (c3d8dc51)
+*  up qs (f27027c7)
+*  up nodemailer and smtp-server (ef387992)
+*  up dbsearch (d2879b41)
+*  up some packages (c0785ad4)
+*  up persona (37cca916)
+*  update changelog for v4.16.4 (7e51e555)
+
+##### Bug Fixes
+
+*  add missing ip-locked lang key, closes #15053 (e00506ca)
+*  closes #15052, allow socket.emits from exempt groups (be7580a7)
+
+##### Refactors
+
+*  add hint to force usage of zset indexes (687e1a5d)
+*  catch all exceptions in localLogin, closes #15054 (ce62dcd5)
+*  don't modify passed in data to renderAsync (897c15ec)
+
 #### v4.16.4 (2026-10-23)
 
 ##### Chores
