@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Êtes-vous sûr de vouloir effacer tout l’historique de recherche ?",
 	"search-term": "Terme",
 	"search-count": "Nombre",
-	"view-all": "Tout afficher"
+	"view-all": "Tout afficher",
+	"logins.user-agent": "%1 %2 on %3"
 }

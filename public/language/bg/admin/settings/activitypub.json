@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Въведете адреса на списъка със забранени домейни, който искате да добавите. NodeBB може да работи със списъци във формата на тези предоставени от <a href=\"https://iftas.org\">IFTAS</a>.",
 	"blocklists.refreshed": "Списъкът е обновен – вече съдържа %1 записа",
 	"blocklists.view.title": "Преглед на списъка",
-	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
+	"blocklists.view.intro": "{count, plural, one {Това е домейнът блокиран от този списък със забранени домейни:} other {Това са домейните ({count}) блокирани от този списък със забранени домейни:}}",
 
 	"server-filtering": "Филтриране",
-	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
+	"count": "{count, plural, one {Този NodeBB в момента знае за наличието на <strong>{count}</strong> сървър} other {Този NodeBB в момента знае за наличието на <strong>{count}</strong> сървъра}}",
 	"server.filter-help": "Посочете сървърите, които бихте искали да ограничите да взаимодействат с Вашия NodeBB. Или, можете да изберете обратното и да <em>разрешавате</em> изрично взаимодействието с определени сървъри. И двата варианта са възможни, но не едновременно.<br /><br /><strong>Забележка:</strong> Състоянията на <em>Заглушаване</em> и <em>Временно спиране</em> в момента се третират еднакво – и двете напълно блокират взаимодействието. <em>Филтрирането</em> разрешава взаимодействието, но добавя всичко в опашка за преглед.",
 	"server.filter-allow-list": "Това да се ползва като списък с разрешените сървъри",
 	"server.filter-allow-list-help": "Когато е включено, само домейните в основния списък са разрешени за федериране. Настройките за състоянията се пренебрегват в режима на списък с разрешените.",
@@ -107,10 +107,13 @@
 	"analytics.activities-by-type-empty": "Все още няма записани дейности.",
 	"analytics.activities-by-type-not-filterable": "<strong>Забележка:</strong> Тази разбивка е глобална и не се филтрира по избраното име на сървър.",
 
-	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
+	"errors.intro": "{count, plural, one {Следната грешка беше записана от тази инсталация в рамките на последните 24 часа.} other {Следните {count} грешки бяха записани от тази инсталация в рамките на последните 24 часа.}}",
 	"errors.payload-gone": "Данните за тази грешка вече не съществуват.",
 	"errors.hostname": "Име на сървъра",
 	"errors.type": "Тип",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "Решетъчни маркери",
 	"hashtags.intro": "Следвайте глобални източници на решетъчни маркери, за да получавате съдържание отговарящо на определени етикети. Инсталацията следва източника на препредавателя за решетъчни маркери, който изпраща известия за съответстващо съдържание. Използвайте правила за автоматично категоризиране, за да пренасочвате съдържанието по категории.",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "Активни",
 	"hashtags.state-error": "Грешка",
 	"hashtags.table.tag": "Етикет",
-	"hashtags.table.state": "Състояние"
+	"hashtags.table.state": "Състояние",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

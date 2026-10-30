@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Gib die URL der Sperrliste ein, die du hinzufügen möchtest. NodeBB erkennt Sperrlisten, die dem von <a href=\"https://iftas.org\">IFTAS</a>.verwendeten Format entsprechen.",
 	"blocklists.refreshed": "Die Sperrliste wurde aktualisiert – sie enthält nun %1 Einträge",
 	"blocklists.view.title": "Sperrliste anzeigen",
-	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
+	"blocklists.view.intro": "{count, plural, one {Dies sind die {count} Domain, die von dieser Blockliste gesperrt wurden:} other {Dies sind die {count} Domains, die von dieser Blockliste gesperrt wurden:}}",
 
 	"server-filtering": "Filterung",
-	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
+	"count": "{count, plural, one {Dieses NodeBB kennt derzeit <strong>%1</strong> Server} other {Dieses NodeBB kennt derzeit <strong>{count}</strong> Server}}",
 	"server.filter-help": "Gib die Server an, deren Interaktion mit deinem NodeBB du einschränken möchtest. Alternativ kannst du stattdessen auch die Interaktion mit bestimmten Servern selektiv <em>zulassen.</em> Beide Optionen werden unterstützt, schließen sich jedoch gegenseitig aus. <br /><br /><strong>Hinweis:</strong> Die Schweregrade <em>Stumm</em> and <em>Aussetzen</em> werden derzeit identisch behandelt – beide blockieren die Interaktion vollständig. <em>Filter</em> lässt die Interaktion zu, stellt Inhalte jedoch zur Überprüfung in die Warteschlange.",
 	"server.filter-allow-list": "Stattdessen als Allow-Liste verwenden",
 	"server.filter-allow-list-help": "Wenn diese Option aktiviert ist, dürfen nur Domänen aus der Kernliste eine Föderation bilden. Die Schweregradeinstellungen werden im Zulassungslistenmodus ignoriert.",
@@ -111,6 +111,9 @@
 	"errors.payload-gone": "Die Nutzlast für diesen Fehler ist nicht mehr vorhanden.",
 	"errors.hostname": "Hostname",
 	"errors.type": "Typ",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Folge globalen Hashtag-Akteuren, um Inhalte zu erhalten, die bestimmten Tags entsprechen. Der Instanz-Akteur folgt dem Hashtag-Akteur des Relays, der „Announce“-Aktivitäten für passende Inhalte sendet. Nutze Regeln zur automatischen Kategorisierung, um Inhalte den entsprechenden Kategorien zuzuordnen.",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "Aktiv",
 	"hashtags.state-error": "Fehler",
 	"hashtags.table.tag": "Tag",
-	"hashtags.table.state": "Status"
+	"hashtags.table.state": "Status",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% plné",
 	"post-cache-size": "Veľkosť vyrovnávacej pamäti príspevku",
-	"items-in-cache": "Položky vo vyrovnávacej pamäti"
+	"items-in-cache": "Položky vo vyrovnávacej pamäti",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

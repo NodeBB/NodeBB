@@ -18,5 +18,6 @@
 	"trigger-description": "Vui lòng đăng nhập vào tài khoản diễn đàn của bạn hoặc chọn một xử lý Web Xã Hội Mở để hoàn thành hành động này",
 	"trigger-your-handles": "Xử Lý Đăng Ký Của Bạn",
 	"trigger-yes": "Có, sử dụng cái này",
-	"trigger-no-matching": "Không có xử lý đã đăng ký nào hỗ trợ mục đích này. Đăng ký một xử lý mới hoặc đăng nhập."
+	"trigger-no-matching": "Không có xử lý đã đăng ký nào hỗ trợ mục đích này. Đăng ký một xử lý mới hoặc đăng nhập.",
+	"please-wait": "Please wait…"
 }

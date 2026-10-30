@@ -2,5 +2,14 @@
 	"cache": "מטמון",
 	"percent-full": "%1% מלא",
 	"post-cache-size": "גודל מטמון פוסטים",
-	"items-in-cache": "פריטים במטמון"
+	"items-in-cache": "פריטים במטמון",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

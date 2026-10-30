@@ -104,5 +104,10 @@
 	"handles.enabled": "مہمانوں کے لیے ناموں کی اجازت دیں",
 	"handles.enabled-help": "یہ خصوصیت ایک نیا فیلڈ فراہم کرتی ہے جو مہمانوں کو ہر پوسٹ کے لیے ایک نام منتخب کرنے کی اجازت دیتی ہے۔ اگر غیر فعال ہو، تو سب کا نام صرف 'مہمان' ہوگا۔",
 	"topic-views.enabled": "مہمان موضوعات کے مناظر کی تعداد میں حصہ ڈالیں",
-	"reply-notifications.enabled": "مہمان اپنے جوابات کے لیے اطلاعات بھیجنے کا سبب بن سکیں"
+	"reply-notifications.enabled": "مہمان اپنے جوابات کے لیے اطلاعات بھیجنے کا سبب بن سکیں",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

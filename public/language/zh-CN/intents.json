@@ -18,5 +18,6 @@
 	"trigger-description": "请登录您的论坛账号，或选择一个开放社交网络用户名来完成此操作",
 	"trigger-your-handles": "您注册的用户名",
 	"trigger-yes": "是的，请用这个",
-	"trigger-no-matching": "没有已注册的用户名可处理此 Intent。请注册新用户名或登录。"
+	"trigger-no-matching": "没有已注册的用户名可处理此 Intent。请注册新用户名或登录。",
+	"please-wait": "Please wait…"
 }

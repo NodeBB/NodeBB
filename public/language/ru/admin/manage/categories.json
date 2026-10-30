@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "No followers.",
 	"federation.followers-autofill": "Autofill",
+	"federation.pending": "Pending",
 
 	"alert.created": "Создано",
 	"alert.create-success": "Категория успешно создана!",

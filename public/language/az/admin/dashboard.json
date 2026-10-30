@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Bütün axtarış tarixçəsini təmizləmək istədiyinizə əminsiniz?",
 	"search-term": "Qayda",
 	"search-count": "Say",
-	"view-all": "Hamısına bax"
+	"view-all": "Hamısına bax",
+	"logins.user-agent": "%1 %2 on %3"
 }

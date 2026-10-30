@@ -111,6 +111,9 @@
 	"errors.payload-gone": "Il payload per questo errore non esiste più.",
 	"errors.hostname": "Nome host",
 	"errors.type": "Tipo",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Segui gli attori hashtag globali per ricevere contenuti corrispondenti a tag specifici. L'attore di istanza segue l'attore hashtag del relè, che invia attività di annuncio per i contenuti corrispondenti. Usa le regole di categorizzazione automatica per indirizzare i contenuti alle categorie.",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "Attivo",
 	"hashtags.state-error": "Errore",
 	"hashtags.table.tag": "Tag",
-	"hashtags.table.state": "Stato"
+	"hashtags.table.state": "Stato",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

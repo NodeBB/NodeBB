@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Sei sicuro di voler cancellare l'intera cronologia delle ricerche?",
 	"search-term": "Termine",
 	"search-count": "Conteggio",
-	"view-all": "Mostra tutto"
+	"view-all": "Mostra tutto",
+	"logins.user-agent": "%1 %2 on %3"
 }

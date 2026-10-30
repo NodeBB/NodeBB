@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1%Zasedeno",
 	"post-cache-size": "Velikost predpomnilnika objav",
-	"items-in-cache": "Elementi v predpomnilniku"
+	"items-in-cache": "Elementi v predpomnilniku",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

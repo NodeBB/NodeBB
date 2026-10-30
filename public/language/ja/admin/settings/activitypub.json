@@ -111,6 +111,9 @@
 	"errors.payload-gone": "このエラーのペイロードは既に存在しません。",
 	"errors.hostname": "ホスト名",
 	"errors.type": "タイプ",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Follow global hashtag actors to receive content matching specific tags. The instance actor follows the relay's hashtag actor, which sends Announce activities for matching content. Use auto-categorization rules to route content to categories.",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "Active",
 	"hashtags.state-error": "Error",
 	"hashtags.table.tag": "Tag",
-	"hashtags.table.state": "State"
+	"hashtags.table.state": "State",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

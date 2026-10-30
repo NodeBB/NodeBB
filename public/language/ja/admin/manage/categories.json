@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "フォロワーはいません。",
 	"federation.followers-autofill": "自動入力",
+	"federation.pending": "Pending",
 
 	"alert.created": "作成されました",
 	"alert.create-success": "カテゴリを作成しました!",

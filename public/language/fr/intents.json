@@ -18,5 +18,6 @@
 	"trigger-description": "Veuillez vous connecter à votre compte du forum ou choisir un identifiant Open Social Web pour effectuer cette action.",
 	"trigger-your-handles": "Vos identifiants enregistrés",
 	"trigger-yes": "Oui, utiliser celui-ci",
-	"trigger-no-matching": "Aucun identifiant enregistré ne prend en charge cette intention. Enregistrez un nouvel identifiant ou connectez-vous."
+	"trigger-no-matching": "Aucun identifiant enregistré ne prend en charge cette intention. Enregistrez un nouvel identifiant ou connectez-vous.",
+	"please-wait": "Please wait…"
 }

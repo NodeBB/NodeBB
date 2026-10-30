@@ -106,5 +106,6 @@
     "show-results-as-topics": "Show results as topics",
     "show-results-as-posts": "Show results as posts",
     "see-more-results": "Shiko më shumë rezultate (%1)",
-    "search-in-category": "Kërko në \"%1\""
+    "search-in-category": "Kërko në \"%1\"",
+    "results.reply-prefix": "RE:"
 }

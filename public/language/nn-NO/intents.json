@@ -18,5 +18,6 @@
 	"trigger-description": "Logg inn på forumkontoen din, eller vel eit Open Social Web-brukarnamn for å fullføre denne handlinga.",
 	"trigger-your-handles": "Dine registrerte brukarnamn",
 	"trigger-yes": "Ja, bruk dette",
-	"trigger-no-matching": "Ingen registrerte brukarnamn støttar denne handlinga. Registrer eit nytt brukarnamn eller logg inn."
+	"trigger-no-matching": "Ingen registrerte brukarnamn støttar denne handlinga. Registrer eit nytt brukarnamn eller logg inn.",
+	"please-wait": "Please wait…"
 }

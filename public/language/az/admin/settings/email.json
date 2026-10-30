@@ -56,5 +56,6 @@
 	"include-unverified-warning": "Defolt olaraq, hesabları ilə əlaqəli e-poçtları olan istifadəçilər artıq təsdiqlənib, lakin bunun belə olmadığı hallar var (məsələn, SSO girişləri, babalı istifadəçilər və s.). <strong>Bu parametri öz riskinizlə aktivləşdirin &ndash; yoxlanılmamış </strong>ünvanlara e-poçtların göndərilməsi regional anti-spam qanunlarının pozulması ola bilər.",
 	"prompt": "İstifadəçiləri e-poçtlarını daxil etməyə və ya təsdiq etməyə dəvət edin",
 	"prompt-help": "Əgər istifadəçinin e-poçtu yoxdursa və ya e-poçtu təsdiqlənməyibsə, ekranda xəbərdarlıq göstərilir.",
-	"sendEmailToBanned": "Ban edilmiş olsa belə, istifadəçilərə e-poçt göndərin"
+	"sendEmailToBanned": "Ban edilmiş olsa belə, istifadəçilərə e-poçt göndərin",
+	"smtp-transport.custom-service": "Custom Service"
 }

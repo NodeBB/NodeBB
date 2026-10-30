@@ -102,6 +102,7 @@
 	"federation.followers-id": "Ид.",
 	"federation.followers-none": "Няма последователи.",
 	"federation.followers-autofill": "Автоматично попълване",
+	"federation.pending": "Pending",
 
 	"alert.created": "Създадена",
 	"alert.create-success": "Категорията е създадена успешно!",

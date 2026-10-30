@@ -106,5 +106,6 @@
     "show-results-as-topics": "Ցույց տալ արդյունքները որպես թեմաներ",
     "show-results-as-posts": "Ցույց տալ արդյունքները որպես գրառումներ",
     "see-more-results": "Տեսնել ավելի շատ արդյունքներ (% 1)",
-    "search-in-category": "Որոնել «% 1»-ում"
+    "search-in-category": "Որոնել «% 1»-ում",
+    "results.reply-prefix": "RE:"
 }

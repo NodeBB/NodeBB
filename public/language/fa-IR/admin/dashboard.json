@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "آیا مطمئن هستید که می خواهید کل سابقه جستجو را پاک کنید؟",
 	"search-term": "مدت",
 	"search-count": "تعداد",
-	"view-all": "نمایش همه"
+	"view-all": "نمایش همه",
+	"logins.user-agent": "%1 %2 on %3"
 }

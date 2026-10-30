@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "検索履歴をすべてクリアしてもよろしいですか？",
 	"search-term": "検索語",
 	"search-count": "件数",
-	"view-all": "すべて表示"
+	"view-all": "すべて表示",
+	"logins.user-agent": "%1 %2 on %3"
 }

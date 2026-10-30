@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "האם למחוק את כל היסטוריית החיפושים?",
 	"search-term": "מונח",
 	"search-count": "כמות",
-	"view-all": "הצגת הכל"
+	"view-all": "הצגת הכל",
+	"logins.user-agent": "%1 %2 on %3"
 }

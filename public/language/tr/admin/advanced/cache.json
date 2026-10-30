@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Tam",
 	"post-cache-size": "İleti Önbellek Boyutu",
-	"items-in-cache": "Önbellekteki Öğeler"
+	"items-in-cache": "Önbellekteki Öğeler",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

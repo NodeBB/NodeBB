@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Վստա՞հ եք, որ ցանկանում եք մաքրել որոնման ողջ պատմությունը:",
 	"search-term": "Term",
 	"search-count": "Count",
-	"view-all": "View all"
+	"view-all": "View all",
+	"logins.user-agent": "%1 %2 on %3"
 }

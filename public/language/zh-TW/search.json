@@ -106,5 +106,6 @@
     "show-results-as-topics": "將結果顯示為主題",
     "show-results-as-posts": "將結果顯示為貼文",
     "see-more-results": "查看更多結果 (%1)",
-    "search-in-category": "在 \"%1\" 裏尋找"
+    "search-in-category": "在 \"%1\" 裏尋找",
+    "results.reply-prefix": "RE:"
 }

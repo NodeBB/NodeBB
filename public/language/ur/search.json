@@ -106,5 +106,6 @@
     "show-results-as-topics": "نتائج کو موضوعات کے طور پر دکھائیں",
     "show-results-as-posts": "نتائج کو پوسٹس کے طور پر دکھائیں",
     "see-more-results": "مزید نتائج دکھائیں (%1)",
-    "search-in-category": "„%1“ میں تلاش کریں"
+    "search-in-category": "„%1“ میں تلاش کریں",
+    "results.reply-prefix": "RE:"
 }

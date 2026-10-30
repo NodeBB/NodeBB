@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "¿Estás seguro de que quieres borrar todo el historial de búsqueda?",
 	"search-term": "Término",
 	"search-count": "Conteo",
-	"view-all": "Ver todo"
+	"view-all": "Ver todo",
+	"logins.user-agent": "%1 %2 on %3"
 }

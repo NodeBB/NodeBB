@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Žádní sledující.",
 	"federation.followers-autofill": "Automatické vyplnění",
+	"federation.pending": "Pending",
 
 	"alert.created": "Vytvořeno",
 	"alert.create-success": "Kategorie byla úspěšně vytvořena.",

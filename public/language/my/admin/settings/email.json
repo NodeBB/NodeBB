@@ -56,5 +56,6 @@
 	"include-unverified-warning": "မအတည်ပြုရသေးသော အီးမေးလ်များ ထည့်ခြင်း သတိပေးချက်",
 	"prompt": "အချက်ပြချက်",
 	"prompt-help": "အချက်ပြချက် အကူအညီ",
-	"sendEmailToBanned": "ပိတ်ပင်ထားသူများထံ အီးမေးလ် ပို့ပါ"
+	"sendEmailToBanned": "ပိတ်ပင်ထားသူများထံ အီးမေးလ် ပို့ပါ",
+	"smtp-transport.custom-service": "Custom Service"
 }

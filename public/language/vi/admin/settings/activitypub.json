@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Nhập URL của danh sách chặn mà bạn muốn thêm. NodeBB hiểu các danh sách chặn có định dạng phù hợp với định dạng được sử dụng bởi <a href=\"https://iftas.org\">IFTAS</a>.",
 	"blocklists.refreshed": "Danh sách chặn đã được làm mới — hiện chứa %1 mục",
 	"blocklists.view.title": "Xem Danh Sách Chặn",
-	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
+	"blocklists.view.intro": "{count, plural, other {Có {count} tên miền bị chặn bởi danh sách chặn này:}}",
 
 	"server-filtering": "Lọc",
-	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
+	"count": "{count, plural, other {NodeBB này hiện tại đang nhận biết được <strong>{count}</strong> máy chủ}}",
 	"server.filter-help": "Hãy chỉ định các máy chủ mà bạn muốn hạn chế tương tác với NodeBB của mình. Ngoài ra, bạn cũng có thể lựa chọn <em>cho phép</em> tương tác với các máy chủ cụ thể. Cả hai tùy chọn đều được hỗ trợ, mặc dù chúng loại trừ lẫn nhau.<br /><br /><strong>Chú ý:</strong> <em>Im lặng</em> và <em>Tạm dừng</em> được xử lý như nhau — cả hai đều chặn hoàn toàn tương tác. <em>Lọc</em> cho phép tương tác nhưng xếp nội dung vào hàng đợi để xem xét.",
 	"server.filter-allow-list": "Dùng nó làm Danh Sách Cho Phép Thay Thế",
 	"server.filter-allow-list-help": "Khi được kích hoạt, chỉ các tên miền trong danh sách cốt lõi mới được phép liên kết. Các thiết lập mức độ nghiêm trọng sẽ bị bỏ qua ở chế độ danh sách cho phép.",
@@ -107,10 +107,13 @@
 	"analytics.activities-by-type-empty": "Chưa có hoạt động nào được ghi nhận.",
 	"analytics.activities-by-type-not-filterable": "<strong>Ghi chú:</strong> Phân tích này mang tính toàn cục và không được lọc theo tên máy chủ đã chọn.",
 
-	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
+	"errors.intro": "{count, plural, other {Trong vòng 24 giờ qua, hệ thống này đã ghi nhận {count} lỗi sau đây.}}",
 	"errors.payload-gone": "Thông tin gây ra lỗi này không còn tồn tại nữa.",
 	"errors.hostname": "Tên máy chủ",
 	"errors.type": "Loại",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Theo dõi các tác nhân hashtag toàn cầu để nhận nội dung phù hợp với các thẻ cụ thể. Tác nhân thực thể sẽ theo dõi tác nhân hashtag của máy chủ chuyển tiếp, tác nhân này sẽ gửi các hoạt động Thông báo cho nội dung phù hợp. Sử dụng các quy tắc tự động phân loại để định tuyến nội dung vào các danh mục.",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "Hoạt động",
 	"hashtags.state-error": "Lỗi",
 	"hashtags.table.tag": "Thẻ",
-	"hashtags.table.state": "Trạng thái"
+	"hashtags.table.state": "Trạng thái",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

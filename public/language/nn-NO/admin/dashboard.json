@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Er du sikker på at du vil tømme søkjehistorikken?",
 	"search-term": "Søkjeord",
 	"search-count": "Søkjeantall",
-	"view-all": "Vis alle"
+	"view-all": "Vis alle",
+	"logins.user-agent": "%1 %2 on %3"
 }

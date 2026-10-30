@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Bạn có chắc chắn muốn xóa toàn bộ lịch sử tìm kiếm không?",
 	"search-term": "Cụm từ",
 	"search-count": "Số lần",
-	"view-all": "Xem tất cả"
+	"view-all": "Xem tất cả",
+	"logins.user-agent": "%1 %2 on %3"
 }

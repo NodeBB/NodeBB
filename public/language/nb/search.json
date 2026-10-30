@@ -106,5 +106,6 @@
     "show-results-as-topics": "Vis resultater som tråder",
     "show-results-as-posts": "Vis resultater som innlegg",
     "see-more-results": "Se flere resultater (%1)",
-    "search-in-category": "Søk i \"%1\""
+    "search-in-category": "Søk i \"%1\"",
+    "results.reply-prefix": "RE:"
 }

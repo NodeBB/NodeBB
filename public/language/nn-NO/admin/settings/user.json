@@ -104,5 +104,10 @@
 	"handles.enabled": "Aktiver handtering av gjestar",
 	"handles.enabled-help": "Aktiver for å la gjestar kunne sjå og interagere med forumet innanfor visse grenser.",
 	"topic-views.enabled": "Aktiver visning av emne for gjestar",
-	"reply-notifications.enabled": "Aktiver svarvarsel for gjestar"
+	"reply-notifications.enabled": "Aktiver svarvarsel for gjestar",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

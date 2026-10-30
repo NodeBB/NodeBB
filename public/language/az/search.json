@@ -106,5 +106,6 @@
     "show-results-as-topics": "Nəticələri mövzu kimi göstər",
     "show-results-as-posts": "Nəticələri yazı kimi göstər",
     "see-more-results": "Daha çox nəticəyə baxın (%1)",
-    "search-in-category": "\"% 1\" də axtar"
+    "search-in-category": "\"% 1\" də axtar",
+    "results.reply-prefix": "RE:"
 }

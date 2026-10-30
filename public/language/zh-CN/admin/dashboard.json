@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "您确定您要删除搜索历史吗？",
 	"search-term": "内容",
 	"search-count": "计数",
-	"view-all": "查看全部"
+	"view-all": "查看全部",
+	"logins.user-agent": "%1 %2 on %3"
 }

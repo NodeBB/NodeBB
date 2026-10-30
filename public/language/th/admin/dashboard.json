@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "คุณต้องการล้างประวัติการค้นหาทั้งหมดหรือไม่?",
 	"search-term": "ข้อความ",
 	"search-count": "จำนวนครั้ง",
-	"view-all": "ดูทั้งหมด"
+	"view-all": "ดูทั้งหมด",
+	"logins.user-agent": "%1 %2 on %3"
 }

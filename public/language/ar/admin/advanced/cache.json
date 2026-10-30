@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "1% كاملة",
 	"post-cache-size": "حجم التخزين المؤقت للمشاركات",
-	"items-in-cache": "العناصر في التخزين المؤقت"
+	"items-in-cache": "العناصر في التخزين المؤقت",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

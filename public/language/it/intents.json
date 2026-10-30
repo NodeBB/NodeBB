@@ -18,5 +18,6 @@
 	"trigger-description": "Accedi al tuo account del forum oppure scegli uno pseudonimo Open Social Web per completare questa operazione",
 	"trigger-your-handles": "I tuoi pseudonimi registrati",
 	"trigger-yes": "Sì, usa questo",
-	"trigger-no-matching": "Nessun pseudonimo registrato supporta questa funzione. Registra un nuovo pseudonimo o accedi."
+	"trigger-no-matching": "Nessun pseudonimo registrato supporta questa funzione. Registra un nuovo pseudonimo o accedi.",
+	"please-wait": "Please wait…"
 }

@@ -56,5 +56,6 @@
 	"include-unverified-warning": "Som standard er brukernes e-postadresser bekreftet. <strong>Aktiver denne innstillingen på egen risiko</strong> &ndash; å sende e-post til ubekreftede adresser kan bryte regionale anti-spam-regler.",
 	"prompt": "Be brukere om å legge inn eller bekrefte e-posten sin",
 	"prompt-help": "Hvis en bruker mangler e-postadresse, eller e-postadressen ikke er bekreftet, vil en advarsel vises på skjermen. ",
-	"sendEmailToBanned": "Send e-post til brukere selv om de har blitt utestengt"
+	"sendEmailToBanned": "Send e-post til brukere selv om de har blitt utestengt",
+	"smtp-transport.custom-service": "Custom Service"
 }

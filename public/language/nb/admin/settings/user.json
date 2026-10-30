@@ -104,5 +104,10 @@
 	"handles.enabled": "Tillat gjestenavn",
 	"handles.enabled-help": "Dette alternativet viser et nytt felt som lar gjestene velge et navn for innleggene sine. Hvis deaktivert, vil de kun bli kalt \"Gjest\".",
 	"topic-views.enabled": "La gjestene øke antall visninger av emner",
-	"reply-notifications.enabled": "Tillat gjestene å generere svarvarsler"
+	"reply-notifications.enabled": "Tillat gjestene å generere svarvarsler",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

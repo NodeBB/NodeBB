@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Penuh",
 	"post-cache-size": "Ukuran Cache Kiriman",
-	"items-in-cache": "Item di Cache"
+	"items-in-cache": "Item di Cache",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

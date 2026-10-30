@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "אין עוקבים.",
 	"federation.followers-autofill": "מילוי אוטומטי",
+	"federation.pending": "Pending",
 
 	"alert.created": "נוצר",
 	"alert.create-success": "קטגוריה נוצרה בהצלחה!",

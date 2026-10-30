@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Aizņemts",
 	"post-cache-size": "Rakstu kešatmiņas lielums",
-	"items-in-cache": "Rakstu skaits kešatmiņā"
+	"items-in-cache": "Rakstu skaits kešatmiņā",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

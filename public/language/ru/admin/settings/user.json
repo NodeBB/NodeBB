@@ -104,5 +104,10 @@
 	"handles.enabled": "Разрешить гостям выбирать имена",
 	"handles.enabled-help": "Эта настройка добавляет поле, в котором гость сможет указать имя, под которым он хочет оставить сообщение. Когда она выключена, вместо имени будет написано просто &laquo;Гость&raquo;.",
 	"topic-views.enabled": "Разрешить гостям увеличивать количество просмотров тем",
-	"reply-notifications.enabled": "Разрешить гостям создавать уведомления об ответах"
+	"reply-notifications.enabled": "Разрешить гостям создавать уведомления об ответах",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

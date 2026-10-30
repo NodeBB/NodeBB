@@ -104,5 +104,10 @@
 	"handles.enabled": "Թույլատրել guest handles",
 	"handles.enabled-help": "Այս ընտրանքը բացահայտում է նոր դաշտ, որը թույլ է տալիս հյուրերին ընտրել անուն՝ իրենց կատարած յուրաքանչյուր գրառման հետ կապելու համար: Եթե անջատված են, նրանք պարզապես կանվանվեն «Հյուր»",
 	"topic-views.enabled": "Թույլ տվեք հյուրերին ավելացնել թեմայի դիտումների քանակը",
-	"reply-notifications.enabled": "Թույլ տվեք հյուրերին ստեղծել պատասխանների ծանուցումներ"
+	"reply-notifications.enabled": "Թույլ տվեք հյուրերին ստեղծել պատասխանների ծանուցումներ",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

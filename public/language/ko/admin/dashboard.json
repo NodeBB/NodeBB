@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "전체 검색 기록을 지우시겠습니까?",
 	"search-term": "Term",
 	"search-count": "Count",
-	"view-all": "View all"
+	"view-all": "View all",
+	"logins.user-agent": "%1 %2 on %3"
 }

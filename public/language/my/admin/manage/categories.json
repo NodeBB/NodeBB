@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Follower မရှိပါ",
 	"federation.followers-autofill": "အလိုအလျောက် ဖြည့်ရန်",
+	"federation.pending": "Pending",
 
 	"alert.created": "ဖန်တီးပြီးပါပြီ",
 	"alert.create-success": "ဖန်တီးပြီးပါပြီ",

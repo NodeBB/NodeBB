@@ -2,5 +2,14 @@
 	"cache": "Keş",
 	"percent-full": "%1% dolu",
 	"post-cache-size": "Yazıların keş ölçüsü",
-	"items-in-cache": "Keşdəki elementlər"
+	"items-in-cache": "Keşdəki elementlər",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

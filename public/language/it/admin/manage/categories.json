@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Non seguito.",
 	"federation.followers-autofill": "Riempimento automatico",
+	"federation.pending": "Pending",
 
 	"alert.created": "Creato",
 	"alert.create-success": "Categoria creata con successo!",

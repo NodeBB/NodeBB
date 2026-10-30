@@ -2,5 +2,14 @@
 	"cache": "نهانگاه",
 	"percent-full": "%1% تمام شده",
 	"post-cache-size": "اندازه نهانگاه فرسته",
-	"items-in-cache": "موارد موجود در نهانگاه"
+	"items-in-cache": "موارد موجود در نهانگاه",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

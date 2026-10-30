@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% fullt",
 	"post-cache-size": "Størrelse på innleggsbuffer",
-	"items-in-cache": "Element i buffer"
+	"items-in-cache": "Element i buffer",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

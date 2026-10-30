@@ -2,5 +2,14 @@
 	"cache": "キャッシュ",
 	"percent-full": "%1% 満杯",
 	"post-cache-size": "投稿キャッシュのサイズ",
-	"items-in-cache": "キャッシュ内のアイテム"
+	"items-in-cache": "キャッシュ内のアイテム",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

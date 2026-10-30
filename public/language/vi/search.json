@@ -106,5 +106,6 @@
     "show-results-as-topics": "Kết quả dạng chủ đề",
     "show-results-as-posts": "Kết quả dạng bài đăng",
     "see-more-results": "Xem thêm kết quả (%1)",
-    "search-in-category": "Tìm kiếm trong \"%1\""
+    "search-in-category": "Tìm kiếm trong \"%1\"",
+    "results.reply-prefix": "RE:"
 }

@@ -56,5 +56,6 @@
 	"include-unverified-warning": "By default, users with emails associated with their account have already been verified, but there are situations where this is not the case (e.g. SSO logins, grandfathered users, etc). <strong>Enable this setting at your own risk</strong> &ndash; sending emails to unverified addresses may be a violation of regional anti-spam laws.",
 	"prompt": "Prompt users to enter or confirm their emails",
 	"prompt-help": "If a user does not have an email set, or their email is not confirmed, a warning will be shown on screen.",
-	"sendEmailToBanned": "Send emails to users even if they have been banned"
+	"sendEmailToBanned": "Send emails to users even if they have been banned",
+	"smtp-transport.custom-service": "Custom Service"
 }

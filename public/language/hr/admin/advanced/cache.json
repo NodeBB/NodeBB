@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Puno",
 	"post-cache-size": "Veličina predmemorije objave",
-	"items-in-cache": "Artikli u predmemoriji"
+	"items-in-cache": "Artikli u predmemoriji",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

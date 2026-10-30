@@ -104,5 +104,10 @@
 	"handles.enabled": "Autoriser les invités à poster",
 	"handles.enabled-help": "Cette option affiche un nouveau champ qui permet aux invités de choisir un nom qui sera associé à chaque message qu'ils rédigent. Si désactivé, il seront simplement nommés \"Invité\".",
 	"topic-views.enabled": "Autoriser les invités à augmenter le nombre de consultations de sujets",
-	"reply-notifications.enabled": "Autoriser les invités à générer des notifications de réponse"
+	"reply-notifications.enabled": "Autoriser les invités à générer des notifications de réponse",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

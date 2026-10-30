@@ -111,6 +111,9 @@
 	"errors.payload-gone": "此错误的负载已不存在。",
 	"errors.hostname": "主机名",
 	"errors.type": "类型",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "话题标签",
 	"hashtags.intro": "关注全局话题标签 Actor，以接收匹配特定标签的内容。实例 Actor 会关注中继的话题标签 Actor，后者会为匹配的内容发送 Announce 活动。使用自动分类规则将内容路由到相应分类。",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "激活",
 	"hashtags.state-error": "错误",
 	"hashtags.table.tag": "标签",
-	"hashtags.table.state": "状态"
+	"hashtags.table.state": "状态",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

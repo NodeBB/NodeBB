@@ -56,5 +56,6 @@
 	"include-unverified-warning": "Standardmäßig wurden Benutzer mit E-Mail-Adressen, die mit ihrem Konto verknüpft sind, bereits verifiziert, aber es existieren Situationen, in denen dies nicht der Fall ist (z. B. SSO-Anmeldungen, Großvater-Benutzer usw.). <strong>Aktiviere diese Einstellung auf eigenes Risiko</strong> &ndash; Das Senden von E-Mails an nicht verifizierte Adressen kann einen Verstoß gegen regionale Anti-Spam-Gesetze darstellen.",
 	"prompt": "Benutzer auffordern, ihre E-Mail-Adressen einzugeben oder zu bestätigen",
 	"prompt-help": "Wenn ein Benutzer keine E-Mail-Adresse hat oder seine E-Mail-Adresse nicht bestätigt ist, wird eine Warnung auf dem Bildschirm angezeigt.",
-	"sendEmailToBanned": "E-Mails an Benutzer senden, selbst wenn sie gesperrt wurden"
+	"sendEmailToBanned": "E-Mails an Benutzer senden, selbst wenn sie gesperrt wurden",
+	"smtp-transport.custom-service": "Custom Service"
 }

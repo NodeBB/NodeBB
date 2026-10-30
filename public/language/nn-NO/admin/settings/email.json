@@ -56,5 +56,6 @@
 	"include-unverified-warning": "Ver forsiktig: Dette kan føre til at ikkje-verifiserte e-postar mottar utsendingar.",
 	"prompt": "Varsel",
 	"prompt-help": "Angi teksten som skal visast ved varslingar.",
-	"sendEmailToBanned": "Send e-post til utestengde brukarar"
+	"sendEmailToBanned": "Send e-post til utestengde brukarar",
+	"smtp-transport.custom-service": "Custom Service"
 }

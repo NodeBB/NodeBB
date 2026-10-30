@@ -104,5 +104,10 @@
 	"handles.enabled": "Позволяване на имената за гостите",
 	"handles.enabled-help": "Тази възможност предоставя ново поле, което позволява на гостите да си изберат име, което да се използва за всяка публикация, която правят. Ако е изключено, всички те просто ще имат името „Гост“.",
 	"topic-views.enabled": "Гостите да допринасят за броя на преглеждания на темите",
-	"reply-notifications.enabled": "Гостите да могат да предизвикват изпращането на известия за отговорите си"
+	"reply-notifications.enabled": "Гостите да могат да предизвикват изпращането на известия за отговорите си",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }
