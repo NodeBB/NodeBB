@@ -2,7 +2,7 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "4.16.4",
+    "version": "4.16.6",
     "homepage": "https://www.nodebb.org",
     "repository": {
         "type": "git",
@@ -81,7 +81,7 @@
         "express-useragent": "2.2.3",
         "fetch-cookie": "3.2.0",
         "file-loader": "6.2.0",
-        "file-type": "22.2.0",
+        "file-type": "22.3.0",
         "fs-extra": "11.4.1",
         "graceful-fs": "4.2.11",
         "helmet": "8.3.0",
