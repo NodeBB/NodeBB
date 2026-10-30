@@ -37,6 +37,7 @@
 	"details.private": "Private",
 	"details.disableJoinRequests": "Disable join requests",
 	"details.disableLeave": "Disallow users from leaving the group",
+	"details.chatContactable": "Allow users to start a chat with this group",
 	"details.grant": "Grant/Rescind Ownership",
 	"details.kick": "Kick",
 	"details.kick-confirm": "Are you sure you want to remove this member from the group?",
