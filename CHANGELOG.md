@@ -1,3 +1,26 @@
+#### v4.16.6 (2026-10-30)
+
+##### Chores
+
+*  incrementing version number - v4.16.6 (0d9a6e4a)
+*  remove comments (c6685c64)
+*  up filetype (420aacdd)
+*  update changelog for v4.16.5 (be50a2e1)
+
+##### Bug Fixes
+
+*  dont allow redirect to unsafe url via /ap?resource path (373f3f35)
+* **auth:**
+  *  prevent user account enumeration (via email) on login (ce1c358d)
+  *  ignore client-supplied uid in registration flow (376d14ab)
+
+##### Tests
+
+*  on more corepack test (b121082f)
+*  dockerfile change for corepack, its removed in node:lts (db611d0b)
+*  fix relative_path tests (435d7189)
+*  remove .only (8df05a3c)
+
 #### v4.16.5 (2026-10-28)
 
 ##### Chores
