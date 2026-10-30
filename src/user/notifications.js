@@ -23,17 +23,48 @@ UserNotifications.get = async function (uid) {
 	}
 	const { hideReadNotifications } = await user.getSettings(uid);
 	let [unreadNids, readNids] = await Promise.all([
-		db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 49),
+		db.getSortedSetRevRange(`uid:${uid}:notifications:unread`, 0, 50),
 		hideReadNotifications ? [] : db.getSortedSetRevRange(`uid:${uid}:notifications:read`, 0, 49),
 	]);
+	// The extra ID detects truncation without adding another item to the dropdown.
+	const hasMoreUnread = unreadNids.length > 50;
+	unreadNids = unreadNids.slice(0, 50);
 	readNids = readNids.slice(0, 50 - unreadNids.length);
 	const [unread, read] = await Promise.all([
 		UserNotifications.getNotifications(unreadNids, uid, unreadNids.map(() => false)),
 		UserNotifications.getNotifications(readNids, uid, readNids.map(() => true)),
 	]);
+	if (hasMoreUnread) {
+		await setOldestUnreadPaths(uid, unread);
+	}
 
 	return await plugins.hooks.fire('filter:user.notifications.get', { uid, read, unread });
 };
+
+async function setOldestUnreadPaths(uid, notificationData) {
+	const mergeIds = notificationData.filter(n => n && n.mergeId?.startsWith('notifications:user-posted-to|')).map(n => n.mergeId);
+	const nids = await notifications.findRelated(mergeIds, `uid:${uid}:notifications:unread`);
+	if (!nids.length) {
+		return;
+	}
+	const related = await notifications.getMultiple(nids);
+	const pids = _.uniq(related.filter(n => n && n.pid).map(n => String(n.pid)));
+	const visiblePids = new Set(await privileges.posts.filter('topics:read', pids, uid));
+	const oldestByMergeId = new Map();
+	// findRelated returns IDs in ascending notification order.
+	related.forEach((n) => {
+		if (n && n.path && visiblePids.has(String(n.pid)) && !oldestByMergeId.has(n.mergeId)) {
+			oldestByMergeId.set(n.mergeId, n);
+		}
+	});
+	notificationData.forEach((n) => {
+		const oldest = n && !n.read && oldestByMergeId.get(n.mergeId);
+		if (oldest) {
+			n.path = oldest.path;
+			n.pid = oldest.pid;
+		}
+	});
+}
 
 async function filterNotifications(nids, filter) {
 	if (!filter) {
