@@ -41,6 +41,9 @@ describe('Content-Digest verification', () => {
 		return { method: 'POST', protocol: 'https', url: path, headers, rawBody, body: JSON.parse(rawBody) };
 	}
 
+	// Note: rawBody was chosen so that this digest contains a '+' and so that the
+	// low 2 bits (pad bits) of its last data character are 00 — the "non-zero pad
+	// bits" and "URL-safe alphabet" cases below depend on both properties.
 	const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	const nonZeroPadBits = digest.slice(0, -2) + alphabet[alphabet.indexOf(digest.at(-2)) + 1] + '=';
 	const validDigests = [

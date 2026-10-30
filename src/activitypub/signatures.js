@@ -200,7 +200,7 @@ function getRfc9421AlgoString(key) {
 function verifyContentDigest(bodyData, contentDigestHeader) {
 	if (!contentDigestHeader) return true; // no header to verify
 	const match = contentDigestHeader.match(/^sha-256=:([a-z0-9+/]+={0,2}):$/i);
-	if (!match || match[0] !== contentDigestHeader) {
+	if (!match) {
 		winston.warn('[activitypub/signatures] Invalid Content-Digest format');
 		return false;
 	}
