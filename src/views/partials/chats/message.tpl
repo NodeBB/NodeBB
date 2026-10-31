@@ -38,6 +38,9 @@
 							<a href="#" class="dropdown-item rounded-1" data-action="delete" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-trash text-muted"></i> {{tx("topic:delete")}}</span></a>
 						</li>
 						<li>
+							<a href="#" class="dropdown-item rounded-1" data-action="purge" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-eraser text-muted"></i> {{tx("topic:purge")}}</span></a>
+						</li>
+						<li>
 							<a href="#" class="dropdown-item rounded-1" data-action="restore" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-repeat text-muted"></i> {{tx("topic:restore")}}</span></a>
 						</li>
 						{{{ end }}}
