@@ -111,9 +111,9 @@
 	"errors.payload-gone": "Данните за тази грешка вече не съществуват.",
 	"errors.hostname": "Име на сървъра",
 	"errors.type": "Тип",
-	"errors.all-types": "All types",
-	"errors.in": "IN",
-	"errors.out": "OUT",
+	"errors.all-types": "Всички видове",
+	"errors.in": "ВХОДЯЩИ",
+	"errors.out": "ИЗХОДЯЩИ",
 
 	"hashtags": "Решетъчни маркери",
 	"hashtags.intro": "Следвайте глобални източници на решетъчни маркери, за да получавате съдържание отговарящо на определени етикети. Инсталацията следва източника на препредавателя за решетъчни маркери, който изпраща известия за съответстващо съдържание. Използвайте правила за автоматично категоризиране, за да пренасочвате съдържанието по категории.",
@@ -132,12 +132,12 @@
 	"hashtags.table.tag": "Етикет",
 	"hashtags.table.state": "Състояние",
 
-	"rules.type-hashtag": "Hashtag",
-	"rules.type-user": "User",
+	"rules.type-hashtag": "Решетъчен маркер",
+	"rules.type-user": "Потребител",
 
-	"relays.url": "Relay URL",
-	"relays.all": "All relays",
+	"relays.url": "Адрес на препредавател",
+	"relays.all": "Всички препредаватели",
 
-	"blocklists.add-url": "Blocklist URL",
-	"analytics.all-instances": "All instances"
+	"blocklists.add-url": "Адрес на списък за блокиране",
+	"analytics.all-instances": "Всички инсталации"
 }

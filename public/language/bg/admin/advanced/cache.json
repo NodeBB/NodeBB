@@ -3,13 +3,13 @@
 	"percent-full": "Запълненост: %1%",
 	"post-cache-size": "Размер на кеша за публикации",
 	"items-in-cache": "Елементи в кеша",
-	"name": "name",
-	"capacity": "capacity",
-	"count": "count",
-	"size": "size",
-	"hits": "hits",
-	"misses": "misses",
-	"hit-ratio": "hit ratio",
-	"hits-sec": "hits/sec",
-	"ttl": "ttl"
+	"name": "име",
+	"capacity": "капацитет",
+	"count": "брой",
+	"size": "размер",
+	"hits": "точни съвпадения",
+	"misses": "пропуски",
+	"hit-ratio": "съотношение на точните съвпадения",
+	"hits-sec": "точни съвпадения / сек",
+	"ttl": "време на живот"
 }

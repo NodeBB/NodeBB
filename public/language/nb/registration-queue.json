@@ -9,7 +9,7 @@
 	"reject-all": "Avvis alle",
 	"reject-all-confirm": "Vil du avvise alle registreringsforespørsler på denne siden?",
 	"reject-selected": "Avvis valgte",
-	"reject-selected-confirm": "{count, plural, one {Do you want to reject {count} selected registration request?} other {Do you want to reject {count} selected registration requests?}}",
+	"reject-selected-confirm": "{count, plural, one {Vil du avvise {count} valgt registreringsforespørsel?} other {Vil du avvise {count} valgte registreringsforespørsler?}}",
 	"list.name": "Navn",
 	"list.email": "E-post",
 	"list.ip": "IP",

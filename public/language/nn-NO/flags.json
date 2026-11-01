@@ -4,7 +4,7 @@
 	"reports": "Rapportar",
 	"first-reported": "Fyrst rapportert",
 	"no-flags": "Ingen rapportar funne",
-	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
+	"x-flags-found": "{count, plural, one {{count} rapport funnen.} other {{count} rapportar funne.}}",
 	"assignee": "Tilordna",
 	"update": "Oppdater",
 	"updated": "Oppdatert",

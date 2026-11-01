@@ -111,7 +111,7 @@
 	"errors.payload-gone": "Il payload per questo errore non esiste più.",
 	"errors.hostname": "Nome host",
 	"errors.type": "Tipo",
-	"errors.all-types": "All types",
+	"errors.all-types": "Tutti i tipi",
 	"errors.in": "IN",
 	"errors.out": "OUT",
 
@@ -133,11 +133,11 @@
 	"hashtags.table.state": "Stato",
 
 	"rules.type-hashtag": "Hashtag",
-	"rules.type-user": "User",
+	"rules.type-user": "Utente",
 
-	"relays.url": "Relay URL",
-	"relays.all": "All relays",
+	"relays.url": "URL del relè",
+	"relays.all": "Tutti i relè",
 
-	"blocklists.add-url": "Blocklist URL",
-	"analytics.all-instances": "All instances"
+	"blocklists.add-url": "URL della lista di blocco",
+	"analytics.all-instances": "Tutte le istanze"
 }

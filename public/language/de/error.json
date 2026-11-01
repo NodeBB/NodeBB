@@ -241,7 +241,7 @@
 	"message-flagged-too-many-times": "Diese Chat-Nachricht wurde bereits von anderen markiert",
 	"too-many-post-flags-per-day": "{count, plural, one {You can only flag {count} post per day} other {You can only flag {count} posts per day}}",
 	"too-many-user-flags-per-day": "{count, plural, one {You can only flag {count} user per day} other {You can only flag {count} users per day}}",
-	"too-many-message-flags-per-day": "{count, plural, one {You can only flag {count} chat message per day} other {You can only flag {count} chat messages per day}}",
+	"too-many-message-flags-per-day": "{count, plural, one {Du kannst pro Tag nur {count} Chat-Nachrichten melden} other {Du kannst pro Tag nur {count} Chat-Nachrichten melden}}",
 	"cant-flag-privileged": "Du darfst die Profile oder Inhalte von privilegierten Benutzern (Moderatoren/weltweiten Moderatoren/Admins) nicht kennzeichnen.",
 	"cant-locate-flag-report": "Meldung-Report kann nicht gefunden werden",
 	"self-vote": "Du kannst deine eigenen Beiträge nicht bewerten",

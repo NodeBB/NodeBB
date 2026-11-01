@@ -57,5 +57,5 @@
 	"prompt": "Chiedi agli utenti di inserire o confermare le loro email",
 	"prompt-help": "Se un utente non ha impostato un'email, o la sua email non è confermata, sarà mostrato un avviso sullo schermo.",
 	"sendEmailToBanned": "Invia email agli utenti anche se sono stati bannati",
-	"smtp-transport.custom-service": "Custom Service"
+	"smtp-transport.custom-service": "Servizio personalizzato"
 }

@@ -106,7 +106,7 @@
     "notificationType-post-queue": "כשפוסט חדש נכנס לתור",
     "notificationType-new-post-flag": "כשמדווחים על פוסט",
     "notificationType-new-user-flag": "כשמדווחים על משתמש",
-    "notificationType-new-message-flag": "When a chat message is flagged",
+    "notificationType-new-message-flag": "כאשר הודעת צ'אט מסומנת",
     "notificationType-new-reward": "כאשר אתם מרוויחים פרס חדש",
     "activitypub.announce": "<strong>%1</strong> שיתפו את הפוסט שלך ב <strong>%2</strong> לעוקבים שלהם.",
     "activitypub.announce-dual": "<strong>%1</strong> ו-<strong>%2</strong> שיתף את הפוסט שלך ב <strong>%3</strong> לעוקבים שלהם.",

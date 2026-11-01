@@ -4,7 +4,7 @@
 	"reports": "Rapporter",
 	"first-reported": "Først rapportert",
 	"no-flags": "Hurra! Ingen flagg funnet",
-	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
+	"x-flags-found": "{count, plural, one {{count} rapport funnet.} other {{count} rapporter funnet.}}",
 	"assignee": "Tildelt",
 	"update": "Oppdater",
 	"updated": "Oppdatert",

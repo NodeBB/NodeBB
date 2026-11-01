@@ -8,8 +8,8 @@
 	"hint-1": "Definisci un singolo indirizzo IP per linea. È possibile aggiungere blocchi IP a condizione che seguano il formato CIDR. (es. <code>192.168.100.0/22</code>).",
 	"hint-2": "Puoi aggiungere commenti iniziando le righe con il simbolo <code>#</code>.",
 
-	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
-	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> fuori da <strong>{count}</strong> regola valida.} many {<strong>{%1}</strong> fuori da <strong>{count}</strong> regole valide.} other {<strong>{%1}</strong> fuori da <strong>{count}</strong> regole valide.}}",
+	"validate.x-invalid": "{count, plural, one {La seguente <strong>{count}</strong> regola non è valida:} many {Le seguenti <strong>{count}</strong> regole non sono valide:} other {Le seguenti <strong>{count}</strong> regole non sono valide:}}",
 
 	"alerts.applied-success": "Blacklist applicata",
 

@@ -4,7 +4,7 @@
 	"reports": "Segnalazioni",
 	"first-reported": "Prima segnalazione",
 	"no-flags": "Evviva! Nessuna segnalazione trovata.",
-	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
+	"x-flags-found": "{count, plural, one {{count} segnalazione trovata.} many {{count} segnalazioni trovate.} other {{count} segnalazioni trovate.}}",
 	"assignee": "Assegnatario",
 	"update": "Aggiorna",
 	"updated": "Aggiornato",
