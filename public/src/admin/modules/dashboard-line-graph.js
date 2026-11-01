@@ -138,7 +138,8 @@ function handleUpdateControls({ set }) {
 						callback: submit,
 					},
 				},
-			}).on('shown.bs.modal', function () {
+			});
+			modal.on('shown.bs.modal', function () {
 				const date = new Date();
 				const today = date.toISOString().slice(0, 10);
 				date.setDate(date.getDate() - 1);
