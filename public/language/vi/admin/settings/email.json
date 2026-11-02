@@ -57,5 +57,5 @@
 	"prompt": "Nhắc người dùng nhập hoặc xác nhận email của họ",
 	"prompt-help": "Nếu người dùng chưa cung cấp email hoặc email của họ chưa được xác nhận, một cảnh báo sẽ được hiển thị trên màn hình.",
 	"sendEmailToBanned": "Gửi email cho người dùng ngay cả khi họ đã bị cấm",
-	"smtp-transport.custom-service": "Custom Service"
+	"smtp-transport.custom-service": "Tùy Chỉnh Dịch Vụ "
 }

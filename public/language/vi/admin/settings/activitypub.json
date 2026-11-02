@@ -111,9 +111,9 @@
 	"errors.payload-gone": "Thông tin gây ra lỗi này không còn tồn tại nữa.",
 	"errors.hostname": "Tên máy chủ",
 	"errors.type": "Loại",
-	"errors.all-types": "All types",
-	"errors.in": "IN",
-	"errors.out": "OUT",
+	"errors.all-types": "Tất cả các loại",
+	"errors.in": "VÀO",
+	"errors.out": "RA",
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Theo dõi các tác nhân hashtag toàn cầu để nhận nội dung phù hợp với các thẻ cụ thể. Tác nhân thực thể sẽ theo dõi tác nhân hashtag của máy chủ chuyển tiếp, tác nhân này sẽ gửi các hoạt động Thông báo cho nội dung phù hợp. Sử dụng các quy tắc tự động phân loại để định tuyến nội dung vào các danh mục.",
@@ -133,11 +133,11 @@
 	"hashtags.table.state": "Trạng thái",
 
 	"rules.type-hashtag": "Hashtag",
-	"rules.type-user": "User",
+	"rules.type-user": "Người dùng",
 
-	"relays.url": "Relay URL",
-	"relays.all": "All relays",
+	"relays.url": "URL chuyển tiếp",
+	"relays.all": "Tất cả các chuyển tiếp",
 
-	"blocklists.add-url": "Blocklist URL",
-	"analytics.all-instances": "All instances"
+	"blocklists.add-url": "URL danh sách chặn",
+	"analytics.all-instances": "Tất cả các tiến trình"
 }
