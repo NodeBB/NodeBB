@@ -312,7 +312,8 @@ Emailer.sendToEmail = async (template, email, language, params) => {
 	});
 
 	if (cancel) {
-		winston.info(`[emailer] "${template}" email to ${email} was cancelled by a plugin.`);
+		const logTarget = params.uid ? `uid ${params.uid}` : email;
+		winston.verbose(`[emailer] "${template}" email to ${logTarget} was cancelled by a plugin.`);
 		return;
 	}
 
