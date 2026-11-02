@@ -414,6 +414,45 @@ describe('Post\'s', () => {
 			const tidExists = await topics.exists(topicPostData.topicData.tid);
 			assert.strictEqual(tidExists, false);
 		});
+
+		it('should not resurrect a purged topic hash when purging its orphaned posts', async () => {
+			const victimUid = await user.create({ username: 'zombie-victim', password: '123456' });
+			const replierUid = await user.create({ username: 'zombie-replier', password: '123456' });
+
+			const { topicData } = await topics.post({
+				uid: victimUid,
+				cid: cid,
+				title: 'zombie topic',
+				content: 'zombie main post',
+			});
+			const zombieTid = topicData.tid;
+			await topics.reply({
+				uid: replierUid,
+				tid: zombieTid,
+				content: 'zombie reply',
+			});
+
+			// Admin purges the topic: the topic hash is deleted but the posts are
+			// orphaned in posts:pid (Topics.purge does not purge posts).
+			await topics.purge(zombieTid, globalModUid);
+			assert.strictEqual(await topics.exists(zombieTid), false);
+
+			// Delete the victim user: this purges the orphaned main post via
+			// posts.purge, which must not resurrect the topic hash.
+			await user.deleteContent(globalModUid, victimUid);
+
+			// The topic hash must not have been resurrected as a zombie.
+			const zombie = await db.getObject(`topic:${zombieTid}`);
+			assert.strictEqual(zombie, null, `topic hash was resurrected: ${JSON.stringify(zombie)}`);
+
+			// The global topicCount must reflect the purge and must not drift.
+			const globalData = await db.getObject('global');
+			const topicCount = parseInt(globalData.topicCount, 10);
+			const [actualTopics] = await db.sortedSetsCard(['topics:tid']);
+			assert.strictEqual(topicCount, actualTopics,
+				`topicCount ${topicCount} != actual topics ${actualTopics}`);
+			assert(topicCount >= 0, `topicCount went negative: ${topicCount}`);
+		});
 	});
 
 	describe('edit', () => {
