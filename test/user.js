@@ -571,16 +571,15 @@ describe('User', () => {
 				content: 'reply content 2',
 			});
 			const afterPosting = await db.getObject('global');
-
-			assert.strictEqual(afterPosting.postCount, global.postCount + 3); // initial post + 2 replies
-			assert.strictEqual(afterPosting.topicCount, global.topicCount + 1); // just one new topic
+			assert.strictEqual(Number(afterPosting.postCount), Number(global.postCount) + 3); // initial post + 2 replies
+			assert.strictEqual(Number(afterPosting.topicCount), Number(global.topicCount) + 1); // just one new topic
 
 			await User.deleteContent(uid1, uid1);
 
 			const afterUserDelete = await db.getObject('global');
 
-			assert.strictEqual(afterUserDelete.postCount, global.postCount); // back to original postcount
-			assert.strictEqual(afterUserDelete.topicCount, global.topicCount); // back to original topic count
+			assert.strictEqual(Number(afterUserDelete.postCount), Number(global.postCount)); // back to original postcount
+			assert.strictEqual(Number(afterUserDelete.topicCount), Number(global.topicCount)); // back to original topic count
 		});
 	});
 
