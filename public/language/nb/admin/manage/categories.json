@@ -102,7 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Ingen følgere",
 	"federation.followers-autofill": "Autofyll",
-	"federation.pending": "Pending",
+	"federation.pending": "Avventer",
 
 	"alert.created": "Opprettet",
 	"alert.create-success": "Kategori opprettet!",

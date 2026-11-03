@@ -57,5 +57,5 @@
 	"prompt": "Be brukere om å legge inn eller bekrefte e-posten sin",
 	"prompt-help": "Hvis en bruker mangler e-postadresse, eller e-postadressen ikke er bekreftet, vil en advarsel vises på skjermen. ",
 	"sendEmailToBanned": "Send e-post til brukere selv om de har blitt utestengt",
-	"smtp-transport.custom-service": "Custom Service"
+	"smtp-transport.custom-service": "Egendefinert tjeneste"
 }

@@ -102,7 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Ingen følgarar.",
 	"federation.followers-autofill": "Autofyll",
-	"federation.pending": "Pending",
+	"federation.pending": "Ventar",
 
 	"alert.created": "Oppretta",
 	"alert.create-success": "Kategori oppretta med suksess",

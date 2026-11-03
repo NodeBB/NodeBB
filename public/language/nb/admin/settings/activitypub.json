@@ -111,9 +111,9 @@
 	"errors.payload-gone": "Dataene knyttet til denne feilen finnes ikke lenger.",
 	"errors.hostname": "Vertsnavn",
 	"errors.type": "Type",
-	"errors.all-types": "All types",
-	"errors.in": "IN",
-	"errors.out": "OUT",
+	"errors.all-types": "Alle typer",
+	"errors.in": "INN",
+	"errors.out": "UT",
 
 	"hashtags": "Emneknagger",
 	"hashtags.intro": "Følg globale emneknagg-aktører for å motta innhold med bestemte emneknagger. Instansaktøren følger emneknagg-aktøren til relayen, som sender Announce-aktiviteter for innhold som samsvarer. Bruk regler for automatisk kategorisering for å sende innhold til kategorier.",
@@ -132,12 +132,12 @@
 	"hashtags.table.tag": "Emneknagg",
 	"hashtags.table.state": "Status",
 
-	"rules.type-hashtag": "Hashtag",
-	"rules.type-user": "User",
+	"rules.type-hashtag": "Emneknagg",
+	"rules.type-user": "Bruker",
 
-	"relays.url": "Relay URL",
-	"relays.all": "All relays",
+	"relays.url": "Relay-URL",
+	"relays.all": "Alle relays",
 
-	"blocklists.add-url": "Blocklist URL",
-	"analytics.all-instances": "All instances"
+	"blocklists.add-url": "URL til blokkeringsliste",
+	"analytics.all-instances": "Alle instanser"
 }

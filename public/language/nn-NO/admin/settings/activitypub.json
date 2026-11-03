@@ -111,9 +111,9 @@
 	"errors.payload-gone": "Datapakken for denne feilen finst ikkje lenger.",
 	"errors.hostname": "Vertsnamn",
 	"errors.type": "Type",
-	"errors.all-types": "All types",
-	"errors.in": "IN",
-	"errors.out": "OUT",
+	"errors.all-types": "Alle typar",
+	"errors.in": "INN",
+	"errors.out": "UT",
 
 	"hashtags": "Emneknaggar",
 	"hashtags.intro": "Følg globale emneknagg-aktørar for å få innhald med bestemte emneknaggar. Instansaktøren følgjer emneknagg-aktøren til relayen, som sender Announce-aktivitetar for innhald som samsvarer. Bruk reglar for automatisk kategorisering for å sende innhald til kategoriar.",
@@ -132,12 +132,12 @@
 	"hashtags.table.tag": "Emneknagg",
 	"hashtags.table.state": "Status",
 
-	"rules.type-hashtag": "Hashtag",
-	"rules.type-user": "User",
+	"rules.type-hashtag": "Emneknagg",
+	"rules.type-user": "Brukar",
 
-	"relays.url": "Relay URL",
-	"relays.all": "All relays",
+	"relays.url": "Relay-URL",
+	"relays.all": "Alle relays",
 
-	"blocklists.add-url": "Blocklist URL",
-	"analytics.all-instances": "All instances"
+	"blocklists.add-url": "URL til blokkeringsliste",
+	"analytics.all-instances": "Alle instansar"
 }

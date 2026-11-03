@@ -57,5 +57,5 @@
 	"prompt": "Varsel",
 	"prompt-help": "Angi teksten som skal visast ved varslingar.",
 	"sendEmailToBanned": "Send e-post til utestengde brukarar",
-	"smtp-transport.custom-service": "Custom Service"
+	"smtp-transport.custom-service": "Tilpassa teneste"
 }
