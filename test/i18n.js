@@ -59,9 +59,17 @@ describe('i18n', () => {
 		});
 
 		it('every other block should be a nodebb resource matching its source file name', () => {
+			// resource names that do not match their file name, and why
+			const exceptions = {
+				'language-1': 'language is a reserved resource name in Transifex',
+			};
+
 			blocks.slice(1).forEach((block) => {
-				const match = block.name.match(/^o:nodebb:p:nodebb:r:([a-z0-9-]+)$/);
+				const match = block.name.match(/^o:nodebb:p:nodebb:r:([a-z0-9_-]+)$/);
 				assert(match, `Unexpected block header [${block.name}]`);
+				if (exceptions[match[1]]) {
+					return;
+				}
 
 				const source = block.lines.find(line => line.startsWith('source_file'));
 				assert(source, `block [${block.name}] has no source_file`);
