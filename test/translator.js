@@ -380,6 +380,43 @@ describe('Translator shim', () => {
 		});
 	});
 
+	describe('regional fallbacks', () => {
+		const NS = 'regional-fallback';
+		const enGB = 'Hello, %1!';
+		const ptBR = 'Olá, %1!';
+
+		// pt-PT is identical to en-GB (untranslated at the Transifex level),
+		// pt-BR has a real translation
+		shim.addTranslation('en-GB', NS, { greet: enGB, greet2: enGB });
+		shim.addTranslation('pt-PT', NS, { greet: enGB, greet2: 'Boa tarde, %1!' });
+		shim.addTranslation('pt-BR', NS, { greet: ptBR, greet2: 'Olá de novo, %1!' });
+
+		it('should use the fallback locale when the locale string is identical to en-GB', async () => {
+			const translated = await shim.translateKey(`[[${NS}:greet, world]]`, undefined, 'pt-PT');
+			assert.strictEqual(translated, 'Olá, world!');
+		});
+
+		it('should not alter the fallback locale itself', async () => {
+			const translated = await shim.translateKey(`[[${NS}:greet, world]]`, undefined, 'pt-BR');
+			assert.strictEqual(translated, 'Olá, world!');
+		});
+
+		it('should not overwrite a locale string that differs from en-GB', async () => {
+			const translated = await shim.translateKey(`[[${NS}:greet2, world]]`, undefined, 'pt-PT');
+			assert.strictEqual(translated, 'Boa tarde, world!');
+		});
+
+		it('should not alter locales without a fallback entry', async () => {
+			shim.addTranslation('fr', NS, { greet: enGB });
+			const translated = await shim.translateKey(`[[${NS}:greet, world]]`, undefined, 'fr');
+			assert.strictEqual(translated, 'Hello, world!');
+		});
+
+		it('should expose the fallback map', () => {
+			assert.deepStrictEqual(shim.localeFallbacks, { 'pt-PT': 'pt-BR' });
+		});
+	});
+
 	it('should load translations for language', (done) => {
 		shim.load('en-GB', 'global', (translations) => {
 			assert(translations);

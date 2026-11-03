@@ -334,11 +334,25 @@ module.exports = function (utils, load, warn) {
 			}
 
 			const translation = this.getTranslation(namespace, key);
-			return translation.then(function (translated) {
+			return translation.then(async function (translated) {
 				// check if the translation is missing first
 				if (!translated) {
 					warn('Missing translation "' + name + '" for language "' + self.lang + '"');
 					return escapeHTML(backup || name);
+				}
+
+				// Regional fallback: en-GB is the fallback at the Transifex level,
+				// so a locale string identical to en-GB is effectively untranslated.
+				// If the fallback locale has a distinct string, prefer it.
+				const fallbackLang = Translator.localeFallbacks[self.lang];
+				if (fallbackLang) {
+					const [enGB, fallback] = await Promise.all([
+						Translator.create('en-GB').getTranslation(namespace, key),
+						Translator.create(fallbackLang).getTranslation(namespace, key),
+					]);
+					if (translated === enGB && fallback && fallback !== enGB) {
+						translated = fallback;
+					}
 				}
 
 				return self.txArgs(args).then(function (translatedArgs) {
@@ -412,6 +426,14 @@ module.exports = function (utils, load, warn) {
 		};
 
 		Translator.cache = {};
+
+		/**
+		 * Regional translation fallbacks, `pt-BR` is more thoroughly maintained than `pt-PT`
+		 * @type {Object<string, string>}
+		 */
+		Translator.localeFallbacks = {
+			'pt-PT': 'pt-BR',
+		};
 
 		/**
 		 * Register a custom module to handle translations
@@ -546,6 +568,7 @@ module.exports = function (utils, load, warn) {
 		normalizeToken: normalizeToken,
 		replaceArguments: replaceArguments,
 		getLanguage: Translator.getLanguage,
+		localeFallbacks: Translator.localeFallbacks,
 		rtlLanguages: ['ar', 'fa-IR', 'he', 'ur'],
 		languageDirection: function (lang) {
 			return this.rtlLanguages.includes(lang) ? 'rtl' : 'ltr';
