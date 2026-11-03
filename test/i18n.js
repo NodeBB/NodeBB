@@ -31,6 +31,66 @@ describe('i18n', () => {
 		});
 	});
 
+	describe('.tx/config', () => {
+		let blocks;
+
+		before(() => {
+			const raw = fs.readFileSync(path.resolve(__dirname, '../.tx/config'), 'utf8');
+			blocks = [];
+			let current = null;
+			raw.split('\n').forEach((line) => {
+				const header = line.match(/^\[(.+)\]$/);
+				if (header) {
+					current = { name: header[1], lines: [] };
+					blocks.push(current);
+				} else if (current && line.trim() !== '') {
+					current.lines.push(line);
+				}
+			});
+		});
+
+		it('should start with a [main] block containing the Transifex host', () => {
+			assert(blocks.length > 0, '.tx/config is empty');
+			assert.strictEqual(blocks[0].name, 'main', `first block is [${blocks[0].name}], expected [main]`);
+			assert(
+				blocks[0].lines.some(line => line.trim() === 'host = https://www.transifex.com'),
+				'[main] block is missing "host = https://www.transifex.com"'
+			);
+		});
+
+		it('every other block should be a nodebb resource matching its source file name', () => {
+			blocks.slice(1).forEach((block) => {
+				const match = block.name.match(/^o:nodebb:p:nodebb:r:([a-z0-9-]+)$/);
+				assert(match, `Unexpected block header [${block.name}]`);
+
+				const source = block.lines.find(line => line.startsWith('source_file'));
+				assert(source, `block [${block.name}] has no source_file`);
+				const sourcePath = source.split('=').pop().trim();
+				const prefix = 'public/language/en-GB/';
+				assert(sourcePath.startsWith(prefix), `source_file "${sourcePath}" in [${block.name}] is not under public/language/en-GB/`);
+				// the resource name is the file path (without the .json suffix), with slashes replaced by dashes
+				const resource = sourcePath.slice(prefix.length).replace(/\.json$/, '').replace(/\//g, '-');
+				assert.strictEqual(
+					match[1],
+					resource,
+					`resource "${match[1]}" in [${block.name}] does not match its source file "${sourcePath}"`
+				);
+			});
+		});
+
+		it('every block should have the same number of translations', () => {
+			const counts = blocks.slice(1).map(block => ({
+				name: block.name,
+				count: block.lines.filter(line => line.startsWith('trans.')).length,
+			}));
+			assert(counts.length > 0, 'no resource blocks found in .tx/config');
+			const expected = counts[0].count;
+			counts.forEach(({ name, count }) => {
+				assert.strictEqual(count, expected, `block [${name}] has ${count} translations, expected ${expected}`);
+			});
+		});
+	});
+
 	// There has to be a better way to generate tests asynchronously...
 	it('', async () => {
 		const sourcePath = path.resolve(__dirname, '../public/language/en-GB');
