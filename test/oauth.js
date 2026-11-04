@@ -15,6 +15,7 @@ const groups = require('../src/groups');
 const meta = require('../src/meta');
 
 const url = nconf.get('url');
+const relativePath = nconf.get('relative_path');
 const REDIRECT = 'http://127.0.0.1:9999/cb';
 
 function b64url(buf) {
@@ -109,8 +110,11 @@ describe('OAuth provider (live)', () => {
 		}).toString();
 		const { response } = await getJson(`/oauth/authorize?${qs}`);
 		assert.strictEqual(response.statusCode, 302);
-		assert.ok(/^\/(login|\/login)/.test(response.headers.location) && response.headers.location.includes('next='),
-			response.headers.location);
+		// The login route lives under the install's relative path, and `next`
+		// carries the router-relative authorize URL (i.e. unprefixed).
+		const location = new URL(response.headers.location, url);
+		assert.strictEqual(location.pathname, `${relativePath}/login`, response.headers.location);
+		assert.strictEqual(location.searchParams.get('next'), `/oauth/authorize?${qs}`);
 	});
 
 	it('renders a consent screen listing client and scopes', async () => {

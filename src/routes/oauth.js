@@ -3,16 +3,16 @@
 const middleware = require('../middleware');
 const oauth = require('../oauth');
 
-module.exports = function (app, router, mw, ctrls) {
-	// RFC 8414 authorization server metadata (mounted at the instance root,
-	// like the other /.well-known routes)
-	app.get('/.well-known/oauth-authorization-server', async (req, res) => {
+module.exports = function (router, mw, ctrls) {
+	// RFC 8414 authorization server metadata. Mounted on the router (not the app)
+	// so a subfolder install serves it under <relative_path> (RFC 8414 §3.1).
+	router.get('/.well-known/oauth-authorization-server', async (req, res) => {
 		res.json(await oauth.getMetadata());
 	});
 
 	// OpenID Connect Discovery 1.0 (a superset of the RFC 8414 metadata), at
 	// the canonical OIDC well-known URL.
-	app.get('/.well-known/openid-configuration', async (req, res) => {
+	router.get('/.well-known/openid-configuration', async (req, res) => {
 		res.json(await oauth.getOpenIdMetadata());
 	});
 

@@ -64,10 +64,7 @@ Write.reload = async (params) => {
 		helpers,
 	});
 	winston.info(`[api] Adding ${pluginRouter.stack.length} route(s) to \`api/v3/plugins\``);
-	// Authenticate Bearer tokens and enforce scopes on plugin routes too.
-	// Plugin routes have no scope mapping, so a Bearer/OAuth token is denied
-	// by default (deny-by-default posture). Cookie sessions and ACP tokens
-	// (req.oauth null) pass through. See OAUTH-TODO.md for plugin scope handling.
+	// todo: allow plugins to add to oauth scopes (right now plugin routes all denied by default)
 	const oauth = require('../../oauth');
 	router.use('/api/v3/plugins', middleware.authenticateRequest, oauth.scopes.enforce(), pluginRouter);
 
