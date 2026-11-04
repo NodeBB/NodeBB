@@ -356,7 +356,7 @@ oauth.validateAuthorizationRequest = async (areq, validated) => {
 	const RESPONSE_TYPE_GRANTS = { code: 'authorization_code' };
 	if (!client.grants.includes(RESPONSE_TYPE_GRANTS[areq.type])) {
 		return validated(new AuthorizationError(
-			'[[error:oauth.unsupported-grant]]',
+			'This client is not registered for the authorization_code grant',
 			'unauthorized_client',
 		), client, areq.redirectURI);
 	}

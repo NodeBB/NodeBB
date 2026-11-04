@@ -319,7 +319,6 @@
 	"api.route-not-scoped": "The requested route is not accessible with the provided token.",
 	"api.no-such-client": "No such OAuth client",
 	"api.missing-token": "This endpoint requires an access token",
-	"oauth.unsupported-grant": "This client is not registered for the requested response type",
 
 	"activitypub.not-enabled": "Federation is not enabled on this server",
 	"activitypub.invalid-id": "Unable to resolve the input id, likely as it is malformed.",

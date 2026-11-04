@@ -612,13 +612,13 @@ describe('OAuth provider (live)', () => {
 		assert.ok(tok.body.access_token, `token issued, body: ${JSON.stringify(tok.body)}`);
 	});
 
-	it('rejects a client that lacks the authorization_code grant with 500 (not an OAuth error)', async () => {
-		// RFC 6749 §4.1.2.1: the authorization endpoint must answer with a 400 + JSON error
-		// (unauthorized_client / unsupported_response_type) and must not redirect.
-		// validateAuthorizationRequest throws `[[error:oauth:unsupported-grant]]` for a
-		// client without the grant; that translation key is thrown as a plain Error through
-		// oauth2orize, and NodeBB renders it as a 500 HTML error page. The key is not in
-		// public/language/en-GB/error.json, so it reaches the page untranslated.
+	it('rejects a client that lacks the authorization_code grant with 400 + JSON (RFC 6749 §4.1.2.1)', async () => {
+		// RFC 6749 §4.1.2.1: an authorization request the client is not registered
+		// for is reported directly to the resource owner — 400 + JSON in the OAuth
+		// error shape, never a redirect to the client. validateAuthorizationRequest
+		// raises an AuthorizationError (`unauthorized_client`) whose message is
+		// human-readable text (not a `[[...]]` translation key), so the
+		// error_description the client sees is always presentable.
 		const ccOnly = await oauth.clients.create({
 			name: 'CC only', redirectUris: [REDIRECT], grants: ['client_credentials'],
 			scopes: ['posts:read'], ownerUid: uid,
