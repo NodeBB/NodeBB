@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
 	"search-term": "Koşul",
 	"search-count": "Sayı",
-	"view-all": "Hepsini Görüntüle"
+	"view-all": "Hepsini Görüntüle",
+	"logins.user-agent": "%1 %2 on %3"
 }

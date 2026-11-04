@@ -56,5 +56,6 @@
 	"include-unverified-warning": "기본적으로, 계정과 연결된 이메일이 있는 사용자는 이미 확인되었지만, 이러한 경우가 아닌 경우도 있습니다 (예: SSO 로그인, 예전 사용자 등). <strong>이 설정을 활성화하면 주의가 필요합니다</strong> - 확인되지 않은 주소로 이메일을 보내는 것은 해당 현지 지역의 법률을 위반할 수 있습니다.",
 	"prompt": "사용자에게 이메일을 입력하거나 확인하라는 메시지 표시",
 	"prompt-help": "사용자가 이메일을 설정하지 않았거나 이메일이 확인되지 않으면 화면에 경고가 표시됩니다.",
-	"sendEmailToBanned": "차단된 사용자에게도 이메일 보내기"
+	"sendEmailToBanned": "차단된 사용자에게도 이메일 보내기",
+	"smtp-transport.custom-service": "Custom Service"
 }

@@ -275,9 +275,34 @@ describe('authentication', () => {
 		meta.config.allowLoginWith = 'username-email';
 		const uid = await user.create({ username: '2nduser', password: '2ndpassword', email: '2nduser@nodebb.org' });
 		const { response, body } = await helpers.loginUser('2nduser@nodebb.org', '2ndpassword');
-		assert.strictEqual(response.statusCode, 400);
-		assert.strictEqual(body, '[[error:invalid-email]]');
+		// Unconfirmed emails are not in the email:uid index, so they fall through the
+		// same non-existent-user path as any other bad credential (403, not 400).
+		assert.strictEqual(response.statusCode, 403);
+		assert.strictEqual(body, '[[error:invalid-login-credentials]]');
 		meta.config.allowLoginWith = oldValue;
+	});
+
+	it('should not leak whether an email is registered (email enumeration)', async () => {
+		const oldValue = meta.config.allowLoginWith;
+		meta.config.allowLoginWith = 'username-email';
+		try {
+			// Unregistered email
+			const { response: emailRes, body: emailBody } = await helpers.loginUser('unregistered-enum@example.com', 'SomePassword123');
+			// Non-existent username
+			const { response: userRes, body: userBody } = await helpers.loginUser('unregistered-enum-user', 'SomePassword123');
+			// Registered email with a wrong password
+			const { response: regRes, body: regBody } = await helpers.loginUser('regular@nodebb.org', 'WrongPassword123');
+
+			// All three must be indistinguishable: same status, same message
+			assert.strictEqual(emailRes.statusCode, 403);
+			assert.strictEqual(emailBody, '[[error:invalid-login-credentials]]');
+			assert.strictEqual(userRes.statusCode, 403);
+			assert.strictEqual(userBody, '[[error:invalid-login-credentials]]');
+			assert.strictEqual(regRes.statusCode, 403);
+			assert.strictEqual(regBody, '[[error:invalid-login-credentials]]');
+		} finally {
+			meta.config.allowLoginWith = oldValue;
+		}
 	});
 
 	it('should fail to create user if username is too short', async () => {
@@ -701,6 +726,48 @@ describe('authentication', () => {
 			const redirect = new URL(response.headers.location, nconf.get('url'));
 			assert.strictEqual(redirect.searchParams.get('register'), '[[register:invite.error-invite-only]]');
 			assert.strictEqual(await user.getUidByUsername(username), null);
+		});
+
+		it('should ignore a client-supplied uid in the registration body', async () => {
+			meta.config.requireEmailAddress = 0;
+
+			// Victim: an account with a confirmed email and no password (e.g. SSO-created)
+			const suffix = utils.generateUUID().slice(0, 8);
+			const victimUid = await user.create({
+				username: `victim${suffix}`,
+				email: `victim${suffix}@example.org`,
+			}, { emailVerification: 'verify' });
+
+			const username = `mallory${suffix}`;
+			const jar = request.jar();
+			const { response, body } = await helpers.request('post', '/register', {
+				jar,
+				body: {
+					username,
+					password: 'pending-registration-password',
+					'password-confirm': 'pending-registration-password',
+					uid: victimUid,
+				},
+			});
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(body.next, `${nconf.get('relative_path')}/register/complete`);
+
+			const formData = new FormData();
+			formData.append('email', '');
+			formData.append('gdpr_agree_data', 'on');
+			formData.append('gdpr_agree_email', 'on');
+			const { response: res2 } = await helpers.request('post', '/register/complete', {
+				jar,
+				body: formData,
+				redirect: 'manual',
+			});
+			assert.strictEqual(res2.status, 302);
+
+			const victimData = await user.getUserFields(victimUid, ['email', 'email:confirmed']);
+			assert.strictEqual(victimData.email, `victim${suffix}@example.org`);
+			assert.strictEqual(victimData['email:confirmed'], 1);
+
+			meta.config.requireEmailAddress = 1;
 		});
 	});
 

@@ -11,10 +11,10 @@
 				{{{ each hooks.methods }}}
 				<div class="mb-3">
 					<span>{hooks.methods.id}</span>
-					<span class="text-secondary text-sm">Priority: {hooks.methods.priority}</span>
+					<span class="text-secondary text-sm">{{tx("admin/advanced/hooks:priority")}} {hooks.methods.priority}</span>
 
 					<button class="btn btn-light btn-sm float-end" type="button" data-bs-toggle="collapse" data-bs-target="#{hooks.methods.index}" aria-expanded="false" aria-controls="{hooks.methods.index}">
-						<i class="fa fa-eye"></i> Show Code
+						<i class="fa fa-eye"></i> {{tx("admin/advanced/hooks:show-code")}}
 					</button>
 				</div>
 				<div class="collapse" id="{hooks.methods.index}">

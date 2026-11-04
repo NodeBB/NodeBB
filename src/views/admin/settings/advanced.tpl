@@ -80,7 +80,7 @@
 				<p class="form-text">{{tx("admin/settings/advanced:headers.coep-help")}}</p>
 				<div class="mb-3">
 					<label for="cross-origin-resource-policy">{{tx("admin/settings/advanced:headers.coop")}}</label>
-					<select class="form-select" id="cross-origin-opener-policy" data-field="cross-origin-opener-policy">
+					<select class="form-select" id="cross-origin-opener-policy" data-field="cross-origin-opener-policy" data-tpl-lint-ignore>
 						<option value="same-origin">same-origin</option>
 						<option value="same-origin-allow-popups">same-origin-allow-popups</option>
 						<option value="unsafe-none">unsafe-none</option>
@@ -89,7 +89,7 @@
 
 				<div class="mb-3">
 					<label for="cross-origin-resource-policy">{{tx("admin/settings/advanced:headers.corp")}}</label>
-					<select class="form-select" id="cross-origin-resource-policy" data-field="cross-origin-resource-policy">
+					<select class="form-select" id="cross-origin-resource-policy" data-field="cross-origin-resource-policy" data-tpl-lint-ignore>
 						<option value="same-site">same-site</option>
 						<option value="same-origin">same-origin</option>
 						<option value="cross-origin">cross-origin</option>

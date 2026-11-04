@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Niciun urmăritor.",
 	"federation.followers-autofill": "Completare automată",
+	"federation.pending": "Pending",
 
 	"alert.created": "Created",
 	"alert.create-success": "Category successfully created!",

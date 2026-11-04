@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Täis",
 	"post-cache-size": "Postituse vahemälu suurus",
-	"items-in-cache": "Esemed vahemälus"
+	"items-in-cache": "Esemed vahemälus",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

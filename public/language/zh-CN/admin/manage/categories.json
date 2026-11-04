@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "无关注者",
 	"federation.followers-autofill": "自动填充",
+	"federation.pending": "Pending",
 
 	"alert.created": "创建",
 	"alert.create-success": "版块创建成功！",

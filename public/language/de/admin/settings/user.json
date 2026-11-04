@@ -104,5 +104,10 @@
 	"handles.enabled": "Gastzugänge erlauben",
 	"handles.enabled-help": "Diese Option zeigt ein neues Feld an, in dem Gäste einen Namen auswählen können, der jedem von ihnen erstellten Beitrag zugeordnet werden soll. Wenn sie deaktiviert sind, werden sie einfach „Gast“ genannt.",
 	"topic-views.enabled": "Gästen erlauben, die gezählte Anzahl der Themenaufrufe zu erhöhen",
-	"reply-notifications.enabled": "Erlaube Gästen, Antwortbenachrichtigungen zu erstellen"
+	"reply-notifications.enabled": "Erlaube Gästen, Antwortbenachrichtigungen zu erstellen",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

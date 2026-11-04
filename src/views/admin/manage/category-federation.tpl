@@ -37,7 +37,7 @@
 								<td>
 									<pre class="mb-0 mt-1">{./id}</pre>
 									{{{ if !./approved }}}
-									<span class="form-text text-warning">Pending</span>
+									<span class="form-text text-warning">{{tx("admin/manage/categories:federation.pending")}}</span>
 									{{{ end }}}
 								</td>
 								<td>

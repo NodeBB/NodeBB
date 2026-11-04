@@ -104,5 +104,10 @@
 	"handles.enabled": "Дозволити гостьові імена",
 	"handles.enabled-help": "Ця опція надає додаткове поле, що дозволяє гостям обрати собі ім'я для кожного посту. Якщо вимкнено, вони будуть просто зватися \"Гість\"",
 	"topic-views.enabled": "Allow guests to increase topic view counts",
-	"reply-notifications.enabled": "Allow guests to generate reply notifications"
+	"reply-notifications.enabled": "Allow guests to generate reply notifications",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

@@ -104,5 +104,10 @@
 	"handles.enabled": "Vendég név beállítás engedélyezése",
 	"handles.enabled-help": "Ez a beállítás engedélyez egy új mezőt, amivel a vendégek minden hozzászólásnál választhatnak egy nevet ami megjelenik ott. Ha nincs engedélyezve, egyszerűen \"Vendég\"-ként jelennek meg.",
 	"topic-views.enabled": "Témakör látogatások számának növelésének engedélyezése vendégek számára",
-	"reply-notifications.enabled": "Válasz értesítések generálásának engedélyezése vendégek számára"
+	"reply-notifications.enabled": "Válasz értesítések generálásának engedélyezése vendégek számára",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

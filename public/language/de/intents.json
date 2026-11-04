@@ -18,5 +18,6 @@
 	"trigger-description": "Bitte melde dich bei deinem Forum-Konto an oder wähle einen Open Social Web-Namen aus, um diesen Vorgang abzuschließen",
 	"trigger-your-handles": "Deine registrierten Nutzernamen",
 	"trigger-yes": "Ja, benutze das",
-	"trigger-no-matching": "Es gibt keine registrierten Nutzernamen, die diese Absicht unterstützen. Registriere einen neuen Nutzernamen oder melde dich an."
+	"trigger-no-matching": "Es gibt keine registrierten Nutzernamen, die diese Absicht unterstützen. Registriere einen neuen Nutzernamen oder melde dich an.",
+	"please-wait": "Please wait…"
 }

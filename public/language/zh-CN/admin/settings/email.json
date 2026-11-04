@@ -56,5 +56,6 @@
 	"include-unverified-warning": "默认情况下，账号有邮件地址关联的用户是已核实的用户，但有些情况下不是这样（例如，单点登录，遗留用户等等）。<strong>您自行承担启用此设置的风险</strong>——发送邮件给未核实的用户可能会违反地区性的反垃圾邮件法律。",
 	"prompt": "提示用户输入或验证他们的电子邮箱地址",
 	"prompt-help": "如果用户没有设置电子邮箱，或者他们的电子邮件未被验证，页面上将会显示警告。",
-	"sendEmailToBanned": "即使用户已被封禁也发送电子邮件"
+	"sendEmailToBanned": "即使用户已被封禁也发送电子邮件",
+	"smtp-transport.custom-service": "Custom Service"
 }

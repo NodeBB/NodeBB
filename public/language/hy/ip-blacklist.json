@@ -8,8 +8,8 @@
 	"hint-1": "Սահմանեք մեկ IP հասցե յուրաքանչյուր տողի համար: Դուք կարող եք ավելացնել IP բլոկներ, քանի դեռ դրանք հետևում են CIDR ձևաչափին (օրինակ՝ 192.168.100.0/22):",
 	"hint-2": "Մեկնաբանություններում կարող եք ավելացնել՝ սկսած տողերից # նշանով:",
 
-	"validate.x-valid": "%1-ը %2 կանոն(ներ)ից վավեր է:",
-	"validate.x-invalid": "Հետևյալ %1 կանոններն անվավեր են.",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Կիրառվել է սև ցուցակը",
 

@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% fylt",
 	"post-cache-size": "Storleik på innleggscache",
-	"items-in-cache": "Element i cache"
+	"items-in-cache": "Element i cache",
+	"name": "namn",
+	"capacity": "kapasitet",
+	"count": "tal",
+	"size": "storleik",
+	"hits": "treff",
+	"misses": "manglar",
+	"hit-ratio": "treffrate",
+	"hits-sec": "treff/sek",
+	"ttl": "ttl"
 }

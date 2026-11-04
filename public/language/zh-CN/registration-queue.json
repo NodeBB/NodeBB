@@ -9,7 +9,7 @@
 	"reject-all": "全部拒绝",
 	"reject-all-confirm": "您要拒绝本页上的所有注册申请吗？",
 	"reject-selected": "拒绝选中",
-	"reject-selected-confirm": "您确定要拒绝选中的 %1 个注册申请吗？",
+	"reject-selected-confirm": "{count, plural, one {Do you want to reject {count} selected registration request?} other {Do you want to reject {count} selected registration requests?}}",
 	"list.name": "姓名",
 	"list.email": "邮件",
 	"list.ip": "IP",

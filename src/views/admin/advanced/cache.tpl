@@ -14,15 +14,15 @@
 				<table id="cache-table" class="table table-sm text-sm">
 					<thead>
 						<tr>
-							<th><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">name</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">capacity</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">count</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">size</a></th>
-							<th class="text-end" data-sort="asc"><i class="fa-solid fa-sort-down"></i> <a href="#" class="text-reset">hits</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">misses</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">hit ratio</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">hits/sec</a></th>
-							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">ttl</a></th>
+							<th><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:name")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:capacity")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:count")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:size")}}</a></th>
+							<th class="text-end" data-sort="asc"><i class="fa-solid fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:hits")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:misses")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:hit-ratio")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:hits-sec")}}</a></th>
+							<th class="text-end"><i class="fa-solid invisible fa-sort-down"></i> <a href="#" class="text-reset">{{tx("admin/advanced/cache:ttl")}}</a></th>
 							<th></th>
 						</tr>
 					</thead>

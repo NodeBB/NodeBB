@@ -106,5 +106,6 @@
     "show-results-as-topics": "結果をスレッドとして表示",
     "show-results-as-posts": "結果を投稿として表示",
     "see-more-results": "さらに結果を見る（%1）",
-    "search-in-category": "「%1」で検索"
+    "search-in-category": "「%1」で検索",
+    "results.reply-prefix": "RE:"
 }

@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Täynnä",
 	"post-cache-size": "Viestivälimuistin koko",
-	"items-in-cache": "Asioita välimuistissa"
+	"items-in-cache": "Asioita välimuistissa",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

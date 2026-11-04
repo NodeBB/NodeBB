@@ -8,8 +8,8 @@
 	"hint-1": "Définissez une seule adresse IP par ligne. Vous pouvez ajouter des blocs IP, du moment qu'ils respectent le format CIDR (par ex. <code>192.168.100.0/22</code>).",
 	"hint-2": "Vous pouvez ajouter un commentaire en commençant la ligne par le symbole <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> sur <strong>%2</strong> règle(s) valide(s).",
-	"validate.x-invalid": "Les règles suivantes <strong>%1</strong> sont invalides :",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Liste noire appliquée",
 

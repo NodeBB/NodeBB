@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Opravdu chcete vymazat celou historii vyhledávání?",
 	"search-term": "Termín",
 	"search-count": "Počet",
-	"view-all": "Zobrazit vše"
+	"view-all": "Zobrazit vše",
+	"logins.user-agent": "%1 %2 on %3"
 }

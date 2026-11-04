@@ -106,5 +106,6 @@
     "show-results-as-topics": "Pokazuj wyniki jako tematy",
     "show-results-as-posts": "Pokazuj wyniki jako posty",
     "see-more-results": "Wyświetl więcej wyników (%1)",
-    "search-in-category": "Szukaj w \"%1\""
+    "search-in-category": "Szukaj w \"%1\"",
+    "results.reply-prefix": "RE:"
 }

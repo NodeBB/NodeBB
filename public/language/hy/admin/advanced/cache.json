@@ -2,5 +2,14 @@
 	"cache": "Քեշ",
 	"percent-full": "%1%Լրիվ",
 	"post-cache-size": "Գրառման քեշի չափը",
-	"items-in-cache": "Նյութեր քեշում"
+	"items-in-cache": "Նյութեր քեշում",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

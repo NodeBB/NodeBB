@@ -8,8 +8,8 @@
 	"hint-1": "Odredite jednu IP adresu po liniji. Možete dodati IP blokove dokle god su upisani u CIDR formatu (npr. <code>192.168.100.0/22</code>).",
 	"hint-2": "Možete dodati komentare tako da u početku reda upišete simbol ljestvi code>#</code>",
 
-	"validate.x-valid": "<strong>%1</strong> od <strong>%2</strong> pravila valjano.",
-	"validate.x-invalid": "Sljedeća <strong>%1</strong> pravila su nevažeća:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Blokiranje omogućeno",
 

@@ -8,8 +8,8 @@
 	"hint-1": "Xác định một địa chỉ IP trên mỗi dòng. Bạn có thể thêm các khối IP miễn là chúng tuân theo định dạng CIDR (VD: <code>192.168.100.0/22</code>).",
 	"hint-2": "Bạn có thể thêm bình luận bằng các dòng bắt đầu với ký tự <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> trên <strong>%2</strong> quy tắc hợp lệ.",
-	"validate.x-invalid": "<strong>%1</strong> quy tắc sau không hợp lệ:",
+	"validate.x-valid": "{count, plural, other {<strong>{%1}</strong> trên <strong>{count}</strong> quy tắc hợp lệ.}}",
+	"validate.x-invalid": "{count, plural, other {<strong>{count}</strong> quy tắc sau đây không hợp lệ:}}",
 
 	"alerts.applied-success": "Đã Áp Dụng Danh Sách Đen",
 

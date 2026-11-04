@@ -16,9 +16,9 @@
 				<div class="col-6">
 					<label class="form-label" for="typeFilter">{{tx("admin/settings/activitypub:errors.type")}}</label>
 					<select class="form-select" id="typeFilter">
-						<option value="">All types</option>
-						<option value="in">IN</option>
-						<option value="out">OUT</option>
+						<option value="">{{tx("admin/settings/activitypub:errors.all-types")}}</option>
+						<option value="in">{{tx("admin/settings/activitypub:errors.in")}}</option>
+						<option value="out">{{tx("admin/settings/activitypub:errors.out")}}</option>
 					</select>
 				</div>
 			</div>
@@ -31,7 +31,7 @@
 			<details class="mb-3" data-index="{@index}">
 				<summary>
 					<span title="{./timestampISO}" class="timeago text-secondary text-sm"></span>
-					<span class="badge text-bg-primary">{{{ if (./type == "in") }}}IN{{{ else }}}OUT{{{ end }}}</span>
+					<span class="badge text-bg-primary">{{{ if (./type == "in") }}}{{tx("admin/settings/activitypub:errors.in")}}{{{ else }}}{{tx("admin/settings/activitypub:errors.out")}}{{{ end }}}</span>
 					<span class="badge text-bg-secondary">{./activityType}</span>
 					<br/ >
 					<code>{./id}</code>

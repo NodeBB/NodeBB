@@ -4,7 +4,7 @@
 	"reports": "Zgłoszenia",
 	"first-reported": "Pierwszy raz zgłoszony",
 	"no-flags": "Hura! Nie znaleziono flag.",
-	"x-flags-found": "%1 znalezionych flag.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Oflagowany",
 	"update": "Zaktualizuj",
 	"updated": "Zaaktualizowano",

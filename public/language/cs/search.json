@@ -106,5 +106,6 @@
     "show-results-as-topics": "Zobrazit výsledky jako témata",
     "show-results-as-posts": "Zobrazit výsledky jako příspěvky",
     "see-more-results": "Zobrazit více výsledků (%1)",
-    "search-in-category": "Hledat v \"%1\""
+    "search-in-category": "Hledat v \"%1\"",
+    "results.reply-prefix": "RE:"
 }

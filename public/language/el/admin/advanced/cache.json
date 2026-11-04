@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Πλήρες",
 	"post-cache-size": "Μέγεθος προσωρινής μνήμης ανάρτησης",
-	"items-in-cache": "Αντικείμενα στην προσωρινή μνήμη"
+	"items-in-cache": "Αντικείμενα στην προσωρινή μνήμη",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

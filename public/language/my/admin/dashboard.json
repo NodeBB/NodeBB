@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "ရှာဖွေမှု မှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား?",
 	"search-term": "ရှာဖွေသည့် စာသား",
 	"search-count": "ရှာဖွေမှု အကြိမ်ရေ",
-	"view-all": "အားလုံးကို ကြည့်ရန်"
+	"view-all": "အားလုံးကို ကြည့်ရန်",
+	"logins.user-agent": "%1 %2 on %3"
 }

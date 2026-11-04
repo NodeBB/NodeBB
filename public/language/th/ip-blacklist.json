@@ -8,8 +8,8 @@
 	"hint-1": "กำหนดที่อยู่ IP 1 ค่าต่อ 1 บรรทัด คุณสามารถเพิ่มที่อยู่ IP หรือ IP บล็อกที่สอดคล้องกับรูปแบบ CIDR (เช่น <code>192.168.100.0/22</code>).",
 	"hint-2": "คุณสามารถใส่คำอธิบายโดยใช้เครื่องหมาย <code>#</code> ที่ต้นบรรทัด",
 
-	"validate.x-valid": "กฎ <strong>%1</strong> จากทั้งหมด <strong>%2</strong> กดมีค่าถูกต้อง",
-	"validate.x-invalid": "กฏ <strong>%1</strong> กฎต่อไปนี้ไม่ถูกต้อง",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "บัญชีดำถูกนำไปใช้งานแล้ว",
 

@@ -8,8 +8,8 @@
 	"hint-1": "Določite posamezne naslove IP na vrstico. Bloke IP lahko dodate, dokler sledijo formatu CIDR (e.g. <code>192.168.100.0/22</code>).",
 	"hint-2": "Komentarje lahko dodajate tako, da vrstice začnete z znakom <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> od <strong>%2</strong> pravil je neveljavnih.",
-	"validate.x-invalid": "Naslednjih <strong>%1</strong> pravil je neveljavnih:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Črna lista je uveljavljena",
 

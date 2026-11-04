@@ -56,5 +56,6 @@
 	"include-unverified-warning": "Zwykle adresy e=mail użytkowników są potwierdzone. Jednak zdarzają się odstępstępstwa jak np. logowania przez zewnętrzne SSO. <strong>Włącz tę funkcję na własną odpowiedzialność</strong> &ndash; pamiętając, że może to doprowadzić do naruszeń związanych z walką ze spamem.",
 	"prompt": "Proś użytkowników by podawali i potwierdzali swoje adresy e-mail",
 	"prompt-help": "Jeśli użytkownik nie ma ustawionego adresu e-mail, albo jego adres nie jest potwierdzony, na ekranie zostanie wyświetlone ostrzeżenie.",
-	"sendEmailToBanned": "Wysyłaj maile także do zbanowanych użytkowników"
+	"sendEmailToBanned": "Wysyłaj maile także do zbanowanych użytkowników",
+	"smtp-transport.custom-service": "Custom Service"
 }

@@ -106,5 +106,6 @@
     "show-results-as-topics": "ရလဒ်များကို အကြောင်းအရာများအဖြစ် ပြရန်",
     "show-results-as-posts": "ရလဒ်များကို ပို့စ်များအဖြစ် ပြရန်",
     "see-more-results": "ပိုမိုသော ရလဒ်များ ကြည့်ရန် (%1)",
-    "search-in-category": "\"%1\" တွင် ရှာရန်"
+    "search-in-category": "\"%1\" တွင် ရှာရန်",
+    "results.reply-prefix": "RE:"
 }

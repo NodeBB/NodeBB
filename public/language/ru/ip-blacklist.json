@@ -8,8 +8,8 @@
 	"hint-1": "Указывайте по одному IP-адресу на строку. Вы можете добавлять блокировки для подсетей в формате CIDR (например, <code>192.168.100.0/22</code>)",
 	"hint-2": "Вы можете добавить комментарий, поставив символ <code>#</code> в начале строки.",
 
-	"validate.x-valid": "<strong>%1</strong> из <strong>%2</strong> правил некорректны.",
-	"validate.x-invalid": "Следующие правила <strong>%1</strong> некорректны:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Чёрный список применён",
 

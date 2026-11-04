@@ -223,11 +223,11 @@
 				<div class="mb-3">
 					<label class="form-label" for="minimumPasswordStrength">{{tx("admin/settings/user:min-password-strength")}}</label>
 					<select id="minimumPasswordStrength" class="form-select" data-field="minimumPasswordStrength">
-						<option value="0">0 - too guessable: risky password</option>
-						<option value="1">1 - very guessable</option>
-						<option value="2">2 - somewhat guessable</option>
-						<option value="3">3 - safely unguessable</option>
-						<option value="4">4 - very unguessable</option>
+						<option value="0">{{tx("admin/settings/user:password-strength-0")}}</option>
+						<option value="1">{{tx("admin/settings/user:password-strength-1")}}</option>
+						<option value="2">{{tx("admin/settings/user:password-strength-2")}}</option>
+						<option value="3">{{tx("admin/settings/user:password-strength-3")}}</option>
+						<option value="4">{{tx("admin/settings/user:password-strength-4")}}</option>
 					</select>
 				</div>
 				<div class="mb-3">

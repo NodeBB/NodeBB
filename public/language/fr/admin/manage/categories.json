@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Aucun abonné",
 	"federation.followers-autofill": "Remplissage automatique",
+	"federation.pending": "Pending",
 
 	"alert.created": "Créée",
 	"alert.create-success": "Catégorie créée avec succès !",

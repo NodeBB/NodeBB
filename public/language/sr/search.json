@@ -106,5 +106,6 @@
     "show-results-as-topics": "Прикажи резултате као теме",
     "show-results-as-posts": "Прикажи резултате као објаве",
     "see-more-results": "Прикажи више резултата (%1)",
-    "search-in-category": "Претражи у  „%1\""
+    "search-in-category": "Претражи у  „%1\"",
+    "results.reply-prefix": "RE:"
 }

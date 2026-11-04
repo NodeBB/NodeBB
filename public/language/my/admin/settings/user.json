@@ -104,5 +104,10 @@
 	"handles.enabled": "လက်ကိုင်အမည်များ ဖွင့်ပါ",
 	"handles.enabled-help": "လက်ကိုင်အမည်များ အကူအညီ",
 	"topic-views.enabled": "အကြောင်းအရာ ကြည့်ရှုမှု ဖွင့်ပါ",
-	"reply-notifications.enabled": "ပြန်ကြားချက် အသိပေးချက်များ ဖွင့်ပါ"
+	"reply-notifications.enabled": "ပြန်ကြားချက် အသိပေးချက်များ ဖွင့်ပါ",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

@@ -104,5 +104,10 @@
 	"handles.enabled": "Permitir que visitantes escolham um nome",
 	"handles.enabled-help": "Esta opção mostra um novo campo que permite visitantes de escolher um nome para associar a cada post que eles fizerem. Se desabilitado, eles serão simplesmente chamados de \"Visitante\".",
 	"topic-views.enabled": "Permitir que visitantes aumentem a contagem de visualizações do tópico",
-	"reply-notifications.enabled": "Permitir que convidados gerem notificações de resposta"
+	"reply-notifications.enabled": "Permitir que convidados gerem notificações de resposta",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

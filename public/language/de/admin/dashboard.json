@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Bist du dir sicher, dass du den gesamten Suchverlauf löschen möchten?",
 	"search-term": "Bezeichnung",
 	"search-count": "Anzahl",
-	"view-all": "Zeige alle"
+	"view-all": "Zeige alle",
+	"logins.user-agent": "%1 %2 on %3"
 }

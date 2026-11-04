@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "Заповнений на %1%",
 	"post-cache-size": "Розмір кешу постів",
-	"items-in-cache": "Елементів у кеші"
+	"items-in-cache": "Елементів у кеші",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

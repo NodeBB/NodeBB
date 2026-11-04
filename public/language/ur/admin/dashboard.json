@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "کیا آپ واقعی تلاش کی تاریخ صاف کرنا چاہتے ہیں؟",
 	"search-term": "تلاش کی اصطلاح",
 	"search-count": "تعداد",
-	"view-all": "سب دیکھیں"
+	"view-all": "سب دیکھیں",
+	"logins.user-agent": "%1 %2 on %3"
 }

@@ -11,9 +11,6 @@ WORKDIR /usr/src/app/
 
 COPY . /usr/src/app/
 
-# Install corepack to allow usage of other package managers
-RUN corepack enable
-
 # Removing unnecessary files for us
 RUN find . -mindepth 1 -maxdepth 1 -name '.*' ! -name '.' ! -name '..' -exec bash -c 'echo "Deleting {}"; rm -rf {}' \;
 
@@ -47,7 +44,9 @@ ENV NODE_ENV=production \
 
 WORKDIR /usr/src/app/
 
-RUN corepack enable \
+# Install corepack to allow usage of other package managers
+RUN npm install --global corepack \
+    && corepack enable \
     && groupadd --gid ${GID} ${USER} \
     && useradd --uid ${UID} --gid ${GID} --home-dir /usr/src/app/ --shell /bin/bash ${USER} \
     && mkdir -p /usr/src/app/logs/ /opt/config/ \

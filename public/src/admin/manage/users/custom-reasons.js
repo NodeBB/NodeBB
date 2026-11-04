@@ -14,10 +14,10 @@ define('admin/manage/user/custom-reasons', [
 			modalTemplate: 'admin/partials/manage-custom-reasons-modal',
 			rowTemplate: 'admin/manage/users/custom-reasons',
 			rowBlock: 'reasons',
-			createTitle: '[[admin/manage/custom-reasons:create-reason]]',
-			editTitle: '[[admin/manage/custom-reasons:edit-reason]]',
-			savedMessage: '[[admin/manage/custom-reasons:custom-reasons-saved]]',
-			deleteConfirm: reason => `[[admin/manage/custom-reasons:delete-reason-confirm-x, "${reason.title}"]]`,
+			createTitle: '[[admin/manage/user-custom-reasons:create-reason]]',
+			editTitle: '[[admin/manage/user-custom-reasons:edit-reason]]',
+			savedMessage: '[[admin/manage/user-custom-reasons:custom-reasons-saved]]',
+			deleteConfirm: reason => `[[admin/manage/user-custom-reasons:delete-reason-confirm-x, "${reason.title}"]]`,
 			prepare: async function (formData, reason) {
 				formData.key = reason ? reason.key : Date.now();
 				formData.parsedBody = await socket.emit('admin.parseRaw', formData.body);

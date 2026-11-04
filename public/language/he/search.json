@@ -106,5 +106,6 @@
     "show-results-as-topics": "הצגת תוצאות כנושאים",
     "show-results-as-posts": "הצגת תוצאות כפוסטים",
     "see-more-results": "צפייה בתוצאות נוספות (%1)",
-    "search-in-category": "חיפוש ב-\"%1\""
+    "search-in-category": "חיפוש ב-\"%1\"",
+    "results.reply-prefix": "RE:"
 }

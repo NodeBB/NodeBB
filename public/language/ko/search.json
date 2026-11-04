@@ -106,5 +106,6 @@
     "show-results-as-topics": "토픽으로 보기",
     "show-results-as-posts": "게시물로 보기",
     "see-more-results": "더 많은 결과 보기 (%1)",
-    "search-in-category": "\"%1\"에서 검색"
+    "search-in-category": "\"%1\"에서 검색",
+    "results.reply-prefix": "RE:"
 }

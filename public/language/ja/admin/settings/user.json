@@ -104,5 +104,10 @@
 	"handles.enabled": "ゲストハンドルを有効にする",
 	"handles.enabled-help": "有効にすると、ゲストは投稿ごとに表示名を入力する欄から名前を選べます。無効にすると「ゲスト」とだけ表示されます。",
 	"topic-views.enabled": "ゲストがスレッド閲覧数を増やせるようにする",
-	"reply-notifications.enabled": "ゲストが返信通知を生成できるようにする"
+	"reply-notifications.enabled": "ゲストが返信通知を生成できるようにする",
+	"password-strength-0": "0 - too guessable: risky password",
+	"password-strength-1": "1 - very guessable",
+	"password-strength-2": "2 - somewhat guessable",
+	"password-strength-3": "3 - safely unguessable",
+	"password-strength-4": "4 - very unguessable"
 }

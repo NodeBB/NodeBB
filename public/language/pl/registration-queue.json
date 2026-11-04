@@ -9,7 +9,7 @@
 	"reject-all": "",
 	"reject-all-confirm": "Czy chcesz odrzucić wszystkie wnioski o rejestrację z tej strony?",
 	"reject-selected": "Reject Selected",
-	"reject-selected-confirm": "Czy chcesz odrzucić %1 wybranych wniosków o rejestrację?",
+	"reject-selected-confirm": "{count, plural, one {Do you want to reject {count} selected registration request?} other {Do you want to reject {count} selected registration requests?}}",
 	"list.name": "Nazwa",
 	"list.email": "Adres e-mail",
 	"list.ip": "IP",

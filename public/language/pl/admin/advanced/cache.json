@@ -2,5 +2,14 @@
 	"cache": "Pamięć podręczna",
 	"percent-full": "%1%",
 	"post-cache-size": "Rozmiar pamięci podręcznej postów",
-	"items-in-cache": "Elementów w pamięci podręcznej"
+	"items-in-cache": "Elementów w pamięci podręcznej",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

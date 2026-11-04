@@ -140,7 +140,7 @@
 					</p>
 				</div>
 				<div class="mb-3 card card-body text-bg-light border-0" id="email:smtpTransport:custom-service">
-					<h5>Custom Service</h5>
+					<h5>{{tx("admin/settings/email:smtp-transport.custom-service")}}</h5>
 					<div class="mb-3">
 						<label class="form-label" for="email:smtpTransport:host">{{tx("admin/settings/email:smtp-transport.host")}}</label>
 						<input type="text" class="form-control input-md" id="email:smtpTransport:host" data-field="email:smtpTransport:host" placeholder="smtp.example.org">

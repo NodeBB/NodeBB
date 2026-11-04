@@ -195,9 +195,9 @@ module.exports = function (User) {
 		type = type || '';
 		const reasons = (await db.getObjects(keys.map(k => `custom-reason:${k}`))).filter(Boolean);
 		const translations = new Map([
-			['ban', '[[admin/manage/custom-reasons:reason-ban]]'],
-			['mute', '[[admin/manage/custom-reasons:reason-mute]]'],
-			['post-queue', '[[admin/manage/custom-reasons:reason-post-queue]]'],
+			['ban', '[[admin/manage/user-custom-reasons:reason-ban]]'],
+			['mute', '[[admin/manage/user-custom-reasons:reason-mute]]'],
+			['post-queue', '[[admin/manage/user-custom-reasons:reason-post-queue]]'],
 		]);
 		await Promise.all(reasons.map(async (reason, i) => {
 			reason.key = i;

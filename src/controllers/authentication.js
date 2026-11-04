@@ -21,6 +21,13 @@ const sockets = require('../socket.io');
 const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
+	// Never trust a client-supplied uid; only the session's own uid is valid
+	if (req.uid) {
+		userData.uid = req.uid;
+	} else {
+		delete userData.uid;
+	}
+
 	if (!userData.hasOwnProperty('email')) {
 		userData.updateEmail = true;
 	}
@@ -249,11 +256,8 @@ authenticationController.login = async (req, res, next) => {
 		const isUsernameLogin = loginWith.includes('username') && !validator.isEmail(req.body.username);
 		if (isEmailLogin) {
 			const username = await user.getUsernameByEmail(req.body.username);
-			if (username !== '[[global:guest]]') {
-				req.body.username = username;
-			} else {
-				return errorHandler(req, res, '[[error:invalid-email]]', 400);
-			}
+			// if no username, pass in dummy username for login purposes, otherwise oracle 🔮 if returning early here
+			req.body.username = (username && username !== '[[global:guest]]') ? username : '__dummy__';
 		}
 		if (isEmailLogin || isUsernameLogin) {
 			continueLogin(strategy, req, res, next);

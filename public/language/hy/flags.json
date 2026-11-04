@@ -4,7 +4,7 @@
 	"reports": "Զեկույցներ",
 	"first-reported": "Առաջին զեկույցը",
 	"no-flags": "Դրոշներ չեն գտնվել:",
-	"x-flags-found": "Գտնվել է %1 դրոշ(ներ):",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Հանձնարարող",
 	"update": "Թարմացում ",
 	"updated": "Updated",

@@ -4,7 +4,7 @@
 	"reports": "Hesabatlar",
 	"first-reported": "İlk məlumat verilib",
 	"no-flags": "Yaşasın! Heç bir bayraq tapılmadı.",
-	"x-flags-found": "%1 bayraq(lar) tapıldı.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Təyin edən",
 	"update": "Yenilə",
 	"updated": "Yenilənib",

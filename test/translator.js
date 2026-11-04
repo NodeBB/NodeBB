@@ -130,6 +130,73 @@ describe('Translator shim', () => {
 			});
 			assert.strictEqual(compiled, 'some bar with translation Moved from general discussion');
 		});
+
+		it('should render ICU plural translations', (done) => {
+			context._i18n.topic['icu-plural'] = '{%1, plural, one { Confirmation email already sent, please wait %1 minute to send another one. } other { Confirmation email already sent, please wait %1 minutes to send another one. }}';
+			const one = helpers.tx.call(context, 'topic:icu-plural', '1');
+			const many = helpers.tx.call(context, 'topic:icu-plural', '5');
+			assert.strictEqual(one, 'Confirmation email already sent, please wait 1 minute to send another one.');
+			assert.strictEqual(many, 'Confirmation email already sent, please wait 5 minutes to send another one.');
+			done();
+		});
+
+		it('should render ICU plural translations with braced positional references', (done) => {
+			context._i18n.topic['icu-plural-braced'] = '{%1, plural, one {You have {%1} file.} other {You have {%1} files.}}';
+			const one = helpers.tx.call(context, 'topic:icu-plural-braced', '1');
+			const many = helpers.tx.call(context, 'topic:icu-plural-braced', '10');
+			assert.strictEqual(one, 'You have 1 file.');
+			assert.strictEqual(many, 'You have 10 files.');
+			done();
+		});
+
+		it('should render ICU plural translations with named arguments', (done) => {
+			context._i18n.topic['icu-plural-named'] = '{count, plural, one {You have {count} file.} other {You have {count} files.}}';
+			const one = helpers.tx.call(context, 'topic:icu-plural-named', '1');
+			const many = helpers.tx.call(context, 'topic:icu-plural-named', '10');
+			assert.strictEqual(one, 'You have 1 file.');
+			assert.strictEqual(many, 'You have 10 files.');
+			done();
+		});
+
+		it('should use the locale for ICU plural categories', (done) => {
+			// French: 0 and 1 are "one", everything else is "other"
+			const message = '{%1, plural, one {Un élément %1} other {%1 éléments}}';
+			assert.strictEqual(Translator.create('fr').renderICU(message, ['1'], 'fr'), 'Un élément 1');
+			assert.strictEqual(Translator.create('fr').renderICU(message, ['2'], 'fr'), '2 éléments');
+			done();
+		});
+
+		it('should render nested ICU translations', (done) => {
+			context._i18n.topic['icu-nested'] = '{%1, plural, one {You have one unread message from {arg2}} other {You have %1 unread messages from {arg2}}}';
+			const one = helpers.tx.call(context, 'topic:icu-nested', '1', 'John');
+			const many = helpers.tx.call(context, 'topic:icu-nested', '3', 'John');
+			assert.strictEqual(one, 'You have one unread message from John');
+			assert.strictEqual(many, 'You have 3 unread messages from John');
+			done();
+		});
+
+		it('should fall back to plain substitution for non-ICU translations', (done) => {
+			const str = helpers.tx.call(context, 'topic:argument-test', 'a', 'b', 'c');
+			assert.strictEqual(str, 'Test arguments like a and b, in them: c');
+			done();
+		});
+
+		it('should fall back to plain substitution when the ICU message is malformed', (done) => {
+			context._i18n.topic['icu-broken'] = '{%1, plural, one {broken %1';
+			const str = helpers.tx.call(context, 'topic:icu-broken', '2');
+			assert.strictEqual(str, '{2, plural, one {broken 2');
+			done();
+		});
+
+		it('should render ICU translations via shim.translate', async () => {
+			shim.addTranslation('en-GB', 'topic', {
+				'icu-shim': '{%1, plural, one {One cat %1} other {Many cats %1}}',
+			});
+			const one = await shim.translate('[[topic:icu-shim, 1]]');
+			const many = await shim.translate('[[topic:icu-shim, 2]]');
+			assert.strictEqual(one, 'One cat 1');
+			assert.strictEqual(many, 'Many cats 2');
+		});
 	});
 
 	describe('isTranslationKey/hasTranslationKey', () => {
@@ -310,6 +377,43 @@ describe('Translator shim', () => {
 				'Check out this post on "nodebb"',
 				'I thought you might be interested in this post: http://example.com/post/123',
 			]);
+		});
+	});
+
+	describe('regional fallbacks', () => {
+		const NS = 'regional-fallback';
+		const enGB = 'Hello, %1!';
+		const ptBR = 'Olá, %1!';
+
+		// pt-PT is identical to en-GB (untranslated at the Transifex level),
+		// pt-BR has a real translation
+		shim.addTranslation('en-GB', NS, { greet: enGB, greet2: enGB });
+		shim.addTranslation('pt-PT', NS, { greet: enGB, greet2: 'Boa tarde, %1!' });
+		shim.addTranslation('pt-BR', NS, { greet: ptBR, greet2: 'Olá de novo, %1!' });
+
+		it('should use the fallback locale when the locale string is identical to en-GB', async () => {
+			const translated = await shim.translateKey(`[[${NS}:greet, world]]`, undefined, 'pt-PT');
+			assert.strictEqual(translated, 'Olá, world!');
+		});
+
+		it('should not alter the fallback locale itself', async () => {
+			const translated = await shim.translateKey(`[[${NS}:greet, world]]`, undefined, 'pt-BR');
+			assert.strictEqual(translated, 'Olá, world!');
+		});
+
+		it('should not overwrite a locale string that differs from en-GB', async () => {
+			const translated = await shim.translateKey(`[[${NS}:greet2, world]]`, undefined, 'pt-PT');
+			assert.strictEqual(translated, 'Boa tarde, world!');
+		});
+
+		it('should not alter locales without a fallback entry', async () => {
+			shim.addTranslation('fr', NS, { greet: enGB });
+			const translated = await shim.translateKey(`[[${NS}:greet, world]]`, undefined, 'fr');
+			assert.strictEqual(translated, 'Hello, world!');
+		});
+
+		it('should expose the fallback map', () => {
+			assert.deepStrictEqual(shim.localeFallbacks, { 'pt-PT': 'pt-BR' });
 		});
 	});
 

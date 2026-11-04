@@ -66,10 +66,10 @@
 	"blocklists.add-help": "Enter the URL of the blocklist you would like to add. NodeBB understands blocklists that match the format used by <a href=\"https://iftas.org\">IFTAS</a>.",
 	"blocklists.refreshed": "Blocklist refreshed — it now contains %1 entries",
 	"blocklists.view.title": "View Blocklist",
-	"blocklists.view.intro": "These are the %1 domain(s) blocked by this blocklist:",
+	"blocklists.view.intro": "{count, plural, one {This is the {count} domain blocked by this blocklist:} other {These are the {count} domains blocked by this blocklist:}}",
 
 	"server-filtering": "Filtrování",
-	"count": "Tento NodeBB momentálně vi o <strong>%1</strong> serveru/serverech.",
+	"count": "{count, plural, one {This NodeBB is currently aware of <strong>{count}</strong> server} other {This NodeBB is currently aware of <strong>{count}</strong> servers}}",
 	"server.filter-help": "Specify servers you would like to restrict from interacting with your NodeBB. Alternatively, you may opt to selectively <em>allow</em> interaction with specific servers, instead. Both options are supported, although they are mutually exclusive.<br /><br /><strong>Note:</strong> <em>Silence</em> and <em>Suspend</em> severities are treated identically at present — both fully block interaction. <em>Filter</em> allows interaction but queues content for review.",
 	"server.filter-allow-list": "Použít toto místo toho jako seznam povolených",
 	"server.filter-allow-list-help": "When enabled, only domains in the core list are allowed to federate. Severity settings are ignored in allow list mode.",
@@ -107,10 +107,13 @@
 	"analytics.activities-by-type-empty": "No activities recorded yet.",
 	"analytics.activities-by-type-not-filterable": "<strong>Note:</strong> This breakdown is global and not filtered by the selected hostname.",
 
-	"errors.intro": "The following %1 error(s) were recorded by this instance within the last 24 hours.",
+	"errors.intro": "{count, plural, one {The following {count} error was recorded by this instance within the last 24 hours.} other {The following {count} errors were recorded by this instance within the last 24 hours.}}",
 	"errors.payload-gone": "The payload for this error no longer exists.",
 	"errors.hostname": "Hostname",
 	"errors.type": "Type",
+	"errors.all-types": "All types",
+	"errors.in": "IN",
+	"errors.out": "OUT",
 
 	"hashtags": "Hashtags",
 	"hashtags.intro": "Follow global hashtag actors to receive content matching specific tags. The instance actor follows the relay's hashtag actor, which sends Announce activities for matching content. Use auto-categorization rules to route content to categories.",
@@ -127,5 +130,14 @@
 	"hashtags.state-active": "Active",
 	"hashtags.state-error": "Error",
 	"hashtags.table.tag": "Tag",
-	"hashtags.table.state": "State"
+	"hashtags.table.state": "State",
+
+	"rules.type-hashtag": "Hashtag",
+	"rules.type-user": "User",
+
+	"relays.url": "Relay URL",
+	"relays.all": "All relays",
+
+	"blocklists.add-url": "Blocklist URL",
+	"analytics.all-instances": "All instances"
 }

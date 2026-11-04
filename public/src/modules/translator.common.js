@@ -1,5 +1,7 @@
 'use strict';
 
+const icu = require('./icu.common');
+
 module.exports = function (utils, load, warn) {
 	const assign = Object.assign || jQuery.extend;
 
@@ -260,6 +262,56 @@ module.exports = function (utils, load, warn) {
 		};
 
 		/**
+		 * Render a translation value, using ICU MessageFormat (plural) when the
+		 * value is a whole-string plural, and plain %1/%2 substitution otherwise.
+		 * @param {string} translation - Raw translation value
+		 * @param {string[]} args - Already-escaped arguments for %1, %2, …
+		 * @param {string} [locale] - BCP-47 locale for plural category selection
+		 * @returns {string}
+		 */
+		Translator.prototype.renderICU = function (translation, args, locale) {
+			// Whole-string ICU plurals (the Transifex convention): the value starts
+			// with `{` and carries the `plural` type. Everything else is plain %N.
+			if (typeof translation !== 'string' || !translation.startsWith('{') || !translation.includes('plural')) {
+				return replaceArguments(translation, args);
+			}
+			locale = locale || Translator.getLanguage();
+			const icuArgs = {};
+			args.forEach((arg, index) => {
+				const n = index + 1;
+				icuArgs[`arg${n}`] = arg;
+				// braced positional references like `{%1}` inside a branch
+				icuArgs[`%${n}`] = arg;
+			});
+			// Named arguments (e.g. `{count, plural, …}`) have no %N to rewrite,
+			// so bind each to the positional args by order of first appearance.
+			// NodeBB passes arguments positionally, but Transifex round-trips
+			// named ICU strings.
+			const namedArgs = [];
+			const namedRe = /\{([A-Za-z_][A-Za-z0-9_]*)\s*[,}]/g;
+			let namedMatch;
+			while ((namedMatch = namedRe.exec(translation)) !== null) {
+				if (!namedArgs.includes(namedMatch[1])) {
+					namedArgs.push(namedMatch[1]);
+				}
+			}
+			namedArgs.forEach((name, index) => {
+				if (args[index] !== undefined && icuArgs[name] === undefined) {
+					icuArgs[name] = args[index];
+				}
+			});
+			try {
+				// Only the outer argument name is rewritten to a valid ICU identifier,
+				// bare %N placeholders inside the selected branch are substituted afterwards
+				const rendered = icu.renderICU(translation.replace(/%(\d+)/, 'arg$1'), icuArgs, locale);
+				return replaceArguments(rendered, args);
+			} catch (e) {
+				warn(`ICU translation failed, falling back to plain substitution: ${e.message}`);
+				return replaceArguments(translation, args);
+			}
+		};
+
+		/**
 		 * Translates a specific key and array of arguments
 		 * @param {string} name - Translation key (ex. 'global:home')
 		 * @param {string[]} args - Arguments for `%1`, `%2`, etc
@@ -282,15 +334,29 @@ module.exports = function (utils, load, warn) {
 			}
 
 			const translation = this.getTranslation(namespace, key);
-			return translation.then(function (translated) {
+			return translation.then(async function (translated) {
 				// check if the translation is missing first
 				if (!translated) {
 					warn('Missing translation "' + name + '" for language "' + self.lang + '"');
 					return escapeHTML(backup || name);
 				}
 
+				// Regional fallback: en-GB is the fallback at the Transifex level,
+				// so a locale string identical to en-GB is effectively untranslated.
+				// If the fallback locale has a distinct string, prefer it.
+				const fallbackLang = Translator.localeFallbacks[self.lang];
+				if (fallbackLang) {
+					const [enGB, fallback] = await Promise.all([
+						Translator.create('en-GB').getTranslation(namespace, key),
+						Translator.create(fallbackLang).getTranslation(namespace, key),
+					]);
+					if (translated === enGB && fallback && fallback !== enGB) {
+						translated = fallback;
+					}
+				}
+
 				return self.txArgs(args).then(function (translatedArgs) {
-					return replaceArguments(translated, translatedArgs);
+					return self.renderICU(translated, translatedArgs, self.lang);
 				});
 			});
 		};
@@ -360,6 +426,14 @@ module.exports = function (utils, load, warn) {
 		};
 
 		Translator.cache = {};
+
+		/**
+		 * Regional translation fallbacks, `pt-BR` is more thoroughly maintained than `pt-PT`
+		 * @type {Object<string, string>}
+		 */
+		Translator.localeFallbacks = {
+			'pt-PT': 'pt-BR',
+		};
 
 		/**
 		 * Register a custom module to handle translations
@@ -483,6 +557,9 @@ module.exports = function (utils, load, warn) {
 		Translator: Translator,
 
 		compile: Translator.compile,
+		renderICU: function (translation, args, locale) {
+			return Translator.create(locale).renderICU(translation, args, locale);
+		},
 		escape: Translator.escape,
 		unescape: Translator.unescape,
 		escapeArg: Translator.escapeArg,
@@ -491,6 +568,7 @@ module.exports = function (utils, load, warn) {
 		normalizeToken: normalizeToken,
 		replaceArguments: replaceArguments,
 		getLanguage: Translator.getLanguage,
+		localeFallbacks: Translator.localeFallbacks,
 		rtlLanguages: ['ar', 'fa-IR', 'he', 'ur'],
 		languageDirection: function (lang) {
 			return this.rtlLanguages.includes(lang) ? 'rtl' : 'ltr';

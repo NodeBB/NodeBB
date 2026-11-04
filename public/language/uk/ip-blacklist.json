@@ -8,8 +8,8 @@
 	"hint-1": "Вкажіть по одній IP адресі на кожен рядок. Ви можете додавати блоки IP адрес, якщо вони відповідні формату CIDR (наприклад, <code>192.168.100.0/22</code>)",
 	"hint-2": "Ви можете додавати коментарі вказавши символ <code>#</code> на початку рядку.",
 
-	"validate.x-valid": "<strong>%1</strong> із <strong>%2</strong> правил вірні.",
-	"validate.x-invalid": "Наступні <strong>%1</strong> правил невірні:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Чорний список примінено",
 

@@ -102,6 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "İzləyici yoxdur.",
 	"federation.followers-autofill": "Avtomatik doldur",
+	"federation.pending": "Pending",
 
 	"alert.created": "Yaradıldı",
 	"alert.create-success": "Kateqoriya uğurla yaradıldı!",

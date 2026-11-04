@@ -8,8 +8,8 @@
 	"hint-1": "Her satır için tek bir IP adresi tanımlayın. CIDR formatını izledikleri sürece IP blokları ekleyebilirsiniz (Örn: <code>192.168.100.0/22</code>).",
 	"hint-2": "Yorumlara <code>#</code> sembolüyle başlayan satırları ekleyebilirsiniz.",
 
-	"validate.x-valid": "<strong>%2</strong> geçerli kuraldan <strong>%1</strong> tanesi.",
-	"validate.x-invalid": "Şu <strong>%1</strong> kural geçersiz:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Kara Liste Uygulandı",
 

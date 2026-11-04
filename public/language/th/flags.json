@@ -4,7 +4,7 @@
 	"reports": "รายงาน",
 	"first-reported": "ถูกรายงานครั้งแรก",
 	"no-flags": "ไชโย ไม่พบการรายงานเลย",
-	"x-flags-found": "พบการรายงาน %1 รายการ",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "ผู้ได้รับมอบหมาย",
 	"update": "อัพเดท",
 	"updated": "อัพเดทแล้ว",

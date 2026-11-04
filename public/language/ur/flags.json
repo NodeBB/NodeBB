@@ -4,7 +4,7 @@
 	"reports": "رپورٹس",
 	"first-reported": "پہلی رپورٹ",
 	"no-flags": "ہورے! کوئی رپورٹس نہیں ملیں۔",
-	"x-flags-found": "رپورٹس ملیں: %1۔",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "تفویض کردہ",
 	"update": "اپ ڈیٹ",
 	"updated": "اپ ڈیٹ ہوا",

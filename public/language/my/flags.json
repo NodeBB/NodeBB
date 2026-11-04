@@ -4,7 +4,7 @@
 	"reports": "သတင်းပို့မှုများ",
 	"first-reported": "ပထမဆုံးတင်သော",
 	"no-flags": "အလံမရှိပါ",
-	"x-flags-found": "အလံ %1 ခုတွေ့ရှိသည်",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "တာဝန်ခံ",
 	"update": "အပ်ဒိတ်",
 	"updated": "အပ်ဒိတ်လုပ်ပြီး",

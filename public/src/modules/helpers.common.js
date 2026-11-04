@@ -90,7 +90,7 @@ module.exports = function (utils, Benchpress, tx, relative_path) {
 			return escapedArg;
 		});
 
-		return tx.replaceArguments(translation, escapedArgs);
+		return tx.renderICU(translation, escapedArgs);
 	}
 
 	function buildMetaTag(tag) {

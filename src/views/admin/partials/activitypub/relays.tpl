@@ -5,7 +5,7 @@
 
 <form role="form">
 	<div class="mb-3">
-		<label class="form-label" for="url">Relay URL</label>
+		<label class="form-label" for="url">{{tx("admin/settings/activitypub:relays.url")}}</label>
 		<input type="url" id="url" name="url" title="Relay URL" class="form-control" placeholder="https://example.org/actor" required>
 	</div>
 </form>

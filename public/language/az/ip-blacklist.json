@@ -8,8 +8,8 @@
 	"hint-1": "Hər sətir üçün tək IP ünvanlarını təyin edin. CIDR formatına (məsələn, <code>192.168.100.0/22</code>) əməl etdikcə IP bloklarını əlavə edə bilərsiniz.",
 	"hint-2": "Şərhlərə <code>#</code> simvolu ilə başlayan sətirlər əlavə edə bilərsiniz.",
 
-	"validate.x-valid": "<strong>%2</strong> qayda(lar)dan <strong>%1</strong> etibarlıdır.",
-	"validate.x-invalid": "Aşağıdakı <strong>%1</strong> qaydalar yanlışdır:",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
+	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
 
 	"alerts.applied-success": "Qara siyahı tətbiq olundu",
 

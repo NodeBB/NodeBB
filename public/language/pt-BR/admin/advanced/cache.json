@@ -2,5 +2,14 @@
 	"cache": "Cache",
 	"percent-full": "%1% Cheio",
 	"post-cache-size": "Tamanho do Cache de Posts",
-	"items-in-cache": "Itens no Cache"
+	"items-in-cache": "Itens no Cache",
+	"name": "name",
+	"capacity": "capacity",
+	"count": "count",
+	"size": "size",
+	"hits": "hits",
+	"misses": "misses",
+	"hit-ratio": "hit ratio",
+	"hits-sec": "hits/sec",
+	"ttl": "ttl"
 }

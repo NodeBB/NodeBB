@@ -4,7 +4,7 @@
 	"reports": "Reports",
 	"first-reported": "First Reported",
 	"no-flags": "Un licorca, que non hai nada marcado para revisión.",
-	"x-flags-found": "%1 flag(s) found.",
+	"x-flags-found": "{count, plural, one {{count} flag found.} other {{count} flags found.}}",
 	"assignee": "Encargado",
 	"update": "Actualizar",
 	"updated": "Actualizado",

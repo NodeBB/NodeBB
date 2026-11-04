@@ -106,5 +106,6 @@
     "show-results-as-topics": "Eredmények megjelenítése témakörönként",
     "show-results-as-posts": "Az eredmények megjelenítése bejegyzésként",
     "see-more-results": "Több találat megjelenítése (%1)",
-    "search-in-category": "Keresés \"%1\"-ban/ben"
+    "search-in-category": "Keresés \"%1\"-ban/ben",
+    "results.reply-prefix": "RE:"
 }

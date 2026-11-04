@@ -106,5 +106,6 @@
     "show-results-as-topics": "Sonuçları başlık olarak göster",
     "show-results-as-posts": "Sonuçları ileti olarak göster",
     "see-more-results": "Daha fazla sonuç gör (%1)",
-    "search-in-category": "\"%1\" içinde ara"
+    "search-in-category": "\"%1\" içinde ara",
+    "results.reply-prefix": "RE:"
 }

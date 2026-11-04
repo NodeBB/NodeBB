@@ -105,5 +105,6 @@
 	"clear-search-history-confirm": "Are you sure you want to clear entire search history?",
 	"search-term": "條件",
 	"search-count": "次數",
-	"view-all": "查看全部"
+	"view-all": "查看全部",
+	"logins.user-agent": "%1 %2 on %3"
 }
