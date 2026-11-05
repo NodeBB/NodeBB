@@ -66,5 +66,5 @@
 	"log-ips": "רישום כתובות IP",
 	"log-ips-help": "זהכאשר האפשרות מופעלת, כתובות ה-IP של כל המבקרים נשמרות בקבוצה ממוינת לצורכי ניתוח נתונים. הדבר משמש לחישוב מספר המבקרים הייחודיים.",
 	"analytics-retention": "Analytics Retention (days)",
-	"analytics-retention-help": "Number of days to keep analytics data (page views, unique visitors, etc.) before it is automatically pruned. Set to 0 to keep analytics data forever."
+	"analytics-retention-help": "מספר הימים לשמירת נתוני ניתוח (צפיות בעמוד, מבקרים ייחודיים וכו') לפני שנמחקים אוטומטית. הזינו 0 כדי לשמור על נתוני ניתוח לנצח."
 }

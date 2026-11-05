@@ -57,5 +57,5 @@
 	"prompt": "提示用户输入或验证他们的电子邮箱地址",
 	"prompt-help": "如果用户没有设置电子邮箱，或者他们的电子邮件未被验证，页面上将会显示警告。",
 	"sendEmailToBanned": "即使用户已被封禁也发送电子邮件",
-	"smtp-transport.custom-service": "Custom Service"
+	"smtp-transport.custom-service": "自定义服务"
 }

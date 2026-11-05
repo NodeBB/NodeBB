@@ -57,5 +57,5 @@
 	"prompt": "בקשו מהמשתמשים להגדיר/לאמת את כתובת הדוא\"ל שלהם",
 	"prompt-help": "הצגת אזהרה למשתמשים שהדוא\"ל שלהם לא מוגדר/לא מאומת",
 	"sendEmailToBanned": "שליחת אימיילים גם למשתמשים מורחקים",
-	"smtp-transport.custom-service": "Custom Service"
+	"smtp-transport.custom-service": "שירות מותאם אישית"
 }

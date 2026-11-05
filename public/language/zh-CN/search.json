@@ -107,5 +107,5 @@
     "show-results-as-posts": "以帖子显示结果",
     "see-more-results": "查看更多结果 (%1)",
     "search-in-category": "在\"%1\"中搜索",
-    "results.reply-prefix": "RE:"
+    "results.reply-prefix": "回复前缀："
 }

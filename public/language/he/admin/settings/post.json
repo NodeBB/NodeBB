@@ -59,8 +59,8 @@
 	"backlinks": "קישורים נכנסים",
 	"backlinks.enabled": "אפשר קישורים נכנסים בנושא",
 	"backlinks.help": "אם פוסט מפנה לנושא אחר, קישור חזרה לפוסט יתווסף לנושא אליו בוצעה ההפניה בשלב זה.",
-	"topic-events.hidden": "Hidden topic event types",
-	"topic-events.hidden-help": "Topic events of the selected types are not shown to anybody in the topic timeline. Events are still recorded, so re-enabling a type restores the events logged while it was hidden.",
+	"topic-events.hidden": "סוגי אירועי נושא מוסתרים",
+	"topic-events.hidden-help": "אירועי נושא מהסוגים שנבחרו לא יוצגו לאף אחד בציר הזמן של הנושא. אירועים עדיין מתועדים, כך שהפעלה מחדש של סוג משחזרת את האירועים שנרשמו בזמן שהוא היה מוסתר.",
 	"ip-tracking": "IP מעקב",
 	"ip-tracking.each-post": "מעקב אחר כתובת IP על כל הודעה",
 	"enable-post-history": "הפוך היסטוריית פוסטים לזמינה"

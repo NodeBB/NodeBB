@@ -27,9 +27,9 @@
 
 	"delete-confirm": "האם למחוק את הטוקן הזה? לא יהיה ניתן לשחזר אותו.",
 	"roll-confirm": "האם ליצור מחדש את הטוקן הזה? הטוקן הישן יבוטל מיד ולא יהיה ניתן לשחזרו.",
-	"token-once-title": "Copy Token Now",
-	"token-once-warning": "This token will only be shown once. Store it securely before closing this dialog.",
+	"token-once-title": "העתיקו את הטוקן עכשיו",
+	"token-once-warning": "טוקן זה יוצג פעם אחת בלבד. אחסנו אותו בצורה מאובטחת לפני סגירת דו-שיח זה.",
 	"copy-token": "העתקה",
-	"token-copied": "Token copied to clipboard.",
-	"token-copy-failed": "Unable to copy token. Please copy it manually."
+	"token-copied": "הטוקן הועתק ללוח.",
+	"token-copy-failed": "לא ניתן להעתיק את הטוקן. העתיקו אותו ידנית."
 }

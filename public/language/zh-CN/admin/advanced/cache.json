@@ -3,13 +3,13 @@
 	"percent-full": "%1% 容量",
 	"post-cache-size": "帖子缓存大小",
 	"items-in-cache": "缓存中的条目数量",
-	"name": "name",
-	"capacity": "capacity",
-	"count": "count",
-	"size": "size",
-	"hits": "hits",
-	"misses": "misses",
-	"hit-ratio": "hit ratio",
-	"hits-sec": "hits/sec",
-	"ttl": "ttl"
+	"name": "缓存名称",
+	"capacity": "容量",
+	"count": "数量",
+	"size": "条目数",
+	"hits": "命中数",
+	"misses": "未命中数",
+	"hit-ratio": "命中率",
+	"hits-sec": "每秒命中数",
+	"ttl": "TTL"
 }

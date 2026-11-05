@@ -13,6 +13,6 @@
     "watching.description": "הודע לי על נושאים חדשים.",
     "not-watching.description": "אל תודיע לי על נושאים חדשים.",
     "following-tag.message": "מעכשיו תקבל התראה כאשר מישהו יפרסם נושא עם התג הזה.",
-    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
+    "following-tag.message-no-notifications": "אתם עוקבים כעת אחר תג זה, אך הגדרת ההתראה שלכם מוגדרת על 'ללא'.",
     "not-following-tag.message": "לא תקבל התראות כאשר מישהו יפרסם נושא עם התג הזה."
 }
