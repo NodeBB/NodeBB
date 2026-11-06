@@ -102,7 +102,7 @@
 	"federation.followers-id": "ID",
 	"federation.followers-none": "Brak śledzących.",
 	"federation.followers-autofill": "Autouzupełnianie",
-	"federation.pending": "Pending",
+	"federation.pending": "Oczekuje",
 
 	"alert.created": "Utworzony",
 	"alert.create-success": "Kategoria pomyślnie dodana!",

@@ -41,7 +41,7 @@
 	"teaser.first": "Pierwszy",
 	"showPostPreviewsOnHover": "Pokaż podgląd postu po najechaniu myszą",
 	"unread-and-recent": "Ustawienia nieprzeczytanych i ostatnich",
-	"unread.cutoff": "Dni do odcięcia nieprzeczytanych ",
+	"unread.cutoff": "Okres uwzględniania nieprzeczytanych",
 	"unread.min-track-last": "Minimalna liczba postów w temacie przed śledzeniem ostatnio przeczytanego",
 	"recent.max-topics": "Maksymalna liczba postów na stronie /recent",
 	"recent.categoryFilter.disable": "Wyłącz filtrowanie tematów w ignorowanych kategoriach na stronie /recent",
