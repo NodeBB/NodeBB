@@ -97,22 +97,22 @@ define('pictureCropper', ['alerts'], function (alerts) {
 				});
 
 				cropperModal.find('.flip').on('click', function () {
-					const option = this.getAttribute('data-option');
 					const method = this.getAttribute('data-method');
+
+					// $scale multiplies the transform matrix, so -1 mirrors on each click
 					if (method === 'scaleX') {
-						cropperImage.$scale(option, 1);
+						cropperImage.$scale(-1, 1);
 					} else {
-						cropperImage.$scale(1, option);
+						cropperImage.$scale(1, -1);
 					}
-					this.setAttribute('data-option', option * -1);
 				});
 
 				cropperModal.find('.reset').on('click', function () {
+					// resetTransform only clears the matrix, which leaves the image at its
+					// natural size: re-center and re-fit it, as the fit/inset handlers do
 					cropperImage.$resetTransform();
+					cropperImage.$center(cropperImage.initialFit);
 					cropperSelection.$reset();
-					cropperModal.find('.flip').each(function () {
-						this.setAttribute('data-option', '-1');
-					});
 				});
 
 				cropperModal.find('.crop-btn').on('click', function () {
