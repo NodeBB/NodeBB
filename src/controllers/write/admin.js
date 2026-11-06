@@ -314,3 +314,56 @@ Admin.plugins.upgrade = async (req, res) => {
 	await api.admin.plugins.upgrade(req, { id: req.params.pluginId, version: req.body.version });
 	helpers.formatApiResponse(200, res);
 };
+Admin.oauth = {};
+
+Admin.oauth.createClient = async (req, res) => {
+	try {
+		const { client, secret } = await require('../../oauth').clients.create(req.body);
+		helpers.formatApiResponse(201, res, {
+			client: require('../../oauth').clients.formatForAdmin(client),
+			secret,
+		});
+	} catch (e) {
+		helpers.formatApiResponse(400, res, e.message);
+	}
+};
+
+Admin.oauth.listClients = async (req, res) => {
+	const clients = await require('../../oauth').clients.list();
+	helpers.formatApiResponse(200, res, {
+		clients: clients.map(require('../../oauth').clients.formatForAdmin),
+	});
+};
+
+Admin.oauth.getClient = async (req, res) => {
+	const client = await require('../../oauth').clients.get(req.params.clientId);
+	if (!client) {
+		return helpers.formatApiResponse(404, res, '[[error:api.no-such-client]]');
+	}
+	helpers.formatApiResponse(200, res, { client: require('../../oauth').clients.formatForAdmin(client) });
+};
+
+Admin.oauth.updateClient = async (req, res) => {
+	try {
+		const client = await require('../../oauth').clients.update(req.params.clientId, req.body);
+		helpers.formatApiResponse(200, res, { client: require('../../oauth').clients.formatForAdmin(client) });
+	} catch (e) {
+		helpers.formatApiResponse(e.message === '[[error:no-such-client]]' ? 404 : 400, res, e.message);
+	}
+};
+
+Admin.oauth.rotateClientSecret = async (req, res) => {
+	try {
+		const secret = await require('../../oauth').clients.rotateSecret(req.params.clientId);
+		helpers.formatApiResponse(200, res, { secret });
+	} catch (e) {
+		helpers.formatApiResponse(400, res, e.message);
+	}
+};
+
+Admin.oauth.deleteClient = async (req, res) => {
+	const { clients, tokens } = require('../../oauth');
+	await clients.delete(req.params.clientId);
+	await tokens.revokeAllForClient(req.params.clientId);
+	helpers.formatApiResponse(200, res);
+};
