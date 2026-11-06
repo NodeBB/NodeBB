@@ -8,7 +8,13 @@ const meta = require('../src/meta');
 const utils = require('../src/utils');
 
 describe('secret', () => {
-	const original = nconf.get('secret');
+	let original;
+
+	before(() => {
+		// The secret is resolved by databasemock's root before hook, so capture it afterwards —
+		// the describe body runs before any hook, when nconf.get('secret') is not set yet.
+		original = nconf.get('secret');
+	});
 
 	afterEach(async () => {
 		nconf.set('secret', original);

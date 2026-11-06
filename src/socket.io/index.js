@@ -4,7 +4,7 @@ const os = require('os');
 const nconf = require('nconf');
 const winston = require('winston');
 const util = require('util');
-const cookieParser = require('cookie-parser')(nconf.get('secret'));
+const cookieParser = require('cookie-parser');
 
 const db = require('../database');
 const user = require('../user');
@@ -21,7 +21,15 @@ const Namespaces = Object.create(null);
 
 const Sockets = module.exports;
 
+let cookieParserAsync;
+
 Sockets.init = async function (server) {
+	// The cookie parser is built here rather than at require time, so that it is created with the
+	// secret resolved by meta.secret.init() (which generates one if config.json does not define it),
+	// and with the same secret express-session was given in src/webserver.js.
+	const parseCookies = cookieParser(nconf.get('secret'));
+	cookieParserAsync = util.promisify((req, callback) => parseCookies(req, {}, err => callback(err)));
+
 	requireModules();
 
 	const SocketIO = require('socket.io').Server;
@@ -268,8 +276,6 @@ async function validateSession(socket, errorMsg) {
 		session: sessionData,
 	});
 }
-
-const cookieParserAsync = util.promisify((req, callback) => cookieParser(req, {}, err => callback(err)));
 
 async function authorize(request, callback) {
 	if (!request) {
