@@ -157,6 +157,7 @@ before(async function () {
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
 	}
+	await require('../../src/meta').secret.init();
 	await setupMockDefaults();
 	await db.initSessionStore();
 
@@ -196,6 +197,8 @@ async function setupMockDefaults() {
 	await db.emptydb();
 
 	winston.info('test_database flushed');
+
+	await meta.secret.init();
 	await setupDefaultConfigs(meta);
 
 	await meta.configs.init();

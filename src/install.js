@@ -23,11 +23,6 @@ questions.main = [
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
 	{
-		name: 'secret',
-		description: 'Please enter a NodeBB secret',
-		default: nconf.get('secret') || utils.generateUUID(),
-	},
-	{
 		name: 'submitPluginUsage',
 		description: 'Would you like to submit anonymous plugin usage to nbbpm?',
 		default: 'yes',
@@ -210,6 +205,7 @@ async function completeConfigSetup(config) {
 	nconf.overrides(config);
 	const db = require('./database');
 	await db.init();
+	await require('./meta').secret.init();
 	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
 	}
