@@ -32,7 +32,9 @@
 }
 
 #crop-picture-modal {
-	.cropper-container.cropper-bg {
+	// cropperjs 2.x renders a web component canvas in place of the image
+	cropper-canvas {
+		width: 100%;
 		max-width: 100%;
 	}
 }

@@ -29,7 +29,6 @@ const buildImports = {
 			'@import "@adactive/bootstrap-tagsinput/src/bootstrap-tagsinput";',
 			source,
 			'@import "jquery-ui";',
-			'@import "cropperjs/dist/cropper";',
 		].join('\n');
 	},
 	admin: function (source) {
