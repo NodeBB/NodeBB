@@ -16,6 +16,7 @@ start.start = async function () {
 		await db.checkCompatibility();
 
 		const meta = require('./meta');
+		await meta.secret.init();
 		await meta.configs.init();
 
 		if (nconf.get('runJobs')) {

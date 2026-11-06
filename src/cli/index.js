@@ -113,7 +113,7 @@ prestart.setupWinston();
 
 // Alternate configuration file support
 const configFile = path.resolve(paths.baseDir, nconf.get('config') || 'config.json');
-const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
+const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('database'));
 
 prestart.loadConfig(configFile);
 prestart.versionCheck();

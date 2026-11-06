@@ -20,6 +20,7 @@ Meta.logs = require('./logs');
 Meta.errors = require('./errors');
 Meta.tags = require('./tags');
 Meta.dependencies = require('./dependencies');
+Meta.secret = require('./secret');
 Meta.templates = require('./templates');
 Meta.blacklist = require('./blacklist');
 Meta.languages = require('./languages');
