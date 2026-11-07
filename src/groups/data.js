@@ -15,7 +15,7 @@ const prependRelativePath = url => url.startsWith('http') ? url : relative_path 
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
-	'userTitleEnabled', 'disableJoinRequests', 'disableLeave',
+	'userTitleEnabled', 'disableJoinRequests', 'disableLeave', 'chatContactable',
 ];
 
 module.exports = function (Groups) {

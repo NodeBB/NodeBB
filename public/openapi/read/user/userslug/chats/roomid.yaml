@@ -526,6 +526,14 @@ get:
                           type: string
                   privateRoomCount:
                     type: number
+                  linkableGroups:
+                    type: array
+                    description: Groups the calling user may link to a private chat room
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
                   nextStart:
                     type: number
                   title:
