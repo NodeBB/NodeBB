@@ -1,5 +1,6 @@
 'use strict';
 
+const winston = require('winston');
 const db = require('../database');
 const user = require('../user');
 const meta = require('../meta');
@@ -53,7 +54,9 @@ middleware.verify = async function (req, res, next) {
 		// Signature header, which can be crafted to disagree with the spec parser.
 		const verified = await activitypub.verify(req);
 		if (!verified) {
-			activitypub.helpers.log('[middleware/activitypub] HTTP signature verification failed.');
+			// The key id is logged for operators only; identity is taken from the
+			// verified keyId above, never from a re-parse of this header.
+			winston.warn(`[middleware/activitypub] HTTP signature verification failed for ${activitypub.signatures.getKeyId(req.headers)}; ${req.method} ${req.path} rejected`);
 			if (req.method === 'POST') {
 				return res.sendStatus(400);
 			}
@@ -147,13 +150,11 @@ middleware.assertPayload = helpers.try(async function (req, res, next) {
 	}
 
 	await activitypub.actors.assert(actor);
-	let compare = await db.getObjectsFields([
-		`userRemote:${actor}:keys`, `categoryRemote:${actor}:keys`,
-	], ['id']);
-	compare = compare.reduce((keyId, { id }) => keyId || id || '', '').replace(/#[\w-]+$/, '');
 
-	const keyId = req.apKeyId.replace(/#[\w-]+$/, '');
-	if (compare !== keyId) {
+	// The stored key must belong to the actor the payload names.
+	const stripFragment = keyId => keyId.replace(/#[\w-]+$/, '');
+	const stored = await activitypub.getStoredKeys(actor);
+	if (!stored || stripFragment(stored.id || '') !== stripFragment(req.apKeyId)) {
 		activitypub.helpers.log('[middleware/activitypub] Key ownership cross-check failed.');
 		return res.sendStatus(403);
 	}

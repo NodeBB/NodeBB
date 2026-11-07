@@ -219,7 +219,56 @@ ActivityPub.getPrivateKey = async (type, id) => {
 	return { key: privateKey, keyId };
 };
 
-ActivityPub.fetchPublicKey = async (uri, ip) => {
+ActivityPub.getStoredKeys = async (uri) => {
+	const base = uri.replace(/#.*$/, '');
+	const [userKeys, categoryKeys] = await db.getObjectsFields([
+		`userRemote:${base}:keys`, `categoryRemote:${base}:keys`,
+	], ['id', 'publicKeyPem']);
+
+	const keys = (userKeys.id || userKeys.publicKeyPem) ? userKeys : categoryKeys;
+	return (keys.id || keys.publicKeyPem) ? keys : null;
+};
+
+async function _fetchKeyDocument(uri, keyData) {
+	const headers = { 'accept': ActivityPub._constants.acceptableTypes.at(1) };
+
+	if (keyData) {
+		Object.assign(headers, await ActivityPub.sign(keyData, uri));
+	}
+
+	// Use request.get with built-in SSRF protections
+	// Set reasonable timeout and response size limit
+	const { body, response } = await request.get(uri, {
+		timeout: 5000, // 5 seconds
+		sizeLimit: 1024 * 1024, // 1MB — public keys are typically <10KB
+		headers,
+		redirect: 'manual',
+	});
+
+	// Authorized-fetch servers answer unsigned actor requests with a 401, so a
+	// non-2xx response has to be treated as a key lookup failure.
+	if (!response.ok) {
+		throw new Error('[[error:activitypub.pubKey-not-found]]');
+	}
+
+	const publicKeyPem = typeof body === 'object' && body !== null ?
+		(body.publicKeyPem || body.publicKey?.publicKeyPem) :
+		undefined;
+
+	if (!publicKeyPem) {
+		// Response didn't contain expected public key
+		throw new Error('[[error:activitypub.pubKey-not-found]]');
+	}
+
+	// Validate public key
+	if (!utils.isPEM(publicKeyPem)) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	return publicKeyPem;
+}
+
+ActivityPub.fetchPublicKey = async (uri, ip, keyData) => {
 	const cached = publicKeyCache.get(uri);
 	if (cached !== undefined) {
 		if (cached === null) {
@@ -246,6 +295,28 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
+	// Handle loopback requests for keys
+	const { type, id } = await ActivityPub.helpers.resolveLocalId(uri);
+	if (['user', 'category', 'application'].includes(type)) {
+		// The instance actor is the application actor, and its keys live under uid 0.
+		const prefix = type === 'category' ? 'cid' : 'uid';
+		const localPem = await ActivityPub.getPublicKey(prefix, type === 'application' ? 0 : id);
+		if (localPem) {
+			publicKeyCache.set(uri, localPem);
+			return localPem;
+		}
+	}
+
+	const stored = await ActivityPub.getStoredKeys(uri);
+	if (stored) {
+		// A stored key id that does not match the requested one means the key was
+		// rotated — let the caller fetch the current one over the network.
+		if (stored.id === uri && stored.publicKeyPem && utils.isPEM(stored.publicKeyPem)) {
+			publicKeyCache.set(uri, stored.publicKeyPem);
+			return stored.publicKeyPem;
+		}
+	}
+
 	// Check rate limit for this IP (0 = disabled)
 	if (meta.config.activitypubPublicKeyFetchRateLimit > 0) {
 		const lockId = `pubkey:${ip}`;
@@ -257,50 +328,36 @@ ActivityPub.fetchPublicKey = async (uri, ip) => {
 		publicKeyFetchRateLimit.set(lockId, currentCount + 1, 60 * 1000);
 	}
 
-	try {
-		// Use request.get with built-in SSRF protections
-		// Set reasonable timeout and response size limit
-		const { body } = await request.get(uri, {
-			timeout: 5000, // 5 seconds
-			sizeLimit: 1024 * 1024, // 1MB — public keys are typically <10KB
-			headers: {
-				'accept': ActivityPub._constants.acceptableTypes.at(1),
-			},
-			redirect: 'manual',
-		});
+	const { hostname } = new URL(uri);
+	await _checkFederationPolicy(hostname, uri);
 
-		// Process response and cache
-		if (body.hasOwnProperty('publicKeyPem')) {
-			// Validate public key
-			if (!utils.isPEM(body.publicKeyPem)) {
-				throw new Error('[[error:invalid-data]]');
-			}
-			// CryptographicKey returned (correct)
-			publicKeyCache.set(uri, body.publicKeyPem);
-			return body.publicKeyPem;
-		} else if (body?.publicKey?.publicKeyPem) {
-			// Validate public key
-			if (!utils.isPEM(body.publicKey.publicKeyPem)) {
-				throw new Error('[[error:invalid-data]]');
-			}
-			// Actor object returned (less correct)
-			publicKeyCache.set(uri, body.publicKey.publicKeyPem);
-			return body.publicKey.publicKeyPem;
+	let publicKeyPem = null;
+
+	if (keyData) {
+		try {
+			publicKeyPem = await _fetchKeyDocument(uri, keyData);
+		} catch (e) {
+			ActivityPub.helpers.log(`[activitypub/fetchPublicKey] Signed fetch of ${uri} failed: ${e.message}`);
 		}
-
-		// Response didn't contain expected public key
-		publicKeyCache.set(uri, null);
-		throw new Error('[[error:activitypub.pubKey-not-found]]');
-	} catch (err) {
-		// Cache the failed request
-		publicKeyCache.set(uri, null);
-
-		// Re-throw with context if needed
-		if (err.message.includes('reserved-ip-address')) {
-			throw new Error('[[error:activitypub.invalid-id]]');
-		}
-		throw err;
 	}
+
+	if (!publicKeyPem) {
+		try {
+			publicKeyPem = await _fetchKeyDocument(uri, null);
+		} catch (err) {
+			// Cache the failed request
+			publicKeyCache.set(uri, null);
+
+			// Re-throw with context if needed
+			if (err.message.includes('reserved-ip-address')) {
+				throw new Error('[[error:activitypub.invalid-id]]');
+			}
+			throw err;
+		}
+	}
+
+	publicKeyCache.set(uri, publicKeyPem);
+	return publicKeyPem;
 };
 
 ActivityPub.sign = async ({ key, keyId }, url, digest) => {
@@ -312,7 +369,8 @@ ActivityPub.sign = async ({ key, keyId }, url, digest) => {
 ActivityPub.verify = async (req) => {
 	ActivityPub.helpers.log('[activitypub/verify] Starting signature verification...');
 
-	const verified = await ActivityPub.signatures.verify(req, ActivityPub.fetchPublicKey);
+	const keyData = await ActivityPub.getPrivateKey('uid', 0);
+	const verified = await ActivityPub.signatures.verify(req, (uri, ip) => ActivityPub.fetchPublicKey(uri, ip, keyData));
 	if (!verified) {
 		ActivityPub.helpers.log('[activitypub/verify] Signature verification failed.');
 	} else {

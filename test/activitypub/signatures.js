@@ -2,12 +2,15 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
-const { createHash } = require('crypto');
+const { createHash, generateKeyPairSync } = require('crypto');
 const { importPublicKey, getWebcrypto } = require('@misskey-dev/node-http-message-signatures');
 
 const db = require('../mocks/databasemock');
+const meta = require('../../src/meta');
 const user = require('../../src/user');
 const utils = require('../../src/utils');
+const request = require('../../src/request');
+const helpers = require('../activitypub/helpers');
 const activitypub = require('../../src/activitypub');
 
 describe('http signature signing and verification', () => {
@@ -416,6 +419,214 @@ describe('http signature signing and verification', () => {
 				async (keyId) => (keyId === attackerKeyId ? attackerPubPem : null)
 			);
 			assert.strictEqual(verified, attackerKeyId);
+		});
+	});
+
+	describe('.fetchPublicKey()', () => {
+		let uid;
+		let privPem;
+		let pubPem;
+		let pubPem2;
+		let originalGet;
+
+		before(async () => {
+			uid = await user.create({ username: utils.generateUUID().slice(0, 10) });
+			const kp = generateKeyPairSync('rsa', { modulusLength: 2048, publicExponent: 0x10001 });
+			privPem = kp.privateKey.export({ format: 'pem', type: 'pkcs8' }).toString();
+			pubPem = kp.publicKey.export({ format: 'pem', type: 'spki' }).toString();
+			const kp2 = generateKeyPairSync('rsa', { modulusLength: 2048, publicExponent: 0x10001 });
+			pubPem2 = kp2.publicKey.export({ format: 'pem', type: 'spki' }).toString();
+			originalGet = request.get;
+		});
+
+		after(() => {
+			request.get = originalGet;
+			helpers.mocks.restoreRequests();
+		});
+
+		// Stands in for a remote server. The returned array records the headers of
+		// every request NodeBB makes, so tests can assert what the key fetch looked like.
+		const stubServer = (respond) => {
+			const seen = [];
+			request.get = async (url, config) => {
+				const headers = (config && config.headers) || {};
+				seen.push({ url, headers });
+				return respond(url, headers);
+			};
+			return seen;
+		};
+
+		const actorDocument = (url, pem) => ({
+			body: {
+				'@context': ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'],
+				id: url,
+				type: 'Person',
+				publicKey: { id: `${url}#main-key`, owner: url, publicKeyPem: pem },
+			},
+			response: { ok: true, status: 200, statusCode: 200, statusText: 'OK', headers: { 'content-type': 'application/activity+json' } },
+			url,
+		});
+
+		// Mastodon in AUTHORIZED_FETCH=true mode answers unsigned actor requests thus
+		const unsignedRejected = (url) => ({
+			body: { error: 'Request not signed' },
+			response: { ok: false, status: 401, statusCode: 401, statusText: 'Unauthorized', headers: { 'content-type': 'application/json' } },
+			url,
+		});
+
+		// A server that serves the key document only to signed requests
+		const serveSignedOnly = (url, headers) => (headers.signature ?
+			actorDocument(url, pubPem) :
+			unsignedRejected(url));
+
+		// A server that cannot look up NodeBB's instance key: it refuses the signed
+		// request, and serves the key document to unsigned ones
+		const refuseSignedOnly = (url, headers) => (headers.signature ?
+			unsignedRejected(url) :
+			actorDocument(url, pubPem));
+
+		// Unique URIs, so the public key cache is not shared between tests
+		const keyUri = () => `https://example.org/users/${utils.generateUUID().slice(0, 8)}#main-key`;
+
+		it('should resolve NodeBB\'s own key id from the database, without an HTTP request', async () => {
+			const storedPem = await activitypub.getPublicKey('uid', uid);
+			const seen = stubServer(() => {
+				throw new Error('local keys must not be fetched over HTTP');
+			});
+
+			assert.strictEqual(await activitypub.fetchPublicKey(`${nconf.get('url')}/uid/${uid}#key`, '203.0.113.7'), storedPem);
+			assert.strictEqual(seen.length, 0);
+		});
+
+		it('should resolve the instance actor key id (/actor#key) locally', async () => {
+			const storedPem = await activitypub.getPublicKey('uid', 0);
+			const seen = stubServer(() => {
+				throw new Error('local keys must not be fetched over HTTP');
+			});
+
+			assert.strictEqual(await activitypub.fetchPublicKey(`${nconf.get('url')}/actor#key`, '203.0.113.7'), storedPem);
+			assert.strictEqual(seen.length, 0);
+		});
+
+		it('should not read a user key hash for a post URI whose id collides with a uid', async () => {
+			// resolveLocalId reports `https://site/post/N` as { type: 'post', id: 'N' };
+			// reading `uid:N:keys` for it would return user N's key.
+			const uidPem = await activitypub.getPublicKey('uid', uid);
+			const seen = stubServer(url => actorDocument(url, pubPem2));
+
+			const pem = await activitypub.fetchPublicKey(`${nconf.get('url')}/post/${uid}#key`, '203.0.113.7');
+			assert.notStrictEqual(pem, uidPem);
+			assert.strictEqual(pem, pubPem2);
+			assert.strictEqual(seen.length, 1);
+		});
+
+		it('should sign the outgoing key fetch when key data is passed in', async () => {
+			const uri = keyUri();
+			const seen = stubServer(url => actorDocument(url, pubPem));
+
+			const pem = await activitypub.fetchPublicKey(uri, '203.0.113.7', await activitypub.getPrivateKey('uid', 0));
+			assert.strictEqual(pem, pubPem);
+			assert.strictEqual(seen.length, 1);
+			assert(seen[0].headers.signature, 'the key fetch was not signed');
+			assert(seen[0].headers.signature.includes(`keyId="${nconf.get('url')}/actor#key"`),
+				`the key fetch must be signed with the instance actor key: ${seen[0].headers.signature}`);
+		});
+
+		it('should fetch unsigned when no key data is passed in', async () => {
+			const uri = keyUri();
+			const seen = stubServer(url => actorDocument(url, pubPem));
+
+			await activitypub.fetchPublicKey(uri, '203.0.113.7');
+			assert.strictEqual(seen.length, 1);
+			assert.strictEqual(seen[0].headers.signature, undefined);
+		});
+
+		it('should fetch keys from servers that require signed GETs (authorized fetch)', async () => {
+			const uri = keyUri();
+			const seen = stubServer(serveSignedOnly);
+
+			const pem = await activitypub.fetchPublicKey(uri, '203.0.113.7', await activitypub.getPrivateKey('uid', 0));
+			assert.strictEqual(pem, pubPem);
+			assert.strictEqual(seen.length, 1, 'the signed fetch should have succeeded on the first attempt');
+		});
+
+		it('should fall back to an unsigned fetch when the signed request is refused', async () => {
+			const uri = keyUri();
+			const seen = stubServer(refuseSignedOnly);
+
+			const pem = await activitypub.fetchPublicKey(uri, '203.0.113.7', await activitypub.getPrivateKey('uid', 0));
+			assert.strictEqual(pem, pubPem);
+			assert.strictEqual(seen.length, 2, 'the unsigned fallback should have run');
+		});
+
+		it('should throw when the key cannot be fetched, and cache the failure', async () => {
+			const uri = keyUri();
+			const seen = stubServer(url => unsignedRejected(url));
+			const keyData = await activitypub.getPrivateKey('uid', 0);
+
+			await assert.rejects(activitypub.fetchPublicKey(uri, '203.0.113.7', keyData), /pubKey-not-found/);
+			assert.strictEqual(seen.length, 2);
+
+			// the cached failure short-circuits later lookups
+			await assert.rejects(activitypub.fetchPublicKey(uri, '203.0.113.7', keyData), /pubKey-not-found/);
+			assert.strictEqual(seen.length, 2);
+		});
+
+		it('should use the stored key of an asserted remote actor, without an HTTP request', async () => {
+			const actorId = `https://example.org/users/${utils.generateUUID().slice(0, 8)}`;
+			helpers.mocks.mockRequests();
+			helpers.mocks.person({
+				id: actorId,
+				preferredUsername: `key${utils.generateUUID().slice(0, 6)}`,
+				publicKey: { id: `${actorId}#main-key`, owner: actorId, publicKeyPem: pubPem },
+			});
+			await activitypub.actors.assert(actorId, { update: true });
+
+			const seen = stubServer(() => {
+				throw new Error('known keys must not be fetched over HTTP');
+			});
+			assert.strictEqual(await activitypub.fetchPublicKey(`${actorId}#main-key`, '203.0.113.7'), pubPem);
+			assert.strictEqual(seen.length, 0);
+
+			helpers.mocks.restoreRequests();
+		});
+
+		it('should verify a delivery from a secure-mode server (issue #14988)', async () => {
+			const keyId = keyUri();
+			const path = '/category/5/inbox';
+			const endpoint = `${nconf.get('url')}${path}`;
+			const body = {
+				id: 'https://example.org/activities/1',
+				type: 'Follow',
+				actor: keyId.replace(/#.*$/, ''),
+				object: `${nconf.get('url')}/category/5`,
+			};
+			const digest = activitypub.signatures.calculateDigest(JSON.stringify(body));
+			const signedHeaders = await activitypub.signatures.sign({ key: privPem, keyId }, endpoint, 'POST', digest);
+			const seen = stubServer(serveSignedOnly);
+			const { activitypubEnabled } = meta.config;
+			meta.config.activitypubEnabled = 1;
+
+			const req = {
+				method: 'POST',
+				url: path,
+				path,
+				ip: '203.0.113.7',
+				rawBody: Buffer.from(JSON.stringify(body)),
+				body,
+				headers: {
+					host: nconf.get('url_parsed').host,
+					'content-type': 'application/activity+json',
+					digest,
+					...signedHeaders,
+				},
+			};
+
+			const verified = await activitypub.verify(req);
+			meta.config.activitypubEnabled = activitypubEnabled;
+
+			assert.strictEqual(verified, keyId, 'a delivery from an authorized-fetch server must verify');
+			assert(seen[0].headers.signature, 'the key fetch must be signed');
 		});
 	});
 });

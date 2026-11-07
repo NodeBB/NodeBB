@@ -2,11 +2,12 @@
 
 const assert = require('assert');
 const nconf = require('nconf');
-const { createHash } = require('crypto');
+const { createHash, generateKeyPairSync } = require('crypto');
 
 const db = require('../mocks/databasemock');
 const user = require('../../src/user');
 const utils = require('../../src/utils');
+const request = require('../../src/request');
 const activitypub = require('../../src/activitypub');
 const middleware = require('../../src/middleware/activitypub');
 
@@ -83,6 +84,47 @@ describe('middleware.verify', () => {
 			assert.strictEqual(nextCalled, true);
 			assert.strictEqual(response.statusCode, null);
 			assert.ok(req.uid);
+		});
+
+		it('should accept a delivery signed by a server in authorized-fetch mode (#14988)', async () => {
+			const kp = generateKeyPairSync('rsa', { modulusLength: 2048, publicExponent: 0x10001 });
+			const privPem = kp.privateKey.export({ format: 'pem', type: 'pkcs8' }).toString();
+			const pubPem = kp.publicKey.export({ format: 'pem', type: 'spki' }).toString();
+			const remote = `https://example.org/users/${utils.generateUUID().slice(0, 8)}`;
+			const keyId = `${remote}#main-key`;
+			const path = `/user/${username}/inbox`;
+			const endpoint = `${nconf.get('url')}${path}`;
+			const body = { foo: 'bar' };
+			const digest = `SHA-256=${createHash('sha256').update(JSON.stringify(body)).digest('base64')}`;
+			const signedHeaders = await activitypub.signatures.sign({ key: privPem, keyId }, endpoint, 'POST', digest);
+
+			// Mastodon in AUTHORIZED_FETCH=true mode: the actor document is served only to signers
+			const originalGet = request.get;
+			const fetches = [];
+			request.get = async (url, config) => {
+				const signed = Boolean((config.headers || {}).signature);
+				fetches.push(signed);
+				return signed ? {
+					body: { id: remote, type: 'Person', publicKey: { id: keyId, owner: remote, publicKeyPem: pubPem } },
+					response: { ok: true, status: 200, statusCode: 200, statusText: 'OK', headers: { 'content-type': 'application/activity+json' } },
+					url,
+				} : {
+					body: { error: 'Request not signed' },
+					response: { ok: false, status: 401, statusCode: 401, statusText: 'Unauthorized', headers: { 'content-type': 'application/json' } },
+					url,
+				};
+			};
+
+			const req = buildReq('POST', path, { ...signedHeaders, digest });
+			req.body = body;
+			const res = buildRes();
+			const { nextCalled, res: response } = await runMiddleware(req, res);
+			request.get = originalGet;
+
+			assert.deepStrictEqual(fetches, [true], 'the key fetch must be signed, and succeed on the first attempt');
+			assert.strictEqual(response.statusCode, null, 'the delivery must not be rejected with 400');
+			assert.strictEqual(nextCalled, true);
+			assert.strictEqual(req.uid, remote);
 		});
 
 		it('should reject with 400 when signature is invalid', async () => {
