@@ -26,6 +26,18 @@
 		</ul>
 	</div>
 
+	{{{ if linkableGroups.length }}}
+	<div component="chat/room/member-groups/options" class="mb-3">
+		<label class="form-label">{{tx("modules:chat.member-groups")}}</label>
+		<select component="chat/room/member-groups" class="form-select" multiple size="5">
+			{{{ each linkableGroups }}}
+			<option value="{./name}">{./name}</option>
+			{{{ end }}}
+		</select>
+		<p class="form-text">{{tx("modules:chat.member-groups-help")}}</p>
+	</div>
+	{{{ end }}}
+
 	{{{ if user.isAdmin }}}
 	<select component="chat/room/type" class="form-select mb-3">
 		<option value="private">{{tx("modules:chat.private.option")}}</option>
