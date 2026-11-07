@@ -304,7 +304,7 @@ async function searchMessageContent(uid, roomIds, rooms, query) {
 		rooms.map(room => !!(room && room.public))
 	);
 	const [messages, blockedUids] = await Promise.all([
-		Messaging.getMessagesFields(ids, ['roomId', 'fromuid', 'content', 'timestamp']),
+		Messaging.getMessagesFields(ids, ['roomId', 'fromuid', 'content', 'timestamp', 'deleted', 'system']),
 		user.blocks.list(uid),
 	]);
 
@@ -326,7 +326,8 @@ async function searchMessageContent(uid, roomIds, rooms, query) {
 
 	const inUserRooms = new Set(roomIds.map(String));
 	messages.forEach((msg, idx) => {
-		if (!msg || !msg.fromuid) {
+		// deleted and system messages are not searchable, whatever the plugin returns
+		if (!msg || !msg.fromuid || msg.deleted || msg.system) {
 			return;
 		}
 		const roomId = String(msg.roomId);

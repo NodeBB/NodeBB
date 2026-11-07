@@ -1014,6 +1014,7 @@ describe('Messaging Library', () => {
 		let contentRoom;
 		let joinCutoffRoom;
 		let blockedRoom;
+		let filterDeleted = true;
 		const _delay = meta.config.newbieChatMessageDelay;
 
 		// stand-in for a search plugin: a naive substring scan over the rooms the
@@ -1024,7 +1025,7 @@ describe('Messaging Library', () => {
 				const messages = await Messaging.getMessagesFields(mids, ['content', 'deleted', 'system']);
 				return mids.filter((mid, idx) => {
 					const msg = messages[idx];
-					return msg && !msg.deleted && !msg.system &&
+					return msg && (!filterDeleted || (!msg.deleted && !msg.system)) &&
 						String(msg.content).toLowerCase().includes(String(data.content).toLowerCase());
 				});
 			}));
@@ -1151,6 +1152,22 @@ describe('Messaging Library', () => {
 				await User.blocks.add(carol, alice);
 				assert.deepStrictEqual(await search(alice, 'aubergine'), []);
 				await User.blocks.remove(carol, alice);
+			});
+
+			it('should not match deleted messages even if the plugin returns them', async () => {
+				const deletedRoom = await Messaging.newRoom(alice, { uids: [bob] });
+				const { mid } = await Messaging.addMessage({
+					uid: bob, roomId: deletedRoom, content: 'persimmon smoothie',
+				});
+				assert.strictEqual((await search(alice, 'persimmon')).length, 1);
+
+				await Messaging.deleteMessage(mid, bob);
+				filterDeleted = false;
+				try {
+					assert.deepStrictEqual(await search(alice, 'persimmon'), []);
+				} finally {
+					filterDeleted = true;
+				}
 			});
 		});
 	});
