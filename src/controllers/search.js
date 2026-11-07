@@ -60,7 +60,7 @@ searchController.search = async function (req, res, next) {
 		sortBy: ['relevance', 'timestamp', 'votes', 'topic.lastposttime', 'topic.title', 'topic.postcount', 'topic.viewcount', 'topic.votes', 'topic.timestamp', 'user.username', 'category.name'],
 		sortDirection: ['asc', 'desc'],
 	};
-	const validParams = helpers.validateParameters(req.query, Object.keys(validation), validation);
+	const validParams = helpers.validateParameters(searchQuery, Object.keys(validation), validation);
 	const data = {
 		query: searchQuery.term,
 		searchIn: validParams.in || 'titlesposts',
