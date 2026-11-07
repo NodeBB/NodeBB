@@ -24,30 +24,30 @@ searchController.search = async function (req, res, next) {
 	const page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 
 	const searchOnly = parseInt(req.query.searchOnly, 10) === 1;
-
+	const searchQuery = { ...req.query };
 	const [canSearchUsers, canSearchContent, canSearchTags] = await privileges.global.can([
 		'search:users', 'search:content', 'search:tags',
 	], req.uid);
 
-	const searchIn = req.query.in || meta.config.searchDefaultIn || 'titlesposts';
+	const searchIn = searchQuery.in || meta.config.searchDefaultIn || 'titlesposts';
 	let allowed = (searchIn === 'users' && canSearchUsers) ||
 					(searchIn === 'tags' && canSearchTags) ||
 					(searchIn === 'categories') ||
 					(['titles', 'titlesposts', 'posts', 'bookmarks'].includes(searchIn) && canSearchContent);
 	({ allowed } = await plugins.hooks.fire('filter:search.isAllowed', {
 		uid: req.uid,
-		query: req.query,
+		query: searchQuery,
 		allowed,
 	}));
 	if (!allowed) {
 		return helpers.notAllowed(req, res);
 	}
 
-	if (req.query.categories && !Array.isArray(req.query.categories)) {
-		req.query.categories = [req.query.categories];
+	if (searchQuery.categories && !Array.isArray(searchQuery.categories)) {
+		searchQuery.categories = [searchQuery.categories];
 	}
-	if (req.query.hasTags && !Array.isArray(req.query.hasTags)) {
-		req.query.hasTags = [req.query.hasTags];
+	if (searchQuery.hasTags && !Array.isArray(searchQuery.hasTags)) {
+		searchQuery.hasTags = [searchQuery.hasTags];
 	}
 
 	const validation = {
@@ -62,13 +62,13 @@ searchController.search = async function (req, res, next) {
 	};
 	const validParams = helpers.validateParameters(req.query, Object.keys(validation), validation);
 	const data = {
-		query: req.query.term,
+		query: searchQuery.term,
 		searchIn: validParams.in || 'titlesposts',
 		matchWords: validParams.matchWords || 'all',
-		postedBy: req.query.by,
-		categories: req.query.categories,
-		searchChildren: req.query.searchChildren === 'true',
-		hasTags: req.query.hasTags,
+		postedBy: searchQuery.by,
+		categories: searchQuery.categories,
+		searchChildren: searchQuery.searchChildren === 'true',
+		hasTags: searchQuery.hasTags,
 		replies: validParams.replies || '',
 		repliesFilter: validParams.repliesFilter || 'atleast',
 		timeRange: validParams.timeRange || '',
@@ -78,7 +78,7 @@ searchController.search = async function (req, res, next) {
 		page: page,
 		itemsPerPage: req.query.itemsPerPage,
 		uid: req.uid,
-		qs: req.query,
+		qs: searchQuery,
 	};
 
 	const [searchData] = await Promise.all([
@@ -86,18 +86,18 @@ searchController.search = async function (req, res, next) {
 		recordSearch(data),
 	]);
 
-	searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+	searchData.pagination = pagination.create(page, searchData.pageCount, searchQuery);
 	searchData.multiplePages = searchData.pageCount > 1;
-	searchData.search_query = String(req.query.term || '');
-	searchData.term = req.query.term;
+	searchData.search_query = String(searchQuery.term || '');
+	searchData.term = searchQuery.term;
 
 	if (searchOnly) {
 		return res.json(searchData);
 	}
 
 	searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
-	searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
-	searchData.showAsTopics = req.query.showAs === 'topics';
+	searchData.showAsPosts = !searchQuery.showAs || searchQuery.showAs === 'posts';
+	searchData.showAsTopics = searchQuery.showAs === 'topics';
 	searchData.title = '[[global:header.search]]';
 	if (Array.isArray(data.categories)) {
 		searchData.selectedCids = data.categories.map(cid => String(cid));
