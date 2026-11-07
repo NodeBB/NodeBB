@@ -60,7 +60,7 @@
         "chart.js": "4.6.1",
         "cli-graph": "3.2.2",
         "clipboard": "2.0.11",
-        "commander": "15.0.0",
+        "commander": "15.1.0",
         "compare-versions": "6.1.1",
         "compression": "1.8.2",
         "connect-flash": "0.1.1",
