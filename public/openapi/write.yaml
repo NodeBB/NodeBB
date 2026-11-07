@@ -49,9 +49,15 @@ tags:
     description: Administrative calls
   - name: files
     description: File upload routes
+  - name: oauth
+    description: OAuth 2.0 / OpenID Connect authorization server endpoints
 paths:
   /ping:
     $ref: 'write/ping.yaml'
+  /oauth/authorize:
+    $ref: 'write/oauth/authorize.yaml'
+  /oauth/userinfo:
+    $ref: 'write/oauth/userinfo.yaml'
   /utilities/login:
     $ref: 'write/login.yaml'
   /users/:
@@ -298,6 +304,12 @@ paths:
     $ref: 'write/admin/tokens/token.yaml'
   /admin/tokens/{token}/roll:
     $ref: 'write/admin/tokens/token/roll.yaml'
+  /admin/oauth/clients:
+    $ref: 'write/admin/oauth/clients.yaml'
+  /admin/oauth/clients/{clientId}:
+    $ref: 'write/admin/oauth/clients/clientId.yaml'
+  /admin/oauth/clients/{clientId}/secret:
+    $ref: 'write/admin/oauth/clients/clientId/secret.yaml'
   /admin/chats/{roomId}:
     $ref: 'write/admin/chats/roomId.yaml'
   /admin/groups:

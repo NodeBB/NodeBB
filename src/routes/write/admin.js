@@ -33,6 +33,13 @@ module.exports = function () {
 	setupApiRoute(router, 'delete', '/tokens/:token', [...middlewares], controllers.write.admin.deleteToken);
 	setupApiRoute(router, 'post', '/tokens/:token/roll', [...middlewares], controllers.write.admin.rollToken);
 
+	setupApiRoute(router, 'post', '/oauth/clients', [...middlewares], controllers.write.admin.oauth.createClient);
+	setupApiRoute(router, 'get', '/oauth/clients', [...middlewares], controllers.write.admin.oauth.listClients);
+	setupApiRoute(router, 'get', '/oauth/clients/:clientId', [...middlewares], controllers.write.admin.oauth.getClient);
+	setupApiRoute(router, 'put', '/oauth/clients/:clientId', [...middlewares], controllers.write.admin.oauth.updateClient);
+	setupApiRoute(router, 'post', '/oauth/clients/:clientId/secret', [...middlewares], controllers.write.admin.oauth.rotateClientSecret);
+	setupApiRoute(router, 'delete', '/oauth/clients/:clientId', [...middlewares], controllers.write.admin.oauth.deleteClient);
+
 	setupApiRoute(router, 'delete', '/chats/:roomId', [...middlewares, middleware.assert.room], controllers.write.admin.chats.deleteRoom);
 
 	setupApiRoute(router, 'get', '/groups', [...middlewares], controllers.write.admin.listGroups);
