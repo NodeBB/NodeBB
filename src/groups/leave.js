@@ -60,6 +60,7 @@ module.exports = function (Groups) {
 			...promises,
 			clearGroupTitleIfSet(groupsToLeave, uid),
 			leavePublicRooms(groupsToLeave, uid),
+			messaging.removeUserFromMemberGroupRooms(uid, groupsToLeave),
 		]);
 
 		plugins.hooks.fire('action:group.leave', {

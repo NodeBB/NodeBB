@@ -24,6 +24,11 @@ RoomObject:
     groups:
       type: array
       description: list of groups that can access the room
+    memberGroups:
+      type: array
+      items:
+        type: string
+      description: list of groups whose members are members of the room (private rooms only)
     timestamp:
       type: number
       description: Timestamp of when room was created
