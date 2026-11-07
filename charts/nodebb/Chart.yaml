@@ -1,0 +1,19 @@
+apiVersion: v2
+name: nodebb
+description: A Helm chart for NodeBB
+type: application
+version: 0.1.0
+appVersion: "3.6.0"
+dependencies:
+- name: redis
+  version: 18.4.0
+  repository: https://charts.bitnami.com/bitnami
+  condition: global.redis.managed
+- name: mongodb
+  version: 14.3.1
+  repository: https://charts.bitnami.com/bitnami
+  condition: global.mongodb.managed
+- name: postgresql
+  version: 13.2.18
+  repository: https://charts.bitnami.com/bitnami
+  condition: global.postgresql.managed
