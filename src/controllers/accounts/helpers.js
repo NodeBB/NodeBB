@@ -165,26 +165,15 @@ helpers.getCustomUserFields = async function (callerUID, userData) {
 		return fields;
 	}
 
-	const allFields = await user.customFields.getFields();
-
-	const isSelf = String(callerUID) === String(userData.uid);
-	const [isAdmin, isModOfAny] = await Promise.all([
+	const [allFields, isAdmin, isModOfAny] = await Promise.all([
+		user.customFields.getFields(),
 		privileges.users.isAdministrator(callerUID),
 		user.isModeratorOfAnyCategory(callerUID),
 	]);
 
-	const fields = allFields.filter((field) => {
-		const visibility = field.visibility || 'all';
-		const visibilityCheck = isAdmin || isModOfAny || isSelf || visibility === 'all' ||
-			(
-				visibility === 'loggedin' &&
-				String(callerUID) !== '0' &&
-				String(callerUID) !== '-1'
-			);
-		const minRep = field['min:rep'] || 0;
-		const repCheck = userData.reputation >= minRep || meta.config['reputation:disabled'];
-		return visibilityCheck && repCheck;
-	});
+	const fields = allFields.filter(
+		field => user.customFields.isFieldVisible(field, callerUID, userData, isAdmin || isModOfAny)
+	);
 
 	fields.forEach((f) => {
 		let userValue = userData[f.key];
