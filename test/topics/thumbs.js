@@ -13,6 +13,7 @@ const groups = require('../../src/groups');
 const topics = require('../../src/topics');
 const posts = require('../../src/posts');
 const categories = require('../../src/categories');
+const privileges = require('../../src/privileges');
 const plugins = require('../../src/plugins');
 const file = require('../../src/file');
 const utils = require('../../src/utils');
@@ -311,9 +312,20 @@ describe('Topic thumbs', () => {
 			assert.strictEqual(response.statusCode, 404);
 		});
 
-		it('should fail when calling user cannot edit the tid', async () => {
-			const { response } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/2/thumbs`, path.join(__dirname, '../files/test.png'), {}, fooJar, fooCSRF);
+		it('should fail when calling user cannot edit the tid', async function () {
+			const { response } = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${this.tid}/thumbs`, path.join(__dirname, '../files/test.png'), {}, fooJar, fooCSRF);
 			assert.strictEqual(response.statusCode, 403);
+		});
+
+		it('should respond 404 when calling user cannot read the tid', async () => {
+			const privateCid = (await categories.create({ name: 'ThumbPrivate', description: 'private', slug: 'thumbprivate' })).cid;
+			await privileges.categories.rescind(['groups:topics:read'], privateCid, 'registered-users');
+			const { topicData } = await topics.post({ uid: adminUid, cid: privateCid, title: 'private thumb topic', content: 'private' });
+
+			const restricted = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${topicData.tid}/thumbs`, path.join(__dirname, '../files/test.png'), {}, fooJar, fooCSRF);
+			const missing = await helpers.uploadFile(`${nconf.get('url')}/api/v3/topics/${Number.MAX_SAFE_INTEGER}/thumbs`, path.join(__dirname, '../files/test.png'), {}, fooJar, fooCSRF);
+			assert.strictEqual(restricted.response.statusCode, 404);
+			assert.strictEqual(missing.response.statusCode, 404);
 		});
 
 		it('should fail if user does not have upload:image privilege', async function () {

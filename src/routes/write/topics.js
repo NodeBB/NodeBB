@@ -8,10 +8,10 @@ const routeHelpers = require('../helpers');
 const { setupApiRoute } = routeHelpers;
 
 module.exports = function () {
-	const middlewares = [middleware.ensureLoggedIn];
+	const middlewares = [middleware.ensureLoggedIn, middleware.assert.topic];
 
 	setupApiRoute(router, 'post', '/', [middleware.checkRequired.bind(null, ['cid', 'content'])], controllers.write.topics.create);
-	setupApiRoute(router, 'get', '/:tid', [], controllers.write.topics.get);
+	setupApiRoute(router, 'get', '/:tid', [middleware.assert.topic], controllers.write.topics.get);
 	setupApiRoute(router, 'post', '/:tid', [middleware.checkRequired.bind(null, ['content']), middleware.assert.topic], controllers.write.topics.reply);
 	setupApiRoute(router, 'delete', '/:tid', [...middlewares], controllers.write.topics.purge);
 
@@ -33,9 +33,10 @@ module.exports = function () {
 	setupApiRoute(router, 'patch', '/:tid/tags', [...middlewares, middleware.checkRequired.bind(null, ['tags']), middleware.assert.topic], controllers.write.topics.addTags);
 	setupApiRoute(router, 'delete', '/:tid/tags', [...middlewares, middleware.assert.topic], controllers.write.topics.deleteTags);
 
-	setupApiRoute(router, 'get', '/:tid/thumbs', [], controllers.write.topics.getThumbs);
+	setupApiRoute(router, 'get', '/:tid/thumbs', [middleware.assert.topic], controllers.write.topics.getThumbs);
 
 	setupApiRoute(router, 'post', '/:tid/thumbs', [
+		middleware.assert.topic,
 		middleware.validateFiles,
 		middleware.uploads.ratelimit,
 	], controllers.write.topics.addThumb);

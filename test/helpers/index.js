@@ -48,6 +48,11 @@ helpers.request = async function (method, uri, options = {}) {
 	return await request[lowercaseMethod](`${nconf.get('url')}${uri}`, options);
 };
 
+helpers.statusCode = async function (method, uri, options = {}) {
+	const { response } = await helpers.request(method, uri, { ...options, resolveOn500: true });
+	return response.statusCode;
+};
+
 helpers.loginUser = async (username, password, payload = {}) => {
 	const jar = request.jar();
 	const data = { username, password, ...payload };

@@ -2865,6 +2865,81 @@ describe('Topic\'s', () => {
 			assert(score < Date.now(), 'Post in cid:<cid>:pids has wrong score, it should not be in the future');
 		});
 	});
+
+	describe('restricted topic existence', () => {
+		// Endpoints must respond identically to a topic the caller cannot read
+		// as they do to a topic that does not exist, so that restricted topic ids
+		// cannot be enumerated.
+		let privCid;
+		let restrictedTid;
+		let restrictedPid;
+		let fooUid;
+		let fooJar;
+
+		const missingTid = Number.MAX_SAFE_INTEGER;
+
+		before(async () => {
+			privCid = (await categories.create({
+				name: 'Restricted Topic Category',
+				description: 'category hidden from guests and regular users',
+				slug: 'restricted-topic-category',
+			})).cid;
+			await privileges.categories.rescind(['groups:topics:read'], privCid, 'guests');
+			await privileges.categories.rescind(['groups:topics:read'], privCid, 'registered-users');
+
+			fooUid = await User.create({ username: 'restrictedfoo', password: '12345678' });
+			fooJar = (await helpers.loginUser('restrictedfoo', '12345678')).jar;
+
+			const posted = await topics.post({
+				uid: adminUid, cid: privCid, title: 'restricted topic', content: 'restricted content',
+			});
+			restrictedTid = posted.topicData.tid;
+			restrictedPid = posted.postData.pid;
+			// replies populate diffs/voters paths, and keep the main post from being the last post
+			await topics.reply({ uid: adminUid, tid: restrictedTid, content: 'restricted reply' });
+		});
+
+		const probes = [
+			['get', p => `/api/v3/topics/${p}`],
+			['get', p => `/api/v3/topics/${p}/thumbs`],
+			['get', p => `/api/v3/topics/${p}/events`],
+			['get', p => `/api/v3/topics/${p}/crossposts`],
+			['post', p => `/api/v3/topics/${p}`, { body: { content: 'a reply' } }],
+			['put', p => `/api/v3/topics/${p}/pin`],
+			['delete', p => `/api/v3/topics/${p}/pin`],
+			['put', p => `/api/v3/topics/${p}/lock`],
+			['delete', p => `/api/v3/topics/${p}/lock`],
+			['put', p => `/api/v3/topics/${p}/follow`],
+			['delete', p => `/api/v3/topics/${p}/follow`],
+			['put', p => `/api/v3/topics/${p}/read`],
+			['delete', p => `/api/v3/topics/${p}/read`],
+			['put', p => `/api/v3/topics/${p}/bump`],
+			['put', p => `/api/v3/topics/${p}/move`, () => ({ body: { cid: categoryObj.cid } })],
+			['put', p => `/api/v3/topics/${p}/state`],
+			['delete', p => `/api/v3/topics/${p}/state`],
+			['delete', p => `/api/v3/topics/${p}`],
+			['post', p => `/api/v3/topics/${p}/thumbs`],
+			['delete', p => `/api/v3/topics/${p}/thumbs`, { body: { path: '/files/nonexistent.png' } }],
+			['put', p => `/api/v3/topics/${p}/thumbs/order`, { body: { path: 'x', order: 0 } }],
+			['put', p => `/api/v3/topics/${p}/tags`, { body: { tags: [] } }],
+			['patch', p => `/api/v3/topics/${p}/tags`, { body: { tags: [] } }],
+			['delete', p => `/api/v3/topics/${p}/tags`],
+		];
+
+		for (const [method, path, extra] of probes) {
+			for (const who of ['guest', 'logged in']) {
+				it(`${method.toUpperCase()} ${path(':id')} (${who})`, async () => {
+					const opts = typeof extra === 'function' ? extra() : { ...extra };
+					if (who === 'logged in') {
+						opts.jar = fooJar;
+					}
+					const restricted = await helpers.statusCode(method, path(restrictedTid), opts);
+					const missing = await helpers.statusCode(method, path(missingTid), opts);
+					assert.strictEqual(restricted, missing, `restricted=${restricted} missing=${missing}`);
+				});
+			}
+		}
+	});
 });
 
 describe('Topics\'', async () => {

@@ -4,6 +4,7 @@ const nconf = require('nconf');
 
 const db = require('../../database');
 const topics = require('../../topics');
+const privileges = require('../../privileges');
 const api = require('../../api');
 const helpers = require('../helpers');
 
@@ -17,6 +18,11 @@ Posts.redirectByIndex = async (req, res, next) => {
 		index = 0;
 	}
 	index = parseInt(index, 10);
+
+	// Don't leak the existence of topics the caller can't read
+	if (!await privileges.topics.canRead(tid, req.uid)) {
+		return next('route');
+	}
 
 	let pid;
 	if (index === 0) {

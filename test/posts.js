@@ -1748,3 +1748,106 @@ describe('Posts\'', async () => {
 		});
 	});
 });
+
+describe('restricted post existence', () => {
+	// Endpoints must respond identically to a post the caller cannot read as
+	// they do to a post that does not exist, so that restricted post ids
+	// cannot be enumerated.
+	let privCid;
+	let publicCid;
+	let restrictedTid;
+	let restrictedPid;
+	let publicTid;
+	let replyUid;
+	let adminUid;
+	let fooUid;
+	let fooJar;
+
+	const missingPid = Number.MAX_SAFE_INTEGER;
+
+	before(async () => {
+		adminUid = await user.create({ username: 'restrictedadmin', password: '12345678' });
+		await groups.join('administrators', adminUid);
+		fooUid = await user.create({ username: 'restrictedfoo2', password: '12345678' });
+		fooJar = (await helpers.loginUser('restrictedfoo2', '12345678')).jar;
+
+		privCid = (await categories.create({
+			name: 'Restricted Post Category',
+			description: 'category hidden from guests and regular users',
+			slug: 'restricted-post-category',
+		})).cid;
+		await privileges.categories.rescind(['groups:topics:read'], privCid, 'guests');
+		await privileges.categories.rescind(['groups:topics:read'], privCid, 'registered-users');
+
+		publicCid = (await categories.create({
+			name: 'Public Post Category',
+			description: 'public category',
+			slug: 'public-post-category',
+		})).cid;
+
+		const posted = await topics.post({
+			uid: adminUid, cid: privCid, title: 'restricted post topic', content: 'restricted content',
+		});
+		restrictedTid = posted.topicData.tid;
+		restrictedPid = posted.postData.pid;
+
+		const publicPost = await topics.post({
+			uid: adminUid, cid: publicCid, title: 'public post topic', content: 'public content',
+		});
+		publicTid = publicPost.topicData.tid;
+
+		// populate voters, diffs and keep the main post from being the last post
+		replyUid = await user.create({ username: 'restrictedreplyer', password: '12345678' });
+		await topics.reply({ uid: replyUid, tid: restrictedTid, content: 'restricted reply' });
+		// give upvote temporarily so a non-author can populate the voters set
+		await privileges.categories.give(['groups:posts:upvote'], privCid, 'registered-users');
+		await posts.upvote(restrictedPid, replyUid);
+
+		// upvote/downvote + history/edit privs are not needed for the read check,
+		// rescind them too so voters/diffs/edit probes exercise the read gate
+		await privileges.categories.rescind(['groups:posts:upvote', 'groups:posts:downvote'], privCid, 'registered-users');
+		await privileges.categories.rescind(['groups:posts:history'], privCid, 'registered-users');
+		await privileges.categories.rescind(['groups:posts:edit'], privCid, 'registered-users');
+		await posts.edit({ uid: adminUid, pid: restrictedPid, content: 'restricted content edited' });
+	});
+
+	const probes = [
+		['get', p => `/api/v3/posts/${p}`],
+		['get', p => `/api/v3/posts/${p}/index`],
+		['get', p => `/api/v3/posts/${p}/raw`],
+		['get', p => `/api/v3/posts/${p}/summary`],
+		['get', p => `/api/v3/posts/${p}/replies`],
+		['get', p => `/api/v3/posts/${p}/voters`],
+		['get', p => `/api/v3/posts/${p}/upvoters`],
+		['get', p => `/api/v3/posts/${p}/announcers`],
+		['get', p => `/api/v3/posts/${p}/announcers/tooltip`],
+		['get', p => `/api/v3/posts/${p}/diffs`],
+		['get', p => `/api/v3/posts/${p}/diffs/1`],
+		['put', p => `/api/v3/posts/${p}`, { body: { content: 'edited' } }],
+		['put', p => `/api/v3/posts/${p}/vote`, { body: { delta: 1 } }],
+		['delete', p => `/api/v3/posts/${p}/vote`],
+		['put', p => `/api/v3/posts/${p}/bookmark`],
+		['delete', p => `/api/v3/posts/${p}/bookmark`],
+		['put', p => `/api/v3/posts/${p}/state`],
+		['delete', p => `/api/v3/posts/${p}/state`],
+		['delete', p => `/api/v3/posts/${p}`],
+		['put', p => `/api/v3/posts/${p}/move`, () => ({ body: { tid: publicTid } })],
+		['get', p => `/api/v3/posts/+byIndex/0?tid=${p}`],
+	];
+
+	for (const [method, path, extra] of probes) {
+		const target = path(':id').includes('byIndex') ? restrictedTid : restrictedPid;
+		const missing = missingPid;
+		for (const who of ['guest', 'logged in']) {
+			it(`${method.toUpperCase()} ${path(':id')} (${who})`, async () => {
+				const opts = typeof extra === 'function' ? extra() : { ...extra };
+				if (who === 'logged in') {
+					opts.jar = fooJar;
+				}
+				const restricted = await helpers.statusCode(method, path(target), opts);
+				const absent = await helpers.statusCode(method, path(missing), opts);
+				assert.strictEqual(restricted, absent, `restricted=${restricted} missing=${absent}`);
+			});
+		}
+	}
+});

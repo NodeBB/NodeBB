@@ -19,6 +19,7 @@ const flags = require('../flags');
 const slugify = require('../slugify');
 const utils = require('../utils');
 const activitypub = require('../activitypub');
+const privileges = require('../privileges');
 
 const helpers = require('./helpers');
 const controllerHelpers = require('../controllers/helpers');
@@ -61,11 +62,19 @@ Assert.topic = helpers.try(async (req, res, next) => {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
 	}
 
+	if (!await privileges.topics.canRead(req.params.tid, req.uid)) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-topic]]'));
+	}
+
 	next();
 });
 
 Assert.post = helpers.try(async (req, res, next) => {
 	if (!await posts.exists(req.params.pid)) {
+		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-post]]'));
+	}
+
+	if (!await privileges.posts.canRead(req.params.pid, req.uid)) {
 		return controllerHelpers.formatApiResponse(404, res, new Error('[[error:no-post]]'));
 	}
 
