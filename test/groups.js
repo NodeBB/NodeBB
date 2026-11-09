@@ -14,6 +14,8 @@ const plugins = require('../src/plugins');
 const utils = require('../src/utils');
 const socketGroups = require('../src/socket.io/groups');
 const apiGroups = require('../src/api/groups');
+const slugify = require('../src/slugify');
+const privileges = require('../src/privileges');
 const meta = require('../src/meta');
 const navigation = require('../src/navigation/admin');
 const translator = require('../src/translator');
@@ -981,16 +983,22 @@ describe('Groups', () => {
 
 	describe('socket/api methods', () => {
 		it('should error if data is null', (done) => {
-			socketGroups.before({ uid: 0 }, 'groups.join', null, (err) => {
+			socketGroups.before({ uid: 0 }, 'groups.cover.update', null, (err) => {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should not error if data is valid', (done) => {
-			socketGroups.before({ uid: 0 }, 'groups.join', {}, (err) => {
+			socketGroups.before({ uid: 0 }, 'groups.cover.update', {}, (err) => {
 				assert.ifError(err);
 				done();
+			});
+		});
+
+		it('should not expose socket handlers that mutate group membership', () => {
+			['join', 'leave', 'addMember', 'kick', 'grant', 'rescind', 'create', 'update', 'delete'].forEach((method) => {
+				assert.equal(typeof socketGroups[method], 'undefined');
 			});
 		});
 
@@ -1010,6 +1018,66 @@ describe('Groups', () => {
 			} catch (err) {
 				assert.equal(err.message, '[[error:not-allowed]]');
 			}
+		});
+
+		it('should refuse self-join to global-moderators', async () => {
+			await assert.rejects(
+				apiGroups.join({ uid: testUid }, { slug: slugify(Groups.GLOBAL_MODERATORS), uid: testUid }),
+				{ message: '[[error:not-allowed]]' }
+			);
+			assert.equal(await Groups.isMember(testUid, Groups.GLOBAL_MODERATORS), false);
+		});
+
+		it('should refuse self-join to category privilege groups', async () => {
+			const { cid } = await Categories.create({ name: 'Privilege Carrier Category' });
+			const carrier = 'PrivilegeCarrier';
+			await Groups.create({ name: carrier });
+			await privileges.categories.give(['groups:topics:moderate'], cid, carrier);
+			const privilegeGroup = `cid:${cid}:privileges:groups:topics:moderate`;
+
+			assert.equal(Groups.isPrivilegeGroup(privilegeGroup), true);
+			// privilege group slugs are deliberately not registered, so the route cannot resolve them
+			assert.equal(await Groups.getGroupNameByGroupSlug(slugify(privilegeGroup)), null);
+			await assert.rejects(
+				apiGroups.join({ uid: testUid }, { slug: slugify(privilegeGroup), uid: testUid }),
+				{ message: '[[error:no-group]]' }
+			);
+			assert.equal(await Groups.isMember(testUid, privilegeGroup), false);
+		});
+
+		it('should refuse self-join to ephemeral (pseudo) groups', async () => {
+			for (const groupName of Groups.ephemeralGroups) {
+				// eslint-disable-next-line no-await-in-loop
+				await assert.rejects(
+					apiGroups.join({ uid: testUid }, { slug: slugify(groupName), uid: testUid }),
+					(err) => {
+						assert(['[[error:no-group]]', '[[error:not-allowed]]'].includes(err.message), err.message);
+						return true;
+					}
+				);
+				// eslint-disable-next-line no-await-in-loop
+				assert.equal(await Groups.isMember(testUid, groupName), false);
+			}
+		});
+
+		it('should refuse self-join to ephemeral groups even when the slug is registered', async () => {
+			// simulates a groupslug:groupname entry pointing at a pseudo-group
+			await db.setObjectField('groupslug:groupname', 'fediverse', 'fediverse');
+			await assert.rejects(
+				apiGroups.join({ uid: testUid }, { slug: 'fediverse', uid: testUid }),
+				{ message: '[[error:not-allowed]]' }
+			);
+			assert.equal(await Groups.isMember(testUid, 'fediverse'), false);
+			await db.deleteObjectField('groupslug:groupname', 'fediverse');
+		});
+
+		it('should refuse adding other users to groups for non-admins', async () => {
+			const otherUid = await User.create({ username: 'join-target' });
+			await assert.rejects(
+				apiGroups.join({ uid: testUid }, { slug: 'test', uid: otherUid }),
+				{ message: '[[error:not-allowed]]' }
+			);
+			assert.equal(await Groups.isMember(otherUid, 'Test'), false);
 		});
 
 		it('should error if group does not exist', async () => {
@@ -1255,6 +1323,25 @@ describe('Groups', () => {
 			} catch (err) {
 				assert.equal(err.message, '[[error:invalid-group-name]]');
 			}
+		});
+
+		it('should fail to create a group with an ephemeral group name', async () => {
+			// guests/spiders/fediverse are pseudo-groups that carry privileges for the
+			// anonymous, crawler and remote (ActivityPub) actors; a real group must not shadow them
+			for (const name of Groups.ephemeralGroups) {
+				// eslint-disable-next-line no-await-in-loop
+				await assert.rejects(
+					apiGroups.create({ uid: adminUid }, { name }),
+					{ message: '[[error:invalid-group-name]]' }
+				);
+			}
+		});
+
+		it('should fail to rename a group to an ephemeral group name', async () => {
+			await assert.rejects(
+				apiGroups.update({ uid: adminUid }, { slug: 'test', name: 'fediverse' }),
+				{ message: '[[error:invalid-group-name]]' }
+			);
 		});
 
 		it('should fail to rename guests group', async () => {

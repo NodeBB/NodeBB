@@ -94,7 +94,7 @@ module.exports = function (Groups) {
 			throw new Error('[[error:group-name-too-long]]');
 		}
 
-		if (name === 'guests' || (!Groups.isPrivilegeGroup(name) && name.includes(':'))) {
+		if (Groups.ephemeralGroups.includes(name) || (!Groups.isPrivilegeGroup(name) && name.includes(':'))) {
 			throw new Error('[[error:invalid-group-name]]');
 		}
 

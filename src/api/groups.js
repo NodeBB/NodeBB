@@ -162,6 +162,7 @@ groupsAPI.join = async function (caller, data) {
 	const isCallerAdmin = await privileges.admin.can('admin:groups', caller.uid);
 	if (!isCallerAdmin && (
 		groups.systemGroups.includes(groupName) ||
+		groups.ephemeralGroups.includes(groupName) ||
 		groups.isPrivilegeGroup(groupName)
 	)) {
 		throw new Error('[[error:not-allowed]]');
