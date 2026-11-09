@@ -133,7 +133,7 @@ module.exports = async function (app, middleware) {
 		}
 	});
 
-	router.all(/^\/+api(?:\/.*)?$/, middleware.prepareAPI);
+	router.all(/^\/+api(?:\/.*)?$/i, middleware.prepareAPI);
 
 	// handle custom homepage routes
 	router.use('/', controllers.home.rewrite);
@@ -162,7 +162,7 @@ function addAdminRoutePrivChecks(router, middleware, mounts) {
 			paths.push(`/+${escapedMount}`, `/+${escapedMount}/.*`);
 		}
 
-		return new RegExp(`^(?:${paths.join('|')})$`);
+		return new RegExp(`^(?:${paths.join('|')})$`, 'i');
 	}
 
 	router.all(

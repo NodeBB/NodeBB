@@ -64,6 +64,12 @@ describe('Controllers', () => {
 		assert(body.csrf_token);
 	});
 
+	it('should load route json data via /API/recent', async () => {
+		const { response, body } = await request.get(`${nconf.get('url')}/API/recent`);
+		assert.equal(response.statusCode, 200);
+		assert.strictEqual(body.template.name, 'recent');
+	});
+
 	it('should expose notification settings used by client-side subscription hints', async () => {
 		await Promise.all([
 			user.setSetting(fooUid, 'notificationType_new-reply', 'none'),
