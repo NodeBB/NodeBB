@@ -189,7 +189,7 @@
         "mockdate": "3.0.5",
         "nyc": "18.0.0",
         "parse5": "8.1.1",
-        "smtp-server": "3.21.3"
+        "smtp-server": "3.21.4"
     },
     "optionalDependencies": {
         "sass-embedded": "1.108.1"
