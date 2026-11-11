@@ -84,6 +84,8 @@ module.exports = function (User) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		const opts = parseCreateOptions(userData);
+		opts.emailVerification = opts.emailVerification || meta.config.registrationApprovalEmailVerification;
+
 		const creation_time = await db.sortedSetScore('registration:queue', username);
 		const uid = await User.create(userData, opts);
 		if (userData.hashedPassword) {
