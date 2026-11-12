@@ -2,6 +2,7 @@
 
 const validator = require('validator');
 
+const meta = require('../meta');
 const db = require('../database');
 const utils = require('../utils');
 const tx = require('../translator');
@@ -97,4 +98,28 @@ CustomFields.validate = function (field, value) {
 			));
 		}
 	}
+};
+
+CustomFields.hideCustomFields = async function (callerUID, userData, isPrivileged, allFields) {
+	allFields.forEach((field) => {
+		const isVisible = CustomFields.isFieldVisible(field, callerUID, userData, isPrivileged);
+		if (!isVisible) {
+			userData[field.key] = undefined;
+		}
+	});
+};
+
+CustomFields.isFieldVisible = function (field, callerUID, userData, isPrivileged) {
+	const visibility = field.visibility || 'all';
+	callerUID = String(callerUID);
+	const isSelf = callerUID === String(userData.uid);
+	const visibilityCheck = isPrivileged || isSelf || visibility === 'all' ||
+		(
+			visibility === 'loggedin' &&
+			callerUID !== '0' &&
+			callerUID !== '-1'
+		);
+	const minRep = field['min:rep'] || 0;
+	const repCheck = userData.reputation >= minRep || meta.config['reputation:disabled'];
+	return visibilityCheck && repCheck;
 };

@@ -1,3 +1,15 @@
+#### v4.16.7 (2026-10-31)
+
+##### Chores
+
+*  incrementing version number - v4.16.7 (e10be67a)
+*  update changelog for v4.16.6 (2e041957)
+
+##### Bug Fixes
+
+*  xss in chat message restore via translateHtml (760ded45)
+*  add dedicated purge button to chat messages, same patter as posts (cdde44e5)
+
 #### v4.16.6 (2026-10-30)
 
 ##### Chores

@@ -307,13 +307,15 @@ define('forum/chats/messages', [
 			const html = await messages.parseMessage(message);
 			const msgEl = components.get('chat/message', message.mid);
 			if (msgEl.length) {
-				const componentsToReplace = [
-					'[component="chat/message/body"]',
-					'[component="chat/message/edited"]',
-				];
-				componentsToReplace.forEach((cmp) => {
-					msgEl.find(cmp).replaceWith(html.find(cmp));
-				});
+				msgEl.find('[component="chat/message/body"]')
+					.replaceWith(html.find('[component="chat/message/body"]'));
+
+				// The edited indicator sits in the header for the first message of a set
+				// and next to the body otherwise, so update it in place instead of replacing it
+				const editedEl = html.find('[component="chat/message/edited"]').first();
+				msgEl.find('[component="chat/message/edited"]')
+					.attr('title', editedEl.attr('title'))
+					.toggleClass('hidden', editedEl.hasClass('hidden'));
 				messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
 			}
 			const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`);

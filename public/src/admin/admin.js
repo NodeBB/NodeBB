@@ -141,7 +141,7 @@ app.onDomReady();
 		}
 
 		pageTitle = translator.compile('admin/admin:acp-title', pageTitle);
-		document.title = (await translator.translateKey(pageTitle)).replace(/&gt;/g, '>');
+		document.title = utils.decodeHTMLEntities(await translator.translateKey(pageTitle));
 	}
 
 	function setupRestartLinks() {

@@ -307,8 +307,6 @@ function continueLogin(strategy, req, res, next) {
 			const code = await user.reset.generate(userData.uid);
 			(res.locals.redirectAfterLogin || redirectAfterLogin)(req, res, `${nconf.get('relative_path')}/reset/${code}`);
 		} else {
-			delete req.query.lang;
-
 			await authenticationController.doLogin(req, userData.uid);
 			let destination;
 			if (req.session.returnTo) {

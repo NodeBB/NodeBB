@@ -153,6 +153,19 @@
 						{{tx("admin/settings/user:registration-approval-type.help", config.relative_path)}}
 					</p>
 				</div>
+
+				<div class="mb-3">
+					<label class="form-label" for="registrationApprovalEmailVerification">{{tx("admin/settings/user:registration-approval-email-verification")}}</label>
+					<select id="registrationApprovalEmailVerification" class="form-select" data-field="registrationApprovalEmailVerification">
+						<option value="send">{{tx("admin/settings/user:registration-approval-email-verification.send")}}</option>
+						<option value="verify">{{tx("admin/settings/user:registration-approval-email-verification.verify")}}</option>
+						<option value="skip">{{tx("admin/settings/user:registration-approval-email-verification.skip")}}</option>
+					</select>
+					<p class="form-text">
+						{{tx("admin/settings/user:registration-approval-email-verification.help")}}
+					</p>
+				</div>
+
 				<div class="mb-3">
 					<label class="form-label" for="autoApproveTime">{{tx("admin/settings/user:registration-queue-auto-approve-time")}}</label>
 					<input id="autoApproveTime" type="number" class="form-control" data-field="autoApproveTime" placeholder="0">

@@ -230,16 +230,18 @@ module.exports = function (User) {
 			single = true;
 		}
 
-		const [userSettings, isAdmin, isGlobalModerator] = await Promise.all([
+		const [userSettings, isAdmin, isGlobalModerator, isModOfAny, customFields] = await Promise.all([
 			User.getMultipleUserSettings(users.map(user => user.uid)),
 			User.isAdministrator(callerUID),
 			User.isGlobalModerator(callerUID),
+			User.isModeratorOfAnyCategory(callerUID),
+			User.customFields.getFields(),
 		]);
 
-		users = await Promise.all(users.map(async (userData, idx) => {
+		users = users.map((userData, idx) => {
 			const _userData = { ...userData };
 
-			const isSelf = parseInt(callerUID, 10) === parseInt(_userData.uid, 10);
+			const isSelf = String(callerUID) === String(_userData.uid);
 			const privilegedOrSelf = isAdmin || isGlobalModerator || isSelf;
 
 			if (!privilegedOrSelf && !userSettings[idx].showemail) {
@@ -248,8 +250,9 @@ module.exports = function (User) {
 			if (!privilegedOrSelf && !userSettings[idx].showfullname) {
 				_userData.fullname = '';
 			}
+			User.customFields.hideCustomFields(callerUID, _userData, isAdmin || isModOfAny, customFields);
 			return _userData;
-		}));
+		});
 
 		return single ? users.pop() : users;
 	};
@@ -310,7 +313,7 @@ module.exports = function (User) {
 					user.picture = user.uploadedpicture;
 				}
 			}
-			
+
 			if (user.hasOwnProperty('cover:url')) {
 				user['cover:url'] = user['cover:url'] ?
 					prependRelativePath(user['cover:url']) :
