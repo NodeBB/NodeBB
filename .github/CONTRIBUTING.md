@@ -6,6 +6,35 @@ First of all, thank you! Before submission, please run `npm test` to lint and ru
 
 NodeBB mostly conforms to the [AirBnB Javascript style guide](https://github.com/airbnb/javascript#readme). If you're running into a lot of ESlint errors, you may want to install an editor plugin to display them in real time.
 
+## Translatable strings
+
+`public/language/en-GB` contains the source language strings. Every other language directory is
+populated from [our Transifex project](https://explore.transifex.com/nodebb/nodebb/) and regularly overwritten by our
+translation bot, so direct edits to them are discarded — add new keys to `en-GB` only.
+
+### Plurals
+
+Use an ICU plural format when writing strings that can be pluralized, and duplicate the *entire* sentence into each branch so that the whole string is translatable in each form, e.g.
+
+```json
+	"ban-users": "{count, plural, one {Ban {count} user.} other {Ban {count} users.}}"
+```
+
+Plurals must use **named** arguments (`{count}`): the `%N` convention is not valid ICU, so Transifex will
+not detect it as a plural. Positional `%N` placeholders are still fine in non-plural strings.
+
+Two nudges, which share their detection logic in `scripts/i18n-plural.js`:
+
+- An eslint rule, `nodebb/i18n-icu-plural` (registered in `eslint.config.mjs`, using the
+  `@eslint/json` language module), warns on every `word(s)` string in `public/language/en-GB`, so the
+  squiggle appears in the editor as you type. Editors that run ESLint must be told to validate JSON files;
+  in VS Code, add `"json"` to `eslint.validate` in your **user** settings (the repository's `.vscode/` is
+  gitignored, so the setting cannot ship in-repo).
+- A commitlint rule, `i18n-icu-plural` (`scripts/commitlint-plugin-i18n-plural.js`), warns at commit time
+  about the `word(s)` strings the commit *adds*, so the strings that predate the rule are not flagged.
+
+Both are suggestions, not hard failures.
+
 ## Contributor License Agreement
 
 Thank you for considering contributing to NodeBB. **Before you are able to submit a pull request, please take a moment to read our [contributor license agreement](https://gist.github.com/psychobunny/65946d7aa8854b12fab9)** and agree to it on the pull request page on GitHub. In summary, signing this document means that 1) you own the code that you are contributing and 2) you give permission to NodeBB Inc. to license the code to others. This agreement applies to any repository under the NodeBB organization.

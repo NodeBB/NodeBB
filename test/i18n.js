@@ -11,14 +11,21 @@ const icu = require('../public/src/modules/icu.common');
 
 const db = require('./mocks/databasemock');
 
+const SOURCE_LANGUAGE = 'en-GB';
+
+// Localisations live in Transifex and are pulled into the repository out-of-band, so the
+// checks that walk the non-source language directories are only meaningful post-merge.
+// Pull request CI keeps every other test (source language structure, .tx/config, key
+// validity) running, so PRs are gated on the source strings themselves.
+function inPrCI() {
+	return (process.env.GITHUB_REF && process.env.GITHUB_REF !== 'refs/heads/develop') ||
+		process.env.GITHUB_EVENT_NAME === 'pull_request';
+}
+
 describe('i18n', () => {
 	let folders;
 
-	before(async function () {
-		if ((process.env.GITHUB_REF && process.env.GITHUB_REF !== 'refs/heads/develop') || process.env.GITHUB_EVENT_NAME === 'pull_request') {
-			this.skip();
-		}
-
+	before(async () => {
 		folders = await fs.promises.readdir(path.resolve(__dirname, '../public/language'));
 		folders = folders.filter(f => f !== 'README.md');
 	});
@@ -223,78 +230,86 @@ describe('i18n', () => {
 		});
 
 		folders.forEach((language) => {
-			describe(`"${language}" file structure`, () => {
-				let files;
+			describe(`"${language}"`, function () {
+				if (language !== SOURCE_LANGUAGE && inPrCI()) {
+					before(function () {
+						this.skip();
+					});
+				}
 
-				before(async () => {
+				describe('file structure', () => {
+					let files;
+
+					before(async () => {
+						const translationPath = path.resolve(__dirname, `../public/language/${language}`);
+						files = (await file.walk(translationPath)).map(path => path.replace(translationPath, ''));
+					});
+
+					it('translations should contain every language file contained in the source language directory', () => {
+						sourceFiles.forEach((relativePath) => {
+							assert(files.includes(relativePath), `${relativePath.slice(1)} was found in source files but was not found in language "${language}" (likely not internationalized)`);
+						});
+					});
+
+					it('should not contain any extraneous files not included in the source language directory', () => {
+						files.forEach((relativePath) => {
+							assert(sourceFiles.includes(relativePath), `${relativePath.slice(1)} was found in language "${language}" but there is no source file for it (likely removed from en-GB)`);
+						});
+					});
+
+					it('language.json code should match the folder name', () => {
+						const langFile = path.resolve(__dirname, `../public/language/${language}/language.json`);
+						const langData = require(langFile);
+						assert.strictEqual(langData.code, language, `language.code "${langData.code}" does not match folder name "${language}"`);
+					});
+
+					it('language.json dir should be either "ltr" or "rtl"', () => {
+						const langFile = path.resolve(__dirname, `../public/language/${language}/language.json`);
+						const langData = require(langFile);
+						assert(['ltr', 'rtl'].includes(langData.dir), `language.dir "${langData.dir}" is not "ltr" or "rtl"`);
+					});
+				});
+
+				describe('file contents', () => {
+					let fullPaths;
 					const translationPath = path.resolve(__dirname, `../public/language/${language}`);
-					files = (await file.walk(translationPath)).map(path => path.replace(translationPath, ''));
-				});
+					const strings = new Map();
 
-				it('translations should contain every language file contained in the source language directory', () => {
-					sourceFiles.forEach((relativePath) => {
-						assert(files.includes(relativePath), `${relativePath.slice(1)} was found in source files but was not found in language "${language}" (likely not internationalized)`);
+					before(async () => {
+						fullPaths = await file.walk(translationPath);
 					});
-				});
 
-				it('should not contain any extraneous files not included in the source language directory', () => {
-					files.forEach((relativePath) => {
-						assert(sourceFiles.includes(relativePath), `${relativePath.slice(1)} was found in language "${language}" but there is no source file for it (likely removed from en-GB)`);
+					it('should contain only valid JSON files', () => {
+						try {
+							fullPaths.forEach((fullPath) => {
+								if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
+									return;
+								}
+
+								const hash = require(fullPath);
+								strings.set(fullPath.replace(translationPath, ''), hash);
+							});
+						} catch (e) {
+							assert(!e, `Invalid JSON found: ${e.message}`);
+						}
 					});
-				});
 
-				it('language.json code should match the folder name', () => {
-					const langFile = path.resolve(__dirname, `../public/language/${language}/language.json`);
-					const langData = require(langFile);
-					assert.strictEqual(langData.code, language, `language.code "${langData.code}" does not match folder name "${language}"`);
-				});
+					it('should contain every translation key contained in its source counterpart', () => {
+						const sourceArr = Array.from(sourceStrings.keys());
+						sourceArr.forEach((namespace) => {
+							const sourceKeys = Object.keys(sourceStrings.get(namespace));
+							const translationKeys = Object.keys(strings.get(namespace));
 
-				it('language.json dir should be either "ltr" or "rtl"', () => {
-					const langFile = path.resolve(__dirname, `../public/language/${language}/language.json`);
-					const langData = require(langFile);
-					assert(['ltr', 'rtl'].includes(langData.dir), `language.dir "${langData.dir}" is not "ltr" or "rtl"`);
-				});
-			});
-
-			describe(`"${language}" file contents`, () => {
-				let fullPaths;
-				const translationPath = path.resolve(__dirname, `../public/language/${language}`);
-				const strings = new Map();
-
-				before(async () => {
-					fullPaths = await file.walk(translationPath);
-				});
-
-				it('should contain only valid JSON files', () => {
-					try {
-						fullPaths.forEach((fullPath) => {
-							if (fullPath.endsWith('_DO_NOT_EDIT_FILES_HERE.md')) {
-								return;
-							}
-
-							const hash = require(fullPath);
-							strings.set(fullPath.replace(translationPath, ''), hash);
+							assert(sourceKeys && translationKeys);
+							sourceKeys.forEach((key) => {
+								assert(translationKeys.includes(key), `${namespace.slice(1, -5)}:${key} missing in ${language}`);
+							});
+							assert.strictEqual(
+								sourceKeys.length,
+								translationKeys.length,
+								`Extra keys found in namespace "${namespace.slice(1, -5)}" for language "${language}"`
+							);
 						});
-					} catch (e) {
-						assert(!e, `Invalid JSON found: ${e.message}`);
-					}
-				});
-
-				it('should contain every translation key contained in its source counterpart', () => {
-					const sourceArr = Array.from(sourceStrings.keys());
-					sourceArr.forEach((namespace) => {
-						const sourceKeys = Object.keys(sourceStrings.get(namespace));
-						const translationKeys = Object.keys(strings.get(namespace));
-
-						assert(sourceKeys && translationKeys);
-						sourceKeys.forEach((key) => {
-							assert(translationKeys.includes(key), `${namespace.slice(1, -5)}:${key} missing in ${language}`);
-						});
-						assert.strictEqual(
-							sourceKeys.length,
-							translationKeys.length,
-							`Extra keys found in namespace "${namespace.slice(1, -5)}" for language "${language}"`
-						);
 					});
 				});
 			});
