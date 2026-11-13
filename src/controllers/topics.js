@@ -428,7 +428,7 @@ topicsController.teaser = async function (req, res, next) {
 	if (!utils.isNumber(tid)) {
 		return next();
 	}
-	const canRead = await privileges.topics.can('topics:read', tid, req.uid);
+	const canRead = await privileges.topics.canRead(tid, req.uid);
 	if (!canRead) {
 		return res.status(404).json('not-found');
 	}

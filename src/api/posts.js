@@ -558,7 +558,8 @@ postsAPI.getReplies = async (caller, { pid }) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const { uid } = caller;
-	const canRead = await privileges.posts.can('topics:read', pid, caller.uid);
+	const tid = await posts.getPostField(pid, 'tid');
+	const canRead = await privileges.topics.canRead(tid, caller.uid);
 	if (!canRead) {
 		return null;
 	}
