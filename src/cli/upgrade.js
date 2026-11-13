@@ -98,8 +98,9 @@ async function runUpgrade(upgrades, options) {
 		await runSteps(tasks, options);
 		return;
 	}
-
-	await require('../database').init();
+	const db = require('../database');
+	await db.init();
+	await db.createIndices();
 	await require('../meta').configs.init();
 	await require('../upgrade').runParticular(upgrades);
 	process.exit(0);
