@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 nap",
     "chat.three-months": "3 hónap",
     "chat.delete-message-confirm": "Biztos törölni akarod az üzenetet?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Felhasználók lekérése...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

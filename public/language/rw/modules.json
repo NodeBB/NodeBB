@@ -34,6 +34,7 @@
     "chat.thirty-days": "Iminsi 30",
     "chat.three-months": "Amezi 3",
     "chat.delete-message-confirm": "Wiringiye neza ko ushaka gusiba ubu butumwa?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Retrieving users...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

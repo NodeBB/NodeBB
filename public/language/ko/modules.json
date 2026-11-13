@@ -34,6 +34,7 @@
     "chat.thirty-days": "30일",
     "chat.three-months": "3개월",
     "chat.delete-message-confirm": "이 메시지를 삭제하시겠습니까?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "사용자 가져오는 중...",
     "chat.view-users-list": "사용자 목록 보기",
     "chat.pinned-messages": "고정된 메시지",

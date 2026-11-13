@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 روز",
     "chat.three-months": "3 ماه",
     "chat.delete-message-confirm": "آیا مطمئن هستید که می خواهید این پیام را حذف کنید؟",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Retrieving users...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

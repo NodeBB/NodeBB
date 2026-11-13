@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 dager",
     "chat.three-months": "3 måneder",
     "chat.delete-message-confirm": "Er du sikker på at du vil slette denne meldingen?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Henter brukere ...",
     "chat.view-users-list": "Vis brukerlisten",
     "chat.pinned-messages": "Festede meldinger",

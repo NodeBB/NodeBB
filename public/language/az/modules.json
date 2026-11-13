@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 Gün",
     "chat.three-months": "3 Ay",
     "chat.delete-message-confirm": "Bu mesajı silmək istədiyinizə əminsiniz?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "İstifadəçilər yüklənir...",
     "chat.view-users-list": "İstifadəçi siyahısına bax",
     "chat.pinned-messages": "Sabitlənmiş mesajlar",

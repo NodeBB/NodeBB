@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 dagen",
     "chat.three-months": "3 maanden",
     "chat.delete-message-confirm": "Weet je zeker dat je dit bericht wilt verwijderen?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Gebruikers ophalen...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

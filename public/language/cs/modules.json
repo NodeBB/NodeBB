@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 dní",
     "chat.three-months": "3 měsíce",
     "chat.delete-message-confirm": "Jste si jist/a, že chcete odstranit tuto zprávu?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Získávání seznamu uživatelů...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

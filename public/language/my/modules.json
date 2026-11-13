@@ -34,6 +34,7 @@
     "chat.thirty-days": "ရက် ၃၀",
     "chat.three-months": "၃ လ",
     "chat.delete-message-confirm": "ဤမက်ဆေ့ချ်ကို ဖျက်ရန်သေချာပါသလား။",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "သုံးစွဲသူများရယူနေသည်...",
     "chat.view-users-list": "သုံးစွဲသူစာရင်းကြည့်ပါ",
     "chat.pinned-messages": "တွဲချိတ်ထားသော မက်ဆေ့ချ်များ",

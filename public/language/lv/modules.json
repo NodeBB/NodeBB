@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 dienas",
     "chat.three-months": "3 mēneši",
     "chat.delete-message-confirm": "Vai tiešām vēlies izdzēst šo sarunu?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Ielādē lietotājus...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

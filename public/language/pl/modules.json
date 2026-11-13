@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 dni",
     "chat.three-months": "3 miesiące",
     "chat.delete-message-confirm": "Czy na pewno chcesz usunąć tę wiadomość?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Pobieram użytkowników...",
     "chat.view-users-list": "Zobacz listę użytkowników",
     "chat.pinned-messages": "Przypięte wiadomości",

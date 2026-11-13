@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 päivää",
     "chat.three-months": "3 kuukautta",
     "chat.delete-message-confirm": "Haluatko varmasti poistaa tämän viestin?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Noudetaan käyttäjiä...",
     "chat.view-users-list": "Näytä käyttäjälista.",
     "chat.pinned-messages": "Kiinnitetyt viestit",

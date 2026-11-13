@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 ימים",
     "chat.three-months": "3 חודשים",
     "chat.delete-message-confirm": "האם למחוק הודעה זו?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "מאחזר משתמשים...",
     "chat.view-users-list": "הצגת רשימת משתמשים",
     "chat.pinned-messages": "הודעות מוצמדות",

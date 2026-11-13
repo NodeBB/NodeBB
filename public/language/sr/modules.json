@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 дана",
     "chat.three-months": "3 месеца",
     "chat.delete-message-confirm": "Да ли сте сигурни да желите да избришете ову поруку?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Преузимање корисника...",
     "chat.view-users-list": "Погледај листу корисника",
     "chat.pinned-messages": "Закачене поруке",

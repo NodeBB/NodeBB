@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 dagar",
     "chat.three-months": "3 månader",
     "chat.delete-message-confirm": "Är du säker på att du vill radera det här meddelandet?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Hämtar användare...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",

@@ -34,6 +34,7 @@
     "chat.thirty-days": "30天",
     "chat.three-months": "3个月",
     "chat.delete-message-confirm": "您确定您要删除此消息吗？",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "查找用户",
     "chat.view-users-list": "查看用户列表",
     "chat.pinned-messages": "已置顶消息",

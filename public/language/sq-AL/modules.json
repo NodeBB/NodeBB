@@ -34,6 +34,7 @@
     "chat.thirty-days": "30 Ditë",
     "chat.three-months": "3 Muaj",
     "chat.delete-message-confirm": "A je i sigurt që dëshiron ta fshihni këtë mesazh?",
+    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
     "chat.retrieving-users": "Duke marrë përdoruesit...",
     "chat.view-users-list": "View users list",
     "chat.pinned-messages": "Pinned Messages",
