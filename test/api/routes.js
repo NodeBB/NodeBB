@@ -32,19 +32,16 @@ describe('routes', function () {
 	it('should grab all mounted routes and ensure a schema exists', async function () {
 		const webserver = require('../../src/webserver');
 		const buildPaths = function (stack, prefix) {
+			const effectivePrefix = prefix === nconf.get('relative_path') ? '' : prefix;
 			const paths = stack.map((dispatch) => {
 				if (dispatch.route && dispatch.route.path && typeof dispatch.route.path === 'string') {
-					if (!prefix && !dispatch.route.path.startsWith('/api/')) {
+					if (!effectivePrefix && !dispatch.route.path.startsWith('/api/')) {
 						return null;
-					}
-
-					if (prefix === nconf.get('relative_path')) {
-						prefix = '';
 					}
 
 					return {
 						method: Object.keys(dispatch.route.methods)[0],
-						path: (prefix || '') + dispatch.route.path,
+						path: (effectivePrefix || '') + dispatch.route.path,
 					};
 				} else if (dispatch.name === 'router') {
 					const prefix = dispatch.regexp.toString().replace('/^', '').replace('\\/?(?=\\/|$)/i', '').replace(/\\\//g, '/');

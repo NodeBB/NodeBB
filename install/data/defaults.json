@@ -47,6 +47,7 @@
     "showPostUploadsAsThumbnails": 1,
     "registrationType": "normal",
     "registrationApprovalType": "normal",
+    "registrationApprovalEmailVerification": "send",
     "allowAccountDelete": 1,
     "privateUploads": 0,
     "allowedFileExtensions": "png,jpg,bmp,txt,webp,webm,mp4,gif",

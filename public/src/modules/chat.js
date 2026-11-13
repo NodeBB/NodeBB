@@ -170,7 +170,7 @@ define('chat', [
 	};
 
 	Chat.isFromBlockedUser = function (fromUid) {
-		return app.user.blocks.includes(String(fromUid));
+		return app.user?.blocks?.includes(String(fromUid)) ?? false;
 	};
 
 	Chat.isLookingAtRoom = function (roomId) {

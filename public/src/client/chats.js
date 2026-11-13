@@ -499,6 +499,9 @@ define('forum/chats', [
 				case 'restore':
 					messages.restore(messageId, roomId);
 					break;
+				case 'purge':
+					messages.purge(messageId, roomId);
+					break;
 				case 'pin':
 					pinnedMessages.pin(messageId, roomId);
 					break;

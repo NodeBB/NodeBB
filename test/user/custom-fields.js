@@ -10,6 +10,7 @@ const groups = require('../../src/groups');
 
 const request = require('../../src/request');
 const adminUser = require('../../src/socket.io/admin/user');
+const utils = require('../../src/utils');
 
 
 describe('custom user fields', () => {
@@ -58,7 +59,7 @@ describe('custom user fields', () => {
 		await assert.rejects(
 			user.updateProfile(lowRepUid, {
 				uid: lowRepUid,
-				luckyNumber: 13,
+				luckyNumber: '13',
 			}),
 			{ message: '[[error:not-enough-reputation-custom-field, 7, Lucky Number]]' },
 		);
@@ -137,7 +138,7 @@ describe('custom user fields', () => {
 			location: 'Toronto',
 			favouriteDate: '2014-05-01',
 			favouriteLanguages: '["Javascript", "Python"]',
-			luckyNumber: 13,
+			luckyNumber: '13',
 			soccerTeam: 'Galatasaray',
 		});
 
@@ -160,5 +161,22 @@ describe('custom user fields', () => {
 		const { body } = await request.get(`${nconf.get('url')}/api/user/highrepuser`);
 		const field = body.customUserFields.find(f => f.key === 'favouriteLanguages');
 		assert.ok(field['select-options'].every(opt => !opt.selected));
+	});
+
+	it('should not load private custom user fields in the user data for the api route', async () => {
+		const username = utils.generateUUID();
+		const uid = await user.create({ username });
+		await db.setObjectField(`user:${uid}`, 'reputation', 10);
+		await db.sortedSetAdd(`users:reputation`, 10, uid);
+		await user.updateProfile(uid, {
+			uid: uid,
+			luckyNumber: '7',
+			website: 'https://nodebb.org',
+		});
+		const { body } = await request.get(`${nconf.get('url')}/api/user/${username}`);
+		assert.strictEqual(body.luckyNumber, undefined);
+		assert.strictEqual(body.website, 'https://nodebb.org');
+		assert.strictEqual(body.customUserFields.find(f => f.key === 'luckyNumber'), undefined);
+		assert.strictEqual(body.customUserFields.find(f => f.key === 'website').value, 'https://nodebb.org');
 	});
 });

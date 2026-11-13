@@ -1,3 +1,51 @@
+#### v4.16.8 (2026-11-12)
+
+##### Chores
+
+*  incrementing version number - v4.16.8 (f7ee36d6)
+*  update changelog for v4.16.7 (da90487d)
+
+##### New Features
+
+*  closes #15115, allow modifiying email verification type (c2451a48)
+
+##### Bug Fixes
+
+*  show the edited indicator on grouped chat messages (#15106) (b04f482e)
+*  decode all HTML entities in ACP page title (#15109) (670e80d3)
+*  case sensitive path regexes, add missing tests (7c909367)
+*  hide custom user fields in user data on /api/user/:userslug (39da887d)
+*  on topics' internal method deleteTopics, call topics.purgePostsAndTopic so other users' posts are not orphaned (2f5e2f04)
+*  dont error if app.user or app.user.blocks is undefined (f47b6404)
+*  closes #15082, fix modal event handler (9c1271df)
+* **emailer:**  mask raw email addresses in plugin  cancellation logs to prevent PII leaks (894651cf)
+
+##### Refactors
+
+*  don need to delete req.query.lang (df7eca6e)
+*  don't modify req.query (79373f4f)
+*  use searchQuery (25121d4a)
+*  dont write to req.query (6045e2af)
+*  refactor: use regex for api & admin path so it works in express v4 & v5 (542f47e7)
+*  use regex for api & admin path so it works in express v4 & v5 (fe806595)
+
+##### Tests
+
+*  fix redis tests (04f4c782)
+*  add a test for user.deleteCount and counters (130aadd0)
+
+#### v4.16.7 (2026-10-31)
+
+##### Chores
+
+*  incrementing version number - v4.16.7 (e10be67a)
+*  update changelog for v4.16.6 (2e041957)
+
+##### Bug Fixes
+
+*  xss in chat message restore via translateHtml (760ded45)
+*  add dedicated purge button to chat messages, same patter as posts (cdde44e5)
+
 #### v4.16.6 (2026-10-30)
 
 ##### Chores

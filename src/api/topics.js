@@ -210,15 +210,9 @@ topicsAPI.deleteTags = async (caller, { tid }) => {
 
 topicsAPI.getThumbs = async (caller, { tid, thumbsOnly }) => {
 	if (isFinite(tid)) { // post_uuids can be passed in occasionally, in that case no checks are necessary
-		const [exists, canRead] = await Promise.all([
-			topics.exists(tid),
-			privileges.topics.can('topics:read', tid, caller.uid),
-		]);
-		if (!exists) {
-			throw new Error('[[error:not-found]]');
-		}
+		const canRead = await privileges.topics.canRead(tid, caller.uid);
 		if (!canRead) {
-			throw new Error('[[error:not-allowed]]');
+			throw new Error('[[error:not-found]]');
 		}
 	}
 

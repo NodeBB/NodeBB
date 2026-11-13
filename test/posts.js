@@ -26,7 +26,6 @@ const file = require('../src/file');
 const helpers = require('./helpers');
 const utils = require('../src/utils');
 const request = require('../src/request');
-const translator = require('../src/translator');
 
 describe('Post\'s', () => {
 	let voterUid;

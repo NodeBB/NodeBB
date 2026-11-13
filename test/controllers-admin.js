@@ -14,6 +14,7 @@ const user = require('../src/user');
 const groups = require('../src/groups');
 const helpers = require('./helpers');
 const meta = require('../src/meta');
+const utils = require('../src/utils');
 
 describe('Admin Controllers', () => {
 	let tid;
@@ -75,6 +76,15 @@ describe('Admin Controllers', () => {
 
 		assert.equal(response.statusCode, 403);
 		assert(body);
+	});
+
+	it('should reject case-sensitive paths', async () => {
+		const username = utils.generateUUID();
+		await user.create({ username, password: 'password' });
+		const { jar } = await helpers.loginUser(username, 'password');
+		const url = `${nconf.get('url')}/api/Admin/advanced/database`;
+		const { response } = await request.get(url, { jar });
+		assert.equal(response.statusCode, 403);
 	});
 
 	it('should load admin dashboard', async () => {

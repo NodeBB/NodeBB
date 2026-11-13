@@ -68,7 +68,7 @@ body.page-user-chats {
 					opacity: 0;
 					transition: $transition-fade;
 					&:has([aria-expanded="true"]) { opacity: 1; }
-					[data-action="restore"], [data-action="unpin"] { display: none; }
+					[data-action="restore"], [data-action="unpin"], [data-action="purge"] { display: none; }
 				}
 				&:hover {
 					.controls { opacity: 1;	}
@@ -78,7 +78,7 @@ body.page-user-chats {
 				.message-body { opacity: 0.3; }
 				.message-body-wrapper .controls {
 					[data-action] { display: none; }
-					[data-action="restore"] { display: block; }
+					[data-action="restore"], [data-action="purge"] { display: block; }
 				}
 			}
 			&.pinned {

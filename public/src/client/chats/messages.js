@@ -307,13 +307,15 @@ define('forum/chats/messages', [
 			const html = await messages.parseMessage(message);
 			const msgEl = components.get('chat/message', message.mid);
 			if (msgEl.length) {
-				const componentsToReplace = [
-					'[component="chat/message/body"]',
-					'[component="chat/message/edited"]',
-				];
-				componentsToReplace.forEach((cmp) => {
-					msgEl.find(cmp).replaceWith(html.find(cmp));
-				});
+				msgEl.find('[component="chat/message/body"]')
+					.replaceWith(html.find('[component="chat/message/body"]'));
+
+				// The edited indicator sits in the header for the first message of a set
+				// and next to the body otherwise, so update it in place instead of replacing it
+				const editedEl = html.find('[component="chat/message/edited"]').first();
+				msgEl.find('[component="chat/message/edited"]')
+					.attr('title', editedEl.attr('title'))
+					.toggleClass('hidden', editedEl.hasClass('hidden'));
 				messages.onMessagesAddedToDom(components.get('chat/message', message.mid));
 			}
 			const parentEl = $(`[component="chat/message/parent"][data-parent-mid="${message.mid}"]`);
@@ -354,13 +356,13 @@ define('forum/chats/messages', [
 		parentEl.toggleClass('deleted', false);
 		if (!isSelf) {
 			msgEl.find('[component="chat/message/body"]')
-				.translateHtml(message.content);
+				.html(message.content);
 			messages.onMessagesAddedToDom(components.get('chat/message', message.messageId));
 		}
 
 		if (!isParentSelf && parentEl.length) {
 			parentEl.find('[component="chat/message/parent/content"]')
-				.translateHtml(message.content);
+				.html(message.content);
 			messages.onMessagesAddedToDom($(`[component="chat/message/parent"][data-parent-mid="${message.messageId}"]`));
 		}
 	}
@@ -418,16 +420,28 @@ define('forum/chats/messages', [
 				return;
 			}
 
-			api.del(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
+			api.del(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}/state`, {}).then(() => {
 				components.get('chat/message', messageId).toggleClass('deleted', true);
 			}).catch(alerts.error);
 		});
 	};
 
 	messages.restore = function (messageId, roomId) {
-		api.post(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
+		api.put(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}/state`, {}).then(() => {
 			components.get('chat/message', messageId).toggleClass('deleted', false);
 		}).catch(alerts.error);
+	};
+
+	messages.purge = function (messageId, roomId) {
+		modals.confirm('[[modules:chat.purge-message-confirm]]', function (ok) {
+			if (!ok) {
+				return;
+			}
+
+			api.del(`/chats/${roomId}/messages/${encodeURIComponent(messageId)}`, {}).then(() => {
+				components.get('chat/message', messageId).remove();
+			}).catch(alerts.error);
+		});
 	};
 
 	return messages;

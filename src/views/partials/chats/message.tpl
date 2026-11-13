@@ -15,10 +15,15 @@
 		{{{ end }}}
 		<span class="chat-timestamp text-muted timeago" title="{messages.timestampISO}"></span>
 
-		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="{{tx("global:edited-timestamp", isoTimeToLocaleString(messages.editedISO, config.userLang))}}"><i class="fa fa-edit"></i></span></div>
+		{{{ if messages.newSet }}}
+		<div component="chat/message/edited" class="text-muted ms-auto {{{ if !messages.edited }}}hidden{{{ end }}}" title="{{tx("global:edited-timestamp", isoTimeToLocaleString(messages.editedISO, config.userLang))}}"><i class="fa fa-edit"></i></div>
+		{{{ end }}}
 	</div>
-	<div class="message-body-wrapper">
-		<div component="chat/message/body" class="message-body ps-0 py-0 text-break mb-last-0 mb-3">
+	<div class="message-body-wrapper position-relative">
+		{{{ if !messages.newSet }}}
+		<div component="chat/message/edited" class="text-muted text-sm lh-1 position-absolute top-0 end-0 {{{ if !messages.edited }}}hidden{{{ end }}}" title="{{tx("global:edited-timestamp", isoTimeToLocaleString(messages.editedISO, config.userLang))}}"><i class="fa fa-edit"></i></div>
+		{{{ end }}}
+		<div component="chat/message/body" class="message-body ps-0 py-0 text-break mb-last-0 mb-3 {{{ if messages.edited }}}pe-4{{{ end }}}">
 			{{{ if messages.txContent }}}{{tx(messages.content)}}{{{ else }}}{{messages.content}}{{{ end }}}
 		</div>
 		<!-- IMPORT partials/chats/reactions.tpl -->
@@ -36,6 +41,9 @@
 						</li>
 						<li>
 							<a href="#" class="dropdown-item rounded-1" data-action="delete" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-trash text-muted"></i> {{tx("topic:delete")}}</span></a>
+						</li>
+						<li>
+							<a href="#" class="dropdown-item rounded-1" data-action="purge" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-eraser text-muted"></i> {{tx("topic:purge")}}</span></a>
 						</li>
 						<li>
 							<a href="#" class="dropdown-item rounded-1" data-action="restore" role="menuitem"><span class="d-inline-flex align-items-center gap-2"><i class="fa fa-fw fa-repeat text-muted"></i> {{tx("topic:restore")}}</span></a>

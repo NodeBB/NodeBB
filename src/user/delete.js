@@ -53,7 +53,7 @@ module.exports = function (User) {
 
 	async function deleteTopics(callerUid, uid) {
 		await batch.processSortedSet(`uid:${uid}:topics`, async (tids) => {
-			await topics.purge(tids, callerUid);
+			await topics.purgePostsAndTopic(tids, callerUid);
 			await db.sortedSetRemove(`uid:${uid}:topics`, tids);
 		}, { alwaysStartAt: 0, batch: 100 });
 	}
