@@ -42,8 +42,12 @@ UserReset.generate = async function (uid) {
 	return code;
 };
 
-UserReset.send = async function (email) {
-	const uid = await user.getUidByEmail(email);
+UserReset.send = async function (identifier) {
+	if (typeof identifier !== 'string' || !identifier.trim()) {
+		throw new Error('[[error:invalid-email]]');
+	}
+	identifier = identifier.trim();
+	const uid = await getUidByIdentifier(identifier);
 	if (!uid) {
 		throw new Error('[[error:invalid-email]]');
 	}
@@ -64,6 +68,20 @@ UserReset.send = async function (email) {
 		await db.deleteObjectField('locks', `reset${uid}`);
 	}
 };
+
+async function getUidByIdentifier(identifier) {
+	if (utils.isEmailValid(identifier)) {
+		return await user.getUidByEmail(identifier);
+	}
+
+	const uid = await user.getUidByUsername(identifier);
+	if (!uid) {
+		return 0;
+	}
+	const email = await user.getUserField(uid, 'email');
+	const emailUid = email && await user.getUidByEmail(email);
+	return parseInt(emailUid, 10) === parseInt(uid, 10) ? uid : 0;
+}
 
 async function lockReset(uid) {
 	const value = `reset${uid}`;
