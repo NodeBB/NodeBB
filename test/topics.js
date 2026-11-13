@@ -2602,6 +2602,18 @@ describe('Topic\'s', () => {
 			assert.notStrictEqual(data[0].lastposttime, topicData.lastposttime);
 		});
 
+		it('should not load topic teaser for an unprivileged user', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/topic/teaser/${topicData.tid}`);
+			assert.strictEqual(response.statusCode, 404);
+			assert(body);
+		});
+
+		it('should not load nested replies for an unprivileged user', async () => {
+			const { response, body } = await request.get(`${nconf.get('url')}/api/v3/posts/${topicData.mainPid}/replies`);
+			assert.strictEqual(response.statusCode, 404);
+			assert(body);
+		});
+
 		it('should not load topic for an unprivileged user', async () => {
 			const { response, body } = await request.get(`${nconf.get('url')}/topic/${topicData.slug}`);
 			assert.strictEqual(response.statusCode, 404);
