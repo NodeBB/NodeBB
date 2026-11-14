@@ -34,7 +34,7 @@
     "chat.thirty-days": "30 дни",
     "chat.three-months": "3 месеца",
     "chat.delete-message-confirm": "Наистина ли искате да изтриете това съобщение?",
-    "chat.purge-message-confirm": "Are you sure you wish to permanently delete this message?",
+    "chat.purge-message-confirm": "Наистина ли искате да изтриете завинаги това съобщение?",
     "chat.retrieving-users": "Получаване на потребителите…",
     "chat.view-users-list": "Преглед на списъка с потребители",
     "chat.pinned-messages": "Закачени съобщения",
