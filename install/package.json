@@ -176,7 +176,7 @@
         "coveralls-next": "6.0.2",
         "@eslint/js": "10.0.1",
         "@eslint/json": "2.1.1",
-        "@stylistic/eslint-plugin": "5.10.0",
+        "@stylistic/eslint-plugin": "6.0.0",
         "ajv": "8.20.0",
         "eslint-config-nodebb": "2.0.3",
         "globals": "17.14.0",
