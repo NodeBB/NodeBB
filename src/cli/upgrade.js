@@ -33,6 +33,7 @@ const steps = {
 		message: 'Updating NodeBB data store schema...',
 		handler: async function () {
 			await require('../database').init();
+			await require('../database').createIndices();
 			await require('../meta').configs.init();
 			await require('../upgrade').run();
 		},
