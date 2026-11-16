@@ -424,7 +424,8 @@ define('forum/chats', [
 	Chats.addScrollBottomHandler = function (roomId, chatContent) {
 		chatContent.parents('[component="chat/message/window"]')
 			.find('[component="chat/messages/scroll-up-alert"]')
-			.off('click').on('click', function () {
+			.off('click')
+			.on('click', function () {
 				if (ajaxify.data.scrollToIndex && parseInt(ajaxify.data.roomId, 10) === parseInt(roomId, 10)) {
 					Chats.switchChat(roomId);
 				} else {

@@ -33,6 +33,7 @@ const steps = {
 		message: 'Updating NodeBB data store schema...',
 		handler: async function () {
 			await require('../database').init();
+			await require('../database').createIndices();
 			await require('../meta').secret.init(); // some upgrades rely on secret to be set/generated
 			await require('../meta').configs.init();
 			await require('../upgrade').run();
@@ -99,8 +100,10 @@ async function runUpgrade(upgrades, options) {
 		await runSteps(tasks, options);
 		return;
 	}
-
-	await require('../database').init();
+	const db = require('../database');
+	await db.init();
+	await db.createIndices();
+	await require('../meta').secret.init(); // some upgrades rely on secret to be set/generated
 	await require('../meta').configs.init();
 	await require('../upgrade').runParticular(upgrades);
 	process.exit(0);
