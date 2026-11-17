@@ -3,13 +3,13 @@
 	"invalid-config-field-value": "Ugyldig verdi for innstillinga «%1»: %2",
 	"invalid-json": "Ugyldig JSON",
 	"wrong-parameter-type": "Ein verdi av typen %3 var venta for eigenskapen `%1`, men %2 vart mottatt i staden",
-	"required-parameters-missing": "Naudsynt parameter mangla i denne API-kallinga: %1",
+	"required-parameters-missing": "Nødvendig parameter mangla i denne API-kallinga: %1",
 
 	"reserved-ip-address": "Nettverksførespurnader til reserverte IP-område er ikkje tillatne.",
 
 	"not-logged-in": "Du ser ikkje ut til å vere logga inn.",
 	"account-locked": "Kontoen din har blitt midlertidig låst",
-	"ip-locked": "IP-adressa di har blitt mellombels låst",
+	"ip-locked": "IP-adressa di har blitt midlertidig låst",
 	"search-requires-login": "Søk krev ein konto - ver venleg å logge inn eller registrer deg.",
 	"goback": "Trykk tilbake for å gå til førre side",
 
@@ -37,7 +37,7 @@
 	"invalid-url": "Ugyldig URL",
 	"invalid-event": "Ugyldig hending: %1",
 	"local-login-disabled": "Lokalt innloggingssystem har blitt deaktivert for ikkje-privilegerte kontoar.",
-	"csrf-invalid": "Vi kunne ikkje logge deg inn, mest sannsynleg på grunn av ei utgått sesjon. Prøv igjen.",
+	"csrf-invalid": "Vi kunne ikkje logge deg inn, mest sannsynleg på grunn av ein utgått sesjon. Prøv igjen.",
 	"invalid-path": "Ugyldig sti",
 	"folder-exists": "Mappa eksisterer",
 
@@ -139,7 +139,7 @@
 	"already-bookmarked": "Du har allereie bokmerka dette innlegget",
 	"already-unbookmarked": "Du har allereie fjerna bokmerket på dette innlegget",
 
-	"cant-ban-other-admins": "Du kan ikkje utestenge andre administratorar!",
+	"cant-ban-other-admins": "Du kan ikkje stenge andre administratorar ute!",
 	"cant-mute-other-admins": "Du kan ikkje dempe andre administratorar!",
 	"user-muted-for-hours": "{count, plural, one {Du har blitt dempa. Du kan publisere igjen om {count} time} other {Du har blitt dempa. Du kan publisere igjen om {count} timar}}",
 	"user-muted-for-minutes": "{count, plural, one {Du har blitt dempa. Du kan publisere igjen om {count} minutt} other {Du har blitt dempa. Du kan publisere igjen om {count} minutt}}",
@@ -181,7 +181,7 @@
 
 	"topic-already-crossposted": "Dette innlegget er allereie kryssposta der.",
 
-	"cant-purge-main-post": "Du kan ikkje rense hovudinnlegget, ver venleg å slette emnet i staden",
+	"cant-purge-main-post": "Du kan ikkje rense hovudinnlegget, ver venleg å slette innlegget i staden",
 
 	"topic-thumbnails-are-disabled": "Miniatyrbilete for emne er deaktivert.",
 	"invalid-file": "Ugyldig fil",
@@ -275,8 +275,8 @@
 	"session-mismatch-text": "Det ser ut som innloggingssesjonen din ikkje lenger samsvarar med serveren. Ver venleg å oppdatere sida.",
 
 	"no-topics-selected": "Ingen emne valt!",
-	"cant-move-to-same-topic": "Kan ikkje flytte innlegg til same emne!",
-	"cant-move-topic-to-same-category": "Kan ikkje flytte emne til same kategori!",
+	"cant-move-to-same-topic": "Kan ikkje flytte svar til same innlegg!",
+	"cant-move-topic-to-same-category": "Kan ikkje flytte innlegg til same kategori!",
 	"cant-move-topic-to-from-remote-categories": "Du kan ikkje flytte innlegg inn i eller ut av eksterne kategoriar. Vurder å kryssposte i staden.",
 	"cant-move-topic-too-many-posts": "Kan ikkje flytte eit innlegg med meir enn %1 svar.",
 
@@ -298,7 +298,7 @@
 	"topic-event-unrecognized": "Emnehending '%1' ikkje gjenkjent",
 
 	"category.handle-taken": "Kategori-stien er allereie i bruk, vel vennlegst eit anna.",
-	"cant-set-child-as-parent": "Kan ikkje setje barn som overordna kategori",
+	"cant-set-child-as-parent": "Kan ikkje underkategori som overordna kategori",
 	"cant-set-self-as-parent": "Kan ikkje setje seg sjølv som overordna kategori",
 
 	"api.master-token-no-uid": "Ein mastertoken vart mottatt utan ein tilsvarande `_uid` i førespurnadsinnhaldet",

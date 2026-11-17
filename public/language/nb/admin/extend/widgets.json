@@ -2,7 +2,7 @@
 	"widgets": "Widgeter",
 	"available": "Tilgjengelige widgeter",
 	"explanation": "Velg en widget fra rullegardinmenyen og dra og slipp den i et malens widgetområde til venstre.",
-	"none-installed": "Ingen widgeter funnet! Aktiver plugin for essensielle widgeter i <a href=\"%1\">plugins</a>-kontrollpanelet.",
+	"none-installed": "Ingen widgeter funnet! Aktiver tillegg for essensielle widgeter i <a href=\"%1\">tillegg</a>-kontrollpanelet.",
 	"clone-from": "Klon widgeter fra",
 	"containers.available": "Tilgjengelige beholdere",
 	"containers.explanation": "Velg en beholder for widgeter.",

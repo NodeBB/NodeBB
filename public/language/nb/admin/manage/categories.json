@@ -46,7 +46,7 @@
 	"disable": "Deaktiver",
 	"edit": "Rediger",
 	"analytics": "Analyser",
-	"federation": "Føderasjon",
+	"federation": "Føderering",
 
 	"view-category": "Vis kategori",
 	"set-order": "Sett rekkefølge",
@@ -83,7 +83,7 @@
 	"analytics.title": "Analyser for kategorien \"%1\"",
 	"analytics.pageviews-hourly": "<strong>Figur 1</strong> &ndash; Timevise sidevisninger for denne kategorien",
 	"analytics.pageviews-daily": "<strong>Figur 2</strong> &ndash; Daglige sidevisninger for denne kategorien",
-	"analytics.topics-daily": "<strong>Figur 3</strong> &ndash; Daglige tråder publisert i denne kategorien",
+	"analytics.topics-daily": "<strong>Figur 3</strong> &ndash; Daglige innlegg publisert i denne kategorien",
 	"analytics.posts-daily": "<strong>Figur 4</strong> &ndash; Daglige innlegg i denne kategorien",
 
 	"federation.title": "Fødereringsinnstillinger for kategorien «%1»",
@@ -113,7 +113,7 @@
 	"alert.rename": "Gi nytt navn til ekstern kategori",
 	"alert.rename-help": "Skriv inn et nytt navn for denne kategorien. La feltet stå tomt for å gjenopprette det opprinnelige navnet.",
 	"alert.confirm-remove": "Er du sikker på at du vil fjerne denne kategorien? Du kan legge den til igjen når som helst.",
-	"alert.confirm-purge": "<p class=\"lead\">Vil du virkelig renske kategorien \"%1\"?</p><h5><strong class=\"text-danger\"> Advarsel!</strong> Alle tråder og innlegg i denne kategorien vil bli rensket!</h5><p class=\"help-block\"> Rensking av en kategori vil fjerne alle tråder og innlegg, og slette kategorien fra databasen. Hvis du vil fjerne en kategori <em>midlertidig</em>, vil du \"deaktivere\" kategorien i stedet.</p>",
+	"alert.confirm-purge": "<p class=\"lead\">Vil du virkelig renske kategorien \"%1\"?</p><h5><strong class=\"text-danger\"> Advarsel!</strong> Alle innlegg i denne kategorien vil bli rensket!</h5><p class=\"help-block\"> Rensking av en kategori vil fjerne alle innlegg, og slette kategorien fra databasen. Hvis du vil fjerne en kategori <em>midlertidig</em>, vil du \"deaktivere\" kategorien i stedet.</p>",
 	"alert.purge-success": "Kategori renset!",
 	"alert.copy-success": "Innstillinger kopiert!",
 	"alert.set-parent-category": "Angi overkategori",

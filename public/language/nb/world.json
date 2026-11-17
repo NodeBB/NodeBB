@@ -13,14 +13,14 @@
 
 	"help.title": "Hva er denne siden?",
 	"help.intro": "Velkommen til din del av fediverset.",
-	"help.fediverse": "«Fediverset» er et nettverk av sammenkoblede apper og nettsteder som alle kommuniserer med hverandre, og der brukerne kan se hverandre. Dette forumet er føderert og kan samhandle med dette sosiale nettet (eller «fediverset»). Denne siden er din del av fediverset. Den består kun av emner som er opprettet av, og delt fra, brukere <strong>du</strong> følger.",
+	"help.fediverse": "«Fediverset» er et nettverk av sammenkoblede apper og nettsteder som alle kommuniserer med hverandre, og der brukerne kan se hverandre. Dette forumet er føderert og kan samhandle med dette sosiale nettet (eller «fediverset»). Denne siden er din del av fediverset. Den består kun av innlegg som er opprettet av, og delt fra, brukere <strong>du</strong> følger.",
 	"help.build": "Det kan hende det ikke er så mange innlegg her i starten, det er helt normalt. Du vil begynne å se mer innhold her etter hvert som du begynner å følge andre brukere.",
 	"help.federating": "På samme måte vil innleggene dine begynne å vises i disse appene og på disse nettstedene dersom brukere utenfor dette forumet begynner å følge <em>deg</em>.",
 	"help.next-generation": "Dette er neste generasjon sosiale medier, begynn å bidra i dag!",
 
 	"onboard.title": "En verden av innhold rett foran deg",
 	"onboard.what": "Tenk på dette som en global strøm for å oppdage nytt innhold. Her samles interessante diskusjoner fra nettet og andre fellesskap, alt på ett sted.",
-	"onboard.why": "Du kan utforske det som er populært akkurat nå, men den beste måten å bruke denne strømmen på er å gjøre den til din egen. Ved å opprette en konto kan du følge bestemte personer og emner, filtrere bort støy og bare se det som er viktig for deg.",
+	"onboard.why": "Du kan utforske det som er populært akkurat nå, men den beste måten å bruke denne strømmen på er å gjøre den til din egen. Ved å opprette en konto kan du følge bestemte personer og innlegg, filtrere bort støy og bare se det som er viktig for deg.",
 	"onboard.how": "Klar til å komme i gang? Opprett en konto for å begynne å følge andre, få varsler når noen svarer deg, og lagre favorittene dine.",
 
 	"category-search": "Finn kategori",

@@ -87,10 +87,10 @@
 	"development/logger": "Loggførar",
 	"development/info": "Informasjon",
 
-	"rebuild-and-restart-forum": "Bygg om og restart forum",
-	"rebuild-and-restart": "Bygg om og restart",
-	"restart-forum": "Restart forum",
-	"restart": "Restart",
+	"rebuild-and-restart-forum": "Bygg om og start forum",
+	"rebuild-and-restart": "Bygg om og start på nytt",
+	"restart-forum": "Start forum på nytt",
+	"restart": "Start på nytt",
 	"logout": "Logg ut",
 	"view-forum": "Vis forum",
 

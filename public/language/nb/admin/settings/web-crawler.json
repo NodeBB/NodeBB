@@ -4,7 +4,7 @@
 	"sitemap-feed-settings": "Innstillinger for nettstedskart og feed",
 	"disable-rss-feeds": "Deaktiver RSS-feeder",
 	"disable-sitemap-xml": "Deaktiver Sitemap.xml",
-	"sitemap-topics": "Antall emner som vises i nettstedskartet",
+	"sitemap-topics": "Antall innlegg som vises i nettstedskartet",
 	"sitemap-cache-duration-hours": "Varighet for mellomlagring av nettstedskart (timer)",
 	"clear-sitemap-cache": "Tøm hurtigbuffer for nettstedskart",
 	"view-sitemap": "Vis nettstedskart"

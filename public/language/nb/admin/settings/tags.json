@@ -3,13 +3,13 @@
     "link-to-manage": "Administrer emneord",
     "system-tags": "Systememneord",
     "system-tags-help": "Bare privilegerte brukere vil kunne bruke disse emneordene.",
-    "tags-per-topic": "Emneord per tråd",
-    "min-per-topic": "Minimum antall emneord per tråd",
-    "max-per-topic": "Maksimalt antall emneord per tråd",
+    "tags-per-topic": "Emneord per innlegg",
+    "min-per-topic": "Minimum antall emneord per innlegg",
+    "max-per-topic": "Maksimalt antall emneord per innlegg",
     "min-length": "Minimum lengde på emneord",
     "max-length": "Maksimal lengde på emneord",
     "case-sensitive": "Skill mellom store og små bokstaver i emneord",
     "case-sensitive-help": "Når dette er aktivert, skilles det mellom store og små bokstaver i emneord (#NodeBB og #nodebb blir behandlet som ulike emneord). Når dette er deaktivert, blir emneord gjort om til små bokstaver.",
-    "related-topics": "Relaterte tråder",
-    "max-related-topics": "Maksimalt antall relaterte tråder som skal vises (hvis støttet av tema)"
+    "related-topics": "Relaterte innlegg",
+    "max-related-topics": "Maksimalt antall relaterte innlegg som skal vises (hvis støttet av tema)"
 }

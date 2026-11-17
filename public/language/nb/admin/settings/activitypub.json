@@ -1,5 +1,5 @@
 {
-	"intro-lead": "Hva er føderasjon?",
+	"intro-lead": "Hva er føderering?",
 	"intro-body": "NodeBB kan kommunisere med andre NodeBB-installasjoner som støtter dette. Dette skjer gjennom en protokoll kalt <a href=\"https://activitypub.rocks/\">ActivityPub</a>. Hvis dette er aktivert, kan NodeBB kommunisere med andre apper og nettsteder som bruker ActivityPub (f.eks. Mastodon, PeerTube osv.).",
 	"general": "Generelt",
 	"pruning": "Opprydding i innhold",
@@ -29,8 +29,8 @@
 	"rules.modal.title": "Slik fungerer det",
 	"rules.modal.instructions": "Alt innkommende innhold blir sjekket mot disse kategoriseringsreglene, og innhold som samsvarer, blir automatisk krysspublisert til valgt kategori.<br /><br /><strong>NB!</strong> Innhold som allerede er kategorisert (dvs. ligger i en ekstern kategori), blir også sjekket mot disse reglene og kan bli krysspublisert til flere kategorier.",
 	"rules.add": "Legg til ny regel",
-	"rules.help-hashtag": "Emner som inneholder denne emneknaggen, vil samsvare (skiller ikke mellom store og små bokstaver). Ikke skriv inn <code>#</code>-tegnet.",
-	"rules.help-user": "Emner opprettet av den angitte brukeren vil samsvare. Skriv inn et brukernavn eller en fullstendig ID (f.eks. <code>bob@example.org</code> eller <code>https://example.org/users/bob</code>.",
+	"rules.help-hashtag": "Innlegg som inneholder denne emneknaggen, vil samsvare (skiller ikke mellom store og små bokstaver). Ikke skriv inn <code>#</code>-tegnet.",
+	"rules.help-user": "Innlegg opprettet av den angitte brukeren vil samsvare. Skriv inn et brukernavn eller en fullstendig ID (f.eks. <code>bob@example.org</code> eller <code>https://example.org/users/bob</code>.",
 	"rules.type": "Type",
 	"rules.value": "Verdi",
 	"rules.action": "Handling",
@@ -89,7 +89,7 @@
 	"content.summary-limit": "Antall tegn før et sammendrag genereres",
 	"content.summary-limit-help": "Når innhold som fødereres ut, overskrider dette antallet tegn, genereres et <code>sammendrag</code> som består av alle fullstendige setninger før denne grensen. (Standard: 500)",
 	"content.break-string": "Skilletegn for Note/Article",
-	"content.break-string-help": "Dette skilletegnet kan settes inn manuelt av avanserte brukere når de oppretter nye emner. Det forteller NodeBB at innhold fram til dette punktet skal brukes som <code>sammendrag</code>. Hvis denne strengen ikke brukes, brukes grensen for antall tegn i stedet. (Standard: <code>[...]</code>)",
+	"content.break-string-help": "Dette skilletegnet kan settes inn manuelt av avanserte brukere når de oppretter nye innlegg. Det forteller NodeBB at innhold fram til dette punktet skal brukes som <code>sammendrag</code>. Hvis denne strengen ikke brukes, brukes grensen for antall tegn i stedet. (Standard: <code>[...]</code>)",
 	"content.world-default-cid": "Standard kategori-ID for skrivefeltet på «Verden»-siden",
 
 	"analytics.intro": "Denne siden gir en oversikt over statusen for forumets føderering med andre instanser/servere.",

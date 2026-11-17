@@ -2,7 +2,7 @@
 {
 	"post-queue": "Innleggskø",
 	"no-queued-posts": "Det er ingen innlegg i innleggskøen.",
-	"no-single-post": "Innlegget eller emnet du leter etter er ikke lenger i køen. Det har sannsynligvis blitt godkjent eller slettet allerede.",
+	"no-single-post": "Innlegget du leter etter er ikke lenger i køen. Det har sannsynligvis blitt godkjent eller slettet allerede.",
 	"enabling-help": "Aktiver innleggskøen for å moderere innlegg før de publiseres.",
 	"back-to-list": "Tilbake til innleggskø",
 	"public-intro": "Denne siden viser alle innlegg som venter på moderering.",
@@ -21,7 +21,7 @@
 	"category-editable": "Klikk på kategori for å redigere",
 	"title-editable": "Klikk på tittel for å redigere",
 	"reply": "Svar",
-	"topic": "Emne",
+	"topic": "Innlegg",
 	"crosspost": "Krysspubliser",
 	"accept": "Godkjenn",
 	"reject": "Avvis",

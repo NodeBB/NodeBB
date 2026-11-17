@@ -14,7 +14,7 @@
 	"goback": "Trykk på tilbakeknappen for å gå tilbake til forrige side",
 
 	"invalid-cid": "Ugyldig kategori-ID",
-	"invalid-tid": "Ugyldig emne-ID",
+	"invalid-tid": "Ugyldig innlegg-ID",
 	"invalid-pid": "Ugyldig innlegg-ID",
 	"invalid-uid": "Ugyldig bruker-ID",
 	"invalid-mid": "Ugyldig ID for chattmelding",
@@ -48,7 +48,7 @@
 	"email-taken": "E-posten er allerede i bruk",
 	"email-nochange": "E-posten som er angitt er den samme e-posten som allerede er lagret.",
 	"email-invited": "E-post har allerede fått invitasjon",
-	"email-not-confirmed": "Posting i enkelte kategorier eller emner blir aktivert når e-posten din er bekreftet. Klikk her for å sende en bekreftelses-e-post.",
+	"email-not-confirmed": "Posting i enkelte kategorier eller innlegg blir aktivert når e-posten din er bekreftet. Klikk her for å sende en bekreftelses-e-post.",
 	"email-not-confirmed-chat": "Du kan ikke chatte før e-posten din er bekreftet, vennligst klikk her for å bekrefte e-postadressen.",
 	"email-not-confirmed-email-sent": "E-posten din er ikke bekreftet ennå, sjekk innboksen din for bekreftelses-e-post. Det kan hende du ikke kan legge ut innlegg i enkelte kategorier eller chatte før e-posten din er bekreftet.",
 	"no-email-to-confirm": "Kontoen din mangler e-postadresse. En e-postadresse er nødvendig for gjenoppretting av konto, og kan være nødvendig for chatting og innlegg i enkelte kategorier. Klikk her for å skrive inn en e-postadresse.",
@@ -74,7 +74,7 @@
 	"ban-expiry-missing": "Vennligst oppgi et sluttidspunkt for denne utestengingen.",
 
 	"no-category": "Kategorien eksisterer ikke",
-	"no-topic": "Emne eksisterer ikke",
+	"no-topic": "Innlegg eksisterer ikke",
 	"no-post": "Innlegg eksisterer ikke",
 	"no-group": "Gruppe eksisterer ikke",
 	"no-user": "Bruker eksisterer ikke",
@@ -102,8 +102,8 @@
 	"post-delete-duration-expired-days": "{count, plural, one {Du kan bare slette innlegg i {count} dag etter at de er publisert} other {Du kan bare slette innlegg i {count} dager etter at de er publisert}}",
 	"post-delete-duration-expired-days-hours": "Du har bare lov til å slette innlegg i %1 dag(er), %2 time(r) etter at det er sendt",
 
-	"cant-delete-topic-has-reply": "Du kan ikke slette tråden din etter den har fått et innlegg",
-	"cant-delete-topic-has-replies": "Du kan ikke slette tråden din etter den har %1 innlegg",
+	"cant-delete-topic-has-reply": "Du kan ikke slette innlegget ditt etter det har fått et innlegg",
+	"cant-delete-topic-has-replies": "Du kan ikke slette innlegget ditt etter det har %1 innlegg",
 
 	"content-too-short": "{count, plural, one {Skriv et lengre innlegg. Innlegg må inneholde minst {count} tegn.} other {Skriv et lengre innlegg. Innlegg må inneholde minst {count} tegn.}}",
 	"content-too-long": "{count, plural, one {Skriv et kortere innlegg. Innlegg kan ikke være lengre enn {count} tegn.} other {Skriv et kortere innlegg. Innlegg kan ikke være lengre enn {count} tegn.}}",
@@ -117,8 +117,8 @@
 	"tag-too-short": "{count, plural, one {Skriv et lengre emneord. Emneord må inneholde minst {count} tegn} other {Skriv et lengre emneord. Emneord må inneholde minst {count} tegn}}",
 	"tag-too-long": "{count, plural, one {Skriv et kortere emneord. Emneord kan ikke være lengre enn {count} tegn} other {Skriv et kortere emneord. Emneord kan ikke være lengre enn {count} tegn}}",
 	"tag-not-allowed": "Tagg ikke tillatt",
-	"not-enough-tags": "{count, plural, one {For få emneord. Emner må ha minst {count} emneord} other {For få emneord. Emner må ha minst {count} emneord}}",
-	"too-many-tags": "{count, plural, one {For mange emneord. Emner kan ikke ha flere enn {count} emneord} other {For mange emneord. Emner kan ikke ha flere enn {count} emneord}}",
+	"not-enough-tags": "{count, plural, one {For få emneord. Innlegg må ha minst {count} emneord} other {For få emneord. Innlegg må ha minst {count} emneord}}",
+	"too-many-tags": "{count, plural, one {For mange emneord. Innlegg kan ikke ha flere enn {count} emneord} other {For mange emneord. Innlegg kan ikke ha flere enn {count} emneord}}",
 	"cant-use-system-tag": "Du kan ikke bruke denne systemtaggen",
 	"cant-remove-system-tag": "Du kan ikke fjerne denne systemtaggen.",
 
@@ -131,16 +131,16 @@
 
   	"scheduling-to-past": "Vennligst velg en dato i fremtiden.",
   	"invalid-schedule-date": "Vennligst skriv inn en gyldig dato og tidspunkt.",
-  	"cant-pin-scheduled": "Planlagte tråder kan ikke bli (u)festet.",
-  	"cant-merge-scheduled": "Planlagte tråder kan ikke slås sammen.",
-  	"cant-move-posts-to-scheduled": "Kan ikke flytte innlegg til en planlagt tråd.",
-  	"cant-move-from-scheduled-to-existing": "Kan ikke flytte innlegg fra en planlagt tråd til en eksisterende tråd.",
+  	"cant-pin-scheduled": "Planlagte innlegg kan ikke bli (u)festet.",
+  	"cant-merge-scheduled": "Planlagte innlegg kan ikke slås sammen.",
+  	"cant-move-posts-to-scheduled": "Kan ikke flytte svar til et planlagt innlegg.",
+  	"cant-move-from-scheduled-to-existing": "Kan ikke flytte svar fra et planlagt innlegg til et eksisterende innlegg.",
 
 	"already-bookmarked": "Du har allerede bokmerket dette innlegget",
 	"already-unbookmarked": "Du har allerede fjernet bokmerket fra dette innlegget",
 
-	"cant-ban-other-admins": "Du kan ikke utestenge andre administratorer!",
-	"cant-mute-other-admins": "Du kan ikke kneble andre administratorer.",
+	"cant-ban-other-admins": "Du kan ikke stenge andre administratorer ute!",
+	"cant-mute-other-admins": "Du kan ikke dempe andre administratorer.",
 	"user-muted-for-hours": "{count, plural, one {Du har blitt dempet. Du kan publisere igjen om {count} time} other {Du har blitt dempet. Du kan publisere igjen om {count} timer}}",
 	"user-muted-for-minutes": "{count, plural, one {Du har blitt dempet. Du kan publisere igjen om {count} minutt} other {Du har blitt dempet. Du kan publisere igjen om {count} minutter}}",
 	"user-muted-indefinitely": "Du er dempet på ubestemt tid",
@@ -176,14 +176,14 @@
 	"post-already-deleted": "Dette innlegget har blitt slettet",
 	"post-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
 
-	"topic-already-deleted": "Dette emnet har allerede blitt slettet",
-	"topic-already-restored": "Dette emnet har allerede blitt gjenopprettet",
+	"topic-already-deleted": "Dette innlegget har allerede blitt slettet",
+	"topic-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
 
 	"topic-already-crossposted": "Dette innlegget er allerede krysspostet der.",
 
-	"cant-purge-main-post": "Du kan ikke slette hovedinnlegget. Vennligst slett emnet i stedet.",
+	"cant-purge-main-post": "Du kan ikke slette hovedinnlegget. Vennligst slett innlegget i stedet.",
 
-	"topic-thumbnails-are-disabled": "Emne-minatyrbilder har blitt deaktivert",
+	"topic-thumbnails-are-disabled": "Innlegg-minatyrbilder har blitt deaktivert",
 	"invalid-file": "Ugyldig fil",
 	"uploads-are-disabled": "Opplastinger er deaktivert",
 
@@ -274,9 +274,9 @@
 	"session-mismatch": "Uoverensstemmelse i sesjon",
 	"session-mismatch-text": "Det ser ut til at din innloggingssesjon ikke lenger matcher med serveren. Last inn denne siden på nytt.",
 
-	"no-topics-selected": "Ingen tråder valgt!",
-	"cant-move-to-same-topic": "Du kan ikke flytte innlegg til samme tråd!",
-	"cant-move-topic-to-same-category": "Du kan ikke flytte tråd til samme kategori!",
+	"no-topics-selected": "Ingen innlegg valgt!",
+	"cant-move-to-same-topic": "Du kan ikke flytte svar til samme innlegg!",
+	"cant-move-topic-to-same-category": "Du kan ikke flytte innlegg til samme kategori!",
 	"cant-move-topic-to-from-remote-categories": "Du kan ikke flytte innlegg inn i eller ut av eksterne kategorier. Vurder å kryssposte i stedet.",
 	"cant-move-topic-too-many-posts": "Kan ikke flytte et innlegg med mer enn %1 svar.",
 
@@ -288,14 +288,14 @@
 	"no-connection": "Det virker å være et problem med internett-tilgangen din",
 	"socket-reconnect-failed": "Får ikke tilgang til serveren for øyeblikket. Klikk her for å prøve igjen, eller prøv igjen senere",
 
-	"invalid-plugin-id": "Ugyldig innstikk-ID",
+	"invalid-plugin-id": "Ugyldig tillegg-ID",
 	"plugin-not-whitelisted": "Ute av stand til å installere tillegget &ndash; bare tillegg som er hvitelistet av NodeBB sin pakkebehandler kan bli installert via administratorkontrollpanelet",
-	"cannot-toggle-system-plugin": "Du kan ikke slå av eller på en systemutvidelse.",
-	"plugin-installation-via-acp-disabled": "Installasjon av utvidelser via administrasjonspanelet er slått av.",
-	"plugins-set-in-configuration": "Du har ikke tillatelse til å endre plugin-status da de er definert under kjøring (config.json, miljøvariabler eller terminalargumenter)Vennligst endre konfigurasjonen i stedet.",
-	"theme-not-set-in-configuration": "Når aktive plugins er definert i konfigurasjonen, krever endring av tema at det nye temaet legges til i listen over aktive plugins før det oppdateres i ACP.",
+	"cannot-toggle-system-plugin": "Du kan ikke slå av eller på et systemtillegg.",
+	"plugin-installation-via-acp-disabled": "Installasjon av tillegg via administrasjonspanelet er slått av.",
+	"plugins-set-in-configuration": "Du har ikke tillatelse til å endre tilleggs-status da de er definert under kjøring (config.json, miljøvariabler eller terminalargumenter)Vennligst endre konfigurasjonen i stedet.",
+	"theme-not-set-in-configuration": "Når aktive tillegg er definert i konfigurasjonen, krever endring av tema at det nye temaet legges til i listen over aktive tillegg før det oppdateres i ACP.",
 
-	"topic-event-unrecognized": "Trådhendelse '%1' er ukjent",
+	"topic-event-unrecognized": "Innleggshendelse '%1' er ukjent",
 
 	"category.handle-taken": "Kategoristi er allerede tatt, velg noe annet.",
 	"cant-set-child-as-parent": "Kan ikke sette underkategori til hovedkategori",
@@ -314,7 +314,7 @@
 	"api.503": "Ruten du prøver å kalle er for øyeblikket ikke tilgjengelig grunnet innstilling på serveren",
 	"api.reauth-required": "Ressursen du prøver å få tilgang til krever (re-)autentisering.",
 
-	"activitypub.not-enabled": "Føderasjon er ikke aktivert på denne serveren",
+	"activitypub.not-enabled": "Føderering er ikke aktivert på denne serveren",
 	"activitypub.invalid-id": "Kan ikke løse opp input-ID-en, sannsynligvis fordi den er ugyldig.",
 	"activitypub.invalid-content-type": "Det returnerte innholdet hadde en uventet innholdstype.",
 	"activitypub.get-failed": "Kan ikke hente den angitte ressursen.",
