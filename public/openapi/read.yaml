@@ -146,6 +146,8 @@ paths:
     $ref: 'read/admin/manage/digest.yaml'
   /api/admin/manage/api:
     $ref: 'read/admin/manage/api.yaml'
+  /api/admin/manage/oauth:
+    $ref: 'read/admin/manage/oauth.yaml'
   /api/admin/federation/general:
     $ref: 'read/admin/federation/general.yaml'
   /api/admin/federation/content:

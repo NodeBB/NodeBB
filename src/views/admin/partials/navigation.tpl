@@ -47,6 +47,7 @@
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/admins-mods">{{tx("admin/menu:manage/admins-mods")}}</a>
 				{{{ end }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/api">{{tx("admin/menu:settings/api")}}</a>
+				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/oauth">{{tx("admin/menu:manage/oauth")}}</a>
 				{{{ if user.privileges.admin:tags }}}
 				<a class="btn btn-ghost btn-sm text-start" href="{relative_path}/admin/manage/tags">{{tx("admin/menu:manage/tags")}}</a>
 				{{{ end }}}
