@@ -54,6 +54,9 @@ get:
                           type: number
                         disableLeave:
                           type: number
+                        chatContactable:
+                          type: number
+                          description: Whether users may open a chat room with this group
                         nameEncoded:
                           type: string
                         displayName:

@@ -27,7 +27,7 @@ module.exports = function (Groups) {
 
 		// Cast some values as bool (if not boolean already)
 		// 'true' and '1' = true, everything else false
-		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave'].forEach((prop) => {
+		['userTitleEnabled', 'private', 'hidden', 'disableJoinRequests', 'disableLeave', 'chatContactable'].forEach((prop) => {
 			if (values.hasOwnProperty(prop) && typeof values[prop] !== 'boolean') {
 				values[prop] = values[prop] === 'true' || parseInt(values[prop], 10) === 1;
 			}
@@ -68,6 +68,10 @@ module.exports = function (Groups) {
 
 		if (values.hasOwnProperty('disableLeave')) {
 			payload.disableLeave = values.disableLeave ? '1' : '0';
+		}
+
+		if (values.hasOwnProperty('chatContactable')) {
+			payload.chatContactable = values.chatContactable ? '1' : '0';
 		}
 
 		if (values.hasOwnProperty('name')) {
@@ -354,5 +358,13 @@ module.exports = function (Groups) {
 			}
 		});
 		await db.setObjectBulk(bulkSet);
+
+		const memberGroupRoomIds = await db.getSortedSetRange(`group:${oldName}:chat:rooms`, 0, -1);
+		const memberGroupRooms = await messaging.getRoomsData(memberGroupRoomIds, ['roomId', 'memberGroups']);
+		await db.setObjectBulk(memberGroupRooms.filter(Boolean).map(room => [
+			`chat:room:${room.roomId}`,
+			{ memberGroups: JSON.stringify(room.memberGroups.map(group => (group === oldName ? newName : group))) },
+		]));
+		await db.rename(`group:${oldName}:chat:rooms`, `group:${newName}:chat:rooms`);
 	}
 };
