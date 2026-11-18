@@ -39,6 +39,10 @@ get:
                             type: number
                           timestampISO:
                             type: string
+                          index:
+                            type: number
+                            nullable: true
+                            description: 1-based position of the message in the room, set when the teaser is a message that matched the search query
                           user:
                             type: object
                             properties:
