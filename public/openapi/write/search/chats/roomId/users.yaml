@@ -40,5 +40,7 @@ get:
                           properties:
                             isOwner:
                               type: boolean
+                            viaGroup:
+                              type: boolean
                             canKick:
                               type: boolean
