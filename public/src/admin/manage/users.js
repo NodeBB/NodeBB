@@ -245,7 +245,7 @@ define('admin/manage/users', [
 							reason: formData.reason,
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+						onSuccess(`[[admin/manage/users:alerts.ban-success, ${uids.length}]]`, '.ban', true);
 					}).catch(alerts.error);
 				},
 			});
@@ -268,7 +268,7 @@ define('admin/manage/users', [
 							reason: formData.reason || '',
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+						onSuccess(`[[admin/manage/users:alerts.unban-success, ${uids.length}]]`, '.ban', false);
 					}).catch(alerts.error);
 				},
 			});
@@ -292,7 +292,7 @@ define('admin/manage/users', [
 							reason: formData.reason,
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.mute-success]]', '.mute', true);
+						onSuccess(`[[admin/manage/users:alerts.mute-success, ${uids.length}]]`, '.mute', true);
 					}).catch(alerts.error);
 				},
 			});
@@ -314,7 +314,7 @@ define('admin/manage/users', [
 							reason: formData.reason || '',
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.unmute-success]]', '.mute', false);
+						onSuccess(`[[admin/manage/users:alerts.unmute-success, ${uids.length}]]`, '.mute', false);
 					}).catch(alerts.error);
 				},
 			});
@@ -326,7 +326,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			socket.emit('admin.user.resetLockouts', uids, done('[[admin/manage/users:alerts.lockout-reset-success]]'));
+			socket.emit('admin.user.resetLockouts', uids, done(`[[admin/manage/users:alerts.lockout-reset-success, ${uids.length}]]`));
 		});
 
 		$('.change-email').on('click', function () {
@@ -355,7 +355,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			modals.confirm('[[admin/manage/users:alerts.confirm-validate-email]]', function (confirm) {
+			modals.confirm(`[[admin/manage/users:alerts.confirm-validate-email, ${uids.length}]]`, function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -427,6 +427,7 @@ define('admin/manage/users', [
 						className: 'btn-primary',
 						callback: function () {
 							changePassword(modal).then(() => {
+								alerts.success(`[[admin/manage/users:alerts.password-change-success, ${uids.length}]]`);
 								modal.modal('hide');
 							}).catch(alerts.error);
 							return false;
@@ -442,9 +443,9 @@ define('admin/manage/users', [
 				return;
 			}
 
-			modals.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
+			modals.confirm(`[[admin/manage/users:alerts.password-reset-confirm, ${uids.length}]]`, function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[admin/manage/users:alerts.password-reset-email-sent]]'));
+					socket.emit('admin.user.sendPasswordResetEmail', uids, done(`[[admin/manage/users:alerts.password-reset-email-sent, ${uids.length}]]`));
 				}
 			});
 		});
@@ -455,23 +456,26 @@ define('admin/manage/users', [
 				return;
 			}
 
-			modals.confirm('[[admin/manage/users:alerts.confirm-force-password-reset]]', function (confirm) {
+			modals.confirm(`[[admin/manage/users:alerts.confirm-force-password-reset, ${uids.length}]]`, function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.forcePasswordReset', uids, done('[[admin/manage/users:alerts.validate-force-password-reset-success]]'));
+					socket.emit('admin.user.forcePasswordReset', uids, done(`[[admin/manage/users:alerts.validate-force-password-reset-success, ${uids.length}]]`));
 				}
 			});
 		});
 
 		$('.delete-user').on('click', () => {
-			handleDelete('[[admin/manage/users:alerts.confirm-delete]]', '/account');
+			const uids = getSelectedUids();
+			handleDelete(`[[admin/manage/users:alerts.confirm-delete, ${uids.length}]]`, '/account');
 		});
 
 		$('.delete-user-content').on('click', () => {
-			handleDelete('[[admin/manage/users:alerts.confirm-delete-content]]', '/content');
+			const uids = getSelectedUids();
+			handleDelete(`[[admin/manage/users:alerts.confirm-delete-content, ${uids.length}]]`, '/content');
 		});
 
 		$('.delete-user-and-content').on('click', () => {
-			handleDelete('[[admin/manage/users:alerts.confirm-purge]]', '');
+			const uids = getSelectedUids();
+			handleDelete(`[[admin/manage/users:alerts.confirm-purge, ${uids.length}]]`, '');
 		});
 
 		$('[component="user/select/all"]').on('click', function () {
@@ -562,9 +566,9 @@ define('admin/manage/users', [
 						)
 					).then(() => {
 						if (path !== '/content') {
-							alerts.success('[[admin/manage/users:alerts.delete-success]]');
+							alerts.success(`[[admin/manage/users:alerts.delete-success, ${uids.length}]]`);
 						} else {
-							alerts.success('[[admin/manage/users:alerts.delete-content-success]]');
+							alerts.success(`[[admin/manage/users:alerts.delete-content-success, ${uids.length}]]`);
 						}
 						unselectAll();
 						if (!$('.users-table [component="user/select/single"]').length) {
