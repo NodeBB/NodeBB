@@ -103,6 +103,7 @@ module.exports = function (Posts) {
 			bulkRemove.push([`uid:${p.uid}:posts`, p.pid]);
 			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids`, p.pid]);
 			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids:votes`, p.pid]);
+			bulkRemove.push([`cid:${p.cid}:uid:${p.uid}:pids:votesRatio`, p.pid]);
 			bulkIncr.push([`uid:${p.uid}:cids`, -1, p.cid]);
 		});
 		await Promise.all([

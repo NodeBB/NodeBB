@@ -165,6 +165,7 @@ module.exports = function (Topics) {
 			`cid:${topicData[0].cid}:pids`,
 			`cid:${topicData[0].cid}:uid:${postData.uid}:pids`,
 			`cid:${topicData[0].cid}:uid:${postData.uid}:pids:votes`,
+			`cid:${topicData[0].cid}:uid:${postData.uid}:pids:votesRatio`,
 		];
 		const tasks = [
 			db.incrObjectFieldBy(`category:${topicData[0].cid}`, 'post_count', -1),
@@ -179,6 +180,9 @@ module.exports = function (Topics) {
 		];
 		if (postData.votes > 0 || postData.votes < 0) {
 			tasks.push(db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids:votes`, postData.votes, postData.pid));
+		}
+		if (postData.downvotes > 0) {
+			tasks.push(db.sortedSetAdd(`cid:${topicData[1].cid}:uid:${postData.uid}:pids:votesRatio`, postData.upvotes / postData.downvotes, postData.pid));
 		}
 
 		await Promise.all(tasks);

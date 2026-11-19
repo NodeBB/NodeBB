@@ -153,11 +153,15 @@ module.exports = function (Posts) {
 			bulkRemove.push([`uid:${post.uid}:posts`, post.pid]);
 			bulkRemove.push([`cid:${post.cid}:uid:${post.uid}:pids`, post.pid]);
 			bulkRemove.push([`cid:${post.cid}:uid:${post.uid}:pids:votes`, post.pid]);
+			bulkRemove.push([`cid:${post.cid}:uid:${post.uid}:pids:votesRatio`, post.pid]);
 
 			bulkAdd.push([`uid:${toUid}:posts`, post.timestamp, post.pid]);
 			bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids`, post.timestamp, post.pid]);
 			if (post.votes > 0 || post.votes < 0) {
 				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votes`, post.votes, post.pid]);
+			}
+			if (post.downvotes > 0) {
+				bulkAdd.push([`cid:${post.cid}:uid:${toUid}:pids:votesRatio`, post.upvotes / post.downvotes, post.pid]);
 			}
 
 			bulkIncr.push(
