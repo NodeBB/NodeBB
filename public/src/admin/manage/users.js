@@ -245,7 +245,7 @@ define('admin/manage/users', [
 							reason: formData.reason,
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.ban-success]]', '.ban', true);
+						onSuccess(`[[admin/manage/users:alerts.ban-success, ${uids.length}]]`, '.ban', true);
 					}).catch(alerts.error);
 				},
 			});
@@ -268,7 +268,7 @@ define('admin/manage/users', [
 							reason: formData.reason || '',
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+						onSuccess(`[[admin/manage/users:alerts.unban-success, ${uids.length}]]`, '.ban', false);
 					}).catch(alerts.error);
 				},
 			});
@@ -292,7 +292,7 @@ define('admin/manage/users', [
 							reason: formData.reason,
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.mute-success]]', '.mute', true);
+						onSuccess(`[[admin/manage/users:alerts.mute-success, ${uids.length}]]`, '.mute', true);
 					}).catch(alerts.error);
 				},
 			});
@@ -314,7 +314,7 @@ define('admin/manage/users', [
 							reason: formData.reason || '',
 						});
 					})).then(() => {
-						onSuccess('[[admin/manage/users:alerts.unmute-success]]', '.mute', false);
+						onSuccess(`[[admin/manage/users:alerts.unmute-success, ${uids.length}]]`, '.mute', false);
 					}).catch(alerts.error);
 				},
 			});
@@ -326,7 +326,7 @@ define('admin/manage/users', [
 				return;
 			}
 
-			socket.emit('admin.user.resetLockouts', uids, done('[[admin/manage/users:alerts.lockout-reset-success]]'));
+			socket.emit('admin.user.resetLockouts', uids, done(`[[admin/manage/users:alerts.lockout-reset-success, ${uids.length}]]`));
 		});
 
 		$('.change-email').on('click', function () {
@@ -427,6 +427,7 @@ define('admin/manage/users', [
 						className: 'btn-primary',
 						callback: function () {
 							changePassword(modal).then(() => {
+								alerts.success(`[[admin/manage/users:alerts.password-change-success, ${uids.length}]]`);
 								modal.modal('hide');
 							}).catch(alerts.error);
 							return false;
