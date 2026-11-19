@@ -4,7 +4,7 @@ const db = require('../../database');
 
 module.exports = {
 	name: 'Store controversial posts in user votes sorted set',
-	timestamp: Date.UTC(2026, 8, 25),
+	timestamp: Date.UTC(2026, 10, 19),
 	method: async function () {
 		// upgrade script taking too long? uncomment this.
 		// return;
