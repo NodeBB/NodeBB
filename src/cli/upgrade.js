@@ -32,9 +32,7 @@ const steps = {
 	schema: {
 		message: 'Updating NodeBB data store schema...',
 		handler: async function () {
-			await require('../database').init();
-			await require('../database').createIndices();
-			await require('../meta').configs.init();
+			await upgradePreSetup();
 			await require('../upgrade').run();
 		},
 	},
@@ -99,12 +97,18 @@ async function runUpgrade(upgrades, options) {
 		await runSteps(tasks, options);
 		return;
 	}
-	const db = require('../database');
-	await db.init();
-	await db.createIndices();
-	await require('../meta').configs.init();
+	await upgradePreSetup();
 	await require('../upgrade').runParticular(upgrades);
 	process.exit(0);
+}
+
+async function upgradePreSetup() {
+	const db = require('../database');
+	await db.init();
+	if (db.hasOwnProperty('createIndices')) {
+		await db.createIndices();
+	}
+	await require('../meta').configs.init();
 }
 
 exports.upgrade = runUpgrade;
