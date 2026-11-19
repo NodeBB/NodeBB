@@ -66,9 +66,6 @@ export default defineConfig([
 	...publicConfig,
 	...serverConfig,
 	{
-		// The source language files are JSON; the JSON language module gives the
-		// `nodebb/i18n-icu-plural` rule a JSON AST (Document/Object/Member/String) so
-		// it can flag the "(s)" plural hack in the IDE as the file is edited.
 		plugins: {
 			json,
 			nodebb: {
@@ -88,14 +85,32 @@ export default defineConfig([
 							};
 						},
 					},
+					'i18n-icu-syntax': {
+						meta: { type: 'problem', schema: [] },
+						create(context) {
+							return {
+								Member(node) {
+									if (node.value && node.value.type === 'String' && node.value.value.includes('{')) {
+										const problem = i18nPlural.validateICU(node.value.value);
+										if (problem) {
+											context.report({
+												node: node.value,
+												message: `Invalid ICU syntax in "${node.name.value}": ${problem}`,
+											});
+										}
+									}
+								},
+							};
+						},
+					},
 				},
 			},
 		},
 		files: ['public/language/en-GB/**/*.json'],
 		language: 'json/json',
 		rules: {
-			// warn, not error: the existing source strings predate the rule.
 			'nodebb/i18n-icu-plural': 'warn',
+			'nodebb/i18n-icu-syntax': 'error',
 		},
 	},
 	{

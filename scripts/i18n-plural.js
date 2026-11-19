@@ -2,10 +2,11 @@
 
 /*
  * Detection of the "(s)" plural hack in the source language files
- * (public/language/en-GB), shared by the two nudges:
+ * (public/language/en-GB), shared by the nudges:
  *
- *  - the eslint rule registered in eslint.config.mjs (`nodebb/i18n-icu-plural`),
- *    which reports every offending string in the source language as the file is
+ *  - the eslint rules registered in eslint.config.mjs (`nodebb/i18n-icu-plural`
+ *    as a suggestion/warn, and `nodebb/i18n-icu-syntax` as a problem/error),
+ *    which report every offending string in the source language as the file is
  *    edited (IDE squiggles), and
  *  - the commitlint rule in scripts/commitlint-plugin-i18n-plural.js
  *    (`i18n-icu-plural`), which reports only the strings a commit adds.
@@ -46,6 +47,130 @@ function describeOffenders(offenders) {
 		GUIDANCE,
 		`    ${EXAMPLE}`,
 	].join('\n');
+}
+
+// --- ICU syntax validation -------------------------------------------------
+//
+// Validates the plural subset of ICU MessageFormat that
+// public/src/modules/icu.common.js renders: `{name}` argument references and
+// `{name, plural, category {message} …}` with an `other` category. Messages
+// may nest braces (e.g. `{count}` inside a plural branch). `select` and other
+// argument types are not supported by the renderer.
+
+const IDENTIFIER = /^[A-Za-z_$][\w$]*$/;
+
+// split on `separator` at brace depth 0
+function splitTopLevel(str, separator) {
+	const parts = [];
+	let depth = 0;
+	let start = 0;
+	for (let i = 0; i < str.length; i++) {
+		const char = str[i];
+		if (char === '{') {
+			depth++;
+		} else if (char === '}') {
+			depth--;
+		} else if (char === separator && depth === 0) {
+			parts.push(str.slice(start, i));
+			start = i + 1;
+		}
+	}
+	parts.push(str.slice(start));
+	return parts;
+}
+
+// index of the `}` matching the `{` at openIdx, or -1 if unbalanced
+function findMatchingBrace(str, openIdx) {
+	let depth = 0;
+	for (let i = openIdx; i < str.length; i++) {
+		if (str[i] === '{') {
+			depth++;
+		} else if (str[i] === '}') {
+			depth--;
+			if (depth === 0) {
+				return i;
+			}
+		}
+	}
+	return -1;
+}
+
+// Validates the inside of a `{ … }` argument; returns an error string or null.
+function validateArgument(body) {
+	const fields = splitTopLevel(body, ',').map(field => field.trim());
+	const name = fields[0];
+	if (!IDENTIFIER.test(name)) {
+		return `invalid argument name "${name}"`;
+	}
+	const type = fields[1];
+	if (!type) {
+		return null;
+	}
+	if (type !== 'plural') {
+		return `unsupported ICU argument type "${type}"`;
+	}
+
+	const categories = [];
+	const rest = fields.slice(2).join(',');
+	let i = 0;
+	while (i < rest.length) {
+		while (i < rest.length && /\s/.test(rest[i])) {
+			i++;
+		}
+		if (i >= rest.length) {
+			break;
+		}
+		const openIdx = rest.indexOf('{', i);
+		if (openIdx === -1) {
+			return 'malformed plural: missing category body';
+		}
+		const category = rest.slice(i, openIdx).trim();
+		if (!category) {
+			return 'malformed plural: empty category name';
+		}
+		const closeIdx = findMatchingBrace(rest, openIdx);
+		if (closeIdx === -1) {
+			return 'missing closing brace';
+		}
+		categories.push(category);
+		i = closeIdx + 1;
+	}
+	if (!categories.length) {
+		return 'plural with no categories';
+	}
+	if (!categories.includes('other')) {
+		return 'plural missing "other" category';
+	}
+	return null;
+}
+
+/**
+ * Validate an ICU message (the plural subset rendered by icu.common.js).
+ * @param {string} message
+ * @returns {string|null} an error description, or null if the message is valid
+ */
+function validateICU(message) {
+	let i = 0;
+	while (i < message.length) {
+		const char = message[i];
+		if (char === '}') {
+			return 'unbalanced closing brace';
+		}
+		if (char !== '{') {
+			i++;
+			continue;
+		}
+		const closeIdx = findMatchingBrace(message, i);
+		if (closeIdx === -1) {
+			return 'missing closing brace';
+		}
+		const problem = validateArgument(message.slice(i + 1, closeIdx));
+		if (problem) {
+			return problem;
+		}
+		i = closeIdx + 1;
+	}
+	return null;
 }
 
 // The staged diff of the source language directory, one entry per offending key.
@@ -107,5 +232,6 @@ module.exports = {
 	isPluralHack,
 	describeString,
 	describeOffenders,
+	validateICU,
 	stagedSourceStrings,
 };
