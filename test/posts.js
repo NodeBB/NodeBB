@@ -172,6 +172,14 @@ describe('Post\'s', () => {
 			assert.strictEqual(score, 1);
 		});
 
+		it('should not add the pid to the :votesRatio sorted set without downvotes', async () => {
+			const cid = await posts.getCidByPid(postData.pid);
+			const { uid, pid } = postData;
+
+			const score = await db.sortedSetScore(`cid:${cid}:uid:${uid}:pids:votesRatio`, pid);
+			assert.strictEqual(score, null);
+		});
+
 		it('should get voters', (done) => {
 			socketPosts.getVoters({ uid: globalModUid }, { pid: postData.pid, cid: cid }, (err, data) => {
 				assert.ifError(err);
@@ -228,6 +236,14 @@ describe('Post\'s', () => {
 
 			const score = await db.sortedSetScore(`cid:${cid}:uid:${uid}:pids:votes`, pid);
 			assert.strictEqual(score, -1);
+		});
+
+		it('should add the pid to the :votesRatio sorted set with the upvote/downvote ratio', async () => {
+			const cid = await posts.getCidByPid(postData.pid);
+			const { uid, pid } = postData;
+
+			const score = await db.sortedSetScore(`cid:${cid}:uid:${uid}:pids:votesRatio`, pid);
+			assert.strictEqual(score, 0);
 		});
 
 		it('should prevent downvoting more than total daily limit', async () => {

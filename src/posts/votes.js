@@ -281,6 +281,11 @@ module.exports = function (Posts) {
 			} else {
 				await db.sortedSetRemove(`cid:${cid}:uid:${postData.uid}:pids:votes`, postData.pid);
 			}
+			if (postData.downvotes > 0) {
+				await db.sortedSetAdd(`cid:${cid}:uid:${postData.uid}:pids:votesRatio`, postData.upvotes / postData.downvotes, postData.pid);
+			} else {
+				await db.sortedSetRemove(`cid:${cid}:uid:${postData.uid}:pids:votesRatio`, postData.pid);
+			}
 		}
 
 		if (String(topicData.mainPid) !== String(postData.pid)) {

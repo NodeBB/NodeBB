@@ -77,17 +77,13 @@ const templateToData = {
 		crumb: '[[global:controversial]]',
 		getSets: async function (callerUid, userData) {
 			const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
-			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votes`);
+			return cids.map(c => `cid:${c}:uid:${userData.uid}:pids:votesRatio`);
 		},
 		getTopics: async (sets, req, start, stop) => {
-			let pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, '-inf', -1);
+			let pids = await db.getSortedSetRangeByScore(sets, start, stop - start + 1, 0, '+inf');
 			pids = await privileges.posts.filter('topics:read', pids, req.uid);
 			const postObjs = await posts.getPostSummaryByPids(pids, req.uid, { stripTags: false, extraFields: ['contentWarning'] });
 			return { posts: postObjs, nextStart: stop + 1 };
-		},
-		getItemCount: async (sets) => {
-			const counts = await Promise.all(sets.map(set => db.sortedSetCount(set, '-inf', -1)));
-			return counts.reduce((acc, val) => acc + val, 0);
 		},
 	},
 	'account/watched': {
