@@ -91,6 +91,10 @@ module.exports = function (User) {
 		});
 		uids = hookResult.uids;
 
+		if (searchBy === 'fullname') {
+			uids = await filterHiddenFullnames(uids, uid);
+		}
+
 		uids = await filterAndSortUids(uids, data);
 		if (data.hardCap > 0) {
 			uids.length = data.hardCap;
@@ -150,6 +154,16 @@ module.exports = function (User) {
 			return data.split(':').pop();
 		});
 		return uids;
+	}
+
+	async function filterHiddenFullnames(uids, callerUid) {
+		if (!uids.length || await User.isAdminOrGlobalMod(callerUid)) {
+			return uids;
+		}
+		const settings = await User.getMultipleUserSettings(uids);
+		return uids.filter((uid, index) => !utils.isNumber(uid) ||
+			String(uid) === String(callerUid) ||
+			settings[index].showfullname);
 	}
 
 	async function filterAndSortUids(uids, data) {
