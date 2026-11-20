@@ -443,6 +443,24 @@ describe('User', () => {
 			assert.equal(uid, data.users[0].uid);
 		});
 
+		it('should not match hidden full names for unprivileged users', async () => {
+			const uid = await User.create({ username: 'fullnamesearch3', fullname: 'Hidden Realname' });
+			let data = await apiUser.search({ uid: testUid }, { query: 'hidden realname', searchBy: 'fullname' });
+			assert.equal(data.users.length, 0);
+
+			data = await apiUser.search({ uid: adminUid }, { query: 'hidden realname', searchBy: 'fullname' });
+			assert.equal(data.users.length, 1);
+			assert.equal(uid, data.users[0].uid);
+
+			const { hideFullname } = meta.config;
+			meta.config.hideFullname = 0;
+			await User.setSetting(uid, 'showfullname', 1);
+			data = await apiUser.search({ uid: testUid }, { query: 'hidden realname', searchBy: 'fullname' });
+			meta.config.hideFullname = hideFullname;
+			assert.equal(data.users.length, 1);
+			assert.equal(uid, data.users[0].uid);
+		});
+
 		it('should return empty array if query is empty', async () => {
 			const data = await apiUser.search({ uid: testUid }, { query: '' });
 			assert.equal(data.users.length, 0);

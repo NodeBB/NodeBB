@@ -21,7 +21,7 @@ require('./topics/tags')(SocketTopics);
 require('./topics/merge')(SocketTopics);
 
 SocketTopics.postcount = async function (socket, tid) {
-	const canRead = await privileges.topics.can('topics:read', tid, socket.uid);
+	const canRead = await privileges.topics.canRead(tid, socket.uid);
 	if (!canRead) {
 		throw new Error('[[no-privileges]]');
 	}

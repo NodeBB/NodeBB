@@ -97,7 +97,8 @@ define('admin/appearance/skins', [
 	async function highlightSelectedTheme(themeId) {
 		$('[data-theme]')
 			.removeClass('selected')
-			.find('[data-action="use"]').each(function () {
+			.find('[data-action="use"]')
+			.each(function () {
 				if ($(this).parents('[data-theme]').attr('data-theme')) {
 					$(this)
 						.translateText('[[admin/appearance/skins:select-skin]]')
