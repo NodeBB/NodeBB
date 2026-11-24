@@ -1,13 +1,13 @@
 {
 	"general": "Général",
 	"private-groups": "Groupes privés",
-	"private-groups.help": "Si cette case est cochée, rejoindre un groupe nécessitera l'accord d'un propriétaire du groupe <em>(Par défaut : activé)</em>",
+	"private-groups.help": "Si activé, rejoindre un groupe nécessite l'approbation du propriétaire du groupe <em>(Par défaut : activé)</em>",
 	"private-groups.warning": "<strong>Attention !</strong> Si cette option est désactivée et que vous avez des groupes privés, ils deviendront automatiquement publics.",
 	"allow-multiple-badges": "Autoriser les badges multiples",
-	"allow-multiple-badges-help": "Cet affichage peut être utilisé pour permettre aux utilisateurs de sélectionner plusieurs badges de groupe, nécessite que votre thème le supporte.",
+	"allow-multiple-badges-help": "Cette option peut être utilisée pour permettre aux utilisateurs de sélectionner plusieurs badges de groupe, nécessite la prise en charge par le thème.",
 	"max-name-length": "Longueur maximale du nom de groupe",
 	"max-title-length": "Longueur maximale du titre de groupe",
 	"cover-image": "Image de couverture du groupe",
 	"default-cover": "Images de couverture par défaut",
-	"default-cover-help": "Ajouter des images de couvertures par défaut séparées par des virgules pour les groupes n'ayant pas téléversé d'image de couverture"
+	"default-cover-help": "Ajoutez des images de couverture par défaut, séparées par des virgules, pour les groupes qui n'ont pas d'image de couverture téléversée"
 }

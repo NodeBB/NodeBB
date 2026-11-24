@@ -1,14 +1,14 @@
 {
 	"notifications": "Notifications",
-	"disable-notification-emails": "Désactiver les e-mails de notification.",
+	"disable-notification-emails": "Désactiver les e-mails de notification",
 	"welcome-notification": "Notification de bienvenue",
-	"welcome-notification-link": "Lien de notification de bienvenue",
-	"welcome-notification-uid": "Notification de bienvenue de l'utilisateur (UID)",
-	"post-queue-notification-uid": "File d'attente utilisateur (UID)",
-	"notification-uid-help": "Si défini, la notification envoyée proviendra de cet utilisateur. Sinon, il s’agira d’une notification système.",
-	"notification-delay": "Délai d’envoi des e-mails de notification (secondes)",
-	"notification-delay-help": "Si l’utilisateur a lu la notification pendant ce délai, l’e-mail ne sera pas envoyé.<br/> Valeur par défaut : 60 secondes.",
+	"welcome-notification-link": "Lien de la notification de bienvenue",
+	"welcome-notification-uid": "Expéditeur de la notification de bienvenue (UID)",
+	"post-queue-notification-uid": "Expéditeur des notifications de la file d'attente (UID)",
+	"notification-uid-help": "Si défini, la notification envoyée proviendra de cet utilisateur. Sinon, il s'agira d'une notification système.",
+	"notification-delay": "Délai d'envoi des e-mails de notification (secondes)",
+	"notification-delay-help": "Si l'utilisateur a lu la notification dans ce délai, l'e-mail ne sera pas envoyé.<br/>Par défaut : 60 secondes.",
 	"tinycon.settings": "Tinycon",
 	"tinycon.notification-color": "Couleur de notification",
-	"tinycon.notification-background": "Couleur d’arrière-plan des notifications"
+	"tinycon.notification-background": "Arrière-plan de notification"
 }

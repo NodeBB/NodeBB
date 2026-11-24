@@ -1,11 +1,11 @@
 {
-    "uploading-file": "Envoi d'un fichier…",
-    "select-file-to-upload": "Sélectionner un ficher à envoyer",
-    "upload-success": "Fichier envoyé",
+    "uploading-file": "Envoi du fichier…",
+    "select-file-to-upload": "Sélectionnez un fichier à envoyer !",
+    "upload-success": "Fichier envoyé avec succès !",
     "maximum-file-size": "%1 ko maximum",
-    "no-uploads-found": "Aucun fichier envoyé",
-    "public-uploads-info": "Les téléchargements sont publics, tous les visiteurs peuvent les voir.",
+    "no-uploads-found": "Aucun envoi trouvé",
+    "public-uploads-info": "Les envois sont publics, tous les visiteurs peuvent les voir.",
     "private-uploads-info": "Les envois sont privés, seuls les utilisateurs connectés peuvent les voir.",
-    "delete-upload": "Supprimer le fichier",
-    "delete-upload-confirm": "Êtes-vous sûr de vouloir supprimer ce fichier ?"
+    "delete-upload": "Supprimer l'envoi",
+    "delete-upload-confirm": "Êtes-vous sûr de vouloir supprimer cet envoi ?"
 }

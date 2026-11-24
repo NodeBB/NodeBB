@@ -1,15 +1,15 @@
 {
     "tag": "Paramètres des mots-clés",
     "link-to-manage": "Gérer les mots-clés",
-    "system-tags": "Gestion des mots-clés",
+    "system-tags": "Mots-clés système",
     "system-tags-help": "Seuls les utilisateurs privilégiés pourront utiliser ces mots-clés.",
     "tags-per-topic": "Mots-clés par sujet",
-    "min-per-topic": "Nombre minimale de mots-clés par sujet",
-    "max-per-topic": "Nombre maximale de mots-clés par sujet",
+    "min-per-topic": "Nombre minimum de mots-clés par sujet",
+    "max-per-topic": "Nombre maximum de mots-clés par sujet",
     "min-length": "Longueur minimale des mots-clés",
     "max-length": "Longueur maximale des mots-clés",
-    "case-sensitive": "Tags sensibles à la casse",
-    "case-sensitive-help": "Lorsqu’elle est activée, la casse des tags est respectée (#NodeBB et #nodebb seront considérés comme des tags différents). Lorsqu’elle est désactivée, les tags sont normalisés en minuscules.",
+    "case-sensitive": "Mots-clés sensibles à la casse",
+    "case-sensitive-help": "Lorsque cette option est activée, les mots-clés sont sensibles à la casse (#NodeBB et #nodebb seront considérés comme des mots-clés différents). Lorsqu'elle est désactivée, les mots-clés sont normalisés en minuscules.",
     "related-topics": "Sujets connexes",
-    "max-related-topics": "Nombre maximum de sujets connexes à afficher (si supporté par le thème)"
+    "max-related-topics": "Nombre maximum de sujets connexes à afficher (si pris en charge par le thème)"
 }

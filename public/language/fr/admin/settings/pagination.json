@@ -1,12 +1,12 @@
 {
 	"pagination": "Paramètres de pagination",
-	"enable": "Utiliser la pagination des sujets et messages au lieu du défilement infini.",
+	"enable": "Paginer les sujets et les messages au lieu d'utiliser le défilement infini.",
 	"posts": "Pagination des messages",
 	"topics": "Pagination des sujets",
 	"posts-per-page": "Messages par page",
-	"max-posts-per-page": "Messages maximum par page",
-	"categories": "Pagination des categories",
+	"max-posts-per-page": "Nombre maximum de messages par page",
+	"categories": "Pagination des catégories",
 	"topics-per-page": "Sujets par page",
-	"max-topics-per-page": "Maximum de sujets par page",
+	"max-topics-per-page": "Nombre maximum de sujets par page",
 	"categories-per-page": "Catégories par page"
 }

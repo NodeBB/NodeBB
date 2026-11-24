@@ -1,13 +1,13 @@
 {
-    "username-email": "Identifiant ou email",
-    "username": "Identifiant",
+    "username-email": "Nom d'utilisateur / E-mail",
+    "username": "Nom d'utilisateur",
     "remember-me": "Se souvenir de moi ?",
     "forgot-password": "Mot de passe oublié ?",
     "alternative-logins": "Autres méthodes de connexion",
-    "failed-login-attempt": "Identification échouée",
-    "login-successful": "Vous êtes maintenant connecté !",
+    "failed-login-attempt": "Connexion échouée",
+    "login-successful": "Vous vous êtes connecté avec succès !",
     "dont-have-account": "Vous n'avez pas de compte ?",
-    "logged-out-due-to-inactivity": "Vous avez été déconnecté du <strong>Tableau de bord</strong> en raison de votre inactivité",
+    "logged-out-due-to-inactivity": "Vous avez été déconnecté du panneau d'administration en raison de votre inactivité",
     "caps-lock-enabled": "Le verrouillage des majuscules est activé",
-    "manage-social-web-handles": "Gérer les identifiants du Web social ouvert"
+    "manage-social-web-handles": "Gérer les identifiants Open Social Web"
 }

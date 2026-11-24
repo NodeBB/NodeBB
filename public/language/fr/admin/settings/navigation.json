@@ -6,14 +6,14 @@
 	"tooltip": "Info-bulle :",
 	"text": "Texte :",
 	"text-class": "Classe de texte : <small>optionnel</small>",
-	"class": "Classe : <small>facultatif</small>",
+	"class": "Classe : <small>optionnel</small>",
 	"id": "ID : <small>optionnel</small>",
 
 	"properties": "Propriétés :",
-	"show-to-groups": "Visible pour les groupes\n ",
+	"show-to-groups": "Visible pour les groupes :",
 	"open-new-window": "Ouvrir dans une nouvelle fenêtre",
 	"dropdown": "Menu déroulant",
-	"dropdown-placeholder": "Placer vos éléments de menu déroulant ci-dessous, par exemple : <br/>https://myforum.com",
+	"dropdown-placeholder": "Placez vos éléments de menu déroulant ci-dessous, par ex. : <br/>&lt;li&gt;&lt;a class=&quot;dropdown-item&quot; href&#x3D;&quot;https://myforum.com&quot;&gt;Link 1&lt;/a&gt;&lt;/li&gt;",
 
 	"btn.delete": "Supprimer",
 	"btn.disable": "Désactiver",

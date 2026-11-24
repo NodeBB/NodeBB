@@ -1,15 +1,15 @@
 {
-	"zero-is-disabled": "Entrez 0 pour désactiver cette restriction",
+	"zero-is-disabled": "Saisissez 0 pour désactiver cette restriction",
 	"chat-settings": "Paramètres des discussions",
 	"disable": "Désactiver les discussions",
-	"disable-editing": "Désactiver l'édition/la suppression des messages des discussions",
-	"disable-editing-help": "Les administrateurs et modérateurs globaux sont dispensés de cette restriction",
+	"disable-editing": "Désactiver la modification/suppression des messages de discussion",
+	"disable-editing-help": "Les administrateurs et modérateurs globaux sont exemptés de cette restriction",
 	"max-length": "Longueur maximale des messages de discussion",
-	"max-length-remote": "Longueur maximale des messages de discussions distante",
-	"max-length-remote-help": "Cette valeur est généralement fixée à un niveau supérieur à la taille maximale des messages de discussion pour les utilisateurs locaux, car les messages distants ont tendance à être plus longs (avec des mentions @, etc.).",
-	"max-chat-room-name-length": "Longueur maximale des noms de salons",
-	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
-	"delay": "Temps entre chaque message de discussion (en millisecondes)",
+	"max-length-remote": "Longueur maximale des messages de discussion distants",
+	"max-length-remote-help": "Cette valeur est généralement fixée à un niveau supérieur à la taille maximale des messages de discussion pour les utilisateurs locaux, car les messages distants ont tendance à être plus longs (avec des mentions @, etc.)",
+	"max-chat-room-name-length": "Longueur maximale des noms de salons de discussion",
+	"max-room-size": "Nombre maximum d'utilisateurs dans les salons de discussion",
+	"delay": "Délai entre les messages de discussion (ms)",
 	"restrictions.seconds-edit-after": "Nombre de secondes pendant lesquelles un message de discussion restera modifiable.",
-	"restrictions.seconds-delete-after": "Nombre de secondes pendant lesquelles un message de discussion reste supprimable."
+	"restrictions.seconds-delete-after": "Nombre de secondes pendant lesquelles un message de discussion restera supprimable."
 }

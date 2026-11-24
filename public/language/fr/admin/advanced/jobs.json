@@ -3,7 +3,7 @@
 	"job-name": "Nom de la tâche",
 	"schedule": "Planification",
 	"next-run": "Prochaine exécution",
-	"last-duration": "Durée précédente",
+	"last-duration": "Dernière durée",
 	"running": "En cours",
-	"active": "Actif"
+	"active": "Active"
 }

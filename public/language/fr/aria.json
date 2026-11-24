@@ -3,8 +3,8 @@
 	"topic-sort-option": "Option de tri des sujets, %1",
 	"user-avatar-for": "Avatar de l'utilisateur pour %1",
 	"profile-page-for": "Page de profil de l'utilisateur %1",
-	"user-watched-tags": "L'utilisateur a regardé les tags",
-	"delete-upload-button": "Supprimer le bouton de téléchargement",
+	"user-watched-tags": "Mots-clés suivis par l'utilisateur",
+	"delete-upload-button": "Bouton de suppression du fichier téléversé",
 	"group-page-link-for": "Lien vers la page de groupe pour %1",
-	"show-crossposts": "Afficher les messages imbriqués"
+	"show-crossposts": "Afficher les publications simultanées"
 }

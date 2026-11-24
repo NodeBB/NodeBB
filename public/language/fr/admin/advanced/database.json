@@ -1,9 +1,9 @@
 {
-	"x-b": "%1 B",
-	"x-mb": "%1 Mb",
-	"x-gb": "%1 Gb",
-	"uptime-seconds": "Disponibilité (secondes)",
-	"uptime-days": "Disponibilité (jours)",
+	"x-b": "%1 o",
+	"x-mb": "%1 Mo",
+	"x-gb": "%1 Go",
+	"uptime-seconds": "Temps de fonctionnement en secondes",
+	"uptime-days": "Temps de fonctionnement en jours",
 
 	"mongo": "MongoDB",
 	"mongo.version": "Version de MongoDB",
@@ -18,16 +18,16 @@
 	"mongo.resident-memory": "Mémoire résidente",
 	"mongo.virtual-memory": "Mémoire virtuelle",
 	"mongo.mapped-memory": "Mémoire mappée",
-	"mongo.bytes-in": "Données entrantes",
-	"mongo.bytes-out": "Données sortantes",
+	"mongo.bytes-in": "Octets entrants",
+	"mongo.bytes-out": "Octets sortants",
 	"mongo.num-requests": "Nombre de requêtes",
 	"mongo.raw-info": "Informations brutes MongoDB",
-	"mongo.unauthorized": "NodeBB n'a pas pu interroger MongoDB pour obtenir des statistiques. Assurez-vous que l'utilisateur utilisé par NodeBB possède le rôle &quot;clusterMonitor&quot; sur la base de données avec les droits &quot;admin&quot;.",
+	"mongo.unauthorized": "NodeBB n'a pas pu interroger la base de données MongoDB pour obtenir les statistiques pertinentes. Assurez-vous que l'utilisateur utilisé par NodeBB possède le rôle &quot;clusterMonitor&quot; pour la base de données &quot;admin&quot;.",
 
 	"redis": "Redis",
 	"redis.version": "Version de Redis",
 	"redis.keys": "Clés",
-	"redis.expires": "Expiration",
+	"redis.expires": "Expirations",
 	"redis.avg-ttl": "TTL moyen",
 	"redis.connected-clients": "Clients connectés",
 	"redis.connected-slaves": "Esclaves connectés",
@@ -46,7 +46,7 @@
 	"redis.keyspace-misses": "Échecs du Keyspace",
 	"redis.raw-info": "Informations brutes Redis",
 
-	"postgres": "PostgreSQL",
+	"postgres": "Postgres",
 	"postgres.version": "Version de PostgreSQL",
-	"postgres.raw-info": "Informations brutes PostgreSQL"
+	"postgres.raw-info": "Informations brutes Postgres"
 }

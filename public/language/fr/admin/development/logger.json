@@ -1,13 +1,13 @@
 {
 	"logger": "Journaliseur",
 	"logger-settings": "Réglages de la journalisation",
-	"description": "En activant les cases, vous recevrez des journaux dans votre terminal. Si vous spécifiez un chemin, les journaux y seront sauvegardés. La journalisation HTTP est utile pour collecter des statistiques sur les personnes qui accèdent à votre forum. En plus de la journalisation des requêtes HTTP, nous pouvons également journaliser les évènements socket.io. La journalisation socket.io, associée au monitoring redis-cli, peut-être très utile pour apprendre les rouages de NodeBB.",
-	"explanation": "Cochez ou décochez simplement les réglages de la journalisation pour l'activer ou la désactiver. Aucun redémarrage n'est nécessaire.",
+	"description": "En cochant les cases, vous recevrez les journaux dans votre terminal. Si vous indiquez un chemin, les journaux seront alors enregistrés dans un fichier à la place. La journalisation HTTP est utile pour collecter des statistiques sur qui accède à quoi, et quand, sur votre forum. En plus de la journalisation des requêtes HTTP, nous pouvons également journaliser les évènements socket.io. La journalisation socket.io, combinée à redis-cli monitor, peut être très utile pour comprendre le fonctionnement interne de NodeBB.",
+	"explanation": "Cochez ou décochez simplement les réglages de la journalisation pour l'activer ou la désactiver à la volée. Aucun redémarrage n'est nécessaire.",
 	"enable-http": "Activer la journalisation HTTP",
-	"enable-socket": "Activer la journalisation des événements socket.io",
-	"file-path": "Chemin vers les fichiers journaux",
+	"enable-socket": "Activer la journalisation des évènements socket.io",
+	"file-path": "Chemin vers le fichier journal",
 	"file-path-placeholder": "/path/to/log/file.log ::: laisser vide pour journaliser vers votre terminal",
 
 	"control-panel": "Panneau de contrôle de la journalisation",
-	"update-settings": "Mettre à jour la configuration"
+	"update-settings": "Mettre à jour les réglages de la journalisation"
 }

@@ -1,6 +1,6 @@
 {
-	"lead": "Configurez votre liste noire ici.",
-	"description": "Quelques fois, bannir un utilisateur ne suffit pas. Restreindre l'accès au forum à une adresse IP ou à un ensemble d'adresses IP peut être le meilleur moyen de protection. Dans ce cas, vous pouvez ajouter les adresses IP problématiques ou des plages d'adresses à cette liste noire, ce qui empêchera l'identification et la création de nouveau compte.",
+	"lead": "Configurez votre liste noire d'IP ici.",
+	"description": "Parfois, le bannissement d'un compte utilisateur n'est pas suffisamment dissuasif. D'autres fois, restreindre l'accès au forum à une IP spécifique ou à une plage d'IP est le meilleur moyen de protéger un forum. Dans ces cas, vous pouvez ajouter les adresses IP problématiques ou des blocs CIDR entiers à cette liste noire, et elles ne pourront plus se connecter ni créer de nouveau compte.",
 	"active-rules": "Règles actives",
 	"validate": "Valider la liste noire",
 	"apply": "Appliquer la liste noire",
@@ -8,12 +8,12 @@
 	"hint-1": "Définissez une seule adresse IP par ligne. Vous pouvez ajouter des blocs IP, du moment qu'ils respectent le format CIDR (par ex. <code>192.168.100.0/22</code>).",
 	"hint-2": "Vous pouvez ajouter un commentaire en commençant la ligne par le symbole <code>#</code>.",
 
-	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> out of <strong>{count}</strong> rule valid.} other {<strong>{%1}</strong> out of <strong>{count}</strong> rules valid.}}",
-	"validate.x-invalid": "{count, plural, one {The following <strong>{count}</strong> rule is invalid:} other {The following <strong>{count}</strong> rules are invalid:}}",
+	"validate.x-valid": "{count, plural, one {<strong>{%1}</strong> sur <strong>{count}</strong> règle valide.} many {<strong>{%1}</strong> sur <strong>{count}</strong> règles valides.} other {<strong>{%1}</strong> sur <strong>{count}</strong> règles valides.}}",
+	"validate.x-invalid": "{count, plural, one {La <strong>{count}</strong> règle suivante est invalide :} many {Les <strong>{count}</strong> règles suivantes sont invalides :} other {Les <strong>{count}</strong> règles suivantes sont invalides :}}",
 
 	"alerts.applied-success": "Liste noire appliquée",
 
-	"analytics.blacklist-hourly": "<strong>Image 1</strong> - Nombre de visites de la liste noire par heure",
-	"analytics.blacklist-daily": "<strong>Image 2</strong> - Nombre de visites de la liste noire par jour",
-	"ip-banned": "IP bannies"
+	"analytics.blacklist-hourly": "<strong>Image 1</strong> &ndash; Nombre de visites de la liste noire par heure",
+	"analytics.blacklist-daily": "<strong>Image 2</strong> &ndash; Nombre de visites de la liste noire par jour",
+	"ip-banned": "IP bannie"
 }

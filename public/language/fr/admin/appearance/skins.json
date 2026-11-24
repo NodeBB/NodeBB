@@ -1,18 +1,18 @@
 {
 	"skins": "Habillages",
-	"bootswatch-skins": "Habillages de lancement",
+	"bootswatch-skins": "Habillages Bootswatch",
 	"custom-skins": "Habillages personnalisés",
 	"add-skin": "Ajouter un habillage",
-	"save-custom-skins": "Sauvegarder les habillages personnalisés",
-	"save-custom-skins-success": "Habillages personnalisés sauvegardé avec succès",
+	"save-custom-skins": "Enregistrer les habillages personnalisés",
+	"save-custom-skins-success": "Habillages personnalisés enregistrés avec succès",
 	"custom-skin-name": "Nom de l'habillage personnalisé",
 	"custom-skin-variables": "Variables de l'habillage personnalisé",
-	"loading": "Chargements des habillages…",
+	"loading": "Chargement des habillages...",
 	"homepage": "Page d'accueil",
 	"select-skin": "Sélectionner l'habillage",
 	"revert-skin": "Rétablir l'habillage",
 	"current-skin": "Habillage actuel",
 	"skin-updated": "Habillage mis à jour",
-	"applied-success": "L'habillage %1 a été appliqué avec succès.",
-	"revert-success": "Couleurs de l'habillage remises par défaut"
+	"applied-success": "L'habillage %1 a été appliqué avec succès",
+	"revert-success": "Habillage rétabli aux couleurs de base"
 }

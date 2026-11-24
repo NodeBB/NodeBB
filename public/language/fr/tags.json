@@ -1,6 +1,6 @@
 {
     "all-tags": "Tous les mots-clés",
-    "no-tag-topics": "Il n'y a aucun sujet ayant ce mot-clé",
+    "no-tag-topics": "Il n'y a aucun sujet ayant ce mot-clé.",
     "no-tags-found": "Aucun mot-clé trouvé",
     "tags": "Mots-clés",
     "enter-tags-here": "Saisir des mots-clés, %1 - %2 caractères.",
@@ -8,11 +8,11 @@
     "no-tags": "Il n'y a pas encore de mots-clés.",
     "select-tags": "Sélectionner les mots-clés",
     "tag-whitelist": "Liste blanche de mots-clés",
-    "watching": "Abonné",
+    "watching": "Suivi",
     "not-watching": "Ne plus suivre",
-    "watching.description": "Être notifier des nouveaux sujets.",
-    "not-watching.description": "Ne pas être notifier des nouveaux sujets.",
-    "following-tag.message": "Vous recevrez désormais des notifications lorsque quelqu'un publiera un sujet avec ce mot-clés.",
-    "following-tag.message-no-notifications": "You are now following this tag, but your notification setting is set to none.",
-    "not-following-tag.message": "Vous ne recevrez plus de notifications lorsque quelqu'un publiera un sujet avec ce mot-clés."
+    "watching.description": "Me notifier des nouveaux sujets.",
+    "not-watching.description": "Ne pas me notifier des nouveaux sujets.",
+    "following-tag.message": "Vous recevrez désormais des notifications lorsque quelqu'un publiera un sujet avec ce mot-clé.",
+    "following-tag.message-no-notifications": "Vous suivez désormais ce mot-clé, mais votre paramètre de notification est défini sur aucune.",
+    "not-following-tag.message": "Vous ne recevrez pas de notifications lorsque quelqu'un publiera un sujet avec ce mot-clé."
 }
