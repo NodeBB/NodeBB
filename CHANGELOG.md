@@ -1,3 +1,32 @@
+#### v4.16.9 (2026-11-20)
+
+##### Chores
+
+*  incrementing version number - v4.16.9 (9df08d2c)
+*  up eslint-config-nodebb (8a5db4f1)
+*  up eslint-config-nodebb (9d1178bb)
+*  up eslint-config-nodebb (9d59e475)
+*  update changelog for v4.16.8 (bf8a7cb0)
+
+##### Bug Fixes
+
+*  fullname enumeration via user search (2cd47f8d)
+*  remove logs in register/abort that logs entire session (c42651e8)
+*  don't crash on redis, closes #15141 (c4b32035)
+*  closes #15138, cast string 'true'/'false' to boolean for trust_proxy (9c276101)
+*  open chat modal at its full width (#15127) (5456eac3)
+*  run createIndices on full upgrade (schema step), not only runParticular (#15126) (005c0624)
+*  call createIndices in upgrade, closes #15123 (69e8f6b6)
+*  use privileges.topics.canRead which handles scheduled deleted topics (7bf1874d)
+
+##### Other Changes
+
+*  fix some lint issues (3df12281)
+
+##### Tests
+
+*  add missing tests for teaser and replies routes (64872d1a)
+
 #### v4.16.8 (2026-11-12)
 
 ##### Chores
