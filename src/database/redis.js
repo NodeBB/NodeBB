@@ -37,10 +37,6 @@ redisModule.init = async function (opts) {
 	redisModule.client = await connection.connect(opts || nconf.get('redis'));
 };
 
-redisModule.createIndices = async function () {
-	// Redis has no indices to create
-};
-
 redisModule.createSessionStore = async function (options) {
 	const meta = require('../meta');
 	const { RedisStore } = require('connect-redis');
