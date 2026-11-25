@@ -111,6 +111,7 @@ define('admin/manage/group', [
 				memberPostCids: $('#memberPostCids').val(),
 				disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
 				disableLeave: $('#group-disableLeave').is(':checked'),
+				chatContactable: $('#group-chatContactable').is(':checked'),
 			}).then(() => {
 				const newName = $('#change-group-name').val();
 

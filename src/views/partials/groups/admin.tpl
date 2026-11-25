@@ -39,6 +39,10 @@
 					<label class="form-check-label" for="disableLeave">{{tx("groups:details.disableLeave")}}</label>
 					<input class="form-check-input" name="disableLeave" id="disableLeave" type="checkbox"{{{if group.disableLeave}}} checked{{{end}}}>
 				</div>
+				<div class="form-check mb-3">
+					<label class="form-check-label" for="chatContactable">{{tx("groups:details.chatContactable")}}</label>
+					<input class="form-check-input" name="chatContactable" id="chatContactable" type="checkbox"{{{ if group.chatContactable }}} checked{{{ end }}}>
+				</div>
 
 				<div class="mb-3">
 					<label class="form-label" for="memberPostCids">{{tx("groups:details.member-post-cids")}}</label>
