@@ -351,6 +351,11 @@ middleware.requireAPIReAuth = function ({ reauthWindowMinutes = 2 } = {}) {
 			return await controllers.helpers.formatApiResponse(401, res);
 		}
 
+		// bearer token sessions exempt from reauth challenge
+		if (typeof req.headers.authorization === 'string' && req.headers.authorization.startsWith('Bearer ')) {
+			return next();
+		}
+
 		if (isReAuthValid(req, reauthWindowMinutes)) {
 			return next();
 		}
