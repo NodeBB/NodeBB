@@ -1,10 +1,10 @@
 {
 	"queue": "File d'attente",
 	"no-users-in-queue": "Il n'y a aucun utilisateur dans la file d'attente d'inscription.",
-	"description": "Pour activer cette fonctionnalité, allez dans <a href=\"%1\">Paramètres &rarr; Utilisateur &rarr; Inscription des utilisateurs</a> et définissez <strong>Type d'inscription</strong> sur \"Approbation de l'administrateur\".",
+	"description": "Pour activer cette fonctionnalité, allez dans <a href=\"%1\">Réglages &rarr; Utilisateurs &rarr; Inscription des utilisateurs</a> et définissez <strong>Type d'inscription</strong> sur \"Approbation de l'administrateur\".",
 	"requests": "Demandes d'inscription",
 	"suspected-spam": "Spam suspecté",
-	"suspected-spam-description": "Ces inscriptions correspondent à un ou plusieurs signaux de spam connus. Une correspondance n'est pas une preuve — vérifiez les détails avant de rejeter.",
+	"suspected-spam-description": "Ces inscriptions correspondent à un ou plusieurs signaux de spam connus. Une correspondance n'est pas une preuve — vérifiez les informations avant de rejeter.",
 	"select-all": "Tout sélectionner",
 	"reject-all": "Tout rejeter",
 	"reject-all-confirm": "Voulez-vous rejeter toutes les demandes d'inscription de cette page ?",

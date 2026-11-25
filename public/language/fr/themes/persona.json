@@ -1,10 +1,10 @@
 {
     "settings.title": "Configuration du thème",
-    "settings.intro": "Vous pouvez personnaliser les paramètres de votre thème ici. Les paramètres sont stockés sur une base par appareil, vous pouvez donc avoir différents paramètres sur chacun de vos appareils (téléphone, tablette, ordinateur de bureau, etc)",
-    "settings.mobile-menu-side": "Changer la position du menu en version mobile",
+    "settings.intro": "Vous pouvez personnaliser les paramètres de votre thème ici. Les paramètres sont enregistrés par appareil, vous pouvez donc avoir des paramètres différents sur chacun de vos appareils (téléphone, tablette, ordinateur de bureau, etc.)",
+    "settings.mobile-menu-side": "Inverser le côté de chaque menu mobile",
     "settings.autoHidingNavbar": "Masquer automatiquement la barre de navigation lors du défilement",
-    "settings.autoHidingNavbar-xs": "Très petits écrans (ex : téléphones en mode portrait, etc)",
-    "settings.autoHidingNavbar-sm": "Petits écrans (ex : téléphones, certaines tablettes, etc)",
-    "settings.autoHidingNavbar-md": "Écrans moyens (ex : tablettes en mode paysage, etc)",
-    "settings.autoHidingNavbar-lg": "Grands écrans (ex : ordinateurs de bureau, etc)"
+    "settings.autoHidingNavbar-xs": "Très petits écrans (par ex. téléphones en mode portrait)",
+    "settings.autoHidingNavbar-sm": "Petits écrans (par ex. téléphones, certaines tablettes)",
+    "settings.autoHidingNavbar-md": "Écrans moyens (par ex. tablettes en mode paysage)",
+    "settings.autoHidingNavbar-lg": "Grands écrans (par ex. ordinateurs de bureau)"
 }

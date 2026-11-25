@@ -1,7 +1,7 @@
 {
     "title": "Non lus",
-    "no-unread-topics": "Aucun sujet non lu.",
-    "load-more": "Charger la suite",
+    "no-unread-topics": "Il n'y a aucun sujet non lu.",
+    "load-more": "Charger plus",
     "mark-as-read": "Marquer comme lu",
     "mark-as-unread": "Marquer comme non lu",
     "selected": "Sélectionnés",
@@ -9,8 +9,8 @@
     "all-categories": "Toutes les catégories",
     "topics-marked-as-read.success": "Sujets marqués comme lus !",
     "all-topics": "Tous les sujets",
-    "new-topics": "Nouveau sujet",
+    "new-topics": "Nouveaux sujets",
     "watched-topics": "Sujets surveillés",
-    "unreplied-topics": "Sujets sans réponses",
-    "multiple-categories-selected": "Sélection multiple"
+    "unreplied-topics": "Sujets sans réponse",
+    "multiple-categories-selected": "Plusieurs sélectionnées"
 }
