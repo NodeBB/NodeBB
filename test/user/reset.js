@@ -117,12 +117,44 @@ describe('Password reset (library methods)', () => {
 describe('locks', () => {
 	let uid;
 	let email;
+	let username;
 	beforeEach(async () => {
-		const username = utils.generateUUID().slice(0, 10);
+		username = utils.generateUUID().slice(0, 10);
 		email = `${username}@nodebb.org`;
 		uid = await user.create({ username, email }, {
 			emailVerification: 'verify',
 		});
+	});
+
+	it('should send a reset email for an exact username', async () => {
+		const code = await user.reset.send(username);
+		assert.strictEqual(parseInt(await db.getObjectField('reset:uid', code), 10), uid);
+	});
+
+	it('should share the per-user rate limit between username and email requests', async () => {
+		await user.reset.send(username);
+		await assert.rejects(user.reset.send(email), {
+			message: '[[error:reset-rate-limited]]',
+		});
+	});
+
+	it('should not generate a reset code for an unknown username', async () => {
+		const count = await db.sortedSetCard('reset:issueDate');
+		await assert.rejects(user.reset.send(utils.generateUUID().slice(0, 10)), {
+			message: '[[error:invalid-email]]',
+		});
+		assert.strictEqual(await db.sortedSetCard('reset:issueDate'), count);
+	});
+
+	it('should not generate a reset code when the username has no confirmed email mapping', async () => {
+		const username = utils.generateUUID().slice(0, 10);
+		const uid = await user.create({ username });
+		await user.setUserField(uid, 'email', `${username}@unconfirmed.test`);
+		const count = await db.sortedSetCard('reset:issueDate');
+		await assert.rejects(user.reset.send(username), {
+			message: '[[error:invalid-email]]',
+		});
+		assert.strictEqual(await db.sortedSetCard('reset:issueDate'), count);
 	});
 
 	it('should disallow reset request if one was made within the minute', async () => {
