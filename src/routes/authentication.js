@@ -46,21 +46,36 @@ Auth.getLoginStrategies = function () {
 
 Auth.verifyToken = async function (token, done) {
 	const tokenObj = await api.utils.tokens.get(token);
-	const uid = tokenObj ? tokenObj.uid : undefined;
-
-	if (uid !== undefined) {
-		if (parseInt(uid, 10) > 0) {
-			done(null, {
-				uid: uid,
-			});
-		} else {
-			done(null, {
-				master: true,
-			});
-		}
-	} else {
-		done(false);
+	if (!tokenObj) {
+		return done(false);
 	}
+
+	// Expired tokens (OAuth access tokens carry an expiry) are rejected
+	if (tokenObj.expires && tokenObj.expires < Date.now()) {
+		return done(false);
+	}
+
+	const {uid} = tokenObj;
+	if (parseInt(uid, 10) > 0) {
+		const user = { uid };
+		if (tokenObj.type === 'oauth' && tokenObj.clientId) {
+			user.oauth = { scopes: tokenObj.scopes || [], clientId: tokenObj.clientId };
+		}
+		return done(null, user);
+	}
+
+	if (tokenObj.type === 'oauth' && tokenObj.clientId) {
+		// client_credentials token: acts as the client itself, not as a user
+		return done(null, {
+			uid: 0,
+			clientId: tokenObj.clientId,
+			oauth: { scopes: tokenObj.scopes || [], clientId: tokenObj.clientId },
+		});
+	}
+
+	return done(null, {
+		master: true,
+	});
 };
 
 Auth.reloadRoutes = async function (params) {

@@ -1,0 +1,41 @@
+OAuthClient:
+  type: object
+  description: An OAuth 2.0 client registered with NodeBB
+  properties:
+    id:
+      type: string
+      description: The client identifier
+    name:
+      type: string
+      description: A human-readable name for the client
+    description:
+      type: string
+      description: Optional description of the client
+    redirectUris:
+      type: array
+      description: The URIs the client is allowed to redirect to after authorization
+      items:
+        type: string
+    grants:
+      type: array
+      description: The grant types the client may use
+      items:
+        type: string
+    scopes:
+      type: array
+      description: The scopes the client may request
+      items:
+        type: string
+    public:
+      type: boolean
+      description: Whether the client is public (no client secret, PKCE required)
+    disabled:
+      type: boolean
+      description: Whether the client is disabled
+    createdAt:
+      type: number
+      description: Unix timestamp (ms) of when the client was created
+    createdAtISO:
+      type: string
+      nullable: true
+      description: ISO 8601 timestamp of when the client was created

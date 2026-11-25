@@ -14,6 +14,7 @@ const adminController = {
 	groups: require('./admin/groups'),
 	digest: require('./admin/digest'),
 	api: require('./admin/api'),
+	oauth: require('./admin/oauth'),
 	appearance: require('./admin/appearance'),
 	federation: require('./admin/federation'),
 	extend: {

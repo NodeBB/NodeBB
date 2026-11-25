@@ -1,0 +1,32 @@
+{
+	"lead-text": "From this page you can manage the OAuth 2.0 clients that are allowed to access NodeBB on behalf of its users.",
+	"intro": "External applications can obtain OAuth 2.0 access tokens via the authorization code grant (with PKCE), which they can then use to authenticate against the Write API. Tokens issued to clients are scoped, and can be revoked at any time.",
+	"create-client": "Create Client",
+	"update-client": "Update Client",
+
+	"name": "Name",
+	"description": "Description",
+	"client-id": "Client ID",
+	"redirect-uris": "Redirect URIs",
+	"redirect-uris-help": "One URI per line. The client will only be redirected back to one of these URIs after authorization.",
+	"grants": "Grant types",
+	"scopes": "Scopes",
+	"type": "Type",
+	"created": "Created",
+	"actions": "Actions",
+	"public": "Public",
+	"public-help": "Public clients (e.g. browser-based applications) have no client secret and must use PKCE when requesting authorization codes.",
+	"confidential": "Confidential",
+	"disabled": "Disabled",
+	"edit": "Edit",
+	"rotate-secret": "Rotate client secret",
+	"delete": "Delete",
+
+	"delete-confirm": "Are you sure you wish to delete this client? All tokens issued to it will be revoked and it will no longer be able to request authorization.",
+	"secret-once-title": "Copy Client Secret Now",
+	"secret-once-warning": "This client secret will not be shown again. Store it securely.",
+	"copy-secret": "Copy",
+	"secret-copied": "Client secret copied to clipboard",
+	"secret-copy-failed": "Failed to copy client secret",
+	"secret-rotated": "Client secret has been rotated"
+}

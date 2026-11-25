@@ -1,0 +1,90 @@
+post:
+  tags:
+    - admin
+  summary: Create an OAuth 2.0 client
+  description: Creates a new OAuth 2.0 client. The client secret is returned once, in the `secret` property of the response, and cannot be retrieved again.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - name
+            - redirectUris
+          properties:
+            name:
+              type: string
+              description: A human-readable name for the client
+              example: "My Application"
+            description:
+              type: string
+              description: Optional description of the client
+              example: "My awesome application"
+            redirectUris:
+              type: array
+              description: The URIs the client is allowed to redirect to after authorization
+              items:
+                type: string
+              example:
+                - "https://example.com/callback"
+            grants:
+              type: array
+              description: The grant types the client may use
+              items:
+                type: string
+                enum:
+                  - authorization_code
+                  - refresh_token
+                  - client_credentials
+              example:
+                - "authorization_code"
+                - "refresh_token"
+            scopes:
+              type: array
+              description: The scopes the client may request
+              items:
+                type: string
+              example:
+                - "topics:read"
+                - "posts:read"
+            public:
+              type: boolean
+              description: Whether the client is public (no client secret, PKCE required)
+              example: false
+            disabled:
+              type: boolean
+              description: Whether the client is disabled
+              example: false
+  responses:
+    '201':
+      description: Client created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              client:
+                $ref: ../../../components/schemas/admin/oauthClient.yaml#/OAuthClient
+              secret:
+                type: string
+                description: The client secret. This is the only time it will be shown.
+    '400':
+      $ref: ../../../components/responses/400.yaml#/400
+get:
+  tags:
+    - admin
+  summary: List OAuth 2.0 clients
+  description: Returns a list of all OAuth 2.0 clients.
+  responses:
+    '200':
+      description: A list of OAuth 2.0 clients
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              clients:
+                type: array
+                items:
+                  $ref: ../../../components/schemas/admin/oauthClient.yaml#/OAuthClient
