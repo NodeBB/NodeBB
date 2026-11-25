@@ -62,8 +62,19 @@ Upgrade.getAll = async function () {
 Upgrade.appendPluginScripts = async function (files) {
 	// Find all active plugins
 	const activePlugins = await plugins.getActive();
-	activePlugins.forEach((plugin) => {
-		const configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
+	for (const plugin of activePlugins) {
+		let configPath = path.join(paths.nodeModules, plugin, 'plugin.json');
+		// eslint-disable-next-line no-await-in-loop
+		if (!await file.exists(configPath)) {
+			configPath = path.join(paths.nodeModules, plugin, 'plugin.js');
+		}
+		// eslint-disable-next-line no-await-in-loop
+		if (!await file.exists(configPath)) {
+			winston.error(`Missing plugin scripts for ${plugin} -- ignoring`);
+			// eslint-disable-next-line no-continue
+			continue;
+		}
+
 		try {
 			const pluginConfig = require(configPath);
 			if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
@@ -76,7 +87,7 @@ Upgrade.appendPluginScripts = async function (files) {
 				winston.error(e.stack);
 			}
 		}
-	});
+	}
 	return files;
 };
 
