@@ -211,11 +211,12 @@ export function handleBulkActions() {
 	document.querySelector('[component="flags/bulk-actions"]').addEventListener('click', function (e) {
 		const subselector = e.target.closest('[data-action]');
 		if (subselector) {
+			const flagIds = getSelected();
 			const action = subselector.getAttribute('data-action');
 			let confirmed;
 			if (action === 'bulk-purge') {
 				confirmed = new Promise((resolve, reject) => {
-					modals.confirm('[[flags:confirm-purge]]', (confirmed) => {
+					modals.confirm(`[[flags:confirm-purge, ${flagIds.length}]]`, (confirmed) => {
 						if (confirmed) {
 							resolve();
 						} else {
@@ -224,7 +225,6 @@ export function handleBulkActions() {
 					});
 				});
 			}
-			const flagIds = getSelected();
 			const promises = flagIds.map(async (flagId) => {
 				const data = {};
 				switch (action) {
