@@ -9,7 +9,7 @@
     "enter-username": "Meklējamais lietotājvārds",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Ielādēt vairāk",
-    "users-found-search-took": "Atrasti %1 lietotājs(-i)! Meklēšana ilga %2 sekundes.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtrēt pēc",
     "online-only": "Tikai tiešsaistē",
     "invite": "Uzaicināt",

@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Meldung widerrufen?",
 
 	"bulk-actions": "Massenaktionen",
-	"bulk-resolve": "Markierung(en) bereiningen",
-	"confirm-purge": "Bist du sicher, dass du diese Markierungen dauerhaft löschen möchtest?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Löschen der Markierungen abgebrochen",
-	"bulk-purge": "Lösche Markierung(en)",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 Meldungen aktualisiert",
 	"flagged-timeago": "Markiert <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatisch gemeldet] %1 Abwertungen erhalten."

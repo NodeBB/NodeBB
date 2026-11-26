@@ -9,7 +9,7 @@
     "enter-username": "Digite um nome de usuário para pesquisar",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Carregar Mais",
-    "users-found-search-took": "%1 usuário(s) encontrado(s)! A pesquisa levou %2 segundos.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtrar Por",
     "online-only": "Apenas Online",
     "invite": "Convidar",

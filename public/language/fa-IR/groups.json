@@ -3,7 +3,7 @@
     "all-groups": "همه‌ی گروه‌ها",
     "groups": "گروه‌ها",
     "members": "اعضا",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "مشاهده گروه",
     "owner": "مالک گروه",
     "new-group": "ساخت گروه جدید",

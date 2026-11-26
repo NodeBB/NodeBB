@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results-matching": "Habonetse ibintu (ikintu) %1 gihura na \"%2\". (Byafashe amasegonda %3)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Nta cyabonetse",
     "advanced-search": "Gushaka Byisumbuye",
     "in": "Muri",

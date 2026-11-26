@@ -9,7 +9,7 @@
     "enter-username": "Masukkan nama pengguna untuk carian",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Muat lagi",
-    "users-found-search-took": "%1 pengguna dijumpai! Pencarian ambil masa %2 saat.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Saring dengan",
     "online-only": "Atas talian sahaja",
     "invite": "Jemput",

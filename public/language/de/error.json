@@ -264,8 +264,8 @@
 	"no-session-found": "Keine Login-Sitzung gefunden!",
 	"not-in-room": "Benutzer nicht im Raum",
 	"cant-kick-self": "Du kannst dich nicht selber aus der Gruppe entfernen.",
-	"no-users-selected": "Kein(e) Benutzer ausgewählt",
-	"no-groups-selected": "Keine Gruppe(n) ausgewählt",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Ungültiger Startseitenpfad",
 
 	"invalid-session": "Ungültige Session",

@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results-matching": "%1 tulemus(t) mis vastavad otsingule \"%2\", (%3 sekundit)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Vasteid ei leitud",
     "advanced-search": "Täpsem otsing",
     "in": "Kus kohast",

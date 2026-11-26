@@ -264,8 +264,8 @@
 	"no-session-found": "Жодної сесії не знайдено!",
 	"not-in-room": "Користувача немає в кімнаті",
 	"cant-kick-self": "Ви не можете вигнати самі себе з групи",
-	"no-users-selected": "Не вибрано жодного користувача",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Невірний шлях на головну",
 
 	"invalid-session": "Invalid Session",

@@ -264,8 +264,8 @@
 	"no-session-found": "未登录！",
 	"not-in-room": "用户已不在聊天室中",
 	"cant-kick-self": "您不能把自己踢出群组",
-	"no-users-selected": "尚未选择用户",
-	"no-groups-selected": "没有用户组被选中",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "无效的首页路径",
 
 	"invalid-session": "无效的会话",

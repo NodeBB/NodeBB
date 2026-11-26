@@ -264,8 +264,8 @@
 	"no-session-found": "Log in ဝင်ရောက်ထားခြင်း မတွေ့ရှိရပါ!",
 	"not-in-room": "အသုံးပြုသူသည် အခန်းထဲတွင် မရှိပါ",
 	"cant-kick-self": "သင့်ကိုယ်သင် အဖွဲ့ထဲမှ နှင်ထုတ်၍မရပါ",
-	"no-users-selected": "အသုံးပြုသူ ရွေးချယ်ထားခြင်း မရှိပါ",
-	"no-groups-selected": "အဖွဲ့ ရွေးချယ်ထားခြင်း မရှိပါ",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "ပင်မစာမျက်နှာ လမ်းကြောင်း မမှန်ကန်ပါ",
 
 	"invalid-session": "Session မမှန်ကန်ပါ",

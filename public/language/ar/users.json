@@ -9,7 +9,7 @@
     "enter-username": "أدخل اسم مستخدم للبحث",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "حمل المزيد",
-    "users-found-search-took": "تم إيجاد %1 مستخدمـ(ين)! استغرق البحث %2 ثانية.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "تصفية بحسب",
     "online-only": "المتصلون فقط",
     "invite": "دعوة",

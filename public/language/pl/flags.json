@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Wycofać zgłoszenie?",
 
 	"bulk-actions": "Operacje masowe",
-	"bulk-resolve": "Oznacz flagi jako rozwiązane",
-	"confirm-purge": "Czy jesteś pewien trwałego usunięcia tych flag?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Wymazywanie flag anulowane",
-	"bulk-purge": "Wymaż flagi",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "Zaktualizowano %1 flag",
 	"flagged-timeago": "Oznaczone <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatyczna Flaga] Otrzymano %1 głosów przeciw."

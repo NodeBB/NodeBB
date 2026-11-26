@@ -9,7 +9,7 @@
     "enter-username": "Введите имя пользователя для поиска",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Загрузить еще",
-    "users-found-search-took": "Найдено пользователей: %1! Поиск занял %2 с.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Сортировать по",
     "online-only": "Только онлайн",
     "invite": "Пригласить",

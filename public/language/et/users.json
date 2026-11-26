@@ -9,7 +9,7 @@
     "enter-username": "Sisesta kasutajanimi, keda soovid otsida",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Lae veel",
-    "users-found-search-took": "%1 kasutaja(t) leiti! Otsing kestis %2 sekundit.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtreeri",
     "online-only": "Ainult seesolevad",
     "invite": "Kutsuge",

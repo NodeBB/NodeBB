@@ -9,7 +9,7 @@
     "enter-username": "Уведіть ім'я користувача для пошуку",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Завантажити більше",
-    "users-found-search-took": "%1 користувач(ів) знайдено! Пошук тривав %2 секунди.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Фільтрувати за",
     "online-only": "Лише в мережі",
     "invite": "Запросити",

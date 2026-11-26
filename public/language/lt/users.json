@@ -9,7 +9,7 @@
     "enter-username": "Įrašykite vartotojo vardą paieškai",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Įkelti daugiau",
-    "users-found-search-took": "Rasta %1 vartotojas(-ai)! Paieška užtruko %2 sekundes.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtruoti pagal",
     "online-only": "Tik prisijunge",
     "invite": "Pakviesti",

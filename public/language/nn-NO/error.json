@@ -264,8 +264,8 @@
 	"no-session-found": "Ingen innloggingssesjon funne!",
 	"not-in-room": "Brukar ikkje i rommet",
 	"cant-kick-self": "Du kan ikkje sparke deg sjølv ut av gruppa",
-	"no-users-selected": "Ingen brukarar valt",
-	"no-groups-selected": "Ingen grupper valt",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Ugyldig heimesiderute",
 
 	"invalid-session": "Ugyldig sesjon",

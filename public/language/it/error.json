@@ -264,8 +264,8 @@
 	"no-session-found": "Nessuna sessione di accesso trovata!",
 	"not-in-room": "L'utente non è in questa stanza",
 	"cant-kick-self": "Non puoi espellerti dal gruppo",
-	"no-users-selected": "Nessun utente selezionato",
-	"no-groups-selected": "Nessun gruppo(i) selezionato",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Percorso della pagina iniziale non valido",
 
 	"invalid-session": "Sessione non valida",

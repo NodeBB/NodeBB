@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results-matching": "%1 збіг(ів) по запиту \"%2\"  (%3 секунд)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Збіги не знайдено",
     "advanced-search": "Розширений пошук",
     "in": "В",

@@ -3,7 +3,7 @@
     "all-groups": "Bütün qruplar",
     "groups": "Qruplar",
     "members": "Üzvlər",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Qrupa bax",
     "owner": "Qrup sahibi",
     "new-group": "Yeni qrup yarat",

@@ -264,8 +264,8 @@
 	"no-session-found": "Prisijungimo sesija nerasta!",
 	"not-in-room": "Vartotojas ne svetainėje",
 	"cant-kick-self": "Negalite išmesti savęs iš grupės",
-	"no-users-selected": "Nepasirinktas joks vartotojas",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Blogas kelias į pagrindinį puslapį",
 
 	"invalid-session": "Invalid Session",

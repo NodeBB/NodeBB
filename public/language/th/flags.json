@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Rescind Report?",
 
 	"bulk-actions": "จัดการทีละมากๆ",
-	"bulk-resolve": "แก้ปัญหารายงาน",
-	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Flag Purge Cancelled",
-	"bulk-purge": "Purge Flag(s)",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "รายงาน %1 อันถูกอัพเดท",
 	"flagged-timeago": "ถูกรายงาน <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[รายงานอัตโนมัติ] ถูกโหวดลง %1 ครั้ง"

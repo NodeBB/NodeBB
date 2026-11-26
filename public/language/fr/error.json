@@ -264,8 +264,8 @@
 	"no-session-found": "Pas de session de connexion trouvée !",
 	"not-in-room": "L'utilisateur n'est pas dans le salon",
 	"cant-kick-self": "Vous ne pouvez pas vous exclure vous-même du groupe",
-	"no-users-selected": "Aucun utilisateur(s) sélectionné(s)",
-	"no-groups-selected": "Aucun groupe(s) sélectionné(s)",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Route de la page d'accueil invalide",
 
 	"invalid-session": "Session invalide",

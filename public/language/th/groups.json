@@ -3,7 +3,7 @@
     "all-groups": "กลุ่มทั้งหมด",
     "groups": "กลุ่ม",
     "members": "สมาชิก",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "ดูกลุ่ม",
     "owner": "เจ้าของกลุ่ม",
     "new-group": "สร้างกลุ่มใหม่",

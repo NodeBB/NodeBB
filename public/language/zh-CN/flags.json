@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "撤销举报？",
 
 	"bulk-actions": "批量操作",
-	"bulk-resolve": "处理举报",
-	"confirm-purge": "您确定要永久删除这些举报吗？",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "已取消清除举报",
-	"bulk-purge": "清除举报",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "已更新%1个举报",
 	"flagged-timeago": "举报于 <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "【自动举报】收到 %1 个踩"

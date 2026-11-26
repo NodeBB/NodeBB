@@ -264,8 +264,8 @@
 	"no-session-found": "Сессия входа не найдена!",
 	"not-in-room": "Пользователь отсутствует в этой комнате",
 	"cant-kick-self": "Удалить себя из группы невозможно.",
-	"no-users-selected": "Выберите одного или нескольких пользователей",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Неверная ссылка на домашнюю страницу",
 
 	"invalid-session": "Недействительная сессия",

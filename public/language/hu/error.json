@@ -264,8 +264,8 @@
 	"no-session-found": "Nem található bejelentkezési munkamenet",
 	"not-in-room": "A felhasználó nincs a szobában",
 	"cant-kick-self": "Nem rúghatod ki magad a csoportból",
-	"no-users-selected": "Nincs felhasználó kiválasztva",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Érvénytelen főoldal elérési útvonal",
 
 	"invalid-session": "Invalid Session",

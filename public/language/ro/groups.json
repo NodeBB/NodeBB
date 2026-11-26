@@ -3,7 +3,7 @@
     "all-groups": "All groups",
     "groups": "Grupuri",
     "members": "Members",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Vezi Grup",
     "owner": "Propietar de group",
     "new-group": "Crează un grup nou",

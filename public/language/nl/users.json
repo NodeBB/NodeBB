@@ -9,7 +9,7 @@
     "enter-username": "Vul een gebruikersnaam in om te zoeken",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Meer laden...",
-    "users-found-search-took": "%1 gebruiker(s) gevonden! Zoekactie duurde %2 seconden.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filter op",
     "online-only": "Online",
     "invite": "Uitnodigen",

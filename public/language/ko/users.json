@@ -9,7 +9,7 @@
     "enter-username": "검색할 사용자 이름 입력",
     "search-user-for-chat": "채팅할 사용자를 검색",
     "load-more": "더 보기",
-    "users-found-search-took": "%1 명의 사용자가 발견되었습니다! 검색에 걸린 시간: %2 초",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "필터링 기준",
     "online-only": "온라인만",
     "invite": "초대",

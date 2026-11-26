@@ -264,8 +264,8 @@
 	"no-session-found": "로그인 세션이 없습니다!",
 	"not-in-room": "사용자가 방에 없습니다",
 	"cant-kick-self": "자기 자신을 그룹에서 추방할 수 없습니다",
-	"no-users-selected": "사용자가 선택되지 않았습니다",
-	"no-groups-selected": "그룹이 선택되지 않았습니다",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "유효하지 않은 홈페이지 경로",
 
 	"invalid-session": "잘못된 세션",

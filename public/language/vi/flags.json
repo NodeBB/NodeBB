@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Hủy Bỏ Báo Cáo?",
 
 	"bulk-actions": "‎Hành động hàng loạt‎",
-	"bulk-resolve": "Xử Lý Cờ",
-	"confirm-purge": "Bạn có chắc chắn muốn xóa vĩnh viễn những cờ này không?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Đã Hủy Loại Bỏ Cờ",
-	"bulk-purge": "Loại Bỏ Cờ",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 cờ đã cập nhật",
 	"flagged-timeago": "Đã gắn cờ <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Cờ Tự Động] Nhận được %1 phản đối."

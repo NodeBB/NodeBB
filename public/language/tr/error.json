@@ -264,8 +264,8 @@
 	"no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
 	"not-in-room": "Odada kullanıcı yok",
 	"cant-kick-self": "Kendinizi gruptan atamazsınız.",
-	"no-users-selected": "Seçili kullanıcı(lar) bulunamadı",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Geçersiz anasayfa yolu",
 
 	"invalid-session": "Geçersiz Oturum",

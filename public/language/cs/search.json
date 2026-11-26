@@ -1,6 +1,6 @@
 {
     "type-to-search": "Začněte psát pro hledání",
-    "results-matching": "Počet výsledků pro „%2“: %1, (%3 sekund)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Nic nebylo nalezeno",
     "advanced-search": "Pokročilé hledání",
     "in": "v",

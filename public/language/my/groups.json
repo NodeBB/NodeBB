@@ -3,7 +3,7 @@
     "all-groups": "အဖွဲ့အားလုံး",
     "groups": "အဖွဲ့များ",
     "members": "အဖွဲ့ဝင်များ",
-    "x-members": "%1 အဖွဲ့ဝင်",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "အဖွဲ့ကြည့်ရန်",
     "owner": "အဖွဲ့ပိုင်ရှင်",
     "new-group": "အဖွဲ့အသစ်ဖန်တီးရန်",

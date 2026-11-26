@@ -3,7 +3,7 @@
     "all-groups": "すべてのグループ",
     "groups": "グループ",
     "members": "メンバー",
-    "x-members": "%1人",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "グループを表示",
     "owner": "グループオーナー",
     "new-group": "新しいグループを作成",

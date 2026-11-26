@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "לבטל דיווח?",
 
 	"bulk-actions": "פעולות כלליות",
-	"bulk-resolve": "השלמת דיווחים",
-	"confirm-purge": "האם למחוק לצמיתות את הדיווחים הללו?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "מחיקת הדיווח בוטל",
-	"bulk-purge": "מחיקת דיווחים",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 דיווחים עודכנו",
 	"flagged-timeago": "מדווחים <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[דיווח אוטומטי] פוסט זה קיבל %1 הצבעות למטה."

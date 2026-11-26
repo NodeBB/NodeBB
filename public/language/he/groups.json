@@ -3,7 +3,7 @@
     "all-groups": "כל הקבוצות",
     "groups": "קבוצות",
     "members": "חברים",
-    "x-members": "%1 חבר(ים)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "הצגת קבוצה",
     "owner": "מנהל קבוצה",
     "new-group": "יצירת קבוצה חדשה",

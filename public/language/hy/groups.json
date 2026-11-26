@@ -3,7 +3,7 @@
     "all-groups": "Բոլոր խմբերը",
     "groups": "Խմբեր",
     "members": "Անդամներ",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Դիտել խումբը",
     "owner": "Խմբի սեփականատեր",
     "new-group": "Ստեղծել նոր խումբ",

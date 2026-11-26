@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "ပြန်ရုပ်သိမ်းရန်အတည်ပြုပါ",
 
 	"bulk-actions": "အစုလိုက်လုပ်ဆောင်ချက်များ",
-	"bulk-resolve": "အစုလိုက်ဖြေရှင်းမည်",
-	"confirm-purge": "အပြီးဖျက်ရန်အတည်ပြုပါ",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "အပြီးဖျက်မှုပယ်ဖျက်ပြီး",
-	"bulk-purge": "အစုလိုက်အပြီးဖျက်မည်",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "အစုလိုက်အောင်မြင်",
 	"flagged-timeago": "%1 အကြာက အလံပြထား",
   	"auto-flagged": "အလိုအလျောက်အလံပြ"

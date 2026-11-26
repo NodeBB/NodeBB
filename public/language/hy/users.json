@@ -9,7 +9,7 @@
     "enter-username": "Գրեք անուն և որոնեք",
     "search-user-for-chat": "Որոնեք օգտատեր՝ զրույց սկսելու համար",
     "load-more": "Բեռնել ավելին",
-    "users-found-search-took": "Գտնվեց %1 օգտվող։ Որոնումը տևեց %2 վայրկյան։",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Ֆիլտրել ըստ",
     "online-only": "Միայն առցանցները",
     "invite": "Հրավիրել",

@@ -9,7 +9,7 @@
     "enter-username": "Gimme y'er handle",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Load More",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filter By",
     "online-only": "Online only",
     "invite": "Invite",

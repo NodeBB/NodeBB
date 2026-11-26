@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Trekke tilbake rapporten?",
 
 	"bulk-actions": "Massehandlingar",
-	"bulk-resolve": "Løys alle",
-	"confirm-purge": "Er du sikker på at du vil slette desse flagga?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Merking sletting avbroten",
-	"bulk-purge": "Slett merking(ar)",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "Alle vart handsama med suksess",
 	"flagged-timeago": "Rapportert for %1 sidan",
   	"auto-flagged": "Automatisk rapportert"

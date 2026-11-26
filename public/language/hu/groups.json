@@ -3,7 +3,7 @@
     "all-groups": "All groups",
     "groups": "Csoportok",
     "members": "Felhasználók",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Csoport megtekintés",
     "owner": "Csoport tulajdonosa",
     "new-group": "Új csoport létrehozása",

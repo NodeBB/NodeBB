@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "報告を取り消しますか？",
 
 	"bulk-actions": "一括操作",
-	"bulk-resolve": "フラグを解決",
-	"confirm-purge": "これらのフラグを完全に削除してもよろしいですか？",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "フラグの完全削除をキャンセルしました",
-	"bulk-purge": "フラグを完全削除",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1件のフラグを更新しました",
 	"flagged-timeago": "フラグ付け <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[自動フラグ] %1件の低評価を受けました。"

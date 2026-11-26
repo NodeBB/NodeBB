@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "رپورٹ منسوخ کریں؟",
 
 	"bulk-actions": "اجتماعی اقدامات",
-	"bulk-resolve": "رپورٹ(س) حل کریں",
-	"confirm-purge": "کیا آپ واقعی ان رپورٹس کو مستقل طور پر حذف کرنا چاہتے ہیں؟",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "رپورٹ کا حذف منسوخ کر دیا گیا",
-	"bulk-purge": "رپورٹ(س) حذف کریں",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 رپورٹس اپ ڈیٹ ہو گئی ہیں",
 	"flagged-timeago": "رپورٹ کیا گیا <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[خودکار رپورٹ] %1 منفی ووٹس موصول ہوئے۔"

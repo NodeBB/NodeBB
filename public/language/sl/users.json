@@ -9,7 +9,7 @@
     "enter-username": "Za iskanje vpiši uporabniško ime",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Naloži več",
-    "users-found-search-took": "%1 uporabnik(ov) najdenih! Iskanje je potrebovalo %2 sekunde.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtriraj po",
     "online-only": "Samo dosegljivi",
     "invite": "Povabi",

@@ -264,8 +264,8 @@
 	"no-session-found": "Prijavne seje ni mogoče najti!",
 	"not-in-room": "Uporabnika ni v sobi.",
 	"cant-kick-self": "Sebe ne morete umakniti iz skupine.",
-	"no-users-selected": "Ni izbranih uporabnikov.",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Napačna pot do domače strani.",
 
 	"invalid-session": "Invalid Session",

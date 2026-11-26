@@ -264,8 +264,8 @@
 	"no-session-found": "לא נמצאו סשני התחברות!",
 	"not-in-room": "משתמש זה אינו בחדר הצ'אט",
 	"cant-kick-self": "אינכם יכולים להסיר את עצמכם מהקבוצה",
-	"no-users-selected": "לא נבחרו משתמשים",
-	"no-groups-selected": "לא נבחרו קבוצות",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "כתובת דף הבית שגויה",
 
 	"invalid-session": "סשן לא תקין",

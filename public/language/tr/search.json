@@ -1,6 +1,6 @@
 {
     "type-to-search": "Aramak için yazın",
-    "results-matching": "%1 tane “%2“ bulundu (%3 saniye)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Hiç eşleşme bulunamadı",
     "advanced-search": "Gelişmiş Arama",
     "in": "Konum:",

@@ -9,7 +9,7 @@
     "enter-username": "Etsi syöttämällä käyttäjätunnus",
     "search-user-for-chat": "Aloita keskustelu etsimällä käyttäjä",
     "load-more": "Lataa lisää",
-    "users-found-search-took": "%1 käyttäjä(ä) löytyi! Haku kesti %2 sekuntia.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Suodata",
     "online-only": "Vain paikalla olevat",
     "invite": "Kutsu",

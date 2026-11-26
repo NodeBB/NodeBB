@@ -264,8 +264,8 @@
 	"no-session-found": "Nenhuma sessão de login encontrada!",
 	"not-in-room": "O usuário não está na sala",
 	"cant-kick-self": "Você não pode kickar a si mesmo do grupo",
-	"no-users-selected": "Nenhuma escolha de usuário(s) foi feita",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Rota de página inicial inválida",
 
 	"invalid-session": "Sessão Inválida",

@@ -264,8 +264,8 @@
 	"no-session-found": "کوئی لاگ ان سیشن نہیں ملا!",
 	"not-in-room": "صارف کمرے میں نہیں ہے",
 	"cant-kick-self": "آپ خود کو گروپ سے باہر نہیں نکال سکتے",
-	"no-users-selected": "کوئی صارف منتخب نہیں کیا گیا",
-	"no-groups-selected": "کوئی گروپ منتخب نہیں کیا گیا",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "غلط ہوم پیج کا راستہ",
 
 	"invalid-session": "سیشن ختم ہو چکا ہے",

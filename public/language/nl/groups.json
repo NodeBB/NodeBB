@@ -3,7 +3,7 @@
     "all-groups": "All groups",
     "groups": "Groepen",
     "members": "Members",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Bekijk groep",
     "owner": "Groepseigenaar",
     "new-group": "Nieuwe groep aanmaken",

@@ -264,8 +264,8 @@
 	"no-session-found": "لم دخول مسجل!",
 	"not-in-room": "المستخدم غير موجود في الغرفة.",
 	"cant-kick-self": "لا يمكنك طرد نفسك من المجموعة.",
-	"no-users-selected": "لا يوجد مستخدم محدد.",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Invalid home page route",
 
 	"invalid-session": "Invalid Session",

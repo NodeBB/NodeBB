@@ -264,8 +264,8 @@
 	"no-session-found": "ログインセッションが見つかりません！",
 	"not-in-room": "ユーザーが部屋にいません",
 	"cant-kick-self": "あなたは、グループから自分自身をキックすることが出来ません",
-	"no-users-selected": "ユーザーが選択されていません",
-	"no-groups-selected": "グループが選択されていません",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "ホームページのルートが無効",
 
 	"invalid-session": "無効なセッション",

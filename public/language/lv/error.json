@@ -264,8 +264,8 @@
 	"no-session-found": "Aktīvo sesiju nevarēja atrast!",
 	"not-in-room": "Lietotājs nav tērzētavā",
 	"cant-kick-self": "Nevar sevi izslēgt no grupas",
-	"no-users-selected": "Nav atlasīts neviens lietotājs(-i)",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Nederīgs sākumlapas ceļš",
 
 	"invalid-session": "Invalid Session",

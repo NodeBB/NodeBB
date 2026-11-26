@@ -9,7 +9,7 @@
     "enter-username": "Ange ett användarnamn för att söka",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Ladda fler",
-    "users-found-search-took": "%1 användare hittades! Sökningen tog %2 sekunder.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtrera på",
     "online-only": "Endast online",
     "invite": "Bjud in",

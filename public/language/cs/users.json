@@ -9,7 +9,7 @@
     "enter-username": "Zadej uživatelské jméno k hledání",
     "search-user-for-chat": "Hledání uživatele pro zahájení konverzace",
     "load-more": "Načíst další",
-    "users-found-search-took": "Nalezeno %1 uživatel(ů) za %2 vteřiny.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtrovat dle",
     "online-only": "Pouze připojené",
     "invite": "Pozvat",

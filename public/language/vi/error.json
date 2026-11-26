@@ -264,8 +264,8 @@
 	"no-session-found": "Không có phiên đăng nhập!",
 	"not-in-room": "Người dùng không có trong phòng",
 	"cant-kick-self": "Bạn không thể tự loại mình khỏi nhóm",
-	"no-users-selected": "Không chọn người nào",
-	"no-groups-selected": "Không chọn nhóm nào",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ",
 
 	"invalid-session": "Phiên Không Hợp Lệ",

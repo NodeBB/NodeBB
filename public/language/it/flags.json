@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Annullare il rapporto?",
 
 	"bulk-actions": "Azioni in blocco",
-	"bulk-resolve": "Risolvi segnalazione(i)",
-	"confirm-purge": "Sei sicuro di voler eliminare definitivamente queste segnalazioni?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Elimina definitivamente delle segnalazioni eliminate",
-	"bulk-purge": "Elimina definitivamente segnalazione(i)",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 segnalazioni aggiornate",
 	"flagged-timeago": "Segnalato <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Contrassegnato automaticamente] Ha ricevuto %1 voti negativi."

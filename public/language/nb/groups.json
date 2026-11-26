@@ -3,7 +3,7 @@
     "all-groups": "Alle grupper",
     "groups": "Grupper",
     "members": "Medlemmer",
-    "x-members": "%1 medlem(er)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Vis gruppe",
     "owner": "Gruppeeier",
     "new-group": "Opprett ny gruppe",

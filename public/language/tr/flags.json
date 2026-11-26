@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Rescind Report?",
 
 	"bulk-actions": "Toplu Aksiyonlar",
-	"bulk-resolve": "Şikayetleri Çözümle",
-	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Flag Purge Cancelled",
-	"bulk-purge": "Purge Flag(s)",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 şikayet güncellendi",
 	"flagged-timeago": "Şikayet edildi <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Otomatik Şikayet] %1 tane eksi oy aldı."

@@ -3,7 +3,7 @@
     "all-groups": "Tüm gruplar",
     "groups": "Gruplar",
     "members": "Üyeler",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Grubu Gör",
     "owner": "Grup Kurucusu",
     "new-group": "Yeni Grup Oluştur",

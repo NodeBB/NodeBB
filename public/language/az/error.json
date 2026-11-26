@@ -264,8 +264,8 @@
 	"no-session-found": "Giriş sessiyası tapılmadı!",
 	"not-in-room": "İstifadəçi otaqda deyil",
 	"cant-kick-self": "Özünüzü qrupdan çıxara bilməzsiniz",
-	"no-users-selected": "İstifadəçi(lər) seçilməyib",
-	"no-groups-selected": "Heç bir qrup(lar) seçilməyib",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Etibarsız ana səhifə marşrutu",
 
 	"invalid-session": "Etibarsız sessiya",

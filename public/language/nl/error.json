@@ -264,8 +264,8 @@
 	"no-session-found": "Geen login sessie gevonden!",
 	"not-in-room": "Gebruiker niet in de chat",
 	"cant-kick-self": "Je kunt jezelf niet uit een groep schoppen",
-	"no-users-selected": "Geen gebruiker(s) geselecteerd",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Onbekende homepage route",
 
 	"invalid-session": "Ongeldige Sessie",

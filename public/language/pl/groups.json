@@ -3,7 +3,7 @@
     "all-groups": "Wszystkie grupy",
     "groups": "Grupy",
     "members": "Użytkownicy",
-    "x-members": "%1 użytkownik(-ów)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Obejrzyj grupę",
     "owner": "Właściciel grupy",
     "new-group": "Stwórz nową grupę",

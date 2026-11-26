@@ -3,7 +3,7 @@
     "all-groups": "All groups",
     "groups": "Grupos",
     "members": "Members",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Ver grupo",
     "owner": "Dono do grupo",
     "new-group": "Crear un novo grupo",

@@ -264,8 +264,8 @@
 	"no-session-found": "هیچ session ورودی یافت نشد!",
 	"not-in-room": "هیچ کاربری در این گفتگو نیست",
 	"cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید",
-	"no-users-selected": "هیچ کاربر(های) انتخاب نشده",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "مسیر صفحه اصلی نامعتبر است",
 
 	"invalid-session": "seesion نامعتبر، دوباره وارد حساب کاربری خود شوید",

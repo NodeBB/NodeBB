@@ -1,6 +1,6 @@
 {
     "type-to-search": "Digita per cercare",
-    "results-matching": "%1 risultato(i) corrispondente(i) \"%2\", (%3 secondi)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Nessuna corrispondenza trovata",
     "advanced-search": "Ricerca Avanzata",
     "in": "In",

@@ -9,7 +9,7 @@
     "enter-username": "Skriv inn et brukernavn for å søke",
     "search-user-for-chat": "Søk etter en bruker for å starte chat",
     "load-more": "Last flere",
-    "users-found-search-took": "%1 bruker(e) funnet. Søket tok %2 sekunder.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtrer etter",
     "online-only": "Kun tilkoblede",
     "invite": "Invitér",

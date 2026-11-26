@@ -3,7 +3,7 @@
     "all-groups": "All groups",
     "groups": "Grupas",
     "members": "Members",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Skatīt grupas",
     "owner": "Grupas īpašnieks",
     "new-group": "Izveidot jaunu grupu",

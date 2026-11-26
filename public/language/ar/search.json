@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results-matching": "%1 نتيجة (نتائج) موافقة لـ \"%2\", (%3 ثواني)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "لم يتم العثور على نتائج.",
     "advanced-search": "بحث متقدم",
     "in": "في",

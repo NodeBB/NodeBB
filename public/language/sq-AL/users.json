@@ -9,7 +9,7 @@
     "enter-username": "Kërko një përdorues",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Ngarko më shumë",
-    "users-found-search-took": "%1 përdorues u gjet (en) ! Kërkimi zgjati %2 sekonda.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtro sipas",
     "online-only": "Online vetëm",
     "invite": "Fto",

@@ -9,7 +9,7 @@
     "enter-username": "Nhập tên đăng nhập để tìm",
     "search-user-for-chat": "Tìm kiếm người dùng để bắt đầu trò chuyện",
     "load-more": "Tải Thêm",
-    "users-found-search-took": "Tìm được %1 người! Tìm kiếm mất %2 giây.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Lọc Theo",
     "online-only": "Chỉ trực tuyến",
     "invite": "Mời",

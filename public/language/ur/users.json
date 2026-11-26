@@ -9,7 +9,7 @@
     "enter-username": "تلاش کرنے کے لیے صارف نام درج کریں",
     "search-user-for-chat": "گفتگو شروع کرنے کے لیے صارف تلاش کریں",
     "load-more": "مزید لوڈ کریں",
-    "users-found-search-took": "%1 صارفین ملے! تلاش میں %2 سیکنڈ لگے۔",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "فلٹر کریں",
     "online-only": "صرف آن لائن والے",
     "invite": "دعوت دیں",

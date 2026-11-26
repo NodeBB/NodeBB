@@ -9,7 +9,7 @@
     "enter-username": "กรอกชื่อผู้ใช้เพื่อค้นหา",
     "search-user-for-chat": "ค้นหาผู้ใช้เพื่อเริ่มต้นแชท",
     "load-more": "โหลดเพิ่มเติม",
-    "users-found-search-took": "พบผู้ใช้  %1 คน! การค้นหาใช้เวลาทั้งหมด %2 วินาที",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "กรองโดย",
     "online-only": "กำลังออนไลน์เท่านั้น",
     "invite": "เชิญ",

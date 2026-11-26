@@ -9,7 +9,7 @@
     "enter-username": "הכניסו שם משתמש לחיפוש",
     "search-user-for-chat": "חפשו משתמש כדי להתחיל צ'אט",
     "load-more": "טעינת עוד",
-    "users-found-search-took": "%1 משתמשים נמצאו! החיפוש ארך %2 שניות.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "סינון לפי",
     "online-only": "מחוברים בלבד",
     "invite": "הזמנה",

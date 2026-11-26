@@ -3,7 +3,7 @@
     "all-groups": "Kaikki ryhmät",
     "groups": "Ryhmät",
     "members": "Members",
-    "x-members": "%1 member(s)",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "Tarkaste ryhmää",
     "owner": "Ryhmän omistaja",
     "new-group": "Luo uusi ryhmä",

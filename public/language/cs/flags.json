@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Zrušit hlášení?",
 
 	"bulk-actions": "Bulk Actions",
-	"bulk-resolve": "Resolve Flag(s)",
-	"confirm-purge": "Opravdu chcete trvale smazat tato označení?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Mazání označení zrušeno",
-	"bulk-purge": "Odstranit označení",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 flags updated",
 	"flagged-timeago": "Označeno <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Auto Flagged] Received %1 downvotes."

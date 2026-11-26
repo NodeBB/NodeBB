@@ -1,6 +1,6 @@
 {
     "type-to-search": "Type to search",
-    "results-matching": "%1 rezultāts(-i), kas atbilst \"%2\", (%3 sekundes)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Sakritības nav atrastas",
     "advanced-search": "Meklēt izvērsti",
     "in": "Kur",

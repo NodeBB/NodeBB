@@ -1,6 +1,6 @@
 {
     "type-to-search": "輸入搜尋",
-    "results-matching": "%1 個符合 \"%2\", (%3 秒)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "無符合的結果",
     "advanced-search": "進階搜尋",
     "in": "在",

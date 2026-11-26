@@ -9,7 +9,7 @@
     "enter-username": "Унесите корисничко име за претрагу",
     "search-user-for-chat": "Потражите корисника да бисте започели ћаскање",
     "load-more": "Учитај више",
-    "users-found-search-took": "Нађено је %1 корисника! Претрага је завршена за %2 секунде.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Филтрирај према",
     "online-only": "Само корисници на мрежи",
     "invite": "Позови",

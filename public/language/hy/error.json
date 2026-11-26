@@ -264,8 +264,8 @@
 	"no-session-found": "Մուտքի սեսիա չի գտնվել:",
 	"not-in-room": "Օգտատերը սենյակում չէ",
 	"cant-kick-self": "Դուք չեք կարող ձեզ հեռացնել խմբից",
-	"no-users-selected": "Ընտրված օգտատեր(ներ) չկա",
-	"no-groups-selected": "Ընտրված չէ խումբ(ներ):",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Գլխավոր էջի անվավեր ուղեգիծ",
 
 	"invalid-session": "Անվավեր սեսիա",

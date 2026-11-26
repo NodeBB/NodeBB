@@ -9,7 +9,7 @@
     "enter-username": "輸入使用者名搜索",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "載入更多",
-    "users-found-search-took": "找到 %1 位使用者！耗時 %2 秒。",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "過濾選項",
     "online-only": "只看在線",
     "invite": "邀請註冊",

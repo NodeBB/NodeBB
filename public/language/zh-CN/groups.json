@@ -3,7 +3,7 @@
     "all-groups": "所有群组",
     "groups": "群组",
     "members": "成员",
-    "x-members": "%1 位成员",
+    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
     "view-group": "查看群组",
     "owner": "群组所有者",
     "new-group": "创建群组",

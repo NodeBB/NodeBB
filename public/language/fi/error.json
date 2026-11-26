@@ -264,8 +264,8 @@
 	"no-session-found": "No login session found!",
 	"not-in-room": "Käyttäjä ei ole huoneessa",
 	"cant-kick-self": "Et voi potkaista itseäsi pois ryhmästä",
-	"no-users-selected": "No user(s) selected",
-	"no-groups-selected": "No group(s) selected",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "Virheellinen aloitussivun polku",
 
 	"invalid-session": "Invalid Session",

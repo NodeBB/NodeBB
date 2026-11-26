@@ -9,7 +9,7 @@
     "enter-username": "Aramak için bir kullanıcı adı girin",
     "search-user-for-chat": "Sohbet başlatmak için kullanıcıyı arayın:",
     "load-more": "Daha Fazla Yükle",
-    "users-found-search-took": "%1 kullanıcı(lar) bulundu! Arama %2 saniye sürdü.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Şu şekilde filtrele",
     "online-only": "Sadece çevrimiçi",
     "invite": "Davet et",

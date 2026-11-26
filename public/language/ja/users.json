@@ -9,7 +9,7 @@
     "enter-username": "ユーザー名を入力",
     "search-user-for-chat": "チャットを開始するユーザーを検索",
     "load-more": "もっと見る",
-    "users-found-search-took": "%1人のユーザーを見つけました！(検索まで%2秒掛かりました。)",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "フィルタ",
     "online-only": "オンラインのみ",
     "invite": "招待",

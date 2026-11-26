@@ -264,8 +264,8 @@
 	"no-session-found": "ไม่พบการเข้าสู่ระบบ",
 	"not-in-room": "ผู้ใช้ไม่อยู่ในห้อง",
 	"cant-kick-self": "คุณไม่สามารถเตะตัวเองออกจากกลุ่มได้",
-	"no-users-selected": "ไม่มีผู้ใช้ที่เลือก",
-	"no-groups-selected": "ไม่มีกลุ่มที่เลือก",
+	"no-users-selected": "No users selected",
+	"no-groups-selected": "No groups selected",
 	"invalid-home-page-route": "เส้นทางไปหน้าแรกผิดพลาด",
 
 	"invalid-session": "เซสชันผิดพลาด",

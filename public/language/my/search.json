@@ -1,6 +1,6 @@
 {
     "type-to-search": "ရှာဖွေရန် ရိုက်ထည့်ပါ",
-    "results-matching": "\"%2\" နှင့် ကိုက်ညီသော ရလဒ် %1 ခု၊ (%3 စက္ကန့်)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "ကိုက်ညီမှုများ မတွေ့ပါ",
     "advanced-search": "အဆင့်မြင့် ရှာဖွေမှု",
     "in": "တွင်",

@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Rescind Report?",
 
 	"bulk-actions": "Tömeges műveletek",
-	"bulk-resolve": "Megoldott jelölés",
-	"confirm-purge": "Are you sure you want to permanently delete these flags?",
+	"bulk-resolve": "Resolve Flags",
+	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
 	"purge-cancelled": "Flag Purge Cancelled",
-	"bulk-purge": "Purge Flag(s)",
+	"bulk-purge": "Purge Flags",
 	"bulk-success": "%1 jelölő frissítve",
 	"flagged-timeago": "Flagged <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Automatikus Megjelölés] %1 negatív szavazatot kapott."

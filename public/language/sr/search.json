@@ -1,6 +1,6 @@
 {
     "type-to-search": "Унесите за претрагу",
-    "results-matching": "%1 резултат(а) се подудара са „%2”, (%3 секунди)",
+    "results-matching": "{count, plural, one {{count} result matching \"%2\", (%3 seconds)} other {{count} results matching \"%2\", (%3 seconds)}}",
     "no-matches": "Нема подударања",
     "advanced-search": "Напредна претрага",
     "in": "У",

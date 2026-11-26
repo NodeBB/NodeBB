@@ -9,7 +9,7 @@
     "enter-username": "Indtast brugernavn for at søge",
     "search-user-for-chat": "Search for a user to start chat",
     "load-more": "Indlæs mere",
-    "users-found-search-took": "%1 bruger(e) fundet! Søgning tog %2 sekunder.",
+    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
     "filter-by": "Filtre Efter",
     "online-only": "Kun online",
     "invite": "Invitér",
