@@ -8,18 +8,54 @@ const activitypub = require('../activitypub');
 module.exports = function (Messaging) {
 	Messaging.deleteMessage = async (mid, uid) => await doDeleteRestore(mid, 1, uid);
 	Messaging.restoreMessage = async (mid, uid) => await doDeleteRestore(mid, 0, uid);
-	Messaging.purgeMessage = async (mid) => {
-		const msgData = await Messaging.getMessageFields(mid, [
-			'mid', 'fromuid', 'roomId', 'deleted', 'system',
+	Messaging.purgeMessage = async (mids) => {
+		mids = Array.isArray(mids) ? mids : [mids];
+		const msgData = await Messaging.getMessagesFields(mids, [
+			'mid', 'fromuid', 'roomId', 'deleted', 'system', 'toMid',
 		]);
-		if (!msgData) {
+		if (!msgData.length) {
 			return;
 		}
-		await db.delete(`message:${mid}`);
-		await db.sortedSetRemove(`chat:room:${msgData.roomId}:mids`, mid);
-		await db.decrObjectField(`chat:room:${msgData.roomId}`, 'messageCount');
 
-		plugins.hooks.fire('action:messaging.delete', { message: msgData });
+		const midsPerRoom = {};
+		for (const m of msgData) {
+			if (m && m.mid && m.roomId) {
+				midsPerRoom[m.roomId] = (midsPerRoom[m.roomId] || new Set()).add(m.mid);
+			}
+		}
+
+		const totalPurgeCount = new Set(msgData.filter(m => m && m.mid).map(m => m.mid)).size;
+
+		await db.deleteAll([
+			...msgData.map(m => `message:${m.mid}`),
+			...msgData.map(m => `mid:${m.mid}:replies`),
+		]);
+
+		const promises = [
+			db.sortedSetRemove(`messages:mid`, mids),
+		];
+
+		for (const [roomId, midsSet] of Object.entries(midsPerRoom)) {
+			promises.push(
+				db.sortedSetRemove(`chat:room:${roomId}:mids`, Array.from(midsSet))
+			);
+			promises.push(
+				db.sortedSetRemove(`chat:room:${roomId}:mids:pinned`, Array.from(midsSet))
+			);
+			promises.push(
+				db.incrObjectFieldBy(`chat:room:${roomId}`, 'messageCount', -midsSet.size)
+			);
+		}
+		const bulkRemoveFromParent = msgData.filter(m => m && m.toMid)
+			.map(m => [`mid:${m.toMid}:replies`, m.mid]);
+
+		await Promise.all([
+			...promises,
+			db.incrObjectFieldBy('global', 'messageCount', -totalPurgeCount),
+			db.sortedSetRemoveBulk(bulkRemoveFromParent),
+		]);
+
+		plugins.hooks.fire('action:messaging.purge', { messages: msgData });
 	};
 
 	async function doDeleteRestore(mid, state, uid) {
