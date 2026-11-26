@@ -87,10 +87,9 @@ module.exports = function (Messaging) {
 	};
 
 	async function sendNotification(fromUid, roomId, messageObj) {
-		const [settings, roomData, realtimeUids] = await Promise.all([
+		const [settings, roomData] = await Promise.all([
 			db.getObject(`chat:room:${roomId}:notification:settings`),
 			Messaging.getRoomData(roomId),
-			io.getUidsInRoom(`chat_room_${roomId}`),
 		]);
 		const roomDefault = roomData.notificationSetting;
 		const uidsToNotify = [];
@@ -99,8 +98,7 @@ module.exports = function (Messaging) {
 			uids = uids.filter(
 				uid => utils.isNumber(uid) &&
 					(parseInt((settings && settings[uid]) || roomDefault, 10) === ALLMESSAGES) &&
-					String(fromUid) !== String(uid) &&
-					!realtimeUids.includes(uid)
+					String(fromUid) !== String(uid)
 			);
 			const hasRead = await Messaging.hasRead(uids, roomId);
 			uidsToNotify.push(...uids.filter((uid, index) => !hasRead[index]));

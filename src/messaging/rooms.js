@@ -149,12 +149,19 @@ module.exports = function (Messaging) {
 		}
 
 		await Promise.all(roomIds.map(async (roomId) => {
-			const uids = await db.getSortedSetMembers(`chat:room:${roomId}:uids`);
+			const [uids, mids] = await Promise.all([
+				db.getSortedSetMembers(`chat:room:${roomId}:uids`),
+				db.getSortedSetMembers(`chat:room:${roomId}:mids`),
+			]);
+
 			const keys = uids
 				.map(uid => `uid:${uid}:chat:rooms`)
 				.concat(uids.map(uid => `uid:${uid}:chat:rooms:unread`));
 
-			await db.sortedSetsRemove(keys, roomId);
+			await Promise.all([
+				db.sortedSetsRemove(keys, roomId),
+				Messaging.purgeMessage(mids),
+			]);
 		}));
 		await Promise.all([
 			db.deleteAll([
