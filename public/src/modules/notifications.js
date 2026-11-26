@@ -117,7 +117,7 @@ define('notifications', [
 			ajaxify.refresh();
 		}
 		const { template } = ajaxify.data;
-		if (template.chats && String(ajaxify.data.roomId) === String(notifData.roomId)) {
+		if (app.isFocused && template.chats && String(ajaxify.data.roomId) === String(notifData.roomId)) {
 			// user is already looking at this room, mark the notification read
 			// instead of leaving it unread until the next room load
 			if (notifData.nid) {
@@ -126,7 +126,7 @@ define('notifications', [
 			return;
 		}
 
-		if (template.topic && String(ajaxify.data.tid) === String(notifData.tid)) {
+		if (app.isFocused && template.topic && String(ajaxify.data.tid) === String(notifData.tid)) {
 			await socket.emit('topics.markTopicNotificationsRead', [notifData.tid]);
 			return;
 		}
