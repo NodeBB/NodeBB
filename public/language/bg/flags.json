@@ -97,10 +97,10 @@
 	"modal-confirm-rescind": "Анулиране на доклада?",
 
 	"bulk-actions": "Групови действия",
-	"bulk-resolve": "Resolve Flags",
-	"confirm-purge": "{count, plural, one {Are you sure you want to permanently delete this flag?} other {Are you sure you want to permanently delete these flags?}}",
+	"bulk-resolve": "Разрешаване на докладите",
+	"confirm-purge": "{count, plural, one {Наистина ли искате да изтриете завинаги този доклад?} other {Наистина ли искате да изтриете завинаги тези доклади?}}",
 	"purge-cancelled": "Изтриването на доклад е отменено",
-	"bulk-purge": "Purge Flags",
+	"bulk-purge": "Изтриване на докладите",
 	"bulk-success": "%1 доклада са обновени",
 	"flagged-timeago": "Докладвано <span class=\"timeago\" title=\"%1\"></span>",
   	"auto-flagged": "[Авт. докладвано] Получени %1 отрицателни гласа."

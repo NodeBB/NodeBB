@@ -3,7 +3,7 @@
     "all-groups": "Всички групи",
     "groups": "Групи",
     "members": "Членове",
-    "x-members": "{count, plural, one {{count} member} other {{count} members}}",
+    "x-members": "{count, plural, one {{count} член} other {{count} членове}}",
     "view-group": "Преглед на групата",
     "owner": "Собственик на групата",
     "new-group": "Създаване на нова група",

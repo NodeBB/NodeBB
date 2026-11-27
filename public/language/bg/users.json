@@ -9,7 +9,7 @@
     "enter-username": "Въведете потребителско име, което да потърсите",
     "search-user-for-chat": "Потърсете потребител, с когото да започнете разговор",
     "load-more": "Зареждане на още",
-    "users-found-search-took": "{count, plural, one {{count} user found! Search took %2 seconds.} other {{count} users found! Search took %2 seconds.}}",
+    "users-found-search-took": "{count, plural, one {{count} намерен потребител! Търсенето отне %2 сек.} other {{count} намерени потребители! Търсенето отне %2 сек.}}",
     "filter-by": "Филтриране",
     "online-only": "Само тези на линия",
     "invite": "Канене",

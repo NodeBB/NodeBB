@@ -264,8 +264,8 @@
 	"no-session-found": "Няма намерена сесия на вписване!",
 	"not-in-room": "Потребителят не е в стаята",
 	"cant-kick-self": "Не можете да изритате себе си от групата",
-	"no-users-selected": "No users selected",
-	"no-groups-selected": "No groups selected",
+	"no-users-selected": "Няма избрани потребители",
+	"no-groups-selected": "Няма избрани групи",
 	"invalid-home-page-route": "Грешен път към началната страница",
 
 	"invalid-session": "Изтекла сесия",
